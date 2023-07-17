@@ -49,33 +49,45 @@ const ListCard = (props) => {
           {showTab == 1 ? (
             getTimeInterval(date)
           ) : showTab == 2 ? (
-            <Popover
-              content={
-                <>
-                  {/* <div className='row justify-content-between th-pointer pb-2'>
-                    <img src={editIcon} className='mr-3 ' />
-                    <span className='th-black-1 th-16'>Edit</span>
-                  </div> */}
-                  <div
-                    className='row justify-content-center th-pointer'
-                    onClick={() => {
-                      setShowModal(true);
-                    }}
-                  >
-                    <img src={publishIcon} className='mr-3 ' />
-                    <span className='th-green th-16'>Publish</span>
-                  </div>
-                  {/* <div className='row justify-content-center th-pointer pt-2'>
-                    <img src={deleteIcon} className='mr-3' />
-                    <span className='th-red th-16 '>Delete</span>
-                  </div> */}
-                </>
-              }
-              trigger='click'
-              placement='bottomRight'
+            // <Popover
+            //   content={
+            //     <>
+            //       {/* <div className='row justify-content-between th-pointer pb-2'>
+            //         <img src={editIcon} className='mr-3 ' />
+            //         <span className='th-black-1 th-16'>Edit</span>
+            //       </div> */}
+            //       <div
+            //         className='row justify-content-center th-pointer'
+            //         onClick={() => {
+            //           setShowModal(true);
+            //         }}
+            //       >
+            //         <img src={publishIcon} className='mr-3 ' />
+            //         <span className='th-green th-16'>Publish</span>
+            //       </div>
+            //       {/* <div className='row justify-content-center th-pointer pt-2'>
+            //         <img src={deleteIcon} className='mr-3' />
+            //         <span className='th-red th-16 '>Delete</span>
+            //       </div> */}
+            //     </>
+            //   }
+            //   trigger='click'
+            //   placement='bottomRight'
+            // >
+            //   <EllipsisOutlined />
+            // </Popover>
+            <div
+              className='d-flex justify-content-end'
+              onClick={() => {
+                setShowModal(true);
+              }}
             >
-              <EllipsisOutlined />
-            </Popover>
+              <div className='th-bg-primary th-white w-75 th-pointer th-br-4 text-center py-1'>
+                {!props?.allowedPublishBranches?.includes(props?.data?.branch_id[0])
+                  ? 'Verify'
+                  : 'Publish'}
+              </div>
+            </div>
           ) : (
             // <div className='d-flex justify-content-around'>
             //   <img src={emailIcon} />

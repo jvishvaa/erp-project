@@ -127,16 +127,21 @@ const DetailsModal = (props) => {
         .then((res) => {
           if (res?.data?.status_code === 200) {
             if (res?.data?.result?.is_verified) {
-              message.success(res?.data?.message);
-              setIsVerifed(true);
+              // message.success(res?.data?.message);
+              props.handleClose();
+              message.success('Announcement Published Successfully');
+              props.setTab(3);
+              // setIsVerifed(true);
             } else {
-              message.error(
-                `Incorrect OTP, please try again ${
-                  attempts < 3
-                    ? `(${3 - attempts - 1} attempts remaining)`
-                    : `(last attempt remaining )`
-                }`
-              );
+              if (attempts < 2) {
+                message.error(
+                  `Wrong OTP, please type correct OTP, ${
+                    2 - attempts == 1
+                      ? `last attempt remaining`
+                      : `${2 - attempts} attempts remaining`
+                  }`
+                );
+              }
               fetchOTPStatus({ announcement_id: data?.id });
             }
           }
@@ -160,7 +165,7 @@ const DetailsModal = (props) => {
           setAttempts(res.data.result?.attempts);
           if (
             res.data.result?.otp_status == 'Blocked' ||
-            res.data.result?.attempts >= 4
+            res.data.result?.attempts >= 3
           ) {
             setIsBlocked(true);
           } else if (

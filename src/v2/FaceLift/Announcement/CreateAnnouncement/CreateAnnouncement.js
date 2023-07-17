@@ -374,7 +374,7 @@ const CreateAnnouncement = () => {
         if (res.data.status_code === 200) {
           message.success(
             asDraft
-              ? 'Announcement Saved as Draft'
+              ? 'Announcement has saved in Draft'
               : 'Announcement Published Successfully'
           );
           setLoading(false);
