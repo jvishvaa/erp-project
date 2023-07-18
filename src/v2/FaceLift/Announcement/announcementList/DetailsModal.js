@@ -108,8 +108,11 @@ const DetailsModal = (props) => {
           message.success('Announcement Published Successfully');
           props.setTab(3);
         }
+      })
+      .catch((err) => {
+        message.error(err?.message);
       });
-    props.setTab('3');
+    // props.setTab('3');
   };
 
   const handleOTPVerification = () => {
@@ -197,13 +200,15 @@ const DetailsModal = (props) => {
         if (res?.data?.status_code === 200) {
           message.success(res.data.message);
           setOTPSent(true);
+        } else if (res?.data?.status_code == 409) {
+          message.error(res?.data?.developer_msg);
         }
       })
       .catch((err) => {
         message.error(err.message);
       })
       .finally(() => {
-        // setLoading(false);
+        setLoading(false);
       });
   };
 
