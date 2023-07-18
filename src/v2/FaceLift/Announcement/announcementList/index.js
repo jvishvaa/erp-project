@@ -23,10 +23,10 @@ const AnnouncementList = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'localhost:3000'
-    ? true
-    : false;
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
+      ? true
+      : false;
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
   const [loading, setLoading] = useState(false);
@@ -39,6 +39,7 @@ const AnnouncementList = () => {
   const [listCount, setListCount] = useState('');
   const [date, setDate] = useState('');
   const [branchIds, setBranchIds] = useState('');
+  const [allowedPublishBranches, setAllowedPublishBranches] = useState([]);
   const history = useHistory();
   const showBranchFilter = [1, 2, 4, 8, 9];
   const branchOptions = branchList?.map((each) => {
@@ -112,6 +113,24 @@ const AnnouncementList = () => {
         console.log(error);
       });
   };
+  const fetchAnnouncementConfigs = () => {
+    axios
+      .get(
+        `${endpoints.academics.getConfigAnnouncement}?config_key=anncmt_cumctn_config&config_type=json`
+      )
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          if (res?.data?.result?.enbl_brnches.length > 0) {
+            setAllowedPublishBranches(res?.data?.result?.enbl_brnches);
+          } else {
+            setAllowedPublishBranches([]);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const categoryOptions = categories?.map((each) => {
     return (
@@ -147,7 +166,8 @@ const AnnouncementList = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+    fetchAnnouncementConfigs();
+  }, [window.location.pathname]);
 
   const TabContent = () => {
     return (
@@ -216,7 +236,7 @@ const AnnouncementList = () => {
           </div>
         </div>
         {loading ? (
-          <div className='d-flex justify-content-center align-items-center h-50'>
+          <div className='d-flex justify-content-center align-items-center h-50 pt-5'>
             <Spin tip='Loading...' size='large' />
           </div>
         ) : listCount > 0 ? (
@@ -225,7 +245,12 @@ const AnnouncementList = () => {
               <div className='th-14 th-fw-500 th-black-1 th-lh-20 mb-4 px-2'>
                 <div className='th-black-2 th-fw-600 mb-2'>{item?.date}</div>
                 {item?.events.map((item) => (
-                  <ListCard data={item} showTab={showTab} setTab={onChange} />
+                  <ListCard
+                    data={item}
+                    showTab={showTab}
+                    setTab={onChange}
+                    allowedPublishBranches={allowedPublishBranches}
+                  />
                 ))}
               </div>
             );
@@ -326,20 +351,24 @@ const AnnouncementList = () => {
                   )}
                 </Tabs>
               </div>
-              {selectedBranch?.branch?.id == 248 && isOrchids ? '' : 
-              <>
-              {userLevel !== 12 && userLevel !== 13 && (
-                <div
-                  style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-                  className='th-bg-primary th-white th-br-6 px-4 py-3 th-fw-500 th-pointer'
-                  onClick={() => history.push('./create-announcement')}
-                >
-                  <span className='d-flex align-items-center'>
-                    <PlusOutlined size='small' className='mr-2' />
-                    Create New
-                  </span>
-                </div>
-              )} </> }
+              {selectedBranch?.branch?.id == 248 && isOrchids ? (
+                ''
+              ) : (
+                <>
+                  {userLevel !== 12 && userLevel !== 13 && (
+                    <div
+                      style={{ position: 'fixed', bottom: '5%', right: '2%' }}
+                      className='th-bg-primary th-white th-br-6 px-4 py-3 th-fw-500 th-pointer'
+                      onClick={() => history.push('./create-announcement')}
+                    >
+                      <span className='d-flex align-items-center'>
+                        <PlusOutlined size='small' className='mr-2' />
+                        Create New
+                      </span>
+                    </div>
+                  )}{' '}
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -54,10 +54,14 @@ class EditUser extends Component {
       hasAddAccess: false,
       userLevel: '',
       designation: '',
-      isOrchids : window.location.host.split('.')[0] === 'orchids' ||
-      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
-        ? true
-        : false,
+      isOrchids:
+        window.location.host.split('.')[0] === 'orchids' ||
+        window.location.host.split('.')[0] === 'qa' ||
+        window.location.host.split('.')[0] === 'localhost:3000' ||
+        window.location.host.split('.')[0] === 'mcollege' ||
+        window.location.host.split('.')[0] === 'dps'
+          ? true
+          : false,
     };
   }
 
@@ -119,11 +123,11 @@ class EditUser extends Component {
       section = [],
       subjects = [],
     } = { ...details };
-    if(index == 0){
+    if (index == 0) {
       this.setState({
         userLevel: details.userLevel,
-        designation: details.designation
-      })
+        designation: details.designation,
+      });
     }
     const {
       academic_year: academicYear = [],
@@ -151,7 +155,7 @@ class EditUser extends Component {
   };
 
   onSubmitSchoolDetails = (details) => {
-    console.log(details , 'sub');
+    console.log(details, 'sub');
     const { selectedUser } = this.props;
     this.state.user.mapping_bgs.forEach(({ is_delete }, index) => {
       if (is_delete) {
@@ -302,16 +306,33 @@ class EditUser extends Component {
       contact: student_country_code + '-' + contact,
       email,
       erp_user,
-      profile,
-      father_photo,
-      mother_photo,
-      guardian_photo,
       parent: parentDetail,
     };
-    if(this.state.isOrchids == true){
-      requestObj['user_level'] = this.state.userLevel?.id
-      if(this.state.userLevel?.id != 13){
-        requestObj['designation'] = this.state.designation?.id
+    if ((typeof profile === 'string' && profile === '') || typeof profile === 'object') {
+      requestObj = { ...requestObj, profile };
+    }
+    if (
+      (typeof father_photo === 'string' && father_photo === '') ||
+      typeof father_photo === 'object'
+    ) {
+      requestObj = { ...requestObj, father_photo };
+    }
+    if (
+      (typeof mother_photo === 'string' && mother_photo === '') ||
+      typeof mother_photo === 'object'
+    ) {
+      requestObj = { ...requestObj, mother_photo };
+    }
+    if (
+      (typeof guardian_photo === 'string' && guardian_photo === '') ||
+      typeof guardian_photo === 'object'
+    ) {
+      requestObj = { ...requestObj, guardian_photo };
+    }
+    if (this.state.isOrchids == true) {
+      requestObj['user_level'] = this.state.userLevel?.id;
+      if (this.state.userLevel?.id != 13) {
+        requestObj['designation'] = this.state.designation?.id;
       }
     }
     if (!requestWithParentorGuradianDetails) {

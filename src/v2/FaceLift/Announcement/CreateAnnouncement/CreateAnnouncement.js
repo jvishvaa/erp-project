@@ -50,11 +50,13 @@ const CreateAnnouncement = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const isStudentIncluded = selectedUserLevels?.includes(13);
   const [allGradesSelected, setAllGradesSelected] = useState(false);
-  const [ email , setEmail ] = useState(false)
-  const [ sms , setSMS ] = useState(false)
-  const [ whatsapp , setWhatsapp ] = useState(false)
-
-  const [ notiConfig , setNotiConfig ] = useState()
+  const [email, setEmail] = useState(false);
+  const [sms, setSMS] = useState(false);
+  const [whatsapp, setWhatsapp] = useState(false);
+  const [allowPublish, setAllowPublish] = useState(true);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [notiConfig, setNotiConfig] = useState();
   const { TextArea } = Input;
 
   const handleUploadModalClose = () => {
@@ -73,31 +75,32 @@ const CreateAnnouncement = () => {
     newFileList.splice(index, 1);
     setUploadedFiles(newFileList);
   };
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
 
   const handleChange = (value) => {
     setSelectedCategory(value);
   };
 
-
-  useEffect(()=> {
-    fetchConfig()
-  },[])
+  useEffect(() => {
+    fetchConfig();
+  }, []);
 
   const fetchConfig = () => {
     axiosInstance
-      .get(`${endpoints.academics.getConfigAnnouncement}?config_key=anncmt_cumctn_config&config_type=json`)
+      .get(
+        `${endpoints.academics.getConfigAnnouncement}?config_key=anncmt_cumctn_config&config_type=json`
+      )
       .then((res) => {
-        console.log(res);
-        setNotiConfig(res?.data?.result)
+        setNotiConfig(res?.data?.result);
+        if (res?.data?.result?.enbl_brnches?.length > 0) {
+          setAllowPublish(false);
+        } else {
+          setAllowPublish(true);
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
-
 
   const fetchUserLevel = () => {
     axios
@@ -204,6 +207,13 @@ const CreateAnnouncement = () => {
       grade: [],
       section: [],
     });
+    if (notiConfig?.enbl_brnches?.length > 0) {
+      if (notiConfig?.enbl_brnches?.includes(e)) {
+        setAllowPublish(true);
+      } else {
+        setAllowPublish(false);
+      }
+    }
     if (e) {
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
@@ -364,7 +374,7 @@ const CreateAnnouncement = () => {
         if (res.data.status_code === 200) {
           message.success(
             asDraft
-              ? 'Announcement Saved as Draft'
+              ? 'Announcement has saved in Draft'
               : 'Announcement Published Successfully'
           );
           setLoading(false);
@@ -778,9 +788,27 @@ const CreateAnnouncement = () => {
                       options={intimationOptions}
                       onChange={(e) => setIntimation(e)}
                     /> */}
-                    {notiConfig?.is_email == true ? <Checkbox onChange={(e) => setEmail(e.target.checked)} >Intimate Via Email</Checkbox> : ''}
-                    {notiConfig?.is_sms == true ? <Checkbox onChange={(e) => setSMS(e.target.checked)} >Intimate Via SMS</Checkbox> : ''}
-                    {notiConfig?.is_whatsapp == true ? <Checkbox onChange={(e) => setWhatsapp(e.target.checked)} >Intimate Via Whatsapp</Checkbox> : ''}
+                    {notiConfig?.is_email == true ? (
+                      <Checkbox onChange={(e) => setEmail(e.target.checked)}>
+                        Intimate Via Email
+                      </Checkbox>
+                    ) : (
+                      ''
+                    )}
+                    {notiConfig?.is_sms == true ? (
+                      <Checkbox onChange={(e) => setSMS(e.target.checked)}>
+                        Intimate Via SMS
+                      </Checkbox>
+                    ) : (
+                      ''
+                    )}
+                    {notiConfig?.is_whatsapp == true ? (
+                      <Checkbox onChange={(e) => setWhatsapp(e.target.checked)}>
+                        Intimate Via Whatsapp
+                      </Checkbox>
+                    ) : (
+                      ''
+                    )}
                   </div>
                   <div className='col-md-4 d-flex justify-content-md-end py-4 py-md-0'>
                     <Button
@@ -790,13 +818,15 @@ const CreateAnnouncement = () => {
                     >
                       Save as Draft
                     </Button>
-
-                    <Button
-                      className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5'
-                      onClick={() => handlePublish(false)}
-                    >
-                      Publish
-                    </Button>
+                    {allowPublish && (
+                      <Button
+                        className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5'
+                        onClick={() => handlePublish(false)}
+                        // disabled={!allowPublish}
+                      >
+                        Publish
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

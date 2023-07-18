@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Modal, Button, message, Carousel, Tooltip } from 'antd';
+import { Modal, Button, message, Carousel, Tooltip, Input, Tag, Spin } from 'antd';
 import {
   ArrowDownOutlined,
   LeftCircleFilled,
@@ -24,6 +24,14 @@ const DetailsModal = (props) => {
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
   const [branchName, setBranchName] = useState();
+  const [OTPStatus, setOTPStatus] = useState();
+  const [loading, setLoading] = useState();
+  const [otp, setOtp] = useState('');
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [OTPSent, setOTPSent] = useState(false);
+  const [isVerified, setIsVerifed] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [attempts, setAttempts] = useState(0);
   const imageAttachments = data?.attachments.filter((item) =>
     ['jpg', 'jpeg', 'png'].includes(
       item.split('.')[item.split('.').length - 1].toLowerCase()
@@ -100,8 +108,108 @@ const DetailsModal = (props) => {
           message.success('Announcement Published Successfully');
           props.setTab(3);
         }
+      })
+      .catch((err) => {
+        message.error(err?.message);
       });
-    props.setTab('3');
+    // props.setTab('3');
+  };
+
+  const handleOTPVerification = () => {
+    if (!otp.trim().length) {
+      message.error('Please enter OTP');
+      return;
+    } else if (otp.length !== 6) {
+      message.error('OTP must have 6 digits');
+      return;
+    } else {
+      let payload = { announcement_id: data?.id, otp: otp };
+      setVerifyLoading(true);
+      axios
+        .put(`erp_user/v1/verify-otp/`, payload)
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            if (res?.data?.result?.is_verified) {
+              // message.success(res?.data?.message);
+              props.handleClose();
+              message.success('Announcement Published Successfully');
+              props.setTab(3);
+              // setIsVerifed(true);
+            } else {
+              if (attempts < 2) {
+                message.error(
+                  `Wrong OTP, please type correct OTP, ${
+                    2 - attempts == 1
+                      ? `last attempt remaining`
+                      : `${2 - attempts} attempts remaining`
+                  }`
+                );
+              }
+              fetchOTPStatus({ announcement_id: data?.id });
+            }
+          }
+        })
+        .catch((err) => {
+          message.error(err.message);
+        })
+        .finally(() => {
+          setVerifyLoading(false);
+        });
+    }
+  };
+
+  const fetchOTPStatus = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`erp_user/v1/otp-status/`, { params: { ...params } })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setOTPStatus(res.data.result);
+          setAttempts(res.data.result?.attempts);
+          if (
+            res.data.result?.otp_status == 'Blocked' ||
+            res.data.result?.attempts >= 3
+          ) {
+            setIsBlocked(true);
+          } else if (
+            res.data.result?.is_otp_generated &&
+            res.data.result?.otp_status == 'Active'
+          ) {
+            setOTPSent(true);
+          } else if (
+            res.data.result?.is_otp_generated &&
+            res.data.result?.otp_status == 'Verified'
+          ) {
+            setIsVerifed(true);
+          }
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+  const handleGenerateOTP = () => {
+    setLoading(true);
+    let payload = { announcement_id: data?.id };
+    axios
+      .post(`erp_user/v1/generate-otp/`, payload)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          message.success(res.data.message);
+          setOTPSent(true);
+        } else if (res?.data?.status_code == 409) {
+          message.error(res?.data?.developer_msg);
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -123,12 +231,29 @@ const DetailsModal = (props) => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (showTab == 2) {
+      if (
+        props?.allowedPublishBranches?.length > 0 &&
+        !props?.allowedPublishBranches?.includes(data?.branch_id[0])
+      ) {
+        fetchOTPStatus({ announcement_id: data?.id });
+      } else {
+        setIsVerifed(true);
+      }
+    }
+  }, []);
   return (
     <>
       <Modal
         centered
         visible={props?.show}
-        onCancel={props?.handleClose}
+        onCancel={() => {
+          props.handleClose();
+          setIsVerifed(false);
+          setOTPSent(false);
+        }}
         footer={false}
         width={hasImageAttachments ? 850 : 500}
       >
@@ -321,22 +446,116 @@ const DetailsModal = (props) => {
               </div>
             )}
             {showTab == 2 && (
-              <div className='d-flex justify-content-end'>
-                <Button
-                  className='th-bg-grey th-black-2 th-br-4 th-fw-500 th-14 th-pointer col-md-4 col-5 mr-5 mr-md-2'
-                  style={{ border: '1px solid #D9D9D9' }}
-                  onClick={props?.handleClose}
-                >
-                  Cancel
-                </Button>
+              <>
+                {!props?.allowedPublishBranches?.includes(data?.branch_id[0]) ? (
+                  isBlocked ? (
+                    <div className='th-red text-center th-fw-500 th-16'>
+                      Your announcement has been blocked as a result of three incorrect
+                      OTP entries.
+                    </div>
+                  ) : isVerified ? (
+                    <div className='d-flex justify-content-end'>
+                      <Button
+                        className='th-bg-grey th-black-2 th-br-4 th-fw-500 th-14 th-pointer col-md-4 col-5 mr-5 mr-md-2'
+                        style={{ border: '1px solid #D9D9D9' }}
+                        onClick={props?.handleClose}
+                      >
+                        Cancel
+                      </Button>
 
-                <Button
-                  className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-4 col-5'
-                  onClick={() => handlePublish(data?.id)}
-                >
-                  Publish
-                </Button>
-              </div>
+                      <Button
+                        className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-4 col-5'
+                        onClick={() => handlePublish(data?.id)}
+                      >
+                        Publish
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      {!OTPSent ? (
+                        <div className='d-flex justify-content-end w-100'>
+                          {OTPStatus?.is_otp_generated &&
+                          OTPStatus?.otp_status == 'Active' ? (
+                            <Button
+                              type='primary'
+                              className='th-br-4'
+                              onClick={() => {
+                                setOTPSent(true);
+                              }}
+                            >
+                              Verfiy OTP
+                            </Button>
+                          ) : (
+                            <Button
+                              className='th-bg-primary th-white th-br-4 th-fw-500 th-14'
+                              onClick={handleGenerateOTP}
+                              loading={loading}
+                            >
+                              {OTPStatus?.otp_status == 'Expired'
+                                ? 'Re-send'
+                                : 'Generate'}{' '}
+                              OTP
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className='d-flex justify-content-between w-100'>
+                          <div>
+                            <Input
+                              type='number'
+                              maxLength={6}
+                              placeholder='Please enter OTP'
+                              showCount
+                              value={otp}
+                              onChange={(e) => {
+                                if (
+                                  !e.target.validity?.valid ||
+                                  Number(e.target.value) < 0
+                                ) {
+                                  message.error('Please enter numbers only');
+                                  return;
+                                } else {
+                                  if (String(e.target.value).length < 7) {
+                                    setOtp(e.target.value);
+                                  }
+                                }
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Button
+                              className='th-bg-primary th-white th-br-4 th-fw-500 th-14'
+                              onClick={() => {
+                                handleOTPVerification();
+                              }}
+                              loading={verifyLoading}
+                            >
+                              Verify OTP
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )
+                ) : (
+                  <div className='d-flex justify-content-end'>
+                    <Button
+                      className='th-bg-grey th-black-2 th-br-4 th-fw-500 th-14 th-pointer col-md-4 col-5 mr-5 mr-md-2'
+                      style={{ border: '1px solid #D9D9D9' }}
+                      onClick={props?.handleClose}
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button
+                      className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-4 col-5'
+                      onClick={() => handlePublish(data?.id)}
+                    >
+                      Publish
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

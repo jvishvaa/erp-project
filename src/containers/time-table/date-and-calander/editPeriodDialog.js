@@ -149,7 +149,6 @@ const EditPeriodDialog = (props) => {
         tt_id: props.ttId,
         buddy_teacher_id: buddyTeacherId,
       };
-
       let data = await editPeriod(props?.periodDetails?.id, obj);
       if (data.status_code === 200) {
         setAlert('success', data.message);
