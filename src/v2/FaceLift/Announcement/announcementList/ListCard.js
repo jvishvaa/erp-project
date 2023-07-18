@@ -83,7 +83,8 @@ const ListCard = (props) => {
               }}
             >
               <div className='th-bg-primary th-white w-75 th-pointer th-br-4 text-center py-1'>
-                {!props?.allowedPublishBranches?.includes(props?.data?.branch_id[0])
+                {props?.allowedPublishBranches.length > 0 &&
+                !props?.allowedPublishBranches?.includes(props?.data?.branch_id[0])
                   ? 'Verify'
                   : 'Publish'}
               </div>
