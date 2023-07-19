@@ -65,7 +65,7 @@ import {
   Checkbox,
   Tooltip,
   Progress,
-  Modal
+  Modal,
 } from 'antd';
 import { LeftOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -223,33 +223,35 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   const [bulkTeacherRemark, setBulkTeacherRemark] = useState();
   const fileUploadInput = useRef(null);
   const [uploadLoading, setUploadLoading] = useState(false);
-  const [ percentValue , setPercentValue ] = useState(10)
+  const [percentValue, setPercentValue] = useState(10);
   const [uploadStart, setUploadStart] = useState(false);
-
+  const [formats, setFormats] = useState([]);
 
   let idInterval = null;
   useEffect(() => {
-    console.log(uploadStart , 'start' , percentValue ,idInterval);
-    if(uploadStart == true && percentValue < 90){
-      console.log(percentValue , 'pval');
-      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount) ), 1000);
+    console.log(uploadStart, 'start', percentValue, idInterval);
+    if (uploadStart == true && percentValue < 90) {
+      console.log(percentValue, 'pval');
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
     }
 
     return () => {
       clearInterval(idInterval);
-      setPercentValue(10)
+      setPercentValue(10);
     };
   }, [uploadStart]);
 
   const checkCount = (count) => {
-    console.log(count , 'count');
-    if(count < 90){
-      return count+5;
-    }else {
+    console.log(count, 'count');
+    if (count < 90) {
+      return count + 5;
+    } else {
       return count;
     }
-  }
-
+  };
 
   const handleHomeworkSubmit = () => {
     let count = 0;
@@ -372,6 +374,26 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     }
   }, []);
 
+  const fetchFormats = () => {
+    setLoading(true);
+    axiosInstance
+      .get(`/assessment/check-sys-config/?config_key=hw-video-format`)
+      .then((response) => {
+        if (response?.data?.result) {
+          setFormats(response?.data?.result);
+          console.log(response, 'ress');
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        message.error('error', error?.message);
+      });
+  };
+  useEffect(() => {
+    fetchFormats();
+  }, []);
+
   useEffect(() => {
     let maxVal = 0;
     axiosInstance
@@ -404,7 +426,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
               if (result.data.data.hw_questions[i]?.is_attachment_enable == true) {
                 maxVal += result.data.data.hw_questions[i].max_attachment;
               }
-
             }
             setMaxCount(maxVal);
           } else if (homeworkSubmission.status === 2 || homeworkSubmission.status === 3) {
@@ -474,10 +495,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   }, []);
 
   const handleBulkNotification = () => {
-    if(maxCount == 0){
-      message.error('File Upload Restriction, please contact subject teacher')
-    }
-    else if (bulkDataDisplay?.length >= maxCount) {
+    if (maxCount == 0) {
+      message.error('File Upload Restriction, please contact subject teacher');
+    } else if (bulkDataDisplay?.length >= maxCount) {
       setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
     } else {
       fileUploadInput.current.click();
@@ -489,17 +509,21 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
     } else {
       const fil = e.target.files[0] || null;
+      const videoFormat = fil.name.split('.');
+      const typeFormat = videoFormat[videoFormat?.length - 1];
+      console.log(formats.includes(`.${typeFormat}`), typeFormat, 'formatfil');
       if (
         fil.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.mp4') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.avi') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.3gp') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.m4v') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.mpeg-4') > 0 
+        formats.includes(`.${typeFormat}`)
+        // fil.name.toLowerCase().lastIndexOf('.mp4') > 0 ||
+        // fil.name.toLowerCase().lastIndexOf('.avi') > 0 ||
+        // fil.name.toLowerCase().lastIndexOf('.3gp') > 0 ||
+        // fil.name.toLowerCase().lastIndexOf('.m4v') > 0 ||
+        // fil.name.toLowerCase().lastIndexOf('.mpeg-4') > 0
         // fil.name.toLowerCase().lastIndexOf('.doc') > 0
         // fil.name.toLowerCase().lastIndexOf('.docx') > 0
       ) {
@@ -518,13 +542,13 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   list.push(arr[k]);
                   setBulkDataDisplay(list);
                 }
-                setPercentValue(100)
+                setPercentValue(100);
                 setUploadStart(false);
               } else {
                 list.push(e.target.files[0]);
                 setBulkDataDisplay(list);
                 bulkData.push(result.data.data);
-                setPercentValue(100)
+                setPercentValue(100);
                 setUploadStart(false);
               }
               setAlert('success', result.data.message);
@@ -542,7 +566,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         setUploadStart(false);
         setAlert(
           'error',
-          'Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4 , .avi, .3gp , .m4v) and pdf(.pdf) are acceptable'
+          `Only image(.jpeg, .jpg, .png), audio(mp3), video (${formats.toString()}) and pdf(.pdf) are acceptable`
         );
       }
     }
@@ -574,31 +598,33 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   };
 
   const uploadFileHandler = (e, index, maxVal, question) => {
-    console.log(question , 'ques');
+    console.log(question, 'ques');
     e.persist();
-    if(question?.is_attachment_enable == false){
-      message.error('File Upload Restriction, please contact subject teacher')
-    }
-    else if (attachmentCount[index] >= maxVal) {
+    if (question?.is_attachment_enable == false) {
+      message.error('File Upload Restriction, please contact subject teacher');
+    } else if (attachmentCount[index] >= maxVal) {
       setAlert(
         'warning',
         `Can\'t upload more than ${maxVal} attachments for question ${index + 1}`
       );
     } else {
       const fil = e.target.files[0];
+      const videoFormat = fil.name.split('.');
+      const typeFormat = videoFormat[videoFormat?.length - 1];
       if (
         fil.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
         fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.mp4') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.avi') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.3gp') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.m4v') > 0 ||
-        fil.name.toLowerCase().lastIndexOf('.mpeg-4') > 0 
+        formats.includes(`.${typeFormat}`)
+        // fil.name.toLowerCase().lastIndexOf('.mp4') > 0 ||
+        // fil.name.toLowerCase().lastIndexOf('.avi') > 0 ||
+        // fil.name.toLowerCase().lastIndexOf('.3gp') > 0 ||
+        // fil.name.toLowerCase().lastIndexOf('.m4v') > 0 ||
+        // fil.name.toLowerCase().lastIndexOf('.mpeg-4') > 0
       ) {
-        setPercentValue(10)
+        setPercentValue(10);
         setUploadStart(true);
         const formData = new FormData();
         formData.append('file', fil);
@@ -616,14 +642,14 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   setAttachmentDataDisplay(list);
                 }
                 setUploadStart(false);
-                setPercentValue(100)
+                setPercentValue(100);
               } else {
                 attachmentCount[index]++;
                 list[index] = [...attachmentDataDisplay[index], result.data.data];
                 setAttachmentDataDisplay(list);
                 attachmentData[index].attachments.push(result.data.data);
                 setUploadStart(false);
-                setPercentValue(100)
+                setPercentValue(100);
               }
               setAlert('success', result.data.message);
             } else {
@@ -638,7 +664,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       } else {
         setAlert(
           'error',
-          'Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4, .avi, .3gp , .m4v) and pdf(.pdf) are acceptable'
+          `Only image(.jpeg, .jpg, .png), audio(mp3), video (${formats.toString()}) and pdf(.pdf) are acceptable`
         );
       }
     }
@@ -780,7 +806,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       if (bulkDataDisplay.length >= totalMaxAttachment[totalMaxAttachment.length - 1]) {
         setAlert(
           'warning',
-          `Can\'t upload more than ${totalMaxAttachment[totalMaxAttachment.length - 1]
+          `Can\'t upload more than ${
+            totalMaxAttachment[totalMaxAttachment.length - 1]
           } attachments in total.`
         );
         handleCloseCorrectionModal();
@@ -886,7 +913,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     setLoading(true);
     axiosInstance
       .put(`${endpoints.homework.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`)
-      .then((result) => { });
+      .then((result) => {});
   };
 
   return (
@@ -941,8 +968,10 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
               className='row justify-content-between th-br-10 my-2 p-3 col-md-12'
               style={{ background: '#EEF2F8' }}
             >
-              <Tooltip title={homeworkTitle} >
-                <div className='th-14 th-fw-600 col-md-8 text-truncate'>Homework Title : {homeworkTitle}</div>
+              <Tooltip title={homeworkTitle}>
+                <div className='th-14 th-fw-600 col-md-8 text-truncate'>
+                  Homework Title : {homeworkTitle}
+                </div>
               </Tooltip>
               {homeworkSubmission.status === 1 && (
                 <div className='checkWrapper'>
@@ -973,7 +1002,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 handleClose={handleCloseCorrectionModal}
                 alert={undefined}
                 open={penToolOpen}
-                callBackOnPageChange={() => { }}
+                callBackOnPageChange={() => {}}
                 handleSaveFile={handleSaveEvaluatedFile}
               />
             )}
@@ -1002,9 +1031,14 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         <AttachmentIcon fontSize='small' />
                         <input
                           type='file'
-                          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .avi, .3gp, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF .AVI, .3GP , .m4v, .M4V , .MPEG-4'
+                          accept={`.png, .jpg, .jpeg, .mp3, .pdf, .PNG, .JPG, .JPEG, .MP3, .PDF, ${formats.toString()}`}
                           onChange={(e) => {
-                            uploadFileHandler(e, index, question.max_attachment , question);
+                            uploadFileHandler(
+                              e,
+                              index,
+                              question.max_attachment,
+                              question
+                            );
                             e.target.value = null;
                           }}
                           className={classes.fileInput}
@@ -1162,9 +1196,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                             'preview',
                                             'download',
                                             homeworkSubmission.status === 1 &&
-                                            question.is_pen_editor_enable &&
-                                            !item.includes('/lesson_plan_file/') &&
-                                            'pentool',
+                                              question.is_pen_editor_enable &&
+                                              !item.includes('/lesson_plan_file/') &&
+                                              'pentool',
                                           ]}
                                         />
                                       </div>
@@ -1190,13 +1224,13 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           url.includes('/lesson_plan_file/')
                                             ? ['download']
                                             : [
-                                              'preview',
-                                              'download',
-                                              homeworkSubmission.status === 1 &&
-                                              question.is_pen_editor_enable &&
-                                              !url.includes('/lesson_plan_file/') &&
-                                              'pentool',
-                                            ]
+                                                'preview',
+                                                'download',
+                                                homeworkSubmission.status === 1 &&
+                                                  question.is_pen_editor_enable &&
+                                                  !url.includes('/lesson_plan_file/') &&
+                                                  'pentool',
+                                              ]
                                         }
                                       />
                                     </div>
@@ -1312,140 +1346,140 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         question.submitted_files?.length > 0) ||
                         (homeworkSubmission.status === 3 &&
                           question.evaluated_files?.length > 0)) && (
-                          <div className='attachments-container'>
-                            {(() => {
-                              document.body.style.overflow = 'hidden';
-                            })()}
-                            <Typography component='h4' color='primary' className='header'>
-                              {homeworkSubmission.status === 2
-                                ? 'Submitted Files'
-                                : 'Evaluated Files'}
-                            </Typography>
-                            <div className='attachments-list-outer-container'>
-                              <div className='prev-btn'>
-                                {question?.submitted_files?.length > 1 && (
-                                  <IconButton onClick={() => handleScroll(index, 'left')}>
-                                    <ArrowBackIosIcon />
-                                  </IconButton>
-                                )}
-                              </div>
-                              {homeworkSubmission.status === 2 && (
-                                <SimpleReactLightbox>
-                                  <div
-                                    className='attachments-list'
-                                    ref={scrollableContainer}
-                                    onScroll={(e) => {
-                                      e.preventDefault();
-                                    }}
-                                    id={`homework_student_question_container_${index}`}
-                                  >
-                                    {question.submitted_files.map((url, i) => (
-                                      <>
-                                        <div className='attachment'>
-                                          <Attachment
-                                            key={`homework_student_question_attachment_${i}`}
-                                            fileUrl={url}
-                                            fileName={`Attachment-${i + 1}`}
-                                            urlPrefix={
-                                              url.includes('/lesson_plan_file/')
-                                                ? `${endpoints.homework.resourcesFiles}`
-                                                : `${endpoints.discussionForum.s3}/homework`
-                                            }
-                                            index={i}
-                                            actions={['preview', 'download']}
-                                          />
-                                        </div>
-                                      </>
-                                    ))}
-                                    <div
-                                      style={{
-                                        position: 'absolute',
-                                        visibility: 'hidden',
-                                        height: '0px',
-                                        width: '0px',
-                                      }}
-                                    >
-                                      <SRLWrapper>
-                                        {question.submitted_files.map((url, i) => (
-                                          <img
-                                            src={
-                                              url.includes('/lesson_plan_file/')
-                                                ? `${endpoints.homework.resourcesFiles}${url}`
-                                                : `${endpoints.discussionForum.s3}/homework/${url}`
-                                            }
-                                            onError={(e) => {
-                                              e.target.src = placeholder;
-                                            }}
-                                            alt={`Attachment-${i + 1}`}
-                                            style={{ height: '0px' }}
-                                          />
-                                        ))}
-                                      </SRLWrapper>
-                                    </div>
-                                  </div>
-                                </SimpleReactLightbox>
+                        <div className='attachments-container'>
+                          {(() => {
+                            document.body.style.overflow = 'hidden';
+                          })()}
+                          <Typography component='h4' color='primary' className='header'>
+                            {homeworkSubmission.status === 2
+                              ? 'Submitted Files'
+                              : 'Evaluated Files'}
+                          </Typography>
+                          <div className='attachments-list-outer-container'>
+                            <div className='prev-btn'>
+                              {question?.submitted_files?.length > 1 && (
+                                <IconButton onClick={() => handleScroll(index, 'left')}>
+                                  <ArrowBackIosIcon />
+                                </IconButton>
                               )}
-                              {homeworkSubmission.status === 3 && (
-                                <SimpleReactLightbox>
+                            </div>
+                            {homeworkSubmission.status === 2 && (
+                              <SimpleReactLightbox>
+                                <div
+                                  className='attachments-list'
+                                  ref={scrollableContainer}
+                                  onScroll={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                  id={`homework_student_question_container_${index}`}
+                                >
+                                  {question.submitted_files.map((url, i) => (
+                                    <>
+                                      <div className='attachment'>
+                                        <Attachment
+                                          key={`homework_student_question_attachment_${i}`}
+                                          fileUrl={url}
+                                          fileName={`Attachment-${i + 1}`}
+                                          urlPrefix={
+                                            url.includes('/lesson_plan_file/')
+                                              ? `${endpoints.homework.resourcesFiles}`
+                                              : `${endpoints.discussionForum.s3}/homework`
+                                          }
+                                          index={i}
+                                          actions={['preview', 'download']}
+                                        />
+                                      </div>
+                                    </>
+                                  ))}
                                   <div
-                                    className='attachments-list'
-                                    ref={scrollableContainer}
-                                    onScroll={(e) => {
-                                      e.preventDefault();
+                                    style={{
+                                      position: 'absolute',
+                                      visibility: 'hidden',
+                                      height: '0px',
+                                      width: '0px',
                                     }}
-                                    id={`homework_student_question_container_${index}`}
                                   >
-                                    {question.evaluated_files.map((url, i) => (
-                                      <>
-                                        <div className='attachment'>
-                                          <Attachment
-                                            key={`homework_student_question_attachment_${i}`}
-                                            fileUrl={url}
-                                            fileName={`Attachment-${i + 1}`}
-                                            urlPrefix={
-                                              url.includes('/lesson_plan_file/')
-                                                ? `${endpoints.homework.resourcesFiles}`
-                                                : `${endpoints.discussionForum.s3}/homework`
-                                            }
-                                            index={i}
-                                            actions={['preview', 'download']}
-                                          />
-                                        </div>
-                                      </>
-                                    ))}
-                                    <div
-                                      style={{ position: 'absolute', visibility: 'hidden' }}
-                                    >
-                                      <SRLWrapper>
-                                        {question.evaluated_files.map((url, i) => (
-                                          <img
-                                            src={
-                                              url.includes('/lesson_plan_file/')
-                                                ? `${endpoints.homework.resourcesFiles}${url}`
-                                                : `${endpoints.discussionForum.s3}/homework/${url}`
-                                            }
-                                            onError={(e) => {
-                                              e.target.src = placeholder;
-                                            }}
-                                            alt={`Attachment-${i + 1}`}
-                                            style={{ height: '0px' }}
-                                          />
-                                        ))}
-                                      </SRLWrapper>
-                                    </div>
+                                    <SRLWrapper>
+                                      {question.submitted_files.map((url, i) => (
+                                        <img
+                                          src={
+                                            url.includes('/lesson_plan_file/')
+                                              ? `${endpoints.homework.resourcesFiles}${url}`
+                                              : `${endpoints.discussionForum.s3}/homework/${url}`
+                                          }
+                                          onError={(e) => {
+                                            e.target.src = placeholder;
+                                          }}
+                                          alt={`Attachment-${i + 1}`}
+                                          style={{ height: '0px' }}
+                                        />
+                                      ))}
+                                    </SRLWrapper>
                                   </div>
-                                </SimpleReactLightbox>
+                                </div>
+                              </SimpleReactLightbox>
+                            )}
+                            {homeworkSubmission.status === 3 && (
+                              <SimpleReactLightbox>
+                                <div
+                                  className='attachments-list'
+                                  ref={scrollableContainer}
+                                  onScroll={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                  id={`homework_student_question_container_${index}`}
+                                >
+                                  {question.evaluated_files.map((url, i) => (
+                                    <>
+                                      <div className='attachment'>
+                                        <Attachment
+                                          key={`homework_student_question_attachment_${i}`}
+                                          fileUrl={url}
+                                          fileName={`Attachment-${i + 1}`}
+                                          urlPrefix={
+                                            url.includes('/lesson_plan_file/')
+                                              ? `${endpoints.homework.resourcesFiles}`
+                                              : `${endpoints.discussionForum.s3}/homework`
+                                          }
+                                          index={i}
+                                          actions={['preview', 'download']}
+                                        />
+                                      </div>
+                                    </>
+                                  ))}
+                                  <div
+                                    style={{ position: 'absolute', visibility: 'hidden' }}
+                                  >
+                                    <SRLWrapper>
+                                      {question.evaluated_files.map((url, i) => (
+                                        <img
+                                          src={
+                                            url.includes('/lesson_plan_file/')
+                                              ? `${endpoints.homework.resourcesFiles}${url}`
+                                              : `${endpoints.discussionForum.s3}/homework/${url}`
+                                          }
+                                          onError={(e) => {
+                                            e.target.src = placeholder;
+                                          }}
+                                          alt={`Attachment-${i + 1}`}
+                                          style={{ height: '0px' }}
+                                        />
+                                      ))}
+                                    </SRLWrapper>
+                                  </div>
+                                </div>
+                              </SimpleReactLightbox>
+                            )}
+                            <div className='next-btn'>
+                              {question?.submitted_files?.length > 1 && (
+                                <IconButton onClick={() => handleScroll(index, 'right')}>
+                                  <ArrowForwardIosIcon color='primary' />
+                                </IconButton>
                               )}
-                              <div className='next-btn'>
-                                {question?.submitted_files?.length > 1 && (
-                                  <IconButton onClick={() => handleScroll(index, 'right')}>
-                                    <ArrowForwardIosIcon color='primary' />
-                                  </IconButton>
-                                )}
-                              </div>
                             </div>
                           </div>
-                        )}
+                        </div>
+                      )}
                     </>
                   )}
                   {isQuestionWise && homeworkSubmission.status == 3 && (
@@ -1472,10 +1506,10 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     >
                       Bulk Upload
                       {bulkDataDisplay?.length < maxCount ||
-                        bulkDataDisplay === undefined ? (
+                      bulkDataDisplay === undefined ? (
                         <input
                           type='file'
-                          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .avi, .3gp, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF, .AVI, .3GP , .m4v, .M4V , .MPEG-4'
+                          accept={`.png, .jpg, .jpeg, .mp3, .pdf, .PNG, .JPG, .JPEG, .MP3, .PDF, ${formats.toString()}`}
                           style={{ display: 'none' }}
                           id='raised-button-file'
                           onChange={(e) => {
@@ -1583,7 +1617,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             : 'All Evaluated Files'}
                         </Typography>
                         <div className='attachments-list-outer-container'>
-                          { }
+                          {}
                           <div className='prev-btn'>
                             {submittedEvaluatedFilesBulk.length > 5 && (
                               <IconButton onClick={() => handleScroll('left')}>
@@ -1929,14 +1963,21 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     </Button>
                   </DialogActions>
                 </Dialog>
-                <Modal maskClosable={false} closable={false} footer={null} visible={uploadStart} width={1000} centered>
+                <Modal
+                  maskClosable={false}
+                  closable={false}
+                  footer={null}
+                  visible={uploadStart}
+                  width={1000}
+                  centered
+                >
                   <Progress
                     strokeColor={{
                       from: '#108ee9',
                       to: '#87d068',
                     }}
                     percent={percentValue}
-                    status="active"
+                    status='active'
                     className='p-4'
                   />
                 </Modal>
