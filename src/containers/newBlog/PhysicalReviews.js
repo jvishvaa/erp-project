@@ -277,6 +277,11 @@ const PhysicalReviewed = (props) => {
       render: (text, row) => <span className='th-black-1'>{row?.booked_user?.name}</span>,
     },
     {
+      title: <span className='th-white th-fw-700'>ERP Id</span>,
+      align: 'center',
+      render: (text, row) => <span className='th-black-1'>{row?.booked_user?.username}</span>,
+    },
+    {
       title: <span className='th-white th-fw-700'>Executed Date</span>,
       align: 'center',
       render: (text, row) => (
@@ -354,7 +359,7 @@ const PhysicalReviewed = (props) => {
           }
           loading={loading}
           scroll={{ x: totalSubmitted.length > 0 ? 'max-content' : null, y: 600 }}
-          pagination={false}
+          pagination={true}
         />
       </div>
       <Drawer
@@ -565,10 +570,10 @@ const PhysicalReviewed = (props) => {
               <table className='w-100' style={{ background: '#eee' }}>
                 <thead>
                   <tr style={{ background: '#4800c9', color: 'white' }}>
-                    <th style={{ textAlign: 'center' }}> Rounds </th>
+                    <th style={{ textAlign: 'center' }}> Attempts </th>
                     {tableHeader?.map((item, i) => (
                       <th style={{ padding: '5px' }}>
-                        {<div className='text-justify text-break'>{item?.name}</div>}
+                        {<div className='text-center text-break'>{item?.name}</div>}
                       </th>
                     ))}
                   </tr>
@@ -589,7 +594,7 @@ const PhysicalReviewed = (props) => {
                           )[0].remarks;
                           return (
                             <td style={{ padding: '5px' }}>
-                              <div className='text-justify'>{remarks}</div>
+                              <div className='text-center'>{remarks}</div>
                             </td>
                           );
                         })}
@@ -604,7 +609,7 @@ const PhysicalReviewed = (props) => {
                 {overallData.length > 0 &&
                   overallData.map((item, index) => {
                     return (
-                      <div className='row-12 p-2 d-flex align-items-center justify-content-start'>
+                      <div className='row p-2 d-flex align-items-center justify-content-start'>
                         <div
                           style={{
                             fontWeight: 500,

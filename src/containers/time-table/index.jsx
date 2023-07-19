@@ -28,7 +28,9 @@ import NoFilterData from 'components/noFilteredData/noFilterData';
 import clsx from 'clsx';
 import './timetable.scss';
 import Filters from './uppergrade/Filters';
-import { filter } from 'lodash';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import endpoints from 'config/endpoints';
 
 const useStyles = makeStyles((theme) => ({
   formTextFields: {
@@ -102,6 +104,8 @@ const TimeTable = (props) => {
   const [showFilter, setShowFilter] = useState(true);
   const [periodType, setPeriodType] = useState();
   const [filteredData, setFilteredData] = useState({});
+  const [addBuddyTeacher, setAddBuddyTeacher] = useState(false);
+  const [buddyTeacherId, setBuddyTeacherId] = useState();
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -218,7 +222,6 @@ const TimeTable = (props) => {
   useEffect(() => {
     if (section_mappingId) {
       callingSubjectAPI();
-      callingTeachersAPI();
     }
     periodTypeList();
   }, [section_mappingId]);
@@ -266,15 +269,15 @@ const TimeTable = (props) => {
         setAlert('error', "can't fetch subjects");
       });
   };
-  const callingTeachersAPI = () => {
+  const fetchTeachersList = (params = {}) => {
     axiosInstance
-      .get(`/academic/teachers-list/?section_mapping=${section_mappingId}`, {
-        params: {
-          session_year: acadamicYearID,
-        },
+      .get(`${endpoints?.timeTable?.getTeacherList}`, {
+        params: { ...params },
       })
       .then((res) => {
-        setAssignedTeacher(res.data.result);
+        if (res.data.status_code == 200) {
+          setAssignedTeacher(res.data.result);
+        }
       })
       .catch((error) => {
         setAlert('error', "can't fetch teachers list");
@@ -282,6 +285,10 @@ const TimeTable = (props) => {
   };
   const addPeriod = () => {
     if (periodType?.type === 'Lecture') {
+      if (addBuddyTeacher && !buddyTeacherId) {
+        setAlert('Warning', 'Please Fill all Fields');
+        return;
+      }
       if (!assignedTeacherID || !sectionIdOption || days.length === 0) {
         setAlert('Warning', 'Please Fill all Fields');
       } else {
@@ -294,12 +301,20 @@ const TimeTable = (props) => {
         createPeriodAPI();
       }
     } else if (periodType?.type === 'Competitions') {
+      if (addBuddyTeacher && !buddyTeacherId) {
+        setAlert('Warning', 'Please Fill all Fields');
+        return;
+      }
       if (days.length === 0 || !assignedTeacherID) {
         setAlert('Warning', 'Please Fill all Fields');
       } else {
         createPeriodAPI();
       }
     } else if (periodType?.type === 'Miscellaneous Event') {
+      if (addBuddyTeacher && !buddyTeacherId) {
+        setAlert('Warning', 'Please Fill all Fields');
+        return;
+      }
       if (days.length === 0 && !assignedTeacherID) {
         setAlert('Warning', 'Please Select All Fields');
       } else {
@@ -324,6 +339,9 @@ const TimeTable = (props) => {
       subject_mapping_id: periodType?.type === 'Break' ? null : sectionIdOption,
       tt_id: ttID,
     };
+    if (addBuddyTeacher) {
+      obj['buddy_teacher_id'] = buddyTeacherId;
+    }
 
     let data = await createPeriod(obj);
     if (data.status_code === 200) {
@@ -369,7 +387,7 @@ const TimeTable = (props) => {
                       {...params}
                       size='small'
                       fullWidth
-                      label='Period Type'
+                      label='Period Type*'
                       variant='outlined'
                     />
                   )}
@@ -382,14 +400,20 @@ const TimeTable = (props) => {
                     id='combo-box-demo'
                     options={subject || []}
                     getOptionLabel={(option) => option?.subject_name}
-                    onChange={(event, option) => setSectionIdOption(option?.id)}
+                    onChange={(event, option) => {
+                      setSectionIdOption(option?.id);
+                      fetchTeachersList({
+                        section_mapping_id: section_mappingId,
+                        subject: option?.subject_id,
+                      });
+                    }}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         size='small'
                         fullWidth
-                        label='Subject'
+                        label='Subject*'
                         variant='outlined'
                       />
                     )}
@@ -407,7 +431,7 @@ const TimeTable = (props) => {
                       style={{ minWidth: 150 }}
                       autoOk
                       format='hh:mm A'
-                      label='Period Start Time'
+                      label='Period Start Time*'
                       value={selectedStartTime}
                       onChange={setselectedStartTime}
                     />
@@ -422,7 +446,7 @@ const TimeTable = (props) => {
                       style={{ minWidth: 150 }}
                       autoOk
                       format='hh:mm A'
-                      label='Period End Time'
+                      label='Period End Time*'
                       value={selectedEndTime}
                       onChange={setselectedEndTime}
                     />
@@ -440,18 +464,64 @@ const TimeTable = (props) => {
                     id='combo-box-demo'
                     options={assignedTeacher || []}
                     getOptionLabel={(option) => option?.name}
-                    onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
+                    onChange={(event, option) => {
+                      if (option?.user_id) {
+                        setAssignedTeacherID(option?.user_id);
+                        setBuddyTeacherId(null);
+                        setAddBuddyTeacher(false);
+                      } else {
+                        setAddBuddyTeacher(false);
+                        setBuddyTeacherId(null);
+                      }
+                    }}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         size='small'
                         fullWidth
-                        label='Assigned Teacher'
+                        label='Assigned Teacher*'
                         variant='outlined'
                       />
                     )}
                   />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={addBuddyTeacher}
+                        onChange={() => {
+                          setAddBuddyTeacher((prevState) => !prevState);
+                          setBuddyTeacherId(null);
+                        }}
+                        name='checkedB'
+                        color='primary'
+                      />
+                    }
+                    label='Assign Buddy Teacher'
+                  />
+                  {addBuddyTeacher && (
+                    <Autocomplete
+                      fullWidth
+                      id='combo-box-demo'
+                      options={
+                        assignedTeacher?.filter(
+                          (item) => item?.user_id !== assignedTeacherID
+                        ) || []
+                      }
+                      getOptionLabel={(option) => option?.name}
+                      onChange={(event, option) => setBuddyTeacherId(option?.user_id)}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size='small'
+                          fullWidth
+                          label={`Buddy Teacher${addBuddyTeacher ? '*' : ''}`}
+                          variant='outlined'
+                        />
+                      )}
+                    />
+                  )}
                 </div>
               )}
               <div className={classes.formTextFields}>
@@ -472,7 +542,7 @@ const TimeTable = (props) => {
                       variant='outlined'
                       fullWidth
                       size='small'
-                      label='Day'
+                      label='Day*'
                     />
                   )}
                 />

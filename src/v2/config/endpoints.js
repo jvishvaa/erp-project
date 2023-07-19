@@ -61,6 +61,7 @@ export default {
     teacherAttendanceSent: '/erp_user/erpuser-attendance/',
     getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
     getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
+    getStudentCountReportDataV2: '/erp_user/grade-section-wise-student-count-v2/',
     getConfigAnnouncement: '/assessment/check-sys-config/',
   },
   adminDashboard: {
@@ -251,8 +252,8 @@ export default {
     deleteSubjectWiseRatingSchemas: `${newBlogURL}/api/delete_scheme/`,
     updateSubjectWiseRatingSchemas: `${newBlogURL}/api/activity_scheme_update/`,
     // gradeWiseSubjects: `/academic/v4/lesson-plan-subjects/`,
-    getRoundShowHide:`${newBlogURL}/api/check_ps_rounds/`,
-    getCategoryOptions:`${newBlogURL}/api/school_wall_activity_types/`,
+    getRoundShowHide: `${newBlogURL}/api/check_ps_rounds/`,
+    getCategoryOptions: `${newBlogURL}/api/school_wall_activity_types/`,
   },
   fileDrive: {
     fileList: `/schools/school_file_list/`,
@@ -289,4 +290,11 @@ export default {
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   baseURLCentral,
+
+  studentListApis: {
+    branchWiseStudentCount: '/academic/school_strength/',
+    gradeWiseStudentCount: '/academic/grade_wise_students/',
+    downloadBranchWiseStudent2: '/academic/branch_strength_excel_data/',
+    downloadExcelAllstudents2: '/academic/all_branch_strength_excel_data/',
+  },
 };

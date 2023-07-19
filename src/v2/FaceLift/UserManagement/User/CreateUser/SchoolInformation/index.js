@@ -252,6 +252,7 @@ const SchoolInformation = ({
                     userLevel === 13
                   }
                   getPopupContainer={(trigger) => trigger.parentNode}
+                  listHeight={150}
                   onChange={(e, obj) => {
                     if (e.includes('all')) {
                       let values = branches?.map((e) => e?.id);
@@ -306,6 +307,7 @@ const SchoolInformation = ({
                   maxTagCount={3}
                   allowClear
                   getPopupContainer={(trigger) => trigger.parentNode}
+                  listHeight={150}
                   disabled={
                     editId &&
                     isOrchids &&
@@ -371,6 +373,7 @@ const SchoolInformation = ({
                   maxTagCount={3}
                   allowClear
                   getPopupContainer={(trigger) => trigger.parentNode}
+                  listHeight={150}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
                       let values = sections?.map((e) => e?.section_name);
@@ -444,6 +447,7 @@ const SchoolInformation = ({
                   allowClear
                   maxLength={maxSubjectSelection ?? subjects?.length}
                   getPopupContainer={(trigger) => trigger.parentNode}
+                  listHeight={150}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
                       let values = subjects?.map((e) => e?.item_id);

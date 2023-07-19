@@ -9,7 +9,10 @@ import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import axiosInstance from '../../../config/axios';
 import { editPeriod, deletePeriod, getPeriodTypes } from './apis';
-import ConfirmPopOver from '../ConfirmPopOver'
+import ConfirmPopOver from '../ConfirmPopOver';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import endpoints from 'config/endpoints';
 
 const useStyles = makeStyles((theme) => ({
   formTextFields: {
@@ -23,11 +26,11 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   addtimetablebtn: {
-    backgroundColor:  `${theme.palette.v2Color2.primaryV2} !important`,
+    backgroundColor: `${theme.palette.v2Color2.primaryV2} !important`,
     marginTop: '5px',
     marginLeft: '12%',
     '&:hover': {
-      backgroundColor:  `${theme.palette.v2Color2.primaryV2} !important`,
+      backgroundColor: `${theme.palette.v2Color2.primaryV2} !important`,
     },
   },
   addperiodbutton: {
@@ -55,18 +58,19 @@ const EditPeriodDialog = (props) => {
   const [periodType, setPeriodType] = useState();
   const [isEdit, setisEdit] = useState(true);
   const [selectedTeacher, setSelectedTeacher] = useState();
-  const [selectedSubject, setSelectedSubject] = useState()
+  const [selectedSubject, setSelectedSubject] = useState();
   const [selectedLectureType, setSelectedLectureType] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState();
-  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
+  const [addBuddyTeacher, setAddBuddyTeacher] = useState(false);
+  const [buddyTeacherId, setBuddyTeacherId] = useState(null);
+  const [buddyTeacher, setBuddyTeacher] = useState();
 
-useEffect(() => {
-  callingSubjectAPI();
-  callingTeachersAPI();
-  periodTypeList();
-},[])
-
+  useEffect(() => {
+    callingSubjectAPI();
+    periodTypeList();
+  }, []);
 
   useEffect(() => {
     setopenPeriod(props.isPeriodOpen);
@@ -74,13 +78,21 @@ useEffect(() => {
       user_id: props?.periodDetails?.teacher_id,
       name: props?.periodDetails?.teacher_name,
     });
+    setBuddyTeacher({
+      user_id: props?.periodDetails?.buddy_teacher_id,
+      name: props?.periodDetails?.buddy_teacher_name,
+    });
+    fetchTeachersList({
+      section_mapping_id: props?.section_mappingId,
+      subject: props?.periodDetails?.subject_id,
+    });
     setperiodTypeId(props?.periodDetails?.period_type);
     setAssignedTeacherID(props?.periodDetails?.teacher_id);
     setSelectedSubject({
-        id : props?.periodDetails?.subject_mapping_id,
-        subject_name : props?.periodDetails?.subject_name
-    })
-    setSubjectIdOption(props?.periodDetails?.subject_mapping_id)
+      id: props?.periodDetails?.subject_mapping_id,
+      subject_name: props?.periodDetails?.subject_name,
+    });
+    setSubjectIdOption(props?.periodDetails?.subject_mapping_id);
     setDays({
       id: props?.periodDetails?.day,
       name: props?.periodDetails?.day_name,
@@ -89,7 +101,8 @@ useEffect(() => {
       id: props?.periodDetails?.period_type,
       type: props?.periodDetails?.period_type_name,
     });
-
+    setAddBuddyTeacher(props?.periodDetails?.buddy_teacher_id ? true : false);
+    setBuddyTeacherId(props?.periodDetails?.buddy_teacher_id);
     setselectedStartTime(new Date('2015-03-25T' + props?.periodDetails?.start_time));
     setselectedEndTime(
       `${moment(new Date('2015-03-25T' + props?.periodDetails?.end_time))}`
@@ -106,7 +119,6 @@ useEffect(() => {
   ];
 
   const submitResult = async () => {
-    
     let data = await deletePeriod(props?.periodDetails?.id);
     if (data.status_code == 200) {
       setAlert('success', 'period Deleted Successfully');
@@ -119,11 +131,14 @@ useEffect(() => {
     setLectureList(data?.result);
   };
   const handleSubmit = async () => {
-     if(!periodTypeId){
-        setAlert('Warning', 'Please Select Period Type');
-    } else if(!days){
-        setAlert('Warning', 'Please Select Day');
-    }else {
+    if (!periodTypeId) {
+      setAlert('Warning', 'Please Select Period Type');
+    } else if (!days) {
+      setAlert('Warning', 'Please Select Day');
+    } else if (addBuddyTeacher && !buddyTeacherId) {
+      setAlert('Warning', 'Please select buddy teacher');
+      return;
+    } else {
       let obj = {
         period_type_id: periodTypeId,
         start_time: `${moment(selectedStartTime).format('HH:mm:00')}`,
@@ -132,24 +147,27 @@ useEffect(() => {
         teacher_id: assignedTeacherID,
         subject_mapping_id: subjectIdOption,
         tt_id: props.ttId,
+        buddy_teacher_id: buddyTeacherId,
       };
-
       let data = await editPeriod(props?.periodDetails?.id, obj);
       if (data.status_code === 200) {
         setAlert('success', data.message);
         handleClosePeriod();
-      }else {
-        setAlert('warning', data?.response?.data?.developer_msg)
+      } else {
+        setAlert('warning', data?.response?.data?.developer_msg);
       }
     }
   };
   const callingSubjectAPI = () => {
     axiosInstance
-      .get(`/erp_user/v2/mapped-subjects-list/?section_mapping=${props?.section_mappingId}`, {
-        params: {
-          session_year: sessionYear?.id,
-        },
-      })
+      .get(
+        `/erp_user/v2/mapped-subjects-list/?section_mapping=${props?.section_mappingId}`,
+        {
+          params: {
+            session_year: sessionYear?.id,
+          },
+        }
+      )
       .then((res) => {
         setSubject(res.data.result);
       })
@@ -157,15 +175,15 @@ useEffect(() => {
         setAlert('error', "can't fetch subjects");
       });
   };
-  const callingTeachersAPI = () => {
+  const fetchTeachersList = (params = {}) => {
     axiosInstance
-      .get(`/academic/teachers-list/?section_mapping=${props?.section_mappingId}`, {
-        params: {
-          session_year: sessionYear?.id,
-        },
+      .get(`${endpoints?.timeTable?.getTeacherList}`, {
+        params: { ...params },
       })
       .then((res) => {
-        setAssignedTeacher(res.data.result);
+        if (res.data.status_code == 200) {
+          setAssignedTeacher(res.data.result);
+        }
       })
       .catch((error) => {
         setAlert('error', "can't fetch teachers list");
@@ -198,18 +216,27 @@ useEffect(() => {
     setSelectedLectureType(value);
     setperiodTypeId(value?.id);
   };
-const handleSubject = (e,value) => {
-    setSelectedSubject(value)
-    setSubjectIdOption(value?.id)
-}
+  const handleSubject = (e, value) => {
+    setSelectedSubject(value);
+    setSubjectIdOption(value?.id);
+    fetchTeachersList({
+      section_mapping_id: props?.section_mappingId,
+      subject: value?.subject_id,
+    });
+  };
 
   const handleEdit = () => {
     setisEdit(false);
   };
 
   const handleTeacher = (e, value) => {
-    setSelectedTeacher(value);
-    setAssignedTeacherID(value?.user_id);
+    setBuddyTeacher();
+    setBuddyTeacherId(null);
+    setAddBuddyTeacher(false);
+    if (value) {
+      setSelectedTeacher(value);
+      setAssignedTeacherID(value?.user_id);
+    }
   };
   return (
     <div>
@@ -221,7 +248,7 @@ const handleSubject = (e,value) => {
       >
         <DialogTitle id='add-new-dialog-title'>{'Period Details'}</DialogTitle>
         <div className={classes.periodDialog}>
-        <div className={classes.formTextFields}>
+          <div className={classes.formTextFields}>
             <Autocomplete
               fullWidth
               id='combo-box-demo'
@@ -236,34 +263,37 @@ const handleSubject = (e,value) => {
                   {...params}
                   size='small'
                   fullWidth
-                  label='Period Type'
+                  label={`Period Type${props?.user_level !== 13 ? '*' : ''}`}
                   variant='outlined'
                 />
               )}
             />
           </div>
-          { (selectedLectureType?.type === "Lecture" || selectedLectureType?.type === "Examination") &&<div className={classes.formTextFields}>
-            <Autocomplete
-              fullWidth
-              id='combo-box-demo'
-              value={selectedSubject}
-              options={subject || []}
-              getOptionLabel={(option) => option?.subject_name}
-            //   onChange={(event, option) => setSubjectIdOption(option?.id)}
-            onChange={handleSubject}
-            filterSelectedOptions
-              disabled={isEdit}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size='small'
-                  fullWidth
-                  label='Subject'
-                  variant='outlined'
-                />
-              )}
-            />
-          </div>}
+          {(selectedLectureType?.type === 'Lecture' ||
+            selectedLectureType?.type === 'Examination') && (
+            <div className={classes.formTextFields}>
+              <Autocomplete
+                fullWidth
+                id='combo-box-demo'
+                value={selectedSubject}
+                options={subject || []}
+                getOptionLabel={(option) => option?.subject_name}
+                //   onChange={(event, option) => setSubjectIdOption(option?.id)}
+                onChange={handleSubject}
+                filterSelectedOptions
+                disabled={isEdit}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size='small'
+                    fullWidth
+                    label={`Subject${props?.user_level !== 13 ? '*' : ''}`}
+                    variant='outlined'
+                  />
+                )}
+              />
+            </div>
+          )}
           <div style={{ display: 'flex' }}>
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <div className={classes.formTextFields}>
@@ -276,7 +306,7 @@ const handleSubject = (e,value) => {
                   autoOk
                   disabled={isEdit}
                   format='hh:mm A'
-                  label='Starting Time'
+                  label={`Starting Time${props?.user_level !== 13 ? '*' : ''}`}
                   value={selectedStartTime}
                   onChange={setselectedStartTime}
                 />
@@ -291,7 +321,7 @@ const handleSubject = (e,value) => {
                   autoOk
                   disabled={isEdit}
                   format='hh:mm A'
-                  label='Ending Time'
+                  label={`Ending Time${props?.user_level !== 13 ? '*' : ''}`}
                   value={selectedEndTime}
                   onChange={setselectedEndTime}
                 />
@@ -299,28 +329,82 @@ const handleSubject = (e,value) => {
               </div>
             </MuiPickersUtilsProvider>
           </div>
-          { (selectedLectureType?.type === "Lecture" || selectedLectureType?.type === "Examination" || selectedLectureType?.type === "Competitions" || selectedLectureType?.type ==="Miscellaneous Event") &&<div className={classes.formTextFields}>
-            <Autocomplete
-              fullWidth
-              id='combo-box-demo'
-              value={selectedTeacher}
-              options={assignedTeacher || []}
-              getOptionLabel={(option) => option?.name}
-              filterSelectedOptions
-              disabled={isEdit}
-              // onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
-              onChange={handleTeacher}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size='small'
-                  fullWidth
-                  label='Assigned Teacher'
-                  variant='outlined'
+          {(selectedLectureType?.type === 'Lecture' ||
+            selectedLectureType?.type === 'Examination' ||
+            selectedLectureType?.type === 'Competitions' ||
+            selectedLectureType?.type === 'Miscellaneous Event') && (
+            <div className={classes.formTextFields}>
+              <Autocomplete
+                fullWidth
+                id='combo-box-demo'
+                value={selectedTeacher}
+                options={assignedTeacher || []}
+                getOptionLabel={(option) => option?.name}
+                filterSelectedOptions
+                disabled={isEdit}
+                // onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
+                onChange={handleTeacher}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size='small'
+                    fullWidth
+                    label={`Assigned Teacher${props?.user_level !== 13 ? '*' : ''}`}
+                    variant='outlined'
+                  />
+                )}
+              />
+
+              {props?.user_level !== 13 && (
+                <FormControlLabel
+                  disabled={isEdit}
+                  control={
+                    <Checkbox
+                      checked={addBuddyTeacher}
+                      onChange={() => {
+                        setAddBuddyTeacher((prevState) => !prevState);
+                        setBuddyTeacherId(null);
+                      }}
+                      name='checkedB'
+                      color='primary'
+                    />
+                  }
+                  label='Assign Buddy Teacher'
                 />
               )}
-            />
-          </div>}
+              {addBuddyTeacher && (
+                <Autocomplete
+                  fullWidth
+                  id='combo-box-demo'
+                  value={buddyTeacher}
+                  disabled={isEdit}
+                  options={
+                    assignedTeacher?.filter(
+                      (item) => item?.user_id !== assignedTeacherID
+                    ) || []
+                  }
+                  getOptionLabel={(option) => option?.name}
+                  onChange={(event, option) => {
+                    setBuddyTeacher(option);
+                    setBuddyTeacherId(option?.user_id);
+                  }}
+                  className={props?.user_level == 13 ? 'pt-3' : ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size='small'
+                      fullWidth
+                      label={`Buddy Teacher${
+                        addBuddyTeacher && props?.user_level !== 13 ? '*' : ''
+                      }`}
+                      variant='outlined'
+                    />
+                  )}
+                />
+              )}
+            </div>
+          )}
           {/* <FormControl
                 fullWidth
                   variant='outlined'
@@ -347,7 +431,7 @@ const handleSubject = (e,value) => {
                   variant='outlined'
                   fullWidth
                   size='small'
-                  label='Day'
+                  label={`Day${props?.user_level !== 13 ? '*' : ''}`}
                 />
               )}
             />
@@ -362,18 +446,24 @@ const handleSubject = (e,value) => {
           >
             Close
           </Button>
-          {isEdit && props?.selectedTableId === 1 && (props?.user_level === 1 || props?.user_level === 8 ||props?.user_level === 10 || props?.is_superuser) && props?.teacherView && (
-            <Button
-              onClick={handleEdit}
-              color='primary'
-              variant='contained'
-              style={{ color: 'white' }}
-              autoFocus
-            >
-              Edit
-            </Button>
-          )}
-          {!isEdit  && props?.selectedTableId === 1 && (
+          {isEdit &&
+            props?.selectedTableId === 1 &&
+            (props?.user_level === 1 ||
+              props?.user_level === 8 ||
+              props?.user_level === 10 ||
+              props?.is_superuser) &&
+            props?.teacherView && (
+              <Button
+                onClick={handleEdit}
+                color='primary'
+                variant='contained'
+                style={{ color: 'white' }}
+                autoFocus
+              >
+                Edit
+              </Button>
+            )}
+          {!isEdit && props?.selectedTableId === 1 && (
             <Button
               onClick={handleSubmit}
               color='primary'
@@ -384,31 +474,36 @@ const handleSubject = (e,value) => {
               Save
             </Button>
           )}
-          {props?.selectedTableId == 1 && (props?.user_level === 1 || props?.user_level === 8 ||props?.user_level === 10 || props?.is_superuser) && props?.teacherView && <Button
-            onClick={() => {
-              setConfirmMessage('delete');
-              setOpenModal(true);
-            }}
-            color='primary'
-            variant='contained'
-            style={{ color: 'white' }}
-            autoFocus
-          >
-            Delete
-          </Button>}
+          {props?.selectedTableId == 1 &&
+            (props?.user_level === 1 ||
+              props?.user_level === 8 ||
+              props?.user_level === 10 ||
+              props?.is_superuser) &&
+            props?.teacherView && (
+              <Button
+                onClick={() => {
+                  setConfirmMessage('delete');
+                  setOpenModal(true);
+                }}
+                color='primary'
+                variant='contained'
+                style={{ color: 'white' }}
+                autoFocus
+              >
+                Delete
+              </Button>
+            )}
         </DialogActions>
       </Dialog>
 
-      {
-        openModal && (
-          <ConfirmPopOver
-            submit={() => submitResult()}
-            openModal={openModal}
-            setOpenModal={setOpenModal}
-            operation={confirmMessage}
-          />
-        )
-      }
+      {openModal && (
+        <ConfirmPopOver
+          submit={() => submitResult()}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          operation={confirmMessage}
+        />
+      )}
     </div>
   );
 };

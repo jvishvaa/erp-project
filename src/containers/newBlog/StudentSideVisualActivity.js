@@ -10,6 +10,7 @@ import {
   UserOutlined,
   PlayCircleOutlined,
   PieChartOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 
 import {
@@ -23,12 +24,16 @@ import {
   Space,
   Button,
   Spin,
+  Select,
+  Form,
 } from 'antd';
 
 import moment from 'moment';
 import ReactPlayer from 'react-player';
 
 const StudentSideVisualActivity = () => {
+  const formRef = useRef();
+  const { Option } = Select;
   const userIdLocal = JSON.parse(localStorage.getItem('ActivityManagement')) || {};
   const history = useHistory();
   const playerRef = useRef(null);
@@ -46,6 +51,8 @@ const StudentSideVisualActivity = () => {
   const [totalPagesAssigned, setTotalPagesAssigned] = useState(0);
   const [loadingMedia, setLoadingMedia] = useState(false);
   const [playVideo, setPlayVideo] = useState(true);
+  // const [subActivityListData, setSubActivityListData] = useState([]);
+
   const handleCloseViewMore = () => {
     if (playerRef.current) {
       playerRef.current.seekTo(0);
@@ -55,6 +62,28 @@ const StudentSideVisualActivity = () => {
     setSelectedActivity(null);
     setMediaFiles();
   };
+
+  // const fetchSubActivityList = (params = {}) => {
+  //   setLoading(true);
+  //   axios
+  //     .get(`${endpoints.newBlog.criteriaTitleList}`, {
+  //       params: { ...params },
+  //       headers: {
+  //         'X-DTS-HOST': X_DTS_HOST,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response?.data?.status_code === 200) {
+  //         setSubActivityListData(response?.data?.result);
+  //       }
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setLoading(false);
+  //     });
+  // };
+
   const fetchStudentActivityList = (params = {}) => {
     setLoading(true);
     axios
@@ -80,6 +109,15 @@ const StudentSideVisualActivity = () => {
       });
   };
 
+  // useEffect(() => {
+  //   fetchSubActivityList({
+  //     type_id: activityDetails?.id.join(','),
+  //   });
+  //   formRef.current.setFieldsValue({
+  //     sub_activity: activityDetails?.id[0],
+  //   });
+  // }, [activityDetails]);
+
   useEffect(() => {
     fetchStudentActivityList({
       user_id: userIdLocal?.id,
@@ -92,6 +130,7 @@ const StudentSideVisualActivity = () => {
       page_size: limitAssigned,
     });
   }, [currentPageAssigned]);
+
   const handleShowReview = (data) => {
     setShowDrawer(true);
     getRatingView(data?.id);
@@ -141,6 +180,15 @@ const StudentSideVisualActivity = () => {
   const handlePaginationAssign = (page) => {
     setCurrentPageAssigned(page);
   };
+
+  // const subActivityOption = subActivityListData?.map((each) => {
+  //   return (
+  //     <Option key={each?.id} value={each.id}>
+  //       {each?.criteria_title}
+  //     </Option>
+  //   );
+  // });
+
   const columns = [
     {
       title: <span className='th-white th-fw-700'>SL No.</span>,
@@ -191,6 +239,7 @@ const StudentSideVisualActivity = () => {
       ),
     },
   ];
+
   return (
     <div>
       <Layout>
@@ -210,7 +259,42 @@ const StudentSideVisualActivity = () => {
               </Breadcrumb>
             </div>
           </div>
-          <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>
+          <div className='col-12 my-3  th-br-5 py-3 th-bg-white'>
+            {/* <Form id='filterForm' ref={formRef} layout={'vertical'}>
+              <div className='row row align-items-end'>
+                <div className='col-md-2 col-6 px-0'>
+                  <Form.Item name='sub_activity' label='Sub-Activity Type'>
+                    <Select
+                      placeholder='Select Sub-Activity'
+                      showSearch
+                      suffixIcon={<DownOutlined className='th-grey' />}
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      onChange={(e) =>
+                        fetchStudentActivityList({
+                          user_id: userIdLocal?.id,
+                          activity_type: e,
+                          activity_detail_id: 'null',
+                          is_reviewed: 'True',
+                          is_submitted: 'True',
+                          update: 'True',
+                          page: currentPageAssigned,
+                          page_size: limitAssigned,
+                        })
+                      }
+                      bordered={true}
+                    >
+                      {subActivityOption}
+                    </Select>
+                  </Form.Item>
+                </div>
+              </div>
+            </Form> */}
             <div className='row '>
               <div className='col-12 px-0'>
                 <Table
@@ -228,7 +312,6 @@ const StudentSideVisualActivity = () => {
                     pageSize: limitAssigned,
                     showSizeChanger: false,
                     onChange: (e) => {
-                      console.log('Paggination', e);
                       handlePaginationAssign(e);
                     },
                   }}
@@ -273,6 +356,7 @@ const StudentSideVisualActivity = () => {
                         alt={'image'}
                         width='100%'
                         loading='lazy'
+                        // style={{height: '60vh'}}
                       />
                     ) : (
                       <ReactPlayer

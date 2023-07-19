@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createRef } from 'react';
+import React, { useState, useEffect, useContext, createRef, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
@@ -38,7 +38,7 @@ import endpoints from '../../config/endpoints';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import { PieChartOutlined, IdcardOutlined } from '@ant-design/icons';
+import { PieChartOutlined, IdcardOutlined, DownOutlined } from '@ant-design/icons';
 import {
   Breadcrumb,
   Button as ButtonAnt,
@@ -49,6 +49,7 @@ import {
   Modal,
   Spin,
   Tooltip,
+  Form,
 } from 'antd';
 
 import { AppstoreAddOutlined } from '@ant-design/icons';
@@ -142,6 +143,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const VisualActivity = () => {
+  const formRef = useRef();
   const boardListData = useSelector((state) => state.commonFilterReducer?.branchList);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -202,8 +204,11 @@ const VisualActivity = () => {
   );
   const [subActivityId, setSubActivityId] = useState('');
   const [sudActId, setSubActId] = useState(history?.location?.state?.subActiveId);
+  const activityDetails = history?.location?.state?.subActiveId;
+
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [loadingDetails, setLoadingDetails] = useState([]);
+  const [criteriaTitleListData, setCriteriaTitleListData] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -382,7 +387,6 @@ const VisualActivity = () => {
         setAssigned(false);
         setAlert('success', 'Activity Successfully Assign');
         getUnAssinged();
-        // getAssinged();
         setLoading(false);
       });
   };
@@ -571,6 +575,34 @@ const VisualActivity = () => {
     fetchSubActivityListData();
   }, []);
 
+  // useEffect(() => {
+  //   fetchSubActivityList({
+  //     type_id: localActivityData?.id[0],
+  //   });
+   
+  // }, []);
+
+  // const fetchSubActivityList = (params = {}) => {
+  //   setLoading(true);
+  //   axios
+  //     .get(`${endpoints.newBlog.criteriaTitleList}`, {
+  //       params: { ...params },
+  //       headers: {
+  //         'X-DTS-HOST': X_DTS_HOST,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       if (response?.data?.status_code === 200) {
+  //         setCriteriaTitleListData(response?.data?.result);
+  //       }
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setLoading(false);
+  //     });
+  // };
+
   const fetchSubActivityListData = () => {
     const { id } = localActivityData;
     axiosInstance
@@ -590,6 +622,14 @@ const VisualActivity = () => {
     setIsClickedAssigned(true);
     setCurrentPageAssigned(page);
   };
+
+  // const subActivityOption = criteriaTitleListData?.map((each) => {
+  //   return (
+  //     <Option key={each?.id} value={each.id}>
+  //       {each?.criteria_title}
+  //     </Option>
+  //   );
+  // });
 
   return (
     <div>
@@ -624,7 +664,31 @@ const VisualActivity = () => {
               )}
             </div>
           </div>
-          <div className='col-12 mt-3  th-br-5 py-3 th-bg-white'>
+          <div className='col-12 my-3  th-br-5 py-3 th-bg-white'>
+            {/* <Form id='filterForm' ref={formRef} layout={'vertical'}>
+              <div className='row row align-items-end'>
+                <div className='col-md-2 col-6 px-0'>
+                  <Form.Item name='sub_activity' label='Sub-Activity Type'>
+                    <Select
+                      placeholder='Select Sub-Activity'
+                      showSearch
+                      suffixIcon={<DownOutlined className='th-grey' />}
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      onChange={(e) => getAssinged(e)}
+                      bordered={true}
+                    >
+                      {subActivityOption}
+                    </Select>
+                  </Form.Item>
+                </div>
+              </div>
+            </Form> */}
             <div className='row '>
               <div className='col-12 px-0'>
                 <Table

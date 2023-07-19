@@ -19,10 +19,11 @@ import { getModuleInfo } from '../../utility-functions';
 import './viewEbook.css';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+import Loader from 'components/loader/loader';
 
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
+    window.location.host.split('.')[0] === 'qa'
     ? true
     : false;
 function TabPanel(props) {
@@ -89,6 +90,8 @@ class ViewEbook extends Component {
       selectedVolume: '',
       central_branchid: '',
       showGrievanceModal: false,
+      filtered: false,
+      loading: false,
     };
   }
   static contextType = AlertNotificationContext;
@@ -100,8 +103,7 @@ class ViewEbook extends Component {
   handleBranchid = () => {
     axiosInstance
       .get(
-        `${endpoints.communication.branches}?session_year=${
-          this.state.sessionYear?.id
+        `${endpoints.communication.branches}?session_year=${this.state.sessionYear?.id
         }&module_id=${getModuleInfo('Ebook View').id}`
       )
       .then((result) => {
@@ -247,6 +249,7 @@ class ViewEbook extends Component {
   };
 
   getEbook = (acad, branch, grade, subject, vol, customGrade) => {
+    this.setState({ loading: true })
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL);
     const hostSplitArray = host.split('.');
@@ -282,22 +285,17 @@ class ViewEbook extends Component {
 
     if (tabValue === 0 || tabValue === 1) {
       if (filterGrade === '') {
-        urlPath = `${
-          endpoints.ebook.ebook
-        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
-          tabValue + 1
-        }&grade=[${this.state.central_grade}]`;
+        urlPath = `${endpoints.ebook.ebook
+          }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${tabValue + 1
+          }&grade=[${this.state.central_grade}]`;
       } else {
-        urlPath = `${
-          endpoints.ebook.ebook
-        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
-          tabValue + 1
-        }${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+        urlPath = `${endpoints.ebook.ebook
+          }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${tabValue + 1
+          }${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
       }
     } else if (tabValue === 2) {
-      urlPath = `${
-        endpoints.ebook.ebook
-      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      urlPath = `${endpoints.ebook.ebook
+        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
     axiosInstance
       .get(urlPath, {
@@ -315,8 +313,10 @@ class ViewEbook extends Component {
               result.data.result.data,
             totalEbooks: result.data.result.total_ebooks,
           });
+          this.setState({ loading: false })
         } else {
           console.log(result.data.message);
+          this.setState({ loading: false })
         }
       })
       .catch((error) => {
@@ -324,6 +324,7 @@ class ViewEbook extends Component {
         if (error.message === 'Request failed with status code 402') {
           this.context.setAlert('error', 'Access Error');
         }
+        this.setState({ loading: false })
       });
   };
 
@@ -335,6 +336,7 @@ class ViewEbook extends Component {
     this.state.selectedSubject = sub.central_subject;
     this.state.selectedVolume = vol;
     this.getEbook(acad, branch, grade, sub.central_subject, vol, customGrade);
+    this.state.filtered = true;
   };
 
   handleClearFilter = () => {
@@ -343,6 +345,7 @@ class ViewEbook extends Component {
     this.state.selectedGrade = '';
     this.state.selectedSubject = '';
     this.state.selectedVolume = '';
+    this.state.filtered = false;
   };
 
   render() {
@@ -361,6 +364,7 @@ class ViewEbook extends Component {
 
     return (
       <Layout className='layout-container'>
+        {this.state.loading && <Loader />}
         <FeeReminder />
         <div
           className='layout-container-div ebookscroll'
@@ -386,6 +390,7 @@ class ViewEbook extends Component {
                     <Filter
                       handleFilter={this.handleFilter}
                       clearFilter={this.state.clearFilter}
+                      handleClearFilter={this.handleClearFilter}
                     />
                   </Grid>
                 </Grid>
@@ -410,6 +415,7 @@ class ViewEbook extends Component {
                               data={data}
                               tabValue={tabValue}
                               totalEbooks={totalEbooks}
+                              filtered={this.state.filtered}
                             />
                           )}
                         </TabPanel>
@@ -419,6 +425,7 @@ class ViewEbook extends Component {
                               data={data}
                               tabValue={tabValue}
                               totalEbooks={totalEbooks}
+                              filtered={this.state.filtered}
                             />
                           )}
                         </TabPanel>

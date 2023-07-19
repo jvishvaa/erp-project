@@ -902,16 +902,34 @@ const User = () => {
                             }
                             allowClear
                             onChange={(e) => {
-                              setSearchData(e.target.value);
-                              filterData(
-                                pageNo,
-                                branch,
-                                userLevel,
-                                grade,
-                                section,
-                                status,
-                                e.target.value
-                              );
+                              if (e.target.value?.trim()?.length > 0) {
+                                setSearchData(e.target.value);
+                                filterData(
+                                  pageNo,
+                                  branch,
+                                  userLevel,
+                                  grade,
+                                  section,
+                                  status,
+                                  e.target.value
+                                );
+                              } else {
+                                setSearchData(e.target.value);
+                                if (userLevel || grade || section || status) {
+                                  filterData(
+                                    pageNo,
+                                    branch,
+                                    userLevel,
+                                    grade,
+                                    section,
+                                    status,
+                                    e.target.value
+                                  );
+                                } else {
+                                  setUserData([]);
+                                  setShowFilter(true);
+                                }
+                              }
                             }}
                           />
                         </Form.Item>

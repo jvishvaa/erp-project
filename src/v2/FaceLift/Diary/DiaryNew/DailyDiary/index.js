@@ -211,7 +211,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         question: '',
         attachments: [],
         is_attachment_enable: false,
-        max_attachment: 2,
+        max_attachment: 10,
         penTool: false,
         is_central: false,
       },
@@ -924,7 +924,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               question: '',
               attachments: [],
               is_attachment_enable: false,
-              max_attachment: 2,
+              max_attachment: 10,
               penTool: false,
               is_central: false,
             },
@@ -981,10 +981,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       message.error('Please fill Homework Title');
       return;
     }
-    // if (!homeworkInstructions.trim().length && !isAutoAssignDiary) {
-    //   message.error('Please fill Homework Instructions');
-    //   return;
-    // }
+  let NewQuestionList = questionList?.map((item,index) => {
+    if(item?.is_attachment_enable == false){
+      questionList[index]['max_attachment'] = 0
+    }
+  })
     if (!questionList[0]?.question) {
       message.error('Please add questions');
       return;
@@ -1035,14 +1036,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       });
       setHomeworkCreated(true);
 
-      // setQuestionList(reqObj?.questions);
-
-      // history.goBack();
+  
     } catch (error) {
       setLoading(false);
       message.error('Failed to add homework');
     }
-    // }
   };
 
   const fetchHomeworkDetails = (params = {}) => {
@@ -1423,7 +1421,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               question: homeworkData[0]?.homework_text,
               question_files: homeworkData[0]?.media_file,
               is_attachment_enable: false,
-              max_attachment: 2,
+              max_attachment: 10,
               is_pen_editor_enable: false,
               is_central: true,
             };
@@ -1456,7 +1454,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     question: '',
                     attachments: [],
                     is_attachment_enable: false,
-                    max_attachment: 2,
+                    max_attachment: 10,
                     penTool: false,
                     is_central: false,
                   },
@@ -1469,7 +1467,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                   question: '',
                   attachments: [],
                   is_attachment_enable: false,
-                  max_attachment: 2,
+                  max_attachment: 10,
                   penTool: false,
                   is_central: false,
                 },
@@ -2036,7 +2034,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 question: '',
                                 attachments: [],
                                 is_attachment_enable: false,
-                                max_attachment: 2,
+                                max_attachment: 10,
                                 penTool: false,
                                 is_central: false,
                               },
