@@ -42,15 +42,15 @@ const AssignUserLevel = () => {
       ? true
       : false;
 
-      const selectedBranch = useSelector(
-        (state) => state.commonFilterReducer?.selectedBranch
-      );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
-      const isOrchidsbachu =
-      window.location.host.split('.')[0] === 'orchids' ||
-      window.location.host.split('.')[0] === 'localhost:3000'
-        ? true
-        : false;
+  const isOrchidsbachu =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
+      ? true
+      : false;
 
   useEffect(() => {
     fetchUserLevel();
@@ -371,7 +371,7 @@ const AssignUserLevel = () => {
                       loading={loading}
                       columns={columns}
                       rowKey={(record) => record?.user_id}
-                      rowSelection={ selectedBranch?.branch?.id == 248 && isOrchidsbachu ? '' : { ...rowSelection }}
+                      rowSelection={{ ...rowSelection }}
                       dataSource={userData}
                       pagination={false}
                       scroll={{ y: '300px' }}

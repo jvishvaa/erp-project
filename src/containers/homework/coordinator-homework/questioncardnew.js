@@ -101,7 +101,7 @@ const QuestionCardNew = ({
   queIndexCounter,
   setLoading,
   setUploadStart,
-  setPercentValue
+  setPercentValue,
 }) => {
   const classes = useStyles();
   const selectedAcademicYear = useSelector(
@@ -112,7 +112,7 @@ const QuestionCardNew = ({
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [attachments, setAttachments] = useState([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
-  const [enableAttachments, setEnableAttachments] = useState(false);
+  const [enableAttachments, setEnableAttachments] = useState(true);
   const [openAttachmentModal, setOpenAttachmentModal] = useState(false);
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
   const firstUpdate = useRef(true);
@@ -160,8 +160,6 @@ const QuestionCardNew = ({
     }
   };
 
-
-
   useEffect(() => {
     if (edit) {
       setisEdit(false);
@@ -205,7 +203,7 @@ const QuestionCardNew = ({
           fd.append('file', file);
           // setFileUploadInProgress(true);
           setUploadStart(true);
-          setPercentValue(10)
+          setPercentValue(10);
           const filePath = await uploadFile(fd);
           const final = Object.assign({}, filePath);
           if (file.type === 'application/pdf') {
@@ -224,7 +222,7 @@ const QuestionCardNew = ({
             }
           }
           // setFileUploadInProgress(false);
-          setPercentValue(100)
+          setPercentValue(100);
           setUploadStart(false);
           setAlert('success', 'File uploaded successfully');
           setSizeValied('');
@@ -233,7 +231,7 @@ const QuestionCardNew = ({
         }
       } catch (e) {
         // setFileUploadInProgress(false);
-        setPercentValue(100)
+        setPercentValue(100);
         setUploadStart(false);
         setAlert('error', 'File upload failed');
       }
@@ -719,8 +717,8 @@ const QuestionCardNew = ({
                       <Checkbox
                         onChange={(e) => {
                           setEnableAttachments(e.target.checked);
-                          if(e.target.checked == true){
-                            setmaxAttachment(10)
+                          if (e.target.checked == true) {
+                            setmaxAttachment(10);
                           }
                         }}
                         checked={enableAttachments}
