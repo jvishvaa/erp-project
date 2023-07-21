@@ -52,6 +52,7 @@ let boardFilterArr = [
   'test.orchids.letseduvate.com',
 ];
 const { Panel } = Collapse;
+const { confirm } = Modal;
 const DailyDiary = ({ isSubstituteDiary }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -976,6 +977,19 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [chapterID]);
 
+  const homeworkCreateConfirmation = () => {
+    confirm({
+      content:
+        'File upload option has been enabled for students, are you sure do you want to submit the Homework',
+      onOk() {
+        createHomework();
+      },
+      onCancel() {
+        return;
+      },
+    });
+  };
+
   const handleAddHomeWork = async () => {
     if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');
@@ -990,7 +1004,16 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       message.error('Please add questions');
       return;
     }
-    console.log(questionList, 'qlist');
+
+    let uploadEnable = questionList.some((item) => item['is_attachment_enable'] === true);
+    if (uploadEnable) {
+      homeworkCreateConfirmation();
+      return;
+    }
+    createHomework();
+  };
+
+  const createHomework = async () => {
     setQuestionEdit(true);
     setLoading(true);
     let reqObj = {
