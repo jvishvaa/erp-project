@@ -8,6 +8,15 @@ import endpoints from 'config/endpoints';
 import axios from 'axios';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Loading from './../../../../components/loader/loader';
+import axiosInstance from 'config/axios';
+
+let domain = window.location.href.split('/');
+let isAolOrchids =
+  domain[2].includes('aolschool') ||
+  domain[2].includes('orchids') ||
+  // domain[2].includes('localhost') ||
+  domain[2].includes('dev') ||
+  domain[2].includes('qa');
 
 const reportTypes = [
   {
@@ -28,34 +37,62 @@ const reportTypes = [
     type: 'Consolidated Assessment Report',
   },
 ];
-const orchidsReportTypes = [
-  { id: 3, type: 'Student Comparison' },
-  {
-    id: 5,
-    type: 'Report Card',
-  },
-  {
-    id: 6,
-    type: 'Individual Test Report',
-  },
+const orchidsReportTypes = isAolOrchids
+  ? [
+      { id: 3, type: 'Student Comparison' },
+      {
+        id: 5,
+        type: 'Report Card',
+      },
+      {
+        id: 6,
+        type: 'Individual Test Report',
+      },
 
-  {
-    id: 9,
-    type: 'Gradewise Assessment Summary',
-  },
-  {
-    id: 10,
-    type: 'Gradewise Assessment Completion',
-  },
-  {
-    id: 13,
-    type: 'Consolidated Assessment Report',
-  },
-  {
-    id: 14,
-    type: 'Report Card',
-  },
-];
+      {
+        id: 9,
+        type: 'Gradewise Assessment Summary',
+      },
+      {
+        id: 10,
+        type: 'Gradewise Assessment Completion',
+      },
+      {
+        id: 13,
+        type: 'Consolidated Assessment Report',
+      },
+      {
+        id: 14,
+        type: 'Report Card',
+      },
+    ]
+  : [
+      {
+        id: 5,
+        type: 'Report Card',
+      },
+      {
+        id: 6,
+        type: 'Individual Test Report',
+      },
+
+      {
+        id: 9,
+        type: 'Gradewise Assessment Summary',
+      },
+      {
+        id: 10,
+        type: 'Gradewise Assessment Completion',
+      },
+      {
+        id: 13,
+        type: 'Consolidated Assessment Report',
+      },
+      {
+        id: 14,
+        type: 'Report Card',
+      },
+    ];
 
 const ReportTypeFilter = ({
   widerWidth,
@@ -82,6 +119,7 @@ const ReportTypeFilter = ({
 
   const [isReportButtonUnable, setIsReportButtonUnable] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [reportCardEnable, setReportCardEnable] = useState(false);
 
   const query = new URLSearchParams(window.location.search);
   const isReportView = Boolean(query.get('report-card'));
@@ -99,13 +137,26 @@ const ReportTypeFilter = ({
 
   useEffect(() => fetchReportPipelineConfig(), [user_level]);
 
-  let domain = window.location.href.split('/');
-  let isAolOrchids =
-    domain[2].includes('aolschool') ||
-    domain[2].includes('orchids') ||
-    domain[2].includes('localhost') ||
-    domain[2].includes('dev') ||
-    domain[2].includes('qa');
+  useEffect(() => {
+    fetchReportConfig();
+  }, []);
+  const fetchReportConfig = () => {
+    setLoading(true);
+    axiosInstance
+      .get(`/assessment/check-sys-config/?config_key=enble_rc_fe`)
+      .then((response) => {
+        console.log(response, 'res');
+        if (response?.data?.result[0] == 'True' || response?.data?.result == 'True') {
+          setReportCardEnable(true);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        // message.error(error?.response?.data?.message ?? 'Something went wrong!');
+        console.log(error, 'err');
+        setLoading(false);
+      });
+  };
 
   const handleQuizReport = () => {
     const userDetails = JSON.parse(localStorage.getItem('userDetails'));
@@ -181,7 +232,7 @@ const ReportTypeFilter = ({
           className='dropdownIcon'
           value={selectedReportType || {}}
           options={
-            isAolOrchids
+            reportCardEnable
               ? session_year !== '2021-22'
                 ? orchidsReportTypes?.filter((eachType) => {
                     return eachType.id !== 5;
