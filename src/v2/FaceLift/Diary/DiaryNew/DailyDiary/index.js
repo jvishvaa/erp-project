@@ -1442,7 +1442,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               id: cuid(),
               question: homeworkData[0]?.homework_text,
               question_files: homeworkData[0]?.media_file,
-              is_attachment_enable: false,
+              is_attachment_enable: true,
               max_attachment: 10,
               is_pen_editor_enable: false,
               is_central: true,
