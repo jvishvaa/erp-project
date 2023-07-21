@@ -46,10 +46,7 @@ import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import {
-  Progress,
-  Modal
-} from 'antd';
+import { Progress, Modal } from 'antd';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -105,7 +102,7 @@ const QuestionCard = ({
   const [attachments, setAttachments] = useState(question.attachments);
   const [attachmentPreviews, setAttachmentPreviews] = useState(question.attachments);
   const [enableAttachments, setEnableAttachments] = useState(
-    question.is_attachment_enable
+    question.is_attachment_enable || true
   );
   const [openAttachmentModal, setOpenAttachmentModal] = useState(false);
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
@@ -116,7 +113,7 @@ const QuestionCard = ({
   const [sizeValied, setSizeValied] = useState({});
   const [showPrev, setshowPrev] = useState(0);
   const [pentool, setpentool] = useState(question.penTool);
-  const [maxattachment, setmaxAttachment] = useState(question.max_attachment);
+  const [maxattachment, setmaxAttachment] = useState(question.max_attachment || 10);
   // const [isAttachmentenable,setisAttachmentenable] = useState(false)
   const [showDrawer, setShowDrawer] = useState(false);
   const [questionData, setquestionData] = useState(question?.question);
@@ -156,32 +153,34 @@ const QuestionCard = ({
     }
   };
 
-  const [ percentValue , setPercentValue ] = useState(10)
+  const [percentValue, setPercentValue] = useState(10);
   const [uploadStart, setUploadStart] = useState(false);
-
 
   let idInterval = null;
   useEffect(() => {
-    console.log(fileUploadInProgress , 'start' , percentValue ,idInterval);
-    if(fileUploadInProgress == true && percentValue < 90){
-      console.log(percentValue , 'pval');
-      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount) ), 1000);
+    console.log(fileUploadInProgress, 'start', percentValue, idInterval);
+    if (fileUploadInProgress == true && percentValue < 90) {
+      console.log(percentValue, 'pval');
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
     }
 
     return () => {
       clearInterval(idInterval);
-      setPercentValue(10)
+      setPercentValue(10);
     };
   }, [fileUploadInProgress]);
 
   const checkCount = (count) => {
-    console.log(count , 'count');
-    if(count < 90){
-      return count+5;
-    }else {
+    console.log(count, 'count');
+    if (count < 90) {
+      return count + 5;
+    } else {
       return count;
     }
-  }
+  };
 
   useEffect(() => {
     if (edit) {
@@ -224,7 +223,7 @@ const QuestionCard = ({
         ) {
           const fd = new FormData();
           fd.append('file', file);
-          setPercentValue(10)
+          setPercentValue(10);
           setFileUploadInProgress(true);
           const filePath = await uploadFile(fd);
           const final = Object.assign({}, filePath);
@@ -243,7 +242,7 @@ const QuestionCard = ({
               setAttachmentPreviews((prevState) => [...prevState, filePath]);
             }
           }
-          setPercentValue(100)
+          setPercentValue(100);
           setFileUploadInProgress(false);
 
           setAlert('success', 'File uploaded successfully');
@@ -673,7 +672,7 @@ const QuestionCard = ({
                       rows={4}
                       rowsMax={6}
                       value={questionData}
-                    // disabled={true}
+                      // disabled={true}
                     />
                     <FormHelperText style={{ color: 'red' }}>
                       {question.errors?.question}
@@ -702,23 +701,23 @@ const QuestionCard = ({
                           />
                         </div>
                       ) : ( */}
-                        <>
-                          <IconButton
-                            onClick={() => fileUploadInput.current.click()}
-                            title='Attach files'
+                      <>
+                        <IconButton
+                          onClick={() => fileUploadInput.current.click()}
+                          title='Attach files'
+                        >
+                          <Badge
+                            badgeContent={attachmentPreviews?.length}
+                            color='primary'
                           >
-                            <Badge
-                              badgeContent={attachmentPreviews?.length}
-                              color='primary'
-                            >
-                              <AttachFileIcon color='primary' />
-                            </Badge>
-                          </IconButton>
-                          <small className={classes.acceptedfiles}>
-                            {' '}
-                            Accepted files: jpeg,jpg,mp3,mp4,pdf,png
-                          </small>
-                        </>
+                            <AttachFileIcon color='primary' />
+                          </Badge>
+                        </IconButton>
+                        <small className={classes.acceptedfiles}>
+                          {' '}
+                          Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                        </small>
+                      </>
                       {/* )} */}
                     </div>
                     <div></div>
@@ -801,7 +800,7 @@ const QuestionCard = ({
                                   index={cindex}
                                   actions={
                                     url.includes('/lesson_plan_file/') &&
-                                      !url.includes('png')
+                                    !url.includes('png')
                                       ? ['download', 'delete']
                                       : ['preview', 'download', 'delete']
                                   }
@@ -885,7 +884,7 @@ const QuestionCard = ({
                       onChange={(e) => {
                         setEnableAttachments(e.target.checked);
                         if (e.target.checked == true) {
-                          setmaxAttachment(10)
+                          setmaxAttachment(10);
                         }
                         console.log(e.target.checked);
                       }}
@@ -1271,7 +1270,7 @@ const QuestionCard = ({
                                                   extension:
                                                     '.' +
                                                     resource.split('.')[
-                                                    resource.split('.').length - 1
+                                                      resource.split('.').length - 1
                                                     ],
                                                 },
                                               ],
@@ -1326,14 +1325,21 @@ const QuestionCard = ({
           )}
         </Grid>
       </Drawer>
-      <Modal maskClosable={false} closable={false} footer={null} visible={fileUploadInProgress} width={1000} centered>
+      <Modal
+        maskClosable={false}
+        closable={false}
+        footer={null}
+        visible={fileUploadInProgress}
+        width={1000}
+        centered
+      >
         <Progress
           strokeColor={{
             from: '#108ee9',
             to: '#87d068',
           }}
           percent={percentValue}
-          status="active"
+          status='active'
           className='p-4'
         />
       </Modal>

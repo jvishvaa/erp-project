@@ -351,24 +351,18 @@ const AnnouncementList = () => {
                   )}
                 </Tabs>
               </div>
-              {selectedBranch?.branch?.id == 248 && isOrchids ? (
-                ''
-              ) : (
-                <>
-                  {userLevel !== 12 && userLevel !== 13 && (
-                    <div
-                      style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-                      className='th-bg-primary th-white th-br-6 px-4 py-3 th-fw-500 th-pointer'
-                      onClick={() => history.push('./create-announcement')}
-                    >
-                      <span className='d-flex align-items-center'>
-                        <PlusOutlined size='small' className='mr-2' />
-                        Create New
-                      </span>
-                    </div>
-                  )}{' '}
-                </>
-              )}
+              {userLevel !== 12 && userLevel !== 13 && (
+                <div
+                  style={{ position: 'fixed', bottom: '5%', right: '2%' }}
+                  className='th-bg-primary th-white th-br-6 px-4 py-3 th-fw-500 th-pointer'
+                  onClick={() => history.push('./create-announcement')}
+                >
+                  <span className='d-flex align-items-center'>
+                    <PlusOutlined size='small' className='mr-2' />
+                    Create New
+                  </span>
+                </div>
+              )}{' '}
             </div>
           </div>
         </div>

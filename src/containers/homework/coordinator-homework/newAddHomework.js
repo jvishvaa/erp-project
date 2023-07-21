@@ -41,7 +41,8 @@ import {
   DatePicker,
   Button,
   Breadcrumb,
-  Modal, Progress
+  Modal,
+  Progress,
 } from 'antd';
 import {
   CloseCircleOutlined,
@@ -117,7 +118,7 @@ const AddHomeworkCordNew = ({
       id: cuid(),
       question: '',
       attachments: [],
-      is_attachment_enable: false,
+      is_attachment_enable: true,
       max_attachment: 10,
       penTool: false,
     },
@@ -140,21 +141,23 @@ const AddHomeworkCordNew = ({
     setDateValue(value);
   };
   const formRef = createRef();
-  const [percentValue, setPercentValue] = useState(10)
+  const [percentValue, setPercentValue] = useState(10);
   const [uploadStart, setUploadStart] = useState(false);
-
 
   let idInterval = null;
   useEffect(() => {
     console.log(uploadStart, 'start', percentValue, idInterval);
     if (uploadStart == true && percentValue < 90) {
       console.log(percentValue, 'pval');
-      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount)), 1000);
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
     }
 
     return () => {
       clearInterval(idInterval);
-      setPercentValue(10)
+      setPercentValue(10);
     };
   }, [uploadStart]);
 
@@ -165,7 +168,7 @@ const AddHomeworkCordNew = ({
     } else {
       return count;
     }
-  }
+  };
 
   console.log(propData, 'props');
   console.log(selectedHomeworkDetails, 'history');
@@ -253,13 +256,16 @@ const AddHomeworkCordNew = ({
     if (questions.filter((item) => item?.question == '')?.length > 0) {
       return message.error('Please Add Questions');
     }
-    let NewQuestionList = questions?.map((item,index) => {
-      if(item?.is_attachment_enable == false){
-        questions[index]['max_attachment'] = 0
-      } else if(item?.is_attachment_enable == true && questions[index]['max_attachment'] == 0){
-        questions[index]['max_attachment'] = 10
+    let NewQuestionList = questions?.map((item, index) => {
+      if (item?.is_attachment_enable == false) {
+        questions[index]['max_attachment'] = 0;
+      } else if (
+        item?.is_attachment_enable == true &&
+        questions[index]['max_attachment'] == 0
+      ) {
+        questions[index]['max_attachment'] = 10;
       }
-    })
+    });
     const isFormValid = validateHomework();
     if (isFormValid) {
       setLoading(true);
@@ -314,8 +320,8 @@ const AddHomeworkCordNew = ({
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: false,
-        max_attachment: 2,
+        is_attachment_enable: true,
+        max_attachment: 10,
         penTool: false,
       },
       ...prevState.slice(index),
@@ -606,14 +612,21 @@ const AddHomeworkCordNew = ({
           </div>
         </Form>
       </div>
-      <Modal maskClosable={false} closable={false} footer={null} visible={uploadStart} width={1000} centered>
+      <Modal
+        maskClosable={false}
+        closable={false}
+        footer={null}
+        visible={uploadStart}
+        width={1000}
+        centered
+      >
         <Progress
           strokeColor={{
             from: '#108ee9',
             to: '#87d068',
           }}
           percent={percentValue}
-          status="active"
+          status='active'
           className='p-4'
         />
       </Modal>
