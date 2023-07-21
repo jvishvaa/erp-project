@@ -101,9 +101,7 @@ const QuestionCard = ({
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [attachments, setAttachments] = useState(question.attachments);
   const [attachmentPreviews, setAttachmentPreviews] = useState(question.attachments);
-  const [enableAttachments, setEnableAttachments] = useState(
-    question.is_attachment_enable || true
-  );
+  const [enableAttachments, setEnableAttachments] = useState(true);
   const [openAttachmentModal, setOpenAttachmentModal] = useState(false);
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
   const firstUpdate = useRef(true);
@@ -152,6 +150,12 @@ const QuestionCard = ({
       attachmentsRef.current.scrollLeft += 150;
     }
   };
+
+  useEffect(() => {
+    if (question?.is_attachment_enable == false) {
+      setEnableAttachments(false);
+    }
+  }, [question]);
 
   const [percentValue, setPercentValue] = useState(10);
   const [uploadStart, setUploadStart] = useState(false);
