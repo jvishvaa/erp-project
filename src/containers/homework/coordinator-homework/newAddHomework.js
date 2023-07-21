@@ -56,6 +56,8 @@ import {
 import QuestionCardNew from './questioncardnew';
 import Loader from 'components/loader/loader';
 
+const { confirm } = Modal;
+
 const validateQuestions = (obj) => {
   let error = false;
   let errorObj = { question: '' };
@@ -146,9 +148,7 @@ const AddHomeworkCordNew = ({
 
   let idInterval = null;
   useEffect(() => {
-    console.log(uploadStart, 'start', percentValue, idInterval);
     if (uploadStart == true && percentValue < 90) {
-      console.log(percentValue, 'pval');
       idInterval = setInterval(
         () => setPercentValue((oldCount) => checkCount(oldCount)),
         1000
@@ -162,17 +162,12 @@ const AddHomeworkCordNew = ({
   }, [uploadStart]);
 
   const checkCount = (count) => {
-    console.log(count, 'count');
     if (count < 90) {
       return count + 5;
     } else {
       return count;
     }
   };
-
-  console.log(propData, 'props');
-  console.log(selectedHomeworkDetails, 'history');
-  console.log();
 
   useEffect(() => {
     if (propData.isEdit) {
@@ -200,7 +195,6 @@ const AddHomeworkCordNew = ({
       }));
       setQuestions(que);
     }
-    console.log(formRef.current, 'form');
   }, [selectedHomeworkDetails, propData]);
   useEffect(() => {
     if (propData?.viewHomework?.hw_data?.data?.hw_id && propData?.isFromLessonPlan) {
@@ -237,8 +231,20 @@ const AddHomeworkCordNew = ({
     return isFormValid;
   };
 
+  const homeworkCreateConfirmation = () => {
+    confirm({
+      content:
+        'File upload option has been enabled for students, are you sure do you want to submit the Homework',
+      onOk() {
+        createHomework();
+      },
+      onCancel() {
+        return;
+      },
+    });
+  };
+
   const handleAddHomeWork = async () => {
-    console.log(name, description, sectionDisplay, dateValue, questions, 'filter');
     if (name == undefined || name == '') {
       return message.error('Please Add Title');
     }
@@ -266,6 +272,16 @@ const AddHomeworkCordNew = ({
         questions[index]['max_attachment'] = 10;
       }
     });
+
+    let uploadEnable = questions.some((item) => item['is_attachment_enable'] === true);
+    if (uploadEnable) {
+      homeworkCreateConfirmation();
+      return;
+    }
+    createHomework();
+  };
+
+  const createHomework = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
       setLoading(true);
@@ -396,13 +412,11 @@ const AddHomeworkCordNew = ({
   }, [teacherModuleId, sessionYear, branch, grade]);
 
   const handleSection = (event, value) => {
-    console.log(value);
     setSectionDisplay([]);
     if (value) {
       setSectionDisplay(value);
     }
   };
-  console.log('ppp2', sessionYear, grade, branch);
 
   const goback = () => {
     if (propData?.isTeacher == true) {
@@ -429,7 +443,6 @@ const AddHomeworkCordNew = ({
   let sectionsEdit = sectionOptions.filter(
     (item) => item?.props?.value == propData?.viewHomework?.filterData?.sectionId
   );
-  console.log(sectionsEdit, sectionOptions, 'sec');
   useEffect(() => {
     if (propData?.isEdit) {
       handleSection(null, sectionsEdit);
