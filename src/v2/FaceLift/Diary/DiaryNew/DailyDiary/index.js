@@ -210,7 +210,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: false,
+        is_attachment_enable: true,
         max_attachment: 10,
         penTool: false,
         is_central: false,
@@ -923,7 +923,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               id: cuid(),
               question: '',
               attachments: [],
-              is_attachment_enable: false,
+              is_attachment_enable: true,
               max_attachment: 10,
               penTool: false,
               is_central: false,
@@ -981,15 +981,16 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       message.error('Please fill Homework Title');
       return;
     }
-  let NewQuestionList = questionList?.map((item,index) => {
-    if(item?.is_attachment_enable == false){
-      questionList[index]['max_attachment'] = 0
-    }
-  })
+    let NewQuestionList = questionList?.map((item, index) => {
+      if (item?.is_attachment_enable == false) {
+        questionList[index]['max_attachment'] = 0;
+      }
+    });
     if (!questionList[0]?.question) {
       message.error('Please add questions');
       return;
     }
+    console.log(questionList, 'qlist');
     setQuestionEdit(true);
     setLoading(true);
     let reqObj = {
@@ -1035,8 +1036,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         date: moment().format('YYYY-MM-DD'),
       });
       setHomeworkCreated(true);
-
-  
     } catch (error) {
       setLoading(false);
       message.error('Failed to add homework');
@@ -1453,7 +1452,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     id: cuid(),
                     question: '',
                     attachments: [],
-                    is_attachment_enable: false,
+                    is_attachment_enable: true,
                     max_attachment: 10,
                     penTool: false,
                     is_central: false,
@@ -1466,7 +1465,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                   id: cuid(),
                   question: '',
                   attachments: [],
-                  is_attachment_enable: false,
+                  is_attachment_enable: true,
                   max_attachment: 10,
                   penTool: false,
                   is_central: false,
@@ -2033,7 +2032,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 id: cuid(),
                                 question: '',
                                 attachments: [],
-                                is_attachment_enable: false,
+                                is_attachment_enable: true,
                                 max_attachment: 10,
                                 penTool: false,
                                 is_central: false,

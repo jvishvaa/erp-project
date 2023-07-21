@@ -19,7 +19,7 @@ import './styles.scss';
 const columns = [
   //   { id: 'id', label: 'Id', minWidth: 170 },
   { id: 'sl-no', label: 'SL_NO.', minWidth: 100 },
-  {id:'id',label:'ROLE ID',minWidth:100},
+  { id: 'id', label: 'ROLE ID', minWidth: 100 },
   { id: 'role_name', label: 'Role', minWidth: 100 },
   { id: 'created_at', label: 'Created at', minWidth: 100 },
   { id: 'created_by', label: 'Created by', minWidth: 100 },
@@ -38,10 +38,10 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'localhost:3000'
-    ? true
-    : false;
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
+      ? true
+      : false;
   return (
     <Paper className={`${classes.root} roles-table`}>
       <TableContainer className={classes.container}>
@@ -79,7 +79,6 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
                             key={column.id}
                             align={column.align}
                           >
-                          {selectedBranch?.branch?.id == 248 && isOrchids ? '' : 
                             <IconButton
                               onClick={() => {
                                 onEdit(role);
@@ -87,7 +86,7 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
                               title='Edit role'
                             >
                               <EditOutlinedIcon color='primary' />
-                            </IconButton> }
+                            </IconButton>
                             <IconButton
                               onClick={() => {
                                 onDelete(role);
