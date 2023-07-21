@@ -52,6 +52,7 @@ let boardFilterArr = [
   'test.orchids.letseduvate.com',
 ];
 const { Panel } = Collapse;
+const { confirm } = Modal;
 const DailyDiary = ({ isSubstituteDiary }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -210,7 +211,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: false,
+        is_attachment_enable: true,
         max_attachment: 10,
         penTool: false,
         is_central: false,
@@ -923,7 +924,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               id: cuid(),
               question: '',
               attachments: [],
-              is_attachment_enable: false,
+              is_attachment_enable: true,
               max_attachment: 10,
               penTool: false,
               is_central: false,
@@ -976,20 +977,43 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [chapterID]);
 
+  const homeworkCreateConfirmation = () => {
+    confirm({
+      content:
+        'File upload option has been enabled for students, are you sure do you want to submit the Homework',
+      onOk() {
+        createHomework();
+      },
+      onCancel() {
+        return;
+      },
+    });
+  };
+
   const handleAddHomeWork = async () => {
     if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');
       return;
     }
-  let NewQuestionList = questionList?.map((item,index) => {
-    if(item?.is_attachment_enable == false){
-      questionList[index]['max_attachment'] = 0
-    }
-  })
+    let NewQuestionList = questionList?.map((item, index) => {
+      if (item?.is_attachment_enable == false) {
+        questionList[index]['max_attachment'] = 0;
+      }
+    });
     if (!questionList[0]?.question) {
       message.error('Please add questions');
       return;
     }
+
+    let uploadEnable = questionList.some((item) => item['is_attachment_enable'] === true);
+    if (uploadEnable) {
+      homeworkCreateConfirmation();
+      return;
+    }
+    createHomework();
+  };
+
+  const createHomework = async () => {
     setQuestionEdit(true);
     setLoading(true);
     let reqObj = {
@@ -1035,8 +1059,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         date: moment().format('YYYY-MM-DD'),
       });
       setHomeworkCreated(true);
-
-  
     } catch (error) {
       setLoading(false);
       message.error('Failed to add homework');
@@ -1420,7 +1442,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               id: cuid(),
               question: homeworkData[0]?.homework_text,
               question_files: homeworkData[0]?.media_file,
-              is_attachment_enable: false,
+              is_attachment_enable: true,
               max_attachment: 10,
               is_pen_editor_enable: false,
               is_central: true,
@@ -1453,7 +1475,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     id: cuid(),
                     question: '',
                     attachments: [],
-                    is_attachment_enable: false,
+                    is_attachment_enable: true,
                     max_attachment: 10,
                     penTool: false,
                     is_central: false,
@@ -1466,7 +1488,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                   id: cuid(),
                   question: '',
                   attachments: [],
-                  is_attachment_enable: false,
+                  is_attachment_enable: true,
                   max_attachment: 10,
                   penTool: false,
                   is_central: false,
@@ -2033,7 +2055,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 id: cuid(),
                                 question: '',
                                 attachments: [],
-                                is_attachment_enable: false,
+                                is_attachment_enable: true,
                                 max_attachment: 10,
                                 penTool: false,
                                 is_central: false,

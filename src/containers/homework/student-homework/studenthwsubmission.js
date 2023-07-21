@@ -699,6 +699,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         setLoading(false);
       });
   };
+  const lowercaseWords = formats.map((word) => word.toLowerCase());
+  const newFormats = [...new Set(lowercaseWords)];
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
@@ -1046,7 +1048,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                       </IconButton>
                       <small style={{ width: '100%', color: '#014b7e' }}>
                         {' '}
-                        Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                        {`Accepted files: .jpeg,.jpg,.mp3,.pdf,.png,${newFormats.toString()}`}
                       </small>
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
@@ -1523,7 +1525,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   </div>
                   <small className={classes.acceptedfiles}>
                     {' '}
-                    Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                    {`Accepted files: .jpeg,.jpg,.mp3,.pdf,.png,${newFormats.toString()}`}
                   </small>
                 </>
                 <div className='bulk_upload_attachments'>

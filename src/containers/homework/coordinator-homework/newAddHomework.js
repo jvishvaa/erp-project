@@ -41,7 +41,8 @@ import {
   DatePicker,
   Button,
   Breadcrumb,
-  Modal, Progress
+  Modal,
+  Progress,
 } from 'antd';
 import {
   CloseCircleOutlined,
@@ -54,6 +55,8 @@ import {
 } from '@ant-design/icons';
 import QuestionCardNew from './questioncardnew';
 import Loader from 'components/loader/loader';
+
+const { confirm } = Modal;
 
 const validateQuestions = (obj) => {
   let error = false;
@@ -117,7 +120,7 @@ const AddHomeworkCordNew = ({
       id: cuid(),
       question: '',
       attachments: [],
-      is_attachment_enable: false,
+      is_attachment_enable: true,
       max_attachment: 10,
       penTool: false,
     },
@@ -140,36 +143,31 @@ const AddHomeworkCordNew = ({
     setDateValue(value);
   };
   const formRef = createRef();
-  const [percentValue, setPercentValue] = useState(10)
+  const [percentValue, setPercentValue] = useState(10);
   const [uploadStart, setUploadStart] = useState(false);
-
 
   let idInterval = null;
   useEffect(() => {
-    console.log(uploadStart, 'start', percentValue, idInterval);
     if (uploadStart == true && percentValue < 90) {
-      console.log(percentValue, 'pval');
-      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount)), 1000);
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
     }
 
     return () => {
       clearInterval(idInterval);
-      setPercentValue(10)
+      setPercentValue(10);
     };
   }, [uploadStart]);
 
   const checkCount = (count) => {
-    console.log(count, 'count');
     if (count < 90) {
       return count + 5;
     } else {
       return count;
     }
-  }
-
-  console.log(propData, 'props');
-  console.log(selectedHomeworkDetails, 'history');
-  console.log();
+  };
 
   useEffect(() => {
     if (propData.isEdit) {
@@ -197,7 +195,6 @@ const AddHomeworkCordNew = ({
       }));
       setQuestions(que);
     }
-    console.log(formRef.current, 'form');
   }, [selectedHomeworkDetails, propData]);
   useEffect(() => {
     if (propData?.viewHomework?.hw_data?.data?.hw_id && propData?.isFromLessonPlan) {
@@ -234,8 +231,20 @@ const AddHomeworkCordNew = ({
     return isFormValid;
   };
 
+  const homeworkCreateConfirmation = () => {
+    confirm({
+      content:
+        'File upload option has been enabled for students, are you sure do you want to submit the Homework',
+      onOk() {
+        createHomework();
+      },
+      onCancel() {
+        return;
+      },
+    });
+  };
+
   const handleAddHomeWork = async () => {
-    console.log(name, description, sectionDisplay, dateValue, questions, 'filter');
     if (name == undefined || name == '') {
       return message.error('Please Add Title');
     }
@@ -253,13 +262,26 @@ const AddHomeworkCordNew = ({
     if (questions.filter((item) => item?.question == '')?.length > 0) {
       return message.error('Please Add Questions');
     }
-    let NewQuestionList = questions?.map((item,index) => {
-      if(item?.is_attachment_enable == false){
-        questions[index]['max_attachment'] = 0
-      } else if(item?.is_attachment_enable == true && questions[index]['max_attachment'] == 0){
-        questions[index]['max_attachment'] = 10
+    let NewQuestionList = questions?.map((item, index) => {
+      if (item?.is_attachment_enable == false) {
+        questions[index]['max_attachment'] = 0;
+      } else if (
+        item?.is_attachment_enable == true &&
+        questions[index]['max_attachment'] == 0
+      ) {
+        questions[index]['max_attachment'] = 10;
       }
-    })
+    });
+
+    let uploadEnable = questions.some((item) => item['is_attachment_enable'] === true);
+    if (uploadEnable) {
+      homeworkCreateConfirmation();
+      return;
+    }
+    createHomework();
+  };
+
+  const createHomework = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
       setLoading(true);
@@ -314,8 +336,8 @@ const AddHomeworkCordNew = ({
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: false,
-        max_attachment: 2,
+        is_attachment_enable: true,
+        max_attachment: 10,
         penTool: false,
       },
       ...prevState.slice(index),
@@ -390,13 +412,11 @@ const AddHomeworkCordNew = ({
   }, [teacherModuleId, sessionYear, branch, grade]);
 
   const handleSection = (event, value) => {
-    console.log(value);
     setSectionDisplay([]);
     if (value) {
       setSectionDisplay(value);
     }
   };
-  console.log('ppp2', sessionYear, grade, branch);
 
   const goback = () => {
     if (propData?.isTeacher == true) {
@@ -423,7 +443,6 @@ const AddHomeworkCordNew = ({
   let sectionsEdit = sectionOptions.filter(
     (item) => item?.props?.value == propData?.viewHomework?.filterData?.sectionId
   );
-  console.log(sectionsEdit, sectionOptions, 'sec');
   useEffect(() => {
     if (propData?.isEdit) {
       handleSection(null, sectionsEdit);
@@ -606,14 +625,21 @@ const AddHomeworkCordNew = ({
           </div>
         </Form>
       </div>
-      <Modal maskClosable={false} closable={false} footer={null} visible={uploadStart} width={1000} centered>
+      <Modal
+        maskClosable={false}
+        closable={false}
+        footer={null}
+        visible={uploadStart}
+        width={1000}
+        centered
+      >
         <Progress
           strokeColor={{
             from: '#108ee9',
             to: '#87d068',
           }}
           percent={percentValue}
-          status="active"
+          status='active'
           className='p-4'
         />
       </Modal>

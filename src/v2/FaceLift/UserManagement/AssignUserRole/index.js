@@ -51,11 +51,11 @@ const AssignUserRole = () => {
       ? true
       : false;
 
-      const isOrchidsbachu =
-      window.location.host.split('.')[0] === 'orchids' ||
-      window.location.host.split('.')[0] === 'localhost:3000'
-        ? true
-        : false;
+  const isOrchidsbachu =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
+      ? true
+      : false;
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -702,7 +702,7 @@ const AssignUserRole = () => {
                       loading={loading}
                       columns={columns}
                       rowKey={(record) => record?.id}
-                      rowSelection={ selectedAcadBranch?.branch?.id == 248 && isOrchidsbachu ? '' : { ...rowSelection }}
+                      rowSelection={{ ...rowSelection }}
                       dataSource={userData}
                       pagination={false}
                       scroll={{ y: '300px' }}
