@@ -584,6 +584,10 @@ const BlogWall = () => {
         setDetailsLoading(false);
       });
   };
+
+  let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
+  const { school_logo } = schoolDetails;
+
   const PostContent = () => {
     return (
       <>
@@ -1087,7 +1091,7 @@ const BlogWall = () => {
                     <div className='row th-br-8' style={{ outline: '2px solid #d9d9d9' }}>
                       <div className='col-12 py-1'>
                         <img
-                          src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                          src={school_logo}
                           width='130'
                           alt='image'
                         />
@@ -1680,7 +1684,7 @@ const BlogWall = () => {
                             </div>
                           </div>
                           <img
-                            src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                            src={school_logo}
                             width='130'
                             alt='image'
                           />

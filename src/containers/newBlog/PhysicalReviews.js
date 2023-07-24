@@ -279,7 +279,9 @@ const PhysicalReviewed = (props) => {
     {
       title: <span className='th-white th-fw-700'>ERP Id</span>,
       align: 'center',
-      render: (text, row) => <span className='th-black-1'>{row?.booked_user?.username}</span>,
+      render: (text, row) => (
+        <span className='th-black-1'>{row?.booked_user?.username}</span>
+      ),
     },
     {
       title: <span className='th-white th-fw-700'>Executed Date</span>,
@@ -346,6 +348,9 @@ const PhysicalReviewed = (props) => {
       }, {});
     setCustomRatingReview(rounds);
   }
+
+  let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
+  const { school_logo } = schoolDetails;
 
   return (
     <>
@@ -454,7 +459,7 @@ const PhysicalReviewed = (props) => {
                         </div>
                       </div>
                       <img
-                        src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                        src={school_logo}
                         alt='image'
                         style={{
                           height: 130,
@@ -556,7 +561,7 @@ const PhysicalReviewed = (props) => {
 
               <div className='pr-1'>
                 <img
-                  src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                  src={school_logo}
                   alt='image'
                   style={{
                     height: 60,
