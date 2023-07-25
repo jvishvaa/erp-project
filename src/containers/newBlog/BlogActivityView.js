@@ -410,7 +410,7 @@ const BlogActivityView = () => {
       fetchSchoolWall({
         // page_size: 5,
         // page: pageNumber,
-        publish_level: 'Intra Orchids Level',
+        publish_level: 'Intra School Level',
         user_id: userId,
       });
     } else if (showTab == 3) {

@@ -102,7 +102,7 @@ const BlogWall = () => {
   const [publicSpeakingrating, setPublicSpeakingrating] = useState([]);
   const levels = [
     // 'All',
-    'Intra Orchids',
+    'Intra School',
     'Branch',
     'Grade',
     'Section',
@@ -159,13 +159,13 @@ const BlogWall = () => {
     //selectedBranch?.branch?.id
     try {
       if (item?.type === 'post') {
-        if (item?.view_level === 'Intra Orchids Level') {
+        if (item?.view_level === 'Intra School Level') {
           return item?.branch?.name;
         } else {
           return selectedBranch?.branch?.branch_name;
         }
       } else if (item?.type === 'blog') {
-        if (item?.publish_level === 'Intra Orchids Level') {
+        if (item?.publish_level === 'Intra School Level') {
           return item?.branch?.name;
         } else {
           return selectedBranch?.branch?.branch_name;
@@ -367,7 +367,7 @@ const BlogWall = () => {
   const handleSearch = () => {
     if (showTab == 1) {
       fetchPostWall({
-        publish_level: 'Intra Orchids Level',
+        publish_level: 'Intra School Level',
         erp_id: erp,
         session_year: selectedAcademicYear?.session_year,
       });
@@ -905,7 +905,7 @@ const BlogWall = () => {
                                       )}
                                     </div>
                                     <div className=''>
-                                      <Rate disabled defaultValue={2} />
+                                      <Rate disabled defaultValue={item.rating} />
                                     </div>
                                   </div>
                                 </div>
