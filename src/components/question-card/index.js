@@ -46,7 +46,11 @@ import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Progress, Modal } from 'antd';
+import {
+  Progress,
+  Modal,
+  Divider
+} from 'antd';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -162,15 +166,16 @@ const QuestionCard = ({
 
   let idInterval = null;
   useEffect(() => {
-    console.log(fileUploadInProgress, 'start', percentValue, idInterval);
+    if(fileUploadInProgress == true && percentValue < 90){
+      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount) ), 1000);
+    }
     if (fileUploadInProgress == true && percentValue < 90) {
-      console.log(percentValue, 'pval');
       idInterval = setInterval(
         () => setPercentValue((oldCount) => checkCount(oldCount)),
         1000
       );
     }
-
+  
     return () => {
       clearInterval(idInterval);
       setPercentValue(10);
@@ -178,7 +183,6 @@ const QuestionCard = ({
   }, [fileUploadInProgress]);
 
   const checkCount = (count) => {
-    console.log(count, 'count');
     if (count < 90) {
       return count + 5;
     } else {
@@ -867,7 +871,8 @@ const QuestionCard = ({
                 </Grid>
               )}
             </Grid>
-            <Grid container className='question-ctrls-container'>
+            <Divider orientation="left" plain><b>Students can submit Homework via these options</b></Divider>
+            <Grid container className='question-ctrls-container' display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
               <Grid
                 item
                 xs={12}
@@ -890,7 +895,6 @@ const QuestionCard = ({
                         if (e.target.checked == true) {
                           setmaxAttachment(10);
                         }
-                        console.log(e.target.checked);
                       }}
                       name='checkedA'
                       color='primary'
@@ -911,10 +915,11 @@ const QuestionCard = ({
                   xs={12}
                   md={window.location.pathname.includes('/diary/') ? 5 : 3}
                   className='question-ctrl-outer-container'
+                  style={{justifyContent: 'start'}}
                 >
                   {/* <Box className='question-ctrl-inner-container max-attachments'> */}
-                  <div>
-                    <div className='question-ctrl-label'>Maximum number of files</div>
+                  <div className='d-flex'>
+                    <div className='question-ctrl-label pt-2'>Maximum number of files</div>
                     <Select
                       native
                       labelId='demo-customized-select-label'
