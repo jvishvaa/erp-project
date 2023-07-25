@@ -48,7 +48,7 @@ const UploadDocument = (props) => {
   const draggerProps = {
     showUploadList: false,
     disabled: false,
-    accept: '.jpeg,.jpg,.png,.pdf ',
+    accept: '.jpeg,.jpg,.png,.pdf,.mp4 ',
     multiple: true,
     onRemove: (file) => {
       const index = fileList.indexOf(file);
@@ -58,7 +58,7 @@ const UploadDocument = (props) => {
     },
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
-      if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
+      if (['jpeg', 'jpg', 'png', 'pdf', 'mp4'].includes(type)) {
         setFileList([...fileList, ...file[1]]);
         setFileTypeError(false);
       } else {
@@ -155,7 +155,7 @@ const UploadDocument = (props) => {
           </Dragger>
           {fileTypeError && (
             <div className='row pt-3 justify-content-center th-red'>
-              Please add image and pdf files only
+              Please add image, pdf and mp4 files only
             </div>
           )}
           {fileList?.length > 0 && (
