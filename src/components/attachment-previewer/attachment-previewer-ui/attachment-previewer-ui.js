@@ -18,6 +18,12 @@ import 'react-pdf/dist/umd/Page/AnnotationLayer.css';
 import endpoints from 'v2/config/endpoints';
 import axiosInstance from 'config/axios';
 import Loader from 'components/loader/loader';
+import {
+  FullscreenOutlined,
+  CloseSquareOutlined,
+  FullscreenExitOutlined,
+} from '@ant-design/icons';
+import { Button } from 'antd';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;
@@ -38,16 +44,19 @@ function AttachmentPreviewerUI() {
     controls: { isOpen, next, prev, isNextAvailable, isPrevAvailable },
   } = React.useContext(AttachmentPreviewerContext) || {};
   const { extension, src = '', name } = (attachments || [])[currentAttachmentIndex] || {};
-  const history = useHistory()
-  const [webviewer, setWebViewer] = useState(false)
+  const history = useHistory();
+  const [webviewer, setWebViewer] = useState(false);
+  const [fullScreen, setFullScreen] = useState(false);
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const user_level = userData?.user_level;
-  const levelMatch = user_level == 11 || user_level == 10 || user_level == 8 ? true : false ;
+  const levelMatch =
+    user_level == 11 || user_level == 10 || user_level == 8 ? true : false;
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' && levelMatch ||
-  window.location.host.split('.')[0] === 'localhost:3000' && levelMatch || window.location.host.split('.')[0] === 'qa' && levelMatch
-    ? true
-    : false;
+    (window.location.host.split('.')[0] === 'orchids' && levelMatch) ||
+    (window.location.host.split('.')[0] === 'localhost:3000' && levelMatch) ||
+    (window.location.host.split('.')[0] === 'qa' && levelMatch)
+      ? true
+      : false;
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }
@@ -100,26 +109,109 @@ function AttachmentPreviewerUI() {
 
   const handlePPt = () => {
     history.push({
-      pathname: '/pptview', state: {
-        src: src
-      }
-    })
-    closePreview()
+      pathname: '/pptview',
+      state: {
+        src: src,
+      },
+    });
+    closePreview();
+  };
+
+  const goFullScreen = () => {
+    setFullScreen(true);
+    var elem = document.getElementById('attachPPT');
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    }
+  };
+
+  const exitFullScreen = () => {
+    setFullScreen(false);
+
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  };
+
+  const checkFullscreen = () => {
+    if (fullScreen == false) {
+      goFullScreen();
+    } else {
+      exitFullScreen();
+    }
+  };
+
+  if (document.addEventListener) {
+    document.addEventListener('fullscreenchange', exitHandler, false);
+    document.addEventListener('mozfullscreenchange', exitHandler, false);
+    document.addEventListener('MSFullscreenChange', exitHandler, false);
+    document.addEventListener('webkitfullscreenchange', exitHandler, false);
+  }
+
+  function exitHandler() {
+    if (
+      !document.webkitIsFullScreen &&
+      !document.mozFullScreen &&
+      !document.msFullscreenElement
+    ) {
+      // Run code on exit
+      console.log('exit fullscreen');
+      setFullScreen(false);
+    }
   }
 
   const previewerUI = (
     <>
       <Dialog fullScreen open TransitionComponent={Transition}>
-        <div className='attachment-viewer' key={src}>
-          <div className='attachment-viewer-header'>
-            <div className='attachment-viewer-header-close-icon'>
+        <div className='attachment-viewer' key={src} id='attachPPT'>
+          <div className='attachment-viewer-header col-md-4 row'>
+            {!src.toLowerCase().endsWith('.mp3') ? (
+              <div className='attachment-viewer-header-fullscreen-icon p-2'>
+                {!fullScreen ? (
+                  <Button
+                    icon={<FullscreenOutlined />}
+                    onClick={checkFullscreen}
+                    title='View in Fullscreen'
+                  />
+                ) : (
+                  <Button
+                    icon={<FullscreenExitOutlined />}
+                    onClick={checkFullscreen}
+                    title='Exit Fullscreen'
+                  />
+                )}
+              </div>
+            ) : (
+              ''
+            )}
+            <div className='attachment-viewer-header-close-icon p-2'>
+              <Button
+                icon={<CloseSquareOutlined />}
+                onClick={closePreview}
+                title='Close'
+              />
+            </div>
+            {/* <div className='attachment-viewer-header-close-icon'>
               <IconButton onClick={closePreview} aria-label='close' size='small'>
                 <CloseIcon
                   style={{ color: 'white', backgroundColor: 'black' }}
                   fontSize='inherit'
                 />
               </IconButton>
-            </div>
+            </div> */}
           </div>
           <div className='attachment-viewer-frames'>
             <div className='attachment-viewer-frame'>
@@ -156,38 +248,50 @@ function AttachmentPreviewerUI() {
                   </video>
                 ) : isPPt ? (
                   <>
-               
-                     <iframe
+                    <iframe
                       id='attachment-iframe'
                       title='attachment-iframe'
                       src={pptFileSrc}
                       className='attachment-viewer-frame-preview-iframe'
                     />
-                    {isOrchids ? '' : 
-                    <div className='overlayDwnld' style={{ height: '22px' , width: '94px' , bottom: '13px' , position: 'absolute' , background: '#444444' , right: '18px' }} ></div> }
+                    {isOrchids ? (
+                      ''
+                    ) : (
+                      <div
+                        className='overlayDwnld'
+                        style={{
+                          height: '22px',
+                          width: '94px',
+                          bottom: '13px',
+                          position: 'absolute',
+                          background: '#444444',
+                          right: '18px',
+                        }}
+                      ></div>
+                    )}
                   </>
                 ) : (
                   // <PdfjsPreview url={src} />
-                <div>
-                  <Document
-                    file={src}
-                    className='pdf-document'
-                    externalLinkTarget='_blank'
-                    onLoadError={(error) =>
-                      alert('Error while loading document! ' + error.message)
-                    }
-                    onLoadSuccess={onDocumentLoadSuccess}
-                  >
-                    <Page
-                      height={550}
-                      scale={scaleValue || 1}
-                      width={500}
-                      renderAnnotationLayer={true}
-                      className='pdf-page'
-                      pageNumber={pageNumber}
-                    />
-                  </Document>
-                </div>
+                  <div>
+                    <Document
+                      file={src}
+                      className='pdf-document'
+                      externalLinkTarget='_blank'
+                      onLoadError={(error) =>
+                        alert('Error while loading document! ' + error.message)
+                      }
+                      onLoadSuccess={onDocumentLoadSuccess}
+                    >
+                      <Page
+                        height={550}
+                        scale={scaleValue || 1}
+                        width={500}
+                        renderAnnotationLayer={true}
+                        className='pdf-page'
+                        pageNumber={pageNumber}
+                      />
+                    </Document>
+                  </div>
                 )}
                 {/* <iframe src="http://docs.google.com/gview?url=http://infolab.stanford.edu/pub/papers/google.pdf&embedded=true" style="width:600px; height:500px;" frameborder="0"></iframe> */}
                 {/* <p className='attachment-viewer-frame-preview-placeholder'>
