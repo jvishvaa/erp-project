@@ -196,7 +196,7 @@ const PostActivityView = () => {
       fetchPostWall({
         page_size: 10,
         page: pageNumber,
-        view_level: 'Intra Orchids Level',
+        view_level: 'Intra School Level',
         user_id: userId,
       })
     } else if (showTab == 3) {
@@ -872,7 +872,7 @@ const PostActivityView = () => {
               <div className='th-grey th-tabs'>
                 <div className='filter-container-tab'>
                   <button className={showTab == 1 ? 'active' : ""} onClick={() => onChangeTab(1)} key={1} >All </button>
-                  <button className={showTab == 2 ? 'active' : ""} onClick={() => onChangeTab(2)} key={2} >Intra Orchids</button>
+                  <button className={showTab == 2 ? 'active' : ""} onClick={() => onChangeTab(2)} key={2} >Intra School</button>
                   <button className={showTab == 3 ? 'active' : ""} onClick={() => onChangeTab(3)} key={3} >Branch Level</button>
                   <button className={showTab == 4 ? 'active' : ""} onClick={() => onChangeTab(4)} key={4} >Grade Level</button>
                   <button className={showTab == 6 ? 'active' : ""} onClick={() => onChangeTab(6)} key={6} >Section Level</button>

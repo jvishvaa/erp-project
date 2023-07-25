@@ -509,7 +509,7 @@ const Shortlisted_1 = (props) => {
   };
 
   const top100Films = [
-    { title: 'Intra Orchids Level', id: 1 },
+    { title: 'Intra School Level', id: 1 },
     { title: 'Branch Level', id: 2 },
     { title: 'Grade Level', id: 3 },
     { title: 'Section Level', id: 4 },
