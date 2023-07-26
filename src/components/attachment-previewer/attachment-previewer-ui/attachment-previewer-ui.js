@@ -82,21 +82,7 @@ function AttachmentPreviewerUI() {
     '.orf',
     '.sr2',
   ];
-  // const audioVideoFileFormats = [
-  //   '.flv',
-  //   '.mp4',
-  //   '.m3u8',
-  //   '.ts',
-  //   '.3gp',
-  //   '.mov',
-  //   '.avi',
-  //   '	.wmv',
-  //   //
-  //   '.wav',
-  //   '.mp3',
-  //   '.au',
-  //   '.snd',
-  // ];
+
   if (!isOpen) return null;
 
   document.addEventListener(
@@ -217,7 +203,7 @@ function AttachmentPreviewerUI() {
             <div className='attachment-viewer-frame'>
               <div className='attachment-viewer-frame-preview-wrapper'>
                 {imageFileFormats.includes(extension.toLowerCase()) ? (
-                  <div className='attachment-viewer-frame-preview attachment-viewer-frame-preview-image-wrapper'>
+                  <div className='attachment-viewer-frame-preview attachment-viewer-frame-preview-image-wrapper col-md-12'>
                     <img
                       alt='sd'
                       className='attachment-viewer-frame-preview-image'
@@ -226,26 +212,28 @@ function AttachmentPreviewerUI() {
                   </div>
                 ) : src.toLowerCase().endsWith('.mp4') ||
                   src.toLowerCase().endsWith('.mp3') ? (
-                  <video
-                    id='attachment-iframe'
-                    style={{
-                      width: '100%',
-                      objectFit: 'contain',
-                      height: '80vh',
-                      // height: fullscreen ? '92vh' : '69vh',
-                    }}
-                    controls
-                    autoPlay
-                    controlsList='nodownload'
-                  >
-                    {src.toLowerCase().endsWith('.mp4') ? (
-                      <source src={src} type='video/mp4' />
-                    ) : (
-                      <source src={src} type='audio/mp3' />
-                    )}
-                    {/* <source src='mov_bbb.ogg' type='video/ogg' /> */}
-                    Your browser does not support HTML5 video.
-                  </video>
+                  <div className='col-md-12'>
+                    <video
+                      id='attachment-iframe'
+                      style={{
+                        width: '100%',
+                        objectFit: 'contain',
+                        height: '80vh',
+                        // height: fullscreen ? '92vh' : '69vh',
+                      }}
+                      controls
+                      autoPlay
+                      controlsList='nodownload'
+                    >
+                      {src.toLowerCase().endsWith('.mp4') ? (
+                        <source src={src} type='video/mp4' />
+                      ) : (
+                        <source src={src} type='audio/mp3' />
+                      )}
+                      {/* <source src='mov_bbb.ogg' type='video/ogg' /> */}
+                      Your browser does not support HTML5 video.
+                    </video>
+                  </div>
                 ) : isPPt ? (
                   <>
                     <iframe
@@ -293,43 +281,13 @@ function AttachmentPreviewerUI() {
                     </Document>
                   </div>
                 )}
-                {/* <iframe src="http://docs.google.com/gview?url=http://infolab.stanford.edu/pub/papers/google.pdf&embedded=true" style="width:600px; height:500px;" frameborder="0"></iframe> */}
-                {/* <p className='attachment-viewer-frame-preview-placeholder'>
-                There is no preview available for this attachment.
-                <a
-                target='_blank'
-                rel='noopener noreferrer'
-                href='https://trello-attachments.s3.amazonaws.com/6019233e97c6e58477f2621f/602234c24df242896848ffb1/bd1cd4a0e00622346d164ee34a767b3b/Screenshot_from_2021-02-26_12-20-09.png'
-                className='attachment-viewer-frame-preview-placeholder-link'
-                >
-                Open in New Tab | Download
-                </a>
-              </p> */}
-                {/* <div style={{ margin: 50 }}>.</div> */}
               </div>
             </div>
           </div>
-          {/* <div className='attachment-viewer-overlay'>
-          <div className='attachment-viewer-frame-details'>
-          <div className='attachment-viewer-frame-details '>
-          <h2 className='attachment-viewer-frame-details-title'>{name}</h2>
-          <p>Added 3 hours ago - 200.54 KB</p>
-          <p>
-          <a href='/'>Open in New Tab &nbsp;</a>
-          <a href='/'>Remove cover &nbsp;</a>
-          <a href='/'>Delete &nbsp;</a>
-          </p>
-          </div>
-          </div>
-        </div> */}
           {src.toLowerCase().endsWith('.pdf') && (
             <IconButton
-              // style={{ opacity: isNextAvailable ? 1 : 0 }}
-              // style={{ color: isNextAvailable ? 'white' : 'black' }}
-              // disabled={!isNextAvailable}
               disabled={pageNumber === numPages}
               onClick={() => {
-                // next();
                 setPageNumber((prev) => prev + 1);
               }}
               aria-label='right'
@@ -356,7 +314,7 @@ function AttachmentPreviewerUI() {
                   className='attachment-viewer-zoom-out-btn'
                   size='small'
                 >
-                  <ZoomOutIcon style={{ color: scaleValue === 1 ? 'grey' : 'black' }} />
+                  <ZoomOutIcon style={{ color: scaleValue === 1 ? 'grey' : '#979797' }} />
                 </IconButton>
               </Tooltip>
               <div className='attachment-viewer-center-frame'>
@@ -376,15 +334,15 @@ function AttachmentPreviewerUI() {
                   className='attachment-viewer-zoom-in-btn'
                   size='small'
                 >
-                  <ZoomInIcon style={{ color: scaleValue === 2.5 ? 'grey' : 'black' }} />
+                  <ZoomInIcon
+                    style={{ color: scaleValue === 2.5 ? 'grey' : '#979797' }}
+                  />
                 </IconButton>
               </Tooltip>
             </div>
           )}
           {src.toLowerCase().endsWith('.pdf') && (
             <IconButton
-              // style={{ color: isPrevAvailable ? 'white' : 'black' }}
-              // disabled={!isPrevAvailable}
               disabled={pageNumber === 1}
               onClick={() => {
                 prev();
