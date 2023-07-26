@@ -215,7 +215,7 @@ const StudentSideBlog = () => {
                   }}
                 />
               </div>
-              <div className='col-12 py-2 '>
+              {/* <div className='col-12 py-2 '>
                 {tabValue == '1' ? null : (
                   <Rate
                     disabled
@@ -224,7 +224,7 @@ const StudentSideBlog = () => {
                     count={Number(each?.user_reviews?.level?.rating)}
                   />
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         ))

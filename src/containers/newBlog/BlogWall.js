@@ -905,7 +905,7 @@ const BlogWall = () => {
                                       )}
                                     </div>
                                     <div className=''>
-                                      <Rate disabled defaultValue={item.rating} />
+                                      {/* <Rate disabled defaultValue={item.given_rating} /> */}
                                     </div>
                                   </div>
                                 </div>
