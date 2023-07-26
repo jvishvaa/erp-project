@@ -588,6 +588,12 @@ const BlogWall = () => {
   let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
   const { school_logo } = schoolDetails;
 
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
+
   const PostContent = () => {
     return (
       <>
@@ -1090,11 +1096,7 @@ const BlogWall = () => {
                   <div className='col-7'>
                     <div className='row th-br-8' style={{ outline: '2px solid #d9d9d9' }}>
                       <div className='col-12 py-1'>
-                        <img
-                          src={school_logo}
-                          width='130'
-                          alt='image'
-                        />
+                        <img src={school_logo} width='130' alt='image' />
                       </div>
                       <div className='col-12 py-2'>
                         <div
@@ -1535,66 +1537,74 @@ const BlogWall = () => {
                         </>
                       </div>
                     </div>
-                    <div className='row mt-2 align-item-center'>
-                      <div className='col-6 px-0'>
-                        <span className='th-18 th-fw-600'>
-                          Comments
-                          {chatDetails?.length > 0 ? `(${chatDetails?.length})` : null}
-                        </span>
-                      </div>
-                      <div className='col-6 text-right'>
-                        <span
-                          className='th-pointer'
-                          onClick={() =>
-                            getWhatsAppDetails({
-                              erp_id: erp,
-                              created_at__date__gte:
-                                studentPubliSpeakingData?.created_at__date__gte,
-                              created_at__date__lte:
-                                studentPubliSpeakingData?.created_at__date__lte,
-                              activity_id: studentPubliSpeakingData?.activity,
-                            })
-                          }
-                        >
-                          <RedoOutlined />
-                        </span>
-                      </div>
 
-                      <div className='row'>
-                        {chatDetails?.length > 0 ? (
-                          <>
-                            {chatDetails?.map((item, index) => {
-                              if (item?.is_reply == true) {
-                                return (
-                                  <Comment
-                                    author={
-                                      <div className='th-fw-500 th-16'>{item?.name}</div>
-                                    }
-                                    avatar={<Avatar size={40} icon={<UserOutlined />} />}
-                                    content={<p>{item?.message}</p>}
-                                    datetime={
-                                      <>
-                                        <div
-                                          title={moment(item?.sent_at).format(
-                                            'MMM Do,YYYY'
-                                          )}
-                                        >
-                                          {moment(item?.sent_at).format('MMM Do,YYYY')}
+                    {/* //Hiden for b2b */}
+                    {isOrchids && (
+                      <div className='row mt-2 align-item-center'>
+                        <div className='col-6 px-0'>
+                          <span className='th-18 th-fw-600'>
+                            Comments
+                            {chatDetails?.length > 0 ? `(${chatDetails?.length})` : null}
+                          </span>
+                        </div>
+                        <div className='col-6 text-right'>
+                          <span
+                            className='th-pointer'
+                            onClick={() =>
+                              getWhatsAppDetails({
+                                erp_id: erp,
+                                created_at__date__gte:
+                                  studentPubliSpeakingData?.created_at__date__gte,
+                                created_at__date__lte:
+                                  studentPubliSpeakingData?.created_at__date__lte,
+                                activity_id: studentPubliSpeakingData?.activity,
+                              })
+                            }
+                          >
+                            <RedoOutlined />
+                          </span>
+                        </div>
+
+                        <div className='row'>
+                          {chatDetails?.length > 0 ? (
+                            <>
+                              {chatDetails?.map((item, index) => {
+                                if (item?.is_reply == true) {
+                                  return (
+                                    <Comment
+                                      author={
+                                        <div className='th-fw-500 th-16'>
+                                          {item?.name}
                                         </div>
-                                      </>
-                                    }
-                                  />
-                                );
-                              }
-                            })}
-                          </>
-                        ) : (
-                          <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
-                            No Comments Submitted
-                          </div>
-                        )}
+                                      }
+                                      avatar={
+                                        <Avatar size={40} icon={<UserOutlined />} />
+                                      }
+                                      content={<p>{item?.message}</p>}
+                                      datetime={
+                                        <>
+                                          <div
+                                            title={moment(item?.sent_at).format(
+                                              'MMM Do,YYYY'
+                                            )}
+                                          >
+                                            {moment(item?.sent_at).format('MMM Do,YYYY')}
+                                          </div>
+                                        </>
+                                      }
+                                    />
+                                  );
+                                }
+                              })}
+                            </>
+                          ) : (
+                            <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
+                              No Comments Submitted
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -1683,11 +1693,7 @@ const BlogWall = () => {
                               </div>
                             </div>
                           </div>
-                          <img
-                            src={school_logo}
-                            width='130'
-                            alt='image'
-                          />
+                          <img src={school_logo} width='130' alt='image' />
                         </div>
                       </div>
                       <div className='col-12 py-2 px-0'>

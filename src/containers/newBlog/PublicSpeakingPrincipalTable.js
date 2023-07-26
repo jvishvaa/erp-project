@@ -372,6 +372,12 @@ const PublicSpeakingPrincipalTable = (props) => {
     setCurrentPageAssigned(page);
   };
 
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa'
+      ? true
+      : false;
+
   return (
     <>
       <div className='row'>
@@ -507,83 +513,87 @@ const PublicSpeakingPrincipalTable = (props) => {
                           </div>
                         ) : null}
 
-                        <div className='col-12 px-1'>
-                          <div className='row mt-2 align-item-center'>
-                            <div className='col-6 px-0'>
-                              <span className='th-18 th-fw-600'>
-                                Comments
-                                {chatDetails?.length > 0
-                                  ? `(${chatDetails?.length})`
-                                  : null}
-                              </span>
-                            </div>
-                            <div className='col-6 text-right'>
-                              <span
-                                className='th-pointer'
-                                onClick={() =>
-                                  getWhatsAppDetails({
-                                    erp_id: mediaFiles?.user?.username,
-                                    created_at__date__gte:
-                                      mediaFiles?.created_at__date__gte,
-                                    created_at__date__lte:
-                                      mediaFiles?.created_at__date__lte,
-                                    activity_id: mediaFiles?.activity,
-                                  })
-                                }
-                              >
-                                <RedoOutlined />
-                              </span>
-                            </div>
+                        {/* //Hiden for b2b */}
+                        {isOrchids && (
+                          <div className='col-12 px-1'>
+                            <div className='row mt-2 align-item-center'>
+                              <div className='col-6 px-0'>
+                                <span className='th-18 th-fw-600'>
+                                  Comments
+                                  {chatDetails?.length > 0
+                                    ? `(${chatDetails?.length})`
+                                    : null}
+                                </span>
+                              </div>
+                              <div className='col-6 text-right'>
+                                <span
+                                  className='th-pointer'
+                                  onClick={() =>
+                                    getWhatsAppDetails({
+                                      erp_id: mediaFiles?.user?.username,
+                                      created_at__date__gte:
+                                        mediaFiles?.created_at__date__gte,
+                                      created_at__date__lte:
+                                        mediaFiles?.created_at__date__lte,
+                                      activity_id: mediaFiles?.activity,
+                                    })
+                                  }
+                                >
+                                  <RedoOutlined />
+                                </span>
+                              </div>
 
-                            <div
-                              className='row'
-                              style={{
-                                display: 'block',
-                                overflow: 'auto',
-                                maxHeight: permissionState === 'graded' ? '25vh' : '65vh',
-                              }}
-                            >
-                              {chatDetails.length > 0 ? (
-                                <>
-                                  {chatDetails.map((item, index) => {
-                                    if (item?.is_reply == true) {
-                                      return (
-                                        <Comment
-                                          author={
-                                            <div className='th-fw-500 th-16'>
-                                              {item?.name}
-                                            </div>
-                                          }
-                                          avatar={
-                                            <Avatar size={40} icon={<UserOutlined />} />
-                                          }
-                                          content={<p>{item?.message}</p>}
-                                          datetime={
-                                            <>
-                                              <div
-                                                title={moment(item?.sent_at).format(
-                                                  'MMM Do,YYYY'
-                                                )}
-                                              >
-                                                {moment(item?.sent_at).format(
-                                                  'MMM Do,YYYY'
-                                                )}
+                              <div
+                                className='row'
+                                style={{
+                                  display: 'block',
+                                  overflow: 'auto',
+                                  maxHeight:
+                                    permissionState === 'graded' ? '25vh' : '65vh',
+                                }}
+                              >
+                                {chatDetails.length > 0 ? (
+                                  <>
+                                    {chatDetails.map((item, index) => {
+                                      if (item?.is_reply == true) {
+                                        return (
+                                          <Comment
+                                            author={
+                                              <div className='th-fw-500 th-16'>
+                                                {item?.name}
                                               </div>
-                                            </>
-                                          }
-                                        />
-                                      );
-                                    }
-                                  })}
-                                </>
-                              ) : (
-                                <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
-                                  No Comments Submitted
-                                </div>
-                              )}
+                                            }
+                                            avatar={
+                                              <Avatar size={40} icon={<UserOutlined />} />
+                                            }
+                                            content={<p>{item?.message}</p>}
+                                            datetime={
+                                              <>
+                                                <div
+                                                  title={moment(item?.sent_at).format(
+                                                    'MMM Do,YYYY'
+                                                  )}
+                                                >
+                                                  {moment(item?.sent_at).format(
+                                                    'MMM Do,YYYY'
+                                                  )}
+                                                </div>
+                                              </>
+                                            }
+                                          />
+                                        );
+                                      }
+                                    })}
+                                  </>
+                                ) : (
+                                  <div className='th-16 th-fw-400 d-flex align-items-center justify-content-center '>
+                                    No Comments Submitted
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                     {/* ) : null} */}
