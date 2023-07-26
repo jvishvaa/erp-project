@@ -991,8 +991,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
 
   const handleAddHomeWork = async () => {
-    const hour= new Date().getHours();
-    const minute= new Date().getMinutes();
+    const hour = new Date().getHours();
+    const minute = new Date().getMinutes();
     const today = new Date();
     const yyyy = today.getFullYear();
     let mm = today.getMonth() + 1; // since month starts from 0 here
@@ -1001,8 +1001,13 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     if (mm < 10) mm = '0' + mm;
     const formattedToday = `${yyyy}-${mm}-${dd}`;
 
-    if(((hour===18 && minute>=30) || hour>18) && formattedToday===submissionDate){
-      return message.error('Homework creation/updation is locked after 6:30 PM for the same day due date');
+    if (
+      ((hour === 12 && minute >= 30) || hour > 12) &&
+      formattedToday === submissionDate
+    ) {
+      return message.error(
+        'Homework creation/updation is locked after 6:30 PM for the same day due date'
+      );
     }
     if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');
