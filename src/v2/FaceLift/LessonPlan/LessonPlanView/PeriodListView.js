@@ -1576,10 +1576,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                               let textIndex = fullName
                                 ?.split('_')
                                 .indexOf(fullName.split('_').find((item) => isNaN(item)));
-                              let displayName = fullName
-                                .split('_')
-                                .slice(textIndex)
-                                .join('_');
+                              let displayName = fullName?.split('_')?.slice(textIndex).join('_');
                               let fileName = displayName ? displayName.split('.') : null;
                               let file = fileName ? fileName[fileName?.length - 2] : '';
                               let extension = fileName
