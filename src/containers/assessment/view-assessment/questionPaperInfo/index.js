@@ -546,6 +546,7 @@ const QuestionPaperInfo = ({
                   borderRadius: '0.6rem',
                   fontSize: '0.9rem',
                   margin: 'auto',
+                  color: 'white',
                 }}
                 disabled
                 // onClick={() => {
@@ -954,7 +955,7 @@ const QuestionPaperInfo = ({
     </div>
   );
   return (
-    <Paper elevation={2} className={classes.paper}>
+    <Paper elevation={1} className={classes.paper}>
       <div className={classes.testInfo}>
         {fileUploadInProgress && <Loader />}
         {headersUI}

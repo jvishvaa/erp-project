@@ -60,7 +60,16 @@ import endpoints from 'config/endpoints';
 import Loader from './../../components/loader/loader';
 import FileSaver from 'file-saver';
 import axiosInstance from './../../config/axios';
-import { Breadcrumb, Button, Form, Select, Space, Typography, DatePicker } from 'antd';
+import {
+  Breadcrumb,
+  Button,
+  Form,
+  Select,
+  Space,
+  Typography,
+  DatePicker,
+  message,
+} from 'antd';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { DownOutlined } from '@ant-design/icons';
 
@@ -103,9 +112,8 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const [assesmentTestsTotalPage, setAssesmentTestsTotalPage] = useState(0);
   const [filteredAssesmentTests, setFilteredAssesmentTests] = useState([]);
   const [filteredAssesmentTestsPage, setFilteredAssesmentTestPage] = useState(1);
-  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] = useState(
-    0
-  );
+  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] =
+    useState(0);
   const [showFilteredList, setShowFilteredList] = useState(false);
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
@@ -138,6 +146,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const [checkDel, setCheckDel] = useState(false);
   const [showFilter, setShowfilter] = useState(false);
+  const [allowChangeReviewStatus, setAllowChangeReviewStatus] = useState(false);
   const filtersData = history?.location?.state?.filtersData;
 
   useEffect(() => {
@@ -180,35 +189,6 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     validateOnChange: false,
     validateOnBlur: false,
   });
-
-  // useEffect(() => {
-  //   if(filtersData && moduleId){
-  //     debugger
-  //     handleBranch('',filtersData?.branch)
-  //       formik.setFieldValue('branch', filtersData?.branch);
-  //       // handleGrade('',filtersData?.grade)
-  //       // formik.setFieldValue('grade', filtersData?.grade);
-  //       // handleSubject()
-  //       formik.setFieldValue('status', filtersData?.status);
-  //       formik.setFieldValue('section', filtersData?.section);
-  //       formik.setFieldValue('group', filtersData?.group);
-  //       formik.setFieldValue('assesment_type', filtersData?.assesment_type);
-  //       formik.setFieldValue('date', filtersData?.date);
-  //       formRef.current.setFieldsValue({
-  //         branch : filtersData?.branch,
-  //         // grade : filtersData?.grade,
-  //         // subject : filtersData?.subject,
-  //         status : filtersData?.status,
-  //         assessmentType : filtersData?.assesment_type,
-  //         section : filtersData?.section,
-  //         date : filtersData?.date
-
-  //       })
-  //       // formik.setFieldValue('grade', filtersData?.grade);
-
-  //   }
-
-  // },[filtersData, moduleId])
 
   useEffect(() => {
     if (filtersData && formik.values.branch.length) {
@@ -717,6 +697,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   useEffect(() => {
     fetchUserAccessQuiz();
     getErpCategory();
+    fetchAllowChangeReviewConfig();
   }, []);
   const fetchUserAccessQuiz = () => {
     axiosInstance
@@ -728,6 +709,16 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       .catch((err) => {
         console.log(err);
       });
+  };
+  const fetchAllowChangeReviewConfig = () => {
+    axiosInstance
+      .get(`${endpoints.doodle.checkDoodle}?config_key=IS_REVIEW_ANSWER_ENABLED`)
+      .then((response) => {
+        if (response?.data?.result[0] === 'True') {
+          setAllowChangeReviewStatus(true);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
   };
 
   const { token: TOKEN = '' } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -1442,6 +1433,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                     quizAccess={quizAccess}
                     userLevel={userLevel}
                     filterResults={filterResults}
+                    allowChangeReviewStatus={allowChangeReviewStatus}
                   />
                 </Grid>
               )}

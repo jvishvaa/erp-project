@@ -1,22 +1,19 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import { useMediaQuery, useTheme, Container, Grid, Divider } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
-import Layout, { ContainerContext } from '../../Layout';
+import Layout from '../../Layout';
 import { generateQueryParamSting } from '../../../utility-functions';
-import Loading from '../../../components/loader/loader';
-import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import QuestionPaperCard from './questionPaperCard';
+import { Breadcrumb, Drawer, Select, Table, Tabs, Tag, message } from 'antd';
 import QuestionPaperInfo from './questionPaperInfo';
 import endpoints from '../../../config/endpoints';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import endpointsV2 from 'v2/config/endpoints';
 import axiosInstance from '../../../config/axios';
 import './view-assessment.css';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import FeeReminderAssesment from 'containers/assessment-central/Feereminder';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
 
+const { Option } = Select;
 
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
@@ -24,41 +21,32 @@ const isOrchids =
     ? true
     : false;
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-    style: { fontSize: '0.8rem' },
-  };
-}
 const getSearchParams = (propsObj) => {
   const { location: { search = '' } = {} } = propsObj;
   const urlParams = new URLSearchParams(search); // search = ?open=true&qId=123
   const searchParamsObj = Object.fromEntries(urlParams); // {open: "true", def: "[asf]", xyz: "5"}
   return searchParamsObj;
 };
-const handleDownloadPdf = (blob, title) => {
-  let link = document.createElement('a');
-  link.setAttribute(
-    'href',
-    URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }))
-  );
-  link.download = `${title}.pdf`;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-};
+
+const { TabPane } = Tabs;
 const ViewAssessments = ({ history, ...restProps }) => {
-  const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
+  const {
+    user_id: user,
+    role_details: { grades: userGrades },
+  } = JSON.parse(localStorage.getItem('userDetails') || {});
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [loading, setLoading] = useState(false);
-  const [questionPaperList, setQuestionPaperList] = useState([]);
-  const [page, setPageNumber] = useState(+getSearchParams(restProps).page || 1);
+  const [testsList, setTestsList] = useState([]);
+  const [pageNumber, setPageNumber] = useState(+getSearchParams(restProps).page || 1);
   const [totalCount, setTotalCount] = useState(0);
   const [status, setStatus] = useState(+getSearchParams(restProps).status || 0);
   const IsTestDone = JSON.parse(localStorage.getItem('is_test_comp')) || {};
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
-  // const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();
-  // const { containerRef } = React.useContext(ContainerContext);
   const getInfoDefaultVal = () => {
     const questionPaperId = getSearchParams(restProps).info;
     return questionPaperId || undefined;
@@ -66,12 +54,21 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [showInfo, setShowInfo] = useState(getInfoDefaultVal());
   const [testDate, setTestDate] = useState();
   const [assessmentType, setAssessmentType] = useState();
-  const { setAlert } = useContext(AlertNotificationContext);
   const query = new URLSearchParams(window.location.search);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
+  const [showInfoDrawer, setShowInfoDrawer] = useState(false);
+  const [subjectData, setSubjectData] = useState([]);
+  const [subjectId, setSubjectId] = useState();
+
   useEffect(() => {
     localStorage.setItem('is_retest', query.get('status') === '2');
+    fetchSubjectData({
+      session_year: selectedAcademicYear?.id,
+      branch_id: selectedBranch?.branch?.id,
+      // module_id: moduleId,
+      grade: userGrades[0]?.grade_id,
+    });
   }, []);
 
   useEffect(() => {
@@ -85,46 +82,70 @@ const ViewAssessments = ({ history, ...restProps }) => {
   useEffect(() => {
     setShowInfo();
   }, [window.location.pathname]);
-  const fetchQuestionPapers = () => {
+
+  const fetchTestList = () => {
+    setTestsList([]);
+    setTotalCount(0);
     setLoading(true);
-    const statusId = status === 0 ? 2 : 1;
-    const params = [0, 1].includes(status)
-      ? `?user=${user}&page=${page}&page_size=${9}&status=${statusId}&session_year=${
-          sessionYear?.id
-        }`
-      : `?page=${page}&page_size=${9}&session_year=${sessionYear?.id}`;
-    const endpoint = [0, 1].includes(status)
-      ? endpoints.assessment.questionPaperList
-      : endpoints.assessment.retestQuestionPaperList;
+    const statusId = status == 0 ? 2 : 1;
+    let params =
+      status == 0 || status == 1
+        ? {
+            user: user,
+            page: pageNumber,
+            page_size: 9,
+            status: statusId,
+            session_year: sessionYear?.id,
+          }
+        : {
+            page: pageNumber,
+            page_size: 9,
+            session_year: sessionYear?.id,
+          };
+    let endpoint =
+      status == 0 || status == 1
+        ? endpoints.assessment.questionPaperList
+        : endpoints.assessment.retestQuestionPaperList;
     axiosInstance
-      .get(`${endpoint}${params}`)
+      .get(`${endpoint}`, {
+        params: { ...params, ...(subjectId ? { subjects: subjectId } : {}) },
+      })
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          setQuestionPaperList(response?.data?.result?.results);
+          setTestsList(response?.data?.result?.results);
           setTotalCount(response?.data?.result?.count);
-          setLoading(false);
         } else {
-          setLoading(false);
           const { data: { message } = {} } = response;
-          setAlert('error', `${message || 'Failed to fetch assessments.'}`);
+          message.error(`${message || 'Failed to fetch assessments.'}`);
         }
       })
       .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
         setLoading(false);
-        setAlert('error', error.message);
       });
-    // setQuestionPaperList(x.result.result);
-    // setTotalCount(x.result.count);
+  };
+  const fetchSubjectData = (params = {}) => {
+    axiosInstance
+      .get(`${endpointsV2.lessonPlan.allSubjects}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          setSubjectData(res.data.result);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
   };
   useEffect(() => {
-    fetchQuestionPapers();
-  }, [page, status]);
-  const handlePagination = (event, page) => {
+    fetchTestList();
+  }, [pageNumber, status, subjectId]);
+
+  const handlePagination = (page) => {
     setPageNumber(page);
-    // if (containerRef.current) {
-    //   containerRef.current.style.scrollBehavior = 'smooth';
-    //   containerRef.current.scrollTo(0, 0);
-    // }
   };
   const handleCloseGrievanceModal = () => {
     setShowGrievanceModal(false);
@@ -134,174 +155,266 @@ const ViewAssessments = ({ history, ...restProps }) => {
     setShowInfo(paperInfoObj.id);
     setTestDate(paperInfoObj.test_date);
     setAssessmentType(paperInfoObj?.test_type_name);
+    setShowInfoDrawer(true);
   };
-  const [downloadTestId, setDownloadTestId] = useState(null);
-  const downloadAssessment = useCallback(
-    ({ id: testId, test_name: testName = 'Assessment' }) => {
-      setDownloadTestId(testId);
-      axiosInstance
-        .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${testId}`, {
-          responseType: 'blob',
-        })
-        .then((response) => {
-          const {
-            headers = {},
-            message = 'Question paper not available',
-            data = '',
-          } = response || {};
-          const contentType = headers['content-type'] || '';
-          if (contentType === 'application/pdf') {
-            handleDownloadPdf(data, testName);
-          } else {
-            setAlert('info', message);
-          }
-        })
-        .catch((error) => {
-          setAlert(error?.message);
-        });
-    },
-    [downloadTestId]
-  );
+
   useEffect(
     () =>
       history.push(
-        `/assessment/?${generateQueryParamSting({ page, info: showInfo, status })}`
+        `/assessment/?${generateQueryParamSting({
+          page: pageNumber,
+          info: showInfo,
+          status,
+        })}`
       ),
-    [showInfo, page, status]
+    [showInfo, pageNumber, status]
   );
   const handleCloseInfo = () => {
     setShowInfo(undefined);
+    setShowInfoDrawer(false);
   };
-  const tabBar = () => {
-    return (
-      <>
-        <div className='tabArea'>
-          <Tabs
-            indicatorColor='secondary'
-            textColor='secondary'
-            value={status}
-            onChange={(e, a) => {
-              setPageNumber(1);
-              setStatus(a);
-              setShowInfo(undefined);
-              localStorage.setItem('is_retest', a === 2);
-            }}
-            aria-label='simple tabs example'
-          >
-            {/* <Tab label='All' {...a11yProps(0)} /> */}
-            <Tab label='Upcoming' {...a11yProps(0)} />
-            <Tab label='Completed' {...a11yProps(1)} />
-            <Tab label='Retest' {...a11yProps(2)} />
-          </Tabs>
-          {/* {status == 1 ? (
-            <div className='indexarea'>
-              <div className='indexTag'>
-                <p>Index :</p>
-              </div>
-              <div className='onlinetotal'>
-                <div className='onbox'></div>
-                <p style={{ fontWeight: 600, fontSize: '15px' }}>Online</p>
-              </div>
-              <div className='offlinetotal'>
-                <div className='offbox'></div>
-                <p style={{ fontWeight: 600, fontSize: '15px' }}>Offline</p>
-              </div>
-            </div>
-          ) : (
-            ''
-          )} */}
+  let columns = [
+    {
+      title: <span className='th-white th-fw-700 '>Sl no.</span>,
+      // dataIndex: 'erp_user',
+      render: (text, row, index) => (
+        <span className='th-black-1 th-14 pl-4'>{(pageNumber - 1) * 9 + index + 1}.</span>
+      ),
+      visible: true,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Subject</span>,
+      dataIndex: 'subject_name',
+      // width: '25%',
+      render: (data) => (
+        <div className='th-black-1 th-14 text-truncate' title={data?.toString()}>
+          {data?.toString()}
         </div>
-      </>
+      ),
+      visible: true,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Test Name</span>,
+      dataIndex: 'test_name',
+      // width: '25%',
+      render: (data) => (
+        <div className='th-black-1 th-14 text-truncate' title={data}>
+          {data}
+        </div>
+      ),
+      visible: true,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Test Mode</span>,
+      dataIndex: 'test_mode',
+      // width: '25%',
+      render: (data) => (
+        <span className='th-black-1 th-14'>{data == '1' ? 'Online' : 'Offline'}</span>
+      ),
+      visible: true,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Test Type</span>,
+      dataIndex: 'test_type_name',
+      // width: '25%',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+      visible: status == 2 ? false : false,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Marks</span>,
+      // dataIndex: 'test_type_name',
+      align: 'center',
+      render: (text, row) => (
+        <span className='th-black-1 th-14'>
+          {row?.is_test_completed?.marks_obtained != 'null'
+            ? row?.is_test_completed?.marks_obtained
+            : row?.test_mode == '1'
+            ? 'Not Attempted'
+            : 'Not Uploaded'}
+        </span>
+      ),
+      visible: status == 1 ? true : false,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Test Date & Time</span>,
+      dataIndex: 'test_date',
+      width: '22%',
+      align: 'center',
+      render: (data) => (
+        <span className='th-black-1 th-14'>
+          {data ? moment(data).format('llll') : ''}
+        </span>
+      ),
+      visible: status == 0 ? false : true,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Action</span>,
+      // width: '25%',
+      align: 'center',
+      render: (data) => (
+        <div>
+          <Tag
+            color='processing'
+            className='th-br-5 py-1 px-2 th-pointer'
+            onClick={() => handleShowInfo(data)}
+          >
+            View More
+          </Tag>
+        </div>
+      ),
+      visible: true,
+    },
+  ].filter((el) => el?.visible !== false);
+
+  const subjectOptions = subjectData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each.subject_id}>
+        {each?.subject_name}
+      </Option>
+    );
+  });
+
+  const TestListTable = () => {
+    return (
+      <div className='pb-3'>
+        <div className='col-12 pb-2'>
+          <div className='row align-items-center'>
+            <div className='th-black-1 th-fw-600 th-16'>Select Subject</div>
+            <div className='pl-2 col-sm-2 col-6'>
+              <Select
+                placeholder='Select Subject'
+                showSearch
+                allowClear
+                value={subjectId}
+                optionFilterProp='children'
+                getPopupContainer={(trigger) => trigger.parentNode}
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                onChange={(e) => {
+                  setPageNumber(1);
+                  if (e) {
+                    setSubjectId(e);
+                  } else {
+                    setSubjectId(e);
+                  }
+                }}
+                className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                bordered={true}
+              >
+                {subjectOptions}
+              </Select>
+            </div>
+          </div>
+        </div>
+        <div className='col-md-12'>
+          <Table
+            className='th-table'
+            rowClassName={(record, index) =>
+              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+            }
+            loading={loading}
+            columns={columns}
+            dataSource={testsList}
+            pagination={{
+              position: ['bottomCenter'],
+              total: totalCount,
+              current: Number(pageNumber),
+              pageSize: 9,
+              showSizeChanger: false,
+              onChange: (e) => {
+                handlePagination(e);
+              },
+            }}
+            // scroll={{ y: '400px' }}
+          />
+        </div>
+      </div>
     );
   };
-  const themeContext = useTheme();
-  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   return (
     <>
-      {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <CommonBreadcrumbs isAcademicYearVisible={true} componentName='Assessment' />
-        {tabBar()}
-        <Divider variant='middle' />
-        {/* <h4 className='assessment_heading'>All | Completed | Upcoming</h4> */}
-        {user_level == 13 ? 
-        <FeeReminderAssesment /> : '' }
-        <Grid
-          container
-          spacing={2}
-          direction={isMobile ? 'column' : 'row'}
-          style={{ marginTop: '20px', marginBottom: '20px', width: '99%' }}
-        >
-          <Grid item md={showInfo ? 6 : 12} xs={12}>
-            <Grid container spacing={2}>
-              {questionPaperList.map((qp, index) => (
-                <Grid
-                  item
-                  md={showInfo ? 6 : 4}
-                  xs={12}
-                  key={index}
-                  // onClick={() => handleShowInfo(qp)}
-                >
-                  <QuestionPaperCard
-                    {...(qp || {})}
-                    handleViewMore={() => handleShowInfo(qp)}
-                    downloadAssessment={() => downloadAssessment(qp)}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-          </Grid>
-          {showInfo && (
-            <Grid item xs={12} md={6}>
-              <QuestionPaperInfo
-                assessmentId={showInfo}
-                assessmentDate={testDate}
-                assessmentType={assessmentType}
-                key={showInfo}
-                loading={loading}
-                handleCloseInfo={handleCloseInfo}
-              />
-            </Grid>
-          )}
-          <Grid item xs={12}>
-            {questionPaperList?.length > 0 && (
-              <div className='paginateData paginateMobileMargin'>
-                <Pagination
-                  onChange={handlePagination}
-                  style={{ marginTop: 25 }}
-                  count={Math.ceil(totalCount / 10)}
-                  color='primary'
-                  page={page}
-                />
-              </div>
-            )}
-          </Grid>
-          {(user_level == 13 || user_level == 12) && isOrchids ? (
-            <div
-              className='row justify-content-end'
-              style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-            >
-              <div
-                className='th-bg-white px-2 py-1 th-br-6 th-pointer'
-                style={{ border: '1px solid #d9d9d9' }}
-                onClick={() => setShowGrievanceModal(true)}
+        {user_level == 13 ? <FeeReminderAssesment /> : ''}
+        <div className='row pt-3 align-items-center'>
+          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item className='th-black-1 th-16'>Assessments</Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+        </div>
+
+        <div className='row'>
+          <div className='col-md-12'>
+            <div className='th-tabs th-bg-white th-assessment-tabs mb-3'>
+              <Tabs
+                type='card'
+                onChange={(e) => {
+                  setPageNumber(1);
+                  setStatus(e);
+                  setShowInfo(undefined);
+                  localStorage.setItem('is_retest', e === 2);
+                }}
+                activeKey={status.toString()}
               >
-                Issues with Assessment/ Marks? <br />
-                <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
-                  Raise your query
-                </span>
-              </div>
+                <TabPane tab='UPCOMING' key={'0'}>
+                  {TestListTable()}
+                </TabPane>
+                <TabPane tab='COMPLETED' key={'1'}>
+                  {TestListTable()}
+                </TabPane>
+                <TabPane tab='RETEST' key={'2'}>
+                  {TestListTable()}
+                </TabPane>
+              </Tabs>
             </div>
-          ) : null}
-          {showGrievanceModal && (
-            <GrievanceModal
-              module={'Asssessment'}
-              title={'Assessment Related Query'}
-              showGrievanceModal={showGrievanceModal}
-              handleClose={handleCloseGrievanceModal}
-            />
-          )}
-        </Grid>
+          </div>
+        </div>
+        {(user_level == 13 || user_level == 12) && isOrchids ? (
+          <div
+            className='row justify-content-end'
+            style={{ position: 'fixed', bottom: '5%', right: '2%' }}
+          >
+            <div
+              className='th-bg-white px-2 py-1 th-br-6 th-pointer'
+              style={{ border: '1px solid #d9d9d9' }}
+              onClick={() => setShowGrievanceModal(true)}
+            >
+              Issues with Assessment/ Marks? <br />
+              <span className='th-primary pl-1' style={{ textDecoration: 'underline' }}>
+                Raise your query
+              </span>
+            </div>
+          </div>
+        ) : null}
+        {showGrievanceModal && (
+          <GrievanceModal
+            module={'Asssessment'}
+            title={'Assessment Related Query'}
+            showGrievanceModal={showGrievanceModal}
+            handleClose={handleCloseGrievanceModal}
+          />
+        )}
+        <Drawer
+          title='Assessment Details'
+          className='th-activity-drawer'
+          visible={showInfoDrawer}
+          onClose={() => {
+            setShowInfo();
+            setShowInfoDrawer(false);
+          }}
+          width={'50vw'}
+          closable={null}
+        >
+          <QuestionPaperInfo
+            assessmentId={showInfo}
+            assessmentDate={testDate}
+            assessmentType={assessmentType}
+            key={showInfo}
+            loading={loading}
+            handleCloseInfo={handleCloseInfo}
+          />
+        </Drawer>
       </Layout>
     </>
   );

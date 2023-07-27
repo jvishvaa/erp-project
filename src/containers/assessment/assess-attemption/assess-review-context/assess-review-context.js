@@ -44,7 +44,7 @@ export const AssessmentReviewContext = createContext();
 export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   const [questionsDataObj, setQuestionsDataObj] = useState();
   const [currentQuesionId, setCurrentQuesionId] = useState();
-
+  const [isReviewEnabled, setIsReviewEnabled] = useState();
   const [assessmentResultDetails, setAssessmentResultDetails] = useState();
 
   const [assessmentId, setAssessmentId] = React.useState();
@@ -136,8 +136,9 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   function questionDataProcessor(apiResp) {
     const { data: { result: apiData = {} } = {} } = apiResp || {};
 
-    const { questions = [], sections = [] , test_mode = {} } = apiData;
+    const { questions = [], sections = [], test_mode = {}, is_review_enabled } = apiData;
     console.log(apiData);
+    setIsReviewEnabled(is_review_enabled);
     const questionSectionsObj = parseSectionData(sections);
     const userQuesResponsesObj = formatQuesUserResponseObj(apiData || {}) || {};
     const questionsObj = {};
@@ -215,9 +216,13 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
         user_id: user,
         test_id: assessmentId,
         // test_date: assessmentDate,
-      }
-      if(assessmentDate && assessmentType != "Practice Test" && assessmentType != "Open Test"){
-        params.test_date = assessmentDate
+      };
+      if (
+        assessmentDate &&
+        assessmentType != 'Practice Test' &&
+        assessmentType != 'Open Test'
+      ) {
+        params.test_date = assessmentDate;
       }
       fetchAssessmentResult(params);
     }
@@ -284,7 +289,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
         setAssessmentType,
         setAssessmentDate,
         questionsDataObj,
-
+        isReviewEnabled,
         questionsArray: getSortedAndMainQuestions(questionsDataObj || {}) || [],
 
         currentQuesionId,
