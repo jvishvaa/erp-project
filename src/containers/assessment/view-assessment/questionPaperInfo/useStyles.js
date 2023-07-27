@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   analysisWrapper: {
     padding: 5,
     [theme.breakpoints.up('md')]: {
-      maxHeight: '50vh',
+      // maxHeight: '50vh',
       overflowX: 'hidden',
       overflowY: 'auto',
       margin: '10px 0px',

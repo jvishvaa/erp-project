@@ -14,9 +14,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
-import { Drawer, Tooltip, Typography } from 'antd';
+import { Drawer, Tooltip, Typography, message } from 'antd';
 import { useFormik } from 'formik';
-import { Form, Select } from 'antd';
+import { Form, Select, Checkbox } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import Loader from 'components/loader/loader';
 
@@ -33,13 +33,15 @@ const AssesmentDetails = ({
   quizAccess,
   userLevel,
   filterResults,
+  allowChangeReviewStatus,
 }) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
   console.log(filterData, 'filter');
-  const [loading , setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [isteacher, setIsTeacher] = useState(false);
-  const [ isdisable , setIsDisable ] = useState(false)
+  const [allowReview, setAllowReview] = useState(test?.is_review_enabled);
+  const [isdisable, setIsDisable] = useState(false);
   const {
     test_id: id,
     id: assessmentId,
@@ -58,6 +60,7 @@ const AssesmentDetails = ({
     section_mapping,
     question_paper_id: question_paper_id,
     test_id: test_id,
+    is_review_enabled,
   } = test;
 
   const formik = useFormik({
@@ -86,6 +89,21 @@ const AssesmentDetails = ({
   const onClosedrawer = () => {
     setOpen(false);
     onClose();
+  };
+
+  const handleTestReviewStatus = (status) => {
+    axiosInstance
+      .patch(`/assessment/${assessmentId}/test/`, { is_review_enabled: status })
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          message.success('Successfully updated status');
+        } else {
+          message.error(res?.data?.message);
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
   };
 
   const handleDownloadReport = () => {
@@ -120,26 +138,24 @@ const AssesmentDetails = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [testStart, setTestStart] = useState(false);
   const [confirmAlert, setConfirmAlert] = useState(false);
-  const [inProgress , setInprogress ] = useState(false)
+  const [inProgress, setInprogress] = useState(false);
 
   const CancelStart = () => {
     setConfirmAlert(false);
   };
-  let currDate = new Date()
+  let currDate = new Date();
   useEffect(() => {
     if (testDate != null) {
       var add_minutes = function (dt, minutes) {
         return new Date(dt.getTime() + minutes * 60000);
-      }
+      };
 
       let endTime = add_minutes(new Date(testDate), testDuration).toString();
-      const inProgressQuiz = moment(endTime).isAfter(currDate)
-      setInprogress(inProgressQuiz)
-      console.log(inProgressQuiz , 'inprogress');
+      const inProgressQuiz = moment(endTime).isAfter(currDate);
+      setInprogress(inProgressQuiz);
+      console.log(inProgressQuiz, 'inprogress');
     }
-  }, [])
-
-
+  }, []);
 
   const openStartModal = () => {
     setConfirmAlert(true);
@@ -230,7 +246,7 @@ const AssesmentDetails = ({
 
   const handleQuizstart = () => {
     if (formik.values.section != '') {
-    setIsDisable(true)
+      setIsDisable(true);
       let payload = {
         test_id: assessmentId,
         section_mapping: formik.values.section,
@@ -246,8 +262,7 @@ const AssesmentDetails = ({
             setConfirmAlert(false);
             onClosedrawer();
             filterResults(1);
-            setIsDisable(false)
-
+            setIsDisable(false);
           } else {
             setAlert('error', 'Failed to Start the Test');
             setConfirmAlert(false);
@@ -503,6 +518,19 @@ const AssesmentDetails = ({
               <span className='ml-2'>{sectionName.map((sec, i) => sec).join(', ')}</span>
             </Tooltip>
           </div>
+          {allowChangeReviewStatus && (
+            <div className='col-12 pl-0 py-2'>
+              <Checkbox
+                onChange={() => {
+                  setAllowReview(!allowReview);
+                  handleTestReviewStatus(!allowReview);
+                }}
+                checked={allowReview}
+              >
+                <span className='th-16 th-fw-600'>Allow Review</span>
+              </Checkbox>
+            </div>
+          )}
         </div>
 
         <div className='parameters-container mt-2'>
@@ -633,15 +661,17 @@ const AssesmentDetails = ({
                             </Button>
                           )}
                         </>
-                      ) : (<>
-                        {testType == 'Quiz' && test?.test_mode == 1 && inProgress ? 
-                        <Button variant='contained' disabled color='primary'>
-                          In Progress
-                        </Button>
-                        : 
-                        <Button variant='contained' disabled color='primary'>
-                          Test Completed
-                        </Button> }
+                      ) : (
+                        <>
+                          {testType == 'Quiz' && test?.test_mode == 1 && inProgress ? (
+                            <Button variant='contained' disabled color='primary'>
+                              In Progress
+                            </Button>
+                          ) : (
+                            <Button variant='contained' disabled color='primary'>
+                              Test Completed
+                            </Button>
+                          )}
                         </>
                       )}
                     </>
@@ -661,7 +691,8 @@ const AssesmentDetails = ({
                     </Button>
                   </Grid>
                 )}
-                {((filterData?.status?.children === 'Completed' && (testType != 'Open Test')) ||
+                {((filterData?.status?.children === 'Completed' &&
+                  testType != 'Open Test') ||
                   filterData?.status?.id === 2 ||
                   (testType == 'Quiz' && testDate != null)) && (
                   <Grid item xs={12} style={{ margin: '4% 0' }}>
@@ -675,7 +706,7 @@ const AssesmentDetails = ({
                     </Button>
                   </Grid>
                 )}
-                {(testType == 'Open Test') && (
+                {testType == 'Open Test' && (
                   <Grid item xs={12} style={{ margin: '4% 0' }}>
                     <Button
                       variant='contained'
@@ -692,17 +723,16 @@ const AssesmentDetails = ({
           </div>
         </div>
       </div>
-      <Dialog open={confirmAlert} onClose={CancelStart} maxWidth='sm'
-        fullWidth >
+      <Dialog open={confirmAlert} onClose={CancelStart} maxWidth='sm' fullWidth>
         <DialogTitle id='draggable-dialog-title'>Confirm Start</DialogTitle>
-        <DialogContent style={{ minHeight: '200px' }} >
+        <DialogContent style={{ minHeight: '200px' }}>
           <DialogContentText>
             Once The Test Is Started, You Can't Stop It.
           </DialogContentText>
           {testType == 'Quiz' &&
-            test?.test_mode == 1 &&
-            isteacher &&
-            section_mapping[0] != null ? (
+          test?.test_mode == 1 &&
+          isteacher &&
+          section_mapping[0] != null ? (
             <div>
               <div className='mb-2 text-left'>Section</div>
               <Form.Item name='section'>
@@ -738,25 +768,26 @@ const AssesmentDetails = ({
           <Button onClick={CancelStart} className='labelColor cancelButton'>
             Cancel
           </Button>
-          {isdisable ? 
-          <Button
-            color='primary'
-            variant='contained'
-            style={{ color: 'white' }}
-            onClick={handleQuizstart}
-            disabled
-          >
-            Start
-          </Button>
-          :
-          <Button
-            color='primary'
-            variant='contained'
-            style={{ color: 'white' }}
-            onClick={handleQuizstart}
-          >
-            Start
-          </Button> }
+          {isdisable ? (
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleQuizstart}
+              disabled
+            >
+              Start
+            </Button>
+          ) : (
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleQuizstart}
+            >
+              Start
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </Drawer>
