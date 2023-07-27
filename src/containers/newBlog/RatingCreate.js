@@ -440,7 +440,7 @@ const RatingCreate = () => {
         }
       } else {
         inputList.forEach((item, index) => {
-          debugger;
+          // debugger;
           if (!item?.name && isFormValid) {
             message.error('Please Enter Criteria Name');
             isFormValid = false;
@@ -595,7 +595,7 @@ const RatingCreate = () => {
         setActivityCategory(response?.data);
         if (response) {
           let res = response?.data?.result.filter((item) => {
-            return item.name !== 'Public Speaking' && item.name !== 'Blog Activity';
+            return item.name !== 'Public Speaking';
           });
           setActivityCategoryRemarks(res);
         }
@@ -1671,7 +1671,7 @@ const RatingCreate = () => {
                           {inputList
                             ? inputList.map((input, index) => (
                                 <>
-                                  <div className='row mt-2'>
+                                  <div className='row mt-4'>
                                     <div className='col-10 px-0'>
                                       <Input
                                         placeholder='Criteria Name'
@@ -1688,7 +1688,7 @@ const RatingCreate = () => {
                                       ''
                                     ) : (
                                       <>
-                                        <div className='col-10'>
+                                        <div className='col-10 px-0 pt-2'>
                                           <Input
                                             placeholder='Rating'
                                             width={100}
@@ -1700,7 +1700,7 @@ const RatingCreate = () => {
                                             }
                                           />
                                         </div>
-                                        <div className='col-10'>
+                                        <div className='col-10 px-0 pt-2'>
                                           <Input
                                             placeholder='Score'
                                             width={100}
@@ -1729,6 +1729,7 @@ const RatingCreate = () => {
                                       )}
                                     </div>
                                   </div>
+
                                 </>
                               ))
                             : 'No item in the list '}
