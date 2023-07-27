@@ -40,17 +40,14 @@ import endpoints from '../../config/endpoints';
 import FileValidators from '../../components/file-validation/FileValidators';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import './styles.scss';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import Drawer from '@material-ui/core/Drawer';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import {
-  Progress,
-  Modal,
-  Divider
-} from 'antd';
+import { Progress, Modal, Divider } from 'antd';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -166,8 +163,11 @@ const QuestionCard = ({
 
   let idInterval = null;
   useEffect(() => {
-    if(fileUploadInProgress == true && percentValue < 90){
-      idInterval = setInterval(() => setPercentValue((oldCount) => checkCount(oldCount) ), 1000);
+    if (fileUploadInProgress == true && percentValue < 90) {
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
     }
     if (fileUploadInProgress == true && percentValue < 90) {
       idInterval = setInterval(
@@ -175,7 +175,7 @@ const QuestionCard = ({
         1000
       );
     }
-  
+
     return () => {
       clearInterval(idInterval);
       setPercentValue(10);
@@ -871,8 +871,21 @@ const QuestionCard = ({
                 </Grid>
               )}
             </Grid>
-            <Divider orientation="left" plain><b>Students can submit Homework via these options</b></Divider>
-            <Grid container className='question-ctrls-container' display="grid" gridTemplateColumns="repeat(12, 1fr)" gap={2}>
+            <div className='col-12 text-left py-2 my-1'>
+              <span className='th-16 th-br-4 p-2' style={{ border: '1px solid #d9d9d9' }}>
+                <InfoCircleTwoTone className='pr-2' />
+                <i className='th-grey th-fw-500 '>
+                  Enable/Disable file upload for students to submit Homework
+                </i>
+              </span>
+            </div>
+            <Grid
+              container
+              className='question-ctrls-container'
+              display='grid'
+              gridTemplateColumns='repeat(12, 1fr)'
+              gap={2}
+            >
               <Grid
                 item
                 xs={12}
@@ -915,11 +928,13 @@ const QuestionCard = ({
                   xs={12}
                   md={window.location.pathname.includes('/diary/') ? 5 : 3}
                   className='question-ctrl-outer-container'
-                  style={{justifyContent: 'start'}}
+                  style={{ justifyContent: 'start' }}
                 >
                   {/* <Box className='question-ctrl-inner-container max-attachments'> */}
                   <div className='d-flex'>
-                    <div className='question-ctrl-label pt-2'>Maximum number of files</div>
+                    <div className='question-ctrl-label pt-2'>
+                      Maximum number of files
+                    </div>
                     <Select
                       native
                       labelId='demo-customized-select-label'
