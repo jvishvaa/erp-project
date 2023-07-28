@@ -12,7 +12,12 @@ import publishIcon from 'v2/Assets/dashboardIcons/announcementListIcons/publishI
 import deleteIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/deleteIcon.svg';
 
 const ListCard = (props) => {
-  const { category__category_name: category, content, created_time: date } = props.data;
+  const {
+    category__category_name: category,
+    title,
+    content,
+    created_time: date,
+  } = props.data;
   const { showTab } = props;
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => {
@@ -33,8 +38,17 @@ const ListCard = (props) => {
           backgroundOpacity: 0.5,
         }}
       >
-        <div className='col-md-3 col-4 text-uppercase th-fw-500 text-break pr-0 pr-md-2'>
+        <div className='col-md-1 col-4 text-uppercase th-fw-500 text-break pr-0 pr-md-1'>
           {category}
+        </div>
+        <div
+          className='col-md-2 col-5 text-truncate th-pointer'
+          style={{ width: '10%' }}
+          onClick={() => {
+            setShowModal(true);
+          }}
+        >
+          <b> {extractContent(title)} </b>
         </div>
         <div
           className='col-md-7 col-5 text-truncate th-pointer'
