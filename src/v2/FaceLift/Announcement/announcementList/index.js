@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination } from 'antd';
+import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button } from 'antd';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -40,6 +40,8 @@ const AnnouncementList = () => {
   const [date, setDate] = useState('');
   const [branchIds, setBranchIds] = useState('');
   const [allowedPublishBranches, setAllowedPublishBranches] = useState([]);
+  const [showCategoryCount, setShowCategoryCount] = useState(5);
+  const [category, setCategory] = useState('');
   const history = useHistory();
   const showBranchFilter = [1, 2, 4, 8, 9];
   const branchOptions = branchList?.map((each) => {
@@ -106,7 +108,11 @@ const AnnouncementList = () => {
       .get(`${endpoints.createAnnouncement.announcementCategory}`, {})
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          setCategories(res?.data?.data);
+          let categories_ordered = res?.data?.data;
+          [categories_ordered[0], categories_ordered[5]] = [categories_ordered[5], categories_ordered[0]];
+          // swapping "Holiday" and "Circular" 
+          // Circular Exam Event General TimeTable [Top  5 - not ordered]
+          setCategories(categories_ordered);
         }
       })
       .catch((error) => {
@@ -169,11 +175,20 @@ const AnnouncementList = () => {
     fetchAnnouncementConfigs();
   }, [window.location.pathname]);
 
+  useEffect(() => {
+    handleCategoryChange(category?.id, category?.category_name);
+  }, [category]);
+
+  const headerStyling = {
+    backgroundColor: '#cccccc',
+    padding: '10px',
+  };
+
   const TabContent = () => {
     return (
       <>
-        <div className='row mb-2 mb-md-0'>
-          <div className='col-md-4 col-0'>{''}</div>
+        <div className='row'>
+          <div className='col-md-6 col-0'>{''}</div>
           <div className='col-md-4 px-0 py-2 py-md-0'>
             {showBranchFilter.includes(userLevel) && (
               <Select
@@ -201,25 +216,25 @@ const AnnouncementList = () => {
               </Select>
             )}
           </div>
-          <div className='col-md-2 col-5 px-0 px-md-2'>
-            <Select
-              getPopupContainer={(trigger) => trigger.parentNode}
-              className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-              bordered={false}
-              value={selectedCategoryName}
-              placement='bottomRight'
-              placeholder={'All'}
-              suffixIcon={<DownOutlined className='th-black-1' />}
-              dropdownMatchSelectWidth={false}
-              onChange={(e, val) => handleCategoryChange(e, val)}
-              allowClear
-              menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-            >
-              {categoryOptions}
-            </Select>
-          </div>{' '}
-          <div className='col-md-2 col-7 px-2 th-br-4'>
-            <span className='d-flex'>
+          {/* <div className='col-md-2 col-5 px-0 px-md-2'>
+              <Select
+                getPopupContainer={(trigger) => trigger.parentNode}
+                className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                bordered={false}
+                value={selectedCategoryName}
+                placement='bottomRight'
+                placeholder={'All'}
+                suffixIcon={<DownOutlined className='th-black-1' />}
+                dropdownMatchSelectWidth={false}
+                onChange={(e, val) => handleCategoryChange(e, val)}
+                allowClear
+                menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
+              >
+                {categoryOptions}
+              </Select>
+            </div>{' '} */}
+          <div className='col-md-2'>
+            <span className='d-flex py-1'>
               <img src={calendarIcon} className='pl-2' />
               <DatePicker
                 allowClear={true}
@@ -235,6 +250,77 @@ const AnnouncementList = () => {
             </span>
           </div>
         </div>
+        <div className='mb-3'>
+          <div className='row'>
+            <div className='col-md-12'>
+              <div className='row'>
+                <div className='md-1 px-1 py-1'>
+                  <Button
+                    className={`${
+                      selectedCategoryName == 'All' ? 'th-button-active' : 'th-button'
+                    } th-br-4`}
+                    onClick={() => setCategory()}
+                  >
+                    <span>All</span>
+                  </Button>
+                </div>
+                {categories?.slice(0, showCategoryCount).map((item) => (
+                  <div className='md-1 px-1 py-1'>
+                    <Button
+                      className={`${
+                        item?.id == category?.id ? 'th-button-active' : 'th-button'
+                      } th-br-4`}
+                      onClick={() => setCategory(item)}
+                    >
+                      <span>{item?.category_name}</span>
+                    </Button>
+                  </div>
+                ))}
+                {categories.length > 5 && (
+                  <div className='md-1 px-1 py-1'>
+                    <Button
+                      className='th-button th-br-4'
+                      type='secondary'
+                      onClick={() => {
+                        showCategoryCount == categories.length
+                          ? setShowCategoryCount(5)
+                          : setShowCategoryCount(categories.length);
+                      }}
+                    >
+                      Show {showCategoryCount == categories.length ? 'Less' : 'Other Categories'}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <>
+          <div className='row mb-3 px-1'>
+            <div className='col-md-12' style={headerStyling}>
+              <div className='row'>
+                <div className='col-md-1 col-4'>
+                  <b>TYPE</b>
+                </div>
+                <div className='col-md-2 col-5 text-truncate'>
+                  <b>TITLE</b>
+                </div>
+                <div className='col-md-7 col-5 text-truncate'>
+                  <b>DESCRIPTION</b>
+                </div>
+                {showTab != 2 ? (
+                  <div className='col-md-2 col-3 px-md-3 text-right'>
+                    <b>TIME LINE</b>
+                  </div>
+                ) : (
+                  <div className='col-md-2 col-3 pl-5 pr-1 text-center'>
+                    <b>ACTION</b>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
         {loading ? (
           <div className='d-flex justify-content-center align-items-center h-50 pt-5'>
             <Spin tip='Loading...' size='large' />
