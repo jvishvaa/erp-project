@@ -161,7 +161,7 @@ function AttachmentPreviewerUI() {
 
   const previewerUI = (
     <>
-      <Dialog fullScreen open TransitionComponent={Transition}>
+      <Dialog fullScreen open TransitionComponent={Transition} style={{ zIndex: '2000' }}>
         <div className='attachment-viewer' key={src} id='attachPPT'>
           <div className='attachment-viewer-header col-md-4 row'>
             {!src.toLowerCase().endsWith('.mp3') ? (
