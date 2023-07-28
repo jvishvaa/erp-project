@@ -148,7 +148,7 @@ const StudentSidePublicSpeaking = () => {
       width: '50%',
       render: (text, row) => (
         <div className='word-wrap'>
-          {row?.levels?.filter((item) => item.status == true)[0].name}
+          {row?.levels?.filter((item) => item.status == true)[0]?.name}
         </div>
       ),
     },

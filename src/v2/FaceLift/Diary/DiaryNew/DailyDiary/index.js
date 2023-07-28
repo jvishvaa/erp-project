@@ -991,6 +991,24 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
 
   const handleAddHomeWork = async () => {
+    const hour = new Date().getHours();
+    const minute = new Date().getMinutes();
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // since month starts from 0 here
+    let dd = today.getDate();
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+    const formattedToday = `${yyyy}-${mm}-${dd}`;
+
+    if (
+      ((hour === 12 && minute >= 30) || hour > 12) &&
+      formattedToday === submissionDate
+    ) {
+      return message.error(
+        'Homework creation/updation is locked after 6:30 PM for the same day due date'
+      );
+    }
     if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');
       return;
@@ -1957,7 +1975,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
                   <div className='col-12 py-2'>
                     <span className='th-grey th-14'>
-                      Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
+                      Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf,.mp4 ])
                     </span>
                     <div
                       className='row justify-content-start align-items-center th-br-4 py-1 mt-1 th-bg-white'
@@ -2154,7 +2172,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                       </div>
                       {showHomeworkForm && (
                         <div className='row'>
-                          <div className='col-6'>
+                          <div className='col-md-6 col-sm-12 my-1'>
                             {questionList.length < 5 ? (
                               <Button
                                 className='th-width-100 th-br-6 th-pointer'
@@ -2167,7 +2185,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               </Button>
                             ) : null}
                           </div>
-                          <div className='col-6'>
+                          <div className='col-md-6 col-sm-12 my-1'>
                             <Button
                               className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
                               onClick={handleAddHomeWork}

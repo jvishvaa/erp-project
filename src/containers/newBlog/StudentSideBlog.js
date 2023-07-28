@@ -215,7 +215,7 @@ const StudentSideBlog = () => {
                   }}
                 />
               </div>
-              <div className='col-12 py-2 '>
+              {/* <div className='col-12 py-2 '>
                 {tabValue == '1' ? null : (
                   <Rate
                     disabled
@@ -224,7 +224,7 @@ const StudentSideBlog = () => {
                     count={Number(each?.user_reviews?.level?.rating)}
                   />
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         ))
@@ -285,6 +285,10 @@ const StudentSideBlog = () => {
   const handlePageChange = (page, pageSize) => {
     setPage(page);
   };
+
+  let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
+  const { school_logo } = schoolDetails;
+  
   return (
     <div>
       <Layout>
@@ -392,11 +396,7 @@ const StudentSideBlog = () => {
             <div className='col-7'>
               <div className='row th-br-8' style={{ outline: '2px solid #d9d9d9' }}>
                 <div className='col-12 py-1'>
-                  <img
-                    src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                    width='130'
-                    alt='image'
-                  />
+                  <img src={school_logo} width='130' alt='image' />
                 </div>
                 <div className='col-12 py-2'>
                   <div

@@ -16,14 +16,23 @@
   position: fixed;
   right: 52px;
   z-index: 40;
-  background-color: #323639;
+  /* background-color: #323639; */
   /* top: 79px; */
 }
 .attachment-viewer-header-close-icon {
-  color: hsla(0, 0%, 100%, 0.6);
+  /* color: hsla(0, 0%, 100%, 0.6); */
   padding: 9px;
   position: absolute;
   right: 0;
+  top: 0;
+  transition-property: transform, color;
+  transition-duration: 0.15s;
+}
+.attachment-viewer-header-fullscreen-icon {
+  /* color: hsla(0, 0%, 100%, 0.6); */
+  padding: 9px;
+  position: absolute;
+  right: 40px;
   top: 0;
   transition-property: transform, color;
   transition-duration: 0.15s;

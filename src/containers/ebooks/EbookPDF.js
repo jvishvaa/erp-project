@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
-import { Grid, makeStyles, } from '@material-ui/core';
+import { Grid, makeStyles } from '@material-ui/core';
 import { ArrowBack, ArrowForward, ZoomOutMap, Undo, Close } from '@material-ui/icons';
-import { LeftOutlined, EditOutlined, ClearOutlined, CloseSquareOutlined, UndoOutlined } from '@ant-design/icons';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import {
+  LeftOutlined,
+  EditOutlined,
+  ClearOutlined,
+  CloseSquareOutlined,
+  UndoOutlined,
+} from '@ant-design/icons';
 import { Button, Select, Menu, message, Tooltip, Form } from 'antd';
 import clsx from 'clsx';
 import { Pagination } from 'antd';
@@ -143,7 +150,7 @@ const EbookPdf = (props) => {
       const AnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}`;
       axiosInstance
         .post(AnnotateURL, data1)
-        .then((res) => { })
+        .then((res) => {})
         .catch((error) => {
           console.log(error);
         });
@@ -162,11 +169,11 @@ const EbookPdf = (props) => {
   }, [props.id, page, height, width, mode]);
 
   useEffect(() => {
-    if(props?.recently == true){
+    if (props?.recently == true) {
       console.log(props);
       setPage(props?.pageNumber);
     } else {
-      setPage(1)
+      setPage(1);
     }
   }, []);
 
@@ -249,7 +256,7 @@ const EbookPdf = (props) => {
     const deleteAnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
     axiosInstance
       .delete(deleteAnnotateURL)
-      .then((res) => { })
+      .then((res) => {})
       .catch((error) => {
         console.log(error);
       });
@@ -272,33 +279,32 @@ const EbookPdf = (props) => {
 
   const handlePage = (e) => {
     console.log(e);
-    setPage(e)
-    props.getPageNum(e)
-  }
+    setPage(e);
+    props.getPageNum(e);
+  };
 
-  let rightClick = document.getElementsByClassName('anticon anticon-right')
-  let leftClick = document.getElementsByClassName('anticon anticon-left')
+  let rightClick = document.getElementsByClassName('anticon anticon-right');
+  let leftClick = document.getElementsByClassName('anticon anticon-left');
 
- document.onkeydown = function (e) {
-  console.log(e);
-  if(e?.keyCode == 39){
-    console.log(rightClick ,'right');
-    if(isZoomed == false){
-      rightClick[1].click()
-    } else {
-      handlePage(page + 1)
+  document.onkeydown = function (e) {
+    console.log(e);
+    if (e?.keyCode == 39) {
+      console.log(rightClick, 'right');
+      if (isZoomed == false) {
+        rightClick[1].click();
+      } else {
+        handlePage(page + 1);
+      }
     }
-  }
-  if(e?.keyCode == 37){
-    console.log(leftClick ,'left');
-    if(isZoomed == false){
-      leftClick[1].click()
-    } else {
-      handlePage(page - 1)
+    if (e?.keyCode == 37) {
+      console.log(leftClick, 'left');
+      if (isZoomed == false) {
+        leftClick[1].click();
+      } else {
+        handlePage(page - 1);
+      }
     }
-  }
- }
-
+  };
 
   return (
     <Grid>
@@ -306,19 +312,42 @@ const EbookPdf = (props) => {
         {hover ? (
           ''
         ) : (
-          <div className={classes.root} id='pdfviewhead' >
-            <div style={{ display: 'flex', justifyContent: 'space-between', background: '#e7e7e7' , position: 'fixed' , top: '0' , width: '100%' }} >
-              <div style={{ width: '15%', display: 'flex', justifyContent: 'space-around' }}>
-                <Button onClick={() => setMode('pen')} shape="circle" icon={<EditOutlined />} className={clsx(classes.backButton)} style={{
-                  fontSize: '25px',
-                  color: mode === 'pen' ? '#40a9ff' : 'black',
-                  borderColor: mode === 'pen' ? '#40a9ff' : 'black',
-                }} />
-                <Button onClick={() => setMode('eraser')} shape="circle" icon={<ClearOutlined />} className={clsx(classes.backButton)} style={{
-                  fontSize: '25px',
-                  color: mode === 'eraser' ? '#40a9ff' : 'black',
-                  borderColor: mode === 'eraser' ? '#40a9ff' : 'black',
-                }} />
+          <div className={classes.root} id='pdfviewhead'>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                background: '#e7e7e7',
+                position: 'fixed',
+                top: '0',
+                width: '100%',
+              }}
+            >
+              <div
+                style={{ width: '15%', display: 'flex', justifyContent: 'space-around' }}
+              >
+                <Button
+                  onClick={() => setMode('pen')}
+                  shape='circle'
+                  icon={<EditOutlined />}
+                  className={clsx(classes.backButton)}
+                  style={{
+                    fontSize: '25px',
+                    color: mode === 'pen' ? '#40a9ff' : 'black',
+                    borderColor: mode === 'pen' ? '#40a9ff' : 'black',
+                  }}
+                />
+                <Button
+                  onClick={() => setMode('eraser')}
+                  shape='circle'
+                  icon={<ClearOutlined />}
+                  className={clsx(classes.backButton)}
+                  style={{
+                    fontSize: '25px',
+                    color: mode === 'eraser' ? '#40a9ff' : 'black',
+                    borderColor: mode === 'eraser' ? '#40a9ff' : 'black',
+                  }}
+                />
                 <input
                   type='range'
                   className='js-line-range'
@@ -332,22 +361,36 @@ const EbookPdf = (props) => {
                   style={{ color: 'white', cursor: 'pointer' }}
                 > */}
                 {/* <Undo id='clear' onClick={deleteAnnotateData} /> */}
-                <Button onClick={deleteAnnotateData} id='clear' shape="circle" icon={<UndoOutlined />} className={clsx(classes.backButton)} style={{
-                  fontSize: '25px',
-                  // color: '#40a9ff',
-                  // borderColor: '#40a9ff',
-                }} />
+                <Button
+                  onClick={deleteAnnotateData}
+                  id='clear'
+                  shape='circle'
+                  icon={<UndoOutlined />}
+                  className={clsx(classes.backButton)}
+                  style={{
+                    fontSize: '25px',
+                    // color: '#40a9ff',
+                    // borderColor: '#40a9ff',
+                  }}
+                />
                 {/* </Tooltip> */}
                 <Tooltip title='Marker' arrow style={{ color: 'white' }}>
                   <input type='color' className='js-color-picker color-picker' />
                 </Tooltip>
               </div>
               <div>
-                <Button icon={<CloseSquareOutlined />} onClick={() => props.goBackFunction()} >Close</Button>
+                <Button
+                  icon={<CloseSquareOutlined />}
+                  onClick={() => props.goBackFunction()}
+                >
+                  Close
+                </Button>
               </div>
             </div>
             <div className='subject-name'>
-              <h2 style={{ 'text-transform': 'capitalize', color: 'black' }}>{props.name}</h2>
+              <h2 style={{ 'text-transform': 'capitalize', color: 'black' }}>
+                {props.name}
+              </h2>
             </div>
           </div>
         )}
@@ -396,15 +439,32 @@ const EbookPdf = (props) => {
             }}
           />
         </div>
-        <ZoomOutMap className='zoom-icon' onClick={onZoomHandler} />
+        <ZoomInIcon className='zoom-icon' onClick={onZoomHandler} />
         {hover ? (
           ''
         ) : (
           <>
             {console.log(totalPages)}
-            <div style={{ display: 'flex', justifyContent: 'center' , position: 'fixed' , bottom: '0' , width: '100%'  , background: '#e7e7e7'}} >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                position: 'fixed',
+                bottom: '0',
+                width: '100%',
+                background: '#e7e7e7',
+              }}
+            >
               <span>Page</span>
-              <Pagination simple showSizeChanger={false} current={page} total={totalPages} defaultPageSize={1} onChange={handlePage} size='default'  />
+              <Pagination
+                simple
+                showSizeChanger={false}
+                current={page}
+                total={totalPages}
+                defaultPageSize={1}
+                onChange={handlePage}
+                size='default'
+              />
             </div>
             {/* <div className={classes.pagercoustom}>
             <Grid container spacing={2}>

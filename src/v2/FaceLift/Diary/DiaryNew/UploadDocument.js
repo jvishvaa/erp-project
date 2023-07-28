@@ -4,12 +4,43 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
 import axios from 'v2/config/axios';
 import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDropIcon.svg';
+import { Progress } from 'antd';
 
 const UploadDocument = (props) => {
   const [fileList, setFileList] = useState([]);
   const [fileTypeError, setFileTypeError] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
+  const [percentValue, setPercentValue] = useState(10);
 
+  let idInterval = null;
+  useEffect(() => {
+    if (fileUploadInProgress == true && percentValue < 90) {
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
+    }
+    if (fileUploadInProgress == true && percentValue < 90) {
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
+    }
+
+    return () => {
+      clearInterval(idInterval);
+      setPercentValue(10);
+    };
+  }, [fileUploadInProgress]);
+
+  const checkCount = (count) => {
+    if (count < 90) {
+      return count + 5;
+    } else {
+      return count;
+    }
+  };
   const getSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -27,7 +58,7 @@ const UploadDocument = (props) => {
       if (props?.section) {
         formData.append('section', props?.section);
       }
-
+      setFileUploadInProgress(true);
       axios
         .post(`${endpoints.dailyDiary.upload}`, formData)
         .then((res) => {
@@ -37,10 +68,12 @@ const UploadDocument = (props) => {
             setFileList([]);
             props.handleClose();
             setUploading(false);
+            setFileUploadInProgress(false);
           }
         })
         .catch((e) => {
           message.error(e);
+          setFileUploadInProgress(false);
         });
     });
   };
@@ -48,7 +81,7 @@ const UploadDocument = (props) => {
   const draggerProps = {
     showUploadList: false,
     disabled: false,
-    accept: '.jpeg,.jpg,.png,.pdf ',
+    accept: '.jpeg,.jpg,.png,.pdf,.mp4 ',
     multiple: true,
     onRemove: (file) => {
       const index = fileList.indexOf(file);
@@ -58,7 +91,7 @@ const UploadDocument = (props) => {
     },
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
-      if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
+      if (['jpeg', 'jpg', 'png', 'pdf', 'mp4'].includes(type)) {
         setFileList([...fileList, ...file[1]]);
         setFileTypeError(false);
       } else {
@@ -155,7 +188,7 @@ const UploadDocument = (props) => {
           </Dragger>
           {fileTypeError && (
             <div className='row pt-3 justify-content-center th-red'>
-              Please add image and pdf files only
+              Please add image, pdf and mp4 files only
             </div>
           )}
           {fileList?.length > 0 && (
@@ -183,6 +216,24 @@ const UploadDocument = (props) => {
             })}
           </div>
         </div>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        closable={false}
+        footer={null}
+        visible={fileUploadInProgress}
+        width={1000}
+        centered
+      >
+        <Progress
+          strokeColor={{
+            from: '#108ee9',
+            to: '#87d068',
+          }}
+          percent={percentValue}
+          status='active'
+          className='p-4'
+        />
       </Modal>
     </>
   );

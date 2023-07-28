@@ -87,7 +87,6 @@ const StudentAnalytics = withRouter(({
         }
         monthData.push(obj)
     })
-    console.log(monthData);
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
     useEffect(() => {
@@ -133,14 +132,12 @@ const StudentAnalytics = withRouter(({
         setSegment(e)
     }
     useEffect(() => {
-        console.log(dates);
         if (dates != null) {
             handleDate(dates)
         }
     }, [dates])
 
-    const handleDate = (value) => {
-        console.log(value);
+    const handleDate = (value) => {  
         if (value[0] != null) {
             setStartDate(moment(value[0]).format('YYYY-MM-DD'))
             setEndDate(moment(value[1]).format('YYYY-MM-DD'))
@@ -148,16 +145,12 @@ const StudentAnalytics = withRouter(({
     }
 
 
-    console.log(acad_session_id, 'acadd');
     const dateToday = moment()
-    const startDay = moment().subtract(1, "w")
-    console.log(startDay, 'start');
-    console.log("Current month is:", moment().month())
+    const startDay = moment().subtract(1, "w")  
     const currentMonth = moment().month() + 1
 
     useEffect(() => {
-        if (acad_session_id) {
-            console.log(acad_session_id, 'acadd');
+        if (acad_session_id) {         
             getOverallReport({
                 acad_session_id: acad_session_id
             })
@@ -204,8 +197,7 @@ const StudentAnalytics = withRouter(({
                     'X-DTS-Host': X_DTS_HOST,
                 }
             })
-            .then((res) => {
-                console.log(res);
+            .then((res) => {              
                 setToday(res.data.result)
             })
             .catch((error) => {
@@ -220,8 +212,7 @@ const StudentAnalytics = withRouter(({
                     'X-DTS-Host': X_DTS_HOST,
                 }
             })
-            .then((res) => {
-                console.log(res);
+            .then((res) => {              
                 if(res?.data?.status_code == 200){
                     setData(res.data.result)
                 }
@@ -238,8 +229,7 @@ const StudentAnalytics = withRouter(({
                     'X-DTS-Host': X_DTS_HOST,
                 }
             })
-            .then((res) => {
-                console.log(res);
+            .then((res) => {              
                 setSubmit(res.data.result)
             })
             .catch((error) => {
@@ -254,8 +244,7 @@ const StudentAnalytics = withRouter(({
                     'X-DTS-Host': X_DTS_HOST,
                 }
             })
-            .then((res) => {
-                console.log(res);
+            .then((res) => {               
                 setPending(res.data.result)
                 setSubject(res?.data?.result)
             })
@@ -287,18 +276,20 @@ const StudentAnalytics = withRouter(({
                 opacity: '0.9'
             }
         },
-        label: {
-            position: 'middle',
-            content: (item) => {
-                return `${item.subject_wise_percentage.toFixed(0)}%`;
+        tooltip: {
+            // Custom tooltip options
+            customContent: (title, items) => {
+              // Customize the tooltip content as per your requirement
+              // title is the x-axis value, items contains the corresponding y-axis values  
+              let pending=(items[0]?.data?.assigned_subject_wise_count || 0)-(items[0]?.data?.student_submitted_count || 0);
+              return `<div style="padding: 8px;">
+                        <p style="margin: 0; padding: 4px;" >${title}: <b>${items[0]?.data?.subject_wise_percentage}%</b></p>
+                        <p style="margin: 0; padding: 4px;">Total Assigned: <b>${items[0]?.data?.assigned_subject_wise_count || 0}</b></p>
+                        <p style="margin: 0; padding: 4px;">Total Submitted: <b>${items[0]?.data?.student_submitted_count || 0}</b></p>
+                        <p style="margin: 0; padding: 4px;">Total Pending: <b>${pending}</b></p>
+                      </div>`;
             },
-            style: {
-                opacity: 100,
-                fill: '#000000',
-                fontSize: 12,
-                fontWeight: 600,
-            }
-        },
+          },
     };
 
     const optionsOverallPie = {
@@ -384,9 +375,9 @@ const StudentAnalytics = withRouter(({
         }
     }, [pending])
 
-
-
-
+    const onBack = () => {
+        history.push('/homework/student');
+      };
 
     return (
         <>
@@ -403,11 +394,17 @@ const StudentAnalytics = withRouter(({
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 </div>
+
+               <Button style={{borderRadius: '7px'}}icon={<LeftOutlined/>} type='primary' className='ml-3 mt-2 pl-2' onClick={onBack}>Back</Button>
+
                 <Divider />
                 <div className='row'>
                     <div className='col-md-4' >
                         <div className='card w-100'>
+                            <div className='d-flex justify-content-between'>
                             <div className='th-13 th-fw-600 p-2'>Overall Homework Completion</div>
+                            <div className='th-13 p-2'>Academic Year: {selectedAcademicYear?.session_year}</div>
+                            </div>
                             <div className='d-flex justify-content-between mb-4'>
                                 <div className='col-md-6'>
                                     <HighchartsReact
@@ -439,6 +436,7 @@ const StudentAnalytics = withRouter(({
                         <div className='card w-100'>
                             <div className='row p-2 justify-content-between' >
                                 <div className='th-13 th-fw-600 p-2'>Subjectwise Homework Completion</div>
+                                <div className='th-13 p-2'>Academic Year: {selectedAcademicYear?.session_year}</div>   
                                 <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
                                     <Form ref={formRef}>
                                         <Form.Item name='month'>
@@ -461,7 +459,6 @@ const StudentAnalytics = withRouter(({
                                 </div>
                             </div>
                             <div className='p-4' >
-                                {console.log(pending, 'pend')}
                                 {pending?.length > 0 ?
                                     <Column {...config} /> : <div style={{ marginBottom: '20px' }} > <Empty /></div>}
                             </div>
@@ -474,6 +471,7 @@ const StudentAnalytics = withRouter(({
                     <div className='card w-100'>
                         <div className='row p-2 justify-content-between' >
                             <div className='th-13 th-fw-600 p-2'>Monthwise Homework Completion</div>
+                            <div className='th-13 p-2'>Academic Year: {selectedAcademicYear?.session_year}</div>
                             <div >
                                 <Form ref={formRefOverall} className='d-flex justify-content-between' >
 
