@@ -218,7 +218,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
       dataIndex: 'test_type_name',
       // width: '25%',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
-      visible: status == 2 ? false : false,
+      visible: status == 2 ? false : true,
     },
     {
       title: <span className='th-white th-fw-700'>Marks</span>,

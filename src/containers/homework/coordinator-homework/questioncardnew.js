@@ -56,6 +56,7 @@ import {
   CalendarOutlined,
   FileAddOutlined,
 } from '@ant-design/icons';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -648,6 +649,17 @@ const QuestionCardNew = ({
                   </FormControl>
                 </Grid>
                 <Divider />
+                <div className='col-12 text-left py-2 my-1 px-0'>
+                  <span
+                    className='th-16 th-br-4 p-2'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    <InfoCircleTwoTone className='pr-2' />
+                    <i className='th-grey th-fw-500 '>
+                      Enable/Disable file upload for students to submit Homework
+                    </i>
+                  </span>
+                </div>
                 <div className='row'>
                   <div
                     className='col-md-2 card'
