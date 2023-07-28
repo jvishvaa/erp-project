@@ -4,12 +4,43 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
 import axios from 'v2/config/axios';
 import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDropIcon.svg';
+import { Progress } from 'antd';
 
 const UploadDocument = (props) => {
   const [fileList, setFileList] = useState([]);
   const [fileTypeError, setFileTypeError] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
+  const [percentValue, setPercentValue] = useState(10);
 
+  let idInterval = null;
+  useEffect(() => {
+    if (fileUploadInProgress == true && percentValue < 90) {
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
+    }
+    if (fileUploadInProgress == true && percentValue < 90) {
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
+    }
+
+    return () => {
+      clearInterval(idInterval);
+      setPercentValue(10);
+    };
+  }, [fileUploadInProgress]);
+
+  const checkCount = (count) => {
+    if (count < 90) {
+      return count + 5;
+    } else {
+      return count;
+    }
+  };
   const getSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -27,7 +58,7 @@ const UploadDocument = (props) => {
       if (props?.section) {
         formData.append('section', props?.section);
       }
-
+      setFileUploadInProgress(true);
       axios
         .post(`${endpoints.dailyDiary.upload}`, formData)
         .then((res) => {
@@ -37,10 +68,12 @@ const UploadDocument = (props) => {
             setFileList([]);
             props.handleClose();
             setUploading(false);
+            setFileUploadInProgress(false);
           }
         })
         .catch((e) => {
           message.error(e);
+          setFileUploadInProgress(false);
         });
     });
   };
@@ -183,6 +216,24 @@ const UploadDocument = (props) => {
             })}
           </div>
         </div>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        closable={false}
+        footer={null}
+        visible={fileUploadInProgress}
+        width={1000}
+        centered
+      >
+        <Progress
+          strokeColor={{
+            from: '#108ee9',
+            to: '#87d068',
+          }}
+          percent={percentValue}
+          status='active'
+          className='p-4'
+        />
       </Modal>
     </>
   );
