@@ -486,12 +486,6 @@ import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff'
 import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
 import LoginFormSSO from 'containers/login/ssologin';
-// import {
-//   addListeners,
-//   removeListeners,
-//   resetIdleTimeout,
-//   loggedOutTime,
-// } from './v2/CheckUserTiming/IdleTimeOut';
 import IdleTieOutComp from './v2/CheckUserTiming/IdleTimeOutComp';
 import axiosInstance from './config/axios';
 function App({ alert, isMsAPI, erpConfig }) {
