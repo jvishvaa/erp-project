@@ -18,6 +18,7 @@ import ChangePassword from './change-password/change-password';
 import Layout from '../Layout';
 import { connect, useSelector } from 'react-redux';
 import './profile.css';
+import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   textfields: {
     display: 'block',
@@ -40,8 +41,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Profile = (props) => {
+  const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
-  const { role_details: roleDetailes , user_level: userLevel} =
+  const { role_details: roleDetailes, user_level: userLevel } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [update, setUpdate] = useState(false);
@@ -51,10 +53,10 @@ const Profile = (props) => {
   const [userImageData, setUserImageData] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [inputFields, setInputFields] = useState([]);
-  const [editable,seteditable] = useState(false)
+  const [editable, seteditable] = useState(false);
   const classes = useStyles();
-  const [userDetails,setuserDetails] = useState()
-  const [inputDetails, setInputDetails] = useState()
+  const [userDetails, setuserDetails] = useState();
+  const [inputDetails, setInputDetails] = useState();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -74,8 +76,8 @@ const Profile = (props) => {
         setInputFields([
           {
             name: 'name',
-            type: 'text', 
-            value: `${ userDetails?.user?.first_name} ${ userDetails?.user?.last_name}`,
+            type: 'text',
+            value: `${userDetails?.user?.first_name} ${userDetails?.user?.last_name}`,
             placeholder: 'Name',
             editable: false,
             requireOTPAuthentication: false,
@@ -99,7 +101,7 @@ const Profile = (props) => {
           {
             name: 'email',
             type: 'text',
-            value:  userDetails?.user.email,
+            value: userDetails?.user.email,
             placeholder: 'Email Id',
             editable: false,
             requireOTPAuthentication: true,
@@ -128,7 +130,6 @@ const Profile = (props) => {
             editable: false,
             requireOTPAuthentication: true,
           },
-         
         ]);
         setUserId(userDetails?.id);
         setProfileImage(userDetails?.profile);
@@ -139,7 +140,6 @@ const Profile = (props) => {
       setAlert('error', error.message);
     }
   };
-
 
   const getStudentDetails = async () => {
     try {
@@ -152,14 +152,14 @@ const Profile = (props) => {
         }
       );
       console.log(result);
-      const userDetails  = result?.data?.data || {};
+      const userDetails = result?.data?.data || {};
       console.log(userDetails);
       if (result?.data?.data) {
         setInputFields([
           {
             name: 'name',
-            type: 'text', 
-            value:  userDetails?.name,
+            type: 'text',
+            value: userDetails?.name,
             placeholder: 'Name',
             editable: false,
             requireOTPAuthentication: false,
@@ -167,7 +167,10 @@ const Profile = (props) => {
           {
             name: 'Fathers Name',
             type: 'text',
-            value: userDetails?.parent_details?.length > 0 ? userDetails?.parent_details[0].father_name : '',
+            value:
+              userDetails?.parent_details?.length > 0
+                ? userDetails?.parent_details[0].father_name
+                : '',
             placeholder: 'Fathers Name',
             editable: false,
             requireOTPAuthentication: true,
@@ -175,7 +178,10 @@ const Profile = (props) => {
           {
             name: 'Mothers Name',
             type: 'text',
-            value: userDetails?.parent_details?.length > 0 ? userDetails?.parent_details[0].mother_name : '',
+            value:
+              userDetails?.parent_details?.length > 0
+                ? userDetails?.parent_details[0].mother_name
+                : '',
             placeholder: 'Mothers Name',
             editable: false,
             requireOTPAuthentication: true,
@@ -191,7 +197,7 @@ const Profile = (props) => {
           {
             name: 'email',
             type: 'text',
-            value:  userDetails?.email,
+            value: userDetails?.email,
             placeholder: 'Email Id',
             editable: false,
             requireOTPAuthentication: true,
@@ -244,7 +250,6 @@ const Profile = (props) => {
             editable: false,
             requireOTPAuthentication: true,
           },
-         
         ]);
         setUserId(roleDetailes?.erp_user_id);
         setProfileImage(userDetails?.profile);
@@ -256,15 +261,19 @@ const Profile = (props) => {
     }
   };
 
-
   const editDetails = () => {
-    seteditable(true)
-    setInputDetails(inputFields)
-    let data = inputFields.map((i)=> (
-      (i.name == 'name' || i.name =='Fathers Name' ||i.name == 'Mothers Name' ||i.name == 'DOB') ? {...i, editable : true} : {...i}
-    ))
-    setInputFields(data)
-  }
+    seteditable(true);
+    setInputDetails(inputFields);
+    let data = inputFields.map((i) =>
+      i.name == 'name' ||
+      i.name == 'Fathers Name' ||
+      i.name == 'Mothers Name' ||
+      i.name == 'DOB'
+        ? { ...i, editable: true }
+        : { ...i }
+    );
+    setInputFields(data);
+  };
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setUserImage(URL.createObjectURL(event.target.files[0]));
@@ -276,20 +285,20 @@ const Profile = (props) => {
     const changeImageUrl = `${endpoints.communication.userStatusChange}${userId}/update-user-profile/`;
     try {
       const formData = new FormData();
-      if(userImageData){
+      if (userImageData) {
         formData.set('profile', userImageData);
       }
-      if(userDetails && userDetails.name){
-        formData.set('name',userDetails.name )
+      if (userDetails && userDetails.name) {
+        formData.set('name', userDetails.name);
       }
-      if(userDetails && userDetails['Fathers Name']){
-        formData.set('father_name',userDetails['Fathers Name'])
+      if (userDetails && userDetails['Fathers Name']) {
+        formData.set('father_name', userDetails['Fathers Name']);
       }
-      if(userDetails && userDetails['Mothers Name']){
-        formData.set('mother_name',userDetails['Mothers Name'])
+      if (userDetails && userDetails['Mothers Name']) {
+        formData.set('mother_name', userDetails['Mothers Name']);
       }
-      if(userDetails && userDetails.DOB){
-        formData.set('dob',userDetails.DOB)
+      if (userDetails && userDetails.DOB) {
+        formData.set('dob', userDetails.DOB);
       }
       const response = await axiosInstance({
         method: 'put',
@@ -300,14 +309,14 @@ const Profile = (props) => {
       if (response.data.status_code === 200) {
         setAlert('success', 'Profile changed successfully');
         setUserImage(null);
-        setuserDetails(null)
+        setuserDetails(null);
         setUserImageData(null);
-        if(userLevel == 13){
-          getStudentDetails()
+        if (userLevel == 13) {
+          getStudentDetails();
         } else {
           getUserDetails();
         }
-        seteditable(false)
+        seteditable(false);
       } else {
         setAlert('error', response.data.message);
       }
@@ -318,12 +327,12 @@ const Profile = (props) => {
 
   const handleProfileUpdateCancel = () => {
     setUserImage(null);
-    seteditable(false)
-    setInputFields(inputDetails)
+    seteditable(false);
+    setInputFields(inputDetails);
   };
   useEffect(() => {
-    if(userLevel == 13){
-      getStudentDetails()
+    if (userLevel == 13) {
+      getStudentDetails();
     } else {
       getUserDetails();
     }
@@ -391,10 +400,12 @@ const Profile = (props) => {
                         type={items.type}
                         id={items.name}
                         name={items.name}
-                        readonly = {!items.editable}
+                        readonly={!items.editable}
                         value={items.value}
-                        autoFocus = {true}
-                        onChange = {(e) => setuserDetails({...userDetails,[items.name] : e.target.value})}
+                        autoFocus={true}
+                        onChange={(e) =>
+                          setuserDetails({ ...userDetails, [items.name]: e.target.value })
+                        }
                       />
                     </div>
                   </Fragment>
@@ -405,22 +416,24 @@ const Profile = (props) => {
               color='primary'
               variant='contained'
               className='profile_change_password_button'
-              onClick={() => setPasswordPopUp(true)}
+              // onClick={() => setPasswordPopUp(true)}
+              onClick={() => history.push('/change-password')}
             >
               Change password
             </Button>
-            {!editable && <Button
-              color='primary'
-              variant='contained'
-              // className='profile_change_password_button'
-              style={{    marginLeft: '68%',marginTop: '3%'}}
-              onClick = {editDetails}
-              
-            >
-              Edit
-            </Button>}
+            {!editable && (
+              <Button
+                color='primary'
+                variant='contained'
+                // className='profile_change_password_button'
+                style={{ marginLeft: '68%', marginTop: '3%' }}
+                onClick={editDetails}
+              >
+                Edit
+              </Button>
+            )}
           </div>
-          {userImage || editable ?  (
+          {userImage || editable ? (
             <div className='profile_update_button_wrapper'>
               <input
                 className='profile_update_button cancel_button_profile'
@@ -433,7 +446,6 @@ const Profile = (props) => {
                 color='primary'
                 className='profile_update_button'
                 onClick={handleProfileUpdate}
-                color='primary'
               >
                 Update Profile
               </Button>
