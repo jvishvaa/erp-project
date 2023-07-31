@@ -159,6 +159,20 @@ function AttachmentPreviewerUI() {
     }
   }
 
+  document.onkeydown = function (e) {
+    console.log(e);
+    if (e?.keyCode == 39) {
+      if (pageNumber < numPages) {
+        setPageNumber(pageNumber + 1);
+      }
+    }
+    if (e?.keyCode == 37) {
+      if (pageNumber > 1) {
+        setPageNumber(pageNumber - 1);
+      }
+    }
+  };
+
   const previewerUI = (
     <>
       <Dialog fullScreen open TransitionComponent={Transition} style={{ zIndex: '2000' }}>

@@ -356,11 +356,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
                     ) : status == 1 ? (
                       <Result
                         icon={<InfoCircleOutlined />}
-                        title={
-                          <span>
-                            There are no completed tests or assessments for you.
-                          </span>
-                        }
+                        title={<span>There are no completed tests for you.</span>}
                         subTitle={
                           <span>
                             Remember, learning is a continuous journey, and there will be
