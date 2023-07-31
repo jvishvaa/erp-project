@@ -74,6 +74,7 @@ import ActivityMangementDashboard from 'v2/FaceLift/ActivityManagement/ActivityM
 import StudentStrength from 'v2/FaceLift/SchoolStrength';
 import StudentCountReport from 'v2/FaceLift/SchoolStrength/StudentCountReport';
 import ChangePassword from '../v2/FaceLift/ChangePassword';
+import SignatureUploadv2 from 'v2/FaceLift/MasterManagement/signature-upload/signature-table';
 
 const V2Router = () => {
   useEffect(() => {
@@ -366,6 +367,10 @@ const V2Router = () => {
                         ,
                         <Route path='/change-password'>
                           {({ match }) => <ChangePassword match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/signature-upload'>
+                          {({ match }) => <SignatureUploadv2 match={match} />}
                         </Route>
                         ,
                         {/* v1 router */}

@@ -465,6 +465,9 @@ const CreateAnnouncement = () => {
             <Breadcrumb.Item href='/dashboard' className='th-grey'>
               Dashboard
             </Breadcrumb.Item>
+            <Breadcrumb.Item href='/announcement-list' className='th-grey'>
+              Announcements
+            </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1'>
               Create New Announcement
             </Breadcrumb.Item>

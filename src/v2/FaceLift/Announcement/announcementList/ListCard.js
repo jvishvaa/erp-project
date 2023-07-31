@@ -3,7 +3,7 @@ import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { getCategoryColor } from 'v2/generalAnnouncementFunctions';
 import DetailsModal from './DetailsModal';
 import { EllipsisOutlined, DeleteOutlined, SendOutlined } from '@ant-design/icons';
-import { Popover } from 'antd';
+import { Popover, Tooltip } from 'antd';
 // import emailIcon from 'v2/Assets/dashboardIcons/announcementListIcons/emailIcon.svg';
 // import smsIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smsIcon.svg';
 // import whatsappIcon from 'v2/Assets/dashboardIcons/announcementListIcons/whatsappIcon.svg';
@@ -38,11 +38,11 @@ const ListCard = (props) => {
           backgroundOpacity: 0.5,
         }}
       >
-        <div className='col-md-1 col-4 text-uppercase th-fw-500 text-break pr-0 pr-md-1'>
+        <div className='col-md-2 col-4 text-uppercase th-fw-500 text-break pr-0 pr-md-1'>
           {category}
         </div>
         <div
-          className='col-md-2 col-5 text-truncate th-pointer'
+          className='col-md-3 col-5 text-truncate th-pointer'
           style={{ width: '10%' }}
           onClick={() => {
             setShowModal(true);
@@ -51,16 +51,22 @@ const ListCard = (props) => {
           <b> {extractContent(title)} </b>
         </div>
         <div
-          className='col-md-7 col-5 text-truncate th-pointer'
+          className='col-md-5 col-5 text-truncate th-pointer'
           style={{ width: '95%' }}
           onClick={() => {
             setShowModal(true);
           }}
         >
-          {extractContent(content)}
+          <Tooltip
+            autoAdjustOverflow='false'
+            placement='bottomLeft'
+            title={extractContent(content)}
+          >
+            {extractContent(content)}
+          </Tooltip>
         </div>
         <div className='col-md-2 col-3 px-2 px-md-4 th-grey text-right'>
-          {showTab == 1 ? (
+          {showTab == 1 || showTab == 3 ? (
             getTimeInterval(date)
           ) : showTab == 2 ? (
             // <Popover
