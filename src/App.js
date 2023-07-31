@@ -486,15 +486,35 @@ import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff'
 import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
 import LoginFormSSO from 'containers/login/ssologin';
-// import PPTView from './components/attachment-previewer/attachment-previewer-ui/pptview';
-
+import IdleTieOutComp from './v2/CheckUserTiming/IdleTimeOutComp';
+import axiosInstance from './config/axios';
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
     erpConfig();
+    fetchConfigData();
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   const isV2 = IsV2Checker();
+
+  // IDLE TIMEOUT - LOGOUT AFTER 5 HOURS IF USER IS IN STATIC MODE
+  const [idleTimeOut, setIdleTimeOut] = useState(null);
+  const fetchConfigData = () => {
+    axiosInstance
+      .get(`/assessment/check-sys-config/?config_key=idealTime`)
+      .then((response) => {
+        if (response?.data?.status_code === '200') {
+          const configData = response?.data?.result[0];
+          setIdleTimeOut(parseInt(configData.idleTime) * 60 * 1000);
+        } else {
+          // console.log('Failed to fetch config data from the API.');
+          setIdleTimeOut(5 * 60 * 60 * 1000);
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching config data:', error);
+      });
+  };
 
   return (
     // <ErrorBoundary404 HomeButton={false}>
@@ -504,6 +524,7 @@ function App({ alert, isMsAPI, erpConfig }) {
         <link rel='icon' href={logo} />
       </Helmet>
 
+      {idleTimeOut && <IdleTieOutComp idleTimeOut={idleTimeOut} />}
       {!isV2 ? (
         <Router>
           <AlertNotificationProvider>
