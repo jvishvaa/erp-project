@@ -429,7 +429,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
         </div>
         {(user_level == 13 || user_level == 12) && isOrchids ? (
           <div
-            className='row justify-content-end'
+            className=''
             style={{ position: 'fixed', bottom: '5%', right: '2%' }}
           >
             <div

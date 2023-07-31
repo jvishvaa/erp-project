@@ -71,6 +71,7 @@ const AnnouncementList = () => {
     if (e) {
       setSelectedCategoryId(e);
       setSelectedCategoryName(value.children);
+      setPageNumber(1);
     } else {
       setSelectedCategoryId('');
       setSelectedCategoryName('All');
@@ -180,7 +181,7 @@ const AnnouncementList = () => {
   }, [category]);
 
   const headerStyling = {
-    backgroundColor: '#cccccc',
+    backgroundColor: '#0033cc',
     padding: '10px',
   };
 
@@ -188,8 +189,8 @@ const AnnouncementList = () => {
     return (
       <>
         <div className='row'>
-          <div className='col-md-6 col-0'>{''}</div>
-          <div className='col-md-4 px-0 py-2 py-md-0'>
+          <div className='col-md-8 col-0'>{''}</div>
+          <div className='col-md-2 px-3 py-2 py-md-0'>
             {showBranchFilter.includes(userLevel) && (
               <Select
                 getPopupContainer={(trigger) => trigger.parentNode}
@@ -299,22 +300,22 @@ const AnnouncementList = () => {
           <div className='row mb-3 px-1'>
             <div className='col-md-12' style={headerStyling}>
               <div className='row'>
-                <div className='col-md-1 col-4'>
-                  <b>TYPE</b>
+                <div className='col-md-2 col-4 th-white th-fw-700'>
+                  <b>Type</b>
                 </div>
-                <div className='col-md-2 col-5 text-truncate'>
-                  <b>TITLE</b>
+                <div className='col-md-3 col-5 text-truncate th-white th-fw-700'>
+                  <b>Title</b>
                 </div>
-                <div className='col-md-7 col-5 text-truncate'>
-                  <b>DESCRIPTION</b>
+                <div className='col-md-5 col-5 text-truncate th-white th-fw-700'>
+                  <b>Description</b>
                 </div>
                 {showTab != 2 ? (
-                  <div className='col-md-2 col-3 px-md-3 text-right'>
-                    <b>TIME LINE</b>
+                  <div className='col-md-2 col-3 px-md-3 text-right th-white th-fw-700'>
+                    <b>Time Line</b>
                   </div>
                 ) : (
-                  <div className='col-md-2 col-3 pl-5 pr-1 text-center'>
-                    <b>ACTION</b>
+                  <div className='col-md-2 col-3 pl-5 pr-1 text-center th-white th-fw-700'>
+                    <b>Action</b>
                   </div>
                 )}
               </div>
