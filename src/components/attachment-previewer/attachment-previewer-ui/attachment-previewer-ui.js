@@ -178,25 +178,22 @@ function AttachmentPreviewerUI() {
       <Dialog fullScreen open TransitionComponent={Transition} style={{ zIndex: '2000' }}>
         <div className='attachment-viewer' key={src} id='attachPPT'>
           <div className='attachment-viewer-header col-md-4 row'>
-            {!src.toLowerCase().endsWith('.mp3') ? (
-              <div className='attachment-viewer-header-fullscreen-icon p-2'>
-                {!fullScreen ? (
-                  <Button
-                    icon={<FullscreenOutlined />}
-                    onClick={checkFullscreen}
-                    title='View in Fullscreen'
-                  />
-                ) : (
-                  <Button
-                    icon={<FullscreenExitOutlined />}
-                    onClick={checkFullscreen}
-                    title='Exit Fullscreen'
-                  />
-                )}
-              </div>
-            ) : (
-              ''
-            )}
+            <div className='attachment-viewer-header-fullscreen-icon p-2'>
+              {!fullScreen ? (
+                <Button
+                  icon={<FullscreenOutlined />}
+                  onClick={checkFullscreen}
+                  title='View in Fullscreen'
+                />
+              ) : (
+                <Button
+                  icon={<FullscreenExitOutlined />}
+                  onClick={checkFullscreen}
+                  title='Exit Fullscreen'
+                />
+              )}
+            </div>
+
             <div className='attachment-viewer-header-close-icon p-2'>
               <Button
                 icon={<CloseSquareOutlined />}
