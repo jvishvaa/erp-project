@@ -50,32 +50,42 @@ const UploadDocument = (props) => {
   };
 
   const handleUpload = () => {
-    uniqueFilesList.forEach((file) => {
-      const formData = new FormData();
-      formData.append('branch_name', props?.branchName);
-      formData.append('grades', props?.gradeID);
-      formData.append('file', file);
-      if (props?.section) {
-        formData.append('section', props?.section);
+    console.log(uniqueFilesList, 'listfile');
+    let validateMP4 = false;
+    let checkMP4 = uniqueFilesList.map((e) => {
+      if (e?.type == 'video/mp4' && e?.size > 524288000) {
+        validateMP4 = true;
+        return message.error('MP4 Size Cannot Exceed 500MB');
       }
-      setFileUploadInProgress(true);
-      axios
-        .post(`${endpoints.dailyDiary.upload}`, formData)
-        .then((res) => {
-          if (res?.data?.status_code === 200) {
-            message.success('Attachment Added');
-            props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
-            setFileList([]);
-            props.handleClose();
-            setUploading(false);
-            setFileUploadInProgress(false);
-          }
-        })
-        .catch((e) => {
-          message.error(e);
-          setFileUploadInProgress(false);
-        });
     });
+    if (validateMP4 == false) {
+      uniqueFilesList.forEach((file) => {
+        const formData = new FormData();
+        formData.append('branch_name', props?.branchName);
+        formData.append('grades', props?.gradeID);
+        formData.append('file', file);
+        if (props?.section) {
+          formData.append('section', props?.section);
+        }
+        setFileUploadInProgress(true);
+        axios
+          .post(`${endpoints.dailyDiary.upload}`, formData)
+          .then((res) => {
+            if (res?.data?.status_code === 200) {
+              message.success('Attachment Added');
+              props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
+              setFileList([]);
+              props.handleClose();
+              setUploading(false);
+              setFileUploadInProgress(false);
+            }
+          })
+          .catch((e) => {
+            message.error(e);
+            setFileUploadInProgress(false);
+          });
+      });
+    }
   };
   const { Dragger } = Upload;
   const draggerProps = {
