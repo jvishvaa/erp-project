@@ -871,14 +871,21 @@ const QuestionCard = ({
                 </Grid>
               )}
             </Grid>
-            <div className='col-12 text-left py-2 my-1'>
-              <span className='th-16 th-br-4 p-2' style={{ border: '1px solid #d9d9d9' }}>
-                <InfoCircleTwoTone className='pr-2' />
-                <i className='th-grey th-fw-500 '>
-                  Enable/Disable file upload for students to submit Homework
-                </i>
-              </span>
-            </div>
+            {!window.location.pathname.includes('/diary/') ? (
+              <div className='col-12 text-left py-2 my-1'>
+                <span
+                  className='th-16 th-br-4 p-2'
+                  style={{ border: '1px solid #d9d9d9' }}
+                >
+                  <InfoCircleTwoTone className='pr-2' />
+                  <i className='th-grey th-fw-500 '>
+                    Enable/Disable file upload for students to submit Homework
+                  </i>
+                </span>
+              </div>
+            ) : (
+              ''
+            )}
             <Grid
               container
               className='question-ctrls-container'
