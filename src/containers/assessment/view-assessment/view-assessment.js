@@ -187,7 +187,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
   let columns = [
     {
       title: <span className='th-white th-fw-700 '>Sl no.</span>,
-      // dataIndex: 'erp_user',
       render: (text, row, index) => (
         <span className='th-black-1 th-14 pl-4'>
           {(pageNumber - 1) * 15 + index + 1}.
@@ -198,8 +197,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
     {
       title: <span className='th-white th-fw-700'>Subject</span>,
       dataIndex: 'subject_name',
-
-      // width: '25%',
       render: (data) => (
         <div className='th-black-1 th-14 text-wrap th-width-100' title={data?.toString()}>
           {data?.map((el) => el).join(', ')}
@@ -221,7 +218,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
     {
       title: <span className='th-white th-fw-700'>Test Mode</span>,
       dataIndex: 'test_mode',
-      // width: '25%',
       render: (data) => (
         <span className='th-black-1 th-14'>{data == '1' ? 'Online' : 'Offline'}</span>
       ),
@@ -230,14 +226,11 @@ const ViewAssessments = ({ history, ...restProps }) => {
     {
       title: <span className='th-white th-fw-700'>Test Type</span>,
       dataIndex: 'test_type_name',
-      // width: '25%',
-      align: 'center',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
       visible: status == 2 ? false : true,
     },
     {
       title: <span className='th-white th-fw-700'>Marks</span>,
-      // dataIndex: 'test_type_name',
       align: 'center',
       render: (text, row) => (
         <span className='th-black-1 th-14'>
@@ -260,11 +253,9 @@ const ViewAssessments = ({ history, ...restProps }) => {
           {data ? moment(data).format('llll') : '-'}
         </span>
       ),
-      visible: status == 0 ? false : true,
     },
     {
       title: <span className='th-white th-fw-700'>Action</span>,
-      // width: '25%',
       align: 'center',
       render: (data) => (
         <div>
@@ -428,10 +419,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
           </div>
         </div>
         {(user_level == 13 || user_level == 12) && isOrchids ? (
-          <div
-            className=''
-            style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-          >
+          <div className='' style={{ position: 'fixed', bottom: '5%', right: '2%' }}>
             <div
               className='th-bg-white px-2 py-1 th-br-6 th-pointer'
               style={{ border: '1px solid #d9d9d9' }}
