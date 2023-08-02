@@ -139,6 +139,7 @@ const AddHomeworkCordNew = ({
   const [dateValue, setDateValue] = useState(moment(params.date).format('YYYY-MM-DD'));
   const [hwId, sethwId] = useState(propData?.viewHomework?.hw_data?.data?.hw_id);
   const [loading, setLoading] = useState(false);
+  const [hwSubTime, setHwSubTime] = useState(null);
   const handleDateChange = (event, value) => {
     setDateValue(value);
   };
@@ -244,7 +245,68 @@ const AddHomeworkCordNew = ({
     });
   };
 
+  const isOrchids =
+  window.location.host.split('.')[0] === 'orchids' ||
+  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
+    ? true
+    : false;
+
+  useEffect(() => {
+    fetchHwTimeConfig();
+  }, []);
+
+  const fetchHwTimeConfig = () => {
+    setLoading(true);
+    axiosInstance
+      .get(`/assessment/check-sys-config/?config_key=hw_creation_time`)
+      .then((response) => {
+        setHwSubTime(response?.data?.result[0] || null);
+        setLoading(false);
+      })
+      .catch((error) => {
+        // message.error(error?.response?.data?.message ?? 'Something went wrong!');
+        setLoading(false);
+      });
+  };
+
+  function tConv24(time24) {
+    var ts = time24;
+    var H = +ts.substr(0, 2);
+    var h = H % 12 || 12;
+    h = h < 10 ? '0' + h : h; // leading 0 at the left for 1 digit hours
+    var ampm = H < 12 ? ' AM' : ' PM';
+    ts = h + ts.substr(2, 3) + ampm;
+    return ts;
+  }
+
+
   const handleAddHomeWork = async () => {
+    if(isOrchids){
+    let breakTime = hwSubTime && hwSubTime.split(':');
+    let closeHR = (breakTime && breakTime[0]) || null;
+    let closeMin = (breakTime && breakTime[1]) || null;
+    const hour = new Date().getHours();
+    const minute = new Date().getMinutes();
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // since month starts from 0 here
+    let dd = today.getDate();
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+    const formattedToday = `${yyyy}-${mm}-${dd}`;
+    if (
+      closeHR != null &&
+      ((hour === closeHR && minute >= closeMin) || hour > closeHR) &&
+      formattedToday === dateValue
+    ) {
+      return message.error(
+        `Homework creation/updation is locked after ${tConv24(
+          hwSubTime
+        )} for the same day due date`
+      );
+    }
+  }
+
     if (name == undefined || name == '') {
       return message.error('Please Add Title');
     }
