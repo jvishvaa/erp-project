@@ -244,7 +244,12 @@ const ViewAssessments = ({ history, ...restProps }) => {
       visible: status == 1 ? true : false,
     },
     {
-      title: <span className='th-white th-fw-700'>Test Date & Time</span>,
+      title: (
+        <span className='th-white th-fw-700'>
+          {status == 0 ? 'Scheduled Date & Time' : 'Test Date & Time'}
+        </span>
+      ),
+
       dataIndex: 'test_date',
       width: '22%',
       align: 'center',

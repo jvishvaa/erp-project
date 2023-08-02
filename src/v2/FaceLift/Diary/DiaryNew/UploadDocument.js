@@ -100,7 +100,11 @@ const UploadDocument = (props) => {
       setFileList(newFileList);
     },
     beforeUpload: (...file) => {
-      const type = file[0]?.type.split('/')[1];
+      let type = file[0]?.type.split('/')[1];
+      if (type == 'mp4') {
+        let checkFormat = file[0]?.name.split('.')[1];
+        type = checkFormat;
+      }
       if (['jpeg', 'jpg', 'png', 'pdf', 'mp4'].includes(type)) {
         setFileList([...fileList, ...file[1]]);
         setFileTypeError(false);
