@@ -1385,7 +1385,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                 : item?.completed_by_user_name}{' '}
                                               on{' '}
                                               {moment(item?.completed_at).format(
-                                                'DD/MM/YYYY'
+                                                'DD/MM/YYYY hh:mm A'
                                               )}
                                             </span>
                                           </div>
@@ -1576,7 +1576,10 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                               let textIndex = fullName
                                 ?.split('_')
                                 .indexOf(fullName.split('_').find((item) => isNaN(item)));
-                              let displayName = fullName?.split('_')?.slice(textIndex).join('_');
+                              let displayName = fullName
+                                ?.split('_')
+                                ?.slice(textIndex)
+                                .join('_');
                               let fileName = displayName ? displayName.split('.') : null;
                               let file = fileName ? fileName[fileName?.length - 2] : '';
                               let extension = fileName
@@ -2411,7 +2414,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           {modalData?.completion_status
             ?.filter((item) => item.is_complete == true)
             .map((item) => (
-              <div className='row px-md-5 py-2 align-items-center justify-content-start'>
+              <div className='row px-md-4 py-2 align-items-center justify-content-start'>
                 <span
                   style={{
                     borderRadius: '50%',
@@ -2425,7 +2428,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                   {item?.completed_by_user_id == user_id
                     ? 'You'
                     : item?.completed_by_user_name}{' '}
-                  on {moment(item?.completed_at).format('DD/MM/YYYY')}
+                  on {moment(item?.completed_at).format('DD/MM/YYYY hh:mm A')}
                 </span>
               </div>
             ))}
