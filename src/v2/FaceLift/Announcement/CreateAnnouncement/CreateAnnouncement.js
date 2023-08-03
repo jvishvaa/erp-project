@@ -249,6 +249,9 @@ const CreateAnnouncement = () => {
     const newGradeList = gradeIds.slice();
     newGradeList.splice(index, 1);
     setGradeIds(newGradeList);
+    if(newGradeList.length == 0) {
+      setMembersCount(0);
+    }
   };
 
   const handleSelectSection = (each) => {
@@ -276,7 +279,7 @@ const CreateAnnouncement = () => {
     const sectionMappingIdIndex = sectionMappingIds.indexOf(each?.value);
     const newSectionMappingIdList = sectionMappingIds.slice();
     newSectionMappingIdList.splice(sectionMappingIdIndex, 1);
-    setSectionIds(newSectionMappingIdList);
+    setSectionMappingIds(newSectionMappingIdList);
   };
   const handleClearSection = () => {
     setSectionIds([]);
@@ -284,6 +287,14 @@ const CreateAnnouncement = () => {
   };
   const handleUserLevel = (e) => {
     setSelectedUserLevels(e.join(','));
+    if(e.length == 0) {
+      setMembersCount(null);
+      formRef.current.setFieldsValue({
+        grade: [],
+        section: [],
+      });
+      setGradeIds([]);
+    }
   };
   const handleClearUserLevel = () => {
     setSelectedUserLevels();
@@ -422,6 +433,8 @@ const CreateAnnouncement = () => {
             section_id: sectionIds.join(','),
             grade_id: gradeIds.join(','),
           });
+        } else {
+          setMembersCount(0);
         }
       } else {
         fetchMembersCount({
@@ -455,7 +468,7 @@ const CreateAnnouncement = () => {
       setSectionIds(sectionData?.map((item) => item?.section_id));
       setSectionMappingIds(sectionData?.map((item) => item?.id));
       // }
-    }
+    } 
   }, [sectionData]);
   return (
     <Layout>
@@ -547,7 +560,7 @@ const CreateAnnouncement = () => {
                       mode='multiple'
                       getPopupContainer={(trigger) => trigger.parentNode}
                       maxTagCount={5}
-                      allowClear={true}
+                      // allowClear={true}
                       suffixIcon={<DownOutlined className='th-grey' />}
                       className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                       placement='bottomRight'
@@ -618,7 +631,7 @@ const CreateAnnouncement = () => {
                             showArrow={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
                             maxTagCount={2}
-                            allowClear={true}
+                            // allowClear={true}
                             dropdownMatchSelectWidth={false}
                             onSelect={(e, value) => {
                               handleSelectSection(value);

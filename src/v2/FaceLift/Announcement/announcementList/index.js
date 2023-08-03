@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button } from 'antd';
+import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button, Empty } from 'antd';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -42,6 +42,8 @@ const AnnouncementList = () => {
   const [allowedPublishBranches, setAllowedPublishBranches] = useState([]);
   const [showCategoryCount, setShowCategoryCount] = useState(5);
   const [category, setCategory] = useState('');
+  const [flag, setFlag] = useState(false);
+  const [showDate, setShowDate] = useState('');
   const history = useHistory();
   const showBranchFilter = [1, 2, 4, 8, 9];
   const branchOptions = branchList?.map((each) => {
@@ -58,8 +60,10 @@ const AnnouncementList = () => {
   const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value).format('YYYY-MM-DD'));
+      setShowDate(value); // to show on datePicker on tab change
     } else {
       setDate('');
+      setShowDate('');
     }
   };
 
@@ -169,7 +173,13 @@ const AnnouncementList = () => {
         is_sent: 'True',
       });
     }
-  }, [showTab, pageNumber, date, selectedCategoryId, branchIds]);
+  }, [flag, pageNumber, date, selectedCategoryId, branchIds]);
+
+  useEffect(() => {
+    setPageNumber(1);
+    setFlag(!flag); // to invoke above useEffect when pageNumber is 1 already
+    // above useEffect didn't invoke if we set pageNumber from 1 to 1
+  }, [showTab]);
 
   useEffect(() => {
     fetchCategories();
@@ -243,6 +253,7 @@ const AnnouncementList = () => {
                 placement='bottomRight'
                 placeholder={'Select Date'}
                 onChange={(value) => handleDateChange(value)}
+                value={showDate ? moment(showDate, 'DD/MM/YYYY') : null}
                 showToday={false}
                 suffixIcon={<DownOutlined className='th-black-1' />}
                 className='th-black-2 pl-0 th-date-picker th-pointer'
@@ -311,7 +322,7 @@ const AnnouncementList = () => {
                 </div>
                 {showTab != 2 ? (
                   <div className='col-md-2 col-3 px-md-3 text-right th-white th-fw-700'>
-                    <b>Time Line</b>
+                    <b>Created at</b>
                   </div>
                 ) : (
                   <div className='col-md-2 col-3 pl-5 pr-1 text-center th-white th-fw-700'>
@@ -343,8 +354,8 @@ const AnnouncementList = () => {
             );
           })
         ) : (
-          <div className='d-flex justify-content-center mt-5'>
-            <img src={NoDataIcon} />
+          <div className='d-flex justify-content-center mt-5 th-grey'>
+            <Empty description={'No new announcements at the moment'} />
           </div>
         )}
 
