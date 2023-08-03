@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination, Button, Empty } from 'antd';
+import {
+  Breadcrumb,
+  Tabs,
+  Select,
+  DatePicker,
+  Spin,
+  Pagination,
+  Button,
+  Empty,
+} from 'antd';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -114,8 +123,11 @@ const AnnouncementList = () => {
       .then((res) => {
         if (res?.data?.status_code === 200) {
           let categories_ordered = res?.data?.data;
-          [categories_ordered[0], categories_ordered[5]] = [categories_ordered[5], categories_ordered[0]];
-          // swapping "Holiday" and "Circular" 
+          [categories_ordered[0], categories_ordered[5]] = [
+            categories_ordered[5],
+            categories_ordered[0],
+          ];
+          // swapping "Holiday" and "Circular"
           // Circular Exam Event General TimeTable [Top  5 - not ordered]
           setCategories(categories_ordered);
         }
@@ -282,7 +294,11 @@ const AnnouncementList = () => {
                       className={`${
                         item?.id == category?.id ? 'th-button-active' : 'th-button'
                       } th-br-4`}
-                      onClick={() => setCategory(item)}
+                      onClick={
+                        item?.id == category?.id
+                          ? () => setCategory()
+                          : () => setCategory(item)
+                      }
                     >
                       <span>{item?.category_name}</span>
                     </Button>
@@ -299,7 +315,10 @@ const AnnouncementList = () => {
                           : setShowCategoryCount(categories.length);
                       }}
                     >
-                      Show {showCategoryCount == categories.length ? 'Less' : 'Other Categories'}
+                      Show{' '}
+                      {showCategoryCount == categories.length
+                        ? 'Less'
+                        : 'Other Categories'}
                     </Button>
                   </div>
                 )}
@@ -355,7 +374,15 @@ const AnnouncementList = () => {
           })
         ) : (
           <div className='d-flex justify-content-center mt-5 th-grey'>
-            <Empty description={'No new announcements at the moment'} />
+            <Empty
+              description={
+                <span>
+                  No new announcements at the moment.
+                  <br />
+                  " Stay tuned for the updates! "
+                </span>
+              }
+            />
           </div>
         )}
 

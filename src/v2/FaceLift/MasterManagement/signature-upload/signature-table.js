@@ -14,6 +14,7 @@ import {
   Tag,
   Space,
   Modal,
+  Empty,
 } from 'antd';
 import {
   DownOutlined,
@@ -44,6 +45,7 @@ const SignatureUploadv2 = () => {
   const [imageData, setImageData] = useState();
 
   const [signatures, setSignatures] = useState([]);
+  const [filterFlag, setFilterFlag] = useState(false);
 
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -107,6 +109,7 @@ const SignatureUploadv2 = () => {
     }
     // fetchSignatures();
     setPage(1); // data will be feteched from useEffect hook
+    setFilterFlag(!filterFlag);
   };
   const fetchSignatures = () => {
     setLoading(true);
@@ -137,7 +140,7 @@ const SignatureUploadv2 = () => {
   };
   useEffect(() => {
     fetchSignatures(); // fetch another 15 entries to display in table
-  }, [page]);
+  }, [page, filterFlag]);
   const handleDelete = (row) => {
     console.log(row, 'row');
     setLoading(true);
@@ -193,7 +196,7 @@ const SignatureUploadv2 = () => {
   const columns = [
     {
       title: <span className='th-white th-fw-700'>User Level</span>,
-      width: '20%',
+      width: '15%',
       align: 'left',
       dataIndex: 'userlevel',
       render: (data, row) => (
@@ -213,7 +216,7 @@ const SignatureUploadv2 = () => {
     },
     {
       title: <span className='th-white th-fw-700'>Name</span>,
-      width: '20%',
+      width: '35%',
       align: 'left',
       dataIndex: 'name',
       render: (data, row) => (
@@ -228,7 +231,7 @@ const SignatureUploadv2 = () => {
       render: (data, row) => (
         <div>
           <img
-            style={{ height: '40px', width: '120px' }}
+            style={{ height: '50px', width: '150px' }}
             src={`${endpoints.signature.s3}${row?.signature}`}
             alt='Signature not found'
             onClick={() => handleOpenImageModal(row)}
@@ -238,7 +241,7 @@ const SignatureUploadv2 = () => {
     },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
-      width: '40%',
+      width: '20%',
       align: 'center',
       dataIndex: 'erp',
       render: (data, row, index) => (
@@ -261,6 +264,14 @@ const SignatureUploadv2 = () => {
       ),
     },
   ];
+
+  const noDataLocale = {
+    emptyText: (
+      <div className='d-flex justify-content-center mt-5 th-grey'>
+        <Empty description={'No signatures have been uploaded for this level yet'} />
+      </div>
+    ),
+  };
 
   return (
     <React.Fragment>
@@ -367,7 +378,8 @@ const SignatureUploadv2 = () => {
                       rowKey={(record) => record?.id}
                       dataSource={signatures}
                       pagination={false}
-                      scroll={{ x: 'max-content' }}
+                      locale={noDataLocale}
+                      scroll={{ x: window.innerWidth > 400 ? '100%' : 'max-content', y:350}}
                     />
                   </div>
 
@@ -387,7 +399,6 @@ const SignatureUploadv2 = () => {
             </div>
           </div>
         </div>
-
         <Modal
           visible={imageFlag}
           title={

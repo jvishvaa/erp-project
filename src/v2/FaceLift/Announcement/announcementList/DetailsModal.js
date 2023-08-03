@@ -499,41 +499,46 @@ const DetailsModal = (props) => {
                           )}
                         </div>
                       ) : (
-                        <div className='d-flex justify-content-between w-100'>
-                          <div>
-                            <Input
-                              type='number'
-                              maxLength={6}
-                              placeholder='Please enter OTP'
-                              showCount
-                              value={otp}
-                              onChange={(e) => {
-                                if (
-                                  !e.target.validity?.valid ||
-                                  Number(e.target.value) < 0
-                                ) {
-                                  message.error('Please enter numbers only');
-                                  return;
-                                } else {
-                                  if (String(e.target.value).length < 7) {
-                                    setOtp(e.target.value);
+                        <>
+                          <div className='d-flex justify-content-between w-100'>
+                            <div>
+                              <Input
+                                type='number'
+                                maxLength={6}
+                                placeholder='Please enter OTP'
+                                showCount
+                                value={otp}
+                                onChange={(e) => {
+                                  if (
+                                    !e.target.validity?.valid ||
+                                    Number(e.target.value) < 0
+                                  ) {
+                                    message.error('Please enter numbers only');
+                                    return;
+                                  } else {
+                                    if (String(e.target.value).length < 7) {
+                                      setOtp(e.target.value);
+                                    }
                                   }
-                                }
-                              }}
-                            />
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <Button
+                                className='th-bg-primary th-white th-br-4 th-fw-500 th-14'
+                                onClick={() => {
+                                  handleOTPVerification();
+                                }}
+                                loading={verifyLoading}
+                              >
+                                Verify OTP
+                              </Button>
+                            </div>
                           </div>
-                          <div>
-                            <Button
-                              className='th-bg-primary th-white th-br-4 th-fw-500 th-14'
-                              onClick={() => {
-                                handleOTPVerification();
-                              }}
-                              loading={verifyLoading}
-                            >
-                              Verify OTP
-                            </Button>
+                          <div className='th-grey th-14'>
+                            You can regenerate the password after 30 minutes.
                           </div>
-                        </div>
+                        </>
                       )}
                     </>
                   )
