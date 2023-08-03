@@ -184,6 +184,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setShowPeriodInfoModal(false);
   };
 
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'localhost:3000' ||
+    window.location.host.split('.')[0] === 'test'
+      ? true
+      : false;
+
   const handleChange = (index, field, value) => {
     const form = questionList[index];
     const modifiedForm = { ...form, [field]: value };
@@ -1020,29 +1028,38 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   }
 
   const handleAddHomeWork = async () => {
-    let breakTime = hwSubTime && hwSubTime.split(':');
-    let closeHR = (breakTime && breakTime[0]) || null;
-    let closeMin = (breakTime && breakTime[1]) || null;
-    const hour = new Date().getHours();
-    const minute = new Date().getMinutes();
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    let mm = today.getMonth() + 1; // since month starts from 0 here
-    let dd = today.getDate();
-    if (dd < 10) dd = '0' + dd;
-    if (mm < 10) mm = '0' + mm;
-    const formattedToday = `${yyyy}-${mm}-${dd}`;
-    console.log(closeHR);
-    if (
-      closeHR != null &&
-      ((hour === closeHR && minute >= closeMin) || hour > closeHR) &&
-      formattedToday === submissionDate
-    ) {
-      return message.error(
-        `Homework creation/updation is locked after ${tConv24(
-          hwSubTime
-        )} for the same day due date`
-      );
+    if (isOrchids) {
+      let breakTime = hwSubTime && hwSubTime.split(':');
+      let closeHR = (breakTime && breakTime[0]) || null;
+      let closeMin = (breakTime && breakTime[1]) || null;
+      const hour = new Date().getHours();
+      const minute = new Date().getMinutes();
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      let mm = today.getMonth() + 1; // since month starts from 0 here
+      let dd = today.getDate();
+      if (dd < 10) dd = '0' + dd;
+      if (mm < 10) mm = '0' + mm;
+      const formattedToday = `${yyyy}-${mm}-${dd}`;
+      if (
+        closeHR != null &&
+        hour == closeHR &&
+        minute >= closeMin &&
+        formattedToday == submissionDate
+      ) {
+        return message.error(
+          `Homework creation/updation is locked after ${tConv24(
+            hwSubTime
+          )} for the same day due date`
+        );
+      }
+      if (closeHR != null && hour > closeHR && formattedToday == submissionDate) {
+        return message.error(
+          `Homework creation/updation is locked after ${tConv24(
+            hwSubTime
+          )} for the same day due date`
+        );
+      }
     }
     if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');
