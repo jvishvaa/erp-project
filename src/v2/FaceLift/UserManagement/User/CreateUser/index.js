@@ -33,7 +33,7 @@ const CreateUser = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [roles, setRoles] = useState([]);
   const [designations, setDesignation] = useState([]);
-  const [moduleId, setModuleId] = useState('');
+  // const [moduleId, setModuleId] = useState('');
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
@@ -87,23 +87,23 @@ const CreateUser = () => {
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   useEffect(() => {
     let NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-    let module = '';
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
-              setModuleId(item.child_id);
-              module = item.child_id;
-            }
-          });
-        }
-      });
-    }
+    // let module = '';
+    // if (NavData && NavData.length) {
+    //   NavData.forEach((item) => {
+    //     if (
+    //       item.parent_modules === 'User Management' &&
+    //       item.child_module &&
+    //       item.child_module.length > 0
+    //     ) {
+    //       item.child_module.forEach((item) => {
+    //         if (item.child_name === 'Create User') {
+    //           setModuleId(item.child_id);
+    //           module = item.child_id;
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
 
     fetchRoleConfig({
       config_key: 'subject_limit',
@@ -111,24 +111,23 @@ const CreateUser = () => {
     getRoleApi();
     if (!params?.id) {
       fetchBranches({
-        module_id: module,
+        // module_id: module,
         session_year: selectedYear?.id,
       });
     }
   }, []);
   useEffect(() => {
-    if (moduleId) {
+    // if (moduleId) {
       if (params?.id) {
         setEditId(params?.id);
         fetchUserData(
           {
             erp_user_id: params?.id,
           },
-          moduleId
         );
       }
-    }
-  }, [moduleId]);
+    // }
+  }, []);
 
   const fetchRoleConfig = (params = {}) => {
     setLoading(true);
@@ -448,7 +447,7 @@ const CreateUser = () => {
         setSingleParent(transformedUser?.single_parent ? true : false);
         fetchDesignation({ user_level: schoolDetails?.user_level });
         fetchBranches({
-          module_id: moduleId,
+          // module_id: moduleId,
           session_year: editYear,
         });
         fetchGrades(schoolDetails?.branch, null, editYear);
@@ -564,10 +563,15 @@ const CreateUser = () => {
       setBranchCode(branch_code);
       setSelectedBranch(branches);
       axiosInstance
+        // .get(
+        //   `${endpoints.academics.grades}?session_year=${
+        //     params?.id ? editYear : selectedYear?.id
+        //   }&branch_id=${branches?.toString()}&module_id=${moduleId}`
+        // )
         .get(
           `${endpoints.academics.grades}?session_year=${
             params?.id ? editYear : selectedYear?.id
-          }&branch_id=${branches?.toString()}&module_id=${moduleId}`
+          }&branch_id=${branches?.toString()}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
@@ -603,12 +607,19 @@ const CreateUser = () => {
     if (grades?.length > 0) {
       setSelectedGrade(grades);
       axiosInstance
+        // .get(
+        //   `${endpoints.academics.sections}?session_year=${
+        //     params?.id ? editYear : selectedYear?.id
+        //   }&branch_id=${
+        //     editBranch ? editBranch?.toString() : selectedBranch?.toString()
+        //   }&grade_id=${grades?.toString()}&module_id=${moduleId}`
+        // )
         .get(
           `${endpoints.academics.sections}?session_year=${
             params?.id ? editYear : selectedYear?.id
           }&branch_id=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
-          }&grade_id=${grades?.toString()}&module_id=${moduleId}`
+          }&grade_id=${grades?.toString()}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
@@ -645,6 +656,15 @@ const CreateUser = () => {
     if (sections?.length > 0) {
       setSelectedSections(sections);
       axiosInstance
+        // .get(
+        //   `${endpoints.academics.subjects}?session_year=${
+        //     params?.id ? editYear : selectedYear?.id
+        //   }&branch=${
+        //     editBranch ? editBranch?.toString() : selectedBranch?.toString()
+        //   }&grade=${
+        //     editGrade ? editGrade?.toString() : selectedGrade?.toString()
+        //   }&section=${sections?.toString()}&module_id=${moduleId}`
+        // )
         .get(
           `${endpoints.academics.subjects}?session_year=${
             params?.id ? editYear : selectedYear?.id
@@ -652,7 +672,7 @@ const CreateUser = () => {
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade=${
             editGrade ? editGrade?.toString() : selectedGrade?.toString()
-          }&section=${sections?.toString()}&module_id=${moduleId}`
+          }&section=${sections?.toString()}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {

@@ -176,31 +176,34 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const fileRef = useRef();
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [moduleId, setModuleId] = useState('');
+  // const [moduleId, setModuleId] = useState('');
 
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
-    ? true
-    : false;
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'localhost:3000' ||
+    window.location.host.split('.')[0] === 'mcollege' ||
+    window.location.host.split('.')[0] === 'dps'
+      ? true
+      : false;
 
   useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-    getRoleApi()
+    // if (NavData && NavData.length) {
+    //   NavData.forEach((item) => {
+    //     if (
+    //       item.parent_modules === 'User Management' &&
+    //       item.child_module &&
+    //       item.child_module.length > 0
+    //     ) {
+    //       item.child_module.forEach((item) => {
+    //         if (item.child_name === 'Create User') {
+    //           setModuleId(item.child_id);
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
+    getRoleApi();
     // getDesignation()
   }, []);
 
@@ -232,8 +235,13 @@ const BulkUpload = ({ onUploadSuccess }) => {
   ];
 
   useEffect(() => {
-    if (moduleId && selectedAcademicYear) getBranches();
-  }, [moduleId, selectedAcademicYear]);
+    //   if (moduleId && selectedAcademicYear) getBranches();
+    // }, [moduleId, selectedAcademicYear]);
+
+    if (selectedAcademicYear) {
+      getBranches();
+    }
+  }, [selectedAcademicYear]);
 
   const handleFileChange = (event) => {
     const { files } = event.target;
@@ -300,9 +308,10 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const getBranches = (acadId) => {
     axiosInstance
-      .get(
-        `erp_user/branch/?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
-      )
+      // .get(
+      //   `erp_user/branch/?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+      // )
+      .get(`erp_user/branch/?session_year=${selectedAcademicYear?.id}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           // const modifiedResponse = result?.data?.data?.results.map(
@@ -329,8 +338,11 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setBranchDisplay(data);
     if (data?.branch?.id > 0 && selectedAcademicYear?.id > 0) {
       axiosInstance
+        // .get(
+        //   `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${data?.branch?.id}&module_id=${moduleId}`
+        // )
         .get(
-          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${data?.branch?.id}&module_id=${moduleId}`
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${data?.branch?.id}`
         )
         .then((result) => {
           if (result.status === 200) {
@@ -355,8 +367,11 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSearchSection([]);
       setSectionDisp('');
       axiosInstance
+        // .get(
+        //   `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branch}&grade_id=${value.grade_id}&module_id=${moduleId}`
+        // )
         .get(
-          `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branch}&grade_id=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branch}&grade_id=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -393,8 +408,11 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSearchSection([value]);
       setSubjects([]);
       axiosInstance
+        // .get(
+        //   `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}&module_id=${moduleId}`
+        // )
         .get(
-          `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}&module_id=${moduleId}`
+          `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -417,7 +435,6 @@ const BulkUpload = ({ onUploadSuccess }) => {
     }
   };
 
-
   const getRoleApi = async () => {
     try {
       const result = await axios.get(endpoints.userManagement.userLevelList, {
@@ -426,7 +443,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
         },
       });
       if (result.status === 200) {
-        setRoles(result?.data?.result)
+        setRoles(result?.data?.result);
       } else {
         setAlert('error', result?.data?.message);
       }
@@ -437,16 +454,18 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const getDesignation = async (id) => {
     try {
-      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
-        headers: {
-          // Authorization: `Bearer ${token}`,
-          'x-api-key': 'vikash@12345#1231',
-        },
-      });
+      const result = await axios.get(
+        `${endpoints.lessonPlan.designation}?user_level=${id}`,
+        {
+          headers: {
+            // Authorization: `Bearer ${token}`,
+            'x-api-key': 'vikash@12345#1231',
+          },
+        }
+      );
       if (result.status === 200) {
         console.log(result);
-        setDesignation(result?.data?.result)
-
+        setDesignation(result?.data?.result);
       } else {
         setAlert('error', result?.data?.message);
       }
@@ -515,28 +534,29 @@ const BulkUpload = ({ onUploadSuccess }) => {
               onChange={handleFileChange}
             />
             <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
-              {isOrchids == true ? 
-              <Box p={1}>
-                {`Download Format: `}
-                <a
-                  style={{ cursor: 'pointer' }}
-                  href='/assets/download-format/erp_user.xlsx'
-                  download='format.xlsx'
-                >
-                  Download format
-                </a>
-              </Box> : 
+              {isOrchids == true ? (
                 <Box p={1}>
-                {`Download Format: `}
-                <a
-                  style={{ cursor: 'pointer' }}
-                  href='/assets/download-format/erp_userb2b.xlsx'
-                  download='format.xlsx'
-                >
-                  Download format
-                </a>
-              </Box>
-              }
+                  {`Download Format: `}
+                  <a
+                    style={{ cursor: 'pointer' }}
+                    href='/assets/download-format/erp_user.xlsx'
+                    download='format.xlsx'
+                  >
+                    Download format
+                  </a>
+                </Box>
+              ) : (
+                <Box p={1}>
+                  {`Download Format: `}
+                  <a
+                    style={{ cursor: 'pointer' }}
+                    href='/assets/download-format/erp_userb2b.xlsx'
+                    download='format.xlsx'
+                  >
+                    Download format
+                  </a>
+                </Box>
+              )}
             </Box>
           </Box>
         </Grid>
@@ -591,8 +611,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 {guidelines.map((val, i) => {
                   return (
                     <div className={classes.guideline}>
-                      {i + 1}.
-                      <span className={classes.guidelineval}>{val.name}</span>
+                      {i + 1}.<span className={classes.guidelineval}>{val.name}</span>
                       <span>{val.field}</span>
                     </div>
                   );
@@ -770,132 +789,143 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </Paper>
               </Grid>
             )}
-            {isOrchids ? <>
-            <Grid item xs={12} sm={4}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  setSelectedRole(value);
-                  if(value?.id){
-                    getDesignation(value?.id)
-                  }
-                }}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedRole || ''}
-                options={roles}
-                getOptionLabel={(option) => option?.level_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='User Level'
-                    placeholder='Select User Level'
+            {isOrchids ? (
+              <>
+                <Grid item xs={12} sm={4}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={(event, value) => {
+                      setSelectedRole(value);
+                      if (value?.id) {
+                        getDesignation(value?.id);
+                      }
+                    }}
+                    id='branch_id'
+                    className='dropdownIcon'
+                    value={selectedRole || ''}
+                    options={roles}
+                    getOptionLabel={(option) => option?.level_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='User Level'
+                        placeholder='Select User Level'
+                      />
+                    )}
                   />
+                  <Paper className={`${classes.root} common-table`}>
+                    <TableContainer className={classes.container}>
+                      <Table stickyHeader aria-label='sticky table'>
+                        <TableHead className='table-header-row'>
+                          <TableRow>
+                            {columnsLevel.map((column) => (
+                              <TableCell
+                                key={column.id}
+                                align={column.align}
+                                style={{ minWidth: column.minWidth }}
+                                className={classes.columnHeader}
+                              >
+                                {column.label}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        {selectedRole?.id ? (
+                          <TableBody>
+                            <TableRow
+                              hover
+                              grade='checkbox'
+                              tabIndex={-1}
+                              key={selectedRole?.id}
+                            >
+                              <TableCell className={classes.tableCell}>
+                                {selectedRole?.id}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {selectedRole?.level_name}
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        ) : (
+                          ''
+                        )}
+                      </Table>
+                    </TableContainer>
+                  </Paper>
+                </Grid>
+                {designation?.length > 0 ? (
+                  <Grid item xs={12} sm={4}>
+                    <Autocomplete
+                      style={{ width: '100%' }}
+                      size='small'
+                      onChange={(event, value) => {
+                        setSelectedDesignation(value);
+                      }}
+                      id='branch_id'
+                      className='dropdownIcon'
+                      value={selectedDesignation}
+                      options={designation}
+                      getOptionLabel={(option) => option?.designation}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='Designation'
+                          placeholder='Select Designation'
+                        />
+                      )}
+                    />
+                    <Paper className={`${classes.root} common-table`}>
+                      <TableContainer className={classes.container}>
+                        <Table stickyHeader aria-label='sticky table'>
+                          <TableHead className='table-header-row'>
+                            <TableRow>
+                              {columnsDesi.map((column) => (
+                                <TableCell
+                                  key={column.id}
+                                  align={column.align}
+                                  style={{ minWidth: column.minWidth }}
+                                  className={classes.columnHeader}
+                                >
+                                  {column.label}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
+                          {selectedDesignation?.id ? (
+                            <TableBody>
+                              <TableRow
+                                hover
+                                grade='checkbox'
+                                tabIndex={-1}
+                                key={selectedDesignation?.id}
+                              >
+                                <TableCell className={classes.tableCell}>
+                                  {selectedDesignation?.id}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {selectedDesignation?.designation}
+                                </TableCell>
+                              </TableRow>
+                            </TableBody>
+                          ) : (
+                            ''
+                          )}
+                        </Table>
+                      </TableContainer>
+                    </Paper>
+                  </Grid>
+                ) : (
+                  ''
                 )}
-              />
-              <Paper className={`${classes.root} common-table`}>
-                <TableContainer className={classes.container}>
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className='table-header-row'>
-                      <TableRow>
-                        {columnsLevel.map((column) => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ minWidth: column.minWidth }}
-                            className={classes.columnHeader}
-                          >
-                            {column.label}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    {selectedRole?.id ?
-                      <TableBody>
-                        <TableRow
-                          hover
-                          grade='checkbox'
-                          tabIndex={-1}
-                          key={selectedRole?.id}
-                        >
-                          <TableCell className={classes.tableCell}>
-                            {selectedRole?.id}
-                          </TableCell>
-                          <TableCell className={classes.tableCell}>
-                            {selectedRole?.level_name}
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                      : ''}
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid>
-            {designation?.length > 0 ?  
-            <Grid item xs={12} sm={4}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  setSelectedDesignation(value);
-                }}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedDesignation}
-                options={designation}
-                getOptionLabel={(option) => option?.designation}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Designation'
-                    placeholder='Select Designation'
-                  />
-                )}
-              />
-              <Paper className={`${classes.root} common-table`}>
-                <TableContainer className={classes.container}>
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className='table-header-row'>
-                      <TableRow>
-                        {columnsDesi.map((column) => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ minWidth: column.minWidth }}
-                            className={classes.columnHeader}
-                          >
-                            {column.label}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    {selectedDesignation?.id ?
-                      <TableBody>
-                        <TableRow
-                          hover
-                          grade='checkbox'
-                          tabIndex={-1}
-                          key={selectedDesignation?.id}
-                        >
-                          <TableCell className={classes.tableCell}>
-                            {selectedDesignation?.id}
-                          </TableCell>
-                          <TableCell className={classes.tableCell}>
-                            {selectedDesignation?.designation}
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                      : ''}
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid> : ''}
-            </> : '' }
+              </>
+            ) : (
+              ''
+            )}
           </Grid>
         </>
       )}
