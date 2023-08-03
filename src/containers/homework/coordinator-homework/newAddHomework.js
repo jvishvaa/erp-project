@@ -246,10 +246,12 @@ const AddHomeworkCordNew = ({
   };
 
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000'
-    ? true
-    : false;
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'localhost:3000' ||
+    window.location.host.split('.')[0] === 'test'
+      ? true
+      : false;
 
   useEffect(() => {
     fetchHwTimeConfig();
@@ -279,33 +281,42 @@ const AddHomeworkCordNew = ({
     return ts;
   }
 
-
   const handleAddHomeWork = async () => {
-    if(isOrchids){
-    let breakTime = hwSubTime && hwSubTime.split(':');
-    let closeHR = (breakTime && breakTime[0]) || null;
-    let closeMin = (breakTime && breakTime[1]) || null;
-    const hour = new Date().getHours();
-    const minute = new Date().getMinutes();
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    let mm = today.getMonth() + 1; // since month starts from 0 here
-    let dd = today.getDate();
-    if (dd < 10) dd = '0' + dd;
-    if (mm < 10) mm = '0' + mm;
-    const formattedToday = `${yyyy}-${mm}-${dd}`;
-    if (
-      closeHR != null &&
-      ((hour === closeHR && minute >= closeMin) || hour > closeHR) &&
-      formattedToday === dateValue
-    ) {
-      return message.error(
-        `Homework creation/updation is locked after ${tConv24(
-          hwSubTime
-        )} for the same day due date`
-      );
+    if (isOrchids) {
+      let breakTime = hwSubTime && hwSubTime.split(':');
+      let closeHR = (breakTime && breakTime[0]) || null;
+      let closeMin = (breakTime && breakTime[1]) || null;
+      const hour = new Date().getHours();
+      const minute = new Date().getMinutes();
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      let mm = today.getMonth() + 1; // since month starts from 0 here
+      let dd = today.getDate();
+      if (dd < 10) dd = '0' + dd;
+      if (mm < 10) mm = '0' + mm;
+      const formattedToday = `${yyyy}-${mm}-${dd}`;
+      let newDateval = moment(dateValue).format('YYYY-MM-DD');
+      console.log(hour, closeHR, minute, closeMin, newDateval, formattedToday, 'hr min');
+      if (
+        closeHR != null &&
+        hour == closeHR &&
+        minute >= closeMin &&
+        formattedToday == newDateval
+      ) {
+        return message.error(
+          `Homework creation/updation is locked after ${tConv24(
+            hwSubTime
+          )} for the same day due date`
+        );
+      }
+      if (closeHR != null && hour > closeHR && formattedToday == newDateval) {
+        return message.error(
+          `Homework creation/updation is locked after ${tConv24(
+            hwSubTime
+          )} for the same day due date`
+        );
+      }
     }
-  }
 
     if (name == undefined || name == '') {
       return message.error('Please Add Title');
