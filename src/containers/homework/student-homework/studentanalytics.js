@@ -212,7 +212,7 @@ const StudentAnalytics = withRouter(({
                     'X-DTS-Host': X_DTS_HOST,
                 }
             })
-            .then((res) => {              
+            .then((res) => {          
                 if(res?.data?.status_code == 200){
                     setData(res.data.result)
                 }
@@ -375,9 +375,6 @@ const StudentAnalytics = withRouter(({
         }
     }, [pending])
 
-    const onBack = () => {
-        history.push('/homework/student');
-      };
 
     return (
         <>
@@ -395,12 +392,10 @@ const StudentAnalytics = withRouter(({
                     </Breadcrumb>
                 </div>
 
-               <Button style={{borderRadius: '7px'}}icon={<LeftOutlined/>} type='primary' className='ml-3 mt-2 pl-2' onClick={onBack}>Back</Button>
-
                 <Divider />
                 <div className='row'>
                     <div className='col-md-4' >
-                        <div className='card w-100'>
+                        <div className='card w-100 mb-2'>
                             <div className='d-flex justify-content-between'>
                             <div className='th-13 th-fw-600 p-2'>Overall Homework Completion</div>
                             <div className='th-13 p-2'>Academic Year: {selectedAcademicYear?.session_year}</div>
@@ -432,12 +427,12 @@ const StudentAnalytics = withRouter(({
                             </div>
                         </div>
                     </div>
-                    <div className='col-md-8'>
-                        <div className='card w-100'>
-                            <div className='row p-2 justify-content-between' >
+                    <div className='col-md-8 mb-2'>
+                        <div className='card w-100 h-100'>
+                            <div className='row justify-content-between' >
                                 <div className='th-13 th-fw-600 p-2'>Subjectwise Homework Completion</div>
                                 <div className='th-13 p-2'>Academic Year: {selectedAcademicYear?.session_year}</div>   
-                                <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
+                                <div>
                                     <Form ref={formRef}>
                                         <Form.Item name='month'>
                                             <Select
@@ -459,17 +454,21 @@ const StudentAnalytics = withRouter(({
                                 </div>
                             </div>
                             <div className='p-4' >
-                                {pending?.length > 0 ?
-                                    <Column {...config} /> : <div style={{ marginBottom: '20px' }} > <Empty /></div>}
+                                {data?.length > 0 ?
+                                    <Column {...config} /> : <div style={{ marginBottom: '25px' }} > <div className="text-center m-5">
+                                    <span style={{fontSize: '15px'}}>
+                                    No Homeworks have been assigned for this month
+                                    </span>
+                                  </div></div>}
                             </div>
 
                         </div>
                     </div>
 
                 </div>
-                <div className='col-md-12 mt-2'>
+                <div className='col-md-12'>
                     <div className='card w-100'>
-                        <div className='row p-2 justify-content-between' >
+                        <div className='row justify-content-between' >
                             <div className='th-13 th-fw-600 p-2'>Monthwise Homework Completion</div>
                             <div className='th-13 p-2'>Academic Year: {selectedAcademicYear?.session_year}</div>
                             <div >
@@ -494,8 +493,13 @@ const StudentAnalytics = withRouter(({
                                 </Form>
                             </div>
                         </div>
-                        <div className='p-3' style={{ width: '70%' }} >
-                            <GroupedChart data={submit} />
+                        <div className='p-3' style={{ width: '100%' }} >
+                            {submit?.length > 0 ?
+                                <GroupedChart data={submit} /> : <div style={{ marginBottom: '25px' }} > <div className="text-center m-5">
+                                <span style={{fontSize: '15px' }}>
+                                No Homeworks have been assigned for this subject
+                                </span>
+                                </div></div>}    
                         </div>
                     </div>
                 </div>
