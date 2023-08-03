@@ -3,6 +3,7 @@ import Layout from 'containers/Layout';
 import { Breadcrumb, Tabs, Select } from 'antd';
 import EbookView from './EbooknewView';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
+import EbookViewStudent from './ebookViewStudent';
 import { useHistory } from 'react-router-dom';
 const { TabPane } = Tabs;
 
@@ -10,20 +11,19 @@ const NewEbookView = (props) => {
   const history = useHistory();
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showTab, setShowTab] = useState('1');
-  const [ changeRecent , setChangeRecent ] = useState(false)
+  const [changeRecent, setChangeRecent] = useState(false);
 
   const onChangeTab = (e) => {
-  setShowTab(e)
-  }
+    setShowTab(e);
+  };
 
   const handleRecent = () => {
-    if(changeRecent == true){
-      setChangeRecent(false)
-    }else if(changeRecent == false){
-      setChangeRecent(true)
+    if (changeRecent == true) {
+      setChangeRecent(false);
+    } else if (changeRecent == false) {
+      setChangeRecent(true);
     }
-  }
-
+  };
 
   return (
     <React.Fragment>
@@ -32,7 +32,7 @@ const NewEbookView = (props) => {
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
-              onClick={handleRecent}
+                onClick={handleRecent}
                 className='th-grey th-16 th-pointer'
               >
                 Online Books
@@ -48,10 +48,18 @@ const NewEbookView = (props) => {
               <div className='th-tabs th-bg-white'>
                 <Tabs type='card' onChange={onChangeTab} activeKey={showTab}>
                   <TabPane tab='EBOOK' key='1'>
-                    <EbookView showTab={showTab} changeRecent={changeRecent} />
+                    {user_level == 13 ? (
+                      <EbookViewStudent showTab={showTab} changeRecent={changeRecent} />
+                    ) : (
+                      <EbookView showTab={showTab} changeRecent={changeRecent} />
+                    )}
                   </TabPane>
                   <TabPane tab='IBOOK' key='2'>
-                    <EbookView showTab={showTab} changeRecent={changeRecent} />
+                    {user_level == 13 ? (
+                      <EbookViewStudent showTab={showTab} changeRecent={changeRecent} />
+                    ) : (
+                      <EbookView showTab={showTab} changeRecent={changeRecent} />
+                    )}
                   </TabPane>
                 </Tabs>
               </div>
