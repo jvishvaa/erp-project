@@ -10,6 +10,7 @@ import { Popover, Tooltip } from 'antd';
 // import editIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/editIcon.svg';
 import publishIcon from 'v2/Assets/dashboardIcons/announcementListIcons/publishIcon.svg';
 import deleteIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/deleteIcon.svg';
+import moment from 'moment';
 
 const ListCard = (props) => {
   const {
@@ -28,6 +29,22 @@ const ListCard = (props) => {
     span.innerHTML = s;
     return span.textContent || span.innerText;
   };
+  const getDuration = (date) => {
+    let currentDate = moment(date).format('DD/MM/YYYY');
+    if (currentDate === moment().format('DD/MM/YYYY')) {
+      return 'Today';
+    } else if (currentDate == moment().subtract(1, 'days').format('DD/MM/YYYY')) {
+      return 'Yesterday';
+    } else {
+      return (
+        <span>
+          {currentDate} <br />
+          {moment(date).format('LT')}
+        </span>
+      );
+    }
+  };
+
   return (
     <>
       <div
@@ -57,17 +74,29 @@ const ListCard = (props) => {
             setShowModal(true);
           }}
         >
-          <Tooltip
-            autoAdjustOverflow='false'
-            placement='bottomLeft'
-            title={extractContent(content)}
-          >
-            {extractContent(content)}
-          </Tooltip>
+          {extractContent(content).length > 66 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={extractContent(content)}
+              overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
+            >
+              {extractContent(content)}
+            </Tooltip>
+          ) : (
+            extractContent(content)
+          )}
         </div>
         <div className='col-md-2 col-3 px-2 px-md-4 th-grey text-right'>
           {showTab == 1 || showTab == 3 ? (
-            getTimeInterval(date)
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomRight'
+              title={getDuration(date)}
+            >
+              {' '}
+              {getTimeInterval(date)}
+            </Tooltip>
           ) : showTab == 2 ? (
             // <Popover
             //   content={

@@ -97,10 +97,13 @@ const UploadSignature = ({
     axiosInstance
       .post(endpoints.signature.createSignatureApi, formData)
       .then((result) => {
-        if (result.data?.status_code > 199 && result.data?.status_code < 300) {
+        if (result.data?.status_code == 200) {
           setLoading(false);
           handleUpdateTableData();
           message.success(result.data?.message || result.data?.msg);
+        } else if (result.data?.status_code == 204) {
+          setLoading(false);
+          message.error('The signature already exists in our records');
         } else {
           setLoading(false);
           message.error(result.data?.message || result.data?.msg);
@@ -315,7 +318,7 @@ const UploadSignature = ({
                       )}
                     </div>
                   </div>
-                  <div className='th-grey'>Allowed image formats (.jpg, .jpeg, .png)</div>
+                  <div className='th-grey th-14'> Accepted files: [ jpeg, jpg, png ] </div>
                 </div>
               </div>
             </Form>
