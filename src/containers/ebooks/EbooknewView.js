@@ -24,7 +24,7 @@ const EbookView = (props) => {
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const [moduleId, setModuleId] = useState();
+  // const [moduleId, setModuleId] = useState();
 
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -91,7 +91,7 @@ const EbookView = (props) => {
     const params = {
       session_year: selectedAcademicYear?.id,
       branch_id: selectedBranch?.branch?.id,
-      module_id: moduleId,
+      // module_id: moduleId,
       book_id: props?.showTab == 1 ? 3 : 4,
     };
     axiosInstance
@@ -140,7 +140,7 @@ const EbookView = (props) => {
       fetchSubjectData({
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
-        module_id: moduleId,
+        // module_id: moduleId,
         grade: item.value,
         book_type: props?.showTab == 1 ? 3 : 4,
       });
@@ -151,7 +151,7 @@ const EbookView = (props) => {
       fetchSubjectData({
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
-        module_id: moduleId,
+        // module_id: moduleId,
         grade: gradeId,
         book_type: props?.showTab == 1 ? 3 : 4,
       });
@@ -233,34 +233,34 @@ const EbookView = (props) => {
   });
 
   useEffect(() => {
-    if (moduleId) {
+    // if (moduleId) {
       fetchGradeData();
       fetchVolumeData();
-    }
+    // }
     setRecently(true);
-  }, [moduleId, props?.showTab]);
+  }, [props?.showTab]);
 
   useEffect(() => {
     setRecently(true);
   }, [props?.changeRecent]);
 
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Ebook' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'Ebook' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item.child_name === 'Ebook View') {
+  //             setModuleId(item.child_id);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
     let domain = window.location.host.split('.');

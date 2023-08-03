@@ -15,7 +15,7 @@ import Filter from './filter.jsx';
 import GridList from './gridList';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-import { getModuleInfo } from '../../utility-functions';
+// import { getModuleInfo } from '../../utility-functions';
 import './viewEbook.css';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
@@ -102,9 +102,13 @@ class ViewEbook extends Component {
 
   handleBranchid = () => {
     axiosInstance
+      // .get(
+      //   `${endpoints.communication.branches}?session_year=${this.state.sessionYear?.id
+      //   }&module_id=${getModuleInfo('Ebook View').id}`
+      // )
       .get(
         `${endpoints.communication.branches}?session_year=${this.state.sessionYear?.id
-        }&module_id=${getModuleInfo('Ebook View').id}`
+        }`
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {

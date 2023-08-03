@@ -149,7 +149,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [moduleId, setModuleId] = useState('');
+  // const [moduleId, setModuleId] = useState('');
   const [excelData] = useState([]);
   const [classStatus, setClassStatus] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -184,23 +184,23 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   ];
 
   let isV2 = IsV2Checker();
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item?.child_name === 'View User') {
-              setModuleId(item?.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'User Management' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item?.child_name === 'View User') {
+  //             setModuleId(item?.child_id);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (history?.location?.state?.isEdit && filteredData && filteredDataList) {
@@ -251,8 +251,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const getBranchApi = async () => {
     try {
+      // const result = await axiosInstance.get(
+      //   `${endpoints.academics.branches}?session_year=${selectedYear.id}&module_id=${moduleId}`
+      // );
       const result = await axiosInstance.get(
-        `${endpoints.academics.branches}?session_year=${selectedYear.id}&module_id=${moduleId}`
+        `${endpoints.academics.branches}?session_year=${selectedYear.id}`
       );
       if (result.data.status_code === 200) {
         const transformedResponse = result?.data?.data?.results.map(
@@ -269,8 +272,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const getGradeApi = async () => {
     try {
+      // const result = await axiosInstance.get(
+      //   `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}&module_id=${moduleId}`
+      // );
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}&module_id=${moduleId}`
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}`
       );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
@@ -284,10 +290,15 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const getSectionApi = async () => {
     try {
+      // const result = await axiosInstance.get(
+      //   `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${
+      //     selectedBranch.id
+      //   }&grade_id=${gradeIds.toString()}&module_id=${moduleId}`
+      // );
       const result = await axiosInstance.get(
         `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${
           selectedBranch.id
-        }&grade_id=${gradeIds.toString()}&module_id=${moduleId}`
+        }&grade_id=${gradeIds.toString()}`
       );
       if (result.data.status_code === 200) {
         setSectionList(result.data.data);
@@ -339,7 +350,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       );
       setIsFilter(true);
       setLoading(true);
-      let getUserListUrl = `${endpoints.communication.viewUser}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
+      // let getUserListUrl = `${endpoints.communication.viewUser}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
+      let getUserListUrl = `${endpoints.communication.viewUser}?page=${currentPage}&page_size=${limit}&session_year=${selectedYear?.id}`;
       if (classStatus && classStatus != 1 && classStatus != 0) {
         let status = classStatus - 1;
         getUserListUrl += `&status=${status.toString()}`;
@@ -427,7 +439,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         gradesId.push(each.grade_id);
       });
     }
-    let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}&session_year=${selectedYear.id}`;
+    // let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}&session_year=${selectedYear.id}`;
+    let getUserListUrl = `communication/erp-user-info-excel-v2/?session_year=${selectedYear.id}`;
     if (rolesId.length > 0 && selectedRoles !== 'All') {
       getUserListUrl += `&user_level=${rolesId.toString()}`;
     }
@@ -656,15 +669,21 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId && selectedYear) getBranchApi();
-  }, [moduleId, selectedYear]);
+    // if (moduleId && selectedYear) getBranchApi();
+    if (selectedYear) getBranchApi();
+
+  }, [selectedYear]);
 
   useEffect(() => {
-    if (moduleId && isClicked) {
+    // if (moduleId && isClicked) {
+    //   setIsClicked(false);
+    //   getUsersData();
+    // }
+    if (isClicked) {
       setIsClicked(false);
       getUsersData();
     }
-  }, [currentPage, moduleId]);
+  }, [currentPage]);
 
   useEffect(() => {
     if (status) {
@@ -687,12 +706,17 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [selectedGrades]);
 
   useEffect(() => {
-    if (isNewSeach && moduleId) {
+    // if (isNewSeach && moduleId) {
+    //   setIsNewSearch(false);
+    //   setCurrentPage(1);
+    //   getUsersData();
+    // }
+    if (isNewSeach) {
       setIsNewSearch(false);
       setCurrentPage(1);
       getUsersData();
     }
-  }, [isNewSeach, moduleId]);
+  }, [isNewSeach]);
 
   const handleBranch = (event, value) => {
     setSelectedBranch('');

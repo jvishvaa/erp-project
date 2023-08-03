@@ -13,7 +13,7 @@ const BulkUpload = () => {
 
   const bulkUploadFormRef = useRef();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [moduleId, setModuleId] = useState('');
+  // const [moduleId, setModuleId] = useState('');
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedBranchCode, setSelectedBranchCode] = useState('');
@@ -131,30 +131,38 @@ const BulkUpload = () => {
   };
 
   useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
+    // if (NavData && NavData.length) {
+    //   NavData.forEach((item) => {
+    //     if (
+    //       item.parent_modules === 'User Management' &&
+    //       item.child_module &&
+    //       item.child_module.length > 0
+    //     ) {
+    //       item.child_module.forEach((item) => {
+    //         if (item.child_name === 'Create User') {
+    //           setModuleId(item.child_id);
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
     fetchUserLevel();
     fetchUserRoles();
   }, []);
 
+  // useEffect(() => {
+  //   if (moduleId && selectedYear) {
+  //     fetchBranches(selectedYear?.id);
+  //   }
+  // }, [moduleId, selectedYear]);
+
   useEffect(() => {
-    if (moduleId && selectedYear) {
+    if (selectedYear) {
       fetchBranches(selectedYear?.id);
     }
-  }, [moduleId, selectedYear]);
+  }, [selectedYear]);
+
+
   const fetchUserRoles = async () => {
     axiosInstance
       .get(`${endpoints.communication.roles}`)
@@ -168,8 +176,11 @@ const BulkUpload = () => {
   const fetchBranches = async () => {
     if (selectedYear) {
       try {
+        // const response = await axiosInstance.get(
+        //   `${endpoints.academics.branches}?session_year=${selectedYear.id}&module_id=${moduleId}`
+        // );
         const response = await axiosInstance.get(
-          `${endpoints.academics.branches}?session_year=${selectedYear.id}&module_id=${moduleId}`
+          `${endpoints.academics.branches}?session_year=${selectedYear.id}`
         );
         if (response.data.status_code === 200) {
           setBranchList(response?.data?.data?.results);
@@ -307,8 +318,11 @@ const BulkUpload = () => {
 
   const fetchGrade = async (branch) => {
     try {
+      // const result = await axiosInstance.get(
+      //   `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${branch}&module_id=${moduleId}`
+      // );
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${branch}&module_id=${moduleId}`
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${branch}`
       );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
@@ -322,8 +336,11 @@ const BulkUpload = () => {
 
   const fetchSection = async (selectedGrade, selectedBranch) => {
     try {
+      // const result = await axiosInstance.get(
+      //   `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch}&grade_id=${selectedGrade}&module_id=${moduleId}`
+      // );
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch}&grade_id=${selectedGrade}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch}&grade_id=${selectedGrade}`
       );
       if (result.data.status_code === 200) {
         setSectionList(result.data.data);
@@ -337,8 +354,11 @@ const BulkUpload = () => {
 
   const fetchSubject = (section) => {
     axiosInstance
+      // .get(
+      //   `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch}&grade=${selectedGrade}&section=${section}&module_id=${moduleId}`
+      // )
       .get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch}&grade=${selectedGrade}&section=${section}&module_id=${moduleId}`
+        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch}&grade=${selectedGrade}&section=${section}`
       )
       .then((response) => {
         if (response?.data?.status_code === 200) {

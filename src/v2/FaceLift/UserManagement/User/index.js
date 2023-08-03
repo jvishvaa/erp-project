@@ -44,7 +44,7 @@ const User = () => {
 
   const { Option } = Select;
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
-  const [moduleId, setModuleId] = useState('');
+  // const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const loggedUserData = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [pageNo, setPageNo] = useState(1);
@@ -225,23 +225,23 @@ const User = () => {
     },
   ];
 
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'View User') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'User Management' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item.child_name === 'View User') {
+  //             setModuleId(item.child_id);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
     fetchUserLevel();
@@ -284,7 +284,7 @@ const User = () => {
 
   const fetchBranches = () => {
     if (selectedYear) {
-      fetchBranchesForCreateUser(selectedYear?.id, moduleId).then((data) => {
+      fetchBranchesForCreateUser(selectedYear?.id).then((data) => {
         const transformedData = data?.map((obj) => ({
           id: obj.id,
           branch_name: obj.branch_name,
@@ -329,11 +329,10 @@ const User = () => {
       });
     }
   };
-
   const fetchGrade = async (branch) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${branch}&module_id=${moduleId}`
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${branch}`
       );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
@@ -388,7 +387,7 @@ const User = () => {
   const fetchSection = async (grade) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${branch}&grade_id=${grade}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${branch}&grade_id=${grade}`
       );
       if (result.data.status_code === 200) {
         setSectionList(result.data.data);
@@ -453,7 +452,7 @@ const User = () => {
     setStatus('');
     setShowFilter(false);
     if (value) {
-      let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}&session_year=${selectedYear?.id}&search=${value}`;
+      let params = `?page=${pageNo}&page_size=${pageLimit}&session_year=${selectedYear?.id}&search=${value}`;
       axiosInstance
         .get(`${endpoints.communication.viewUser}${params}`)
         .then((res) => {
@@ -504,7 +503,7 @@ const User = () => {
 
     setShowFilter(false);
 
-    let params = `?page=${pageNo}&page_size=${pageLimit}&module_id=${moduleId}&session_year=${
+    let params = `?page=${pageNo}&page_size=${pageLimit}&session_year=${
       selectedYear?.id
     }${branchParams ? `&branch=${branch}` : ''}${
       userLevelParams.length > 0 ? `&user_level=${userLevel}` : ''
@@ -553,13 +552,13 @@ const User = () => {
     }
     setDownloadLoading(true);
     let paramsObj = {};
-    paramsObj.module_id = moduleId;
+    // paramsObj.module_id = moduleId;
     paramsObj.session_year = selectedYear.id;
     if (branch) {
       paramsObj.branch = branch ? branch : '';
     }
     if (userLevel) {
-      paramsObj.user_level = userLevel;
+      paramsObj.user_level = userLevel.toString();
     }
     if (grade) {
       paramsObj.grade = grade;

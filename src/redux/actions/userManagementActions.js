@@ -221,10 +221,11 @@ export const editUser = (params) => (dispatch) => {
     });
 };
 
-export const fetchBranchesForCreateUser = (acadId, moduleId) => {
+export const fetchBranchesForCreateUser = (acadId) => {
 
   return axios
-    .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
+    // .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
+    .get(`/erp_user/branch/?session_year=${acadId}`)
     .then((response) => {
       if (response.data.status_code === 200){
         return response?.data?.data?.results.map((obj) => {

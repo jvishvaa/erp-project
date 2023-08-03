@@ -42,7 +42,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const [subjects, setSubjects] = useState([]);
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [moduleId, setModuleId] = useState('');
+  // const [moduleId, setModuleId] = useState('');
   const [roles, setRoles] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [designation, setDesignation] = useState([]);
@@ -50,21 +50,21 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
 
   useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
+    // if (NavData && NavData.length) {
+    //   NavData.forEach((item) => {
+    //     if (
+    //       item.parent_modules === 'User Management' &&
+    //       item.child_module &&
+    //       item.child_module.length > 0
+    //     ) {
+    //       item.child_module.forEach((item) => {
+    //         if (item.child_name === 'Create User') {
+    //           setModuleId(item.child_id);
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
     getRoleApi();
   }, []);
 
@@ -167,7 +167,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const fetchBranches = () => {
     if (selectedYear) {
-      fetchBranchesForCreateUser(selectedYear?.id, moduleId).then((data) => {
+      fetchBranchesForCreateUser(selectedYear?.id).then((data) => {
         const transformedData = data?.map((obj) => ({
           id: obj.id,
           branch_name: obj.branch_name,
@@ -194,7 +194,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       section &&
       section.length > 0
     ) {
-      getSubjects(branch, grade, section, moduleId).then((data) => {
+      // getSubjects(branch, grade, section, moduleId).then((data) => {
+        getSubjects(branch, grade, section).then((data) => {
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -220,7 +221,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         : values;
     formik.setFieldValue('branch', values);
     if (values?.length > 0) {
-      fetchGrades(selectedYear?.id, values, moduleId).then((data) => {
+      // fetchGrades(selectedYear?.id, values, moduleId).then((data) => {
+        fetchGrades(selectedYear?.id, values).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
               item_id: grade?.id,
@@ -252,7 +254,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     formik.setFieldValue('grade', values);
     if (values?.length > 0) {
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
-      fetchSections(selectedYear?.id, branchList, values, moduleId).then((data) => {
+      // fetchSections(selectedYear?.id, branchList, values, moduleId).then((data) => {
+        fetchSections(selectedYear?.id, branchList, values).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
@@ -293,7 +296,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     if (values?.length > 0) {
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
       const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade; // Added
-      getSubjects(selectedYear?.id, branchList, gradeList, values, moduleId).then(
+      // getSubjects(selectedYear?.id, branchList, gradeList, values, moduleId).then(
+        getSubjects(selectedYear?.id, branchList, gradeList, values).then(
         (data) => {
           const transformedData =
             data &&
@@ -320,8 +324,31 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     }
   };
 
+  // useEffect(() => {
+  //   if (moduleId && selectedYear) {
+  //     fetchBranches(selectedYear?.id);
+  //     if (details.branch) {
+  //       handleChangeBranch(details.branch, selectedYear?.id);
+  //       if (details.grade && details.grade.length > 0) {
+  //         handleChangeGrade(details.grade, selectedYear?.id, details.branch);
+  //         if (details.section && details.section.length > 0) {
+  //           handleChangeSection(
+  //             details.section,
+  //             selectedYear?.id,
+  //             details.branch,
+  //             details.grade
+  //           );
+  //           if (details.subjects && details.subjects.length > 0) {
+  //             formik.setFieldValue('subjects', details.subjects);
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }, [moduleId, selectedYear]);
+
   useEffect(() => {
-    if (moduleId && selectedYear) {
+    if (selectedYear) {
       fetchBranches(selectedYear?.id);
       if (details.branch) {
         handleChangeBranch(details.branch, selectedYear?.id);
@@ -341,7 +368,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         }
       }
     }
-  }, [moduleId, selectedYear]);
+  }, [selectedYear]);
 
   const handleSubmit = () => {
     if (formik.values.subjects.length === 0) {
