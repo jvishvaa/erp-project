@@ -201,7 +201,7 @@ const ChangePassword = () => {
                       <div className='col-12 pb-1'>
                         <Form.Item
                           name='current_password'
-                          label='Curent Password'
+                          label='Current Password'
                           rules={[
                             { required: true, message: 'Please enter current password' },
                           ]}
