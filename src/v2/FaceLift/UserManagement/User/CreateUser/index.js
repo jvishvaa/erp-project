@@ -28,6 +28,7 @@ import axiosInstance from 'v2/config/axios';
 import moment from 'moment/moment';
 import { useHistory, useParams } from 'react-router-dom';
 import AcademicYearList from './AcademicYearList';
+import ChangePasswordPopup from './../../../ChangePassword/changePasswordModal';
 const { Step } = Steps;
 const CreateUser = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -80,6 +81,9 @@ const CreateUser = () => {
       is_edit: false,
     },
   ]);
+  const [isPasswordSubmit, setIsPasswordSubmit] = useState(false);
+  const [isPasswordCanceled, setIsPasswordCanceled] = useState(false);
+  const [strengthProgress, setStrengthProgress] = useState('');
   const history = useHistory();
   const params = useParams();
   const passwordFormRef = useRef();
@@ -118,14 +122,12 @@ const CreateUser = () => {
   }, []);
   useEffect(() => {
     // if (moduleId) {
-      if (params?.id) {
-        setEditId(params?.id);
-        fetchUserData(
-          {
-            erp_user_id: params?.id,
-          },
-        );
-      }
+    if (params?.id) {
+      setEditId(params?.id);
+      fetchUserData({
+        erp_user_id: params?.id,
+      });
+    }
     // }
   }, []);
 
@@ -933,7 +935,7 @@ const CreateUser = () => {
 
   const closePasswordModal = () => {
     setOpenPasswordModal(false);
-    passwordFormRef.current.resetFields();
+    setIsPasswordCanceled(true);
   };
 
   const handleChangePassword = () => {
@@ -984,6 +986,7 @@ const CreateUser = () => {
               </div>
             </div>
           )}
+
           {/* <div className='th-small-steps d-block d-sm-block d-md-none'>
             <Steps
               onChange={(key) => {
@@ -1196,16 +1199,33 @@ const CreateUser = () => {
         footer={[
           <Button onClick={closePasswordModal}>Cancel</Button>,
           <Button
-            loading={passwordLoading}
+            loading={loading}
             htmlType='submit'
             form='passwordForm'
             type='primary'
+            onClick={() => setIsPasswordSubmit(true)}
+            disabled={strengthProgress != '100' ? true : false}
           >
             Submit
           </Button>,
         ]}
+        width={'80%'}
+        centered
       >
-        <div className='p-4'>
+        <ChangePasswordPopup
+          isPasswordSubmit={isPasswordSubmit}
+          setIsPasswordSubmit={setIsPasswordSubmit}
+          loading={loading}
+          setLoading={setLoading}
+          userId={params?.id}
+          strengthProgress={strengthProgress}
+          setStrengthProgress={setStrengthProgress}
+          isPasswordCanceled={isPasswordCanceled}
+          setIsPasswordCanceled={setIsPasswordCanceled}
+          redirectPath='/user-management/view-users'
+        />
+
+        {/* <div className='p-4'>
           <Form
             layout='vertical'
             ref={passwordFormRef}
@@ -1269,7 +1289,7 @@ const CreateUser = () => {
               </div>
             </div>
           </Form>
-        </div>
+        </div> */}
       </Modal>
     </React.Fragment>
   );
