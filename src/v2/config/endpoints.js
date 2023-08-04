@@ -286,6 +286,7 @@ export default {
   activityManagementDashboard: {
     studentbmiDetails: `${newBlogURL}/api/get_student_bmi/`,
     studentSportsDetails: `${newBlogURL}/api/dashboard_student_activity_get/`,
+    studentSportsSubActivityId: `${newBlogURL}/api/physical_activity_subtype_id/`,
   },
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',

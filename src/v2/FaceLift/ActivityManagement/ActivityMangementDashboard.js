@@ -1,6 +1,6 @@
 import Layout from 'containers/Layout';
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Spin, message, Result } from 'antd';
+import { Breadcrumb, Spin, message, Result, Button } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -14,6 +14,7 @@ const ActivityMangementDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const [sportsDetails, setSportsDetails] = useState({});
+  const [physicalActivityId, setPhysicalActivityId] = useState(null);
   const { erp, token } = JSON.parse(localStorage.getItem('userDetails'));
 
   const fetchStudentBMIDetails = (params = {}) => {
@@ -58,6 +59,29 @@ const ActivityMangementDashboard = () => {
       });
   };
 
+  const fetchSubActivityId = (params = {}) => {
+    axios
+      .get(`${endpoints?.activityManagementDashboard?.studentSportsSubActivityId}`, {
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+          Authorization: `${token}`,
+        },
+      })
+      .then((res) => {
+        console.log({ res });
+        if (res?.data?.status_code == '200') {
+          setPhysicalActivityId(res?.data?.result[0]);
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  };
+
+  useEffect(() => {
+    fetchSubActivityId();
+  }, []);
+
   useEffect(() => {
     if (erp) {
       fetchSportsDetails({
@@ -69,10 +93,20 @@ const ActivityMangementDashboard = () => {
     }
   }, [erp]);
 
+  const handlePhysicalActivity = () => {
+    localStorage.setItem('PhysicalActivityId', JSON.stringify(physicalActivityId));
+    history.push({
+      pathname: '/student/phycial/activity',
+      state: {
+        activity: physicalActivityId,
+      },
+    });
+  };
+
   return (
     <Layout>
       <div className='row'>
-        <div className='col-12'>
+        <div className='col-8'>
           <Breadcrumb separator='>'>
             <Breadcrumb.Item
               className='th-grey th-16 th-pointer'
@@ -86,6 +120,14 @@ const ActivityMangementDashboard = () => {
               Sports Dashboard
             </Breadcrumb.Item>
           </Breadcrumb>
+        </div>
+        <div className='col-md-4 text-right'>
+          <Button
+            className='ant-btn-primary th-br-4'
+            onClick={handlePhysicalActivity}
+          >
+            View All Activities
+          </Button>
         </div>
         <div className='col-12 py-3'>
           <div className='th-bg-white py-2'>
