@@ -1,9 +1,7 @@
-import { Breadcrumb, Button, Form, Input, Progress, message } from 'antd';
+import { Form, Input, Progress, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import Layout from '../../../containers/Layout';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import endpoints from '../../../config/endpoints';
-import axios from './../../config/axios';
 import { useHistory } from 'react-router-dom';
 import axiosInstance from 'config/axios';
 
@@ -11,7 +9,6 @@ const ChangePasswordPopup = ({
   isPasswordSubmit,
   setIsPasswordSubmit,
   userId,
-  loading,
   setLoading,
   strengthProgress,
   setStrengthProgress,
@@ -189,12 +186,7 @@ const ChangePasswordPopup = ({
                 </ul>
               </div>
               <div className='col-md-6 col-12  mb-3'>
-                <Form
-                  id='passwordForm'
-                  ref={passwordFormRef}
-                  layout={'vertical'}
-                  onFinish={updatePassword}
-                >
+                <Form id='passwordForm' ref={passwordFormRef} layout={'vertical'}>
                   <div className='row py-2 text-left'>
                     <div className='col-12 pb-1'>
                       <Form.Item

@@ -62,6 +62,9 @@ const ActivityMangementDashboard = () => {
   const fetchSubActivityId = (params = {}) => {
     axios
       .get(`${endpoints?.activityManagementDashboard?.studentSportsSubActivityId}`, {
+        params: {
+          erp_id: erp,
+        },
         headers: {
           'X-DTS-HOST': X_DTS_HOST,
           Authorization: `${token}`,
@@ -122,10 +125,7 @@ const ActivityMangementDashboard = () => {
           </Breadcrumb>
         </div>
         <div className='col-md-4 text-right'>
-          <Button
-            className='ant-btn-primary th-br-4'
-            onClick={handlePhysicalActivity}
-          >
+          <Button className='ant-btn-primary th-br-4' onClick={handlePhysicalActivity}>
             View All Activities
           </Button>
         </div>
