@@ -92,7 +92,7 @@ const EbookViewStudent = (props) => {
     const params = {
       session_year: selectedAcademicYear?.id,
       branch_id: selectedBranch?.branch?.id,
-      module_id: moduleId,
+      // module_id: moduleId,
       book_id: props?.showTab == 1 ? 3 : 4,
     };
     axiosInstance
@@ -175,11 +175,9 @@ const EbookViewStudent = (props) => {
   });
 
   useEffect(() => {
-    if (moduleId) {
-      fetchGradeData();
-      fetchVolumeData();
-    }
-  }, [moduleId, props?.showTab]);
+    fetchGradeData();
+    fetchVolumeData();
+  }, [props?.showTab]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -219,7 +217,7 @@ const EbookViewStudent = (props) => {
           academic_year: selectedAcademicYear?.id,
           session_year: selectedAcademicYear?.session_year,
           page_number: page,
-          page_size: '10',
+          page_size: '8',
           book_type: '3',
         };
 
@@ -238,7 +236,7 @@ const EbookViewStudent = (props) => {
           subject: centralSubject,
           domain_name: domain_name,
           page: page,
-          page_size: '10',
+          page_size: '8',
           book_type: '4',
         };
         if (volumeId != null && volumeId?.key != '0') {
@@ -396,6 +394,41 @@ const EbookViewStudent = (props) => {
 
   return (
     <>
+      <div className='col-12 d-flex justify-content-start '>
+        <Form id='filterForm' ref={formRef} layout={'horizontal'} className='col-md-2'>
+          <div className='row align-items-center'>
+            <div className='col-md-12 col-6 pr-0 px-0'>
+              <div className='mb-2 text-left'>Volume</div>
+              <Form.Item name='volume'>
+                <Select
+                  placeholder='Select Volume'
+                  allowClear
+                  defaultActiveFirstOption={true}
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, val) => {
+                    handleBoard(e, val);
+                  }}
+                  onClear={handleClearBoard}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {volumeData?.length > 0 && (
+                    <Option key='0' value='All'>
+                      All
+                    </Option>
+                  )}
+                  {boardOptions}
+                </Select>
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
+      </div>
       <div className='row'>
         <div className='mb-3'>
           <div className='row'>
@@ -426,51 +459,13 @@ const EbookViewStudent = (props) => {
                           : setShowCategoryCount(subjectData?.length);
                       }}
                     >
-                      Show{' '}
-                      {showCategoryCount == subjectData?.length
-                        ? 'Less'
-                        : 'Other Categories'}
+                      Show {showCategoryCount == subjectData?.length ? 'Less' : 'All'}
                     </Button>
                   </div>
                 )}
               </div>
             </div>
           </div>
-        </div>
-        <div className='col-12 d-flex justify-content-end '>
-          <Form id='filterForm' ref={formRef} layout={'horizontal'} className='col-md-2'>
-            <div className='row align-items-center'>
-              <div className='col-md-12 col-6 pr-0 px-0 pl-md-3'>
-                <div className='mb-2 text-left'>Volume</div>
-                <Form.Item name='volume'>
-                  <Select
-                    placeholder='Select Volume'
-                    allowClear
-                    defaultActiveFirstOption={true}
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, val) => {
-                      handleBoard(e, val);
-                    }}
-                    onClear={handleClearBoard}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={false}
-                  >
-                    {volumeData?.length > 0 && (
-                      <Option key='0' value='All'>
-                        All
-                      </Option>
-                    )}
-                    {boardOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-            </div>
-          </Form>
         </div>
       </div>
       <div style={{ minHeight: '55vh' }}>
