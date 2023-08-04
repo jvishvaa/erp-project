@@ -232,13 +232,14 @@ const ViewAssessments = ({ history, ...restProps }) => {
     {
       title: <span className='th-white th-fw-700'>Marks</span>,
       align: 'center',
+      width: '10%',
       render: (text, row) => (
         <span className='th-black-1 th-14'>
           {row?.is_test_completed?.marks_obtained != 'null'
             ? row?.is_test_completed?.marks_obtained
             : row?.test_mode == '1'
             ? 'Not Attempted'
-            : 'Not Uploaded'}
+            : 'Marks entry under progress'}
         </span>
       ),
       visible: status == 1 ? true : false,

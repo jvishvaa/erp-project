@@ -34,6 +34,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../../config/axios';
 import Loader from './../../../../components/loader/loader';
+import moment from 'moment';
 const QuestionPaperInfo = ({
   assessmentId,
   assessmentDate,
@@ -478,21 +479,25 @@ const QuestionPaperInfo = ({
         </a>
       </div>
       <div className={classes.testInfoHeader}>
-        <div>
-          <h4 className={classes.cardTitleHeading}>
-            {testTitle || (fetching ? 'Loading...' : fetchFailed ? `${message}` : '')}
-          </h4>
-          <h4 className={classes.cardDescription}>
-            {[gradeName, ...(subjects || [])].join(', ')}
-          </h4>
-        </div>
-        {testDate && (
-          <div className={classes.cardDate}>
-            {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
-              new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
-            }`}
+        <div className='d-flex flex-column'>
+          <div>
+            <h4 className={classes.cardTitleHeading}>
+              {testTitle || (fetching ? 'Loading...' : fetchFailed ? `${message}` : '')}
+            </h4>
+            <h4 className={classes.cardDescription}>
+              {[gradeName, ...(subjects || [])].join(', ')}
+            </h4>
           </div>
-        )}
+          <div className='text-left'>
+            {testDate && (
+              <div className='th-green th-20 th-600'>
+                {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
+                  moment(testDate).format('llll') || (fetching ? 'Loading...' : '')
+                }`}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );
@@ -505,6 +510,7 @@ const QuestionPaperInfo = ({
           <h6>{ReactHtmlParser(testDescription)}</h6>
         </div>
       </div>
+
       <div>
         <h5 className={classes.cardTitleHeading}>Instructions</h5>
         <div>
@@ -535,6 +541,7 @@ const QuestionPaperInfo = ({
         >
           Take Test
         </Button> */}
+        {console.log('rohan', test_mode, testEndTime, testEndTime < new Date().getTime())}
         {test_mode == 1 ? (
           <>
             {test_type_name != 'Open Test' &&
