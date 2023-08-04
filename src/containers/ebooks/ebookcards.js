@@ -236,7 +236,7 @@ const EbookCards = (props) => {
                       </Tag>
                     </div>
                     <div className='namediv'>
-                      <span className='ebookname'>
+                      <span className='ebookname text-truncate'>
                         {item?.ebook_name.charAt(0).toUpperCase() +
                           item?.ebook_name.slice(1)}
                       </span>
@@ -273,7 +273,7 @@ const EbookCards = (props) => {
                 defaultCurrent={props?.page}
                 total={props?.total}
                 onChange={props?.handlePageChange}
-                pageSize={10}
+                pageSize={8}
               />
             </div>
           ) : (
