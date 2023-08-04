@@ -52,8 +52,8 @@ const UploadSignature = ({
   }, [selectedUserLevel]);
   const fetchErp = () => {
     let reqApi = endpoints.signature.getErpList;
-    console.log(reqApi, 'reqApi');
-    reqApi += `?branch_id=${selectedBranch?.branch?.id}`;
+    reqApi += `?session_year=${selectedAcademicYear?.id}`;
+    reqApi += `&branch_id=${selectedBranch?.branch?.id}`;
     reqApi += `&user_level=${selectedUserLevel?.key}`;
     axiosInstance
       .get(reqApi)
@@ -251,7 +251,8 @@ const UploadSignature = ({
                       suffixIcon={<DownOutlined className='th-grey' />}
                       placeholder={
                         editFlag
-                          ? userLevelList[editData?.author__user__level__user_level - 1]?.level_name
+                          ? userLevelList[editData?.author__user__level__user_level - 1]
+                              ?.level_name
                           : 'Select User Level'
                       }
                       showSearch
@@ -318,7 +319,10 @@ const UploadSignature = ({
                       )}
                     </div>
                   </div>
-                  <div className='th-grey th-14'> Accepted files: [ jpeg, jpg, png ] </div>
+                  <div className='th-grey th-14'>
+                    {' '}
+                    Accepted files: [ jpeg, jpg, png ]{' '}
+                  </div>
                 </div>
               </div>
             </Form>
