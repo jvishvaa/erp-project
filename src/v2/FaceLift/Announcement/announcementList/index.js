@@ -53,6 +53,7 @@ const AnnouncementList = () => {
   const [category, setCategory] = useState('');
   const [flag, setFlag] = useState(false);
   const [showDate, setShowDate] = useState('');
+  const [selectedBranches, setSelectedBranches] = useState([]);
   const history = useHistory();
   const showBranchFilter = [1, 2, 4, 8, 9];
   const branchOptions = branchList?.map((each) => {
@@ -63,6 +64,7 @@ const AnnouncementList = () => {
     );
   });
   const handleBranchChange = (item) => {
+    setSelectedBranches(item);
     const branches = item?.map((i) => i.value).join(',');
     setBranchIds(branches);
   };
@@ -88,6 +90,7 @@ const AnnouncementList = () => {
     } else {
       setSelectedCategoryId('');
       setSelectedCategoryName('All');
+      setPageNumber(1);
     }
   };
 
@@ -234,6 +237,7 @@ const AnnouncementList = () => {
                 filterOption={(input, options) => {
                   return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
+                value={selectedBranches.length>0 ? selectedBranches : []}
               >
                 {branchOptions}
               </Select>
@@ -378,8 +382,7 @@ const AnnouncementList = () => {
               description={
                 <span>
                   No new announcements at the moment.
-                  <br />
-                  " Stay tuned for the updates! "
+                  <br />" Stay tuned for the updates! "
                 </span>
               }
             />

@@ -157,7 +157,6 @@ const UploadSignature = ({
       const file = e.dataTransfer.files;
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      // console.log(type, allowedFiles);
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file);
       } else {
@@ -168,7 +167,6 @@ const UploadSignature = ({
     beforeUpload: (...file) => {
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      // console.log(type, allowedFiles);
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file[1]);
       } else {
@@ -193,8 +191,6 @@ const UploadSignature = ({
       </Option>
     );
   });
-
-  // console.log(editData, 'editData');
 
   return (
     <>
