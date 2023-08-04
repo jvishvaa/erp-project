@@ -18,6 +18,7 @@ import {
   CloseSquareOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import './newebook.scss';
 
 const isOrchids =
@@ -332,10 +333,17 @@ const NewIbook = (props) => {
                             </div>
                           </div>
                           <div className='namediv'>
-                            <span className='ebookname'>
-                              {item?.book_name.charAt(0).toUpperCase() +
-                                item?.book_name.slice(1)}
-                            </span>
+                            <Tooltip
+                              title={
+                                item?.book_name.charAt(0).toUpperCase() +
+                                item?.book_name.slice(1)
+                              }
+                            >
+                              <div className='ebookname col-md-6 p-0 text-truncate'>
+                                {item?.book_name.charAt(0).toUpperCase() +
+                                  item?.book_name.slice(1)}
+                              </div>
+                            </Tooltip>
                           </div>
                           <Divider />
                           <div className='bottomcard'>

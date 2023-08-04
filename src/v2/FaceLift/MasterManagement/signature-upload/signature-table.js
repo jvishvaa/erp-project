@@ -114,7 +114,8 @@ const SignatureUploadv2 = () => {
   const fetchSignatures = () => {
     setLoading(true);
     let reqApi = endpoints.signature.getSignatureList;
-    reqApi += `?branch_id=${selectedBranch?.branch?.id}`;
+    reqApi += `?session_year=${selectedAcademicYear?.id}`;
+    reqApi += `&branch_id=${selectedBranch?.branch?.id}`;
     if (selectedUserLevels.length) {
       const selectedUserLevelIds = selectedUserLevels.map((el) => el.key);
       reqApi += `&user_level=${selectedUserLevelIds.toString()}`;
@@ -142,7 +143,6 @@ const SignatureUploadv2 = () => {
     fetchSignatures(); // fetch another 15 entries to display in table
   }, [page, filterFlag]);
   const handleDelete = (row) => {
-    console.log(row, 'row');
     setLoading(true);
     let reqApi = endpoints.signature.deleteSignatureApi;
     reqApi += `?sign_id=${row?.id}`;
@@ -379,7 +379,10 @@ const SignatureUploadv2 = () => {
                       dataSource={signatures}
                       pagination={false}
                       locale={noDataLocale}
-                      scroll={{ x: window.innerWidth > 400 ? '100%' : 'max-content', y:350}}
+                      scroll={{
+                        x: window.innerWidth > 400 ? '100%' : 'max-content',
+                        y: 350,
+                      }}
                     />
                   </div>
 

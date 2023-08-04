@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Grid, Typography, SvgIcon, Dialog, Slide } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import { Tooltip } from 'antd';
 import { useSelector } from 'react-redux';
-import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
@@ -13,14 +13,6 @@ import moment from 'moment';
 import './newebook.scss';
 import { EyeFilled } from '@ant-design/icons';
 
-const LightTooltip = withStyles((theme) => ({
-  tooltip: {
-    backgroundColor: theme.palette.common.white,
-    color: 'rgba(0, 0, 0, 0.87)',
-    boxShadow: theme.shadows[1],
-    fontSize: 11,
-  },
-}))(Tooltip);
 const useStyles = makeStyles((theme) => ({
   card: {
     textAlign: 'center',
@@ -235,11 +227,18 @@ const EbookCards = (props) => {
                           : ''}
                       </Tag>
                     </div>
-                    <div className='namediv'>
-                      <span className='ebookname text-truncate'>
-                        {item?.ebook_name.charAt(0).toUpperCase() +
-                          item?.ebook_name.slice(1)}
-                      </span>
+                    <div className='namediv '>
+                      <Tooltip
+                        title={
+                          item?.ebook_name.charAt(0).toUpperCase() +
+                          item?.ebook_name.slice(1)
+                        }
+                      >
+                        <div className='ebookname col-md-10 p-0 text-truncate'>
+                          {item?.ebook_name.charAt(0).toUpperCase() +
+                            item?.ebook_name.slice(1)}
+                        </div>
+                      </Tooltip>
                     </div>
                     <Divider />
                     <div className='bottomcard'>
