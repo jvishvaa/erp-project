@@ -267,10 +267,8 @@ const NewIbook = (props) => {
     axiosInstance
       .post(`${endpoints.ebook.ebookClose}`, params)
       .then((res) => {
-        console.log(res);
       })
       .catch((error) => {
-        console.log(error);
       });
   };
 
@@ -380,7 +378,7 @@ const NewIbook = (props) => {
                 defaultCurrent={props?.page}
                 total={props?.total}
                 onChange={props?.handlePageChange}
-                pageSize={8}
+                pageSize={9}
               />
             </div>
           )}

@@ -90,20 +90,16 @@ const EbookCards = (props) => {
       axiosInstance
         .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`)
         .then((res) => {
-          console.log(res);
           setLoading(false);
           if (props?.recently == true) {
-            console.log(data?.page_number, 'hit rec');
             setPageNumber(data?.page_number);
           } else {
             setPageNumber(res?.data?.page_number);
-            console.log(res?.data?.page_number, 'hit not rec');
           }
           setTimeSpent(res?.data?.time_spent);
           setOpen(true);
         })
         .catch((error) => {
-          console.log(error);
           if (error.response.data.status_code == 402) {
             message.error(
               'Access has been denied, please contact your Branch Administration for further assistance'
@@ -129,7 +125,7 @@ const EbookCards = (props) => {
         book_type: '3',
         session_year: selectedAcademicYear?.session_year,
         page_number: props?.page,
-        page_size: '10',
+        page_size: '9',
         domain_name: domain_name,
       });
     } else {
@@ -143,7 +139,7 @@ const EbookCards = (props) => {
         academic_year: selectedAcademicYear?.id,
         session_year: selectedAcademicYear?.session_year,
         page_number: props?.page,
-        page_size: '10',
+        page_size: '9',
         book_type: '3',
       });
     }
@@ -153,15 +149,12 @@ const EbookCards = (props) => {
     axiosInstance
       .post(`${endpoints.ebook.ebookClose}`, params)
       .then((res) => {
-        console.log(res);
       })
       .catch((error) => {
-        console.log(error);
       });
   };
 
   const getPageNum = (pageNum) => {
-    console.log(pageNum);
     setPageNumber(pageNum);
   };
 
@@ -234,9 +227,11 @@ const EbookCards = (props) => {
                           item?.ebook_name.slice(1)
                         }
                       >
-                        <div className='ebookname col-md-10 p-0 text-truncate'>
-                          {item?.ebook_name.charAt(0).toUpperCase() +
-                            item?.ebook_name.slice(1)}
+                        <div style={{width: 200}}>
+                          <div className='ebookname col-md-10 p-0 text-truncate'>
+                            {item?.ebook_name.charAt(0).toUpperCase() +
+                              item?.ebook_name.slice(1)}
+                          </div>
                         </div>
                       </Tooltip>
                     </div>
@@ -272,7 +267,7 @@ const EbookCards = (props) => {
                 defaultCurrent={props?.page}
                 total={props?.total}
                 onChange={props?.handlePageChange}
-                pageSize={8}
+                pageSize={9}
               />
             </div>
           ) : (
@@ -303,7 +298,6 @@ const EbookCards = (props) => {
         </div>
       ) : (
         <div style={{ minHeight: '50vh' }}>
-          {console.log(props, 'pros')}
           <Empty
             style={{ marginTop: '5%' }}
             description={

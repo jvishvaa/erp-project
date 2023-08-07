@@ -171,7 +171,7 @@ const EbookView = (props) => {
       book_type: '3',
       session_year: selectedAcademicYear?.session_year,
       page_number: page,
-      page_size: '8',
+      page_size: '9',
       domain_name: domain_name,
     });
     setRecently(true);
@@ -233,12 +233,12 @@ const EbookView = (props) => {
   });
 
   useEffect(() => {
-    // if (moduleId) {
-    fetchGradeData();
-    fetchVolumeData();
-    setSubjectData([]);
-    // }
-    setRecently(true);
+      // if (moduleId) {
+      fetchGradeData();
+      fetchVolumeData();
+      setSubjectData([]);
+      // }
+      setRecently(true);
   }, [props?.showTab]);
 
   useEffect(() => {
@@ -278,7 +278,7 @@ const EbookView = (props) => {
           academic_year: selectedAcademicYear?.id,
           session_year: selectedAcademicYear?.session_year,
           page_number: page,
-          page_size: '8',
+          page_size: '9',
           book_type: '3',
         });
       } else if (props?.showTab == 2) {
@@ -293,7 +293,7 @@ const EbookView = (props) => {
           volume: volumeId,
           domain_name: domain_name,
           page: page,
-          page_size: '8',
+          page_size: '9',
           book_type: '4',
         });
       }
@@ -307,7 +307,7 @@ const EbookView = (props) => {
         book_type: '3',
         session_year: selectedAcademicYear?.session_year,
         page_number: page,
-        page_size: '8',
+        page_size: '9',
         domain_name: domain_name,
       });
     }
@@ -316,7 +316,7 @@ const EbookView = (props) => {
         book_type: '4',
         session_year: selectedAcademicYear?.session_year,
         page_number: page,
-        page_size: '8',
+        page_size: '9',
         domain_name: domain_name,
       });
     }
@@ -452,7 +452,6 @@ const EbookView = (props) => {
   };
 
   const handleReadEbook = (data) => {
-    console.log(data);
   };
 
   return (
