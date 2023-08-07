@@ -168,7 +168,8 @@ const UploadModal = (props) => {
             >
               Browse Files
             </Button>
-            <p className='pt-2'>Accepted Files [images,pdf,mp3,mp4]</p>
+            <p className='pt-2'>Accepted Files [jpeg,jpg,png,pdf,mp3,mp4]</p>
+            <p className='pt-2'>The maximum size allowed for each file is 50 MB</p>
           </Dragger>
           {fileTypeError && (
             <div className='row pt-3 justify-content-center th-red'>

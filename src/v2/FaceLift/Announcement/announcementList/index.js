@@ -67,14 +67,17 @@ const AnnouncementList = () => {
     setSelectedBranches(item);
     const branches = item?.map((i) => i.value).join(',');
     setBranchIds(branches);
+    setPageNumber(1);
   };
   const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value).format('YYYY-MM-DD'));
       setShowDate(value); // to show on datePicker on tab change
+      setPageNumber(1);
     } else {
       setDate('');
       setShowDate('');
+      setPageNumber(1);
     }
   };
 
