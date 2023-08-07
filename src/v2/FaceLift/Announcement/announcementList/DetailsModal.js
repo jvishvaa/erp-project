@@ -62,16 +62,21 @@ const DetailsModal = (props) => {
     }
   };
   const handleDownload = (files) => {
+    // console.log(files, 'filesss');
     files.map((item) => {
-      const filename = item.split('/')[2];
+      const downloadAll = window.open(
+        `${endpoints.announcementList.s3erp}announcement/${item}`,
+        '_blank'
+      );
+      // const filename = item.split('/')[2];
 
-      axios
-        .get(`${endpoints.announcementList.s3erp}announcement/${item}`, {
-          responseType: 'blob',
-        })
-        .then((res) => {
-          fileDownload(res.data, filename);
-        });
+      // axios
+      //   .get(`${endpoints.announcementList.s3erp}announcement/${item}`, {
+      //     responseType: 'blob',
+      //   })
+      //   .then((res) => {
+      //     fileDownload(res.data, filename);
+      //   });
     });
   };
 
@@ -260,7 +265,7 @@ const DetailsModal = (props) => {
         <div className={`row justify-content-between px-0 th-14`}>
           {hasImageAttachments && (
             <div
-              className='col-md-6 th-bg-grey px-4 pt-5 pt-sm-0'
+              className='col-md-6 th-bg-grey px-4 pt-5 pt-sm-0 carasouel-class'
               style={{ borderRadius: '10px 0px 0px 10px' }}
             >
               <Carousel effect='fade' dots={false} ref={carousel}>
@@ -536,7 +541,7 @@ const DetailsModal = (props) => {
                             </div>
                           </div>
                           <div className='th-grey th-14'>
-                            You can regenerate the password after 30 minutes.
+                            You can regenerate the OTP after 30 minutes.
                           </div>
                         </>
                       )}
