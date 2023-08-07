@@ -31,3 +31,6 @@
 .th-activity-drawer .ant-drawer-content {
   border-top-left-radius: 8px !important;
 }
+.th-assessment-drawer .ant-drawer-content {
+  overflow-x: hidden !important;
+}

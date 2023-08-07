@@ -448,23 +448,27 @@ const ViewAssessments = ({ history, ...restProps }) => {
         )}
         <Drawer
           title='Assessment Details'
-          className='th-activity-drawer'
+          className='th-activity-drawer th-assessment-drawer'
           visible={showInfoDrawer}
           onClose={() => {
-            setShowInfo();
             setShowInfoDrawer(false);
+            setShowInfo();
+            handleCloseInfo();
           }}
           width={'50vw'}
           closable={null}
         >
-          <QuestionPaperInfo
-            assessmentId={showInfo}
-            assessmentDate={testDate}
-            assessmentType={assessmentType}
-            key={showInfo}
-            loading={loading}
-            handleCloseInfo={handleCloseInfo}
-          />
+          {showInfo && (
+            <QuestionPaperInfo
+              assessmentId={showInfo}
+              assessmentDate={testDate}
+              assessmentType={assessmentType}
+              key={showInfo}
+              loading={loading}
+              status={status}
+              handleCloseInfo={handleCloseInfo}
+            />
+          )}
         </Drawer>
       </Layout>
     </>

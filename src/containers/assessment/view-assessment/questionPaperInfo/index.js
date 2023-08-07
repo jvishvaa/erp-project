@@ -40,6 +40,7 @@ const QuestionPaperInfo = ({
   assessmentDate,
   assessmentType,
   handleCloseInfo,
+  status,
   ...restProps
 }) => {
   const [subQuestionsData, setsubQuestionData] = useState([]);
@@ -223,7 +224,6 @@ const QuestionPaperInfo = ({
     axiosInstance
       .get(`${endpoints.assessment.imageupload}?test_id=${assessmentId}`)
       .then((result) => {
-        console.log(result?.data, 'orchids11');
         if (result?.data?.status_code === 200) {
           setShowSubmit(result?.data);
           setAttachments((pre) => [...pre, ...result?.data?.result]);
@@ -235,7 +235,9 @@ const QuestionPaperInfo = ({
       });
   };
 
-  useEffect(() => getAssesmentDocument(), [reloadFlag]);
+  useEffect(() => {
+    getAssesmentDocument();
+  }, [reloadFlag]);
 
   const imageValidator = (file) => {
     if (
@@ -255,7 +257,6 @@ const QuestionPaperInfo = ({
   };
 
   const handleFileUpload = async (file) => {
-    console.log('File', file);
     if (!file) {
       return null;
     }
@@ -541,7 +542,6 @@ const QuestionPaperInfo = ({
         >
           Take Test
         </Button> */}
-        {console.log('rohan', test_mode, testEndTime, testEndTime < new Date().getTime())}
         {test_mode == 1 ? (
           <>
             {test_type_name != 'Open Test' &&
@@ -674,7 +674,6 @@ const QuestionPaperInfo = ({
                           }}
                         >
                           {attachmentPreviews.map((url, pdfindex) => {
-                            console.log('URL', url);
                             let cindex = 0;
                             attachmentPreviews.forEach((item, index) => {
                               if (index < pdfindex) {
@@ -750,7 +749,6 @@ const QuestionPaperInfo = ({
                           <div style={{ position: 'absolute', visibility: 'hidden' }}>
                             <SRLWrapper>
                               {attachmentPreviews.map((url, i) => {
-                                console.log('URLSRL', url);
                                 if (typeof url == 'object') {
                                   return Object.values(url).map((item, i) => {
                                     return (
@@ -842,7 +840,6 @@ const QuestionPaperInfo = ({
                           }}
                         >
                           {showagain.map((url, pdfindex) => {
-                            console.log('URL', url);
                             let cindex = 0;
                             attachmentPreviews.forEach((item, index) => {
                               if (index < pdfindex) {
@@ -907,7 +904,6 @@ const QuestionPaperInfo = ({
                           <div style={{ position: 'absolute', visibility: 'hidden' }}>
                             <SRLWrapper>
                               {showagain.map((url, i) => {
-                                console.log('URLSRL', url);
                                 if (typeof url == 'object') {
                                   return Object.values(url).map((item, i) => {
                                     return (
@@ -952,6 +948,46 @@ const QuestionPaperInfo = ({
                       </div>
                     </div>
                   </Grid>
+                )}
+                {!fetching && (
+                  <div className='row'>
+                    <div className='col-12 mt-3 '>
+                      {moment().diff(testDate, 'seconds') < 0 ? (
+                        <span className='th-green th-fw-500 th-20'>
+                          Test Scheduled At: {moment(testDate).format('llll')}
+                        </span>
+                      ) : (
+                        <div className='col-12 text-center'>
+                          {}
+                          {!showSubmit?.attempted ? (
+                            <span className='th-green th-fw-500 th-20'>
+                              {status == 1 ? (
+                                <span>
+                                  Test ended at{' '}
+                                  {moment(testDate)
+                                    .add(testDuration, 'minutes')
+                                    .format('llll')}
+                                </span>
+                              ) : (
+                                <span>
+                                  Test Ongoing till{' '}
+                                  {moment(testDate)
+                                    .add(testDuration, 'minutes')
+                                    .format('llll')}
+                                </span>
+                              )}
+                            </span>
+                          ) : (
+                            userResponseObj == null && (
+                              <span className='th-green th-fw-500 th-20'>
+                                Marks entry under process
+                              </span>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </>
             )}
