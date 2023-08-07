@@ -128,7 +128,6 @@ const EbookViewStudent = (props) => {
   };
 
   useEffect(() => {
-    console.log('hit subject tab change');
     if (user_level == 13) {
       fetchSubjectData({
         session_year: selectedAcademicYear?.id,
@@ -153,7 +152,6 @@ const EbookViewStudent = (props) => {
   };
 
   const handleBoard = (e, val) => {
-    console.log(e, val, 'volume');
     setvolumeId(val);
   };
   const handleClearBoard = () => {
@@ -199,7 +197,6 @@ const EbookViewStudent = (props) => {
 
   useEffect(() => {
     let domain = window.location.host.split('.');
-    console.log(subjectId, volumeId, page, selectedSubject, centralGrade, 'idss');
     if (
       selectedSubject != '' &&
       centralGrade != undefined &&
@@ -217,7 +214,7 @@ const EbookViewStudent = (props) => {
           academic_year: selectedAcademicYear?.id,
           session_year: selectedAcademicYear?.session_year,
           page_number: page,
-          page_size: '8',
+          page_size: '9',
           book_type: '3',
         };
 
@@ -236,7 +233,7 @@ const EbookViewStudent = (props) => {
           subject: centralSubject,
           domain_name: domain_name,
           page: page,
-          page_size: '8',
+          page_size: '9',
           book_type: '4',
         };
         if (volumeId != null && volumeId?.key != '0') {
@@ -377,7 +374,6 @@ const EbookViewStudent = (props) => {
   };
 
   const handleReadEbook = (data) => {
-    console.log(data);
   };
 
   useEffect(() => {
