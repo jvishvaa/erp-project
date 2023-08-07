@@ -151,7 +151,8 @@ const SignatureUploadv2 = () => {
       .then((result) => {
         if (result.data.status_code === 200) {
           setLoading(false);
-          fetchSignatures(); // data has to be fetchedAfter deleting an entry
+          // fetchSignatures(); // data has to be fetchedAfter deleting an entry
+          handleUpdateTableData();
           message.success(result.data.msg || result.data.message);
         } else {
           setLoading(false);
@@ -172,12 +173,16 @@ const SignatureUploadv2 = () => {
     setUploadFlag(true);
   };
   const handleCloseUploadModal = () => {
-    setPage(1);
+    // setPage(1);
     setUploadFlag(false);
     setEditFlag(false);
   };
   const handleUpdateTableData = () => {
-    fetchSignatures();
+    if(page == 1) {
+      fetchSignatures();
+    } else {
+      setPage(1);
+    }
   };
   const handleOpenImageModal = (row) => {
     setImageData(row);
