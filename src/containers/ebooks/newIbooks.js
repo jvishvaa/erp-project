@@ -266,10 +266,8 @@ const NewIbook = (props) => {
   const ebookClose = (params) => {
     axiosInstance
       .post(`${endpoints.ebook.ebookClose}`, params)
-      .then((res) => {
-      })
-      .catch((error) => {
-      });
+      .then((res) => {})
+      .catch((error) => {});
   };
 
   return (
@@ -371,16 +369,24 @@ const NewIbook = (props) => {
               ))}
           </div>
           {data?.length > 0 && (
-            <div
-              style={{ display: 'flex', justifyContent: 'center', marginBottom: '1%' }}
-            >
-              <Pagination
-                defaultCurrent={props?.page}
-                total={props?.total}
-                onChange={props?.handlePageChange}
-                pageSize={9}
-              />
-            </div>
+            <>
+              <div
+                className='th-16 p-3'
+                style={{ display: 'flex', justifyContent: 'center', color: 'grey' }}
+              >
+                Books cannot be downloaded due to copyright claim
+              </div>
+              <div
+                style={{ display: 'flex', justifyContent: 'center', marginBottom: '1%' }}
+              >
+                <Pagination
+                  defaultCurrent={props?.page}
+                  total={props?.total}
+                  onChange={props?.handlePageChange}
+                  pageSize={9}
+                />
+              </div>
+            </>
           )}
 
           <Dialog
