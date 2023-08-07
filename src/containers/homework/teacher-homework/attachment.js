@@ -60,7 +60,12 @@ const Attachment = (props) => {
             <div className='overlay'>
               <Typography
                 component='h6'
-                style={{ color: '#ffffff', textAlign: 'center', position: 'absolute' }}
+                style={{
+                  color: '#ffffff',
+                  textAlign: 'center',
+                  position: 'absolute',
+                  fontSize: 12,
+                }}
               >
                 {fileName}
               </Typography>
