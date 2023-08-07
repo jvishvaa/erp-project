@@ -148,10 +148,8 @@ const EbookCards = (props) => {
   const ebookClose = (params) => {
     axiosInstance
       .post(`${endpoints.ebook.ebookClose}`, params)
-      .then((res) => {
-      })
-      .catch((error) => {
-      });
+      .then((res) => {})
+      .catch((error) => {});
   };
 
   const getPageNum = (pageNum) => {
@@ -227,7 +225,7 @@ const EbookCards = (props) => {
                           item?.ebook_name.slice(1)
                         }
                       >
-                        <div style={{width: 200}}>
+                        <div style={{ width: 200 }}>
                           <div className='ebookname col-md-10 p-0 text-truncate'>
                             {item?.ebook_name.charAt(0).toUpperCase() +
                               item?.ebook_name.slice(1)}
@@ -262,14 +260,22 @@ const EbookCards = (props) => {
               ))}
           </div>
           {data?.length > 0 ? (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <Pagination
-                defaultCurrent={props?.page}
-                total={props?.total}
-                onChange={props?.handlePageChange}
-                pageSize={9}
-              />
-            </div>
+            <>
+              <div
+                className='th-16 p-3'
+                style={{ display: 'flex', justifyContent: 'center', color: 'grey' }}
+              >
+                Books cannot be downloaded due to copyright claim
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Pagination
+                  defaultCurrent={props?.page}
+                  total={props?.total}
+                  onChange={props?.handlePageChange}
+                  pageSize={9}
+                />
+              </div>
+            </>
           ) : (
             ''
           )}
