@@ -401,7 +401,7 @@ const DetailsModal = (props) => {
             </div>
             <div className='row mt-1 th-12'>
               {data?.role.map((item) => (
-                <div className='th-br-50 th-bg-grey th-black-2 px-3 py-2 mr-2 th-fw-400'>
+                <div className='th-br-50 th-bg-grey th-black-2 px-3 py-2 mr-1 mb-1 th-fw-400'>
                   {getRole(item)}
                 </div>
               ))}
