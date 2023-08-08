@@ -36,6 +36,7 @@ export default {
     mobileLogin: '/erp_user/erp-contact-login/',
     crmHcmToken: `${crm}/qbox/hmac_token/`,
     generateLoginToken: `/erp_user/login_token/`,
+    generateAccessToken: `${baseURL}/erp_user/token/simple/`,
   },
   checkAcademicView: {
     isAcademicView: '/period/period-erp-system-config/',

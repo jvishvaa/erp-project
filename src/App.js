@@ -488,6 +488,8 @@ import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatu
 import LoginFormSSO from 'containers/login/ssologin';
 import IdleTieOutComp from './v2/CheckUserTiming/IdleTimeOutComp';
 import axiosInstance from './config/axios';
+import moment from 'moment';
+import axios from 'axios';
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
@@ -495,7 +497,13 @@ function App({ alert, isMsAPI, erpConfig }) {
     fetchConfigData();
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
+  const [expTime, setExpTime] = useState(null);
   const isV2 = IsV2Checker();
+
+  const userDetails = localStorage?.getItem('userDetails')
+    ? JSON.parse(localStorage?.getItem('userDetails'))
+    : {};
+  const { token, refresh_token } = userDetails;
 
   // IDLE TIMEOUT - LOGOUT AFTER 5 HOURS IF USER IS IN STATIC MODE
   const [idleTimeOut, setIdleTimeOut] = useState(null);
@@ -509,6 +517,67 @@ function App({ alert, isMsAPI, erpConfig }) {
         } else {
           // console.log('Failed to fetch config data from the API.');
           setIdleTimeOut(5 * 60 * 60 * 1000);
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching config data:', error);
+      });
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(checkExpiry, 10000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const checkExpiry = () => {
+    const accessToken = localStorage?.getItem('userDetails')
+      ? JSON.parse(localStorage?.getItem('userDetails'))?.token
+      : null;
+    if (accessToken) {
+      isJwtExpired(accessToken);
+    }
+    console.log('checking running');
+  };
+
+  function isJwtExpired(token) {
+    console.log(token, 'get token');
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      throw new Error('Invalid JWT format');
+    }
+    let payload = JSON.parse(atob(tokenParts[1]));
+
+    var dateString = moment.unix(payload?.exp);
+    var currentTimeSrting = moment();
+    if (currentTimeSrting && dateString) {
+      var duration = moment.duration(dateString.diff(currentTimeSrting));
+      var getMinutes = duration?.get('minutes');
+      var getSeconds = duration?.get('seconds');
+      if (getMinutes == 0 && getSeconds <= 50) {
+        generateAccessToken(refresh_token);
+      }
+      console.log(duration?.get('minutes'), 'getmin');
+      console.log(duration?.get('seconds'), 'getsec');
+    }
+  }
+
+  const generateAccessToken = (refreshToken) => {
+    axiosInstance
+      .post(`${endpoints.auth.generateAccessToken}`, {
+        refresh: refreshToken,
+      })
+      .then((response) => {
+        console.log(response);
+        if (response.status == 200) {
+          console.log('Generate token');
+          // userDetails.token = response?.data?.access_token;
+          let ud = {
+            ...userDetails,
+            token: response?.data?.data,
+          };
+
+          console.log({ ud });
+          localStorage.setItem('userDetails', JSON.stringify(ud));
         }
       })
       .catch((error) => {
