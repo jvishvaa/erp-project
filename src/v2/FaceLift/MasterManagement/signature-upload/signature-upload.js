@@ -13,7 +13,6 @@ import axios from 'axios';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 const { Option } = Select;
-
 const UploadSignature = ({
   setLoading,
   handleCloseUploadModal, // for closing modal
@@ -28,7 +27,7 @@ const UploadSignature = ({
   const [erpList, setErpList] = useState([]);
   const [selectedErp, setSelectedErp] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const [fileSizeError, setFileSizeError] = useState(false);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -143,7 +142,13 @@ const UploadSignature = ({
         message.error(error.response?.data?.message || error.response?.data?.msg);
       });
   };
-
+  useEffect(() => {
+    if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
+      setFileSizeError(true);
+    } else {
+      setFileSizeError(false);
+    }
+  }, [selectedFile]);
   const allowedFiles = ['.jpg', '.jpeg', '.png'];
   const draggerProps = {
     showUploadList: false,
@@ -176,7 +181,6 @@ const UploadSignature = ({
     },
     selectedFile,
   };
-
   const userLevelOptions = userLevelList.map((each) => {
     return (
       <Option key={each?.id} value={each?.level_name}>
@@ -191,7 +195,6 @@ const UploadSignature = ({
       </Option>
     );
   });
-
   return (
     <>
       <Modal
@@ -221,6 +224,7 @@ const UploadSignature = ({
             key='submit'
             type='primary'
             onClick={editFlag ? handleEdit : handleUpload}
+            disabled={fileSizeError}
           >
             {editFlag ? (
               <div>
@@ -291,7 +295,6 @@ const UploadSignature = ({
                     </Select>
                   </Form.Item>
                 </div>
-
                 <div className='col-md-12 col-6 px-2 pt-3'>
                   <div className='row'>
                     <div>
@@ -315,9 +318,22 @@ const UploadSignature = ({
                       )}
                     </div>
                   </div>
-                  <div className='th-grey th-14'>
-                    {' '}
-                    Accepted files: [ jpeg, jpg, png ]{' '}
+                  <div className='mt-2'>
+                    <div className='th-grey th-14'>
+                      {' '}
+                      Accepted files: [ jpeg, jpg, png ]{' '}
+                    </div>
+                    {fileSizeError ? (
+                      <div className='th-red th-14'>
+                        {' '}
+                        Maximum file size allowed is 5MB{' '}
+                      </div>
+                    ) : (
+                      <div className='th-grey th-14'>
+                        {' '}
+                        Maximum file size allowed is 5MB{' '}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -328,5 +344,4 @@ const UploadSignature = ({
     </>
   );
 };
-
 export default UploadSignature;

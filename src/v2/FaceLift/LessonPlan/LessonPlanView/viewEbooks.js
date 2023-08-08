@@ -8,7 +8,7 @@ import {
     Slide,
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import Tooltip from '@material-ui/core/Tooltip';
+// import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
@@ -16,7 +16,7 @@ import EbookPdf from 'containers/ebooks/EbookPDF';
 import {
     EyeFilled,
 } from '@ant-design/icons';
-import { Card, Divider, Tag, Button, Pagination, Empty } from 'antd';
+import { Card, Divider, Tag, Button, Pagination, Empty, Tooltip } from 'antd';
 
 
 const LightTooltip = withStyles((theme) => ({
@@ -118,10 +118,22 @@ const EbookList = (props) => {
                 {data?.length > 0 && data.map((item, index) => (
                     <>
                         <div className='ebookCard' style={{ margin: '1%' }} >
-                            <div style={{ margin: '3%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <img alt="example" src={item?.ebook_thumbnail} style={{ width: '100px', height: '100px', padding: '1%' }} />
-                                <span>{item?.ebook_name}</span>
-                                <Button icon={<EyeFilled />} onClick={() => handleClickOpen(item)} />
+                            <div className='row' style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <img className='col-3' alt="example" src={item?.ebook_thumbnail} style={{ width: '100px', height: '100px', padding: '1%' }} />
+                                {item?.ebook_name?.length>50 ? (
+                                        <Tooltip
+                                        zIndex={2100}
+                                        autoAdjustOverflow='false'
+                                        placement='bottomLeft'
+                                        title={item?.ebook_name}
+                                        overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}>
+                                        <span className='col-8 align-content-center'>{item?.ebook_name?.charAt(0).toUpperCase() + item?.ebook_name?.slice(1,50)+ "..."}</span>
+                                        </Tooltip>
+                                        ) : (
+                                        <span className='col-8 align-content-center'>{item?.ebook_name?.charAt(0).toUpperCase() + item?.ebook_name.slice(1)}</span>
+                                        )}
+                               
+                                <Button className='col-1' icon={<EyeFilled />} onClick={() => handleClickOpen(item)} />
 
                             </div>
                             <Divider style={{ margin: '0px' }} />
