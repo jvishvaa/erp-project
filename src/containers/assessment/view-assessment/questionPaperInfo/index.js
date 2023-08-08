@@ -492,7 +492,7 @@ const QuestionPaperInfo = ({
           <div className='text-left'>
             {testDate && (
               <div className='th-green th-20 th-600'>
-                {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
+                {`${isTestAttempted ? 'Appeared on' : 'Test Scheduled at'} \n ${
                   moment(testDate).format('llll') || (fetching ? 'Loading...' : '')
                 }`}
               </div>
@@ -954,7 +954,7 @@ const QuestionPaperInfo = ({
                     <div className='col-12 mt-3 '>
                       {moment().diff(testDate, 'seconds') < 0 ? (
                         <span className='th-green th-fw-500 th-20'>
-                          Test Scheduled At: {moment(testDate).format('llll')}
+                          Yet to Start
                         </span>
                       ) : (
                         <div className='col-12 text-center'>

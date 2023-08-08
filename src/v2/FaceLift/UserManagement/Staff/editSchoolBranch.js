@@ -18,7 +18,7 @@ const EditSchoolBranch = ({
   setUserDetails,
 }) => {
   const [branches, setBranches] = useState([]);
-  const [moduleId, setModuleId] = useState('');
+  // const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedAcademicYears, setSelectedAcademicYears] = useState();
@@ -29,7 +29,7 @@ const EditSchoolBranch = ({
   const [fakeState, setFakeState] = useState('');
 
   const fetchAcademicYears = () => {
-    getAcademicYears(moduleId).then((data) => {
+    getAcademicYears().then((data) => {
       let transformedData = '';
       transformedData = data?.map((obj = {}) => ({
         id: obj?.id || '',
@@ -43,7 +43,7 @@ const EditSchoolBranch = ({
   const fetchBranches = (acadId) => {
     if (selectedYear) {
       axiosInstance
-        .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
+        .get(`/erp_user/branch/?session_year=${acadId}`)
         .then((res) => {
           if (res?.data?.status_code == 200) {
             const transformedData = res?.data?.data?.results?.map((obj) => ({
@@ -71,30 +71,30 @@ const EditSchoolBranch = ({
     );
   });
 
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'User Management' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item.child_name === 'Create User') {
+  //             setModuleId(item.child_id);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
-    if (moduleId && selectedYear) {
+    if (selectedYear) {
       fetchBranches(selectedYear?.id);
     }
     fetchAcademicYears();
-  }, [moduleId, selectedYear]);
+  }, [selectedYear]);
 
   useEffect(() => {
     if (userDetails) {

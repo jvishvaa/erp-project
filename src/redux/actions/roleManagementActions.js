@@ -181,7 +181,7 @@ export const fetchGrades = (acadId, branches, moduleId) => {
 
   return axios
     .get(
-      `/erp_user/grademapping/?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`
+      `/erp_user/grademapping/?session_year=${acadId}&branch_id=${branchIds}`
     )
     .then((response) => {
       if (response.data.status_code === 200) return response.data.data;
@@ -205,7 +205,7 @@ export const fetchSubjects = (acadId, branches, grades, sections, moduleId) => {
   return axios
     .get(
       // `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${grades?.id}&section=${sections?.id}&module_id=${moduleId}`
-      `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}&module_id=${moduleId}`
+      `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}`
     )
     .then((response) => {
       if (response.data.status_code === 200) return response.data.data;
@@ -224,7 +224,7 @@ export const fetchSections = (acadId, branches, grades, moduleId) => {
   return axios
     .get(
       // `/erp_user/sectionmapping/?session_year=${acadId}&branch_id=${branchIds}&grade_id=${grades.id}&module_id=${moduleId}`
-      `/erp_user/sectionmapping/?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`
+      `/erp_user/sectionmapping/?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}`
     )
     .then((response) => {
       if (response.data.status_code === 200) return response.data.data;
