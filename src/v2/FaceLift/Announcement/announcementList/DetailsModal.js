@@ -61,22 +61,39 @@ const DetailsModal = (props) => {
         return pdfFileIcon;
     }
   };
-  const handleDownload = (files) => {
-    // console.log(files, 'filesss');
-    files.map((item) => {
-      const downloadAll = window.open(
-        `${endpoints.announcementList.s3erp}announcement/${item}`,
-        '_blank'
-      );
-      // const filename = item.split('/')[2];
+  // const handleDownload = (files) => {
+  //   // console.log(files, 'filesss');
+  //   files.map((item) => {
+  //     const downloadAll = window.open(
+  //       `${endpoints.announcementList.s3erp}announcement/${item}`,
+  //       '_blank'
+  //     );
+  //     // const filename = item.split('/')[2];
 
-      // axios
-      //   .get(`${endpoints.announcementList.s3erp}announcement/${item}`, {
-      //     responseType: 'blob',
-      //   })
-      //   .then((res) => {
-      //     fileDownload(res.data, filename);
-      //   });
+  //     // axios
+  //     //   .get(`${endpoints.announcementList.s3erp}announcement/${item}`, {
+  //     //     responseType: 'blob',
+  //     //   })
+  //     //   .then((res) => {
+  //     //     fileDownload(res.data, filename);
+  //     //   });
+  //   });
+  // };
+
+  const handleDownload = async (files) => {
+    for (const item of files) {
+      const fullName = item?.split('_')[item?.split('_').length - 1];
+      let url = `${endpoints.announcementList.s3erp}announcement/${item}`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fullName;
+      await downloadFile(link); // Wait for the download to finish before proceeding to the next iteration
+    }
+  };
+  const downloadFile = (link) => {
+    return new Promise((resolve) => {
+      link.click();
+      setTimeout(resolve, 1000); // Wait for a short duration to ensure the download has started
     });
   };
 
