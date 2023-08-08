@@ -31,23 +31,6 @@ const IdleTieOutComp = ({ idleTimeOut }) => {
     };
   }, []);
 
-  //   const fetchConfigData = () => {
-  //     axiosInstance
-  //       .get(`/assessment/check-sys-config/?config_key=idealTime`)
-  //       .then((response) => {
-  //         if (response?.data?.status_code === '201') {
-  //           const configData = response?.data?.result[0];
-  //           setIdleTimeOut(parseInt(configData.idleTime) * 60 * 1000);
-  //         } else {
-  //           console.log('Failed to fetch config data from the API.');
-  //           setIdleTimeOut(0.5 * 60 * 1000);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.log('Error fetching config data:', error);
-  //       });
-  //   };
-
   let loggedOutTime;
 
   function sendIdleEvent() {

@@ -24,11 +24,11 @@ const ChangePassword = () => {
     },
     {
       isChecked: validationCheck?.hasUpperCase ? true : false,
-      instructions: 'New password must contain atleast 1 capital letter.',
+      instructions: 'New password must contain atleast 1 uppercase.',
     },
     {
       isChecked: validationCheck?.hasLowerCase ? true : false,
-      instructions: 'New password must contain atleast 1 small letter.',
+      instructions: 'New password must contain atleast 1 lowercase.',
     },
     {
       isChecked: validationCheck?.hasDigit ? true : false,
@@ -54,12 +54,21 @@ const ChangePassword = () => {
       sameAsErp: false,
     };
 
-    strengthChecks.length = passwordValue.length >= 8 ? true : false;
-    strengthChecks.hasUpperCase = /[A-Z]+/.test(passwordValue);
-    strengthChecks.hasLowerCase = /[a-z]+/.test(passwordValue);
-    strengthChecks.hasDigit = /[0-9]+/.test(passwordValue);
-    strengthChecks.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
-    strengthChecks.sameAsErp = passwordValue == erpId || !passwordValue ? false : true;
+    const sanitizedPassword = passwordValue.replace(/\s/g, '');
+    passwordFormRef.current.setFieldsValue({
+      new_password: sanitizedPassword,
+    });
+
+    strengthChecks.length = sanitizedPassword.length >= 8 ? true : false;
+    strengthChecks.hasUpperCase = /[A-Z]+/.test(sanitizedPassword);
+    strengthChecks.hasLowerCase = /[a-z]+/.test(sanitizedPassword);
+    strengthChecks.hasDigit = /[0-9]+/.test(sanitizedPassword);
+    strengthChecks.hasSpecialChar = /[^A-Za-z0-9]+/.test(sanitizedPassword);
+    strengthChecks.sameAsErp =
+      sanitizedPassword.toString().toLowerCase() == erpId.toString().toLowerCase() ||
+      !sanitizedPassword
+        ? false
+        : true;
 
     setValidationCheck(strengthChecks);
 
