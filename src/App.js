@@ -490,6 +490,7 @@ import IdleTieOutComp from './v2/CheckUserTiming/IdleTimeOutComp';
 import axiosInstance from './config/axios';
 import moment from 'moment';
 import axios from 'axios';
+import ChangePassword from './v2/FaceLift/ChangePassword';
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
@@ -504,6 +505,9 @@ function App({ alert, isMsAPI, erpConfig }) {
     ? JSON.parse(localStorage?.getItem('userDetails'))
     : {};
   const { token, refresh_token } = userDetails;
+
+  console.log({ userDetails });
+  const history = useHistory();
 
   // IDLE TIMEOUT - LOGOUT AFTER 5 HOURS IF USER IS IN STATIC MODE
   const [idleTimeOut, setIdleTimeOut] = useState(null);
@@ -533,6 +537,18 @@ function App({ alert, isMsAPI, erpConfig }) {
     const accessToken = localStorage?.getItem('userDetails')
       ? JSON.parse(localStorage?.getItem('userDetails'))?.token
       : null;
+
+    const forceUpdate = localStorage?.getItem('userDetails')
+      ? JSON.parse(localStorage?.getItem('userDetails'))?.force_update
+      : null;
+
+    if (forceUpdate == 'true' || forceUpdate == 'True' || forceUpdate == true) {
+      console.log(window.location.pathname == '/change-password' ,'redirect');
+      if (window.location.pathname != '/change-password') {
+        window.location.href = '/change-password';
+      }
+      // history.push('/change-password');
+    }
     if (accessToken) {
       isJwtExpired(accessToken);
     }
@@ -574,6 +590,7 @@ function App({ alert, isMsAPI, erpConfig }) {
           let ud = {
             ...userDetails,
             token: response?.data?.data,
+            force_update: response?.data?.force_update,
           };
 
           console.log({ ud });
@@ -605,6 +622,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                       <ViewStore>
                         <DailyDairyStore>
                           <Switch>
+                            <Route path='/change-password'>
+                              {({ match }) => <ChangePassword match={match} />}
+                            </Route>
                             <Route path='/userprofile'>
                               {({ match }) => <UserProfile match={match} />}
                             </Route>
