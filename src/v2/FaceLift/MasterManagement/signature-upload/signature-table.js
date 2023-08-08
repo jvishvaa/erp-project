@@ -211,7 +211,7 @@ const SignatureUploadv2 = () => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700'>Erp Id</span>,
+      title: <span className='th-white th-fw-700'>ERP ID</span>,
       width: '20%',
       align: 'left',
       dataIndex: 'erp',
