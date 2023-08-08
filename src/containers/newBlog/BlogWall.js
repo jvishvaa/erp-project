@@ -1366,7 +1366,7 @@ const BlogWall = () => {
                           </div> */}
 
                           <div
-                            className='py-2'
+                            className='py-2 mt-2'
                             style={{
                               borderBottom: '1px solid #d9d9d9',
                             }}

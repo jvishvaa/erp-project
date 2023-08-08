@@ -288,7 +288,7 @@ const StudentSideBlog = () => {
 
   let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
   const { school_logo } = schoolDetails;
-  
+
   return (
     <div>
       <Layout>
@@ -493,6 +493,7 @@ const StudentSideBlog = () => {
                               <Rate
                                 disabled
                                 defaultValue={obj?.given_rating}
+                                value={obj?.given_rating}
                                 count={parseInt(obj?.level)}
                               />
                             </div>

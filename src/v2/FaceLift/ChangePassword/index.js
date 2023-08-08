@@ -20,7 +20,7 @@ const ChangePassword = () => {
   let passwordInstructions = [
     {
       isChecked: validationCheck?.length ? true : false,
-      instructions: 'New password must contain atleast 8 character.',
+      instructions: 'New password must contain atleast 8 characters.',
     },
     {
       isChecked: validationCheck?.hasUpperCase ? true : false,
