@@ -72,14 +72,31 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [subjectData, setSubjectData] = useState([]);
   const [subjectId, setSubjectId] = useState();
 
-  useEffect(() => {
-    localStorage.setItem('is_retest', query.get('status') === '2');
-    fetchSubjectData({
+  const fetchGradeData = () => {
+    const params = {
       session_year: selectedAcademicYear?.id,
       branch_id: selectedBranch?.branch?.id,
       // module_id: moduleId,
-      grade: userGrades[0]?.grade_id,
-    });
+    };
+    axiosInstance
+      .get(`/erp_user/grademapping/`, { params })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          fetchSubjectData({
+            session_year: selectedAcademicYear?.id,
+            branch_id: selectedBranch?.branch?.id,
+            // module_id: moduleId,
+            grade: res?.data?.data[0]?.grade_id,
+          });
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  useEffect(() => {
+    localStorage.setItem('is_retest', query.get('status') === '2');
+    fetchGradeData();
   }, []);
 
   useEffect(() => {
