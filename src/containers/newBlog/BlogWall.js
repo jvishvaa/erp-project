@@ -102,11 +102,26 @@ const BlogWall = () => {
   const [publicSpeakingrating, setPublicSpeakingrating] = useState([]);
   const levels = [
     // 'All',
-    'Intra School',
-    'Branch',
-    'Grade',
-    'Section',
-    'Blog of the Month',
+    {
+      name: 'Intra School',
+      visible: true,
+    },
+    {
+      name: 'Branch',
+      visible: true,
+    },
+    {
+      name: 'Grade',
+      visible: true,
+    },
+    {
+      name: 'Section',
+      visible: true,
+    },
+    {
+      name: 'Blog of the Month',
+      visible: categoriesFilter == 'Blogs' ? true : false,
+    },
   ];
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
@@ -619,24 +634,26 @@ const BlogWall = () => {
                     {gradeOptions}
                   </Select>
                 </div>{' '}
-                <div className='col-md-3 col-5 px-0 px-md-2'>
-                  <div className='mb-2 text-left'>Blog List</div>
-                  <Select
-                    className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-                    bordered={true}
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    // value={selectedCategoryName}
-                    placement='bottomRight'
-                    placeholder='Select Blog List'
-                    suffixIcon={<DownOutlined className='th-black-1' />}
-                    dropdownMatchSelectWidth={true}
-                    onChange={(e, val) => handleBlogListChange(e, val)}
-                    allowClear
-                    menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                  >
-                    {blogListOptions}
-                  </Select>
-                </div>{' '}
+                {categoriesFilter !== 'Posts' && (
+                  <div className='col-md-3 col-5 px-0 px-md-2'>
+                    <div className='mb-2 text-left'>Blog List</div>
+                    <Select
+                      className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                      bordered={true}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      // value={selectedCategoryName}
+                      placement='bottomRight'
+                      placeholder='Select Blog List'
+                      suffixIcon={<DownOutlined className='th-black-1' />}
+                      dropdownMatchSelectWidth={true}
+                      onChange={(e, val) => handleBlogListChange(e, val)}
+                      allowClear
+                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
+                    >
+                      {blogListOptions}
+                    </Select>
+                  </div>
+                )}
                 <div className='col-md-3 col-7 px-2 th-br-4'>
                   <div className='mb-2 text-left'>Date</div>
                   <RangePicker
@@ -911,7 +928,12 @@ const BlogWall = () => {
                                       )}
                                     </div>
                                     <div className=''>
-                                      {/* <Rate disabled defaultValue={item.given_rating} /> */}
+                                      <Rate
+                                        disabled
+                                        allowHalf
+                                        value={item.given_rating}
+                                        defaultValue={item.given_rating}
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -1189,8 +1211,10 @@ const BlogWall = () => {
                                   <div className='th-fw-500'>{obj?.name}</div>
                                   <Rate
                                     disabled
+                                    value={obj?.given_rating}
                                     defaultValue={obj?.given_rating}
                                     count={parseInt(obj?.level)}
+                                    allowHalf
                                   />
                                 </div>
                                 <div>
@@ -1834,14 +1858,18 @@ const BlogWall = () => {
                         <div className='d-flex justify-content-between align-items-center flex-wrap'>
                           {levels?.map((item, index) => (
                             <div className='mx-1'>
-                              <Button
-                                onClick={() => onChangeTab(index + 1)}
-                                className={`${
-                                  showTab == index + 1 ? 'th-button-active' : 'th-button'
-                                } th-br-5 mb-2 mb-sm-0`}
-                              >
-                                {item}
-                              </Button>
+                              {item.visible && (
+                                <Button
+                                  onClick={() => onChangeTab(index + 1)}
+                                  className={`${
+                                    showTab == index + 1
+                                      ? 'th-button-active'
+                                      : 'th-button'
+                                  } th-br-5 mb-2 mb-sm-0`}
+                                >
+                                  {item.name}
+                                </Button>
+                              )}
                             </div>
                           ))}
                         </div>
