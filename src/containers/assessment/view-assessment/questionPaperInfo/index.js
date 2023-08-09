@@ -949,16 +949,13 @@ const QuestionPaperInfo = ({
                     </div>
                   </Grid>
                 )}
-                {!fetching && (
+                {!fetching && testDate && (
                   <div className='row'>
                     <div className='col-12 mt-3 '>
-                      {moment().diff(testDate, 'seconds') < 0 ? (
-                        <span className='th-green th-fw-500 th-20'>
-                          Yet to Start
-                        </span>
+                      {testDate && moment().diff(testDate, 'seconds') < 0 ? (
+                        <span className='th-green th-fw-500 th-20'>Yet to Start</span>
                       ) : (
                         <div className='col-12 text-center'>
-                          {}
                           {!showSubmit?.attempted ? (
                             <span className='th-green th-fw-500 th-20'>
                               {status == 1 ? (
