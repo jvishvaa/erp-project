@@ -491,20 +491,23 @@ import axiosInstance from './config/axios';
 import moment from 'moment';
 import axios from 'axios';
 import ChangePassword from './v2/FaceLift/ChangePassword';
+
+const userDetails = localStorage?.getItem('userDetails')
+  ? JSON.parse(localStorage?.getItem('userDetails'))
+  : {};
+const { token, refresh_token } = userDetails;
+
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
     erpConfig();
-    fetchConfigData();
+    if (token) {
+      fetchConfigData();
+    }
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   const [expTime, setExpTime] = useState(null);
   const isV2 = IsV2Checker();
-
-  const userDetails = localStorage?.getItem('userDetails')
-    ? JSON.parse(localStorage?.getItem('userDetails'))
-    : {};
-  const { token, refresh_token } = userDetails;
 
   console.log({ userDetails });
   const history = useHistory();
@@ -515,9 +518,9 @@ function App({ alert, isMsAPI, erpConfig }) {
     axiosInstance
       .get(`/assessment/check-sys-config/?config_key=idealTime`)
       .then((response) => {
-        if (response?.data?.status_code === '200') {
+        if (response?.data?.status_code == '200') {
           const configData = response?.data?.result[0];
-          setIdleTimeOut(parseInt(configData.idleTime) * 60 * 1000);
+          setIdleTimeOut(parseInt(configData) * 60 * 1000);
         } else {
           // console.log('Failed to fetch config data from the API.');
           setIdleTimeOut(5 * 60 * 60 * 1000);
@@ -543,7 +546,7 @@ function App({ alert, isMsAPI, erpConfig }) {
       : null;
 
     if (forceUpdate == 'true' || forceUpdate == 'True' || forceUpdate == true) {
-      console.log(window.location.pathname == '/change-password' ,'redirect');
+      console.log(window.location.pathname == '/change-password', 'redirect');
       if (window.location.pathname != '/change-password') {
         window.location.href = '/change-password';
       }
