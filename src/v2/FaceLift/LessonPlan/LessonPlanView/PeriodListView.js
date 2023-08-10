@@ -2416,17 +2416,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
             ?.filter((item) => item.is_complete == true)
             .map((item) => (
               <div className='d-flex px-md-4 py-2 justify-content-start'>
-                <span
-                  style={{
-                    borderRadius: '50%',
-                    height: 7,
-                    width: 13,
-                    marginTop: 8,
-                    marginRight: 7
-
-                  }}
-                  className='th-bg-primary'
-                ></span>
+                <span style={{ color: 'blue', fontSize: "25px", marginRight: "5px", marginTop: "-9px"}}
+                >&bull;</span>
                 <span>
                   Completed in Sec {item?.section_name?.slice(-1).toUpperCase()} by{' '}
                   {item?.completed_by_user_id == user_id
