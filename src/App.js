@@ -495,13 +495,12 @@ import ChangePassword from './v2/FaceLift/ChangePassword';
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
   : {};
-const { token, refresh_token } = userDetails;
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
     erpConfig();
-    if (token) {
+    if (userDetails?.token) {
       fetchConfigData();
     }
   }, []);
@@ -573,7 +572,7 @@ function App({ alert, isMsAPI, erpConfig }) {
       var getMinutes = duration?.get('minutes');
       var getSeconds = duration?.get('seconds');
       if (getMinutes == 0 && getSeconds <= 50) {
-        generateAccessToken(refresh_token);
+        generateAccessToken(userDetails?.refresh_token);
       }
       console.log(duration?.get('minutes'), 'getmin');
       console.log(duration?.get('seconds'), 'getsec');
