@@ -495,15 +495,17 @@ import ChangePassword from './v2/FaceLift/ChangePassword';
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
   : {};
-
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
     erpConfig();
+  }, []);
+
+  useEffect(() => {
     if (userDetails?.token) {
       fetchConfigData();
     }
-  }, []);
+  }, [userDetails?.token]);
   const [theme, setTheme] = useState(() => themeGenerator());
   const [expTime, setExpTime] = useState(null);
   const isV2 = IsV2Checker();

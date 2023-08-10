@@ -1454,7 +1454,7 @@ const BlogWall = () => {
                             </div>
                             <div
                               className='mt-2'
-                              style={{ height: 250, overflowY: 'auto' }}
+                              style={{ height: 150, overflowY: 'auto' }}
                             >
                               {commentsList?.data?.length > 0 ? (
                                 commentsList?.data?.map((each) => {
@@ -1507,7 +1507,7 @@ const BlogWall = () => {
                             onChange={(e) => setCurrentComment(e.target.value)}
                           />
                         </div>
-                        <div className='col-12 px-0 text-right'>
+                        <div className='col-12 px-0 text-right mb-3'>
                           <span
                             className='th-button-active mt-2 th-width-40 th-br-8 p-1 th-12 text-center th-pointer'
                             onClick={() => submitComment({ type: 'comment' })}

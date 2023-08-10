@@ -450,13 +450,17 @@ const SchoolInformation = ({
                   listHeight={150}
                   onChange={(e, value) => {
                     if (e.includes('all')) {
-                      let values = subjects?.map((e) => e?.item_id);
+                      let values = subjects
+                        ?.map((e) => e?.item_id)
+                        .filter((elem) => elem);
                       schoolForm.current.setFieldsValue({
                         subjects: values,
                       });
                       setSelectedSubjects(subjects?.map((e) => e?.id));
                     } else {
-                      setSelectedSubjects(value?.map((e) => e.id));
+                      setSelectedSubjects(
+                        value?.map((e) => e?.id).filter((elem) => elem)
+                      );
                     }
                   }}
                   showSearch
