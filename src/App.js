@@ -499,14 +499,9 @@ function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
     erpConfig();
+    fetchConfigData();
   }, []);
 
-  useEffect(() => {
-    if (userDetails?.token != undefined || userDetails != null) {
-      console.log(userDetails?.token, 'tok');
-      fetchConfigData();
-    }
-  }, [userDetails?.token]);
   const [theme, setTheme] = useState(() => themeGenerator());
   const [expTime, setExpTime] = useState(null);
   const isV2 = IsV2Checker();
@@ -516,7 +511,12 @@ function App({ alert, isMsAPI, erpConfig }) {
 
   // IDLE TIMEOUT - LOGOUT AFTER 5 HOURS IF USER IS IN STATIC MODE
   const [idleTimeOut, setIdleTimeOut] = useState(null);
+
   const fetchConfigData = () => {
+    let { token = null } = JSON.parse(localStorage.getItem('userDetails')) || {};
+    if (!token) {
+      return;
+    }
     axiosInstance
       .get(`/assessment/check-sys-config/?config_key=idealTime`)
       .then((response) => {
