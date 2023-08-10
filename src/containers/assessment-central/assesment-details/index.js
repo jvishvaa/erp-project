@@ -467,19 +467,23 @@ const AssesmentDetails = ({
       </div> */}
       <div>
         <div className='row align-items-center'>
-          <div className='col-10 px-0'>
+          <div
+            className={`${
+              filterData?.status?.children !== 'Completed' ? 'col-10' : 'col-12'
+            } px-0`}
+          >
             <div className='row'>
               <div className='col-3 px-0'>
                 <span className='th-16'></span>Test Name :
               </div>
-              <div className='col-9 px-0 pl-1'>
+              <div className='col-9 text-wrap pl-0' title={testName}>
                 <span className='th-16'>{testName}</span>
               </div>
             </div>
             {/* Test Name : <span>{testName}</span> */}
           </div>
           {filterData?.status?.children !== 'Completed' && (
-            <div className='col-md-2 d-flex justify-content-end'>
+            <div className='col-2 d-flex justify-content-end'>
               <Button
                 color='primary'
                 variant='contained'
