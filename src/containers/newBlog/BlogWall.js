@@ -140,6 +140,30 @@ const BlogWall = () => {
   const [firstLoad, setFirstLoad] = useState(false);
   const [categoriesList, setCategoriesList] = useState([]);
 
+  const ActvityLocalStorage = () => {
+    axios
+      .post(
+        `${endpoints.newBlog.activityWebLogin}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((response) => {
+        localStorage.setItem(
+          'ActivityManagement',
+          JSON.stringify(response?.data?.result)
+        );
+      });
+  };
+
+  useEffect(() => {
+    ActvityLocalStorage();
+  }, []);
+
   const fetchCategoryOptions = (erp) => {
     axios
       .get(`${endpoints.newBlog.getCategoryOptions}?erp_id=${erp}`, {
