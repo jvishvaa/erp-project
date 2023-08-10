@@ -8,6 +8,7 @@ import imageFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/imageF
 import excelFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/excelFileIcon.svg';
 import pdfFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/pdfFileIcon.svg';
 import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDropIcon.svg';
+import Loading from 'components/loader/loader';
 
 const UploadModal = (props) => {
   const [fileList, setFileList] = useState([]);
@@ -43,6 +44,8 @@ const UploadModal = (props) => {
   };
 
   const handleUpload = () => {
+    props.handleClose();
+    let noOfFiles = uniqueFiles.length;
     uniqueFilesList.forEach((file) => {
       const formData = new FormData();
       formData.append('branch_id', props?.branchId);
@@ -56,12 +59,15 @@ const UploadModal = (props) => {
             message.success(res?.data?.message);
             props.setUploadedFiles((pre) => [...pre, res?.data?.data]);
             setFileList([]);
-            props.handleClose();
-            setUploading(false);
+            noOfFiles = noOfFiles - 1;
+            if (noOfFiles == 0) {
+              setUploading(false);
+            }
           }
         })
         .catch((e) => {
           message.error(e);
+          setUploading(false);
         });
     });
   };
@@ -80,7 +86,7 @@ const UploadModal = (props) => {
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
       if (['jpeg', 'jpg', 'png', 'pdf', 'mp4', 'mpeg'].includes(type)) {
-        if (file[0]?.size > 58085272) {
+        if (file[0]?.size > 52428800) {
           setFileSizeError(true);
         } else {
           setFileList([...fileList, ...file[1]]);
@@ -109,6 +115,7 @@ const UploadModal = (props) => {
 
   return (
     <>
+    {uploading ? <Loading message='Uploading...'/> : null}
       <Modal
         centered
         visible={props?.show}
