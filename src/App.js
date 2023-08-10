@@ -502,7 +502,8 @@ function App({ alert, isMsAPI, erpConfig }) {
   }, []);
 
   useEffect(() => {
-    if (userDetails?.token) {
+    if (userDetails?.token != undefined || userDetails != null) {
+      console.log(userDetails?.token, 'tok');
       fetchConfigData();
     }
   }, [userDetails?.token]);
