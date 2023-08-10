@@ -134,7 +134,7 @@ const AnnouncementList = () => {
             categories_ordered[0],
           ];
           // swapping "Holiday" and "Circular"
-          // Circular Exam Event General TimeTable [Top  5 - not ordered]
+          // Circular Exam Event General TimeTable [Top  5 used - not ordered]
           setCategories(categories_ordered);
         }
       })
@@ -216,9 +216,54 @@ const AnnouncementList = () => {
   const TabContent = () => {
     return (
       <>
-        <div className='row'>
-          <div className='col-md-8 col-0'>{''}</div>
-          <div className='col-md-2 px-3 py-2 py-md-0'>
+        <div className='row mb-3'>
+          <div className='col-md-8 col-0'>
+            <div className='row'>
+              <div className='md-1 px-1 py-1'>
+                <Button
+                  className={`${
+                    selectedCategoryName == 'All' ? 'th-button-active' : 'th-button'
+                  } th-br-4`}
+                  onClick={() => setCategory()}
+                >
+                  <span>All</span>
+                </Button>
+              </div>
+              {categories?.slice(0, showCategoryCount).map((item) => (
+                <div className='md-1 px-1 py-1'>
+                  <Button
+                    className={`${
+                      item?.id == category?.id ? 'th-button-active' : 'th-button'
+                    } th-br-4`}
+                    onClick={
+                      item?.id == category?.id
+                        ? () => setCategory()
+                        : () => setCategory(item)
+                    }
+                  >
+                    <span>{item?.category_name}</span>
+                  </Button>
+                </div>
+              ))}
+              {categories.length > 5 && (
+                <div className='md-1 px-1 py-1'>
+                  <Button
+                    className='th-button th-br-4'
+                    type='secondary'
+                    onClick={() => {
+                      showCategoryCount == categories.length
+                        ? setShowCategoryCount(5)
+                        : setShowCategoryCount(categories.length);
+                    }}
+                  >
+                    Show{' '}
+                    {showCategoryCount == categories.length ? 'Less' : 'Other Categories'}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className='col-md-2 px-1 py-1'>
             {showBranchFilter.includes(userLevel) && (
               <Select
                 getPopupContainer={(trigger) => trigger.parentNode}
@@ -240,7 +285,7 @@ const AnnouncementList = () => {
                 filterOption={(input, options) => {
                   return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
-                value={selectedBranches.length>0 ? selectedBranches : []}
+                value={selectedBranches.length > 0 ? selectedBranches : []}
               >
                 {branchOptions}
               </Select>
@@ -279,58 +324,6 @@ const AnnouncementList = () => {
                 format={'DD/MM/YYYY'}
               />
             </span>
-          </div>
-        </div>
-        <div className='mb-3'>
-          <div className='row'>
-            <div className='col-md-12'>
-              <div className='row'>
-                <div className='md-1 px-1 py-1'>
-                  <Button
-                    className={`${
-                      selectedCategoryName == 'All' ? 'th-button-active' : 'th-button'
-                    } th-br-4`}
-                    onClick={() => setCategory()}
-                  >
-                    <span>All</span>
-                  </Button>
-                </div>
-                {categories?.slice(0, showCategoryCount).map((item) => (
-                  <div className='md-1 px-1 py-1'>
-                    <Button
-                      className={`${
-                        item?.id == category?.id ? 'th-button-active' : 'th-button'
-                      } th-br-4`}
-                      onClick={
-                        item?.id == category?.id
-                          ? () => setCategory()
-                          : () => setCategory(item)
-                      }
-                    >
-                      <span>{item?.category_name}</span>
-                    </Button>
-                  </div>
-                ))}
-                {categories.length > 5 && (
-                  <div className='md-1 px-1 py-1'>
-                    <Button
-                      className='th-button th-br-4'
-                      type='secondary'
-                      onClick={() => {
-                        showCategoryCount == categories.length
-                          ? setShowCategoryCount(5)
-                          : setShowCategoryCount(categories.length);
-                      }}
-                    >
-                      Show{' '}
-                      {showCategoryCount == categories.length
-                        ? 'Less'
-                        : 'Other Categories'}
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </div>
         <>
