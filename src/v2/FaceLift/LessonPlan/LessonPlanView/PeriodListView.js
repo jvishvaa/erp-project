@@ -2408,20 +2408,24 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           visible={showCompletionStatusModal}
           onCancel={closeModal}
           className='th-upload-modal'
+          width={window.innerWidth > 786 ? 550 : window.innerWidth - 10}
           centered
           footer={[]}
         >
           {modalData?.completion_status
             ?.filter((item) => item.is_complete == true)
             .map((item) => (
-              <div className='row px-md-4 py-2 align-items-center justify-content-start'>
+              <div className='d-flex px-md-4 py-2 justify-content-start'>
                 <span
                   style={{
                     borderRadius: '50%',
-                    height: 8,
-                    width: 8,
+                    height: 7,
+                    width: 13,
+                    marginTop: 8,
+                    marginRight: 7
+
                   }}
-                  className='mr-2 th-bg-primary'
+                  className='th-bg-primary'
                 ></span>
                 <span>
                   Completed in Sec {item?.section_name?.slice(-1).toUpperCase()} by{' '}
