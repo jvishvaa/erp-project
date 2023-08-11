@@ -77,8 +77,10 @@ const SignatureUploadv2 = () => {
     // fetchSignatures(); // first 15 api call will be handled by useEffect [page]
   }, []);
   const fetchUserLevels = () => {
+    let api = endpoints.userManagement.userLevelList;
+    api += `?exclude_student=true`;
     axios
-      .get(endpoints.userManagement.userLevelList, {
+      .get(api, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
