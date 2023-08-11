@@ -143,7 +143,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [selectedPeriod, setSelectedPeriod] = useState({});
   const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
   const [combinedQuestionList, setCombinedQuestionList] = useState([]);
-
+  const [hwSubTime, setHwSubTime] = useState(null);
   const questionModify = (questions) => {
     let arr = [];
     let uniqueQuestions = _.uniqBy(questions, 'question');
@@ -183,6 +183,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const closePeriodInfoModal = () => {
     setShowPeriodInfoModal(false);
   };
+
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
+      ? // window.location.host.split('.')[0] === 'test'
+        true
+      : false;
 
   const handleChange = (index, field, value) => {
     const form = questionList[index];
@@ -990,24 +998,68 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     });
   };
 
-  const handleAddHomeWork = async () => {
-    const hour = new Date().getHours();
-    const minute = new Date().getMinutes();
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    let mm = today.getMonth() + 1; // since month starts from 0 here
-    let dd = today.getDate();
-    if (dd < 10) dd = '0' + dd;
-    if (mm < 10) mm = '0' + mm;
-    const formattedToday = `${yyyy}-${mm}-${dd}`;
+  useEffect(() => {
+    fetchHwTimeConfig();
+  }, []);
+  const fetchHwTimeConfig = () => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=hw_creation_time`)
+      .then((response) => {
+        console.log(response, 'res');
+        setHwSubTime(response?.data?.result[0] || null);
+        // setHwSubTime(null);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error, 'err');
+        setLoading(false);
+      });
+  };
 
-    if (
-      ((hour === 12 && minute >= 30) || hour > 12) &&
-      formattedToday === submissionDate
-    ) {
-      return message.error(
-        'Homework creation/updation is locked after 6:30 PM for the same day due date'
-      );
+  function tConv24(time24) {
+    var ts = time24;
+    var H = +ts.substr(0, 2);
+    var h = H % 12 || 12;
+    h = h < 10 ? '0' + h : h; // leading 0 at the left for 1 digit hours
+    var ampm = H < 12 ? ' AM' : ' PM';
+    ts = h + ts.substr(2, 3) + ampm;
+    return ts;
+  }
+
+  const handleAddHomeWork = async () => {
+    if (isOrchids) {
+      let breakTime = hwSubTime && hwSubTime.split(':');
+      let closeHR = (breakTime && breakTime[0]) || null;
+      let closeMin = (breakTime && breakTime[1]) || null;
+      const hour = new Date().getHours();
+      const minute = new Date().getMinutes();
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      let mm = today.getMonth() + 1; // since month starts from 0 here
+      let dd = today.getDate();
+      if (dd < 10) dd = '0' + dd;
+      if (mm < 10) mm = '0' + mm;
+      const formattedToday = `${yyyy}-${mm}-${dd}`;
+      if (
+        closeHR != null &&
+        hour == closeHR &&
+        minute >= closeMin &&
+        formattedToday == submissionDate
+      ) {
+        return message.error(
+          `Homework creation/updation is locked after ${tConv24(
+            hwSubTime
+          )} for the same day due date`
+        );
+      }
+      if (closeHR != null && hour > closeHR && formattedToday == submissionDate) {
+        return message.error(
+          `Homework creation/updation is locked after ${tConv24(
+            hwSubTime
+          )} for the same day due date`
+        );
+      }
     }
     if (!homeworkTitle?.trim().length) {
       message.error('Please fill Homework Title');

@@ -61,17 +61,39 @@ const DetailsModal = (props) => {
         return pdfFileIcon;
     }
   };
-  const handleDownload = (files) => {
-    files.map((item) => {
-      const filename = item.split('/')[2];
+  // const handleDownload = (files) => {
+  //   // console.log(files, 'filesss');
+  //   files.map((item) => {
+  //     const downloadAll = window.open(
+  //       `${endpoints.announcementList.s3erp}announcement/${item}`,
+  //       '_blank'
+  //     );
+  //     // const filename = item.split('/')[2];
 
-      axios
-        .get(`${endpoints.announcementList.s3erp}announcement/${item}`, {
-          responseType: 'blob',
-        })
-        .then((res) => {
-          fileDownload(res.data, filename);
-        });
+  //     // axios
+  //     //   .get(`${endpoints.announcementList.s3erp}announcement/${item}`, {
+  //     //     responseType: 'blob',
+  //     //   })
+  //     //   .then((res) => {
+  //     //     fileDownload(res.data, filename);
+  //     //   });
+  //   });
+  // };
+
+  const handleDownload = async (files) => {
+    for (const item of files) {
+      const fullName = item?.split('_')[item?.split('_').length - 1];
+      let url = `${endpoints.announcementList.s3erp}announcement/${item}`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fullName;
+      await downloadFile(link); // Wait for the download to finish before proceeding to the next iteration
+    }
+  };
+  const downloadFile = (link) => {
+    return new Promise((resolve) => {
+      link.click();
+      setTimeout(resolve, 1000); // Wait for a short duration to ensure the download has started
     });
   };
 
@@ -260,7 +282,7 @@ const DetailsModal = (props) => {
         <div className={`row justify-content-between px-0 th-14`}>
           {hasImageAttachments && (
             <div
-              className='col-md-6 th-bg-grey px-4 pt-5 pt-sm-0'
+              className='col-md-6 th-bg-grey px-4 pt-5 pt-sm-0 carasouel-class'
               style={{ borderRadius: '10px 0px 0px 10px' }}
             >
               <Carousel effect='fade' dots={false} ref={carousel}>
@@ -396,7 +418,7 @@ const DetailsModal = (props) => {
             </div>
             <div className='row mt-1 th-12'>
               {data?.role.map((item) => (
-                <div className='th-br-50 th-bg-grey th-black-2 px-3 py-2 mr-2 th-fw-400'>
+                <div className='th-br-50 th-bg-grey th-black-2 px-3 py-2 mr-1 mb-1 th-fw-400'>
                   {getRole(item)}
                 </div>
               ))}
@@ -499,41 +521,46 @@ const DetailsModal = (props) => {
                           )}
                         </div>
                       ) : (
-                        <div className='d-flex justify-content-between w-100'>
-                          <div>
-                            <Input
-                              type='number'
-                              maxLength={6}
-                              placeholder='Please enter OTP'
-                              showCount
-                              value={otp}
-                              onChange={(e) => {
-                                if (
-                                  !e.target.validity?.valid ||
-                                  Number(e.target.value) < 0
-                                ) {
-                                  message.error('Please enter numbers only');
-                                  return;
-                                } else {
-                                  if (String(e.target.value).length < 7) {
-                                    setOtp(e.target.value);
+                        <>
+                          <div className='d-flex justify-content-between w-100'>
+                            <div>
+                              <Input
+                                type='number'
+                                maxLength={6}
+                                placeholder='Please enter OTP'
+                                showCount
+                                value={otp}
+                                onChange={(e) => {
+                                  if (
+                                    !e.target.validity?.valid ||
+                                    Number(e.target.value) < 0
+                                  ) {
+                                    message.error('Please enter numbers only');
+                                    return;
+                                  } else {
+                                    if (String(e.target.value).length < 7) {
+                                      setOtp(e.target.value);
+                                    }
                                   }
-                                }
-                              }}
-                            />
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <Button
+                                className='th-bg-primary th-white th-br-4 th-fw-500 th-14'
+                                onClick={() => {
+                                  handleOTPVerification();
+                                }}
+                                loading={verifyLoading}
+                              >
+                                Verify OTP
+                              </Button>
+                            </div>
                           </div>
-                          <div>
-                            <Button
-                              className='th-bg-primary th-white th-br-4 th-fw-500 th-14'
-                              onClick={() => {
-                                handleOTPVerification();
-                              }}
-                              loading={verifyLoading}
-                            >
-                              Verify OTP
-                            </Button>
+                          <div className='th-grey th-14'>
+                            You can regenerate the OTP after 30 minutes.
                           </div>
-                        </div>
+                        </>
                       )}
                     </>
                   )

@@ -102,11 +102,26 @@ const BlogWall = () => {
   const [publicSpeakingrating, setPublicSpeakingrating] = useState([]);
   const levels = [
     // 'All',
-    'Intra School',
-    'Branch',
-    'Grade',
-    'Section',
-    'Blog of the Month',
+    {
+      name: 'Intra School',
+      visible: true,
+    },
+    {
+      name: 'Branch',
+      visible: true,
+    },
+    {
+      name: 'Grade',
+      visible: true,
+    },
+    {
+      name: 'Section',
+      visible: true,
+    },
+    {
+      name: 'Blog of the Month',
+      visible: categoriesFilter == 'Blogs' ? true : false,
+    },
   ];
   const [showBlogDetailsDrawer, setShowBlogDetailsDrawer] = useState(false);
   const [blogDrawerData, setBlogDrawerData] = useState(null);
@@ -124,6 +139,30 @@ const BlogWall = () => {
   const [listCount, setListCount] = useState('');
   const [firstLoad, setFirstLoad] = useState(false);
   const [categoriesList, setCategoriesList] = useState([]);
+
+  const ActvityLocalStorage = () => {
+    axios
+      .post(
+        `${endpoints.newBlog.activityWebLogin}`,
+        {},
+        {
+          headers: {
+            Authorization: `${token}`,
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      )
+      .then((response) => {
+        localStorage.setItem(
+          'ActivityManagement',
+          JSON.stringify(response?.data?.result)
+        );
+      });
+  };
+
+  useEffect(() => {
+    ActvityLocalStorage();
+  }, []);
 
   const fetchCategoryOptions = (erp) => {
     axios
@@ -619,24 +658,26 @@ const BlogWall = () => {
                     {gradeOptions}
                   </Select>
                 </div>{' '}
-                <div className='col-md-3 col-5 px-0 px-md-2'>
-                  <div className='mb-2 text-left'>Blog List</div>
-                  <Select
-                    className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
-                    bordered={true}
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    // value={selectedCategoryName}
-                    placement='bottomRight'
-                    placeholder='Select Blog List'
-                    suffixIcon={<DownOutlined className='th-black-1' />}
-                    dropdownMatchSelectWidth={true}
-                    onChange={(e, val) => handleBlogListChange(e, val)}
-                    allowClear
-                    menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                  >
-                    {blogListOptions}
-                  </Select>
-                </div>{' '}
+                {categoriesFilter !== 'Posts' && (
+                  <div className='col-md-3 col-5 px-0 px-md-2'>
+                    <div className='mb-2 text-left'>Blog List</div>
+                    <Select
+                      className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
+                      bordered={true}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      // value={selectedCategoryName}
+                      placement='bottomRight'
+                      placeholder='Select Blog List'
+                      suffixIcon={<DownOutlined className='th-black-1' />}
+                      dropdownMatchSelectWidth={true}
+                      onChange={(e, val) => handleBlogListChange(e, val)}
+                      allowClear
+                      menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
+                    >
+                      {blogListOptions}
+                    </Select>
+                  </div>
+                )}
                 <div className='col-md-3 col-7 px-2 th-br-4'>
                   <div className='mb-2 text-left'>Date</div>
                   <RangePicker
@@ -700,9 +741,9 @@ const BlogWall = () => {
                                     <div className='d-flex flex-column ml-2 th-width-80'>
                                       <div
                                         className='text-truncate th-black-1 th-fw-500 th-width-75'
-                                        title={item?.name}
+                                        title={item?.posted_by}
                                       >
-                                        {item?.name}
+                                        {item?.posted_by}
                                       </div>
                                       <div>
                                         <span className='px-2 th-br-8 th-bg-grey'>
@@ -911,7 +952,12 @@ const BlogWall = () => {
                                       )}
                                     </div>
                                     <div className=''>
-                                      {/* <Rate disabled defaultValue={item.given_rating} /> */}
+                                      <Rate
+                                        disabled
+                                        allowHalf
+                                        value={item.given_rating}
+                                        defaultValue={item.given_rating}
+                                      />
                                     </div>
                                   </div>
                                 </div>
@@ -1189,8 +1235,10 @@ const BlogWall = () => {
                                   <div className='th-fw-500'>{obj?.name}</div>
                                   <Rate
                                     disabled
+                                    value={obj?.given_rating}
                                     defaultValue={obj?.given_rating}
                                     count={parseInt(obj?.level)}
+                                    allowHalf
                                   />
                                 </div>
                                 <div>
@@ -1305,9 +1353,9 @@ const BlogWall = () => {
                             <div className='d-flex flex-column ml-2'>
                               <div
                                 className='text-truncate th-black-1 th-fw-500'
-                                title={selectedPostData?.name}
+                                title={selectedPostData?.posted_by}
                               >
-                                {selectedPostData?.name}
+                                {selectedPostData?.posted_by}
                               </div>
                               <div>
                                 <span className='th-12 th-fw-500 th-black-2'>
@@ -1324,21 +1372,49 @@ const BlogWall = () => {
                         </div>
                         <div className='col-12 px-0'>
                           <div
+                            className='th-bg-grey py-3 px-2 th-br-8'
+                            style={{ outline: '1px solid #d9d9d9' }}
+                          >
+                            <div className=' th-12 th-black-2'>
+                              Title :{' '}
+                              <span className='th-16 th-fw-500 th-black-1'>
+                                {selectedPostData?.name}
+                              </span>
+                            </div>
+                            <div
+                              className='mt-2'
+                              style={{ overflowY: 'auto', maxHeight: '25vh' }}
+                            >
+                              <span className='th-12 th-black-2'>
+                                Description :&nbsp;
+                              </span>
+                              <span className='th-16 th-fw-400 th-black-1'>
+                                {selectedPostData?.description}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-12 px-0'>
+                          {/* <div
                             className=' py-1 mb-1'
                             style={{
                               borderTop: '1px solid #d9d9d9',
                               borderBottom: '1px solid #d9d9d9',
                             }}
                           >
+                            <span className='th-fw-600'> Title -</span>{' '}
+                            {selectedPostData?.name}
                             <div
                               className='mt-2 th-12 th-grey-1'
                               style={{ overflowY: 'auto', maxHeight: '10vh' }}
                             >
+                              <span className='th-fw-600 th-black'> Description -</span>{' '}
                               {selectedPostData?.description}
                             </div>
-                          </div>
+                          </div> */}
+
                           <div
-                            className='py-2'
+                            className='py-2 mt-2'
                             style={{
                               borderBottom: '1px solid #d9d9d9',
                             }}
@@ -1378,7 +1454,7 @@ const BlogWall = () => {
                             </div>
                             <div
                               className='mt-2'
-                              style={{ height: 250, overflowY: 'auto' }}
+                              style={{ height: 150, overflowY: 'auto' }}
                             >
                               {commentsList?.data?.length > 0 ? (
                                 commentsList?.data?.map((each) => {
@@ -1431,7 +1507,7 @@ const BlogWall = () => {
                             onChange={(e) => setCurrentComment(e.target.value)}
                           />
                         </div>
-                        <div className='col-12 px-0 text-right'>
+                        <div className='col-12 px-0 text-right mb-3'>
                           <span
                             className='th-button-active mt-2 th-width-40 th-br-8 p-1 th-12 text-center th-pointer'
                             onClick={() => submitComment({ type: 'comment' })}
@@ -1799,23 +1875,31 @@ const BlogWall = () => {
             <div className='col-12 '>
               <div className='d-flex align-items-center justify-content-between flex-wrap'>
                 <div className='d-flex justify-content-start align-items-center flex-wrap'>
-                  <div className=' th-black-2 th-fw-500 mr-2'>Select Level</div>
-                  <div className=''>
-                    <div className='d-flex justify-content-between align-items-center flex-wrap'>
-                      {levels?.map((item, index) => (
-                        <div className='mx-1'>
-                          <Button
-                            onClick={() => onChangeTab(index + 1)}
-                            className={`${
-                              showTab == index + 1 ? 'th-button-active' : 'th-button'
-                            } th-br-5 mb-2 mb-sm-0`}
-                          >
-                            {item}
-                          </Button>
+                  {categoriesFilter === 'Posts' || categoriesFilter === 'Blogs' ? (
+                    <>
+                      <div className=' th-black-2 th-fw-500 mr-2'>Select Level</div>
+                      <div className=''>
+                        <div className='d-flex justify-content-between align-items-center flex-wrap'>
+                          {levels?.map((item, index) => (
+                            <div className='mx-1'>
+                              {item.visible && (
+                                <Button
+                                  onClick={() => onChangeTab(index + 1)}
+                                  className={`${
+                                    showTab == index + 1
+                                      ? 'th-button-active'
+                                      : 'th-button'
+                                  } th-br-5 mb-2 mb-sm-0`}
+                                >
+                                  {item.name}
+                                </Button>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                      </div>
+                    </>
+                  ) : null}
                 </div>
                 <div className='d-flex my-2 my-md-2'>
                   <div className='d-flex align-items-center justify-content-between'>

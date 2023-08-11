@@ -2,7 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import Layout from '../../Layout';
 import { generateQueryParamSting } from '../../../utility-functions';
-import { Breadcrumb, Drawer, Select, Table, Tabs, Tag, message } from 'antd';
+import {
+  Breadcrumb,
+  Drawer,
+  Select,
+  Table,
+  Tabs,
+  Tag,
+  message,
+  Result,
+  Empty,
+} from 'antd';
 import QuestionPaperInfo from './questionPaperInfo';
 import endpoints from '../../../config/endpoints';
 import endpointsV2 from 'v2/config/endpoints';
@@ -12,6 +22,7 @@ import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import FeeReminderAssesment from 'containers/assessment-central/Feereminder';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import { SmileOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -40,7 +51,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [testsList, setTestsList] = useState([]);
   const [pageNumber, setPageNumber] = useState(+getSearchParams(restProps).page || 1);
   const [totalCount, setTotalCount] = useState(0);
@@ -61,14 +72,31 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [subjectData, setSubjectData] = useState([]);
   const [subjectId, setSubjectId] = useState();
 
-  useEffect(() => {
-    localStorage.setItem('is_retest', query.get('status') === '2');
-    fetchSubjectData({
+  const fetchGradeData = () => {
+    const params = {
       session_year: selectedAcademicYear?.id,
       branch_id: selectedBranch?.branch?.id,
       // module_id: moduleId,
-      grade: userGrades[0]?.grade_id,
-    });
+    };
+    axiosInstance
+      .get(`/erp_user/grademapping/`, { params })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          fetchSubjectData({
+            session_year: selectedAcademicYear?.id,
+            branch_id: selectedBranch?.branch?.id,
+            // module_id: moduleId,
+            grade: res?.data?.data[0]?.grade_id,
+          });
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  useEffect(() => {
+    localStorage.setItem('is_retest', query.get('status') === '2');
+    fetchGradeData();
   }, []);
 
   useEffect(() => {
@@ -84,7 +112,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
   }, [window.location.pathname]);
 
   const fetchTestList = () => {
-    setTestsList([]);
     setTotalCount(0);
     setLoading(true);
     const statusId = status == 0 ? 2 : 1;
@@ -93,13 +120,13 @@ const ViewAssessments = ({ history, ...restProps }) => {
         ? {
             user: user,
             page: pageNumber,
-            page_size: 9,
+            // page_size: 9,
             status: statusId,
             session_year: sessionYear?.id,
           }
         : {
             page: pageNumber,
-            page_size: 9,
+            // page_size: 9,
             session_year: sessionYear?.id,
           };
     let endpoint =
@@ -120,6 +147,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
         }
       })
       .catch((error) => {
+        setTestsList([]);
         message.error(error.message);
       })
       .finally(() => {
@@ -176,19 +204,19 @@ const ViewAssessments = ({ history, ...restProps }) => {
   let columns = [
     {
       title: <span className='th-white th-fw-700 '>Sl no.</span>,
-      // dataIndex: 'erp_user',
       render: (text, row, index) => (
-        <span className='th-black-1 th-14 pl-4'>{(pageNumber - 1) * 9 + index + 1}.</span>
+        <span className='th-black-1 th-14 pl-4'>
+          {(pageNumber - 1) * 15 + index + 1}.
+        </span>
       ),
       visible: true,
     },
     {
       title: <span className='th-white th-fw-700'>Subject</span>,
       dataIndex: 'subject_name',
-      // width: '25%',
       render: (data) => (
-        <div className='th-black-1 th-14 text-truncate' title={data?.toString()}>
-          {data?.toString()}
+        <div className='th-black-1 th-14 text-wrap th-width-100' title={data?.toString()}>
+          {data?.map((el) => el).join(', ')}
         </div>
       ),
       visible: true,
@@ -196,9 +224,9 @@ const ViewAssessments = ({ history, ...restProps }) => {
     {
       title: <span className='th-white th-fw-700'>Test Name</span>,
       dataIndex: 'test_name',
-      // width: '25%',
+      width: '20%',
       render: (data) => (
-        <div className='th-black-1 th-14 text-truncate' title={data}>
+        <div className='th-black-1 th-14 text-truncate th-width-95' title={data}>
           {data}
         </div>
       ),
@@ -207,7 +235,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
     {
       title: <span className='th-white th-fw-700'>Test Mode</span>,
       dataIndex: 'test_mode',
-      // width: '25%',
       render: (data) => (
         <span className='th-black-1 th-14'>{data == '1' ? 'Online' : 'Offline'}</span>
       ),
@@ -216,40 +243,42 @@ const ViewAssessments = ({ history, ...restProps }) => {
     {
       title: <span className='th-white th-fw-700'>Test Type</span>,
       dataIndex: 'test_type_name',
-      // width: '25%',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
       visible: status == 2 ? false : true,
     },
     {
       title: <span className='th-white th-fw-700'>Marks</span>,
-      // dataIndex: 'test_type_name',
       align: 'center',
+      width: '10%',
       render: (text, row) => (
         <span className='th-black-1 th-14'>
           {row?.is_test_completed?.marks_obtained != 'null'
             ? row?.is_test_completed?.marks_obtained
             : row?.test_mode == '1'
             ? 'Not Attempted'
-            : 'Not Uploaded'}
+            : 'Marks entry under progress'}
         </span>
       ),
       visible: status == 1 ? true : false,
     },
     {
-      title: <span className='th-white th-fw-700'>Test Date & Time</span>,
+      title: (
+        <span className='th-white th-fw-700'>
+          {status == 0 ? 'Scheduled Date & Time' : 'Test Date & Time'}
+        </span>
+      ),
+
       dataIndex: 'test_date',
       width: '22%',
       align: 'center',
       render: (data) => (
         <span className='th-black-1 th-14'>
-          {data ? moment(data).format('llll') : ''}
+          {data ? moment(data).format('llll') : '-'}
         </span>
       ),
-      visible: status == 0 ? false : true,
     },
     {
       title: <span className='th-white th-fw-700'>Action</span>,
-      // width: '25%',
       align: 'center',
       render: (data) => (
         <div>
@@ -279,7 +308,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
       <div className='pb-3'>
         <div className='col-12 pb-2'>
           <div className='row align-items-center'>
-            <div className='th-black-1 th-fw-600 th-16'>Select Subject</div>
+            <div className='th-black-1 th-fw-600 th-16'>Subject</div>
             <div className='pl-2 col-sm-2 col-6'>
               <Select
                 placeholder='Select Subject'
@@ -316,17 +345,59 @@ const ViewAssessments = ({ history, ...restProps }) => {
             loading={loading}
             columns={columns}
             dataSource={testsList}
+            locale={{
+              emptyText: (
+                <div>
+                  {!loading ? (
+                    status == 0 ? (
+                      <Result
+                        icon={<SmileOutlined />}
+                        title={
+                          <span>
+                            Great news! There are currently no tests scheduled for the
+                            upcoming days.
+                          </span>
+                        }
+                        subTitle={
+                          <span>
+                            It's a perfect opportunity to focus on your studies, revise
+                            your lessons, and prepare for any future assessments.
+                            Remember, consistent learning and practice are key to
+                            achieving academic success.
+                          </span>
+                        }
+                      />
+                    ) : status == 1 ? (
+                      <Result
+                        icon={<InfoCircleOutlined />}
+                        title={<span>There are no completed tests for you.</span>}
+                        subTitle={
+                          <span>
+                            Remember, learning is a continuous journey, and there will be
+                            more opportunities for growth and success in the future. Keep
+                            up the excellent work and maintain your enthusiasm for
+                            learning!
+                          </span>
+                        }
+                      />
+                    ) : (
+                      <Empty description={'No Retest available'} />
+                    )
+                  ) : null}
+                </div>
+              ),
+            }}
             pagination={{
               position: ['bottomCenter'],
               total: totalCount,
               current: Number(pageNumber),
-              pageSize: 9,
+              pageSize: 15,
               showSizeChanger: false,
               onChange: (e) => {
                 handlePagination(e);
               },
             }}
-            // scroll={{ y: '400px' }}
+            scroll={{ y: '400px' }}
           />
         </div>
       </div>
@@ -371,10 +442,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
           </div>
         </div>
         {(user_level == 13 || user_level == 12) && isOrchids ? (
-          <div
-            className='row justify-content-end'
-            style={{ position: 'fixed', bottom: '5%', right: '2%' }}
-          >
+          <div className='' style={{ position: 'fixed', bottom: '5%', right: '2%' }}>
             <div
               className='th-bg-white px-2 py-1 th-br-6 th-pointer'
               style={{ border: '1px solid #d9d9d9' }}
@@ -397,23 +465,27 @@ const ViewAssessments = ({ history, ...restProps }) => {
         )}
         <Drawer
           title='Assessment Details'
-          className='th-activity-drawer'
+          className='th-activity-drawer th-assessment-drawer'
           visible={showInfoDrawer}
           onClose={() => {
-            setShowInfo();
             setShowInfoDrawer(false);
+            setShowInfo();
+            handleCloseInfo();
           }}
           width={'50vw'}
           closable={null}
         >
-          <QuestionPaperInfo
-            assessmentId={showInfo}
-            assessmentDate={testDate}
-            assessmentType={assessmentType}
-            key={showInfo}
-            loading={loading}
-            handleCloseInfo={handleCloseInfo}
-          />
+          {showInfo && (
+            <QuestionPaperInfo
+              assessmentId={showInfo}
+              assessmentDate={testDate}
+              assessmentType={assessmentType}
+              key={showInfo}
+              loading={loading}
+              status={status}
+              handleCloseInfo={handleCloseInfo}
+            />
+          )}
         </Drawer>
       </Layout>
     </>

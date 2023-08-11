@@ -8,9 +8,9 @@ import { useSelector } from 'react-redux';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loading from '../../components/loader/loader';
-import { getModuleInfo } from '../../utility-functions';
+// import { getModuleInfo } from '../../utility-functions';
 
-const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
+const Filter = ({ handleFilter, clearFilter, handleClearFilter }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [acadList, setAcadList] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -21,7 +21,7 @@ const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
   );
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
-  const [customGrade, setCustomGrade] = useState('')
+  const [customGrade, setCustomGrade] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [loading, setLoading] = useState(false);
   const [volumeList, setVolumeList] = useState([]);
@@ -38,7 +38,7 @@ const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
-    setSelectedVolume('')  
+    setSelectedVolume('');
   }, [clearFilter]);
 
   function ApiCal() {
@@ -67,12 +67,16 @@ const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
       .then((response) => {
         setLoading(false);
         if (response.data.status_code === 200) {
-          if (key === 'acad') {          
+          if (key === 'acad') {
             setAcadList(response.data.data);
+            // withAxiosInstance(
+            //   `${endpoints.communication.branches}?session_year=${
+            //     selectedAcad?.id
+            //   }&module_id=${getModuleInfo('Ebook View').id}`,
+            //   'branch'
+            // );
             withAxiosInstance(
-              `${endpoints.communication.branches}?session_year=${
-                selectedAcad?.id
-              }&module_id=${getModuleInfo('Ebook View').id}`,
+              `${endpoints.communication.branches}?session_year=${selectedAcad?.id}`,
               'branch'
             );
           } else if (key === 'branch') {
@@ -90,29 +94,28 @@ const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
       });
   }
 
-  useEffect(() => {   
+  useEffect(() => {
     withAxiosInstance(
-      `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${
-        getModuleInfo('Ebook View').id
-      }`,
+      // `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${getModuleInfo('Ebook View').id}`,'branch');
+      `${endpoints.communication.branches}?session_year=${selectedAcad?.id}`,
       'branch'
-    );   
+    );
     ApiCal();
   }, []);
 
-  function handleClear() {    
+  function handleClear() {
     setSelectedVolume('');
     setGradeList([]);
     setSubjectList([]);
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
-    handleClearFilter()
+    handleClearFilter();
   }
 
   return (
     <>
-      <Grid container spacing={2} style={{ padding: '0px 10px' }}>        
+      <Grid container spacing={2} style={{ padding: '0px 10px' }}>
         <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -121,12 +124,16 @@ const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
             onChange={(event, value) => {
               setSelectedBranch(value);
               if (value) {
+                // withAxiosInstance(
+                //   `${endpoints.ebook.EbookMappedGrade}?session_year=${
+                //     selectedAcad?.id
+                //   }&branch_id=${value.branch.id}&module_id=${
+                //     getModuleInfo('Ebook View').id
+                //   }`,
+                //   'grade'
+                // );
                 withAxiosInstance(
-                  `${endpoints.ebook.EbookMappedGrade}?session_year=${
-                    selectedAcad?.id
-                  }&branch_id=${value.branch.id}&module_id=${
-                    getModuleInfo('Ebook View').id
-                  }`,
+                  `${endpoints.ebook.EbookMappedGrade}?session_year=${selectedAcad?.id}&branch_id=${value.branch.id}`,
                   'grade'
                 );
               }
@@ -154,10 +161,16 @@ const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
             size='small'
             onChange={(event, value) => {
               if (value) {
+                // withAxiosInstance(
+                //   `${endpoints.ebook.EbookMappedGrade}?branch_id=${
+                //     selectedBranch.branch.id
+                //   }&session_year=${selectedAcademicYear?.id}&grade_id=${
+                //     value.erp_grade
+                //   }&module_id=${getModuleInfo('Ebook View').id}`,
+                //   'subject'
+                // );
                 withAxiosInstance(
-                  `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value.erp_grade}&module_id=${
-                    getModuleInfo('Ebook View').id
-                  }`,
+                  `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value.erp_grade}`,
                   'subject'
                 );
               }
@@ -188,10 +201,10 @@ const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
             size='small'
             onChange={(event, value) => {
               setSelectedVolume('');
-              if(value){
-                let subject = value?.central_grade
+              if (value) {
+                let subject = value?.central_grade;
                 setSelectedSubject(value);
-                setCustomGrade(subject)
+                setCustomGrade(subject);
               }
             }}
             className='dropdownIcon'
@@ -205,7 +218,7 @@ const Filter = ({ handleFilter, clearFilter , handleClearFilter}) => {
                 option.subject_id_name[0].erp_sub_name) ||
               ''
             }
-            value={selectedSubject}      
+            value={selectedSubject}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField

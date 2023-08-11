@@ -215,7 +215,7 @@ const StudentSideBlog = () => {
                   }}
                 />
               </div>
-              {/* <div className='col-12 py-2 '>
+              <div className='col-12 py-2 '>
                 {tabValue == '1' ? null : (
                   <Rate
                     disabled
@@ -224,7 +224,7 @@ const StudentSideBlog = () => {
                     count={Number(each?.user_reviews?.level?.rating)}
                   />
                 )}
-              </div> */}
+              </div>
             </div>
           </div>
         ))
@@ -288,7 +288,7 @@ const StudentSideBlog = () => {
 
   let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
   const { school_logo } = schoolDetails;
-  
+
   return (
     <div>
       <Layout>
@@ -493,7 +493,9 @@ const StudentSideBlog = () => {
                               <Rate
                                 disabled
                                 defaultValue={obj?.given_rating}
+                                value={obj?.given_rating}
                                 count={parseInt(obj?.level)}
+                                allowHalf
                               />
                             </div>
                             <div>

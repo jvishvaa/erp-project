@@ -486,15 +486,126 @@ import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff'
 import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
 import LoginFormSSO from 'containers/login/ssologin';
-// import PPTView from './components/attachment-previewer/attachment-previewer-ui/pptview';
+import IdleTieOutComp from './v2/CheckUserTiming/IdleTimeOutComp';
+import axiosInstance from './config/axios';
+import moment from 'moment';
+import axios from 'axios';
+import ChangePassword from './v2/FaceLift/ChangePassword';
 
+const userDetails = localStorage?.getItem('userDetails')
+  ? JSON.parse(localStorage?.getItem('userDetails'))
+  : {};
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
     erpConfig();
+    fetchConfigData();
   }, []);
+
   const [theme, setTheme] = useState(() => themeGenerator());
+  const [expTime, setExpTime] = useState(null);
   const isV2 = IsV2Checker();
+
+  console.log({ userDetails });
+  const history = useHistory();
+
+  // IDLE TIMEOUT - LOGOUT AFTER 5 HOURS IF USER IS IN STATIC MODE
+  const [idleTimeOut, setIdleTimeOut] = useState(null);
+
+  const fetchConfigData = () => {
+    let { token = null } = JSON.parse(localStorage.getItem('userDetails')) || {};
+    if (!token) {
+      return;
+    }
+    axiosInstance
+      .get(`/assessment/check-sys-config/?config_key=idealTime`)
+      .then((response) => {
+        if (response?.data?.status_code == '200') {
+          const configData = response?.data?.result[0];
+          setIdleTimeOut(parseInt(configData) * 60 * 1000);
+        } else {
+          // console.log('Failed to fetch config data from the API.');
+          setIdleTimeOut(5 * 60 * 60 * 1000);
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching config data:', error);
+      });
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(checkExpiry, 10000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const checkExpiry = () => {
+    const accessToken = localStorage?.getItem('userDetails')
+      ? JSON.parse(localStorage?.getItem('userDetails'))?.token
+      : null;
+
+    const forceUpdate = localStorage?.getItem('userDetails')
+      ? JSON.parse(localStorage?.getItem('userDetails'))?.force_update
+      : null;
+
+    if (forceUpdate == 'true' || forceUpdate == 'True' || forceUpdate == true) {
+      console.log(window.location.pathname == '/change-password', 'redirect');
+      if (window.location.pathname != '/change-password') {
+        window.location.href = '/change-password';
+      }
+      // history.push('/change-password');
+    }
+    if (accessToken) {
+      isJwtExpired(accessToken);
+    }
+    console.log('checking running');
+  };
+
+  function isJwtExpired(token) {
+    console.log(token, 'get token');
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      throw new Error('Invalid JWT format');
+    }
+    let payload = JSON.parse(atob(tokenParts[1]));
+
+    var dateString = moment.unix(payload?.exp);
+    var currentTimeSrting = moment();
+    if (currentTimeSrting && dateString) {
+      var duration = moment.duration(dateString.diff(currentTimeSrting));
+      var getMinutes = duration?.get('minutes');
+      var getSeconds = duration?.get('seconds');
+      if (getMinutes == 0 && getSeconds <= 50) {
+        generateAccessToken(userDetails?.refresh_token);
+      }
+      console.log(duration?.get('minutes'), 'getmin');
+      console.log(duration?.get('seconds'), 'getsec');
+    }
+  }
+
+  const generateAccessToken = (refreshToken) => {
+    axiosInstance
+      .post(`${endpoints.auth.generateAccessToken}`, {
+        refresh: refreshToken,
+      })
+      .then((response) => {
+        console.log(response);
+        if (response.status == 200) {
+          console.log('Generate token');
+          // userDetails.token = response?.data?.access_token;
+          let ud = {
+            ...userDetails,
+            token: response?.data?.data,
+            force_update: response?.data?.force_update,
+          };
+
+          console.log({ ud });
+          localStorage.setItem('userDetails', JSON.stringify(ud));
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching config data:', error);
+      });
+  };
 
   return (
     // <ErrorBoundary404 HomeButton={false}>
@@ -504,6 +615,7 @@ function App({ alert, isMsAPI, erpConfig }) {
         <link rel='icon' href={logo} />
       </Helmet>
 
+      {idleTimeOut && <IdleTieOutComp idleTimeOut={idleTimeOut} />}
       {!isV2 ? (
         <Router>
           <AlertNotificationProvider>
@@ -515,6 +627,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                       <ViewStore>
                         <DailyDairyStore>
                           <Switch>
+                            <Route path='/change-password'>
+                              {({ match }) => <ChangePassword match={match} />}
+                            </Route>
                             <Route path='/userprofile'>
                               {({ match }) => <UserProfile match={match} />}
                             </Route>

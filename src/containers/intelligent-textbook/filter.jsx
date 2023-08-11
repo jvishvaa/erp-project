@@ -11,7 +11,7 @@ import Loading from '../../components/loader/loader';
 import { getModuleInfo } from '../../utility-functions';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-const Filter = ({ handleFilter, clearFilter, setclearFilter , setFiltered }) => {
+const Filter = ({ handleFilter, clearFilter, setclearFilter, setFiltered }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const [acadList, setAcadList] = useState([]);
@@ -62,11 +62,12 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter , setFiltered }) => 
   ];
   useEffect(() => {
     axiosInstance
-      .get(
-        `${endpoints.userManagement.academicYear}?module_id=${
-          getModuleInfo('Ebook View').id
-        }`
-      )
+      // .get(
+      //   `${endpoints.userManagement.academicYear}?module_id=${
+      //     getModuleInfo('Ebook View').id
+      //   }`
+      // )
+      .get(`${endpoints.userManagement.academicYear}`)
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setAcademicYear(res?.data?.data);
@@ -150,10 +151,14 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter , setFiltered }) => 
   }
 
   useEffect(() => {
+    // withAxiosInstance(
+    //   `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${
+    //     getModuleInfo('Ebook View').id
+    //   }`,
+    //   'branch'
+    // );
     withAxiosInstance(
-      `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${
-        getModuleInfo('Ebook View').id
-      }`,
+      `${endpoints.communication.branches}?session_year=${selectedAcad?.id}`,
       'branch'
     );
   }, []);
@@ -297,7 +302,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter , setFiltered }) => 
     setSelectedChapterList('');
     setSelectedKeyConcept('');
     setSelectedBoardId([]);
-    setFiltered(false)
+    setFiltered(false);
   }
 
   useEffect(() => {
@@ -321,12 +326,16 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter , setFiltered }) => 
               // setBoardId(value?.branch_code)
               if (value) {
                 setSelectedBranch(value);
+                // withAxiosInstance(
+                //   `${endpoints.ibook.ibookMappedGrade}?session_year=${
+                //     selectedAcad?.id
+                //   }&branch_id=${value.branch.id}&module_id=${
+                //     getModuleInfo('Ebook View').id
+                //   }`,
+                //   'grade'
+                // );
                 withAxiosInstance(
-                  `${endpoints.ibook.ibookMappedGrade}?session_year=${
-                    selectedAcad?.id
-                  }&branch_id=${value.branch.id}&module_id=${
-                    getModuleInfo('Ebook View').id
-                  }`,
+                  `${endpoints.ibook.ibookMappedGrade}?session_year=${selectedAcad?.id}&branch_id=${value.branch.id}`,
                   'grade'
                 );
               }

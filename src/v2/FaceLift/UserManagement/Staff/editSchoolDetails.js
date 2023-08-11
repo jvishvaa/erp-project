@@ -17,7 +17,7 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
   const [roles, setRoles] = useState([]);
   const [branches, setBranches] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [moduleId, setModuleId] = useState('');
+  // const [moduleId, setModuleId] = useState('');
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedAcademicYears, setSelectedAcademicYears] = useState();
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
@@ -63,35 +63,35 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
     // handleUpdateUserDetails(data)
   };
 
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'User Management' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item.child_name === 'Create User') {
+  //             setModuleId(item.child_id);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
-    if (moduleId && selectedYear) {
+    if (selectedYear) {
       fetchBranches(selectedYear?.id);
     }
     fetchUserLevel();
     fetchRole();
     fetchAcademicYears();
-  }, [moduleId, selectedYear]);
+  }, [selectedYear]);
 
   const fetchAcademicYears = () => {
-    getAcademicYears(moduleId).then((data) => {
+    getAcademicYears().then((data) => {
       let transformedData = '';
       transformedData = data?.map((obj = {}) => ({
         id: obj?.id || '',
@@ -119,7 +119,7 @@ const EditSchoolDetails = ({ userDetails, handleUpdateUserDetails, setUserDetail
 
   const fetchBranches = (acadId) => {
     if (selectedYear) {
-      fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
+      fetchBranchesForCreateUser(acadId).then((data) => {
         const transformedData = data?.map((obj) => ({
           id: obj.id,
           branch_name: obj.branch_name,

@@ -30,6 +30,7 @@ export default {
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
     ebookSubject: '/academic/ebook_mapped_subjects/',
+    ebookSubjectStudent: '/academic/v1/ebook_mapped_subjects/',
     ebookList: `/academic/v1/ebook_school_wise_filter/`,
     ebookDefault: `/academic/v1/ebook_school_wise_default/`,
     ebookClose: '/academic/v1/ebook_user/',
@@ -285,6 +286,7 @@ export default {
   activityManagementDashboard: {
     studentbmiDetails: `${newBlogURL}/api/get_student_bmi/`,
     studentSportsDetails: `${newBlogURL}/api/dashboard_student_activity_get/`,
+    studentSportsSubActivityId: `${newBlogURL}/api/physical_activity_subtype_id/`,
   },
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',

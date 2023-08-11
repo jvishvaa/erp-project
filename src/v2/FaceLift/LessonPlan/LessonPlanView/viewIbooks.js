@@ -17,7 +17,7 @@ import moment from 'moment';
 import { Close } from '@material-ui/icons';
 import ViewBook from 'containers/intelligent-textbook/chapterpage/ViewBook';
 import { useSelector } from 'react-redux';
-import { Card, Divider, Tag, Button, Pagination, Empty } from 'antd';
+import { Card, Divider, Tag, Button, Pagination, Empty, Tooltip } from 'antd';
 import { LeftOutlined, EditOutlined, ClearOutlined, CloseSquareOutlined, UndoOutlined , EyeFilled} from '@ant-design/icons';
 
 
@@ -283,15 +283,24 @@ const IbookList = (props) => {
                         {data?.length > 0 && data.map((item, index) => (
                             <>
                                 <div className='ebookCard' style={{ margin: '1%' }} >
-                                    <div style={{ margin: '3%' , display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' }}>
-                                        <img alt="example" src={`${bookImage}${item?.path}${item?.book_image}`} style={{ width: '100px', height: '100px', padding: '1%' }} />
-                                        <span>{item?.book_name.charAt(0).toUpperCase() + item?.book_name.slice(1)}</span>
-                                        <Button icon={<EyeFilled />} onClick={() => handleBookOpen(item)} />
-
+                                    <div className='row' style={{ display: 'flex' , justifyContent: 'space-between' , alignItems: 'center' }}>
+                                        <img className='col-3' alt="example" src={`${bookImage}${item?.path}${item?.book_image}`} style={{ width: '100px', height: '100px', padding: '1%' }} />
+                                        {item?.book_name?.length>50 ? (
+                                        <Tooltip
+                                        zIndex={2100}
+                                        autoAdjustOverflow='false'
+                                        placement='bottomLeft'
+                                        title={item?.book_name}
+                                        overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}>
+                                        <span className='col-8 align-content-center'>{item?.book_name?.charAt(0).toUpperCase() + item?.book_name?.slice(1,50)+ "..."}</span>
+                                        </Tooltip>
+                                        ) : (
+                                        <span className='col-8 align-content-center'>{item?.book_name?.charAt(0).toUpperCase() + item?.book_name.slice(1)}</span>
+                                        )}
+                                        <Button className='col-1' icon={<EyeFilled />} onClick={() => handleBookOpen(item)} />
                                     </div>
                                     <Divider style={{margin: '0px'}}/>
                                 </div>
-
                             </>
                         ))}
 

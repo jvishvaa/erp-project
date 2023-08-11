@@ -34,11 +34,13 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../../config/axios';
 import Loader from './../../../../components/loader/loader';
+import moment from 'moment';
 const QuestionPaperInfo = ({
   assessmentId,
   assessmentDate,
   assessmentType,
   handleCloseInfo,
+  status,
   ...restProps
 }) => {
   const [subQuestionsData, setsubQuestionData] = useState([]);
@@ -222,7 +224,6 @@ const QuestionPaperInfo = ({
     axiosInstance
       .get(`${endpoints.assessment.imageupload}?test_id=${assessmentId}`)
       .then((result) => {
-        console.log(result?.data, 'orchids11');
         if (result?.data?.status_code === 200) {
           setShowSubmit(result?.data);
           setAttachments((pre) => [...pre, ...result?.data?.result]);
@@ -234,7 +235,9 @@ const QuestionPaperInfo = ({
       });
   };
 
-  useEffect(() => getAssesmentDocument(), [reloadFlag]);
+  useEffect(() => {
+    getAssesmentDocument();
+  }, [reloadFlag]);
 
   const imageValidator = (file) => {
     if (
@@ -254,7 +257,6 @@ const QuestionPaperInfo = ({
   };
 
   const handleFileUpload = async (file) => {
-    console.log('File', file);
     if (!file) {
       return null;
     }
@@ -478,21 +480,25 @@ const QuestionPaperInfo = ({
         </a>
       </div>
       <div className={classes.testInfoHeader}>
-        <div>
-          <h4 className={classes.cardTitleHeading}>
-            {testTitle || (fetching ? 'Loading...' : fetchFailed ? `${message}` : '')}
-          </h4>
-          <h4 className={classes.cardDescription}>
-            {[gradeName, ...(subjects || [])].join(', ')}
-          </h4>
-        </div>
-        {testDate && (
-          <div className={classes.cardDate}>
-            {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
-              new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
-            }`}
+        <div className='d-flex flex-column'>
+          <div>
+            <h4 className={classes.cardTitleHeading}>
+              {testTitle || (fetching ? 'Loading...' : fetchFailed ? `${message}` : '')}
+            </h4>
+            <h4 className={classes.cardDescription}>
+              {[gradeName, ...(subjects || [])].join(', ')}
+            </h4>
           </div>
-        )}
+          <div className='text-left'>
+            {testDate && (
+              <div className='th-green th-20 th-600'>
+                {`${isTestAttempted ? 'Appeared on' : 'Test Scheduled at'} \n ${
+                  moment(testDate).format('llll') || (fetching ? 'Loading...' : '')
+                }`}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );
@@ -505,6 +511,7 @@ const QuestionPaperInfo = ({
           <h6>{ReactHtmlParser(testDescription)}</h6>
         </div>
       </div>
+
       <div>
         <h5 className={classes.cardTitleHeading}>Instructions</h5>
         <div>
@@ -667,7 +674,6 @@ const QuestionPaperInfo = ({
                           }}
                         >
                           {attachmentPreviews.map((url, pdfindex) => {
-                            console.log('URL', url);
                             let cindex = 0;
                             attachmentPreviews.forEach((item, index) => {
                               if (index < pdfindex) {
@@ -743,7 +749,6 @@ const QuestionPaperInfo = ({
                           <div style={{ position: 'absolute', visibility: 'hidden' }}>
                             <SRLWrapper>
                               {attachmentPreviews.map((url, i) => {
-                                console.log('URLSRL', url);
                                 if (typeof url == 'object') {
                                   return Object.values(url).map((item, i) => {
                                     return (
@@ -835,7 +840,6 @@ const QuestionPaperInfo = ({
                           }}
                         >
                           {showagain.map((url, pdfindex) => {
-                            console.log('URL', url);
                             let cindex = 0;
                             attachmentPreviews.forEach((item, index) => {
                               if (index < pdfindex) {
@@ -900,7 +904,6 @@ const QuestionPaperInfo = ({
                           <div style={{ position: 'absolute', visibility: 'hidden' }}>
                             <SRLWrapper>
                               {showagain.map((url, i) => {
-                                console.log('URLSRL', url);
                                 if (typeof url == 'object') {
                                   return Object.values(url).map((item, i) => {
                                     return (
@@ -945,6 +948,43 @@ const QuestionPaperInfo = ({
                       </div>
                     </div>
                   </Grid>
+                )}
+                {!fetching && testDate && (
+                  <div className='row'>
+                    <div className='col-12 mt-3 '>
+                      {testDate && moment().diff(testDate, 'seconds') < 0 ? (
+                        <span className='th-green th-fw-500 th-20'>Yet to Start</span>
+                      ) : (
+                        <div className='col-12 text-center'>
+                          {!showSubmit?.attempted ? (
+                            <span className='th-green th-fw-500 th-20'>
+                              {status == 1 ? (
+                                <span>
+                                  Test ended at{' '}
+                                  {moment(testDate)
+                                    .add(testDuration, 'minutes')
+                                    .format('llll')}
+                                </span>
+                              ) : (
+                                <span>
+                                  Test Ongoing till{' '}
+                                  {moment(testDate)
+                                    .add(testDuration, 'minutes')
+                                    .format('llll')}
+                                </span>
+                              )}
+                            </span>
+                          ) : (
+                            userResponseObj == null && (
+                              <span className='th-green th-fw-500 th-20'>
+                                Marks entry under process
+                              </span>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </>
             )}

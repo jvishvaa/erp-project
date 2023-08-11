@@ -186,6 +186,7 @@ const PendingReview = (props) => {
           temp['id'] = obj.id;
           temp['name'] = obj.level.name;
           temp['rating'] = Number(obj.level.rating);
+          temp['score'] = Number(obj.level.score);
           temp['remarks'] = obj.remarks;
           temp['given_rating'] = obj.given_rating;
           temp['reviewer_id'] = user_id;
@@ -224,11 +225,14 @@ const PendingReview = (props) => {
     let ave = 0;
     let aver;
     ratingReview.map((parameter) => {
-      average += parameter.given_rating;
+      average += (parameter.score / parameter.rating) * parameter.given_rating;
       ave += Number(parameter.rating);
       aver = ave - Number('5');
     });
-    return (average / aver) * 5;
+
+    let fomo = average / ratingReview[ratingReview.length - 1]?.score;
+    let overallRatingObtained = fomo * ratingReview[ratingReview.length - 1]?.rating;
+    return overallRatingObtained;
   };
 
   const handlePagination = (event, page) => {

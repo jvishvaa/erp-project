@@ -3,16 +3,22 @@ import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { getCategoryColor } from 'v2/generalAnnouncementFunctions';
 import DetailsModal from './DetailsModal';
 import { EllipsisOutlined, DeleteOutlined, SendOutlined } from '@ant-design/icons';
-import { Popover } from 'antd';
+import { Popover, Tooltip } from 'antd';
 // import emailIcon from 'v2/Assets/dashboardIcons/announcementListIcons/emailIcon.svg';
 // import smsIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smsIcon.svg';
 // import whatsappIcon from 'v2/Assets/dashboardIcons/announcementListIcons/whatsappIcon.svg';
 // import editIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/editIcon.svg';
 import publishIcon from 'v2/Assets/dashboardIcons/announcementListIcons/publishIcon.svg';
 import deleteIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/deleteIcon.svg';
+import moment from 'moment';
 
 const ListCard = (props) => {
-  const { category__category_name: category, content, created_time: date } = props.data;
+  const {
+    category__category_name: category,
+    title,
+    content,
+    created_time: date,
+  } = props.data;
   const { showTab } = props;
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => {
@@ -23,6 +29,22 @@ const ListCard = (props) => {
     span.innerHTML = s;
     return span.textContent || span.innerText;
   };
+  const getDuration = (date) => {
+    let currentDate = moment(date).format('DD/MM/YYYY');
+    if (currentDate === moment().format('DD/MM/YYYY')) {
+      return 'Today';
+    } else if (currentDate == moment().subtract(1, 'days').format('DD/MM/YYYY')) {
+      return 'Yesterday';
+    } else {
+      return (
+        <span>
+          {currentDate} <br />
+          {moment(date).format('LT')}
+        </span>
+      );
+    }
+  };
+
   return (
     <>
       <div
@@ -33,21 +55,48 @@ const ListCard = (props) => {
           backgroundOpacity: 0.5,
         }}
       >
-        <div className='col-md-3 col-4 text-uppercase th-fw-500 text-break pr-0 pr-md-2'>
+        <div className='col-md-2 col-4 text-uppercase th-fw-500 text-break pr-0 pr-md-1'>
           {category}
         </div>
         <div
-          className='col-md-7 col-5 text-truncate th-pointer'
+          className='col-md-3 col-5 text-truncate th-pointer'
+          style={{ width: '10%' }}
+          onClick={() => {
+            setShowModal(true);
+          }}
+        >
+          <b> {extractContent(title)} </b>
+        </div>
+        <div
+          className='col-md-5 col-5 text-truncate th-pointer'
           style={{ width: '95%' }}
           onClick={() => {
             setShowModal(true);
           }}
         >
-          {extractContent(content)}
+          {extractContent(content).length > 66 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={extractContent(content)}
+              overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
+            >
+              {extractContent(content)}
+            </Tooltip>
+          ) : (
+            extractContent(content)
+          )}
         </div>
         <div className='col-md-2 col-3 px-2 px-md-4 th-grey text-right'>
-          {showTab == 1 ? (
-            getTimeInterval(date)
+          {showTab == 1 || showTab == 3 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomRight'
+              title={getDuration(date)}
+            >
+              {' '}
+              {getTimeInterval(date)}
+            </Tooltip>
           ) : showTab == 2 ? (
             // <Popover
             //   content={
