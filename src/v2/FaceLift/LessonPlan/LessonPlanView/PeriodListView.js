@@ -2408,7 +2408,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           visible={showCompletionStatusModal}
           onCancel={closeModal}
           className='th-upload-modal'
-          width={window.innerWidth > 786 ? 550 : window.innerWidth - 10}
+          width={window.innerWidth > 786 ? 700 : window.innerWidth - 10}
           centered
           footer={[]}
         >
