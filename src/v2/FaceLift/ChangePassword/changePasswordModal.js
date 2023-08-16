@@ -111,9 +111,24 @@ const ChangePasswordPopup = ({
     setLoading(true);
     const updatedValues = passwordFormRef.current.getFieldsValue();
 
+    if (!updatedValues.new_password) {
+      message.error('Please enter new password');
+      setLoading(false);
+      setIsPasswordSubmit(false);
+      return;
+    }
+
+    if (!updatedValues.confirm_password) {
+      message.error('Please enter confirm password');
+      setLoading(false);
+      setIsPasswordSubmit(false);
+      return;
+    }
+
     if (updatedValues.new_password !== updatedValues.confirm_password) {
       message.error('New password and confirm password did not match');
       setLoading(false);
+      setIsPasswordSubmit(false);
       return;
     }
 
@@ -163,7 +178,7 @@ const ChangePasswordPopup = ({
   };
 
   const cancelPasswordUpdate = () => {
-    // passwordFormRef.current.resetFields();
+    passwordFormRef.current.resetFields();
     setStrengthProgress('');
     setStrengthColor('#f8222f');
     setValidationCheck(null);
