@@ -11,7 +11,8 @@ const local = {
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
-    baseUdaan: 'https://dev.udaansurelearning.com/qbox',
+    baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
+    // baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     // baseURL: 'http://localhost:8000/qbox',
     // baseURL: `${window.location.origin}/qbox`,
@@ -35,7 +36,8 @@ const dev = {
   },
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
-    baseUdaan: 'https://dev.udaansurelearning.com/qbox',
+    baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
+    // baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
@@ -61,6 +63,7 @@ const qa = {
     // baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseURLCentral: 'https://mgmt.qa.letseduvate.com/qbox',
+    baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
     baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.qa.letseduvate.com',

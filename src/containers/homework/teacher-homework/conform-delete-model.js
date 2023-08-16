@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 
-const ConformDeleteMOdel = ({ openModal, setOpenModal, submit ,ispdf , isfile}) => {
+const ConformDeleteMOdel = ({ openModal, setOpenModal, submit, ispdf, isfile }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-  console.log(ispdf , 'is');
+  console.log(ispdf, 'is');
 
   return (
     <Dialog
@@ -13,6 +13,7 @@ const ConformDeleteMOdel = ({ openModal, setOpenModal, submit ,ispdf , isfile}) 
       open={openModal}
       onClose={handleCloseModal}
       aria-labelledby='draggable-dialog-title'
+      style={{ zIndex: '2100' }}
     >
       <DialogTitle
         style={{ cursor: 'move', color: '#014b7e' }}
@@ -35,19 +36,19 @@ const ConformDeleteMOdel = ({ openModal, setOpenModal, submit ,ispdf , isfile}) 
         >
           Delete this page
         </Button>
-        {ispdf && <Button
-          color='primary'
-          variant='contained'
-          style={{ color: 'white' }}
-          onClick={() => {
-            submit(true);
-            handleCloseModal();
-          }}
-        >
-        {isfile == 'file' ? 'Delete This File' :
-          'Delete This Pdf'}
-        </Button>
-        }
+        {ispdf && (
+          <Button
+            color='primary'
+            variant='contained'
+            style={{ color: 'white' }}
+            onClick={() => {
+              submit(true);
+              handleCloseModal();
+            }}
+          >
+            {isfile == 'file' ? 'Delete This File' : 'Delete This Pdf'}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

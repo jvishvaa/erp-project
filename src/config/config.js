@@ -13,7 +13,8 @@ const local = {
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
-    baseUdaan: 'https://dev.udaansurelearning.com/qbox',
+    baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
+    // baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     // baseURL: 'http://localhost:8000/qbox',
@@ -40,7 +41,8 @@ const dev = {
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
-    baseUdaan: 'https://dev.udaansurelearning.com/qbox',
+    baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
+    // baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
@@ -69,7 +71,8 @@ const qa = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     // baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
-    baseUdaan: 'https://dev.udaansurelearning.com/qbox',
+    baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
+    // baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://mgmt.qa.letseduvate.com/qbox',
