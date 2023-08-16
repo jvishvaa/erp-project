@@ -384,6 +384,7 @@ const NewIbook = (props) => {
                   total={props?.total}
                   onChange={props?.handlePageChange}
                   pageSize={9}
+                  showSizeChanger={false}
                 />
               </div>
             </>

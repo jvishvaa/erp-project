@@ -55,7 +55,7 @@ const StudentAttendanceDashboard = () => {
   const [userDetails, setUserDetails] = useState([]);
 
   const role_details =
-    JSON.parse(localStorage.getItem('userDetails'))?.role_details || [];
+    JSON.parse(localStorage.getItem('userDetails'))?.role_details || {};
   const erp = JSON.parse(localStorage.getItem('userDetails'))?.erp || null;
 
   const selectedAcademicYear = useSelector(

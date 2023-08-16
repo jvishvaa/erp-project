@@ -256,7 +256,9 @@ const ViewAssessments = ({ history, ...restProps }) => {
             ? row?.is_test_completed?.marks_obtained
             : row?.test_mode == '1'
             ? 'Not Attempted'
-            : 'Marks entry under progress'}
+            : row?.is_completed
+            ? 'Marks entry under progress'
+            : 'Not Attempted'}
         </span>
       ),
       visible: status == 1 ? true : false,
