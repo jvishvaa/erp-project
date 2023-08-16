@@ -54,7 +54,9 @@ const StudentAttendanceDashboard = () => {
   const [upcomingHoliday, setUpcomingHoliday] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
 
-  const { role_details, erp } = JSON.parse(localStorage.getItem('userDetails'));
+  const role_details =
+    JSON.parse(localStorage.getItem('userDetails'))?.role_details || [];
+  const erp = JSON.parse(localStorage.getItem('userDetails'))?.erp || null;
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
