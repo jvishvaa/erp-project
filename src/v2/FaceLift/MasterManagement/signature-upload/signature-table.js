@@ -116,8 +116,12 @@ const SignatureUploadv2 = () => {
   const fetchSignatures = () => {
     setLoading(true);
     let reqApi = endpoints.signature.getSignatureList;
-    reqApi += `?session_year=${selectedAcademicYear?.id}`;
-    reqApi += `&branch_id=${selectedBranch?.branch?.id}`;
+    if(selectedAcademicYear) {
+      reqApi += `?session_year=${selectedAcademicYear?.id}`;
+    }
+    if(selectedBranch) { 
+      reqApi += `&branch_id=${selectedBranch?.branch?.id}`;
+    }
     if (selectedUserLevels.length) {
       const selectedUserLevelIds = selectedUserLevels.map((el) => el.key);
       reqApi += `&user_level=${selectedUserLevelIds.toString()}`;
@@ -133,7 +137,7 @@ const SignatureUploadv2 = () => {
           setTotalCount(result?.data?.result?.count);
         } else {
           setLoading(false);
-          message.error(result.data?.message || result.data?.msg);
+          // message.error(result.data?.message || result.data?.msg);
         }
       })
       .catch((error) => {
