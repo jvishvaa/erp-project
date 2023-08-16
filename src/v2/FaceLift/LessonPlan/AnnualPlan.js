@@ -73,7 +73,7 @@ const AnnualPlan = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
       branch_id: selectedBranch?.branch?.id,
-      module_id: moduleId,
+      // module_id: moduleId,
     };
     axios
       .get(`/erp_user/v2/grademapping/`, { params })
@@ -199,12 +199,12 @@ const AnnualPlan = () => {
   });
 
   useEffect(() => {
-    if (moduleId) {
+    // if (moduleId) {
       fetchGradeData();
       fetchBoardListData();
       // fetchResourceYear();
-    }
-  }, [moduleId]);
+    // }
+  }, []);
 
   useEffect(() => {
     if (NavData && NavData.length) {
