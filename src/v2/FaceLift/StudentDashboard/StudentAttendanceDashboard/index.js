@@ -11,6 +11,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import axiosInstance from 'config/axios';
 
 const settings = {
   dots: false,
@@ -76,19 +77,28 @@ const StudentAttendanceDashboard = () => {
   }, []);
 
   const fetchUserDetails = (params = {}) => {
-    axios
+    axiosInstance
       .get(`${endpoints.profile.getUserStatus}`, {
         params: { ...params },
-        headers: {
-          'X-DTS-Host': X_DTS_HOST,
-        },
+        // headers: {
+        //   'X-DTS-Host': X_DTS_HOST,
+        // },
       })
       .then((response) => {
         if (response.status === 200) {
           setUserDetails(response?.data.result.results);
         }
+        console.log(response, 'res');
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        if (error.response.data.status_code == 401) {
+          localStorage.removeItem('userDetails');
+          if (window.location.pathname != '/') {
+            window.location.href = '/';
+          }
+        }
+      });
   };
 
   const fetchStudentAttendance = (params = {}) => {
