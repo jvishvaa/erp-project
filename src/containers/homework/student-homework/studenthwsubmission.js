@@ -409,10 +409,11 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             setIsBulk(!result.data.data.is_question_wise);
           }
           if (homeworkSubmission.status !== 1) {
-            let offlineQuestions = result.data?.data?.hw_questions?.questions?.filter(
-              (item) => item.is_online == false
-            );
-            console.log('oooooo', offlineQuestions, result.data.data.hw_questions);
+            let questionList = result?.data?.data?.is_question_wise
+              ? result.data?.data?.hw_questions
+              : result.data?.data?.hw_questions?.questions;
+            let offlineQuestions = questionList.filter((item) => item.is_online == false);
+            console.log('oooooo', offlineQuestions, questionList);
             if (offlineQuestions.length !== 0) {
               setHasOnlineQuestion(true);
               setIsQuestionWise(true);
@@ -1168,7 +1169,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   ) : (
                     <div className='pt-2 th-18 th-black-1 th-fw-500'>
                       {!question?.is_online && (
-                        <span
+                        <div
                           className='th-16 th-br-4 p-2'
                           style={{ border: '1px solid #d9d9d9' }}
                         >
@@ -1178,7 +1179,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             submit this Homework in school directly to the subject
                             teacher. If you need further assistance please raise a query.
                           </i>
-                        </span>
+                        </div>
                       )}
                     </div>
                   )}
