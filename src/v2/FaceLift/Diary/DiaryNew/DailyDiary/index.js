@@ -160,9 +160,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           ? question.is_pen_editor_enable
           : question?.penTool
           ? question?.penTool
-          : true,
+          : false,
         is_central: question.is_central ? question.is_central : false,
-        is_online: question.is_online ? question.is_online : true,
+        is_online: question.is_online ? question.is_online : false,
       });
     });
     return arr;
@@ -235,11 +235,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: true,
+        is_attachment_enable: false,
         max_attachment: 10,
-        penTool: true,
+        penTool: false,
         is_central: false,
-        is_online: true,
+        is_online: false,
       },
       ...prevState.slice(index),
     ]);
@@ -949,11 +949,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               id: cuid(),
               question: '',
               attachments: [],
-              is_attachment_enable: true,
+              is_attachment_enable: false,
               max_attachment: 10,
-              penTool: true,
+              penTool: false,
               is_central: false,
-              is_online: true,
+              is_online: false,
             },
           ]);
         }
@@ -1530,11 +1530,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               id: cuid(),
               question: homeworkData[0]?.homework_text,
               question_files: homeworkData[0]?.media_file,
-              is_attachment_enable: true,
+              is_attachment_enable: false,
               max_attachment: 10,
-              is_pen_editor_enable: true,
+              is_pen_editor_enable: false,
               is_central: true,
-              is_online: true,
+              is_online: false,
             };
 
             if (Array.isArray(questionList)) {
@@ -1564,11 +1564,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     id: cuid(),
                     question: '',
                     attachments: [],
-                    is_attachment_enable: true,
+                    is_attachment_enable: false,
                     max_attachment: 10,
-                    penTool: true,
+                    penTool: false,
                     is_central: false,
-                    is_online: true,
+                    is_online: false,
                   },
                 ]);
               }
@@ -1578,11 +1578,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                   id: cuid(),
                   question: '',
                   attachments: [],
-                  is_attachment_enable: true,
+                  is_attachment_enable: false,
                   max_attachment: 10,
-                  penTool: true,
+                  penTool: false,
                   is_central: false,
-                  is_online: true,
+                  is_online: false,
                 },
               ]);
             }
@@ -2146,11 +2146,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 id: cuid(),
                                 question: '',
                                 attachments: [],
-                                is_attachment_enable: true,
+                                is_attachment_enable: false,
                                 max_attachment: 10,
-                                penTool: true,
+                                penTool: false,
                                 is_central: false,
-                                is_online: true,
+                                is_online: false,
                               },
                             ]);
                             setShowHomeworkForm(true);
