@@ -67,7 +67,7 @@ import {
   Progress,
   Modal,
 } from 'antd';
-import { LeftOutlined, UploadOutlined } from '@ant-design/icons';
+import { LeftOutlined, UploadOutlined, InfoCircleTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import Loader from 'components/loader/loader';
 const useStyles = makeStyles((theme) => ({
@@ -226,6 +226,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   const [percentValue, setPercentValue] = useState(10);
   const [uploadStart, setUploadStart] = useState(false);
   const [formats, setFormats] = useState([]);
+  const [hasOnlineQuestion, setHasOnlineQuestion] = useState(false);
 
   let idInterval = null;
   useEffect(() => {
@@ -407,12 +408,34 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             setIsQuestionWise(result.data.data.is_question_wise);
             setIsBulk(!result.data.data.is_question_wise);
           }
-
+          if (homeworkSubmission.status !== 1) {
+            let offlineQuestions = result.data?.data?.hw_questions?.questions?.filter(
+              (item) => item.is_online == false
+            );
+            console.log('oooooo', offlineQuestions, result.data.data.hw_questions);
+            if (offlineQuestions.length !== 0) {
+              setHasOnlineQuestion(true);
+              setIsQuestionWise(true);
+            } else {
+              setHasOnlineQuestion(false);
+              setIsQuestionWise(false);
+            }
+          }
           // setBulkData(result.data.data.hw_questions[0].submitted_files)z
           if (homeworkSubmission.status === 1) {
             // setBulkData(result.data.data.hw_questions.submitted_files || [])
             // setBulkDataDisplay(result.data.data.hw_questions.submitted_files || [])
             setSubjectQuestions(result.data.data.hw_questions);
+            let offlineQuestions = result.data.data.hw_questions?.filter(
+              (item) => item.is_online == false
+            );
+            if (offlineQuestions.length !== 0) {
+              setHasOnlineQuestion(true);
+              setIsQuestionWise(true);
+            } else {
+              setHasOnlineQuestion(false);
+              setIsQuestionWise(false);
+            }
             setHomeworkTitle(result?.data?.data?.homework_name);
             setDesc(result.data.data.description);
             for (let i = 0; i < result.data.data.hw_questions.length; i++) {
@@ -990,6 +1013,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                       onClick={handlequestionwiseclick}
                       color='primary'
                       checked={isQuestionWise}
+                      disabled={hasOnlineQuestion}
                     />
                     <p className='th-13 th-fw-600 mx-2'>Upload Question Wise</p>
                   </div>
@@ -1021,7 +1045,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     </span>
                   </div>
 
-                  {isQuestionWise && homeworkSubmission.status == 1 && (
+                  {isQuestionWise &&
+                  homeworkSubmission.status == 1 &&
+                  question?.is_online ? (
                     <div className='questionWiseAttachmentsContainer before submit'>
                       <IconButton
                         fontSize='small'
@@ -1138,6 +1164,22 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                           </div>
                         </div>
                       </div>
+                    </div>
+                  ) : (
+                    <div className='pt-2 th-18 th-black-1 th-fw-500'>
+                      {!question?.is_online && (
+                        <span
+                          className='th-16 th-br-4 p-2'
+                          style={{ border: '1px solid #d9d9d9' }}
+                        >
+                          <InfoCircleTwoTone className='pr-2' />
+                          <i className='th-grey th-fw-500 '>
+                            This is OFFLINE Homework assigned by the teacher. Please
+                            submit this Homework in school directly to the subject
+                            teacher. If you need further assistance please raise a query.
+                          </i>
+                        </span>
+                      )}
                     </div>
                   )}
 
@@ -1492,7 +1534,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 </div>
               </>
             ))}
-
+            {console.log({ homeworkSubmission, subjectQuestions })}
             {homeworkSubmission.status === 1 && !isQuestionWise && (
               <div className='bulkContainer'>
                 <>

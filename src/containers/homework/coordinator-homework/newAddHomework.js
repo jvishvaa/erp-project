@@ -120,7 +120,7 @@ const AddHomeworkCordNew = ({
       id: cuid(),
       question: '',
       attachments: [],
-      is_attachment_enable: true,
+      is_attachment_enable: false,
       max_attachment: 10,
       penTool: false,
     },
@@ -193,6 +193,7 @@ const AddHomeworkCordNew = ({
         penTool: data.is_pen_editor_enable,
         question: data.question,
         attachments: data.question_files,
+        is_online: data.is_online,
       }));
       setQuestions(que);
     }
@@ -409,9 +410,10 @@ const AddHomeworkCordNew = ({
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: true,
+        is_attachment_enable: false,
         max_attachment: 10,
         penTool: false,
+        is_online: false,
       },
       ...prevState.slice(index),
     ]);
@@ -426,8 +428,23 @@ const AddHomeworkCordNew = ({
   };
 
   const handleChange = (index, field, value) => {
+    console.log('handleChange', index, field, value);
     const form = questions[index];
-    const modifiedForm = { ...form, [field]: value };
+    let modifiedForm = {};
+    if (field == 'is_online') {
+      if (value) {
+        form['is_attachment_enable'] = true;
+        form['penTool'] = true;
+        form['is_online'] = true;
+      } else {
+        form['is_attachment_enable'] = false;
+        form['penTool'] = false;
+        form['is_online'] = false;
+      }
+      modifiedForm = { ...form };
+    } else {
+      modifiedForm = { ...form, [field]: value };
+    }
     setQuestions((prevState) => [
       ...prevState.slice(0, index),
       modifiedForm,

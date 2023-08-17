@@ -160,8 +160,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           ? question.is_pen_editor_enable
           : question?.penTool
           ? question?.penTool
-          : false,
+          : true,
         is_central: question.is_central ? question.is_central : false,
+        is_online: question.is_online ? question.is_online : true,
       });
     });
     return arr;
@@ -194,7 +195,22 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
   const handleChange = (index, field, value) => {
     const form = questionList[index];
-    const modifiedForm = { ...form, [field]: value };
+    let modifiedForm = {};
+    if (field == 'is_online') {
+      if (value) {
+        form['is_attachment_enable'] = true;
+        form['penTool'] = true;
+        form['is_online'] = true;
+      } else {
+        form['is_attachment_enable'] = false;
+        form['penTool'] = false;
+        form['is_online'] = false;
+      }
+      modifiedForm = { ...form };
+    } else {
+      modifiedForm = { ...form, [field]: value };
+    }
+    console.log('handleChange', index, field, value, form, modifiedForm);
     setQuestionList((prevState) => [
       ...prevState.slice(0, index),
       modifiedForm,
@@ -221,8 +237,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         attachments: [],
         is_attachment_enable: true,
         max_attachment: 10,
-        penTool: false,
+        penTool: true,
         is_central: false,
+        is_online: true,
       },
       ...prevState.slice(index),
     ]);
@@ -934,8 +951,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               attachments: [],
               is_attachment_enable: true,
               max_attachment: 10,
-              penTool: false,
+              penTool: true,
               is_central: false,
+              is_online: true,
             },
           ]);
         }
@@ -1514,8 +1532,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               question_files: homeworkData[0]?.media_file,
               is_attachment_enable: true,
               max_attachment: 10,
-              is_pen_editor_enable: false,
+              is_pen_editor_enable: true,
               is_central: true,
+              is_online: true,
             };
 
             if (Array.isArray(questionList)) {
@@ -1547,8 +1566,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     attachments: [],
                     is_attachment_enable: true,
                     max_attachment: 10,
-                    penTool: false,
+                    penTool: true,
                     is_central: false,
+                    is_online: true,
                   },
                 ]);
               }
@@ -1560,8 +1580,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                   attachments: [],
                   is_attachment_enable: true,
                   max_attachment: 10,
-                  penTool: false,
+                  penTool: true,
                   is_central: false,
+                  is_online: true,
                 },
               ]);
             }
@@ -2127,8 +2148,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 attachments: [],
                                 is_attachment_enable: true,
                                 max_attachment: 10,
-                                penTool: false,
+                                penTool: true,
                                 is_central: false,
+                                is_online: true,
                               },
                             ]);
                             setShowHomeworkForm(true);
