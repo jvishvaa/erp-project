@@ -158,6 +158,12 @@ const AnnouncementList = () => {
       })
       .catch((error) => {
         console.log(error);
+        if (error?.response?.data?.status_code == 401) {
+          localStorage.removeItem('userDetails');
+          if (window.location.pathname != '/') {
+            window.location.href = '/';
+          }
+        }
       });
   };
 

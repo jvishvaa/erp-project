@@ -42,6 +42,7 @@ const UploadSignature = ({
       setSelectedErp();
       formRef.current.resetFields(); // invokes when user clears user level dropdown
       // it also clears erp dropdown
+      setErpList([]); // clear erp dropdown when user clears user level
     }
   };
   useEffect(() => {
@@ -78,7 +79,7 @@ const UploadSignature = ({
     if (!selectedUserLevel) {
       message.error('Please select user level');
       return;
-    } else if (!selectedErp) {
+    } else if (!selectedErp) { 
       message.error('Please select Erp');
       return;
     } else if (!selectedFile) {
