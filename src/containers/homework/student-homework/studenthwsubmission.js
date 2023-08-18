@@ -1970,7 +1970,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     Delete
                   </Button>
                 )}
-                {homeworkSubmission.status === 1 && (
+                {homeworkSubmission.status === 1 && hasOnlineQuestion && (
                   <div>
                     <Button
                       variant='contained'

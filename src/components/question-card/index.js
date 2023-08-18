@@ -917,7 +917,7 @@ const QuestionCard = ({
                         xs={12}
                         md={window.location.pathname.includes('/diary/') ? 6 : 3}
                         // className='question-ctrls-inner'
-                        style={{ display: 'flex' }}
+                        style={{ display: 'none' }}
                       >
                         <IconButton>
                           <CloudUploadIcon color='primary' />
@@ -948,7 +948,7 @@ const QuestionCard = ({
                           item
                           xs={12}
                           md={window.location.pathname.includes('/diary/') ? 5 : 3}
-                          className='question-ctrl-outer-container'
+                          className='question-ctrl-outer-container d-none'
                           style={{ justifyContent: 'start' }}
                         >
                           <div className='d-flex'>
@@ -975,7 +975,7 @@ const QuestionCard = ({
                         item
                         xs={12}
                         md={window.location.pathname.includes('/diary/') ? 6 : 3}
-                        style={{ display: 'flex' }}
+                        style={{ display: 'none' }}
                       >
                         <div style={{ display: 'flex' }}>
                           <IconButton>
@@ -1004,18 +1004,28 @@ const QuestionCard = ({
                     </>
                   )}
 
-                  {!window.location.pathname.includes('/diary/') && (
+                  {user_level !== 13 && (
                     <>
                       <Grid
                         item
                         xs={12}
-                        md={5}
+                        md={window.location.pathname.includes('/diary/') ? 12 : 5}
                         // className='question-ctrls-inner'
                         style={{ display: 'flex' }}
                       >
-                        <div className='col-12'>
+                        <div
+                          className={`col-12 ${
+                            window.location.pathname.includes('/diary/') ? 'px-0' : ''
+                          }`}
+                        >
                           <div className='d-flex align-items-center py-2'>
-                            <span className='th-18 th-black-1 th-fw-600'>
+                            <span
+                              className={`${
+                                window.location.pathname.includes('/diary/')
+                                  ? 'th-12'
+                                  : 'th-18'
+                              } th-black-1 th-fw-600`}
+                            >
                               Submission Mode :
                             </span>
                             <span className='mx-2 th-18 th-black th-fw-500'>Offline</span>
@@ -1028,6 +1038,7 @@ const QuestionCard = ({
                                   name='is_online'
                                   color='primary'
                                   checked={submissionMode}
+                                  disabled={window.location.pathname.includes('/diary/')}
                                 />
                               }
                               labelPlacement='start'
@@ -1039,28 +1050,30 @@ const QuestionCard = ({
                         </div>
                       </Grid>
 
-                      <Grid
-                        item
-                        xs={12}
-                        md={2}
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                        }}
-                      >
-                        {/* <Box className='question-ctrl-inner-container th-pointer'> */}
-                        <div>
-                          <Button
-                            onClick={handleResourcesDrawerOpen}
-                            variant='contained'
-                            color='primary'
-                          >
-                            Resources
-                          </Button>
-                        </div>
-                        <div className='th-12 pt-2'>(From Leson Plan)</div>
-                      </Grid>
+                      {!window.location.pathname.includes('/diary/') && (
+                        <Grid
+                          item
+                          xs={12}
+                          md={2}
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {/* <Box className='question-ctrl-inner-container th-pointer'> */}
+                          <div>
+                            <Button
+                              onClick={handleResourcesDrawerOpen}
+                              variant='contained'
+                              color='primary'
+                            >
+                              Resources
+                            </Button>
+                          </div>
+                          <div className='th-12 pt-2'>(From Leson Plan)</div>
+                        </Grid>
+                      )}
                     </>
                   )}
                 </Grid>
