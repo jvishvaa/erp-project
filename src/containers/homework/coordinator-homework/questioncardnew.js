@@ -677,7 +677,7 @@ const QuestionCardNew = ({
 
                 <div className='row'>
                   <div
-                    className='col-md-2 card'
+                    className='col-md-3 card'
                     onClick={() => fileUploadInput.current.click()}
                     style={{ padding: '5px', height: '35px', cursor: 'pointer' }}
                   >
@@ -729,7 +729,7 @@ const QuestionCardNew = ({
                       </>
                     )}
                   </div>
-                  <div className='col-md-9 d-flex p-0 align-items-center'>
+                  <div className='col-md-8 d-flex p-0 align-items-center'>
                     {/* <div
                       className='card'
                       style={{
@@ -806,7 +806,7 @@ const QuestionCardNew = ({
                         Pen Tool
                       </Checkbox>
                     </div> */}
-                    <div className='col-5'>
+                    <div className='col-8'>
                       <div className='d-flex align-items-center py-2'>
                         Submission Mode :
                         <span className='mx-2 th-18 th-black th-fw-500'>Offline</span>
