@@ -1003,10 +1003,27 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [chapterID]);
 
-  const homeworkCreateConfirmation = () => {
+  const homeworkCreateConfirmation = (type) => {
     confirm({
       content:
-        'File upload option has been enabled for students, are you sure do you want to submit the Homework',
+        type == 'online' ? (
+          <div>
+            <strong>Online Submission</strong> has been enabled for students, they will be
+            submitting the Homework online. Are you sure do you want to submit the
+            Homework?
+          </div>
+        ) : type == 'offline' ? (
+          <div>
+            <strong>Offline Submission</strong> has been enabled for students, they will
+            be submitting the Homework directly to you in school. Are you sure do you want
+            to submit the Homework?
+          </div>
+        ) : (
+          <div>
+            <strong> Online & Offline submission</strong> has been enabled for students.
+            Are you sure do you want to submit the Homework?
+          </div>
+        ),
       onOk() {
         createHomework();
       },
@@ -1093,12 +1110,23 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
 
-    let uploadEnable = questionList.some((item) => item['is_attachment_enable'] === true);
-    if (uploadEnable) {
-      homeworkCreateConfirmation();
+    let hasOnlineQuestion = questionList?.every((item) => item['is_online'] === true);
+    let hasOfflineQuestion = questionList?.every((item) => item['is_online'] === false);
+    let hasBothQuestions =
+      questionList?.some((item) => item['is_online'] === false) &&
+      questionList?.some((item) => item['is_online'] === true);
+    if (hasOnlineQuestion) {
+      homeworkCreateConfirmation('online');
       return;
     }
-    createHomework();
+    if (hasOfflineQuestion) {
+      homeworkCreateConfirmation('offline');
+      return;
+    }
+    if (hasBothQuestions) {
+      homeworkCreateConfirmation('both');
+      return;
+    }
   };
 
   const createHomework = async () => {
