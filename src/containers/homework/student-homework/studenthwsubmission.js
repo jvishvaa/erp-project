@@ -227,6 +227,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   const [uploadStart, setUploadStart] = useState(false);
   const [formats, setFormats] = useState([]);
   const [hasOnlineQuestion, setHasOnlineQuestion] = useState(false);
+  const [hasOnlyOffileQuestions, setHasOnlyOffileQuestions] = useState(false);
+  const [hasBothQuestions, setHasBothQuestions] = useState(false);
 
   let idInterval = null;
   useEffect(() => {
@@ -409,17 +411,27 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             setIsBulk(!result.data.data.is_question_wise);
           }
           if (homeworkSubmission.status !== 1) {
-            let questionList = result?.data?.data?.is_question_wise
+            let list = result?.data?.data?.is_question_wise
               ? result.data?.data?.hw_questions
               : result.data?.data?.hw_questions?.questions;
-            let offlineQuestions = questionList.filter((item) => item.is_online == false);
-            console.log('oooooo', offlineQuestions, questionList);
-            if (offlineQuestions.length !== 0) {
+            let hasOnlineQuestion = list?.every((item) => item['is_online'] === true);
+            let hasOfflineQuestion = list?.every((item) => item['is_online'] === false);
+            let hasBothQuestions =
+              list?.some((item) => item['is_online'] === false) &&
+              list?.some((item) => item['is_online'] === true);
+
+            if (hasOnlineQuestion) {
               setHasOnlineQuestion(true);
               setIsQuestionWise(true);
-            } else {
+            }
+            if (hasOfflineQuestion) {
+              setHasOnlyOffileQuestions(true);
               setHasOnlineQuestion(false);
               setIsQuestionWise(false);
+            }
+            if (hasBothQuestions) {
+              setHasBothQuestions(true);
+              setIsQuestionWise(true);
             }
           }
           // setBulkData(result.data.data.hw_questions[0].submitted_files)z
@@ -427,15 +439,25 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
             // setBulkData(result.data.data.hw_questions.submitted_files || [])
             // setBulkDataDisplay(result.data.data.hw_questions.submitted_files || [])
             setSubjectQuestions(result.data.data.hw_questions);
-            let offlineQuestions = result.data.data.hw_questions?.filter(
-              (item) => item.is_online == false
-            );
-            if (offlineQuestions.length !== 0) {
+            let list = result.data.data.hw_questions;
+            let hasOnlineQuestion = list?.every((item) => item['is_online'] === true);
+            let hasOfflineQuestion = list?.every((item) => item['is_online'] === false);
+            let hasBothQuestions =
+              list?.some((item) => item['is_online'] === false) &&
+              list?.some((item) => item['is_online'] === true);
+
+            if (hasOnlineQuestion) {
               setHasOnlineQuestion(true);
               setIsQuestionWise(true);
-            } else {
+            }
+            if (hasOfflineQuestion) {
+              setHasOnlyOffileQuestions(true);
               setHasOnlineQuestion(false);
               setIsQuestionWise(false);
+            }
+            if (hasBothQuestions) {
+              setHasBothQuestions(true);
+              setIsQuestionWise(true);
             }
             setHomeworkTitle(result?.data?.data?.homework_name);
             setDesc(result.data.data.description);
@@ -999,7 +1021,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   Homework Title : {homeworkTitle}
                 </div>
               </Tooltip>
-              {homeworkSubmission.status === 1 && (
+              {homeworkSubmission.status === 1 && !hasOnlyOffileQuestions && (
                 <div className='checkWrapper'>
                   <div className='homework_block_questionwise_check'>
                     <Checkbox
@@ -1014,7 +1036,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                       onClick={handlequestionwiseclick}
                       color='primary'
                       checked={isQuestionWise}
-                      disabled={hasOnlineQuestion}
+                      disabled={hasOnlyOffileQuestions || hasBothQuestions}
                     />
                     <p className='th-13 th-fw-600 mx-2'>Upload Question Wise</p>
                   </div>
@@ -1336,7 +1358,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                             )}
                           </div>
                         </div>
-                        {homeworkSubmission.status === 1 && (
+                        {homeworkSubmission.status === 1 && question?.is_online && (
                           <div
                             className='comments-remarks-container'
                             style={{ display: 'flex', width: '95%', margin: '0 auto' }}
@@ -1535,120 +1557,123 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 </div>
               </>
             ))}
-            {console.log({ homeworkSubmission, subjectQuestions })}
-            {homeworkSubmission.status === 1 && !isQuestionWise && (
-              <div className='bulkContainer'>
-                <>
-                  <div className='bulkUploadButton'>
-                    <Button
-                      variant='contained'
-                      type='primary'
-                      // style={{ color: 'white' }}
-                      component='label'
-                      size='medium'
-                      onClick={handleBulkNotification}
-                      icon={<UploadOutlined />}
-                    >
-                      Bulk Upload
-                      {bulkDataDisplay?.length < maxCount ||
-                      bulkDataDisplay === undefined ? (
-                        <input
-                          type='file'
-                          accept={`.png, .jpg, .jpeg, .mp3, .pdf, .PNG, .JPG, .JPEG, .MP3, .PDF, ${formats.toString()}`}
-                          style={{ display: 'none' }}
-                          id='raised-button-file'
-                          onChange={(e) => {
-                            handleBulkUpload(e);
-                            e.target.value = null;
-                          }}
-                          ref={fileUploadInput}
-                        />
-                      ) : null}
-                    </Button>
+            {console.log({ hasOnlyOffileQuestions })}
+            {homeworkSubmission.status === 1 &&
+              !isQuestionWise &&
+              hasOnlineQuestion &&
+              !hasBothQuestions && (
+                <div className='bulkContainer'>
+                  <>
+                    <div className='bulkUploadButton'>
+                      <Button
+                        variant='contained'
+                        type='primary'
+                        // style={{ color: 'white' }}
+                        component='label'
+                        size='medium'
+                        onClick={handleBulkNotification}
+                        icon={<UploadOutlined />}
+                      >
+                        Bulk Upload
+                        {bulkDataDisplay?.length < maxCount ||
+                        bulkDataDisplay === undefined ? (
+                          <input
+                            type='file'
+                            accept={`.png, .jpg, .jpeg, .mp3, .pdf, .PNG, .JPG, .JPEG, .MP3, .PDF, ${formats.toString()}`}
+                            style={{ display: 'none' }}
+                            id='raised-button-file'
+                            onChange={(e) => {
+                              handleBulkUpload(e);
+                              e.target.value = null;
+                            }}
+                            ref={fileUploadInput}
+                          />
+                        ) : null}
+                      </Button>
+                    </div>
+                    <small className={classes.acceptedfiles}>
+                      {' '}
+                      {`Accepted files: .jpeg,.jpg,.mp3,.pdf,.png,${newFormats.toString()}`}
+                    </small>
+                  </>
+                  <div className='bulk_upload_attachments'>
+                    {bulkDataDisplay?.map((file, i) => (
+                      <FileRow
+                        key={`homework_student_question_attachment_bulk_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeBulkFileHandler(i)}
+                      />
+                    ))}
                   </div>
-                  <small className={classes.acceptedfiles}>
-                    {' '}
-                    {`Accepted files: .jpeg,.jpg,.mp3,.pdf,.png,${newFormats.toString()}`}
-                  </small>
-                </>
-                <div className='bulk_upload_attachments'>
-                  {bulkDataDisplay?.map((file, i) => (
-                    <FileRow
-                      key={`homework_student_question_attachment_bulk_${i}`}
-                      file={file}
-                      index={i}
-                      onClose={() => removeBulkFileHandler(i)}
-                    />
-                  ))}
-                </div>
-                <div className='homework-question-container student-view'>
-                  <div className='attachments-container'>
-                    <div className='attachments-list-outer-container'>
-                      <div className='prev-btn'>
-                        {bulkData?.length > 1 && (
-                          <IconButton onClick={() => handleScrollBulk('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
-                        )}
-                      </div>
-                      <SimpleReactLightbox>
-                        <div
-                          className='attachments-list'
-                          ref={scrollableContainerBulk}
-                          onScroll={(e) => {
-                            e.preventDefault();
-                          }}
-                        >
-                          {bulkData?.length > 0 &&
-                            bulkData?.map((file, i) => (
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={file}
-                                  fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={
-                                    file.includes('/lesson_plan_file/')
-                                      ? `${endpoints.homework.resourcesFiles}`
-                                      : `${endpoints.discussionForum.s3}/homework`
-                                  }
-                                  index={i}
-                                  //onOpenInPenTool={(url) => openInPenTool(url, index)}
-                                  actions={['preview']}
-                                />
-                              </div>
-                            ))}
-                          <div style={{ position: 'absolute', visibility: 'hidden' }}>
-                            <SRLWrapper>
-                              {bulkData?.map((url, i) => (
-                                <img
-                                  src={
-                                    url.includes('/lesson_plan_file/')
-                                      ? `${endpoints.homework.resourcesFiles}${url}`
-                                      : `${endpoints.discussionForum.s3}/homework/${url}`
-                                  }
-                                  onError={(e) => {
-                                    e.target.src = placeholder;
-                                  }}
-                                  alt={`Attachment-${i + 1}`}
-                                  style={{ width: '0', height: '0' }}
-                                />
-                              ))}
-                            </SRLWrapper>
-                          </div>
+                  <div className='homework-question-container student-view'>
+                    <div className='attachments-container'>
+                      <div className='attachments-list-outer-container'>
+                        <div className='prev-btn'>
+                          {bulkData?.length > 1 && (
+                            <IconButton onClick={() => handleScrollBulk('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
-                      </SimpleReactLightbox>
-                      <div className='next-btn'>
-                        {bulkData?.length > 1 && (
-                          <IconButton onClick={() => handleScrollBulk('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
-                        )}
+                        <SimpleReactLightbox>
+                          <div
+                            className='attachments-list'
+                            ref={scrollableContainerBulk}
+                            onScroll={(e) => {
+                              e.preventDefault();
+                            }}
+                          >
+                            {bulkData?.length > 0 &&
+                              bulkData?.map((file, i) => (
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${i}`}
+                                    fileUrl={file}
+                                    fileName={`Attachment-${i + 1}`}
+                                    urlPrefix={
+                                      file.includes('/lesson_plan_file/')
+                                        ? `${endpoints.homework.resourcesFiles}`
+                                        : `${endpoints.discussionForum.s3}/homework`
+                                    }
+                                    index={i}
+                                    //onOpenInPenTool={(url) => openInPenTool(url, index)}
+                                    actions={['preview']}
+                                  />
+                                </div>
+                              ))}
+                            <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                              <SRLWrapper>
+                                {bulkData?.map((url, i) => (
+                                  <img
+                                    src={
+                                      url.includes('/lesson_plan_file/')
+                                        ? `${endpoints.homework.resourcesFiles}${url}`
+                                        : `${endpoints.discussionForum.s3}/homework/${url}`
+                                    }
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                    style={{ width: '0', height: '0' }}
+                                  />
+                                ))}
+                              </SRLWrapper>
+                            </div>
+                          </div>
+                        </SimpleReactLightbox>
+                        <div className='next-btn'>
+                          {bulkData?.length > 1 && (
+                            <IconButton onClick={() => handleScrollBulk('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {isBulk && (
               <>
@@ -1942,7 +1967,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
                                     </Button>
                                 </div> */}
-
                 {!isupdate && homeworkSubmission.status === 2 && (
                   <Button
                     variant='contained'
@@ -1953,7 +1977,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     Edit
                   </Button>
                 )}
-
                 {homeworkSubmission.status === 2 && !isupdate && (
                   <Button
                     variant='contained'
@@ -1970,20 +1993,21 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     Delete
                   </Button>
                 )}
-                {homeworkSubmission.status === 1 && hasOnlineQuestion && (
-                  <div>
-                    <Button
-                      variant='contained'
-                      style={{ color: 'white' }}
-                      onClick={handleHomeworkSubmit}
-                      type='primary'
-                      size='medium'
-                      className='mx-2 '
-                    >
-                      {isupdate == true ? 'Update' : 'Submit'}
-                    </Button>
-                  </div>
-                )}
+                {homeworkSubmission.status === 1 &&
+                  (hasBothQuestions || hasOnlineQuestion) && (
+                    <div>
+                      <Button
+                        variant='contained'
+                        style={{ color: 'white' }}
+                        onClick={handleHomeworkSubmit}
+                        type='primary'
+                        size='medium'
+                        className='mx-2 '
+                      >
+                        {isupdate == true ? 'Update' : 'Submit'}
+                      </Button>
+                    </div>
+                  )}
                 <Dialog id={id} open={open} onClose={handleClose}>
                   <DialogTitle id='draggable-dialog-title'>Delete</DialogTitle>
                   <DialogContent>
