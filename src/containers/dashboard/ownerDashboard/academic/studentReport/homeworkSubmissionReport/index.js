@@ -106,12 +106,12 @@ export default function HomeworkReport(props) {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    if (moduleId) getBranch();
-  }, [moduleId]);
+    if (selectedAcademicYear) getBranch();
+  }, [selectedAcademicYear]);
 
   function getBranch() {
     let allBranchIds = [];
-    let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`;
+    let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}`;
     axiosInstance
       .get(url)
       .then((result) => {
@@ -154,7 +154,7 @@ export default function HomeworkReport(props) {
       setSelectedBranch(value);
       setSelectedBranchIds(branchIds);
       callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchIds}&module_id=${moduleId}`,
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchIds}`,
         'gradeList'
       );
     } else {
@@ -188,7 +188,7 @@ export default function HomeworkReport(props) {
       callApi(
         `${endpoints.academics.sections}?session_year=${
           selectedAcademicYear?.id
-        }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
+        }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}`,
         'section'
       );
     } else {
@@ -216,7 +216,7 @@ export default function HomeworkReport(props) {
       callApi(
         `${endpoints.academics.subjects}?session_year=${
           selectedAcademicYear?.id
-        }&branch=${selectedBranchIds}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${moduleId}`,
+        }&branch=${selectedBranchIds}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}`,
         'subject'
       );
     } else {

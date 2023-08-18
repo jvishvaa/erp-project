@@ -275,11 +275,13 @@ const StudentAttendanceDashboard = () => {
           style={{
             color:
               data === 'Holiday'
-                ? '#278ced'
+                ? '#278CED'
                 : data === 'present'
-                ? '#09a23a'
+                ? '#09A23A'
                 : data === 'absent'
-                ? '#f8222f'
+                ? '#F8222F'
+                : data === 'holiday'
+                ? '#278CED'
                 : '#404040',
           }}
         >

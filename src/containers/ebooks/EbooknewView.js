@@ -133,6 +133,7 @@ const EbookView = (props) => {
     });
     setSubjectData([]);
     handleClearSubject();
+    setPage(1)
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
@@ -182,6 +183,7 @@ const EbookView = (props) => {
     });
   };
   const handleSubject = (item) => {
+    setPage(1)
     if (item) {
       setSubjectId(item.value);
       setCentralSubject(item.centralId);
@@ -195,6 +197,7 @@ const EbookView = (props) => {
   };
   const handleBoard = (e) => {
     setvolumeId(e);
+    setPage(1)
   };
   const handleClearBoard = () => {
     setvolumeId('');
