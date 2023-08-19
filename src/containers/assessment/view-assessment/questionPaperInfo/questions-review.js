@@ -17,16 +17,18 @@ function QuestionReview() {
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
   const classes = useStyles();
-    function extractContent(s) {
+  function extractContent(s) {
     const span = document.createElement('span');
     span.innerHTML = s;
     return span.textContent || span.innerText;
   }
   const [open, setOpen] = React.useState();
-  const { questionsArray = [], questionsDataObj = {} } =
-    React.useContext(AssessmentReviewContext) || {};
+  const {
+    questionsArray = [],
+    questionsDataObj = {},
+    isReviewEnabled,
+  } = React.useContext(AssessmentReviewContext) || {};
   const questionsUI = (quesArray) => {
-    console.log(quesArray);
     return quesArray?.map((Q, index) => {
       const questionId = Q.id;
       const {
@@ -44,13 +46,13 @@ function QuestionReview() {
           user_answer_values: differUserResponse,
           user_answer_images: userResposeImages,
           is_central: isCentral,
-          question_mark: question_mark
+          question_mark: question_mark,
         } = {},
         sub_question_answer: subQuestion = [{}],
-        test_mode: test_mode
+        test_mode: test_mode,
         // is_central: isCentral = false,
       } = questionsDataObj[questionId] || {};
-      console.log(questionsDataObj[questionId])
+      console.log(questionsDataObj[questionId]);
       const handlerAnswerVar = (ansVar) => {
         let answer = '';
         if (Array.isArray(ansVar)) {
@@ -63,29 +65,27 @@ function QuestionReview() {
             .filter(Boolean)
             .join(',');
         }
-        if(typeof ansVar === 'string'){
-          answer = extractContent(ansVar)
+        if (typeof ansVar === 'string') {
+          answer = extractContent(ansVar);
         }
         answer = answer ?? `${ansVar}`;
         return answer;
       };
-      const s3Images = `${isCentral === true ? endpoints.s3 : endpoints.assessmentErp.s3}/`;
+      const s3Images = `${
+        isCentral === true ? endpoints.s3 : endpoints.assessmentErp.s3
+      }/`;
       return (
         <div className={classes.questionCotainer}>
-          {console.log(test_mode, "testmode")}
+          {console.log(test_mode, 'testmode')}
           {questionType === 7 ? (
             <>
               <div className={classes.questionText}>
                 <span>
-                  <b>
-                    {`Q${index + 1}.`}
-                  </b>
+                  <b>{`Q${index + 1}.`}</b>
                   &nbsp;
                 </span>
                 <span style={{ fontSize: '14px' }}>
-                  <b>
-                    {ReactHtmlParser(question)}
-                  </b>
+                  <b>{ReactHtmlParser(question)}</b>
                 </span>
               </div>
               {subQuestion.map((item, index) => (
@@ -95,17 +95,26 @@ function QuestionReview() {
                       {`Sub Q${index + 1}.`}
                       &nbsp;
                     </span>
-                    <span style={{ fontSize: '14px' }}>{ReactHtmlParser(item?.question_answer[0]?.question)}</span>
+                    <span style={{ fontSize: '14px' }}>
+                      {ReactHtmlParser(item?.question_answer[0]?.question)}
+                    </span>
                   </div>
-                  {(item?.user_sub_answer?.question_type === 9) ? (
+                  {item?.user_sub_answer?.question_type === 9 ? (
                     <div className={classes.answersContainer}>
-                      {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
-                      {test_mode == 2 ? question_mark : <label
-                        dangerouslySetInnerHTML={{
-                          __html: handlerAnswerVar(item?.user_sub_answer?.user_answer),
-                        }}
-                      ></label>
-                      }
+                      {test_mode == 2 ? (
+                        <b>Your Marks : &nbsp; </b>
+                      ) : (
+                        <b>Your answer : &nbsp; </b>
+                      )}
+                      {test_mode == 2 ? (
+                        question_mark
+                      ) : (
+                        <label
+                          dangerouslySetInnerHTML={{
+                            __html: handlerAnswerVar(item?.user_sub_answer?.user_answer),
+                          }}
+                        ></label>
+                      )}
                       <br />
                       <b>Correct answer : &nbsp; </b>
                       <label
@@ -118,8 +127,14 @@ function QuestionReview() {
                     </div>
                   ) : (
                     <div className={classes.answersContainer}>
-                      {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
-                      {test_mode == 2 ? question_mark :
+                      {test_mode == 2 ? (
+                        <b>Your Marks : &nbsp; </b>
+                      ) : (
+                        <b>Your answer : &nbsp; </b>
+                      )}
+                      {test_mode == 2 ? (
+                        question_mark
+                      ) : (
                         <span>
                           <label
                             dangerouslySetInnerHTML={{
@@ -151,14 +166,12 @@ function QuestionReview() {
                             </a>
                           ))}
                         </span>
-                      }
+                      )}
                       <br />
                       <b>Correct answer : &nbsp; </b>
                       <label
                         dangerouslySetInnerHTML={{
-                          __html:
-                            item?.question_answer[0]?.answer_values
-
+                          __html: item?.question_answer[0]?.answer_values,
                         }}
                       ></label>
                       {item?.question_answer[0]?.answer_images?.map((image) => (
@@ -186,8 +199,7 @@ function QuestionReview() {
                     </div>
                   )}
                 </>
-              ))
-              }
+              ))}
             </>
           ) : (
             <>
@@ -202,15 +214,21 @@ function QuestionReview() {
                 <>
                   {questionType === 8 ? (
                     <div className={classes.answersContainer}>
-                      {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
+                      {test_mode == 2 ? (
+                        <b>Your Marks : &nbsp; </b>
+                      ) : (
+                        <b>Your answer : &nbsp; </b>
+                      )}
 
-                      {test_mode == 2 ? question_mark :
+                      {test_mode == 2 ? (
+                        question_mark
+                      ) : (
                         <label
                           dangerouslySetInnerHTML={{
                             __html: handlerAnswerVar(differUserResponse),
                           }}
                         ></label>
-                      }
+                      )}
                       <br />
                       <b>Correct answer: &nbsp;</b>
                       <span
@@ -222,8 +240,14 @@ function QuestionReview() {
                   ) : (
                     <>
                       <div className={classes.answersContainer}>
-                        {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
-                        {test_mode == 2 ? question_mark :
+                        {test_mode == 2 ? (
+                          <b>Your Marks : &nbsp; </b>
+                        ) : (
+                          <b>Your answer : &nbsp; </b>
+                        )}
+                        {test_mode == 2 ? (
+                          question_mark
+                        ) : (
                           <>
                             <label
                               dangerouslySetInnerHTML={{
@@ -251,7 +275,7 @@ function QuestionReview() {
                               </a>
                             ))}
                           </>
-                        }
+                        )}
                         <br />
                         <b>Correct answer: &nbsp;</b>
                         <span
@@ -287,12 +311,18 @@ function QuestionReview() {
                 </>
               ) : questionType === 9 ? (
                 <div className={classes.answersContainer}>
-                  {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
-                  {test_mode == 2 ? question_mark :
+                  {test_mode == 2 ? (
+                    <b>Your Marks : &nbsp; </b>
+                  ) : (
+                    <b>Your answer : &nbsp; </b>
+                  )}
+                  {test_mode == 2 ? (
+                    question_mark
+                  ) : (
                     <label
                       dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
                     ></label>
-                  }
+                  )}
                   <br />
                   <b>Correct answer: &nbsp;</b>
                   <span
@@ -301,12 +331,18 @@ function QuestionReview() {
                 </div>
               ) : (
                 <div className={classes.answersContainer}>
-                  {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
-                  {test_mode == 2 ? question_mark :
+                  {test_mode == 2 ? (
+                    <b>Your Marks : &nbsp; </b>
+                  ) : (
+                    <b>Your answer : &nbsp; </b>
+                  )}
+                  {test_mode == 2 ? (
+                    question_mark
+                  ) : (
                     <label
                       dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
                     ></label>
-                  }
+                  )}
                   <br />
                   <b>Correct answer: &nbsp;</b>
                   <span
@@ -322,14 +358,15 @@ function QuestionReview() {
   };
   return (
     <div>
-      <Button
-        style={{ visibility: open ? 'hidden' : 'visible' }}
-
-        className={classes.btn}
-        onClick={setOpen}
-      >
-        Review Answers
-      </Button>
+      {isReviewEnabled && (
+        <Button
+          style={{ visibility: open ? 'hidden' : 'visible' }}
+          className={classes.btn}
+          onClick={setOpen}
+        >
+          Review Answers
+        </Button>
+      )}
       <Collapse in={open}>
         <div>{questionsUI(questionsArray)}</div>
         <Button

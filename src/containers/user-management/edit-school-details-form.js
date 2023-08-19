@@ -60,23 +60,23 @@ const EditSchoolDetailsForm = ({
   window.location.host.split('.')[0] === 'qa' ||  window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'
     ? true
     : false;
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'User Management' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item.child_name === 'Create User') {
+  //             setModuleId(item.child_id);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, []);
   console.log(details , 'details edit');
   const formik = useFormik({
     initialValues: {
@@ -97,7 +97,8 @@ const EditSchoolDetailsForm = ({
   });
 
   const fetchAcademicYears = () => {
-    getAcademicYears(moduleId).then((data) => {
+    // getAcademicYears(moduleId).then((data) => {
+      getAcademicYears().then((data) => {
       let transformedData = '';
       transformedData = data?.map((obj = {}) => ({
         id: obj?.id || '',
@@ -109,7 +110,8 @@ const EditSchoolDetailsForm = ({
   };
 
   const fetchBranches = (acadId) => {
-    fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
+    // fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
+      fetchBranchesForCreateUser(acadId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
@@ -135,7 +137,8 @@ const EditSchoolDetailsForm = ({
       section &&
       section.length > 0
     ) {
-      getSubjects(branch, grade, section, moduleId).then((data) => {
+      // getSubjects(branch, grade, section, moduleId).then((data) => {
+        getSubjects(branch, grade, section).then((data) => {
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -181,7 +184,8 @@ const EditSchoolDetailsForm = ({
           ? [...branches].filter(({ id }) => id !== 'all')
           : values;
       formik.setFieldValue('branch', values);
-      fetchGrades(acadId, values, moduleId).then((data) => {
+      // fetchGrades(acadId, values, moduleId).then((data) => {
+        fetchGrades(acadId, values).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
               item_id: grade?.id,
@@ -217,7 +221,8 @@ const EditSchoolDetailsForm = ({
           : values;
       formik.setFieldValue('grade', values);
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch;
-      fetchSections(acadId, branchList, values, moduleId).then((data) => {
+      // fetchSections(acadId, branchList, values, moduleId).then((data) => {
+        fetchSections(acadId, branchList, values).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
@@ -254,7 +259,8 @@ const EditSchoolDetailsForm = ({
       formik.setFieldValue('section', values);
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch;
       const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade;
-      getSubjects(acadId, branchList, gradeList, values, moduleId).then((data) => {
+      // getSubjects(acadId, branchList, gradeList, values, moduleId).then((data) => {
+        getSubjects(acadId, branchList, gradeList, values).then((data) => {
         const transformedData =
           data &&
           data.map((obj) => ({
@@ -275,7 +281,7 @@ const EditSchoolDetailsForm = ({
   };
 
   useEffect(() => {
-    if (moduleId) {
+    // if (moduleId) {
       fetchAcademicYears();
       getRoleApi()
       getDesignation(details.user_level)
@@ -303,8 +309,8 @@ const EditSchoolDetailsForm = ({
           }
         }
       }
-    }
-  }, [moduleId]);
+    // }
+  }, []);
 
   useEffect(() => {
     if (isNext) handleSubmit();

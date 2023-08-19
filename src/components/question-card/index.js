@@ -40,13 +40,14 @@ import endpoints from '../../config/endpoints';
 import FileValidators from '../../components/file-validation/FileValidators';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import './styles.scss';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import Drawer from '@material-ui/core/Drawer';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Progress, Modal } from 'antd';
+import { Progress, Modal, Switch as SwitchAnt } from 'antd';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -97,7 +98,7 @@ const QuestionCard = ({
     (state) => state.commonFilterReducer?.selectedYear
   );
   let sessionYear;
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { token, user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [attachments, setAttachments] = useState(question.attachments);
   const [attachmentPreviews, setAttachmentPreviews] = useState(question.attachments);
@@ -132,6 +133,7 @@ const QuestionCard = ({
   const [selectedTopic, setSelectedTopic] = useState('');
   const [selectedTopicID, setSelectedTopicID] = useState('');
   const [resourcesData, setResourcesData] = useState();
+  const [submissionMode, setSubmissionMode] = useState(question.is_online);
 
   const [selectedResources, setSelectedResources] = useState([]);
   const isDiaryView = window.location.pathname.includes('/diary/');
@@ -162,9 +164,13 @@ const QuestionCard = ({
 
   let idInterval = null;
   useEffect(() => {
-    console.log(fileUploadInProgress, 'start', percentValue, idInterval);
     if (fileUploadInProgress == true && percentValue < 90) {
-      console.log(percentValue, 'pval');
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
+    }
+    if (fileUploadInProgress == true && percentValue < 90) {
       idInterval = setInterval(
         () => setPercentValue((oldCount) => checkCount(oldCount)),
         1000
@@ -178,7 +184,6 @@ const QuestionCard = ({
   }, [fileUploadInProgress]);
 
   const checkCount = (count) => {
-    console.log(count, 'count');
     if (count < 90) {
       return count + 5;
     } else {
@@ -340,6 +345,16 @@ const QuestionCard = ({
     }
     onChange('penTool', pentool);
   }, [pentool]);
+  useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    onChange('is_online', submissionMode);
+    // onChange('penTool', pentool);
+    // onChange('is_attachment_enable', enableAttachments);
+    // onChange('max_attachment', maxattachment);
+  }, [submissionMode]);
 
   useEffect(() => {
     if (firstUpdate.current) {
@@ -867,129 +882,203 @@ const QuestionCard = ({
                 </Grid>
               )}
             </Grid>
-            <Grid container className='question-ctrls-container'>
-              <Grid
-                item
-                xs={12}
-                md={window.location.pathname.includes('/diary/') ? 6 : 3}
-                // className='question-ctrls-inner'
-                style={{ display: 'flex' }}
-              >
-                {/* <Box className='question-ctrl-inner-container'> */}
-
-                <IconButton>
-                  {/* <IconButton className='question-cntrl-file-upload'> */}
-                  <CloudUploadIcon color='primary' />
-                </IconButton>
-                <FormControlLabel
-                  // className='question-ctrl'ss
-                  control={
-                    <Switch
-                      onChange={(e) => {
-                        setEnableAttachments(e.target.checked);
-                        if (e.target.checked == true) {
-                          setmaxAttachment(10);
-                        }
-                        console.log(e.target.checked);
-                      }}
-                      name='checkedA'
-                      color='primary'
-                      checked={enableAttachments}
-                    />
-                  }
-                  label='File Upload'
-                  labelPlacement='start'
-                  style={{ minWidth: '50px' }}
-                  disabled={window.location.pathname.includes('/diary/')}
-                />
-
-                {/* </Box> */}
-              </Grid>
-              {enableAttachments && (
-                <Grid
-                  item
-                  xs={12}
-                  md={window.location.pathname.includes('/diary/') ? 5 : 3}
-                  className='question-ctrl-outer-container'
-                >
-                  {/* <Box className='question-ctrl-inner-container max-attachments'> */}
-                  <div>
-                    <div className='question-ctrl-label'>Maximum number of files</div>
-                    <Select
-                      native
-                      labelId='demo-customized-select-label'
-                      id='demo-customized-select'
-                      defaultValue={10}
-                      onChange={(e) => setmaxAttachment(e.target.value)}
-                      value={maxattachment}
-                      disabled={window.location.pathname.includes('/diary/')}
-                    >
-                      {Array.from({ length: 10 }, (_, index) => (
-                        <option value={index + 1}>{index + 1}</option>
-                      ))}
-                    </Select>
-                  </div>
-                  {/* </Box> */}
-                </Grid>
-              )}
-              <Grid
-                item
-                xs={12}
-                md={window.location.pathname.includes('/diary/') ? 6 : 3}
-                style={{ display: 'flex' }}
-              >
-                {/* <Box className='question-ctrl-inner-container'> */}
-                <div style={{ display: 'flex' }}>
-                  {/* <IconButton className='question-cntrl-file-upload'> */}
-                  <IconButton>
-                    <CreateIcon color='primary' />
-                  </IconButton>
-                  <FormControlLabel
-                    // className='question-ctrl'
-                    control={
-                      <Switch
-                        name='penTool'
-                        onChange={(e) => {
-                          setpentool(e.target.checked);
-                        }}
-                        color='primary'
-                        checked={pentool}
-                        value={pentool}
-                      />
-                    }
-                    label='Pen tool'
-                    labelPlacement='start'
-                    style={{ minWidth: '50px' }}
-                    disabled={window.location.pathname.includes('/diary/')}
-                  />
+            {!window.location.pathname.includes('/diary/') ? (
+              <>
+                <div className='col-12 text-left py-2 my-1'>
+                  <span
+                    className='th-16 th-br-4 p-2'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    <InfoCircleTwoTone className='pr-2' />
+                    <i className='th-grey th-fw-500 '>
+                      {/* Enable/Disable file upload for students to submit Homework */}
+                      Enable/Disable the choice of online or offline mode for students to
+                      submit their Homework
+                    </i>
+                  </span>
                 </div>
-                {/* </Box> */}
-              </Grid>
-              {!window.location.pathname.includes('/diary/') && (
+              </>
+            ) : (
+              ''
+            )}
+            {user_level !== 13 && (
+              <>
                 <Grid
-                  item
-                  xs={12}
-                  md={2}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                  }}
+                  container
+                  className='question-ctrls-container'
+                  display='grid'
+                  gridTemplateColumns='repeat(12, 1fr)'
+                  gap={2}
                 >
-                  {/* <Box className='question-ctrl-inner-container th-pointer'> */}
-                  <div>
-                    <Button
-                      onClick={handleResourcesDrawerOpen}
-                      variant='contained'
-                      color='primary'
-                    >
-                      Resources
-                    </Button>
-                  </div>
-                  <div className='th-12 pt-2'>(From Leson Plan)</div>
+                  {window.location.pathname.includes('/diary/') && (
+                    <>
+                      <Grid
+                        item
+                        xs={12}
+                        md={window.location.pathname.includes('/diary/') ? 6 : 3}
+                        // className='question-ctrls-inner'
+                        style={{ display: 'none' }}
+                      >
+                        <IconButton>
+                          <CloudUploadIcon color='primary' />
+                        </IconButton>
+                        <FormControlLabel
+                          // className='question-ctrl'ss
+                          control={
+                            <Switch
+                              onChange={(e) => {
+                                setEnableAttachments(e.target.checked);
+                                if (e.target.checked == true) {
+                                  setmaxAttachment(10);
+                                }
+                              }}
+                              name='checkedA'
+                              color='primary'
+                              checked={enableAttachments}
+                            />
+                          }
+                          label='File Upload'
+                          labelPlacement='start'
+                          style={{ minWidth: '50px' }}
+                          disabled={window.location.pathname.includes('/diary/')}
+                        />
+                      </Grid>
+                      {enableAttachments && (
+                        <Grid
+                          item
+                          xs={12}
+                          md={window.location.pathname.includes('/diary/') ? 5 : 3}
+                          className='question-ctrl-outer-container d-none'
+                          style={{ justifyContent: 'start' }}
+                        >
+                          <div className='d-flex'>
+                            <div className='question-ctrl-label pt-2'>
+                              Maximum number of files
+                            </div>
+                            <Select
+                              native
+                              labelId='demo-customized-select-label'
+                              id='demo-customized-select'
+                              defaultValue={10}
+                              onChange={(e) => setmaxAttachment(e.target.value)}
+                              value={maxattachment}
+                              disabled={window.location.pathname.includes('/diary/')}
+                            >
+                              {Array.from({ length: 10 }, (_, index) => (
+                                <option value={index + 1}>{index + 1}</option>
+                              ))}
+                            </Select>
+                          </div>
+                        </Grid>
+                      )}
+                      <Grid
+                        item
+                        xs={12}
+                        md={window.location.pathname.includes('/diary/') ? 6 : 3}
+                        style={{ display: 'none' }}
+                      >
+                        <div style={{ display: 'flex' }}>
+                          <IconButton>
+                            <CreateIcon color='primary' />
+                          </IconButton>
+                          <FormControlLabel
+                            // className='question-ctrl'
+                            control={
+                              <Switch
+                                name='penTool'
+                                onChange={(e) => {
+                                  setpentool(e.target.checked);
+                                }}
+                                color='primary'
+                                checked={pentool}
+                                value={pentool}
+                              />
+                            }
+                            label='Pen tool'
+                            labelPlacement='start'
+                            style={{ minWidth: '50px' }}
+                            disabled={window.location.pathname.includes('/diary/')}
+                          />
+                        </div>
+                      </Grid>
+                    </>
+                  )}
+
+                  {user_level !== 13 && (
+                    <>
+                      <Grid
+                        item
+                        xs={12}
+                        md={window.location.pathname.includes('/diary/') ? 12 : 5}
+                        // className='question-ctrls-inner'
+                        style={{ display: 'flex' }}
+                      >
+                        <div
+                          className={`col-12 ${
+                            window.location.pathname.includes('/diary/') ? 'px-0' : ''
+                          }`}
+                        >
+                          <div className='d-flex align-items-center py-2'>
+                            <span
+                              className={`${
+                                window.location.pathname.includes('/diary/')
+                                  ? 'th-12'
+                                  : 'th-18'
+                              } th-black-1 th-fw-600`}
+                            >
+                              Submission Mode :
+                            </span>
+                            <span className='mx-2 th-18 th-black th-fw-500'>Offline</span>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  onChange={(e) => {
+                                    setSubmissionMode(e.target.checked);
+                                  }}
+                                  name='is_online'
+                                  color='primary'
+                                  checked={submissionMode}
+                                  disabled={window.location.pathname.includes('/diary/')}
+                                />
+                              }
+                              labelPlacement='start'
+                              style={{ minWidth: '50px', margin: 0 }}
+                              disabled={window.location.pathname.includes('/diary/')}
+                            />
+                            <span className='mx-2 th-18 th-black th-fw-500'>Online</span>
+                          </div>
+                        </div>
+                      </Grid>
+
+                      {!window.location.pathname.includes('/diary/') && (
+                        <Grid
+                          item
+                          xs={12}
+                          md={2}
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {/* <Box className='question-ctrl-inner-container th-pointer'> */}
+                          <div>
+                            <Button
+                              onClick={handleResourcesDrawerOpen}
+                              variant='contained'
+                              color='primary'
+                            >
+                              Resources
+                            </Button>
+                          </div>
+                          <div className='th-12 pt-2'>(From Leson Plan)</div>
+                        </Grid>
+                      )}
+                    </>
+                  )}
                 </Grid>
-              )}
-            </Grid>
+              </>
+            )}
           </CardContent>
         </Card>
       </Grid>

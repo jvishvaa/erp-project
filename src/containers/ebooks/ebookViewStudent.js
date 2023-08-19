@@ -19,12 +19,12 @@ import EbookCards from './ebookcards.js';
 import NewIbook from './newIbooks';
 const { Option } = Select;
 
-const EbookView = (props) => {
+const EbookViewStudent = (props) => {
   const formRef = createRef();
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  // const [moduleId, setModuleId] = useState();
+  const [moduleId, setModuleId] = useState();
 
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -42,7 +42,7 @@ const EbookView = (props) => {
   );
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [volumeData, setvolumeData] = useState([]);
-  const [volumeId, setvolumeId] = useState();
+  const [volumeId, setvolumeId] = useState(null);
   const [volumeName, setvolumeName] = useState();
   const [gradeData, setGradeData] = useState([]);
   const [gradeId, setGradeId] = useState();
@@ -61,7 +61,8 @@ const EbookView = (props) => {
   const [total, setTotal] = useState();
   const [recently, setRecently] = useState(false);
   const [ibookSortedData, setIbookSortedData] = useState([]);
-
+  const [showCategoryCount, setShowCategoryCount] = useState(5);
+  const [selectedSubject, setSelectedSUbject] = useState('');
   const env = window.location.host;
   const domain = window.location.host.split('.');
   let domain_name =
@@ -113,7 +114,7 @@ const EbookView = (props) => {
 
   const fetchSubjectData = (params = {}) => {
     axiosInstance
-      .get(`${endpoints.newEbook.ebookSubject}`, {
+      .get(`${endpoints.newEbook.ebookSubjectStudent}`, {
         params: { ...params },
       })
       .then((res) => {
@@ -126,78 +127,33 @@ const EbookView = (props) => {
       });
   };
 
-  const handleGrade = (item) => {
-    formRef.current.setFieldsValue({
-      subject: null,
-      // board: null,
-    });
-    setSubjectData([]);
-    handleClearSubject();
-    setPage(1)
-    if (item) {
-      setGradeId(item.value);
-      setGradeName(item.children);
-      setCentralGrade(item.key);
-      fetchSubjectData({
-        session_year: selectedAcademicYear?.id,
-        branch_id: selectedBranch?.branch?.id,
-        // module_id: moduleId,
-        grade: item.value,
-        book_type: props?.showTab == 1 ? 3 : 4,
-      });
-    }
-  };
   useEffect(() => {
     if (user_level == 13) {
       fetchSubjectData({
         session_year: selectedAcademicYear?.id,
-        branch_id: selectedBranch?.branch?.id,
-        // module_id: moduleId,
-        grade: gradeId,
+        academic_year: selectedAcademicYear?.session_year,
         book_type: props?.showTab == 1 ? 3 : 4,
       });
     }
   }, [gradeId]);
-  const handleClearGrade = () => {
-    setGradeId('');
-    setGradeName('');
-    setCentralGrade('');
-    setSubjectId('');
-    setCentralSubject('');
-    setSubjectName('');
-    setvolumeId('');
-    setvolumeName('');
-    setEbookData([]);
-    fetchEbooksDefault({
-      book_type: '3',
-      session_year: selectedAcademicYear?.session_year,
-      page_number: page,
-      page_size: '9',
-      domain_name: domain_name,
-    });
-    setRecently(true);
-    formRef.current.setFieldsValue({
-      grade: null,
-      subject: null,
-      volume: null,
-    });
-  };
+
   const handleSubject = (item) => {
-    setPage(1)
     if (item) {
-      setSubjectId(item.value);
-      setCentralSubject(item.centralId);
-      setSubjectName(item.children);
+      setSubjectId(item.erp_subject_id);
+      setCentralSubject(item.eduvate_subject_id);
+      setSubjectName(item.erp_sub_name);
+      setSelectedSUbject(item);
+      setPage(1);
+      setvolumeId(null);
+      formRef.current.setFieldsValue({
+        volume: 'All',
+      });
     }
   };
-  const handleClearSubject = () => {
-    setSubjectId('');
-    setCentralSubject('');
-    setSubjectName('');
-  };
-  const handleBoard = (e) => {
-    setvolumeId(e);
-    setPage(1)
+
+  const handleBoard = (e, val) => {
+    setvolumeId(val);
+    setPage(1);
   };
   const handleClearBoard = () => {
     setvolumeId('');
@@ -209,24 +165,6 @@ const EbookView = (props) => {
     setPage(e);
   };
 
-  const gradeOptions = gradeData?.map((each, i) => {
-    return (
-      <Option key={each.central_grade} value={each.erp_grade}>
-        {each?.erp_grade_name}
-      </Option>
-    );
-  });
-  const subjectOptions = subjectData?.map((each, i) => {
-    return (
-      <Option
-        key={each.erp_subject_id}
-        value={each.erp_subject_id}
-        centralId={each.eduvate_subject_id}
-      >
-        {each?.erp_sub_name}
-      </Option>
-    );
-  });
   const boardOptions = volumeData?.map((each) => {
     return (
       <Option key={each?.id} value={each.id}>
@@ -236,46 +174,42 @@ const EbookView = (props) => {
   });
 
   useEffect(() => {
-      // if (moduleId) {
-      fetchGradeData();
-      fetchVolumeData();
-      setSubjectData([]);
-      // }
-      setRecently(true);
+    fetchGradeData();
+    fetchVolumeData();
   }, [props?.showTab]);
 
   useEffect(() => {
-    setRecently(true);
-  }, [props?.changeRecent]);
-
-  // useEffect(() => {
-  //   if (NavData && NavData.length) {
-  //     NavData.forEach((item) => {
-  //       if (
-  //         item.parent_modules === 'Ebook' &&
-  //         item.child_module &&
-  //         item.child_module.length > 0
-  //       ) {
-  //         item.child_module.forEach((item) => {
-  //           if (item.child_name === 'Ebook View') {
-  //             setModuleId(item.child_id);
-  //           }
-  //         });
-  //       }
-  //     });
-  //   }
-  // }, []);
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Ebook' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Ebook View') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     let domain = window.location.host.split('.');
-    if (subjectId && volumeId) {
+    if (
+      selectedSubject != '' &&
+      centralGrade != undefined &&
+      subjectId != undefined &&
+      page
+    ) {
       setRecently(false);
       if (props?.showTab == 1) {
-        fetchEbooks({
+        let obj = {
           grade: centralGrade,
           subject: centralSubject,
           is_ebook: 'true',
-          volume: volumeId,
           branch: selectedBranch?.branch?.id,
           domain_name: domain_name,
           academic_year: selectedAcademicYear?.id,
@@ -283,9 +217,14 @@ const EbookView = (props) => {
           page_number: page,
           page_size: '9',
           book_type: '3',
-        });
+        };
+
+        if (volumeId != null && volumeId?.key != '0') {
+          obj['volume'] = volumeId?.value;
+        }
+        fetchEbooks(obj);
       } else if (props?.showTab == 2) {
-        fetchIbooks({
+        let obj = {
           branch: selectedBranch?.branch?.id,
           academic_year: selectedAcademicYear?.id,
           session_year: selectedAcademicYear?.session_year,
@@ -293,37 +232,18 @@ const EbookView = (props) => {
           ebook_type: '1',
           grade: centralGrade,
           subject: centralSubject,
-          volume: volumeId,
           domain_name: domain_name,
           page: page,
           page_size: '9',
           book_type: '4',
-        });
+        };
+        if (volumeId != null && volumeId?.key != '0') {
+          obj['volume'] = volumeId?.value;
+        }
+        fetchIbooks(obj);
       }
     }
-  }, [subjectId, volumeId, page]);
-
-  useEffect(() => {
-    handleClearGrade();
-    if (props?.showTab == 1) {
-      fetchEbooksDefault({
-        book_type: '3',
-        session_year: selectedAcademicYear?.session_year,
-        page_number: page,
-        page_size: '9',
-        domain_name: domain_name,
-      });
-    }
-    if (props?.showTab == 2) {
-      fetchIbooksDefault({
-        book_type: '4',
-        session_year: selectedAcademicYear?.session_year,
-        page_number: page,
-        page_size: '9',
-        domain_name: domain_name,
-      });
-    }
-  }, [props?.showTab, props?.changeRecent]);
+  }, [volumeId, page, selectedSubject]);
 
   const fetchEbooks = (params) => {
     setLoading(true);
@@ -454,96 +374,94 @@ const EbookView = (props) => {
     return sortedConceptData;
   };
 
-  const handleReadEbook = (data) => {
-  };
+  const handleReadEbook = (data) => {};
+
+  useEffect(() => {
+    formRef.current.setFieldsValue({
+      volume: 'All',
+    });
+  }, []);
+
+  useEffect(() => {
+    if (subjectData?.length > 0) {
+      handleSubject(subjectData[0]);
+    }
+  }, [subjectData]);
 
   return (
     <>
+      <div className='col-12 d-flex justify-content-start '>
+        <Form id='filterForm' ref={formRef} layout={'horizontal'} className='col-md-2'>
+          <div className='row align-items-center'>
+            <div className='col-md-12 col-6 pr-0 px-0'>
+              <div className='mb-2 text-left'>Volume</div>
+              <Form.Item name='volume'>
+                <Select
+                  placeholder='Select Volume'
+                  allowClear
+                  defaultActiveFirstOption={true}
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, val) => {
+                    handleBoard(e, val);
+                  }}
+                  onClear={handleClearBoard}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {volumeData?.length > 0 && (
+                    <Option key='0' value='All'>
+                      All
+                    </Option>
+                  )}
+                  {boardOptions}
+                </Select>
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
+      </div>
       <div className='row'>
-        <div className='col-12'>
-          <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-            <div className='row align-items-center'>
-              <div className='col-md-2 col-6 px-0'>
-                <div className='mb-2 text-left'>Grade</div>
-                <Form.Item name='grade'>
-                  <Select
-                    allowClear
-                    placeholder={
-                      gradeName ? (
-                        <span className='th-black-1'>{gradeName}</span>
-                      ) : (
-                        'Select Grade'
-                      )
-                    }
-                    showSearch
-                    disabled={user_level == 13}
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => {
-                      handleGrade(value);
-                    }}
-                    onClear={handleClearGrade}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={false}
-                  >
-                    {gradeOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                <div className='mb-2 text-left'>Subject</div>
-                <Form.Item name='subject'>
-                  <Select
-                    allowClear
-                    placeholder='Select Subject'
-                    showSearch
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e, value) => {
-                      handleSubject(value);
-                    }}
-                    onClear={handleClearSubject}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={false}
-                  >
-                    {subjectOptions}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                <div className='mb-2 text-left'>Volume</div>
-                <Form.Item name='volume'>
-                  <Select
-                    placeholder='Select Volume'
-                    allowClear
-                    //   defaultValue={'CBSE'}
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e) => {
-                      handleBoard(e);
-                    }}
-                    onClear={handleClearBoard}
-                    className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                    bordered={false}
-                  >
-                    {boardOptions}
-                  </Select>
-                </Form.Item>
+        <div className='mb-3'>
+          <div className='row'>
+            <div className='col-md-12'>
+              <div className='row'>
+                {subjectData?.slice(0, showCategoryCount).map((item) => (
+                  <div className='md-1 px-1 py-1'>
+                    <Button
+                      className={`${
+                        item?.eduvate_subject_id == selectedSubject?.eduvate_subject_id
+                          ? 'th-button-active'
+                          : 'th-button'
+                      } th-br-4`}
+                      onClick={() => handleSubject(item)}
+                    >
+                      <span>{item?.erp_sub_name}</span>
+                    </Button>
+                  </div>
+                ))}
+                {subjectData?.length > 5 && (
+                  <div className='md-1 px-1 py-1'>
+                    <Button
+                      className='th-button th-br-4'
+                      type='secondary'
+                      onClick={() => {
+                        showCategoryCount == subjectData?.length
+                          ? setShowCategoryCount(5)
+                          : setShowCategoryCount(subjectData?.length);
+                      }}
+                    >
+                      Show {showCategoryCount == subjectData?.length ? 'Less' : 'All'}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
-          </Form>
+          </div>
         </div>
       </div>
       <div style={{ minHeight: '55vh' }}>
@@ -556,7 +474,7 @@ const EbookView = (props) => {
             {props?.showTab == 1 ? (
               <div>
                 <span style={{ marginLeft: '1%', fontSize: '20px' }}>
-                  {recently ? 'Recently Viewed Books' : ''}
+                  {/* {recently ? 'Recently Viewed Books' : ''} */}
                 </span>
                 <EbookCards
                   data={ebookData}
@@ -575,7 +493,7 @@ const EbookView = (props) => {
             ) : props?.showTab == 2 ? (
               <div>
                 <span style={{ marginLeft: '1%', fontSize: '20px' }}>
-                  {recently ? 'Recently Viewed Books' : ''}
+                  {/* {recently ? 'Recently Viewed Books' : ''} */}
                 </span>
                 <NewIbook
                   data={ibookSortedData}
@@ -595,4 +513,4 @@ const EbookView = (props) => {
   );
 };
 
-export default EbookView;
+export default EbookViewStudent;

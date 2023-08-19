@@ -11,6 +11,7 @@ import {
   DatePicker,
   Radio,
   Modal,
+  Result,
 } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'config/endpoints';
@@ -19,6 +20,7 @@ import { DownOutlined, CloseOutlined, InfoCircleTwoTone } from '@ant-design/icon
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import _ from 'lodash';
 import { Prompt } from 'react-router-dom';
+import HolidayIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/holidayNew.png';
 
 const { Option } = Select;
 const isOrchids = IsOrchidsChecker();
@@ -52,7 +54,7 @@ const MarkStudentAttendance = () => {
   const [absentCount, setAbsentCount] = useState(0);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const isDateEditable = [1, 2, 8, 9].includes(user_level);
-
+  const [isHoliday, setIsHoliday] = useState(false);
   let columns = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>Sl No.</span>,
@@ -254,6 +256,7 @@ const MarkStudentAttendance = () => {
     axios
       .get(`${endpoints.academics.teacherAttendanceData}`, { params: { ...params } })
       .then((res) => {
+        setIsHoliday(res?.data?.is_holiday);
         if (res?.data?.attendance_data.length > 0) {
           setUserListData(res?.data?.attendance_data);
           setUserAggregateData(res?.data?.aggregate_counts);
@@ -587,90 +590,100 @@ const MarkStudentAttendance = () => {
               </div>
             </div>
           </Form>
-          <div className='row pb-2 th-bg-white'>
-            {userListData?.length > 0 && (
-              <div className='col-12 text-left py-2 my-1'>
-                <span
-                  className='th-16 th-br-4 p-2'
-                  style={{ border: '1px solid #d9d9d9' }}
-                >
-                  <InfoCircleTwoTone className='pr-2' />
-                  <i className='th-grey th-fw-500 '>
-                    Update the attendance to reflect the user's absence and validate the
-                    attendance.
-                  </i>
-                </span>
+          {isHoliday ? (
+            <div className='row row pb-2 th-bg-white'>
+              <div className='col-12'>
+                <Result
+                  icon={<img src={HolidayIcon} style={{ height: '130px' }} />}
+                  title={<span className='th-grey'>Today is holiday.</span>}
+                />
               </div>
-            )}
-            <div className='col-12' style={{ position: 'relative' }}>
-              <Table
-                className='th-table '
-                rowClassName={(record, index) =>
-                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                }
-                loading={loading}
-                columns={columns}
-                pagination={false}
-                rowKey={(record) => record?.id}
-                dataSource={userListData}
-                scroll={{
-                  x: userListData?.length > 0 ? 'max-content' : null,
-                  y: '400px',
-                }}
-              />
-
+            </div>
+          ) : (
+            <div className='row pb-2 th-bg-white'>
               {userListData?.length > 0 && (
-                <div className='col-12 py-2 px-0 th-bg-grey'>
-                  <div
-                    className='row py-2 align-items-center th-br-8 th-14 th-grey th-fw-500 th-bg-white'
-                    style={{ outline: '1px solid #d9d9d9' }}
+                <div className='col-12 text-left py-2 my-1'>
+                  <span
+                    className='th-16 th-br-4 p-2'
+                    style={{ border: '1px solid #d9d9d9' }}
                   >
-                    <div className='col-8'>
-                      <div className='row'>
-                        <div className='col-md-4 col-6  w-100'>
-                          Total:{' '}
-                          <span className='th-primary'>
-                            {handleNumberView(userAggregateData?.total)}
-                          </span>
-                        </div>
-                        <div className='col-md-4 col-6 '>
-                          Present:{' '}
-                          <span className='th-green'>
-                            {handleNumberView(presentCount ?? 0)}
-                          </span>
-                        </div>
-                        <div className='col-md-4 col-6 '>
-                          Absent:{' '}
-                          <span className='th-fw-500 th-red'>
-                            {handleNumberView(absentCount ?? 0)}
-                          </span>
-                        </div>
-                        {selectedUserLevel == 13 && isOrchids && (
-                          <div className='col-12 th-fw-600 th-black-1 pt-1'>
-                            Note : - When attendance is confirmed, an SMS will be sent to
-                            the absentees
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className='col-4 text-right'>
-                      <Button
-                        loading={confirmLoading}
-                        className='th-bg-primary th-white th-br-4 th-width-50'
-                        onClick={() => {
-                          hanldeMarkAttedance();
-                        }}
-                      >
-                        Confirm Attendance
-                      </Button>
-                    </div>
-                  </div>
+                    <InfoCircleTwoTone className='pr-2' />
+                    <i className='th-grey th-fw-500 '>
+                      Update the attendance to reflect the user's absence and validate the
+                      attendance.
+                    </i>
+                  </span>
                 </div>
               )}
-            </div>
-          </div>
+              <div className='col-12' style={{ position: 'relative' }}>
+                <Table
+                  className='th-table '
+                  rowClassName={(record, index) =>
+                    index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                  }
+                  loading={loading}
+                  columns={columns}
+                  pagination={false}
+                  rowKey={(record) => record?.id}
+                  dataSource={userListData}
+                  scroll={{
+                    x: userListData?.length > 0 ? 'max-content' : null,
+                    y: '400px',
+                  }}
+                />
 
+                {userListData?.length > 0 && (
+                  <div className='col-12 py-2 px-0 th-bg-grey'>
+                    <div
+                      className='row py-2 align-items-center th-br-8 th-14 th-grey th-fw-500 th-bg-white'
+                      style={{ outline: '1px solid #d9d9d9' }}
+                    >
+                      <div className='col-8'>
+                        <div className='row'>
+                          <div className='col-md-4 col-6  w-100'>
+                            Total:{' '}
+                            <span className='th-primary'>
+                              {handleNumberView(userAggregateData?.total)}
+                            </span>
+                          </div>
+                          <div className='col-md-4 col-6 '>
+                            Present:{' '}
+                            <span className='th-green'>
+                              {handleNumberView(presentCount ?? 0)}
+                            </span>
+                          </div>
+                          <div className='col-md-4 col-6 '>
+                            Absent:{' '}
+                            <span className='th-fw-500 th-red'>
+                              {handleNumberView(absentCount ?? 0)}
+                            </span>
+                          </div>
+                          {selectedUserLevel == 13 && isOrchids && (
+                            <div className='col-12 th-fw-600 th-black-1 pt-1'>
+                              Note : - When attendance is confirmed, an SMS will be sent
+                              to the absentees
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className='col-4 text-right'>
+                        <Button
+                          loading={confirmLoading}
+                          className='th-bg-primary th-white th-br-4 th-width-50'
+                          onClick={() => {
+                            hanldeMarkAttedance();
+                          }}
+                        >
+                          Confirm Attendance
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           <Modal
             visible={showNotificationModal}
             centered

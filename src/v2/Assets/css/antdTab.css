@@ -151,3 +151,9 @@
 .th-activity-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   z-index: 5;
 }
+.th-assessment-tabs .ant-tabs-tab {
+  background: #f8f8f8 !important;
+}
+.th-assessment-tabs .ant-tabs-tab.ant-tabs-tab-active {
+  background: #fff !important;
+}

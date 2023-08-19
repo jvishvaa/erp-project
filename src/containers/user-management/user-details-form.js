@@ -11,10 +11,9 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Modal from '@material-ui/core/Modal'
-import  Paper  from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper';
 import { TextField } from '@material-ui/core';
-import {IconButton} from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -47,7 +46,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { message} from 'antd';
+import { Modal, message, Button as AntButton } from 'antd';
+import ChangePasswordPopup from 'v2/FaceLift/ChangePassword/changePasswordModal';
 
 const UserDetailsForm = ({
   isEdit,
@@ -64,13 +64,23 @@ const UserDetailsForm = ({
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [open, setOpen] = React.useState(false);
   const [passwordFlag, setPasswordFlag] = useState(true);
-  const [conformPasswordFlag,setConformPasswordFlag] = useState(true)
+  const [conformPasswordFlag, setConformPasswordFlag] = useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [password,setPassword] = useState('')
-  const [conformPassword,setConformPassword] = useState('')
+  const [password, setPassword] = useState('');
+  const [conformPassword, setConformPassword] = useState('');
   const history = useHistory();
-  const [loading,setLoading] = useState(false);
-  const  userLevel  = JSON.parse(localStorage.getItem('userDetails'));
+  const [loading, setLoading] = useState(false);
+  const userLevel = JSON.parse(localStorage.getItem('userDetails'));
+
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
+  const [isPasswordSubmit, setIsPasswordSubmit] = useState(false);
+  const [isPasswordCanceled, setIsPasswordCanceled] = useState(false);
+  const [strengthProgress, setStrengthProgress] = useState('');
+
+  const closePasswordModal = () => {
+    setOpenPasswordModal(false);
+    setIsPasswordCanceled(true);
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -134,10 +144,9 @@ const UserDetailsForm = ({
     formik.handleChange();
   };
 
-
   const handleMobileNumber = (e) => {
     formik.setFieldValue('contact', e.target.value.toString());
-  }
+  };
 
   const handlePropsData = (code) => {
     formik.setFieldValue('student_country_code', code);
@@ -145,110 +154,111 @@ const UserDetailsForm = ({
 
   const handleClose = () => {
     setOpen(false);
-    setPassword('')
-    setConformPassword('')
+    setPassword('');
+    setConformPassword('');
+    setOpenPasswordModal(false);
   };
   const handleOpen = () => {
-    setOpen(true);
+    // setOpen(true);
+    setOpenPasswordModal(true);
   };
 
-
-  const submitPasswordDetails =() =>{
-    if(!password){
-        message.error('Please Enter Password')
-        return
-    } else if(!conformPassword){
-      message.error('Please Enter Confirm Password')
-      return
-    }else if(password?.length < 8 && conformPassword?.length < 8){
-      message.error('Please Enter More Than 8 Character')
-      return
-    }
-    else if(password !== conformPassword){
-      message.error(`Password Doesn't Match`)
-      return
-    } else{
-     axiosInstance.post(`${endpoints.userManagement.passwordChange}`,{
-      user_id:details?.id,
-      password:password,
-     })
-     .then((res) =>{
-      if(res.data.status_code === 200){
-        message.success(res?.data?.message)
-        handleClose()
-        history.push({
-          pathname: '/user-management/view-users',
+  const submitPasswordDetails = () => {
+    if (!password) {
+      message.error('Please Enter Password');
+      return;
+    } else if (!conformPassword) {
+      message.error('Please Enter Confirm Password');
+      return;
+    } else if (password?.length < 8 && conformPassword?.length < 8) {
+      message.error('Please Enter More Than 8 Character');
+      return;
+    } else if (password !== conformPassword) {
+      message.error(`Password Doesn't Match`);
+      return;
+    } else {
+      axiosInstance
+        .post(`${endpoints.userManagement.passwordChange}`, {
+          user_id: details?.id,
+          password: password,
         })
-      } else {
-        message.error(res?.data?.message)
-        handleClose()
-      }
-     });
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            message.success(res?.data?.message);
+            handleClose();
+            history.push({
+              pathname: '/user-management/view-users',
+            });
+          } else {
+            message.error(res?.data?.message);
+            handleClose();
+          }
+        });
     }
-  }
+  };
   return (
     <>
-    <div>
-      {loading && <Loader/>}
-    <Grid container spacing={4} className='user-details-form-container'>
-      <Grid container item xs={12}>
-        <Grid item md={4} xs={12}>
-          <ImageUpload
-            value={formik.values.profile}
-            onChange={(value) => {
-              formik.setFieldValue('profile', value);
-            }}
-          />
-        </Grid>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl required variant='outlined' fullWidth size='small'>
-          <InputLabel htmlFor='component-outlined'>First name</InputLabel>
-          <OutlinedInput
-            id='first_name'
-            name='first_name'
-            onChange={formik.handleChange}
-            value={formik.values.first_name}
-            inputProps={{ maxLength: 20 }}
-            label='First name'
-            autoFocus
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.first_name ? formik.errors.first_name : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl variant='outlined' fullWidth size='small'>
-          <InputLabel htmlFor='component-outlined'>Middle name</InputLabel>
-          <OutlinedInput
-            id='middle_name'
-            name='middle_name'
-            onChange={formik.handleChange}
-            value={formik.values.middle_name}
-            inputProps={{ maxLength: 20 }}
-            label='Middle name'
-          />
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl required variant='outlined' fullWidth size='small'>
-          <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
-          <OutlinedInput
-            id='last_name'
-            name='last_name'
-            onChange={formik.handleChange}
-            value={formik.values.last_name}
-            inputProps={{ maxLength: 20 }}
-            label='Last name'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.last_name ? formik.errors.last_name : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      {/* ERP_ID input filed   */}
-      {/* <Grid item md={4} xs={12}>
+      <div>
+        {loading && <Loader />}
+        <Grid container spacing={4} className='user-details-form-container'>
+          <Grid container item xs={12}>
+            <Grid item md={4} xs={12}>
+              <ImageUpload
+                value={formik.values.profile}
+                onChange={(value) => {
+                  formik.setFieldValue('profile', value);
+                }}
+              />
+            </Grid>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <FormControl required variant='outlined' fullWidth size='small'>
+              <InputLabel htmlFor='component-outlined'>First name</InputLabel>
+              <OutlinedInput
+                id='first_name'
+                name='first_name'
+                onChange={formik.handleChange}
+                value={formik.values.first_name}
+                inputProps={{ maxLength: 20 }}
+                label='First name'
+                autoFocus
+              />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.first_name ? formik.errors.first_name : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <FormControl variant='outlined' fullWidth size='small'>
+              <InputLabel htmlFor='component-outlined'>Middle name</InputLabel>
+              <OutlinedInput
+                id='middle_name'
+                name='middle_name'
+                onChange={formik.handleChange}
+                value={formik.values.middle_name}
+                inputProps={{ maxLength: 20 }}
+                label='Middle name'
+              />
+            </FormControl>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <FormControl required variant='outlined' fullWidth size='small'>
+              <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
+              <OutlinedInput
+                id='last_name'
+                name='last_name'
+                onChange={formik.handleChange}
+                value={formik.values.last_name}
+                inputProps={{ maxLength: 20 }}
+                label='Last name'
+              />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.last_name ? formik.errors.last_name : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          {/* ERP_ID input filed   */}
+          {/* <Grid item md={4} xs={12}>
       <FormControl variant='outlined' fullWidth size='small'>
           <InputLabel htmlFor='component-outlined'>ERP ID</InputLabel>
           <OutlinedInput
@@ -264,41 +274,41 @@ const UserDetailsForm = ({
           </FormHelperText>
         </FormControl>
       </Grid> */}
-      {/* <Grid container item xs={12} spacing={8}> */}
-      <Grid item md={4} xs={12}>
-        <FormControl required component='fieldset' fullWidth size='small'>
-          <FormLabel component='legend'>Gender</FormLabel>
-          <RadioGroup
-            id='gender'
-            name='gender'
-            value={formik.values.gender}
-            onChange={formik.handleChange}
-            row={!isMobile}
-            column={isMobile}
-          >
-            <FormControlLabel
-              value='1'
-              control={<Radio color='primary' checked={formik.values.gender == 1} />}
-              label='Male'
-            />
-            <FormControlLabel
-              value='2'
-              control={<Radio color='primary' checked={formik.values.gender == 2} />}
-              label='Female'
-            />
-            <FormControlLabel
-              value='3'
-              control={<Radio color='primary' checked={formik.values.gender == 3} />}
-              label='Other'
-            />
-          </RadioGroup>
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.gender ? formik.errors.gender : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          {/* <Grid container item xs={12} spacing={8}> */}
+          <Grid item md={4} xs={12}>
+            <FormControl required component='fieldset' fullWidth size='small'>
+              <FormLabel component='legend'>Gender</FormLabel>
+              <RadioGroup
+                id='gender'
+                name='gender'
+                value={formik.values.gender}
+                onChange={formik.handleChange}
+                row={!isMobile}
+                column={isMobile}
+              >
+                <FormControlLabel
+                  value='1'
+                  control={<Radio color='primary' checked={formik.values.gender == 1} />}
+                  label='Male'
+                />
+                <FormControlLabel
+                  value='2'
+                  control={<Radio color='primary' checked={formik.values.gender == 2} />}
+                  label='Female'
+                />
+                <FormControlLabel
+                  value='3'
+                  control={<Radio color='primary' checked={formik.values.gender == 3} />}
+                  label='Other'
+                />
+              </RadioGroup>
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.gender ? formik.errors.gender : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <ThemeProvider theme={theme}>
             <DatePicker
               value={formik.values.date_of_birth || null}
@@ -316,122 +326,126 @@ const UserDetailsForm = ({
             />
           </ThemeProvider>
         </MuiPickersUtilsProvider> */}
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            value={formik.values.date_of_birth || null}
-            onChange={(value) => {
-              formik.setFieldValue('date_of_birth', moment(value).format('YYYY-MM-DD'));
-            }}
-            format='YYYY-MM-DD'
-            maxDate={new Date()}
-            size='small'
-            inputVariant='outlined'
-            fullWidth
-            label='Date of Birth'
-            required
-            variant='dialog'
-            id='date-picker'
-            KeyboardButtonProps={{
-              'aria-label': 'change date',
-            }}
-            
-          />
-        </MuiPickersUtilsProvider>
-        <FormHelperText style={{ color: 'red' }}>
-          {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
-        </FormHelperText>
-      </Grid>
-      <Grid item md={2} xs={2}>
-        <CustomizedSelects
-          name={'student_country_code'}
-          value={formik.values.student_country_code}
-          handlePropsData={(code) => handlePropsData(code)}
-        />
-        <FormHelperText style={{ color: 'red' }}>
-          {formik.errors.student_country_code ? formik.errors.student_country_code : ''}
-        </FormHelperText>
-      </Grid>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <KeyboardDatePicker
+                value={formik.values.date_of_birth || null}
+                onChange={(value) => {
+                  formik.setFieldValue(
+                    'date_of_birth',
+                    moment(value).format('YYYY-MM-DD')
+                  );
+                }}
+                format='YYYY-MM-DD'
+                maxDate={new Date()}
+                size='small'
+                inputVariant='outlined'
+                fullWidth
+                label='Date of Birth'
+                required
+                variant='dialog'
+                id='date-picker'
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
+            </FormHelperText>
+          </Grid>
+          <Grid item md={2} xs={2}>
+            <CustomizedSelects
+              name={'student_country_code'}
+              value={formik.values.student_country_code}
+              handlePropsData={(code) => handlePropsData(code)}
+            />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.student_country_code
+                ? formik.errors.student_country_code
+                : ''}
+            </FormHelperText>
+          </Grid>
 
-      <Grid item md={2} xs={4}>
-        <FormControl required fullWidth variant='outlined' size='small'>
-          <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
-          <OutlinedInput
-            id='contact'
-            name='contact'
-            inputProps={{ maxLength: 15 }}
-            type='number'
-            onInput={(e) => {
-              e.target.value = Math.max(0, parseInt(e.target.value))
-                .toString()
-                .slice(0, 10);
-            }}
-            min={0}
-            // inputProps={{ pattern: { min: 10, max: 10 } }}
-            onChange={(e)=>handleMobileNumber(e)}
-            value={formik.values.contact}
-            label='Mobile no.'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.contact ? formik.errors.contact : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl variant='outlined' fullWidth size='small'>
-          <InputLabel htmlFor='component-outlined'>Username</InputLabel>
-          <OutlinedInput
-            id='username'
-            name='username'
-            inputProps={{ maxLength: 20 }}
-            disabled={isEdit}
-            onChange={isEdit ? () => {} : formik.handleChange}
-            value={formik.values.username}
-            label='Username'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.username ? formik.errors.username : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl required variant='outlined' fullWidth size='small'>
-          <InputLabel htmlFor='component-outlined'>Email</InputLabel>
-          <OutlinedInput
-            id='email'
-            name='email'
-            onChange={formik.handleChange}
-            value={formik.values.email}
-            inputProps={{ maxLength: 40 }}
-            label='Email'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.email ? formik.errors.email : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      {/* </Grid> */}
-      {/* <Grid container item xs={12} spacing={4}> */}
-      <Grid item md={4} xs={12}>
-        <FormControl required variant='outlined' fullWidth size='small'>
-          <InputLabel htmlFor='component-outlined'>Address</InputLabel>
-          <OutlinedInput
-            id='address'
-            name='address'
-            onChange={formik.handleChange}
-            value={formik.values.address}
-            inputProps={{ maxLength: 150 }}
-            multiline
-            required
-            rows={4}
-            rowsMax={6}
-            label='Address'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.address ? formik.errors.address : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      {/* <Grid item md={4}>
+          <Grid item md={2} xs={4}>
+            <FormControl required fullWidth variant='outlined' size='small'>
+              <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
+              <OutlinedInput
+                id='contact'
+                name='contact'
+                inputProps={{ maxLength: 15 }}
+                type='number'
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 10);
+                }}
+                min={0}
+                // inputProps={{ pattern: { min: 10, max: 10 } }}
+                onChange={(e) => handleMobileNumber(e)}
+                value={formik.values.contact}
+                label='Mobile no.'
+              />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.contact ? formik.errors.contact : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <FormControl variant='outlined' fullWidth size='small'>
+              <InputLabel htmlFor='component-outlined'>Username</InputLabel>
+              <OutlinedInput
+                id='username'
+                name='username'
+                inputProps={{ maxLength: 20 }}
+                disabled={isEdit}
+                onChange={isEdit ? () => {} : formik.handleChange}
+                value={formik.values.username}
+                label='Username'
+              />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.username ? formik.errors.username : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          <Grid item md={4} xs={12}>
+            <FormControl required variant='outlined' fullWidth size='small'>
+              <InputLabel htmlFor='component-outlined'>Email</InputLabel>
+              <OutlinedInput
+                id='email'
+                name='email'
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                inputProps={{ maxLength: 40 }}
+                label='Email'
+              />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.email ? formik.errors.email : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          {/* </Grid> */}
+          {/* <Grid container item xs={12} spacing={4}> */}
+          <Grid item md={4} xs={12}>
+            <FormControl required variant='outlined' fullWidth size='small'>
+              <InputLabel htmlFor='component-outlined'>Address</InputLabel>
+              <OutlinedInput
+                id='address'
+                name='address'
+                onChange={formik.handleChange}
+                value={formik.values.address}
+                inputProps={{ maxLength: 150 }}
+                multiline
+                required
+                rows={4}
+                rowsMax={6}
+                label='Address'
+              />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.address ? formik.errors.address : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+          {/* <Grid item md={4}>
           <FormControl variant='outlined' fullWidth disabled>
             <InputLabel htmlFor='component-outlined'>Address line 2</InputLabel>
             <OutlinedInput
@@ -442,99 +456,107 @@ const UserDetailsForm = ({
             />
           </FormControl>
         </Grid> */}
-      {/* </Grid> */}
+          {/* </Grid> */}
 
-      <Grid item xs={12}>
-        <Divider />
-      </Grid>
-      <Grid item xs={12}>
-      <Grid item md={4} xs={12}>
-        <FormControl component='fieldset' fullWidth size='small'>
-          <FormLabel component='legend'>Parent/Guardian</FormLabel>
-          <FormGroup row>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={showParentForm}
-                  onChange={toggleParentForm}
-                  name='gilad'
+          <Grid item xs={12}>
+            <Divider />
+          </Grid>
+          <Grid item xs={12}>
+            <Grid item md={4} xs={12}>
+              <FormControl component='fieldset' fullWidth size='small'>
+                <FormLabel component='legend'>Parent/Guardian</FormLabel>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={showParentForm}
+                        onChange={toggleParentForm}
+                        name='gilad'
+                        color='primary'
+                      />
+                    }
+                    label='Parent'
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={showGuardianForm}
+                        onChange={toggleGuardianForm}
+                        name='jason'
+                        color='primary'
+                      />
+                    }
+                    label='Guardian'
+                  />
+                </FormGroup>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            item
+            xs={12}
+            direction={isMobile ? 'column-reverse' : 'row'}
+            spacing={3}
+          >
+            <Grid item md='2'>
+              <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+                <Button
+                  size='medium'
+                  style={{ width: '100%' }}
+                  variant='contained'
+                  className='cancelButton labelColor'
+                  onClick={handleBack}
+                >
+                  Back
+                </Button>
+              </Box>
+            </Grid>
+            {isEdit &&
+              (userLevel?.is_superuser === true ||
+                userLevel?.user_level === 8 ||
+                userLevel?.user_level === 1 ||
+                userLevel?.user_level === 26) && (
+                <Grid item md='2'>
+                  <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+                    {isEdit === true ? (
+                      <Button
+                        className={classes.formActionButton}
+                        variant='contained'
+                        style={{ color: 'white', width: '100%' }}
+                        color='primary'
+                        size='medium'
+                        onClick={handleOpen}
+                        disabled={isSubmitting}
+                      >
+                        Change Password
+                      </Button>
+                    ) : (
+                      ''
+                    )}
+                  </Box>
+                </Grid>
+              )}
+            <Grid item md='2'>
+              <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+                <Button
+                  className={classes.formActionButton}
+                  variant='contained'
+                  style={{ color: 'white', width: '100%' }}
                   color='primary'
-                />
-              }
-              label='Parent'
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={showGuardianForm}
-                  onChange={toggleGuardianForm}
-                  name='jason'
-                  color='primary'
-                />
-              }
-              label='Guardian'
-            />
-          </FormGroup>
-        </FormControl>
-      </Grid>
-      </Grid>
-      <Grid
-        container
-        item
-        xs={12}
-        direction={isMobile ? 'column-reverse' : 'row'}
-        spacing={3}
-      >
-        <Grid item md='2'>
-          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
-            <Button
-              size='medium'
-              style={{ width: '100%' }}
-              variant='contained'
-              className='cancelButton labelColor'
-              onClick={handleBack}
-            >
-              Back
-            </Button>
-          </Box>
-        </Grid>
-        { isEdit && (userLevel?.is_superuser === true || userLevel?.user_level === 8 || userLevel?.user_level === 1 || userLevel?.user_level === 26) && <Grid item md='2' >
-          <Box display='flex'  justifyContent={isMobile ? 'center' : ''}>
-          {isEdit === true ? (
-          <Button
-              className={classes.formActionButton}
-              variant='contained'
-              style={{ color: 'white', width: '100%'}}
-              color='primary'
-              size='medium'
-              onClick={handleOpen}
-              disabled={isSubmitting}
-            >
-              Change Password
-            </Button>
-
-      ): ''}
-          </Box>
-        </Grid>}
-        <Grid item md='2'>
-          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
-            <Button
-              className={classes.formActionButton}
-              variant='contained'
-              style={{ color: 'white', width: '100%' }}
-              color='primary'
-              size='medium'
-              onClick={() => {
-                formik.handleSubmit();
-              }}
-              disabled={isSubmitting}
-            >
-              {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
-    {open && <Dialog
+                  size='medium'
+                  onClick={() => {
+                    formik.handleSubmit();
+                  }}
+                  disabled={isSubmitting}
+                >
+                  {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+          {/* {open && 
+    <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -636,10 +658,46 @@ const UserDetailsForm = ({
 
                 </Grid>
         </DialogActions>
-      </Dialog>}
-    </Grid>
+      </Dialog>} */}
 
-    </div>
+          <Modal
+            title='Change Password'
+            onOk={() => {
+              console.log('');
+            }}
+            visible={openPasswordModal}
+            onCancel={closePasswordModal}
+            footer={[
+              <AntButton onClick={closePasswordModal}>Cancel</AntButton>,
+              <AntButton
+                loading={loading}
+                htmlType='submit'
+                form='passwordForm'
+                type='primary'
+                onClick={() => setIsPasswordSubmit(true)}
+                disabled={strengthProgress != '100' ? true : false}
+              >
+                Submit
+              </AntButton>,
+            ]}
+            width={'80%'}
+            centered
+          >
+            <ChangePasswordPopup
+              isPasswordSubmit={isPasswordSubmit}
+              setIsPasswordSubmit={setIsPasswordSubmit}
+              loading={loading}
+              setLoading={setLoading}
+              userId={details?.id}
+              strengthProgress={strengthProgress}
+              setStrengthProgress={setStrengthProgress}
+              isPasswordCanceled={isPasswordCanceled}
+              setIsPasswordCanceled={setIsPasswordCanceled}
+              redirectPath='/user-management/view-users'
+            />
+          </Modal>
+        </Grid>
+      </div>
     </>
   );
 };

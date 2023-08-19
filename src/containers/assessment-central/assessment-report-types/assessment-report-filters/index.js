@@ -323,7 +323,7 @@ const AssessmentReportFilters = ({
 
   function getBranch(acadId) {
     axiosInstance
-      .get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`)
+      .get(`${endpoints.academics.branches}?session_year=${acadId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
@@ -340,7 +340,7 @@ const AssessmentReportFilters = ({
   function getGrade(acadId, branchId) {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
+        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -358,7 +358,7 @@ const AssessmentReportFilters = ({
   function getSection(acadId, branchId, gradeId) {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchId}&grade_id=${gradeId}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchId}&grade_id=${gradeId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {

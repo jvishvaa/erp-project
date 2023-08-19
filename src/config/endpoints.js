@@ -36,6 +36,7 @@ export default {
     mobileLogin: '/erp_user/erp-contact-login/',
     crmHcmToken: `${crm}/qbox/hmac_token/`,
     generateLoginToken: `/erp_user/login_token/`,
+    generateAccessToken: `${baseURL}/erp_user/access-token/`,
   },
   checkAcademicView: {
     isAcademicView: '/period/period-erp-system-config/',
@@ -268,6 +269,7 @@ export default {
     updateSignatureApi: '/erp_user/update-destroy-signature/',
     deleteSignatureApi: '/erp_user/update-destroy-signature/',
     getSignatureList: '/erp_user/principle-signature/',
+    getErpList: '/erp_user/branch-list/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     s3: 'https://d3ka3pry54wyko.cloudfront.net/',
   },

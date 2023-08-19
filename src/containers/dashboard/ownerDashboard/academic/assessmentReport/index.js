@@ -73,33 +73,33 @@ export default function AssessmentReport(props) {
 
   const history = useHistory();
 
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Ebook' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, [window.location.pathname]);
+  // useEffect(() => {
+  //   if (NavData && NavData.length) {
+  //     NavData.forEach((item) => {
+  //       if (
+  //         item.parent_modules === 'Ebook' &&
+  //         item.child_module &&
+  //         item.child_module.length > 0
+  //       ) {
+  //         item.child_module.forEach((item) => {
+  //           if (item.child_name === 'Ebook View') {
+  //             setModuleId(item.child_id);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }, [window.location.pathname]);
 
   useEffect(() => {
-    if (moduleId){
-      getBranch();
-      getAssesmentTypes();
-    } 
-  }, [moduleId]);
+    if (selectedAcademicYear?.id){
+    getBranch();
+    getAssesmentTypes();
+    }
+  }, [selectedAcademicYear]);
 
   function getBranch() {
-    let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`;
+    let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}`;
     axiosInstance
       .get(url)
       .then((result) => {
@@ -131,7 +131,7 @@ export default function AssessmentReport(props) {
       setSelectedBranch(value);
       setSelectedBranchIds(selectedId);
       callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId}&module_id=${moduleId}`,
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId}`,
         'gradeList'
       );
     } else {
@@ -164,7 +164,7 @@ export default function AssessmentReport(props) {
       callApi(
         `${endpoints.academics.sections}?session_year=${
           selectedAcademicYear?.id
-        }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
+        }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}`,
         'section'
       );
     } else {
@@ -192,7 +192,7 @@ export default function AssessmentReport(props) {
       callApi(
         `${endpoints.academics.subjects}?session_year=${
           selectedAcademicYear?.id
-        }&branch=${selectedBranchIds}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${moduleId}`,
+        }&branch=${selectedBranchIds}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}`,
         'subject'
       );
     } else {
@@ -286,9 +286,9 @@ export default function AssessmentReport(props) {
 
   function handleDate(v1) {
     if (v1 && v1.length !== 0) {
-      setStartDate(moment((v1[0])).format('YYYY-MM-DD'));
-      if(v1[1] !== undefined){
-        setEndDate(moment((v1[1])).format('YYYY-MM-DD'));
+      setStartDate(moment(v1[0]).format('YYYY-MM-DD'));
+      if (v1[1] !== undefined) {
+        setEndDate(moment(v1[1]).format('YYYY-MM-DD'));
       }
     }
     setDateRangeTechPer(v1);

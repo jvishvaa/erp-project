@@ -24,13 +24,15 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async function (error) {
-    if(error?.response?.data?.status === "412") {
+    if (error?.response?.data?.status === '412') {
       await localStorage.clear();
-      localStorage.setItem('loggedOut',412);
-      window.location.href = '/'
-    }
-    else if (error.response?.status === 401) {
+      localStorage.setItem('loggedOut', 412);
+      window.location.href = '/';
+    } else if (error.response?.status === 401) {
       await localStorage.removeItem('userDetails');
+      if (window.location.pathname != '/') {
+        window.location.href = '/';
+      }
       // Show toast message login to continue
     } else {
       // something went wrong
@@ -44,5 +46,5 @@ export default axiosInstance;
 // Upload: document file size
 export const FileSize = {
   img_pdf: 31457280,
-  audio_video: 41943040
-}
+  audio_video: 41943040,
+};

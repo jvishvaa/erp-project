@@ -72,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
   dividerColor: {
     backgroundColor: `${theme.palette.primary.main} !important`,
   },
-  
 
   buttonColor: {
     color: `${theme.palette.primary.main} !important`,
@@ -188,14 +187,16 @@ const AddReview = () => {
   const createPublish = () => {
     setPublish(true);
   };
-  const [title,setTitle] = useState();
-console.log(history?.location)
+  const [title, setTitle] = useState();
+  console.log(history?.location);
   useEffect(() => {
     if (history?.location?.pathname === '/blog/addreview') {
       setTitle(history?.location?.state?.data);
-      
     }
   }, [history]);
+
+  let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
+  const { school_logo } = schoolDetails;
 
   return (
     <>
@@ -232,11 +233,7 @@ console.log(history?.location)
                 }}
               >
                 <div>
-                  <img
-                    src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
-                    width='130'
-                    alt='image'
-                  />
+                  <img src={school_logo} width='130' alt='image' />
                 </div>
               </div>
 
@@ -287,7 +284,6 @@ console.log(history?.location)
                   }}
                 >
                   {ReactHtmlParser(title?.submitted_work?.html_text)}
-
                 </div>
               </div>
             </div>

@@ -120,7 +120,7 @@ const AddHomeworkCordNew = ({
       id: cuid(),
       question: '',
       attachments: [],
-      is_attachment_enable: true,
+      is_attachment_enable: false,
       max_attachment: 10,
       penTool: false,
     },
@@ -139,6 +139,7 @@ const AddHomeworkCordNew = ({
   const [dateValue, setDateValue] = useState(moment(params.date).format('YYYY-MM-DD'));
   const [hwId, sethwId] = useState(propData?.viewHomework?.hw_data?.data?.hw_id);
   const [loading, setLoading] = useState(false);
+  const [hwSubTime, setHwSubTime] = useState(null);
   const handleDateChange = (event, value) => {
     setDateValue(value);
   };
@@ -192,6 +193,7 @@ const AddHomeworkCordNew = ({
         penTool: data.is_pen_editor_enable,
         question: data.question,
         attachments: data.question_files,
+        is_online: data.is_online,
       }));
       setQuestions(que);
     }
@@ -231,10 +233,27 @@ const AddHomeworkCordNew = ({
     return isFormValid;
   };
 
-  const homeworkCreateConfirmation = () => {
+  const homeworkCreateConfirmation = (type) => {
     confirm({
       content:
-        'File upload option has been enabled for students, are you sure do you want to submit the Homework',
+        type == 'online' ? (
+          <div>
+            <strong>Online Submission</strong> has been enabled for students, they will be
+            submitting the Homework online. Are you sure do you want to submit the
+            Homework?
+          </div>
+        ) : type == 'offline' ? (
+          <div>
+            <strong>Offline Submission</strong> has been enabled for students, they will
+            be submitting the Homework directly to you in school. Are you sure do you want
+            to submit the Homework?
+          </div>
+        ) : (
+          <div>
+            <strong> Online & Offline submission</strong> has been enabled for students.
+            Are you sure do you want to submit the Homework?
+          </div>
+        ),
       onOk() {
         createHomework();
       },
@@ -244,7 +263,79 @@ const AddHomeworkCordNew = ({
     });
   };
 
+  const isOrchids =
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'localhost:3000'
+      ? // window.location.host.split('.')[0] === 'test'
+        true
+      : false;
+
+  useEffect(() => {
+    fetchHwTimeConfig();
+  }, []);
+
+  const fetchHwTimeConfig = () => {
+    setLoading(true);
+    axiosInstance
+      .get(`/assessment/check-sys-config/?config_key=hw_creation_time`)
+      .then((response) => {
+        setHwSubTime(response?.data?.result[0] || null);
+        setLoading(false);
+      })
+      .catch((error) => {
+        // message.error(error?.response?.data?.message ?? 'Something went wrong!');
+        setLoading(false);
+      });
+  };
+
+  function tConv24(time24) {
+    var ts = time24;
+    var H = +ts.substr(0, 2);
+    var h = H % 12 || 12;
+    h = h < 10 ? '0' + h : h; // leading 0 at the left for 1 digit hours
+    var ampm = H < 12 ? ' AM' : ' PM';
+    ts = h + ts.substr(2, 3) + ampm;
+    return ts;
+  }
+
   const handleAddHomeWork = async () => {
+    if (isOrchids) {
+      let breakTime = hwSubTime && hwSubTime.split(':');
+      let closeHR = (breakTime && breakTime[0]) || null;
+      let closeMin = (breakTime && breakTime[1]) || null;
+      const hour = new Date().getHours();
+      const minute = new Date().getMinutes();
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      let mm = today.getMonth() + 1; // since month starts from 0 here
+      let dd = today.getDate();
+      if (dd < 10) dd = '0' + dd;
+      if (mm < 10) mm = '0' + mm;
+      const formattedToday = `${yyyy}-${mm}-${dd}`;
+      let newDateval = moment(dateValue).format('YYYY-MM-DD');
+      console.log(hour, closeHR, minute, closeMin, newDateval, formattedToday, 'hr min');
+      if (
+        closeHR != null &&
+        hour == closeHR &&
+        minute >= closeMin &&
+        formattedToday == newDateval
+      ) {
+        return message.error(
+          `Homework creation/updation is locked after ${tConv24(
+            hwSubTime
+          )} for the same day due date`
+        );
+      }
+      if (closeHR != null && hour > closeHR && formattedToday == newDateval) {
+        return message.error(
+          `Homework creation/updation is locked after ${tConv24(
+            hwSubTime
+          )} for the same day due date`
+        );
+      }
+    }
+
     if (name == undefined || name == '') {
       return message.error('Please Add Title');
     }
@@ -273,12 +364,23 @@ const AddHomeworkCordNew = ({
       }
     });
 
-    let uploadEnable = questions.some((item) => item['is_attachment_enable'] === true);
-    if (uploadEnable) {
-      homeworkCreateConfirmation();
+    let hasOnlineQuestion = questions?.every((item) => item['is_online'] === true);
+    let hasOfflineQuestion = questions?.every((item) => item['is_online'] === false);
+    let hasBothQuestions =
+      questions?.some((item) => item['is_online'] === false) &&
+      questions?.some((item) => item['is_online'] === true);
+    if (hasOnlineQuestion) {
+      homeworkCreateConfirmation('online');
       return;
     }
-    createHomework();
+    if (hasOfflineQuestion) {
+      homeworkCreateConfirmation('offline');
+      return;
+    }
+    if (hasBothQuestions) {
+      homeworkCreateConfirmation('both');
+      return;
+    }
   };
 
   const createHomework = async () => {
@@ -336,9 +438,10 @@ const AddHomeworkCordNew = ({
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: true,
+        is_attachment_enable: false,
         max_attachment: 10,
         penTool: false,
+        is_online: false,
       },
       ...prevState.slice(index),
     ]);
@@ -353,8 +456,23 @@ const AddHomeworkCordNew = ({
   };
 
   const handleChange = (index, field, value) => {
+    console.log('handleChange', index, field, value);
     const form = questions[index];
-    const modifiedForm = { ...form, [field]: value };
+    let modifiedForm = {};
+    if (field == 'is_online') {
+      if (value) {
+        form['is_attachment_enable'] = true;
+        form['penTool'] = true;
+        form['is_online'] = true;
+      } else {
+        form['is_attachment_enable'] = false;
+        form['penTool'] = false;
+        form['is_online'] = false;
+      }
+      modifiedForm = { ...form };
+    } else {
+      modifiedForm = { ...form, [field]: value };
+    }
     setQuestions((prevState) => [
       ...prevState.slice(0, index),
       modifiedForm,

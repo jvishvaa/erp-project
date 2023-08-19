@@ -623,6 +623,9 @@ const StudentSidePhysicalActivity = () => {
     });
   }, [activityDetails]);
 
+  let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
+  const { school_logo } = schoolDetails;
+
   return (
     <div>
       <Layout>
@@ -950,7 +953,7 @@ const StudentSidePhysicalActivity = () => {
                             </div>
                             <div className='pr-3'>
                               <img
-                                src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                                src={school_logo}
                                 alt='image'
                                 style={{
                                   height: 100,
@@ -1059,7 +1062,7 @@ const StudentSidePhysicalActivity = () => {
 
                 <div className='pr-1'>
                   <img
-                    src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                    src={school_logo}
                     alt='image'
                     style={{
                       height: 60,

@@ -46,7 +46,15 @@ import axiosInstance from 'config/axios';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { Divider, Button, Spin, Badge, Checkbox, message } from 'antd';
+import {
+  Divider,
+  Button,
+  Spin,
+  Badge,
+  Checkbox,
+  message,
+  Switch as SwitchAnt,
+} from 'antd';
 import {
   UploadOutlined,
   LeftOutlined,
@@ -56,6 +64,7 @@ import {
   CalendarOutlined,
   FileAddOutlined,
 } from '@ant-design/icons';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -112,7 +121,9 @@ const QuestionCardNew = ({
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [attachments, setAttachments] = useState([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
-  const [enableAttachments, setEnableAttachments] = useState(true);
+  const [enableAttachments, setEnableAttachments] = useState(
+    question?.is_attachment_enable
+  );
   const [openAttachmentModal, setOpenAttachmentModal] = useState(false);
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
   const firstUpdate = useRef(true);
@@ -121,7 +132,7 @@ const QuestionCardNew = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [sizeValied, setSizeValied] = useState({});
   const [showPrev, setshowPrev] = useState(0);
-  const [pentool, setpentool] = useState(false);
+  const [pentool, setpentool] = useState(question?.penTool);
   const [maxattachment, setmaxAttachment] = useState(10);
   // const [isAttachmentenable,setisAttachmentenable] = useState(false)
   const [showDrawer, setShowDrawer] = useState(false);
@@ -143,6 +154,7 @@ const QuestionCardNew = ({
   const [selectedTopic, setSelectedTopic] = useState('');
   const [selectedTopicID, setSelectedTopicID] = useState('');
   const [resourcesData, setResourcesData] = useState();
+  const [submissionMode, setSubmissionMode] = useState(false);
 
   const [selectedResources, setSelectedResources] = useState([]);
   let boardFilterArr = [
@@ -169,6 +181,7 @@ const QuestionCardNew = ({
       setpentool(question.penTool);
       setmaxAttachment(question.max_attachment);
       setEnableAttachments(question.is_attachment_enable);
+      setSubmissionMode(question.is_online);
     }
   }, [question.question, question.attachments]);
 
@@ -648,9 +661,23 @@ const QuestionCardNew = ({
                   </FormControl>
                 </Grid>
                 <Divider />
+                <div className='col-12 text-left py-2 my-1 px-0'>
+                  <span
+                    className='th-16 th-br-4 p-2'
+                    style={{ border: '1px solid #d9d9d9' }}
+                  >
+                    <InfoCircleTwoTone className='pr-2' />
+                    <i className='th-grey th-fw-500 '>
+                      {/* Enable/Disable file upload for students to submit Homework */}
+                      Enable/Disable the choice of online or offline mode for students to
+                      submit their Homework
+                    </i>
+                  </span>
+                </div>
+
                 <div className='row'>
                   <div
-                    className='col-md-2 card'
+                    className='col-md-3 card'
                     onClick={() => fileUploadInput.current.click()}
                     style={{ padding: '5px', height: '35px', cursor: 'pointer' }}
                   >
@@ -702,8 +729,8 @@ const QuestionCardNew = ({
                       </>
                     )}
                   </div>
-                  <div className='col-md-9 d-flex p-0 align-items-center'>
-                    <div
+                  <div className='col-md-8 d-flex p-0 align-items-center'>
+                    {/* <div
                       className='card'
                       style={{
                         padding: '10px',
@@ -778,6 +805,21 @@ const QuestionCardNew = ({
                       >
                         Pen Tool
                       </Checkbox>
+                    </div> */}
+                    <div className='col-8'>
+                      <div className='d-flex align-items-center py-2'>
+                        Submission Mode :
+                        <span className='mx-2 th-18 th-black th-fw-500'>Offline</span>
+                        <SwitchAnt
+                          size='large'
+                          checked={submissionMode}
+                          onChange={(e) => {
+                            onChange('is_online', e);
+                            setSubmissionMode(e);
+                          }}
+                        />
+                        <span className='mx-2 th-18 th-black th-fw-500'>Online</span>
+                      </div>
                     </div>
                     <div className='d-flex align-items-center'>
                       <Button onClick={handleResourcesDrawerOpen} type='primary'>

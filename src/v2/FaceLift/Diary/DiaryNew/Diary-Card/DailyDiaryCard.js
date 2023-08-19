@@ -69,6 +69,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       is_attachment_enable: false,
       max_attachment: 2,
       penTool: false,
+      is_online: false,
     },
   ]);
   const [showTab, setShowTab] = useState(1);
@@ -358,6 +359,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         is_attachment_enable: question.is_attachment_enable,
         max_attachment: question.max_attachment,
         penTool: question.is_pen_editor_enable,
+        is_online: question.is_online,
       });
     });
     return arr;
@@ -396,6 +398,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         is_attachment_enable: false,
         max_attachment: 2,
         penTool: false,
+        is_online: false,
       },
       ...prevState.slice(index),
     ]);

@@ -73,6 +73,8 @@ import ReportPipeline from 'v2/FaceLift/ReportPipeline';
 import ActivityMangementDashboard from 'v2/FaceLift/ActivityManagement/ActivityMangementDashboard';
 import StudentStrength from 'v2/FaceLift/SchoolStrength';
 import StudentCountReport from 'v2/FaceLift/SchoolStrength/StudentCountReport';
+import ChangePassword from '../v2/FaceLift/ChangePassword';
+import SignatureUploadv2 from 'v2/FaceLift/MasterManagement/signature-upload/signature-table';
 
 const V2Router = () => {
   useEffect(() => {
@@ -362,7 +364,16 @@ const V2Router = () => {
                         <Route path='/student_count_report'>
                           {({ match }) => <StudentCountReport match={match} />}
                         </Route>
-                        ,{/* v1 router */}
+                        ,
+                        <Route path='/change-password'>
+                          {({ match }) => <ChangePassword match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/master-management/signature-upload'>
+                          {({ match }) => <SignatureUploadv2 match={match} />}
+                        </Route>
+                        ,
+                        {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}

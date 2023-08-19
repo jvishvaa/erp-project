@@ -1385,7 +1385,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                 : item?.completed_by_user_name}{' '}
                                               on{' '}
                                               {moment(item?.completed_at).format(
-                                                'DD/MM/YYYY'
+                                                'DD/MM/YYYY hh:mm A'
                                               )}
                                             </span>
                                           </div>
@@ -1577,8 +1577,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                 ?.split('_')
                                 .indexOf(fullName.split('_').find((item) => isNaN(item)));
                               let displayName = fullName
-                                .split('_')
-                                .slice(textIndex)
+                                ?.split('_')
+                                ?.slice(textIndex)
                                 .join('_');
                               let fileName = displayName ? displayName.split('.') : null;
                               let file = fileName ? fileName[fileName?.length - 2] : '';
@@ -2408,27 +2408,22 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           visible={showCompletionStatusModal}
           onCancel={closeModal}
           className='th-upload-modal'
+          width={window.innerWidth > 786 ? 700 : window.innerWidth - 10}
           centered
           footer={[]}
         >
           {modalData?.completion_status
             ?.filter((item) => item.is_complete == true)
             .map((item) => (
-              <div className='row px-md-5 py-2 align-items-center justify-content-start'>
-                <span
-                  style={{
-                    borderRadius: '50%',
-                    height: 8,
-                    width: 8,
-                  }}
-                  className='mr-2 th-bg-primary'
-                ></span>
+              <div className='d-flex px-md-4 py-2 justify-content-start'>
+                <span style={{ color: 'blue', fontSize: "25px", marginRight: "5px", marginTop: "-9px"}}
+                >&bull;</span>
                 <span>
                   Completed in Sec {item?.section_name?.slice(-1).toUpperCase()} by{' '}
                   {item?.completed_by_user_id == user_id
                     ? 'You'
                     : item?.completed_by_user_name}{' '}
-                  on {moment(item?.completed_at).format('DD/MM/YYYY')}
+                  on {moment(item?.completed_at).format('DD/MM/YYYY hh:mm A')}
                 </span>
               </div>
             ))}

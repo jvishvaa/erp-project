@@ -129,6 +129,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
 const BlogActivityView = () => {
   const classes = useStyles();
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -408,7 +410,7 @@ const BlogActivityView = () => {
       fetchSchoolWall({
         // page_size: 5,
         // page: pageNumber,
-        publish_level: 'Intra Orchids Level',
+        publish_level: 'Intra School Level',
         user_id: userId,
       });
     } else if (showTab == 3) {
@@ -586,6 +588,9 @@ const BlogActivityView = () => {
     history.push('/post-activity-view')
     return
   }
+  
+  let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
+  const { school_logo } = schoolDetails;
 
 
   const TabContent = () => {
@@ -744,7 +749,7 @@ const BlogActivityView = () => {
                   >
                     <div>
                       <img
-                        src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                        src={school_logo}
                         width='130'
                         alt='image'
                       />

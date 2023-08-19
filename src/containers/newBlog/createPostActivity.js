@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const activityDetailsApi = [
-  { id: 4, level: 'Intra Orchids Level' },
+  { id: 4, level: 'Intra School Level' },
   { id: 1, level: 'Branch Level' },
   { id: 2, level: 'Grade Level' },
   { id: 3, level: 'Section Level' },

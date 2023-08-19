@@ -698,6 +698,9 @@ const PhysicalPendingReview = (props) => {
     setRatingReview(newReview);
   };
 
+  let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
+  const { school_logo } = schoolDetails;
+
   return (
     <>
       <div className='row th-bg-white th-br-5 mb-3'>
@@ -747,7 +750,7 @@ const PhysicalPendingReview = (props) => {
                 <div className='col-12 px-1'>
                   <div>
                     <img
-                      src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                      src={school_logo}
                       alt='image'
                       style={{
                         height: 100,
@@ -904,7 +907,7 @@ const PhysicalPendingReview = (props) => {
 
                 <div className='pr-1'>
                   <img
-                    src='https://image3.mouthshut.com/images/imagesp/925725664s.png'
+                    src={school_logo}
                     alt='image'
                     style={{
                       height: 60,

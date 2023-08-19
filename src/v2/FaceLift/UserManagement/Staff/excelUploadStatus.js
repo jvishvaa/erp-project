@@ -24,29 +24,29 @@ const ExcelUploadStatus = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (moduleId && selectedYear) {
+    if (selectedYear) {
       fetchBranches(selectedYear?.id);
     }
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'User Management' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Create User') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, [moduleId, selectedYear]);
+    // if (NavData && NavData.length) {
+    //   NavData.forEach((item) => {
+    //     if (
+    //       item.parent_modules === 'User Management' &&
+    //       item.child_module &&
+    //       item.child_module.length > 0
+    //     ) {
+    //       item.child_module.forEach((item) => {
+    //         if (item.child_name === 'Create User') {
+    //           setModuleId(item.child_id);
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
+  }, [ selectedYear]);
 
   const fetchBranches = () => {
     if (selectedYear) {
-      fetchBranchesForCreateUser(selectedYear?.id, moduleId).then((data) => {
+      fetchBranchesForCreateUser(selectedYear?.id).then((data) => {
         const transformedData = data?.map((obj) => ({
           id: obj.id,
           branch_name: obj.branch_name,
