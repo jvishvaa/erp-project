@@ -153,6 +153,7 @@ const EbookViewStudent = (props) => {
 
   const handleBoard = (e, val) => {
     setvolumeId(val);
+    setPage(1);
   };
   const handleClearBoard = () => {
     setvolumeId('');
@@ -373,8 +374,7 @@ const EbookViewStudent = (props) => {
     return sortedConceptData;
   };
 
-  const handleReadEbook = (data) => {
-  };
+  const handleReadEbook = (data) => {};
 
   useEffect(() => {
     formRef.current.setFieldsValue({

@@ -120,7 +120,7 @@ const AddHomeworkCordNew = ({
       id: cuid(),
       question: '',
       attachments: [],
-      is_attachment_enable: true,
+      is_attachment_enable: false,
       max_attachment: 10,
       penTool: false,
     },
@@ -193,6 +193,7 @@ const AddHomeworkCordNew = ({
         penTool: data.is_pen_editor_enable,
         question: data.question,
         attachments: data.question_files,
+        is_online: data.is_online,
       }));
       setQuestions(que);
     }
@@ -232,10 +233,27 @@ const AddHomeworkCordNew = ({
     return isFormValid;
   };
 
-  const homeworkCreateConfirmation = () => {
+  const homeworkCreateConfirmation = (type) => {
     confirm({
       content:
-        'File upload option has been enabled for students, are you sure do you want to submit the Homework',
+        type == 'online' ? (
+          <div>
+            <strong>Online Submission</strong> has been enabled for students, they will be
+            submitting the Homework online. Are you sure do you want to submit the
+            Homework?
+          </div>
+        ) : type == 'offline' ? (
+          <div>
+            <strong>Offline Submission</strong> has been enabled for students, they will
+            be submitting the Homework directly to you in school. Are you sure do you want
+            to submit the Homework?
+          </div>
+        ) : (
+          <div>
+            <strong> Online & Offline submission</strong> has been enabled for students.
+            Are you sure do you want to submit the Homework?
+          </div>
+        ),
       onOk() {
         createHomework();
       },
@@ -346,12 +364,23 @@ const AddHomeworkCordNew = ({
       }
     });
 
-    let uploadEnable = questions.some((item) => item['is_attachment_enable'] === true);
-    if (uploadEnable) {
-      homeworkCreateConfirmation();
+    let hasOnlineQuestion = questions?.every((item) => item['is_online'] === true);
+    let hasOfflineQuestion = questions?.every((item) => item['is_online'] === false);
+    let hasBothQuestions =
+      questions?.some((item) => item['is_online'] === false) &&
+      questions?.some((item) => item['is_online'] === true);
+    if (hasOnlineQuestion) {
+      homeworkCreateConfirmation('online');
       return;
     }
-    createHomework();
+    if (hasOfflineQuestion) {
+      homeworkCreateConfirmation('offline');
+      return;
+    }
+    if (hasBothQuestions) {
+      homeworkCreateConfirmation('both');
+      return;
+    }
   };
 
   const createHomework = async () => {
@@ -409,9 +438,10 @@ const AddHomeworkCordNew = ({
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: true,
+        is_attachment_enable: false,
         max_attachment: 10,
         penTool: false,
+        is_online: false,
       },
       ...prevState.slice(index),
     ]);
@@ -426,8 +456,23 @@ const AddHomeworkCordNew = ({
   };
 
   const handleChange = (index, field, value) => {
+    console.log('handleChange', index, field, value);
     const form = questions[index];
-    const modifiedForm = { ...form, [field]: value };
+    let modifiedForm = {};
+    if (field == 'is_online') {
+      if (value) {
+        form['is_attachment_enable'] = true;
+        form['penTool'] = true;
+        form['is_online'] = true;
+      } else {
+        form['is_attachment_enable'] = false;
+        form['penTool'] = false;
+        form['is_online'] = false;
+      }
+      modifiedForm = { ...form };
+    } else {
+      modifiedForm = { ...form, [field]: value };
+    }
     setQuestions((prevState) => [
       ...prevState.slice(0, index),
       modifiedForm,

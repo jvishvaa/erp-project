@@ -210,17 +210,17 @@ const ViewHomeworkNew = withRouter(
         console.log(questionsState, 'qstate');
         let chckremark = questionsState?.filter((item) => item?.remark == '');
         console.log(chckremark, 'cj');
-        if (chckremark?.length > 0) {
-          setAlert('error', 'Please Add Remark for All Questions');
-        } else {
-          try {
-            await evaluateHomeworkQuestionWise(homeworkId, questionsState);
-            setAlert('success', 'Saved Successfully');
-            setDisableEv(false);
-          } catch (e) {
-            setAlert('error', 'Evaluation failed');
-          }
+        // if (chckremark?.length > 0) {
+        //   setAlert('error', 'Please Add Remark for All Questions');
+        // } else {
+        try {
+          await evaluateHomeworkQuestionWise(homeworkId, questionsState);
+          setAlert('success', 'Saved Successfully');
+          setDisableEv(false);
+        } catch (e) {
+          setAlert('error', 'Evaluation failed');
         }
+        // }
       } else {
         currentQuestion = collatedQuestionState;
 

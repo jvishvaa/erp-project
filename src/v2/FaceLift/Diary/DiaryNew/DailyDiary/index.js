@@ -162,6 +162,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           ? question?.penTool
           : false,
         is_central: question.is_central ? question.is_central : false,
+        is_online: question.is_online ? question.is_online : false,
       });
     });
     return arr;
@@ -194,7 +195,22 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
   const handleChange = (index, field, value) => {
     const form = questionList[index];
-    const modifiedForm = { ...form, [field]: value };
+    let modifiedForm = {};
+    if (field == 'is_online') {
+      if (value) {
+        form['is_attachment_enable'] = true;
+        form['penTool'] = true;
+        form['is_online'] = true;
+      } else {
+        form['is_attachment_enable'] = false;
+        form['penTool'] = false;
+        form['is_online'] = false;
+      }
+      modifiedForm = { ...form };
+    } else {
+      modifiedForm = { ...form, [field]: value };
+    }
+    console.log('handleChange', index, field, value, form, modifiedForm);
     setQuestionList((prevState) => [
       ...prevState.slice(0, index),
       modifiedForm,
@@ -219,10 +235,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         id: cuid(),
         question: '',
         attachments: [],
-        is_attachment_enable: true,
+        is_attachment_enable: false,
         max_attachment: 10,
         penTool: false,
         is_central: false,
+        is_online: false,
       },
       ...prevState.slice(index),
     ]);
@@ -932,10 +949,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               id: cuid(),
               question: '',
               attachments: [],
-              is_attachment_enable: true,
+              is_attachment_enable: false,
               max_attachment: 10,
               penTool: false,
               is_central: false,
+              is_online: false,
             },
           ]);
         }
@@ -985,10 +1003,27 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [chapterID]);
 
-  const homeworkCreateConfirmation = () => {
+  const homeworkCreateConfirmation = (type) => {
     confirm({
       content:
-        'File upload option has been enabled for students, are you sure do you want to submit the Homework',
+        type == 'online' ? (
+          <div>
+            <strong>Online Submission</strong> has been enabled for students, they will be
+            submitting the Homework online. Are you sure do you want to submit the
+            Homework?
+          </div>
+        ) : type == 'offline' ? (
+          <div>
+            <strong>Offline Submission</strong> has been enabled for students, they will
+            be submitting the Homework directly to you in school. Are you sure do you want
+            to submit the Homework?
+          </div>
+        ) : (
+          <div>
+            <strong> Online & Offline submission</strong> has been enabled for students.
+            Are you sure do you want to submit the Homework?
+          </div>
+        ),
       onOk() {
         createHomework();
       },
@@ -1075,12 +1110,23 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       return;
     }
 
-    let uploadEnable = questionList.some((item) => item['is_attachment_enable'] === true);
-    if (uploadEnable) {
-      homeworkCreateConfirmation();
+    let hasOnlineQuestion = questionList?.every((item) => item['is_online'] === true);
+    let hasOfflineQuestion = questionList?.every((item) => item['is_online'] === false);
+    let hasBothQuestions =
+      questionList?.some((item) => item['is_online'] === false) &&
+      questionList?.some((item) => item['is_online'] === true);
+    if (hasOnlineQuestion) {
+      homeworkCreateConfirmation('online');
       return;
     }
-    createHomework();
+    if (hasOfflineQuestion) {
+      homeworkCreateConfirmation('offline');
+      return;
+    }
+    if (hasBothQuestions) {
+      homeworkCreateConfirmation('both');
+      return;
+    }
   };
 
   const createHomework = async () => {
@@ -1512,10 +1558,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               id: cuid(),
               question: homeworkData[0]?.homework_text,
               question_files: homeworkData[0]?.media_file,
-              is_attachment_enable: true,
+              is_attachment_enable: false,
               max_attachment: 10,
               is_pen_editor_enable: false,
               is_central: true,
+              is_online: false,
             };
 
             if (Array.isArray(questionList)) {
@@ -1545,10 +1592,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                     id: cuid(),
                     question: '',
                     attachments: [],
-                    is_attachment_enable: true,
+                    is_attachment_enable: false,
                     max_attachment: 10,
                     penTool: false,
                     is_central: false,
+                    is_online: false,
                   },
                 ]);
               }
@@ -1558,10 +1606,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                   id: cuid(),
                   question: '',
                   attachments: [],
-                  is_attachment_enable: true,
+                  is_attachment_enable: false,
                   max_attachment: 10,
                   penTool: false,
                   is_central: false,
+                  is_online: false,
                 },
               ]);
             }
@@ -2125,10 +2174,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                 id: cuid(),
                                 question: '',
                                 attachments: [],
-                                is_attachment_enable: true,
+                                is_attachment_enable: false,
                                 max_attachment: 10,
                                 penTool: false,
                                 is_central: false,
+                                is_online: false,
                               },
                             ]);
                             setShowHomeworkForm(true);

@@ -88,6 +88,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       is_attachment_enable: false,
       max_attachment: 2,
       penTool: false,
+      is_online: false,
     },
   ]);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -119,6 +120,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         is_attachment_enable: data.is_attachment_enable,
         max_attachment: data.max_attachment,
         penTool: data.is_pen_editor_enable,
+        is_online: data.is_online,
         question: data.question,
         attachments: data.question_files,
       }));
@@ -198,6 +200,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         is_attachment_enable: false,
         max_attachment: 2,
         penTool: false,
+        is_online: false,
       },
       ...prevState.slice(index),
     ]);
@@ -212,7 +215,21 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
 
   const handleChange = (index, field, value) => {
     const form = questions[index];
-    const modifiedForm = { ...form, [field]: value };
+    let modifiedForm = {};
+    if (field == 'is_online') {
+      if (value) {
+        form['is_attachment_enable'] = true;
+        form['penTool'] = true;
+        form['is_online'] = true;
+      } else {
+        form['is_attachment_enable'] = false;
+        form['penTool'] = false;
+        form['is_online'] = false;
+      }
+      modifiedForm = { ...form };
+    } else {
+      modifiedForm = { ...form, [field]: value };
+    }
     setQuestions((prevState) => [
       ...prevState.slice(0, index),
       modifiedForm,

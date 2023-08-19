@@ -139,7 +139,7 @@ const SubmittedQuestionNew = ({
                     <>
                       <div className='attachment'>
                         <Attachment
-                          key={`homework_student_question_attachment_${i}`}
+                          key={`homework_teacher_question_attachment_${i}`}
                           fileUrl={url}
                           fileName={`Attachment-${i + 1}`}
                           urlPrefix={
@@ -164,7 +164,9 @@ const SubmittedQuestionNew = ({
                   }}
                 >
                   <SRLWrapper>
-                    {question.submitted_files.map((url, i) => (
+                    {selectedHomeworkDetails?.hw_questions[
+                      activeQuestion - 1
+                    ]?.question_files.map((url, i) => (
                       <img
                         src={
                           url.includes('/lesson_plan_file/')
@@ -387,22 +389,26 @@ const SubmittedQuestionNew = ({
             />
           </FormControl>
         </div> */}
-        <div className='item'>
-          <FormControl variant='outlined' fullWidth size='small'>
-            <InputLabel>Remarks</InputLabel>
-            <OutlinedInput
-              id='remarks'
-              name='remarks'
-              inputProps={{ maxLength: 150 }}
-              multiline
-              rows={3}
-              rowsMax={4}
-              label='Remarks'
-              value={remark}
-              onChange={(e) => onChangeQuestionsState('remark', e.target.value)}
-            />
-          </FormControl>
-        </div>
+        {selectedHomeworkDetails?.hw_questions[activeQuestion - 1]?.is_online ? (
+          <div className='item'>
+            <FormControl variant='outlined' fullWidth size='small'>
+              <InputLabel>Remarks</InputLabel>
+              <OutlinedInput
+                id='remarks'
+                name='remarks'
+                inputProps={{ maxLength: 150 }}
+                multiline
+                rows={3}
+                rowsMax={4}
+                label='Remarks'
+                value={remark}
+                onChange={(e) => onChangeQuestionsState('remark', e.target.value)}
+              />
+            </FormControl>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
       <div className='evaluate-answer-btn-container'>
         <Button variant='contained' color='primary' onClick={onEvaluate}>
