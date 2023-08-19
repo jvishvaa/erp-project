@@ -1399,8 +1399,8 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                               Teacher's comment : {question?.teacher_comment}
                             </div>
                           )}
-                          {question?.remark && (
-                            <div className='remarkBox1'>
+                          {question?.remark && question?.is_online == true && (
+                            <div className='remarkBox1 w-50 text-truncate'>
                               Teacher's Remark : {question?.remark}
                             </div>
                           )}
@@ -1550,9 +1550,15 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     </>
                   )}
                   {isQuestionWise && homeworkSubmission.status == 3 && (
-                    <div className='scoreBox1 w-50 m-5'>
-                      Question Wise Remarks : {question?.remark}
-                    </div>
+                    <>
+                      {question?.is_online ? (
+                        <div className='scoreBox1 w-50 my-3 text-truncate'>
+                          Question Wise Remarks : {question?.remark}
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </>
                   )}
                 </div>
               </>

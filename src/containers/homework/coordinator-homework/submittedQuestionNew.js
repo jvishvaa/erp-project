@@ -389,22 +389,26 @@ const SubmittedQuestionNew = ({
             />
           </FormControl>
         </div> */}
-        <div className='item'>
-          <FormControl variant='outlined' fullWidth size='small'>
-            <InputLabel>Remarks</InputLabel>
-            <OutlinedInput
-              id='remarks'
-              name='remarks'
-              inputProps={{ maxLength: 150 }}
-              multiline
-              rows={3}
-              rowsMax={4}
-              label='Remarks'
-              value={remark}
-              onChange={(e) => onChangeQuestionsState('remark', e.target.value)}
-            />
-          </FormControl>
-        </div>
+        {selectedHomeworkDetails?.hw_questions[activeQuestion - 1]?.is_online ? (
+          <div className='item'>
+            <FormControl variant='outlined' fullWidth size='small'>
+              <InputLabel>Remarks</InputLabel>
+              <OutlinedInput
+                id='remarks'
+                name='remarks'
+                inputProps={{ maxLength: 150 }}
+                multiline
+                rows={3}
+                rowsMax={4}
+                label='Remarks'
+                value={remark}
+                onChange={(e) => onChangeQuestionsState('remark', e.target.value)}
+              />
+            </FormControl>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
       <div className='evaluate-answer-btn-container'>
         <Button variant='contained' color='primary' onClick={onEvaluate}>
