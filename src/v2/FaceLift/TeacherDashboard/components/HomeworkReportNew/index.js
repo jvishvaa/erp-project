@@ -116,7 +116,7 @@ const HomeworkReport = () => {
                                 >
                                   {item?.hw_status == '2' ? "Evaluation Pending" : moment().isAfter(item?.submission_date, 'days')
                                     ? 'Overdue'
-                                    : 'Pending'}
+                                    : 'Submission Pending'}
                                 </div>
                               </div>
                               <div className='th-grey th-10'>
