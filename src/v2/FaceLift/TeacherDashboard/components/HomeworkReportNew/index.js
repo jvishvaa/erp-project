@@ -71,6 +71,7 @@ const HomeworkReport = () => {
               {homeworkReportData?.length > 0 ? (
                 <div className='row mt-1 th-bg-grey p-1 th-br-5'>
                   {homeworkReportData?.map((item, index) => (
+                   item?.hw_status!="3" ? 
                     <Badge.Ribbon
                       style={{ top: '36px', right: '-4px' }}
                       text={<span className='th-white th-12'>{item?.subject_name}</span>}
@@ -95,21 +96,25 @@ const HomeworkReport = () => {
                           >
                             <div className='d-flex justify-content-between th-12 align-items-center'>
                               <div className='th-primary d-flex align-items-center'>
+                              {/* status_choices(hw_status) = (
+                                   ('0', 'overdue/pending'),
+                                   ('2', 'submitted'),
+                                   ('3', 'evaluated') */}
                                 <Badge
                                   status={
-                                    moment().isAfter(item?.submission_date, 'days')
+                                    item?.hw_status == '2' ? 'warning' : moment().isAfter(item?.submission_date, 'days')
                                       ? 'error'
                                       : 'processing'
                                   }
                                 />
                                 <div
                                   className={`${
-                                    moment().isAfter(item?.submission_date, 'days')
+                                    item?.hw_status == '2' ? 'text-warning' : moment().isAfter(item?.submission_date, 'days')
                                       ? 'th-red'
                                       : 'th-primary'
                                   } th-fw-500`}
                                 >
-                                  {moment().isAfter(item?.submission_date, 'days')
+                                  {item?.hw_status == '2' ? "Evaluation Pending" : moment().isAfter(item?.submission_date, 'days')
                                     ? 'Overdue'
                                     : 'Pending'}
                                 </div>
@@ -163,7 +168,7 @@ const HomeworkReport = () => {
                           </div>
                         </div>
                       </div>
-                    </Badge.Ribbon>
+                    </Badge.Ribbon>: null
                   ))}
                 </div>
               ) : (
