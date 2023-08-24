@@ -575,7 +575,9 @@ function App({ alert, isMsAPI, erpConfig }) {
       var getMinutes = duration?.get('minutes');
       var getSeconds = duration?.get('seconds');
       if (getMinutes == 0 && getSeconds <= 50) {
-        generateAccessToken(userDetails?.refresh_token);
+        if (userDetails?.refresh_token) {
+          generateAccessToken(userDetails?.refresh_token);
+        }
       }
       console.log(duration?.get('minutes'), 'getmin');
       console.log(duration?.get('seconds'), 'getsec');
