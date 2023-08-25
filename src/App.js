@@ -575,7 +575,9 @@ function App({ alert, isMsAPI, erpConfig }) {
       var getMinutes = duration?.get('minutes');
       var getSeconds = duration?.get('seconds');
       if (getMinutes == 0 && getSeconds <= 50) {
-        generateAccessToken(userDetails?.refresh_token);
+        if (userDetails?.refresh_token) {
+          generateAccessToken(userDetails?.refresh_token);
+        }
       }
       console.log(duration?.get('minutes'), 'getmin');
       console.log(duration?.get('seconds'), 'getsec');
@@ -603,7 +605,20 @@ function App({ alert, isMsAPI, erpConfig }) {
         }
       })
       .catch((error) => {
-        console.log('Error fetching config data:', error);
+        console.log('Error fetching config data:', error.response);
+        if (error?.response?.data?.status === '412') {
+          localStorage.clear();
+          localStorage.setItem('loggedOut', 412);
+          window.location.href = '/';
+        } else if (error.response?.status === 401) {
+          localStorage.removeItem('userDetails');
+          if (window.location.pathname != '/') {
+            window.location.href = '/';
+          }
+          // Show toast message login to continue
+        } else {
+          // something went wrong
+        }
       });
   };
 
