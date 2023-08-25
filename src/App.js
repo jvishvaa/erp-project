@@ -585,7 +585,7 @@ function App({ alert, isMsAPI, erpConfig }) {
   }
 
   const generateAccessToken = (refreshToken) => {
-    axiosInstance
+    axios
       .post(`${endpoints.auth.generateAccessToken}`, {
         refresh: refreshToken,
       })
@@ -605,7 +605,20 @@ function App({ alert, isMsAPI, erpConfig }) {
         }
       })
       .catch((error) => {
-        console.log('Error fetching config data:', error);
+        console.log('Error fetching config data:', error.response);
+        if (error?.response?.data?.status === '412') {
+          localStorage.clear();
+          localStorage.setItem('loggedOut', 412);
+          window.location.href = '/';
+        } else if (error.response?.status === 401) {
+          localStorage.removeItem('userDetails');
+          if (window.location.pathname != '/') {
+            window.location.href = '/';
+          }
+          // Show toast message login to continue
+        } else {
+          // something went wrong
+        }
       });
   };
 
