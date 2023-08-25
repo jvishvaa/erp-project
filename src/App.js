@@ -585,9 +585,7 @@ function App({ alert, isMsAPI, erpConfig }) {
   }
 
   const generateAccessToken = (refreshToken) => {
-    var instance = axios.create();
-    delete instance.defaults.headers.common['Authorization'];
-    instance
+    axiosInstance
       .post(`${endpoints.auth.generateAccessToken}`, {
         refresh: refreshToken,
       })

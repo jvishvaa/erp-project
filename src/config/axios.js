@@ -14,8 +14,13 @@ const axiosInstance = axios.create({ baseURL });
 axiosInstance.interceptors.request.use(async function (config) {
   const user = await localStorage.getItem('userDetails');
   const requestConfig = config;
-  if (user) {
-    requestConfig.headers.Authorization = `Bearer ${JSON.parse(user).token}`;
+  console.log(requestConfig, 'requestConfig');
+  if (requestConfig.url?.includes('erp_user/access-token')) {
+    requestConfig.headers.Authorization = null;
+  } else {
+    if (user) {
+      requestConfig.headers.Authorization = `Bearer ${JSON.parse(user).token}`;
+    }
   }
   return config;
 });
