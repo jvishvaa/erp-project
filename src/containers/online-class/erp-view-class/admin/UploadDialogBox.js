@@ -103,7 +103,7 @@ const UploadClassWorkDiaogBox = (props) => {
   }
 
   function getPeriodDetails() {
-    setLoading(true);
+    // setLoading(true);
     if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
       msapigetPeriodDetails();
       return;
@@ -120,11 +120,11 @@ const UploadClassWorkDiaogBox = (props) => {
             setUploadFiles([...exstingFiles]);
           }
         }
-        setLoading(false);
+        // setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
-        setLoading(false);
+        // setLoading(false);
       });
   }
 
@@ -295,7 +295,7 @@ const UploadClassWorkDiaogBox = (props) => {
       <Dialog
         className='upload-dialog-box'
         open={classWorkDialog}
-        style={{ zIndex: '3' }}
+        style={{ zIndex: '1001' }}
         onClose={handleClose}
         aria-labelledby='form-dialog-title'
         disableBackdropClick 
