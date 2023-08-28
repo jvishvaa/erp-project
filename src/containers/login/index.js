@@ -148,7 +148,7 @@ function SignIn({ history, setTheme }) {
 
   useEffect(() => {
     if (window.innerWidth < 600) {
-      window.location.replace(`${window.location.host}/m/`);
+      window.location.replace(`https://${window.location.host}/m/`);
     }
   }, []);
 
