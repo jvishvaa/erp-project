@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
-import { Breadcrumb, Tabs, Button, DatePicker, message, Spin, Divider } from 'antd';
+import { Breadcrumb, Tabs, Button, DatePicker, message, Spin, Divider, Empty } from 'antd';
 import moment from 'moment';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -340,7 +340,13 @@ const Diary = () => {
                       </div>
                     ) : (
                       <div className='row justify-content-center pt-5'>
-                        <img src={NoDataIcon} />
+                       <Empty 
+                       description={
+                        <> { user_level == 13 ? (<><div style={{fontSize: "15px"}}>No Diaries are assigned for today.</div>
+                          <div style={{fontSize: "15px"}}>"Relax and engage in activities you enjoy!"</div></>) 
+                          : (<div style={{fontSize: "15px"}}>No Diaries are created for today</div>) }
+                        </>}
+                      />
                       </div>
                     )}
                   </div>
@@ -364,7 +370,13 @@ const Diary = () => {
                       ))
                     ) : (
                       <div className='row justify-content-center pt-5'>
-                        <img src={NoDataIcon} />
+                       <Empty 
+                        description={
+                        <> { user_level == 13 ? (<><div style={{fontSize: "15px"}}>No Diaries are assigned for today.</div>
+                          <div style={{fontSize: "15px"}}>"Relax and engage in activities you enjoy!"</div></> ) 
+                          : (<div style={{fontSize: "15px"}}>No Diaries are created for today</div>) }
+                        </>}
+                      />
                       </div>
                     )}
                   </div>
