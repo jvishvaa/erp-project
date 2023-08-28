@@ -543,17 +543,18 @@ function App({ alert, isMsAPI, erpConfig }) {
       ? JSON.parse(localStorage?.getItem('userDetails'))?.token
       : null;
 
-    const forceUpdate = localStorage?.getItem('userDetails')
-      ? JSON.parse(localStorage?.getItem('userDetails'))?.force_update
-      : null;
+    // const forceUpdate = localStorage?.getItem('userDetails')
+    //   ? JSON.parse(localStorage?.getItem('userDetails'))?.force_update
+    //   : null;
 
-    if (forceUpdate == 'true' || forceUpdate == 'True' || forceUpdate == true) {
-      console.log(window.location.pathname == '/change-password', 'redirect');
-      if (window.location.pathname != '/change-password') {
-        window.location.href = '/change-password';
-      }
-      // history.push('/change-password');
-    }
+    // if (forceUpdate == 'true' || forceUpdate == 'True' || forceUpdate == true) {
+    //   console.log(window.location.pathname == '/change-password', 'redirect');
+    //   if (window.location.pathname != '/change-password') {
+    //     window.location.href = '/change-password';
+    //   }
+    //   // history.push('/change-password');
+    // }
+
     if (accessToken) {
       isJwtExpired(accessToken);
     }

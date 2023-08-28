@@ -7,11 +7,28 @@ import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import axios from 'axios';
 import endpoints from 'v2/config/endpoints';
 import { IsV2Checker } from 'v2/isV2Checker';
+import { useHistory } from 'react-router-dom';
 const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 const isStudent = user_level == 13 ? true : false;
 const isFromOrchids = window.location.host.slice(0, 7) === 'orchids' ? true : false;
 
 function TermsAndCondition(props) {
+  const history = useHistory();
+  useEffect(() => {
+    const forceUpdate = localStorage?.getItem('userDetails')
+      ? JSON.parse(localStorage?.getItem('userDetails'))?.force_update
+      : null;
+    console.log(window.location.pathname, forceUpdate, 'path name');
+
+    if (forceUpdate == 'true' || forceUpdate == 'True' || forceUpdate == true) {
+      console.log(window.location.pathname == '/change-password', 'redirect');
+      if (window.location.pathname != '/change-password') {
+        // window.location.href = '/change-password';
+        history.push('/change-password');
+      }
+    }
+  }, []);
+
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {props?.version && (
