@@ -54,7 +54,6 @@ const ErpAdminViewClassv2 = () => {
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
   const launchdate = localStorage.getItem('launchDate');
-  console.log(launchdate, 'launchdate');
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
     { id: 4, type: 'Remedial Classes' },
@@ -132,10 +131,7 @@ const ErpAdminViewClassv2 = () => {
     }
   }, [window.location.pathname]);
   useEffect(() => {
-    if (
-      moduleId &&
-      window.location.pathname !== '/erp-online-class-student-view'
-    ) {
+    if (moduleId && window.location.pathname !== '/erp-online-class-student-view') {
       callApi(
         `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&module_id=${moduleId}`,
         'gradeList'
@@ -245,7 +241,7 @@ const ErpAdminViewClassv2 = () => {
             parseInt(tabValue, 10) + 1
           }&module_id=${moduleId}&subject_id=${selectedSubject.map((el) => el?.key)}`;
           if (!sectionToggle)
-            url += `&section_mapping_ids=${selectedSection.map((el) => el?.value)}`;
+            url += `&section_mapping_ids=${selectedSection.map((el) => el?.props?.value)}`;
           if (sectionToggle)
             url += `&section_mapping_ids=${[
               ...new Set(groupSectionMappingId),
@@ -393,7 +389,7 @@ const ErpAdminViewClassv2 = () => {
           : value;
       const selectedGradeIds = value.map((el) => el?.key) || [];
       setSelectedGrade(value);
-      getGroup(selectedGradeIds, selectedAcadId);
+      getGroup(selectedGradeIds, selectedBranch?.id);
       callApi(
         `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${selectedGradeIds}&module_id=${moduleId}`,
         'sectionList'
@@ -443,7 +439,7 @@ const ErpAdminViewClassv2 = () => {
     formRef.current.setFieldsValue({
       subject: [],
     });
-    if (value) {
+    if (value?.length) {
       let sectionIds = [];
       let branchIds = [];
       let GradeIds = [];
@@ -462,11 +458,10 @@ const ErpAdminViewClassv2 = () => {
         sessionIds.push(sessids.toString());
         secMappingIds.push(secmapids.toString());
       });
-      let groupIds = value?.map((item) => item?.id);
+      let groupIds = value?.map((item) => item?.key);
       setGroupSectionMappingId(secMappingIds);
       setSelectedGroupData(value);
       setSelectedGroupId(groupIds.toString());
-
       callApi(
         `${
           endpoints.academics.subjects
@@ -512,6 +507,7 @@ const ErpAdminViewClassv2 = () => {
             const sectionData = result?.data?.data || [];
             sectionData.unshift({
               id: 'all',
+              section_id: 'all',
               section__section_name: 'Select All',
             });
             setSectionList(sectionData);
@@ -682,22 +678,22 @@ const ErpAdminViewClassv2 = () => {
         return;
       }
       setLoading(true);
-      localStorage.setItem(
-        'filterData',
-        JSON.stringify({
-          classtype: selectedClassType,
-          academic: selectedAcademicYear,
-          grade: selectedGrade,
-          section: selectedSection,
-          subject: selectedSubject,
-          date: dateRangeTechPer,
-          // group: selectedGroupData,
-          sectionToggle: sectionToggle,
-          page,
-          tabValue,
-          historicalData,
-        })
-      );
+      // localStorage.setItem(
+      //   'filterData',
+      //   JSON.stringify({
+      //     classtype: selectedClassType,
+      //     academic: selectedAcademicYear,
+      //     grade: selectedGrade,
+      //     section: selectedSection,
+      //     subject: selectedSubject,
+      //     date: dateRangeTechPer,
+      //     group: selectedGroupData,
+      //     sectionToggle: sectionToggle,
+      //     page,
+      //     tabValue,
+      //     historicalData,
+      //   })
+      // );
       let url = `${endpoints.aol.classes}?is_aol=0&session_year=${
         selectedAcademicYear?.id
       }&class_type=${selectedClassType?.key}&start_date=${moment(startDateTechPer).format(
@@ -708,7 +704,7 @@ const ErpAdminViewClassv2 = () => {
         (el) => el?.key
       )}`;
       if (!sectionToggle)
-        url += `&section_mapping_ids=${selectedSection.map((el) => el?.value)}`;
+        url += `&section_mapping_ids=${selectedSection.map((el) => el?.props?.value)}`;
       if (sectionToggle)
         url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`;
       callApi(url, 'filter');
@@ -876,7 +872,7 @@ const ErpAdminViewClassv2 = () => {
           parseInt(tabValue, 10) + 1
         }&module_id=${moduleId}`;
         if (!sectionToggle)
-          url += `&section_mapping_ids=${selectedSection.map((el) => el?.value)}`;
+          url += `&section_mapping_ids=${selectedSection.map((el) => el?.props?.value)}`;
         if (sectionToggle)
           url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`;
         callApi(url, 'filter');
@@ -1068,18 +1064,18 @@ const ErpAdminViewClassv2 = () => {
         } else if (tabValue === '1') {
           mindate = moment().add(1, 'day').format('YYYY-MM-DD');
           maxDate = moment(launchdate, 'YYYY-MM-DD').add(1, 'year').format('YYYY-MM-DD');
-          datearr = [moment().add(1, 'day'), moment().add(4, 'days')];
+          datearr = [moment().add(1, 'day'), moment().add(7, 'days')]; // replace 7 by num of days
           // mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
           // maxDate = moment();
           // datearr = [moment().subtract(4, 'days'), moment()];
         } else if (tabValue === '2') {
           mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
           maxDate = moment();
-          datearr = [moment().subtract(4, 'days'), moment()];
+          datearr = [moment().subtract(7, 'days'), moment()]; // replace 7 by num of days
         } else {
           mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
           maxDate = moment(launchdate, 'YYYY-MM-DD').add(1, 'year').format('YYYY-MM-DD');
-          datearr = [moment().subtract(4, 'days'), moment()];
+          datearr = [moment().subtract(7, 'days'), moment()]; // replace 7 by num of days
           // var a = moment(launchdate, 'YYYY-MM-DD').add(1, 'day');
           // var b = moment();
           // if (b.diff(a, 'days') > 6) {
@@ -1115,7 +1111,20 @@ const ErpAdminViewClassv2 = () => {
       align: 'left',
       dataIndex: 'title',
       render: (data, row) => (
-        <span className='th-black-1 th-16'>{row?.online_class?.title}</span>
+        <span className='th-black-1 th-16'>
+          {row?.online_class?.title.length > 25 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={row?.online_class?.title}
+              overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
+            >
+              {`${row.online_class?.title.substring(0, 25)}...`}
+            </Tooltip>
+          ) : (
+            row?.online_class?.title
+          )}
+        </span>
       ),
     },
     {
@@ -1233,11 +1242,24 @@ const ErpAdminViewClassv2 = () => {
     },
     {
       title: <span className='th-white th-fw-700'>Title</span>,
-      width: '30%',
+      width: '35%',
       align: 'left',
       dataIndex: 'title',
       render: (data, row) => (
-        <span className='th-black-1 th-16'>{row?.online_class?.title}</span>
+        <span className='th-black-1 th-16'>
+          {row?.online_class?.title.length > 25 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={row?.online_class?.title}
+              overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
+            >
+              {`${row.online_class?.title.substring(0, 25)}...`}
+            </Tooltip>
+          ) : (
+            row?.online_class?.title
+          )}
+        </span>
       ),
     },
     {
@@ -1265,8 +1287,7 @@ const ErpAdminViewClassv2 = () => {
     {
       title: (
         <span className='th-white th-fw-700'>
-          {' '}
-          <ClockCircleTwoTone /> Status
+          <ClockCircleTwoTone style={{ marginRight: '4px', fontSize: '16px' }} /> Status
         </span>
       ),
       width: '15%',
@@ -1563,7 +1584,6 @@ const ErpAdminViewClassv2 = () => {
       </>
     ) : null;
   };
-
   return (
     <>
       <Layout>
@@ -1631,14 +1651,12 @@ const ErpAdminViewClassv2 = () => {
                         </Select>
                       </Form.Item>
                     </div>
-                    {window.location.pathname ===
-                      '/erp-online-class-student-view' && (
+                    {window.location.pathname === '/erp-online-class-student-view' && (
                       <div className='col-md-3 col-sm-6 col-12'>
                         <HistoricalDataEle />
                       </div>
                     )}
-                    {window.location.pathname !==
-                      '/erp-online-class-student-view' && (
+                    {window.location.pathname !== '/erp-online-class-student-view' && (
                       <>
                         <div className='col-md-3 col-sm-6 col-12'>
                           <Form.Item name='grade'>
@@ -1777,6 +1795,8 @@ const ErpAdminViewClassv2 = () => {
                         <div className='col-md-4 col-sm-6 col-12'>
                           <RangePicker
                             format='MM/DD/YYYY'
+                            disabled={tabValue === '0'}
+                            allowClear={false}
                             disabledDate={(current) => {
                               if (minStartDate && maxStartDate) {
                                 return (
@@ -1893,7 +1913,7 @@ const ErpAdminViewClassv2 = () => {
               onClose={handleClose}
               visible={selectedViewMore}
               width={500}
-              zIndex={1000}
+              // zIndex={1000}
             >
               <SideDrawer
                 setLoading={setLoading}
