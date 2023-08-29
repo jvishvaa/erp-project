@@ -37,8 +37,7 @@ const WebCamDialog = (props) => {
         // fullScreen
         open={props.webOpen}
         onClose={handleClose}
-        style={{ marginTop: '3%' }}
-
+        style={{ zIndex: '2001', marginTop: '3%' }}
       >
         <IconButton
           edge="start"
