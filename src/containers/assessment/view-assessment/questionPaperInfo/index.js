@@ -956,31 +956,37 @@ const QuestionPaperInfo = ({
                         <span className='th-green th-fw-500 th-20'>Yet to Start</span>
                       ) : (
                         <div className='col-12 text-center'>
-                          {!showSubmit?.attempted ? (
-                            <span className='th-green th-fw-500 th-20'>
-                              {status == 1 ? (
-                                <span>
-                                  Test ended at{' '}
-                                  {moment(testDate)
-                                    .add(testDuration, 'minutes')
-                                    .format('llll')}
-                                </span>
-                              ) : (
-                                <span>
-                                  Test Ongoing till{' '}
-                                  {moment(testDate)
-                                    .add(testDuration, 'minutes')
-                                    .format('llll')}
-                                </span>
-                              )}
-                            </span>
-                          ) : (
+                          {/* {!showSubmit?.attempted ? ( */}
+                          <span className='th-green th-fw-500 th-20'>
+                            {status == 1 ? (
+                              <span>
+                                Test ended at{' '}
+                                {moment(testDate)
+                                  .add(testDuration, 'minutes')
+                                  .format('llll')}
+                                {userResponseObj == null && (
+                                  <span className='th-green th-fw-500 th-20'>
+                                    <br />
+                                    Marks entry under process
+                                  </span>
+                                )}
+                              </span>
+                            ) : (
+                              <span>
+                                Test Ongoing till{' '}
+                                {moment(testDate)
+                                  .add(testDuration, 'minutes')
+                                  .format('llll')}
+                              </span>
+                            )}
+                          </span>
+                          {/* ) : (
                             userResponseObj == null && (
                               <span className='th-green th-fw-500 th-20'>
                                 Marks entry under process
                               </span>
                             )
-                          )}
+                          )} */}
                         </div>
                       )}
                     </div>
@@ -994,6 +1000,7 @@ const QuestionPaperInfo = ({
       {/* <br /> */}
     </div>
   );
+  console.log('rohan11', showSubmit, status);
   return (
     <Paper elevation={1} className={classes.paper}>
       <div className={classes.testInfo}>
