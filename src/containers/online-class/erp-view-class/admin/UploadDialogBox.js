@@ -295,7 +295,7 @@ const UploadClassWorkDiaogBox = (props) => {
       <Dialog
         className='upload-dialog-box'
         open={classWorkDialog}
-        style={{ zIndex: '1001' }}
+        style={{ zIndex: '2001' }}
         onClose={handleClose}
         aria-labelledby='form-dialog-title'
         disableBackdropClick 
