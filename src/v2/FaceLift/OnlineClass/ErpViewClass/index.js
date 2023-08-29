@@ -63,7 +63,6 @@ const ErpAdminViewClassv2 = () => {
     { id: 3, type: 'Parent Class' }, */
   ]);
   const [selectedClassType, setSelectedClassType] = useState('');
-  const [selectedAcadId, setSelectedAcadId] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -241,7 +240,9 @@ const ErpAdminViewClassv2 = () => {
             parseInt(tabValue, 10) + 1
           }&module_id=${moduleId}&subject_id=${selectedSubject.map((el) => el?.key)}`;
           if (!sectionToggle)
-            url += `&section_mapping_ids=${selectedSection.map((el) => el?.props?.value)}`;
+            url += `&section_mapping_ids=${selectedSection.map(
+              (el) => el?.props?.value
+            )}`;
           if (sectionToggle)
             url += `&section_mapping_ids=${[
               ...new Set(groupSectionMappingId),
@@ -305,30 +306,6 @@ const ErpAdminViewClassv2 = () => {
       });
     }
   }, []);
-  // useEffect(() => {
-  //   if (
-  //     moduleId &&
-  //     window.location.pathname === '/erp-online-class-teacher-view'
-  //   ) {
-  //     noFilterGetClasses();
-  //   }
-  // }, [tabValue, page]);
-  // useEffect(() => {
-  //   if (
-  //     moduleId &&
-  //     window.location.pathname === '/erp-online-class-teacher-view'
-  //   ) {
-  //     noFilterGetClasses();
-  //   }
-  // }, [moduleId]);
-
-  // useEffect(() => {
-  //   if (window.location.pathname === '/erp-online-class-teacher-view') {
-  //     if (dateRangeTechPer[0] && dateRangeTechPer[1]) {
-  //       noFilterGetClasses();
-  //     }
-  //   }
-  // }, [dateRangeTechPer]);
   useEffect(() => {
     const getvalues = getminMaxDate();
     setMinStartDate(getvalues.mindate);
@@ -383,12 +360,19 @@ const ErpAdminViewClassv2 = () => {
       subject: [],
     });
     if (value?.length) {
-      value =
-        value.filter(({ key }) => key === 'all').length === 1
-          ? [...gradeOptions].filter(({ key }) => key !== 'all')
-          : value;
-      const selectedGradeIds = value.map((el) => el?.key) || [];
-      setSelectedGrade(value);
+      let selectedGradeIds;
+      if (value.some((item) => item.value === 'all')) {
+        const allGrade = gradeList.map((item) => item.grade_id).join(',');
+        selectedGradeIds = allGrade;
+        setSelectedGrade(allGrade);
+        formRef.current.setFieldsValue({
+          grade: gradeList.map((item) => item.grade_id),
+        });
+      } else {
+        const singleGrade = value.map((item) => item.value).join(',');
+        selectedGradeIds = singleGrade;
+        setSelectedGrade(singleGrade);
+      }
       getGroup(selectedGradeIds, selectedBranch?.id);
       callApi(
         `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${selectedGradeIds}&module_id=${moduleId}`,
@@ -417,13 +401,20 @@ const ErpAdminViewClassv2 = () => {
       subject: [],
     });
     if (value?.length) {
-      value =
-        value.filter(({ key }) => key === 'all').length === 1
-          ? [...sectionOptions].filter(({ key }) => key !== 'all')
-          : value;
-      const selectedSectionIds = value.map((el) => el?.key) || [];
-      const gradeIds = selectedGrade.map((el) => el?.key) || [];
-      setSelectedSection(value);
+      let selectedSectionIds;
+      if (value.some((item) => item.key === 'all')) {
+        const allsections = sectionList?.map((item) => item.section_id).join(',');
+        selectedSectionIds = allsections;
+        setSelectedSection(sectionOptions);
+        formRef.current.setFieldsValue({
+          section: sectionList?.map((item) => item.id),
+        });
+      } else {
+        const singleSection = value.map((item) => item.key).join(',');
+        selectedSectionIds = singleSection;
+        setSelectedSection(value);
+      }
+      const gradeIds = selectedGrade;
       callApi(
         `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${gradeIds}&section=${selectedSectionIds}&module_id=${moduleId}`,
         'subjectList'
@@ -496,20 +487,10 @@ const ErpAdminViewClassv2 = () => {
         if (result.status === 200) {
           if (key === 'gradeList') {
             const gradeData = result?.data?.data || [];
-            gradeData.unshift({
-              grade__grade_name: 'Select All',
-              grade_id: 'all',
-              id: 'all',
-            });
             setGradeList(gradeData);
           }
           if (key === 'sectionList') {
             const sectionData = result?.data?.data || [];
-            sectionData.unshift({
-              id: 'all',
-              section_id: 'all',
-              section__section_name: 'Select All',
-            });
             setSectionList(sectionData);
           }
           if (key === 'subjectList') {
@@ -1490,18 +1471,116 @@ const ErpAdminViewClassv2 = () => {
     emptyText: (
       <div className='d-flex justify-content-center mt-5 th-grey'>
         {window.location.pathname === '/erp-online-class-student-view' &&
-          selectedClassType && <Empty description={'No classes found'} />}
-        {window.location.pathname === '/erp-online-class-student-view' &&
-          !selectedClassType && <Empty description={'Please select class type'} />}
-        {window.location.pathname === '/erp-online-class-teacher-view' &&
-          selectedClassType && <Empty description={'No classes found'} />}
-        {window.location.pathname === '/erp-online-class-teacher-view' &&
-          !selectedClassType && (
-            <Empty description={'Please select filters to view classes'} />
+          tabValue === '0' && (
+            <Empty
+              description={
+                <div>
+                  No online classes today. <br />
+                  <i>
+                    But keep up the great work! Take this time to review your <br />
+                    materials and stay curious. Your dedication is inspiring!
+                  </i>
+                </div>
+              }
+            />
           )}
-        {window.location.pathname === '/erp-online-class' && (
-          <Empty description={'No classes found'} />
-        )}
+        {window.location.pathname === '/erp-online-class-student-view' &&
+          tabValue === '1' && (
+            <Empty
+              description={
+                <div>
+                  No online classes scheduled right now. <br />
+                  <i>
+                    Keep up your enthusiasm for learning – you're making excellent
+                    progress!
+                  </i>
+                </div>
+              }
+            />
+          )}
+        {window.location.pathname === '/erp-online-class-student-view' &&
+          tabValue === '2' && (
+            <Empty
+              description={
+                <div>
+                  No completed online classes at the moment. <br />
+                  <i>
+                    Your commitment to learning is commendable – keep up the great work!
+                  </i>
+                </div>
+              }
+            />
+          )}
+        {window.location.pathname === '/erp-online-class-student-view' &&
+          tabValue === '3' && (
+            <Empty
+              description={
+                <div>
+                  No cancelled online classes. <br />
+                  <i>
+                    Your dedication to learning is truly inspiring – keep up the positive
+                    momentum!
+                  </i>
+                </div>
+              }
+            />
+          )}
+        {window.location.pathname !== '/erp-online-class-student-view' &&
+          tabValue === '0' && (
+            <Empty
+              description={
+                <div>
+                  No online classes scheduled at the moment. <br />
+                  <i>
+                    Your dedication to teaching is invaluable, <br />
+                    keep inspiring and prepare for the next engaging session!
+                  </i>
+                </div>
+              }
+            />
+          )}
+        {window.location.pathname !== '/erp-online-class-student-view' &&
+          tabValue === '1' && (
+            <Empty
+              description={
+                <div>
+                  No upcoming online classes right now. <br />
+                  <i>
+                    Your dedication to guiding students is remarkable, <br />
+                    take this time to prepare for your next impactful session!
+                  </i>
+                </div>
+              }
+            />
+          )}
+        {window.location.pathname !== '/erp-online-class-student-view' &&
+          tabValue === '2' && (
+            <Empty
+              description={
+                <div>
+                  No completed online classes currently. <br />
+                  <i>
+                    Your commitment to education is making a difference, <br />
+                    keep up the great work and stay prepared for upcoming sessions!
+                  </i>
+                </div>
+              }
+            />
+          )}
+        {window.location.pathname !== '/erp-online-class-student-view' &&
+          tabValue === '3' && (
+            <Empty
+              description={
+                <div>
+                  No cancelled online classes. <br />
+                  <i>
+                    Your commitment to education is appreciated, keep up the positive
+                    energy <br /> and continue creating meaningful learning experiences!
+                  </i>
+                </div>
+              }
+            />
+          )}
       </div>
     ),
   };
@@ -1513,9 +1592,9 @@ const ErpAdminViewClassv2 = () => {
       </Option>
     );
   });
-  const gradeOptions = gradeList.map((each) => {
+  const gradeOptions = gradeList?.map((each) => {
     return (
-      <Option key={each?.grade_id} value={each?.grade__grade_name}>
+      <Option key={each?.grade_id} value={each.grade_id}>
         {each?.grade__grade_name}
       </Option>
     );
@@ -1560,12 +1639,14 @@ const ErpAdminViewClassv2 = () => {
             />
           </div>
           <Tooltip
-            title={`Recent data: records from ${moment(launchdate)
-              .add(1, 'day')
-              .format('YYYY-MM-DD')} till date
-         Historical data: records before ${moment(launchdate)
-           .add(1, 'day')
-           .format('YYYY-MM-DD')}`}
+            title={
+              <>
+                Recent data: records from{' '}
+                {moment(launchdate).add(1, 'day').format('YYYY-MM-DD')} till date <br />
+                Historical data: records before{' '}
+                {moment(launchdate).add(1, 'day').format('YYYY-MM-DD')}
+              </>
+            }
             placement='bottomLeft'
             overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
           >
@@ -1587,7 +1668,7 @@ const ErpAdminViewClassv2 = () => {
   return (
     <>
       <Layout>
-        <FeeReminder />
+        {window.location.pathname === '/erp-online-class-student-view' && <FeeReminder />}
         <div className='row pt-3 pb-3'>
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
@@ -1681,7 +1762,14 @@ const ErpAdminViewClassv2 = () => {
                               showSearch
                               placeholder='Select Grade*'
                             >
-                              {gradeOptions}
+                              {gradeList.length > 1 && (
+                                <>
+                                  <Option key={'all'} value={'all'}>
+                                    Select All
+                                  </Option>
+                                </>
+                              )}
+                              {gradeOptions}{' '}
                             </Select>
                           </Form.Item>
                         </div>
@@ -1728,6 +1816,13 @@ const ErpAdminViewClassv2 = () => {
                                 showSearch
                                 placeholder='Select Section*'
                               >
+                                {sectionList.length > 1 && (
+                                  <>
+                                    <Option key={'all'} value={'all'}>
+                                      Select All
+                                    </Option>
+                                  </>
+                                )}
                                 {sectionOptions}
                               </Select>
                             </Form.Item>
