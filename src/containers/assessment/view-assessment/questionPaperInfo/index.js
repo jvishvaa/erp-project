@@ -960,10 +960,10 @@ const QuestionPaperInfo = ({
                           <span className='th-green th-fw-500 th-20'>
                             {status == 1 ? (
                               <span>
-                                Test ended at{' '}
+                                {/* Test ended at{' '}
                                 {moment(testDate)
                                   .add(testDuration, 'minutes')
-                                  .format('llll')}
+                                  .format('llll')} */}
                                 {userResponseObj == null && (
                                   <span className='th-green th-fw-500 th-20'>
                                     <br />
