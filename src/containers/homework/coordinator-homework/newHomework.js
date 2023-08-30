@@ -656,7 +656,7 @@ const SubmissionData = withRouter(
           </span>
           <div
             className='card'
-            style={{ width: '95%', margin: '0 auto', marginBottom: '15px' }}
+            style={{ width: '95%', margin: '0 auto', marginBottom: '5px' }}
           >
             <Collapse
               ghost
@@ -934,6 +934,21 @@ const SubmissionData = withRouter(
                 </div>
               </Panel>
             </Collapse>
+          </div>
+          <div className='d-flex justify-content-between mx-auto' style={{width: '95%', marginBottom: '2px'}}>
+          <span
+            className='th-13 th-fw-600'
+            style={{ color: '#A0A0A1'}}
+          >
+            Created By: {selectedHomeworkDetails?.created_by}
+          </span>
+          <span
+            className='th-13 th-fw-600'
+            style={{ color: '#A0A0A1'}}
+          >
+            Creation Date: <span className='th-13 th-fw-600'>{moment(selectedHomeworkDetails?.uploaded_at).format('DD-MM-YYYY, hh:mm A')} </span>
+                  
+          </span>
           </div>
         </div>
         <Tabs
