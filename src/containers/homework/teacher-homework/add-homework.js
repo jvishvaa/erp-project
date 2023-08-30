@@ -219,6 +219,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
     if (field == 'is_online') {
       if (value) {
         form['is_attachment_enable'] = true;
+        form['max_attachment'] = 10;
         form['penTool'] = true;
         form['is_online'] = true;
       } else {
