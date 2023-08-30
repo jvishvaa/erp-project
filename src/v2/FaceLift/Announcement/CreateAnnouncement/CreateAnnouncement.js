@@ -88,6 +88,10 @@ const CreateAnnouncement = () => {
       });
     } else {
       setFeeReminderSelected(false);
+      handleUserLevel([]);
+      formRef.current.setFieldsValue({
+        user_level: [],
+      });
     }
   };
 
@@ -146,6 +150,7 @@ const CreateAnnouncement = () => {
       .get(`${endpoints.createAnnouncement.membersCount}`, {
         params: {
           ...params,
+          ...(feeReminderSelected ? { is_fee_reminder: true } : {}),
         },
       })
       .then((res) => {
@@ -297,8 +302,8 @@ const CreateAnnouncement = () => {
     setSectionMappingIds([]);
   };
   const handleUserLevel = (e) => {
-    setSelectedUserLevels(e.join(','));
-    if (e.length == 0) {
+    setSelectedUserLevels(e?.join(','));
+    if (e?.length == 0) {
       setMembersCount(null);
       formRef.current.setFieldsValue({
         grade: [],
