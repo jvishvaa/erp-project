@@ -4,7 +4,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { message, Spin, Badge } from 'antd';
+import { message, Spin, Badge, Empty } from 'antd';
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/noHomeworkIcon.svg';
 import { getSubjectIcon } from 'v2/getSubjectIcon';
@@ -20,6 +20,7 @@ const HomeworkReport = () => {
   );
   const [homeworkReportData, setHomeworkReportData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [countHwStatus, setCountHwStatus] = useState(0);
 
   const fetchHomeworkReportData = (params = {}) => {
     setLoading(true);
@@ -33,6 +34,14 @@ const HomeworkReport = () => {
       .then((response) => {
         if (response.data?.status_code === 200) {
           setHomeworkReportData(response?.data?.result);
+          var count=0;
+          const data= response?.data?.result?.map((item)=>{
+            if(item?.hw_status == '3'){
+              count=count+1;
+            }
+            return item;
+          })
+          setCountHwStatus(count);
         }
         setLoading(false);
       })
@@ -68,7 +77,7 @@ const HomeworkReport = () => {
               className='col-12 th-custom-scrollbar'
               style={{ height: 335, overflowY: 'auto', overflowX: 'hidden' }}
             >
-              {homeworkReportData?.length > 0 ? (
+              {!(homeworkReportData?.length==countHwStatus) ? (
                 <div className='row mt-1 th-bg-grey p-1 th-br-5'>
                   {homeworkReportData?.map((item, index) => (
                    item?.hw_status!="3" ? 
@@ -162,6 +171,9 @@ const HomeworkReport = () => {
                                     Submission Date :&nbsp;
                                     {moment(item?.submission_date).format('DD/MM/YYYY')}
                                   </div>
+                                  <div className='col-12 px-0 text-truncate th-grey th-fw-400 th-10'>
+                                    Created By : {item?.created_by_staff__first_name} {item?.created_by_staff__last_name}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -171,9 +183,13 @@ const HomeworkReport = () => {
                     </Badge.Ribbon>: null
                   ))}
                 </div>
-              ) : (
+              ) : ( 
                 <div className='d-flex justify-content-center pt-5'>
-                  <img src={NoDataIcon} alt='no-data' />
+                  <Empty 
+                     description={
+                      <div>No Homework assigned yet.!</div>
+                     }
+                  />
                 </div>
               )}
             </div>
