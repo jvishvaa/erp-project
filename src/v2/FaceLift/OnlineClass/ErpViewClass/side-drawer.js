@@ -13,6 +13,7 @@ import UploadDialogBox from '../../../../containers/online-class/erp-view-class/
 import endpoints from 'config/endpoints';
 import moment from 'moment';
 import ResourceDialog from '../../../../containers/online-class/online-class-resources/resourceDialog';
+// import Loader from '../../../../components/loader/loader';
 
 const JoinClass = (props) => {
   const { setLoading, getClassName, historicalData } = props;
@@ -501,8 +502,7 @@ const JoinClass = (props) => {
                         </Button> */}
                       </div>
                     )}
-                    {window.location.pathname ===
-                      '/erp-online-class-teacher-view' && (
+                    {window.location.pathname === '/erp-online-class-teacher-view' && (
                       <div>
                         {/* <Button
                           type='primary'
@@ -516,12 +516,12 @@ const JoinClass = (props) => {
                     )}
                   </div>
                   <div>
-                    {window.location.pathname !==
-                      '/erp-online-class-student-view' && (
+                    {window.location.pathname !== '/erp-online-class-student-view' && (
                       <Popconfirm
                         title='Are you sure to Cancel ?'
                         onConfirm={() => handleCancel()}
                         onClose={() => handleCloseData()}
+                        overlayStyle={{ zIndex: 2001 }} // Adjust the z-index value as needed
                       >
                         <div>
                           <Button
@@ -557,6 +557,7 @@ const SideDrawer = ({
   index,
   historicalData,
 }) => {
+  const [loadingDrawer, setLoadingDrawer] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -578,6 +579,7 @@ const SideDrawer = ({
   };
 
   const msCallData = () => {
+    setLoadingDrawer(true);
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'
         ? `/oncls/v1/${fullData?.id}/student-oncls-details/`
@@ -585,8 +587,12 @@ const SideDrawer = ({
     APIREQUEST('get', detailsURL)
       .then((res) => {
         handleMscallResponse(res);
+        setLoadingDrawer(false);
       })
-      .catch((error) => message.error(error.message));
+      .catch((error) => {
+        setLoadingDrawer(false);
+        message.error(error.message);
+      });
   };
 
   const handleMscallResponse = (res) => {
@@ -616,12 +622,17 @@ const SideDrawer = ({
         : `erp_user/${fullData && fullData.id}/online-class-details/`;
 
     if (fullData) {
+      setLoadingDrawer(true);
       axiosInstance
         .get(detailsURL)
         .then((res) => {
+          setLoadingDrawer(false);
           handleMscallResponse(res);
         })
-        .catch((error) => message.error(error.message));
+        .catch((error) => {
+          setLoadingDrawer(false);
+          message.error(error.message);
+        });
     }
   };
 
@@ -708,7 +719,22 @@ const SideDrawer = ({
               </div>
             </div>
 
-            <div> {fullData?.online_class?.title} </div>
+            <div>
+              {' '}
+              {/* {fullData?.online_class?.title} */}
+              {fullData?.online_class?.title.length > 25 ? (
+                <Tooltip
+                  autoAdjustOverflow='false'
+                  placement='bottomLeft'
+                  title={fullData?.online_class?.title}
+                  overlayStyle={{ zIndex: '2001', maxWidth: '30%', minWidth: '20%' }}
+                >
+                  {`${fullData.online_class?.title.substring(0, 25)}...`}
+                </Tooltip>
+              ) : (
+                fullData?.online_class?.title
+              )}
+            </div>
           </div>
 
           <div>
@@ -759,11 +785,13 @@ const SideDrawer = ({
 
   return (
     <>
+      {/* {loading && <Loader />} */}
       <div>
         <Table
           columns={columns}
           dataSource={noOfPeriods}
           pagination={false}
+          loading={loadingDrawer}
           className='th-table'
           locale={noDataLocale}
           rowClassName={(record, index) =>

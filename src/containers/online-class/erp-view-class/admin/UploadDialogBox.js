@@ -20,10 +20,10 @@ import placeholder from '../../../../assets/images/placeholder_small.jpg';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Attachment from '../../../homework/teacher-homework/attachment';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import APIREQUEST from "../../../../config/apiRequest";
+import APIREQUEST from '../../../../config/apiRequest';
 import moment from 'moment';
 import { Box } from '@material-ui/core';
-
+import { Spin } from 'antd';
 import WebCamDialog from '../webCamDialog';
 
 const useStyles = makeStyles((theme) => ({
@@ -61,8 +61,9 @@ const UploadClassWorkDiaogBox = (props) => {
     classWorkDialog = false,
     OpenDialogBox,
     fullData = {},
-    historicalData
+    historicalData,
   } = props || {};
+  const [loadingHere, setLoadingHere] = useState(false);
   const { online_class = {} } = fullData || {};
   const { id: onlineClassId = '' } = online_class || {};
   const { date: periodDate = '' } = periodData || {};
@@ -72,7 +73,7 @@ const UploadClassWorkDiaogBox = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { openLightbox } = useLightbox();
   const [originalFiles, setOriginalFiles] = useState([]);
-  const [webOpen, setwebOpen] = useState(false)
+  const [webOpen, setwebOpen] = useState(false);
 
   useEffect(() => {
     if (isTeacher) {
@@ -85,7 +86,10 @@ const UploadClassWorkDiaogBox = (props) => {
   }, [periodDate]);
 
   const msapigetPeriodDetails = () => {
-    APIREQUEST("get", `/oncls/v1/oncls-classwork/?online_class_id=${onlineClassId}&date=${periodDate}`)
+    APIREQUEST(
+      'get',
+      `/oncls/v1/oncls-classwork/?online_class_id=${onlineClassId}&date=${periodDate}`
+    )
       .then((result) => {
         if (result.data.status_code === 200) {
           const exstingFiles = result.data?.data || [];
@@ -94,16 +98,16 @@ const UploadClassWorkDiaogBox = (props) => {
             setUploadFiles([...exstingFiles]);
           }
         }
-        setLoading(false);
+        setLoadingHere(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
-        setLoading(false);
+        setLoadingHere(false);
       });
-  }
+  };
 
   function getPeriodDetails() {
-    // setLoading(true);
+    // setLoadingHere(true);
     if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
       msapigetPeriodDetails();
       return;
@@ -120,11 +124,11 @@ const UploadClassWorkDiaogBox = (props) => {
             setUploadFiles([...exstingFiles]);
           }
         }
-        // setLoading(false);
+        setLoadingHere(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
-        // setLoading(false);
+        setLoadingHere(false);
       });
   }
 
@@ -137,7 +141,7 @@ const UploadClassWorkDiaogBox = (props) => {
   }
 
   const handleDeleteImage = (index) => {
-    setLoading(true);
+    setLoadingHere(true);
     axiosInstance
       .post(`${endpoints.assessmentErp.fileRemove}`, {
         file_name: uploadFiles[index],
@@ -148,23 +152,23 @@ const UploadClassWorkDiaogBox = (props) => {
           list.splice(index, 1);
           setUploadFiles(list);
           setAlert('success', result.data.message);
-          setLoading(false);
+          setLoadingHere(false);
         } else {
           setAlert('error', result.data.message);
-          setLoading(false);
+          setLoadingHere(false);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
-        setLoading(false);
+        setLoadingHere(false);
       });
   };
-  const [webcam, setwebcam] = useState('')
+  const [webcam, setwebcam] = useState('');
   const handleWebcam = () => {
-    setwebOpen(!webOpen)
-
-  }
+    setwebOpen(!webOpen);
+  };
   const handleUploadFile = (value) => {
+    setLoadingHere(true);
     // let value = value
     // let value = e.target.files[0];
     if (uploadFiles?.length === 20) {
@@ -172,7 +176,7 @@ const UploadClassWorkDiaogBox = (props) => {
       return;
     }
     if (validateImageFile(value?.name)) {
-      setLoading(true);
+      setLoadingHere(true);
       const fd = new FormData();
       fd.append('file', value);
       fd.append('online_class_id', onlineClassId);
@@ -188,17 +192,17 @@ const UploadClassWorkDiaogBox = (props) => {
           } else {
             setAlert('error', result.data?.message);
           }
-          setLoading(false);
+          setLoadingHere(false);
         })
         .catch((error) => {
           setAlert('error', error?.message);
-          setLoading(false);
+          setLoadingHere(false);
         });
     } else {
+      setLoadingHere(false);
       setAlert('error', 'Image can be of .jpg / .jpeg / .png format');
     }
     // e.target.value = '';
-
   };
 
   const handleClose = () => {
@@ -233,7 +237,7 @@ const UploadClassWorkDiaogBox = (props) => {
   };
 
   const msApisubmitClassWorkAPI = (obj) => {
-    APIREQUEST("post", '/oncls/v1/submit-classwork/', obj)
+    APIREQUEST('post', '/oncls/v1/submit-classwork/', obj)
       .then(() => {
         handleClose();
         setAlert('success', 'Uploaded classwork');
@@ -241,13 +245,12 @@ const UploadClassWorkDiaogBox = (props) => {
       .catch((error) => {
         setAlert('error', error.message);
       });
-
-  }
+  };
 
   const reclickImage = () => {
-    setwebcam('detectImage')
+    setwebcam('detectImage');
     // setimageclick(false)
-  }
+  };
 
   const submitClassWorkAPI = () => {
     if (uploadFiles?.length <= 0 && !handleValidateFileChange()) {
@@ -265,7 +268,7 @@ const UploadClassWorkDiaogBox = (props) => {
       submitted_files: [...uploadFiles],
     };
     if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
-      msApisubmitClassWorkAPI(obj)
+      msApisubmitClassWorkAPI(obj);
       return;
     }
     axiosInstance
@@ -281,11 +284,11 @@ const UploadClassWorkDiaogBox = (props) => {
 
   const isLessthanToday = () => {
     let currt = moment().startOf('day');
-    let perddate = moment(periodDate, "YYYY-MM-DD");
-    if (periodData?.class_status?.toLowerCase() == "completed" && perddate < currt) {
-      return true
+    let perddate = moment(periodDate, 'YYYY-MM-DD');
+    if (periodData?.class_status?.toLowerCase() == 'completed' && perddate < currt) {
+      return true;
     }
-    return false
+    return false;
   };
 
   const imageRef = useRef(null);
@@ -298,7 +301,7 @@ const UploadClassWorkDiaogBox = (props) => {
         style={{ zIndex: '2001' }}
         onClose={handleClose}
         aria-labelledby='form-dialog-title'
-        disableBackdropClick 
+        disableBackdropClick
       >
         <DialogTitle className={classes.uploadBoxTitle} id='form-dialog-title'>
           {isTeacher ? 'Classwork' : 'Upload Classwork'}
@@ -322,8 +325,6 @@ const UploadClassWorkDiaogBox = (props) => {
                       onError={(e) => {
                         console.log('place.e.tag', e.target.src);
                         e.target.src = placeholder;
-
-
                       }}
                       src={isTeacher ? url : `${endpoints.assessmentErp.s3}/${url}`}
                       className='optionImageAttachment1'
@@ -354,18 +355,29 @@ const UploadClassWorkDiaogBox = (props) => {
               </Grid>
             </SRLWrapper>
           </SimpleReactLightbox>
-          {uploadFiles?.length === 0 && (
-            <div className='noImagesTag'>No image to display!</div>
+          {loadingHere ? (
+            <div className='noImagesTag'>
+              <Spin />
+            </div>
+          ) : (
+            <>
+              {uploadFiles?.length === 0 && (
+                <div className='noImagesTag'>No image to display!</div>
+              )}
+              {/* Other content */}
+            </>
           )}
 
           {/* {webcam == 'detectImage' && <ObjectDetection
             submitImage={submitImage}
           />} */}
-          {webOpen && <WebCamDialog
-            webOpen={webOpen}
-            handleUploadFile={handleUploadFile}
-            handleWebcam={handleWebcam}
-          />}
+          {webOpen && (
+            <WebCamDialog
+              webOpen={webOpen}
+              handleUploadFile={handleUploadFile}
+              handleWebcam={handleWebcam}
+            />
+          )}
           {/* {
             webcam == 'submitImage' &&
             <ImageSubmitted
@@ -374,10 +386,8 @@ const UploadClassWorkDiaogBox = (props) => {
               reclickImage={reclickImage}
             />
           } */}
-
         </DialogContent>
         <DialogActions>
-
           {!isTeacher && (
             <div className='box-size-dialog'>
               <input
@@ -387,11 +397,11 @@ const UploadClassWorkDiaogBox = (props) => {
                 type='file'
                 onChange={(e) => {
                   handleUploadFile(e.target.files[0]);
-                  e.target.value = ''
+                  e.target.value = '';
                 }}
               />
-              <label htmlFor='contained-button-file' style={{ color: 'white' }}>
-                {!isLessthanToday() &&
+              <label htmlFor='contained-button-file' style={{ color: 'white', marginBottom: 0 }}>
+                {!isLessthanToday() && (
                   <Button
                     startIcon={<CloudUploadIcon />}
                     className={classes.submitButton}
@@ -402,23 +412,24 @@ const UploadClassWorkDiaogBox = (props) => {
                   >
                     Upload
                   </Button>
-                }
+                )}
               </label>
             </div>
           )}
           {!isTeacher && (
-            <div className='cam' style={{ marginRight: "31%" }}>
-
+            <div className='cam' style={{ marginRight: '27%' }}>
               <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                {!isLessthanToday() &&
-                  <Button
-                    startIcon={<PhotoCamera />}
-                    color='primary'
-                    variant="contained"
-                    onClick={handleWebcam}
-                  >
-                    Capture
-                  </Button>
+                {
+                  !isLessthanToday() && (
+                    <Button
+                      startIcon={<PhotoCamera />}
+                      color='primary'
+                      variant='contained'
+                      onClick={handleWebcam}
+                    >
+                      Capture
+                    </Button>
+                  )
                   // <IconButton
                   //   color='primary'
                   //   onClick={handleWebcam}
@@ -429,7 +440,11 @@ const UploadClassWorkDiaogBox = (props) => {
               </Box>
             </div>
           )}
-          <Button className='cancelButton labelColor' onClick={handleClose}>
+          <Button
+            className='cancelButton labelColor'
+            style={{ width: '90px' }}
+            onClick={handleClose}
+          >
             {isTeacher ? 'Close' : 'Cancel'}
           </Button>
           {!isLessthanToday() && !isTeacher && (
@@ -437,14 +452,13 @@ const UploadClassWorkDiaogBox = (props) => {
               onClick={submitClassWorkAPI}
               color='primary'
               variant='contained'
-              style={{ color: 'white' }}
+              style={{ width: '90px', color: 'white' }}
             >
               Submit
             </Button>
           )}
         </DialogActions>
       </Dialog>
-
     </div>
   );
 };
