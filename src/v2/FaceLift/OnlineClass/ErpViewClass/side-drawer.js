@@ -313,7 +313,7 @@ const JoinClass = (props) => {
           </div>
           {fullData.online_class.question_paper_id == 0 ? (
             <div className='pl-3'>
-              {window.location.pathname === '/erp-online-class-teacher-view' && (
+              {/* {window.location.pathname === '/erp-online-class-teacher-view' && (
                 <Tooltip title='Attach Question Paper'>
                   <FileAddTwoTone
                     style={{ fontSize: '24px' }}
@@ -328,13 +328,13 @@ const JoinClass = (props) => {
                     }
                   />
                 </Tooltip>
-              )}
+              )} */}
             </div>
           ) : (
             <div>
               {window.location.pathname === '/erp-online-class-teacher-view' && (
                 <div className='pl-3'>
-                  <Button
+                  {/* <Button
                     type='primary'
                     className='btn-block th-br-4 th-14'
                     onClick={() =>
@@ -350,7 +350,7 @@ const JoinClass = (props) => {
                     disabled={props?.data?.is_cancelled ? true : isClassStartted()}
                   >
                     Launch Quiz
-                  </Button>
+                  </Button> */}
                 </div>
               )}
             </div>
@@ -359,8 +359,8 @@ const JoinClass = (props) => {
         <div className='row'>
           {window.location.pathname === '/erp-online-class-student-view' ? (
             <>
-              <div className='pr-3'>
-                <Button
+              <div>
+                {/* <Button
                   type='primary'
                   className='btn-block th-br-4 th-14'
                   onClick={() => handleTakeQuiz(fullData)}
@@ -372,7 +372,7 @@ const JoinClass = (props) => {
                   }
                 >
                   Take Quiz
-                </Button>
+                </Button> */}
               </div>
 
               <div>
