@@ -26,6 +26,7 @@ import moment from 'moment';
 import APIREQUEST from 'config/apiRequest';
 import SideDrawer from './side-drawer';
 import Countdown, { zeroPad } from 'react-countdown';
+// import Loader from '../../../../components/loader/loader';
 
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
@@ -217,6 +218,19 @@ const ErpAdminViewClassv2 = () => {
   //     }
   //   }
   // }, [moduleId, window.location.pathname]);
+  useEffect(() => {
+    if(window.location.pathname === '/erp-online-class') {
+      setLoading(true);
+      handleClearFilter();
+    } else if(window.location.pathname === '/erp-online-class-teacher-view') {
+      setLoading(true);
+      handleClearFilter();
+      setSelectedClassType({ key: '0', value: 'Compulsory Class' });
+      formRef.current.setFieldsValue({
+        classtype: 'Compulsory Class',
+      });
+    }
+  }, [window.location.pathname]) 
   useEffect(() => {
     if (page) {
       const getvalues = getminMaxDate();
@@ -594,11 +608,11 @@ const ErpAdminViewClassv2 = () => {
     const getvalues = getminMaxDate();
     setDateRangeTechPer(getvalues.datearr);
     formRef.current.resetFields();
+    setLoading(false);
   };
   function handleFilter() {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     setPage(() => 1);
-    // setTabValue(0);
     setSelectedViewMore(() => '');
     localStorage.removeItem('viewMoreData');
     localStorage.removeItem('filterData');
@@ -699,25 +713,6 @@ const ErpAdminViewClassv2 = () => {
       setMaxStartDate(getvalues.maxDate);
       setDateRangeTechPer(getvalues.datearr);
       var [startDateTechPer, endDateTechPer] = getminMaxDate().datearr;
-      // debugger
-      // if (dateRangeTechPer[0] && dateRangeTechPer[1]) {
-      //   startDateTechPer = dateRangeTechPer[0];
-      //   endDateTechPer = dateRangeTechPer[1];
-      // }
-      // const currentDate = new Date(); // This gets the current date and time
-      // const formattedDate = currentDate.toISOString().split('T')[0]; // Format it as "YYYY-MM-DD"
-      // if (dateRangeTechPer[0] && dateRangeTechPer[1]) {
-      //   if (tabValue === '0') {
-      //     startDateTechPer = moment(formattedDate);
-      //     endDateTechPer = moment(formattedDate);
-      //   } else if (tabValue === '1') {
-      //     startDateTechPer = moment(formattedDate);
-      //     endDateTechPer = moment(maxStartDate);
-      //   } else {
-      //     startDateTechPer = dateRangeTechPer[0];
-      //     endDateTechPer = dateRangeTechPer[1];
-      //   }
-      // }
       if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
         setLoading(true);
         const isMsOriginURL = !['0', '1'].includes(tabValue);
@@ -950,14 +945,6 @@ const ErpAdminViewClassv2 = () => {
     link.click();
     link.remove();
   };
-  // useEffect(() => {
-  //   if (
-  //     window.location.pathname === '/erp-online-class-teacher-view' ||
-  //     window.location.pathname === '/erp-online-class'
-  //   ) {
-  //     handleHostDisable(row);
-  //   }
-  // }, [new Date().getSeconds()]);
   function handleHost(data) {
     if (!handleHostDisable(data)) {
       // setLoading(true);
@@ -986,15 +973,11 @@ const ErpAdminViewClassv2 = () => {
     }
   }
   const handleHostDisable = (row) => {
-    // console.log(row, 'row');
     let disableFlag = false;
     const startTime = new Date(`${row?.online_class?.start_time}`).getTime(); // in milliseconds
     const endTime = new Date(`${row?.online_class?.end_time}`).getTime(); // in milliseconds
     const isActiveEnd = endTime;
     const isActiveStart = startTime - 5 * 60 * 1000;
-    // console.log(starTime, 'startTime');
-    // console.log(enTime, 'endTime');
-    // console.log(isActiveStart, 'isActiveStart');
     if (isActiveStart <= getCurrentTime() && getCurrentTime() <= isActiveEnd) {
       setDisableHost(false);
       disableFlag = false;
@@ -1046,9 +1029,6 @@ const ErpAdminViewClassv2 = () => {
           mindate = moment().add(1, 'day').format('YYYY-MM-DD');
           maxDate = moment(launchdate, 'YYYY-MM-DD').add(1, 'year').format('YYYY-MM-DD');
           datearr = [moment().add(1, 'day'), moment().add(7, 'days')]; // replace 7 by num of days
-          // mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
-          // maxDate = moment();
-          // datearr = [moment().subtract(4, 'days'), moment()];
         } else if (tabValue === '2') {
           mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
           maxDate = moment();
@@ -1057,13 +1037,6 @@ const ErpAdminViewClassv2 = () => {
           mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
           maxDate = moment(launchdate, 'YYYY-MM-DD').add(1, 'year').format('YYYY-MM-DD');
           datearr = [moment().subtract(7, 'days'), moment()]; // replace 7 by num of days
-          // var a = moment(launchdate, 'YYYY-MM-DD').add(1, 'day');
-          // var b = moment();
-          // if (b.diff(a, 'days') > 6) {
-          //   datearr = [moment().subtract(6, 'days'), moment()];
-          // } else {
-          //   datearr = [moment(mindate, 'YYYY-MM-DD'), moment().add(1, 'day')];
-          // }
         }
       }
     } else {
@@ -1146,65 +1119,10 @@ const ErpAdminViewClassv2 = () => {
             >
               View More
             </Button>
-            {/* {tabValue === '0' &&
-              window.location.pathname === '/erp-online-class-student-view' && (
-                <div className='pl-3'>
-                  <Button
-                    type='primary'
-                    className='btn-block th-br-4 th-14'
-                    style={{ width: '60px' }}
-                    onClick={() => handleJoin(row)}
-                  >
-                    Join
-                  </Button>
-                </div>
-              )}
-            {tabValue === '0' &&
-              window.location.pathname === '/erp-online-class-teacher-view' && (
-                <div className='pl-3'>
-                  <Button
-                    type='primary'
-                    className='btn-block th-br-4 th-14'
-                    style={{ width: '60px' }}
-                    onClick={() => handleHost(row)}
-                  >
-                    Host
-                  </Button>
-                </div>
-              )}
-            {tabValue === '0' &&
-              window.location.pathname === '/erp-online-class' && (
-                <div className='pl-3'>
-                  <Button
-                    type='primary'
-                    className='btn-block th-br-4 th-14'
-                    style={{ width: '60px' }}
-                    disabled={handleHostDisable(row) || row?.is_cancelled}
-                    onClick={() => {
-                      if (email !== row?.online_class?.teacher?.email) {
-                        // window.open(fullData && fullData?.join_url, '_blank');
-                        openZoomClass(row?.join_url);
-                      }
-                      if (email === row?.online_class?.teacher?.email) {
-                        // window.open(fullData && fullData?.presenter_url, '_blank');
-                        openZoomClass(row?.presenter_url);
-                      }
-                    }}
-                  >
-                    {email === row?.online_class?.teacher?.email ? 'Host' : 'Audit'}
-                  </Button>
-                </div>
-              )} */}
+  
             {tabValue === '0' && <JoinHostAuditButton row={row} />}
           </div>
-          {/* {tabValue === '0' && (
-            <div className='row' style={{ alignItems: 'center', marginLeft: 'auto' }}>
-              <Countdown
-                date={new Date(row?.online_class?.start_time)}
-                renderer={renderer}
-              />
-            </div>
-          )} */}
+         
         </Space>
       ),
     },
@@ -1296,73 +1214,14 @@ const ErpAdminViewClassv2 = () => {
             >
               View More
             </Button>
-            {/* {tabValue === '0' &&
-              window.location.pathname === '/erp-online-class-student-view' && (
-                <div className='pl-3'>
-                  <Button
-                    type='primary'
-                    className='btn-block th-br-4 th-14'
-                    style={{ width: '60px' }}
-                    onClick={() => handleJoin(row)}
-                  >
-                    Join
-                  </Button>
-                </div>
-              )}
-            {tabValue === '0' &&
-              window.location.pathname === '/erp-online-class-teacher-view' && (
-                <div className='pl-3'>
-                  <Button
-                    type='primary'
-                    className='btn-block th-br-4 th-14'
-                    style={{ width: '60px' }}
-                    onClick={() => handleHost(row)}
-                  >
-                    Host
-                  </Button>
-                </div>
-              )}
-            {tabValue === '0' &&
-              window.location.pathname === '/erp-online-class' && (
-                <div className='pl-3'>
-                  <Button
-                    type='primary'
-                    className='btn-block th-br-4 th-14'
-                    style={{ width: '60px' }}
-                    disabled={handleHostDisable(row) || row?.is_cancelled}
-                    onClick={() => {
-                      if (email !== row?.online_class?.teacher?.email) {
-                        // window.open(fullData && fullData?.join_url, '_blank');
-                        openZoomClass(row?.join_url);
-                      }
-                      if (email === row?.online_class?.teacher?.email) {
-                        // window.open(fullData && fullData?.presenter_url, '_blank');
-                        openZoomClass(row?.presenter_url);
-                      }
-                    }}
-                  >
-                    {email === row?.online_class?.teacher?.email ? 'Host' : 'Audit'}
-                  </Button>
-                </div>
-              )} */}
             {tabValue === '0' && <JoinHostAuditButton row={row} />}
           </div>
-          {/* {tabValue === '0' && (
-            <div className='row' style={{ alignItems: 'center', marginLeft: 'auto' }}>
-              <Countdown
-                date={new Date(row?.online_class?.start_time)}
-                renderer={renderer}
-              />
-            </div>
-          )} */}
         </Space>
       ),
     },
   ];
 
   const JoinHostAuditButton = ({ row }) => {
-    // console.log(row, 'data in joinhostauditbutoton');
-
     return (
       <>
         {window.location.pathname === '/erp-online-class-student-view' && (
@@ -1370,7 +1229,7 @@ const ErpAdminViewClassv2 = () => {
             <Button
               type='primary'
               className='btn-block th-br-4 th-14'
-              style={{ width: '60px' }}
+              style={{ width: '70px' }}
               onClick={() => handleClickAccept(row)}
             >
               Join
@@ -1382,7 +1241,7 @@ const ErpAdminViewClassv2 = () => {
             <Button
               type='primary'
               className='btn-block th-br-4 th-14'
-              style={{ width: '60px' }}
+              style={{ width: '70px' }}
               disabled={handleHostDisable(row) || row?.is_cancelled}
               onClick={() => handleHost(row)}
             >
@@ -1395,7 +1254,7 @@ const ErpAdminViewClassv2 = () => {
             <Button
               type='primary'
               className='btn-block th-br-4 th-14'
-              style={{ width: '60px' }}
+              style={{ width: '70px' }}
               disabled={handleHostDisable(row) || row?.is_cancelled}
               onClick={() => {
                 if (email !== row?.online_class?.teacher?.email) {
@@ -1418,7 +1277,6 @@ const ErpAdminViewClassv2 = () => {
   const renderer = ({ hours, minutes, seconds, completed }) => {
     if (completed) {
       return <div className='th-red th-16'> Ongoing </div>;
-      // return '';
     } else {
       return (
         <>
@@ -1891,7 +1749,7 @@ const ErpAdminViewClassv2 = () => {
                           <RangePicker
                             format='MM/DD/YYYY'
                             disabled={tabValue === '0'}
-                            allowClear={false}
+                            allowClear={true}
                             disabledDate={(current) => {
                               if (minStartDate && maxStartDate) {
                                 return (
@@ -1905,7 +1763,7 @@ const ErpAdminViewClassv2 = () => {
                               if (maxStartDate) {
                                 return current > moment(maxStartDate);
                               }
-                              return false; // No date restrictions
+                              return false;
                             }}
                             value={dateRangeTechPer}
                             onChange={(newValue) => {
@@ -2003,7 +1861,7 @@ const ErpAdminViewClassv2 = () => {
           )}
           {selectedViewMore && (
             <Drawer
-              title='Period Dates'
+              title='Online Class Details'
               placement='right'
               onClose={handleClose}
               visible={selectedViewMore}
