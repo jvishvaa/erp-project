@@ -64,6 +64,7 @@ export default {
     getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
     getStudentCountReportDataV2: '/erp_user/grade-section-wise-student-count-v2/',
     getConfigAnnouncement: '/assessment/check-sys-config/',
+    erpBucket: 'https://d3ka3pry54wyko.cloudfront.net',
   },
   adminDashboard: {
     announcements: '/announcement/v2/inbox/',

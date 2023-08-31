@@ -12,7 +12,9 @@ import redSmiley from 'v2/Assets/dashboardIcons/studentDashboardIcons/red.png';
 import yellowSmiley from 'v2/Assets/dashboardIcons/studentDashboardIcons/yellow.png';
 import lightGreenSmiley from 'v2/Assets/dashboardIcons/studentDashboardIcons/lightGreen.png';
 import greenSmiley from 'v2/Assets/dashboardIcons/studentDashboardIcons/green.png';
-
+import { SmileOutlined, InfoCircleOutlined, EyeFilled } from '@ant-design/icons';
+import { getFileIcon } from 'v2/getFileIcon';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 const Assessment = () => {
   const history = useHistory();
   const selectedAcademicYear = useSelector(
@@ -23,6 +25,8 @@ const Assessment = () => {
   const [loadingPerformance, setLoadingPerformance] = useState(false);
   const [loadingAssessments, setLoadingAssessments] = useState(false);
   const [upcomingAssessmentData, setUpcomingAssessmentData] = useState([]);
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
+
   const getAssessmentRemarks = (average) => {
     return average <= 50
       ? redSmiley
@@ -279,7 +283,7 @@ const Assessment = () => {
                           </div>
                         </div>
                         <div
-                          className='row py-1 align-items-center'
+                          className='row py-1 align-items-center justify-content-between'
                           style={{ borderTop: '1px solid #d9d9d9' }}
                         >
                           <div className='col-3 text-left'>
@@ -287,7 +291,71 @@ const Assessment = () => {
                               {item?.total_mark} Marks
                             </Tag>
                           </div>
-                          <div className='col-9 text-right th-fw-500'>
+                          {item?.document_portion ? (
+                            <div
+                              className='row mt-2 py-2 align-items-center col-md-4 px-0'
+                              style={{ border: '1px solid #d9d9d9' }}
+                            >
+                              <div className='col-12 px-0 th-pointer'>
+                                <div className='row align-items-center'>
+                                  <div className='col-md-2 px-0'>
+                                    <img
+                                      style={{ width: '15px' }}
+                                      className='mx-2'
+                                      src={getFileIcon('pdf')}
+                                    />
+                                  </div>
+                                  <Tooltip title={item?.document_portion}>
+                                    <div className='col-md-8 px-2 text-truncate'>
+                                      <a
+                                        onClick={() => {
+                                          openPreview({
+                                            currentAttachmentIndex: 0,
+                                            attachmentsArray: [
+                                              {
+                                                src: `${endpoints.academics.erpBucket}/${item?.document_portion}`,
+
+                                                name: item?.document_portion,
+                                                extension: '.pdf',
+                                              },
+                                            ],
+                                          });
+                                        }}
+                                        rel='noopener noreferrer'
+                                        target='_blank'
+                                      >
+                                        {item?.document_portion}
+                                      </a>
+                                    </div>
+                                  </Tooltip>
+                                  <div className='col-md-2 px-0'>
+                                    <a
+                                      onClick={() => {
+                                        openPreview({
+                                          currentAttachmentIndex: 0,
+                                          attachmentsArray: [
+                                            {
+                                              src: `${endpoints.academics.erpBucket}/${item?.document_portion}`,
+
+                                              name: item?.document_portion,
+                                              extension: '.pdf',
+                                            },
+                                          ],
+                                        });
+                                      }}
+                                      rel='noopener noreferrer'
+                                      target='_blank'
+                                    >
+                                      <EyeFilled />
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            ''
+                          )}
+                          <div className='col-4 text-right th-fw-500'>
                             <span className=' mr-2'>
                               {moment(item?.date).format('DD-MM-YYYY')}
                             </span>
