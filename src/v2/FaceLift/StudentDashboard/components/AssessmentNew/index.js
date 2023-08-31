@@ -278,8 +278,11 @@ const Assessment = () => {
                         }}
                       >
                         <div className='row py-1'>
-                          <div className='col-12 text-left th-primary th-fw-500'>
+                          <div className='col-9 text-left th-primary th-fw-500'>
                             {item?.subject}
+                          </div>
+                          <div className='col-3 px-1 text-right th-black-1 th-fw-500'>
+                            {moment(item?.date).format('DD-MM-YYYY')}
                           </div>
                         </div>
                         <div
@@ -291,22 +294,52 @@ const Assessment = () => {
                               {item?.total_mark} Marks
                             </Tag>
                           </div>
+                          <div className='col-4 text-left'>
+                            <Tag color='#108ee9' className='th-br-6'>
+                              {item?.test_type_name}
+                            </Tag>
+                          </div>
                           {item?.document_portion ? (
-                            <div
-                              className='row mt-2 py-2 align-items-center col-md-4 px-0'
-                              style={{ border: '1px solid #d9d9d9' }}
-                            >
-                              <div className='col-12 px-0 th-pointer'>
-                                <div className='row align-items-center'>
-                                  <div className='col-md-2 px-0'>
-                                    <img
-                                      style={{ width: '15px' }}
-                                      className='mx-2'
-                                      src={getFileIcon('pdf')}
-                                    />
-                                  </div>
-                                  <Tooltip title={item?.document_portion}>
-                                    <div className='col-md-8 px-2 text-truncate'>
+                            <div className='col-md-5 px-1'>
+                              <div
+                                className='row py-1 align-items-center px-0 th-br-6'
+                                style={{ border: '1px solid #d9d9d9' }}
+                              >
+                                <div className='col-12 px-0 th-pointer'>
+                                  <div className='row align-items-center'>
+                                    <div className='col-md-2 px-0'>
+                                      <img
+                                        style={{ width: '15px' }}
+                                        className='mx-2'
+                                        src={getFileIcon('pdf')}
+                                      />
+                                    </div>
+                                    <Tooltip title={item?.document_portion}>
+                                      <div className='col-md-8 px-2 text-truncate'>
+                                        <a
+                                          onClick={() => {
+                                            openPreview({
+                                              currentAttachmentIndex: 0,
+                                              attachmentsArray: [
+                                                {
+                                                  src: `${endpoints.academics.erpBucket}/${item?.document_portion}`,
+
+                                                  name: item?.document_portion,
+                                                  extension: '.pdf',
+                                                },
+                                              ],
+                                            });
+                                          }}
+                                          rel='noopener noreferrer'
+                                          target='_blank'
+                                        >
+                                          <span className='th-12'>
+                                            {item?.document_portion}
+                                          </span>
+                                        </a>
+                                      </div>
+                                    </Tooltip>
+                                    <div className='col-md-2 px-0'>
                                       <a
                                         onClick={() => {
                                           openPreview({
@@ -324,30 +357,9 @@ const Assessment = () => {
                                         rel='noopener noreferrer'
                                         target='_blank'
                                       >
-                                        {item?.document_portion}
+                                        <EyeFilled />
                                       </a>
                                     </div>
-                                  </Tooltip>
-                                  <div className='col-md-2 px-0'>
-                                    <a
-                                      onClick={() => {
-                                        openPreview({
-                                          currentAttachmentIndex: 0,
-                                          attachmentsArray: [
-                                            {
-                                              src: `${endpoints.academics.erpBucket}/${item?.document_portion}`,
-
-                                              name: item?.document_portion,
-                                              extension: '.pdf',
-                                            },
-                                          ],
-                                        });
-                                      }}
-                                      rel='noopener noreferrer'
-                                      target='_blank'
-                                    >
-                                      <EyeFilled />
-                                    </a>
                                   </div>
                                 </div>
                               </div>
@@ -355,12 +367,12 @@ const Assessment = () => {
                           ) : (
                             ''
                           )}
-                          <div className='col-4 text-right th-fw-500'>
+                          {/* <div className='col-3 text-right th-fw-500'>
                             <span className=' mr-2'>
                               {moment(item?.date).format('DD-MM-YYYY')}
                             </span>
-                            <span>{moment(item?.time, 'hh:mm A').format('hh:mm A')}</span>
-                          </div>
+                            {/* <span>{moment(item?.time, 'hh:mm A').format('hh:mm A')}</span> 
+                          </div> */}
                         </div>
                       </div>
                     ))}
