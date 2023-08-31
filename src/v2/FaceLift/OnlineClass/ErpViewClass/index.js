@@ -219,10 +219,10 @@ const ErpAdminViewClassv2 = () => {
   //   }
   // }, [moduleId, window.location.pathname]);
   useEffect(() => {
-    if(window.location.pathname === '/erp-online-class') {
+    if (window.location.pathname === '/erp-online-class') {
       setLoading(true);
       handleClearFilter();
-    } else if(window.location.pathname === '/erp-online-class-teacher-view') {
+    } else if (window.location.pathname === '/erp-online-class-teacher-view') {
       setLoading(true);
       handleClearFilter();
       setSelectedClassType({ key: '0', value: 'Compulsory Class' });
@@ -230,7 +230,7 @@ const ErpAdminViewClassv2 = () => {
         classtype: 'Compulsory Class',
       });
     }
-  }, [window.location.pathname]) 
+  }, [window.location.pathname]);
   useEffect(() => {
     if (page) {
       const getvalues = getminMaxDate();
@@ -252,7 +252,7 @@ const ErpAdminViewClassv2 = () => {
             'YYYY-MM-DD'
           )}&page_number=${page}&page_size=${limit}&class_status=${
             parseInt(tabValue, 10) + 1
-          }&module_id=${moduleId}&subject_id=${selectedSubject.map((el) => el?.key)}`;
+          }&module_id=${moduleId}&subject_id=${selectedSubject.map((el) => el?.value)}`;
           if (!sectionToggle)
             url += `&section_mapping_ids=${selectedSection.map(
               (el) => el?.props?.value
@@ -416,21 +416,24 @@ const ErpAdminViewClassv2 = () => {
     });
     if (value?.length) {
       let selectedSectionIds;
+      let sectionMappingIds;
       if (value.some((item) => item.key === 'all')) {
         const allsections = sectionList?.map((item) => item.section_id).join(',');
         selectedSectionIds = allsections;
         setSelectedSection(sectionOptions);
+        sectionMappingIds = sectionList?.map((item) => item.id).join(',');
         formRef.current.setFieldsValue({
           section: sectionList?.map((item) => item.id),
         });
       } else {
         const singleSection = value.map((item) => item.key).join(',');
         selectedSectionIds = singleSection;
+        sectionMappingIds = value.map((item) => item.value).join(',');
         setSelectedSection(value);
       }
       const gradeIds = selectedGrade;
       callApi(
-        `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${gradeIds}&section=${selectedSectionIds}&module_id=${moduleId}`,
+        `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${gradeIds}&section=${selectedSectionIds}&module_id=${moduleId}&section_mapping_id=${sectionMappingIds}`,
         'subjectList'
       );
     }
@@ -508,13 +511,14 @@ const ErpAdminViewClassv2 = () => {
             setSectionList(sectionData);
           }
           if (key === 'subjectList') {
-            const transformedData =
-              result?.data?.data.map((sub, index) => {
-                return {
-                  id: index,
-                  ...sub,
-                };
-              }) || [];
+            // const transformedData =
+            //   result?.data?.data.map((sub, index) => {
+            //     return {
+            //       id: index,
+            //       ...sub,
+            //     };
+            //   }) || [];
+            const transformedData = result?.data?.data || [];
             setSubjectList(transformedData);
           }
           if (key === 'filter') {
@@ -696,7 +700,7 @@ const ErpAdminViewClassv2 = () => {
       )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}&class_status=${
         parseInt(tabValue, 10) + 1
       }&module_id=${moduleId}&page_number=${1}&page_size=${limit}&subject_id=${selectedSubject.map(
-        (el) => el?.key
+        (el) => el?.value
       )}`;
       if (!sectionToggle)
         url += `&section_mapping_ids=${selectedSection.map((el) => el?.props?.value)}`;
@@ -838,7 +842,7 @@ const ErpAdminViewClassv2 = () => {
       ) {
         let url = `${endpoints.aol.classes}?is_aol=0&session_year=${
           selectedAcademicYear?.id
-        }&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
+        }&subject_id=${selectedSubject.map((el) => el?.value)}&class_type=${
           selectedClassType?.id
         }&start_date=${startDateTechPer?.format(
           'YYYY-MM-DD'
@@ -1066,14 +1070,14 @@ const ErpAdminViewClassv2 = () => {
       dataIndex: 'title',
       render: (data, row) => (
         <span className='th-black-1 th-16'>
-          {row?.online_class?.title.length > 25 ? (
+          {row?.online_class?.title.length > 26 ? (
             <Tooltip
               autoAdjustOverflow='false'
               placement='bottomLeft'
               title={row?.online_class?.title}
               overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
             >
-              {`${row.online_class?.title.substring(0, 25)}...`}
+              {`${row.online_class?.title.substring(0, 26)}...`}
             </Tooltip>
           ) : (
             row?.online_class?.title
@@ -1119,10 +1123,9 @@ const ErpAdminViewClassv2 = () => {
             >
               View More
             </Button>
-  
+
             {tabValue === '0' && <JoinHostAuditButton row={row} />}
           </div>
-         
         </Space>
       ),
     },
@@ -1146,14 +1149,14 @@ const ErpAdminViewClassv2 = () => {
       dataIndex: 'title',
       render: (data, row) => (
         <span className='th-black-1 th-16'>
-          {row?.online_class?.title.length > 25 ? (
+          {row?.online_class?.title.length > 26 ? (
             <Tooltip
               autoAdjustOverflow='false'
               placement='bottomLeft'
               title={row?.online_class?.title}
               overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
             >
-              {`${row.online_class?.title.substring(0, 25)}...`}
+              {`${row.online_class?.title.substring(0, 26)}...`}
             </Tooltip>
           ) : (
             row?.online_class?.title
@@ -1477,7 +1480,7 @@ const ErpAdminViewClassv2 = () => {
   });
   const subjectOptions = subjectList.map((each) => {
     return (
-      <Option key={each?.subject__id} value={each?.subject__subject_name}>
+      <Option key={each?.id} value={each?.subject__id}>
         {each?.subject__subject_name}
       </Option>
     );
