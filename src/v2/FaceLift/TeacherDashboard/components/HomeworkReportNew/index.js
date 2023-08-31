@@ -163,6 +163,7 @@ const HomeworkReport = () => {
                                     <div
                                       className='text-truncate th-width-100'
                                       title={item?.title}
+                                      
                                     >
                                       {item?.title}
                                     </div>
@@ -184,12 +185,8 @@ const HomeworkReport = () => {
                   ))}
                 </div>
               ) : ( 
-                <div className='d-flex justify-content-center pt-5'>
-                  <Empty 
-                     description={
-                      <div>No Homework assigned yet.!</div>
-                     }
-                  />
+                <div className='d-flex justify-content-center h-100'> 
+                  <img  src={NoDataIcon} style={{width: '232px'}} alt='no-data' />
                 </div>
               )}
             </div>

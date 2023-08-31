@@ -150,7 +150,7 @@ const handleDateChange = (value) => {
               />
             </div>
           </div>
-          {isLoad? null : <span className='th-15' style={{marginLeft:"25px"}}>Date Range : {moment(startDate).format('DD/MM/YYYY')} - {moment(date).format('DD/MM/YYYY')}</span>}
+          {isLoad? null : <span className='th-15' style={{marginLeft:"25px"}}>Date Range : {moment.utc(startDate).format('DD/MM/YYYY')} - {moment(date).format('DD/MM/YYYY')}</span>}
         </div>
 
         <div className='row mt-2'>
