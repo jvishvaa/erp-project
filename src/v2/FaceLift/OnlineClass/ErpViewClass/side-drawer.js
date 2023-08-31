@@ -722,14 +722,14 @@ const SideDrawer = ({
             <div>
               {' '}
               {/* {fullData?.online_class?.title} */}
-              {fullData?.online_class?.title.length > 25 ? (
+              {fullData?.online_class?.title.length > 26 ? (
                 <Tooltip
                   autoAdjustOverflow='false'
                   placement='bottomLeft'
                   title={fullData?.online_class?.title}
                   overlayStyle={{ zIndex: '2001', maxWidth: '30%', minWidth: '20%' }}
                 >
-                  {`${fullData.online_class?.title.substring(0, 25)}...`}
+                  {`${fullData.online_class?.title.substring(0, 26)}...`}
                 </Tooltip>
               ) : (
                 fullData?.online_class?.title
