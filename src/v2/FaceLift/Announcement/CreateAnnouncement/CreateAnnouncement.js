@@ -80,12 +80,22 @@ const CreateAnnouncement = () => {
 
   const handleChange = (value) => {
     setSelectedCategory(value);
+
     if (value == 11) {
       setFeeReminderSelected(true);
       handleUserLevel([13]);
       formRef.current.setFieldsValue({
         user_level: [13],
       });
+      if (sectionIds.length > 0) {
+        fetchMembersCount({
+          role_id: 13,
+          branch_id: branchId,
+          is_allowed_for_all: true,
+          section_id: sectionIds.join(','),
+          grade_id: gradeIds.join(','),
+        });
+      }
     } else {
       setFeeReminderSelected(false);
       handleUserLevel([]);
@@ -151,6 +161,9 @@ const CreateAnnouncement = () => {
         params: {
           ...params,
           ...(feeReminderSelected ? { is_fee_reminder: true } : {}),
+          ...(feeReminderSelected
+            ? { session_year: selectedAcademicYear?.session_year }
+            : { session_year: selectedAcademicYear?.id }),
         },
       })
       .then((res) => {
@@ -443,7 +456,6 @@ const CreateAnnouncement = () => {
         if (sectionIds.length > 0) {
           fetchMembersCount({
             role_id: selectedUserLevels,
-            session_year: selectedAcademicYear?.id,
             branch_id: branchId,
             is_allowed_for_all: true,
             section_id: sectionIds.join(','),
@@ -455,7 +467,6 @@ const CreateAnnouncement = () => {
       } else {
         fetchMembersCount({
           role_id: selectedUserLevels,
-          session_year: selectedAcademicYear?.id,
           branch_id: branchId,
           is_allowed_for_all: true,
         });
