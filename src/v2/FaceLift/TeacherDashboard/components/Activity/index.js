@@ -191,10 +191,10 @@ const Activity = () => {
                   ))}
                 </div>
               ) : (
-                <div className='d-flex justify-content-center pt-5'>
-                  <img src={NoDataIcon} alt='no-data' />
+                <div className='d-flex justify-content-center h-100'>
+                  <img src={NoDataIcon} style={{width: '232px'}} alt='no-data' />
                 </div>
-              )}
+              )} 
             </div>
             <div className='row justify-content-end my-2 pr-3'>
               <div
