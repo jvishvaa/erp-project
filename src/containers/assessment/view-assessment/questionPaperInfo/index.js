@@ -35,6 +35,17 @@ import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../../config/axios';
 import Loader from './../../../../components/loader/loader';
 import moment from 'moment';
+import { getFileIcon } from 'v2/getFileIcon';
+import { saveAs } from 'file-saver';
+
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import {
+  DownOutlined,
+  FileAddOutlined,
+  EyeFilled,
+  DownloadOutlined,
+} from '@ant-design/icons';
+
 const QuestionPaperInfo = ({
   assessmentId,
   assessmentDate,
@@ -54,6 +65,7 @@ const QuestionPaperInfo = ({
   const [reloadFlag, setReloadFlag] = useState(false);
   const [showagain, setShowagain] = useState([]);
   const [allImage, setAllImage] = useState([]);
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
 
   const {
     assessmentId: assessmentIdFromContext = null,
@@ -66,6 +78,7 @@ const QuestionPaperInfo = ({
         descriptions: testDescription,
         test_name: testTitle,
         test_date: testDate,
+        document_portion: portionDocumentData,
         // id: assessmentId,
         question_paper: {
           // id: assessmentId = undefined,
@@ -218,6 +231,12 @@ const QuestionPaperInfo = ({
       }
     }
     // }
+  };
+
+  const downloadMaterial = async (url, filename) => {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    saveAs(blob, filename);
   };
 
   const getAssesmentDocument = () => {
@@ -1002,14 +1021,95 @@ const QuestionPaperInfo = ({
   );
   console.log('rohan11', showSubmit, status);
   return (
-    <Paper elevation={1} className={classes.paper}>
-      <div className={classes.testInfo}>
-        {fileUploadInProgress && <Loader />}
-        {headersUI}
-        {isTestAttempted ? assessmentAnalysis : takeTestUI}
-        {/* {takeTestUI} */}
-      </div>
-    </Paper>
+    <>
+      <Paper elevation={1} className={classes.paper}>
+        <div className={classes.testInfo}>
+          {fileUploadInProgress && <Loader />}
+          {headersUI}
+          {isTestAttempted ? assessmentAnalysis : takeTestUI}
+          {/* {takeTestUI} */}
+        </div>
+      </Paper>
+      {portionDocumentData?.id ? (
+        <div
+          className='col-md-12 p-2 my-2 mt-2'
+          style={{ borderColor: 'black', border: '1px solid' }}
+        >
+          <div className='th-16 th-fw-600'>Portion Document</div>
+          <div
+            className='row mt-2 py-2 align-items-center'
+            style={{ border: '1px solid #d9d9d9' }}
+          >
+            <div className='col-2'>
+              <img src={getFileIcon('pdf')} />
+            </div>
+            <div className='col-10 px-0 th-pointer'>
+              <div className='row align-items-center'>
+                <div className='col-9 px-0'>
+                  <a
+                    onClick={() => {
+                      openPreview({
+                        currentAttachmentIndex: 0,
+                        attachmentsArray: [
+                          {
+                            src: `${endpoints.assessment.erpBucket}/${portionDocumentData?.document_portion}`,
+
+                            name: portionDocumentData?.document_portion,
+                            extension: '.pdf',
+                          },
+                        ],
+                      });
+                    }}
+                    rel='noopener noreferrer'
+                    target='_blank'
+                  >
+                    {portionDocumentData?.document_portion}
+                  </a>
+                </div>
+
+                <div className='col-1'>
+                  <a
+                    onClick={() => {
+                      openPreview({
+                        currentAttachmentIndex: 0,
+                        attachmentsArray: [
+                          {
+                            src: `${endpoints.assessment.erpBucket}/${portionDocumentData?.document_portion}`,
+
+                            name: portionDocumentData?.document_portion,
+                            extension: '.pdf',
+                          },
+                        ],
+                      });
+                    }}
+                    rel='noopener noreferrer'
+                    target='_blank'
+                  >
+                    <EyeFilled />
+                  </a>
+                </div>
+                <div className='col-1'>
+                  <a
+                    rel='noopener noreferrer'
+                    target='_self'
+                    onClick={() =>
+                      downloadMaterial(
+                        `${endpoints.assessment.erpBucket}/${portionDocumentData?.document_portion}`,
+                        portionDocumentData?.document_portion
+                      )
+                    }
+                  >
+                    <DownloadOutlined />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
+    </>
   );
 };
 
