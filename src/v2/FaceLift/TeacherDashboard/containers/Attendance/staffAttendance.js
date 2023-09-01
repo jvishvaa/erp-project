@@ -123,7 +123,7 @@ const handleDateChange = (value) => {
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
             <DatePicker
-              disabledDate={(current) => current.isAfter(moment())}
+              disabledDate={(current) => current.isAfter(moment()) || current.isBefore(moment.utc(startDate).subtract(1,"days"))}
               allowClear={false}
               bordered={false}
               placement='bottomRight'
