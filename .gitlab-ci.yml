@@ -102,7 +102,7 @@ deploy_stage:
       - ip a
       - whoami
       - pwd
-      - sudo chmod 777 -R /home/gitlab-runner/
+      - sudo chmod 777 -R $PWD
      # - sudo npm cache clean --force
      # - sudo npm install -g serve
      # - sudo npm install -g forever
