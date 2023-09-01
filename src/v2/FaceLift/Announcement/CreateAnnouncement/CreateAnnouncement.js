@@ -247,7 +247,7 @@ const CreateAnnouncement = () => {
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
         branch_id: e,
-        module_id: moduleId,
+        // module_id: moduleId,
       });
     }
   };
@@ -480,7 +480,7 @@ const CreateAnnouncement = () => {
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
         branch_id: branchId,
-        module_id: moduleId,
+        // module_id: moduleId,
         grade_id: gradeIds.join(','),
       });
     }

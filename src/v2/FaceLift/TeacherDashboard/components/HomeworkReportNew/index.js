@@ -78,7 +78,7 @@ const HomeworkReport = () => {
               style={{ height: 335, overflowY: 'auto', overflowX: 'hidden' }}
             >
               {!(homeworkReportData?.length==countHwStatus) ? (
-                <div className='row mt-1 th-bg-grey p-1 th-br-5'>
+                <div className='row mt-1 th-custom-ribbon th-bg-grey p-1 th-br-5'>
                   {homeworkReportData?.map((item, index) => (
                    item?.hw_status!="3" ? 
                     <Badge.Ribbon
