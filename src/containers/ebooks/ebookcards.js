@@ -180,6 +180,7 @@ const EbookCards = (props) => {
                       width: 370,
                       display: 'flex',
                       background: item?.ebook_type == 2 ? 'aliceblue' : '',
+                      cursor: 'pointer',
                     }}
                     cover={
                       <img
@@ -188,6 +189,7 @@ const EbookCards = (props) => {
                         style={{ width: '150px', height: '150px', padding: '1%' }}
                       />
                     }
+                    onClick={() => handleClickOpen(item)}
                   >
                     <div
                       style={{
