@@ -22,6 +22,20 @@ function QuestionReview() {
     span.innerHTML = s;
     return span.textContent || span.innerText;
   }
+
+  function extractContentOption(s) {
+    if (s?.length > 0 && s.indexOf('<') > -1) {
+      let newarr = s.replace('<', '&lt;');
+      const span = document.createElement('span');
+      span.innerHTML = newarr;
+      return span.textContent || span.innerText;
+    } else {
+      const span = document.createElement('span');
+      span.innerHTML = s;
+      return span.textContent || span.innerText;
+    }
+  }
+
   const [open, setOpen] = React.useState();
   const {
     questionsArray = [],
@@ -110,20 +124,20 @@ function QuestionReview() {
                         question_mark
                       ) : (
                         <label
-                          dangerouslySetInnerHTML={{
-                            __html: handlerAnswerVar(item?.user_sub_answer?.user_answer),
-                          }}
-                        ></label>
+                          // dangerouslySetInnerHTML={{
+                          //   __html: handlerAnswerVar(item?.user_sub_answer?.user_answer),
+                          // }}
+                        >{handlerAnswerVar(userAnswer)}</label>
                       )}
                       <br />
                       <b>Correct answer : &nbsp; </b>
                       <label
-                        dangerouslySetInnerHTML={{
-                          __html: handlerAnswerVar(
-                            item?.question_answer[0]?.answer_values
-                          ),
-                        }}
-                      ></label>
+                        // dangerouslySetInnerHTML={{
+                        //   __html: handlerAnswerVar(
+                        //     item?.question_answer[0]?.answer_values
+                        //   ),
+                        // }}
+                      >{handlerAnswerVar(item?.question_answer[0]?.answer_values)}</label>
                     </div>
                   ) : (
                     <div className={classes.answersContainer}>
@@ -137,12 +151,14 @@ function QuestionReview() {
                       ) : (
                         <span>
                           <label
-                            dangerouslySetInnerHTML={{
-                              __html: handlerAnswerVar(
-                                item?.user_sub_answer?.user_answer_values
-                              ),
-                            }}
-                          ></label>
+                            // dangerouslySetInnerHTML={{
+                            //   __html: handlerAnswerVar(
+                            //     item?.user_sub_answer?.user_answer_values
+                            //   ),
+                            // }}
+                          >
+                            {handlerAnswerVar(item?.user_sub_answer?.user_answer_values)}
+                          </label>
                           {item?.user_sub_answer?.user_answer_images?.map((image) => (
                             <a
                               className='underlineRemove'
@@ -170,10 +186,10 @@ function QuestionReview() {
                       <br />
                       <b>Correct answer : &nbsp; </b>
                       <label
-                        dangerouslySetInnerHTML={{
-                          __html: item?.question_answer[0]?.answer_values,
-                        }}
-                      ></label>
+                        // dangerouslySetInnerHTML={{
+                        //   __html: item?.question_answer[0]?.answer_values,
+                        // }}
+                      >{handlerAnswerVar(item?.question_answer[0]?.answer_values)}</label>
                       {item?.question_answer[0]?.answer_images?.map((image) => (
                         <a
                           className='underlineRemove'
@@ -224,18 +240,18 @@ function QuestionReview() {
                         question_mark
                       ) : (
                         <label
-                          dangerouslySetInnerHTML={{
-                            __html: handlerAnswerVar(differUserResponse),
-                          }}
-                        ></label>
+                          // dangerouslySetInnerHTML={{
+                          //   __html: handlerAnswerVar(differUserResponse),
+                          // }}
+                        >{handlerAnswerVar(differUserResponse)}</label>
                       )}
                       <br />
                       <b>Correct answer: &nbsp;</b>
                       <span
-                        dangerouslySetInnerHTML={{
-                          __html: handlerAnswerVar(correctAnswerValues),
-                        }}
-                      ></span>
+                        // dangerouslySetInnerHTML={{
+                        //   __html: handlerAnswerVar(correctAnswerValues),
+                        // }}
+                      >{handlerAnswerVar(correctAnswerValues)}</span>
                     </div>
                   ) : (
                     <>
@@ -250,10 +266,12 @@ function QuestionReview() {
                         ) : (
                           <>
                             <label
-                              dangerouslySetInnerHTML={{
-                                __html: handlerAnswerVar(differUserResponse),
-                              }}
-                            ></label>
+                            // dangerouslySetInnerHTML={{
+                            //   __html: handlerAnswerVar(differUserResponse),
+                            // }}
+                            >
+                              {handlerAnswerVar(differUserResponse)}
+                            </label>
                             {userResposeImages?.map((image) => (
                               <a
                                 className='underlineRemove'
@@ -279,10 +297,10 @@ function QuestionReview() {
                         <br />
                         <b>Correct answer: &nbsp;</b>
                         <span
-                          dangerouslySetInnerHTML={{
-                            __html: handlerAnswerVar(correctAnswerValues),
-                          }}
-                        ></span>
+                          // dangerouslySetInnerHTML={{
+                          //   __html: handlerAnswerVar(correctAnswerValues),
+                          // }}
+                        >{handlerAnswerVar(correctAnswerValues)}</span>
                         {answerImages?.map((image) => (
                           <a
                             className='underlineRemove'
@@ -320,14 +338,14 @@ function QuestionReview() {
                     question_mark
                   ) : (
                     <label
-                      dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
-                    ></label>
+                      // dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
+                    >{handlerAnswerVar(userAnswer)}</label>
                   )}
                   <br />
                   <b>Correct answer: &nbsp;</b>
                   <span
-                    dangerouslySetInnerHTML={{ __html: handlerAnswerVar(correctAnswer) }}
-                  ></span>
+                    // dangerouslySetInnerHTML={{ __html: handlerAnswerVar(correctAnswer) }}
+                  >{handlerAnswerVar(correctAnswer)}</span>
                 </div>
               ) : (
                 <div className={classes.answersContainer}>
@@ -340,14 +358,14 @@ function QuestionReview() {
                     question_mark
                   ) : (
                     <label
-                      dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
-                    ></label>
+                      // dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
+                    >{handlerAnswerVar(userAnswer)}</label>
                   )}
                   <br />
                   <b>Correct answer: &nbsp;</b>
                   <span
-                    dangerouslySetInnerHTML={{ __html: handlerAnswerVar(correctAnswer) }}
-                  ></span>
+                    // dangerouslySetInnerHTML={{ __html: handlerAnswerVar(correctAnswer) }}
+                  >{handlerAnswerVar(correctAnswer)}</span>
                 </div>
               )}
             </>

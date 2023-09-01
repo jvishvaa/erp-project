@@ -192,6 +192,7 @@ export default function ResourceDialogComponent(props) {
       aria-labelledby='simple-dialog-title'
       open={open}
       className={classes.root}
+      style={{ zIndex: '2001' }}
     >
       <CardContent className={classes.header}>
         <Typography className={classes.headerTitle}>{props.title}</Typography>

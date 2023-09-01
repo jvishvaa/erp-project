@@ -554,14 +554,18 @@ const AcademicYearList = ({
                 onChange={(e, value) => {
                   if (e.includes('all')) {
                     let values = subjects?.map((e) => e?.id);
+                    let valuesId = subjects?.map((e) => e?.item_id);
                     acadForm.current.setFieldsValue({
                       subjects: values,
                     });
                     setSelectedSubjects(subjects?.map((e) => e?.id));
                     onChange(values, 'subjects');
+                    onChange(valuesId, 'subjectsId');
                   } else {
                     setSelectedSubjects(value?.map((e) => e.id));
                     onChange(e, 'subjects');
+                    let subjectids = value?.map((e) => e?.key);
+                    onChange(subjectids, 'subjectsId');
                   }
                 }}
                 showSearch

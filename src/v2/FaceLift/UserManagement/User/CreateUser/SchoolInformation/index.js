@@ -33,6 +33,7 @@ const SchoolInformation = ({
   setSchoolFormValues,
   selectedYear,
   setSelectedSubjects,
+  setSelectedSubjectsId,
   editId,
   multipleAcademicYear,
   setMultipleAcademicYear,
@@ -457,9 +458,13 @@ const SchoolInformation = ({
                         subjects: values,
                       });
                       setSelectedSubjects(subjects?.map((e) => e?.id));
+                      setSelectedSubjectsId(subjects?.map((e) => e?.value));
                     } else {
                       setSelectedSubjects(
                         value?.map((e) => e?.id).filter((elem) => elem)
+                      );
+                      setSelectedSubjectsId(
+                        value?.map((e) => e?.value).filter((elem) => elem)
                       );
                     }
                   }}
@@ -514,6 +519,7 @@ const SchoolInformation = ({
                       grade: [],
                       section: [],
                       subjects: [],
+                      subjectsId: [],
                       isEdit: false,
                     },
                   ]);

@@ -303,6 +303,7 @@ const NewIbook = (props) => {
                             width: 400,
                             display: 'flex',
                             margin: '1%',
+                            cursor: 'pointer',
                           }}
                           cover={
                             <img
@@ -311,6 +312,7 @@ const NewIbook = (props) => {
                               style={{ width: '150px', height: '150px', padding: '1%' }}
                             />
                           }
+                          onClick={() => handleBookOpen(item)}
                         >
                           <div
                             style={{

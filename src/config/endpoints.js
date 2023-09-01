@@ -533,6 +533,7 @@ export default {
     imageupload: '/assessment/assessment-document-upload/',
     studentImgs: '/assessment/assessment-document-upload/',
     reUpload: '/assessment/enable-assessment-re-upload/',
+    erpBucket: 'https://d3ka3pry54wyko.cloudfront.net',
   },
   reportCardConfig: {
     reportcardcomponent: '/assessment/report-card-component/',

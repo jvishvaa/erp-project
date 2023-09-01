@@ -4,7 +4,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { message, Spin, Badge } from 'antd';
+import { message, Spin, Badge, Empty } from 'antd';
 import { RiseOutlined, FallOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/noHomeworkIcon.svg';
 import { getSubjectIcon } from 'v2/getSubjectIcon';
@@ -20,6 +20,7 @@ const HomeworkReport = () => {
   );
   const [homeworkReportData, setHomeworkReportData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [countHwStatus, setCountHwStatus] = useState(0);
 
   const fetchHomeworkReportData = (params = {}) => {
     setLoading(true);
@@ -33,6 +34,14 @@ const HomeworkReport = () => {
       .then((response) => {
         if (response.data?.status_code === 200) {
           setHomeworkReportData(response?.data?.result);
+          var count=0;
+          const data= response?.data?.result?.map((item)=>{
+            if(item?.hw_status == '3'){
+              count=count+1;
+            }
+            return item;
+          })
+          setCountHwStatus(count);
         }
         setLoading(false);
       })
@@ -68,9 +77,10 @@ const HomeworkReport = () => {
               className='col-12 th-custom-scrollbar'
               style={{ height: 335, overflowY: 'auto', overflowX: 'hidden' }}
             >
-              {homeworkReportData?.length > 0 ? (
-                <div className='row mt-1 th-bg-grey p-1 th-br-5'>
+              {!(homeworkReportData?.length==countHwStatus) ? (
+                <div className='row mt-1 th-custom-ribbon th-bg-grey p-1 th-br-5'>
                   {homeworkReportData?.map((item, index) => (
+                   item?.hw_status!="3" ? 
                     <Badge.Ribbon
                       style={{ top: '36px', right: '-4px' }}
                       text={<span className='th-white th-12'>{item?.subject_name}</span>}
@@ -95,23 +105,27 @@ const HomeworkReport = () => {
                           >
                             <div className='d-flex justify-content-between th-12 align-items-center'>
                               <div className='th-primary d-flex align-items-center'>
+                              {/* status_choices(hw_status) = (
+                                   ('0', 'overdue/pending'),
+                                   ('2', 'submitted'),
+                                   ('3', 'evaluated') */}
                                 <Badge
                                   status={
-                                    moment().isAfter(item?.submission_date, 'days')
+                                    item?.hw_status == '2' ? 'warning' : moment().isAfter(item?.submission_date, 'days')
                                       ? 'error'
                                       : 'processing'
                                   }
                                 />
                                 <div
                                   className={`${
-                                    moment().isAfter(item?.submission_date, 'days')
+                                    item?.hw_status == '2' ? 'text-warning' : moment().isAfter(item?.submission_date, 'days')
                                       ? 'th-red'
                                       : 'th-primary'
                                   } th-fw-500`}
                                 >
-                                  {moment().isAfter(item?.submission_date, 'days')
+                                  {item?.hw_status == '2' ? "Evaluation Pending" : moment().isAfter(item?.submission_date, 'days')
                                     ? 'Overdue'
-                                    : 'Pending'}
+                                    : 'Submission Pending'}
                                 </div>
                               </div>
                               <div className='th-grey th-10'>
@@ -149,6 +163,7 @@ const HomeworkReport = () => {
                                     <div
                                       className='text-truncate th-width-100'
                                       title={item?.title}
+                                      
                                     >
                                       {item?.title}
                                     </div>
@@ -157,18 +172,21 @@ const HomeworkReport = () => {
                                     Submission Date :&nbsp;
                                     {moment(item?.submission_date).format('DD/MM/YYYY')}
                                   </div>
+                                  <div className='col-12 px-0 text-truncate th-grey th-fw-400 th-10'>
+                                    Created By : {item?.created_by_staff__first_name} {item?.created_by_staff__last_name}
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </Badge.Ribbon>
+                    </Badge.Ribbon>: null
                   ))}
                 </div>
-              ) : (
-                <div className='d-flex justify-content-center pt-5'>
-                  <img src={NoDataIcon} alt='no-data' />
+              ) : ( 
+                <div className='d-flex justify-content-center h-100'> 
+                  <img  src={NoDataIcon} style={{width: '232px'}} alt='no-data' />
                 </div>
               )}
             </div>

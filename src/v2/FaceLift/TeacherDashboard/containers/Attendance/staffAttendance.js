@@ -18,7 +18,8 @@ const StaffAttendance = (props) => {
   const [adminData, setAdminData] = useState([]);
   const [date, setDate] = useState(history?.location?.state?.date);
   const [searchedValue, setSearchedValue] = useState('');
-
+  const [startDate, setStartDate] = useState('');
+  const [isLoad, setIsLoad] = useState(true);
 const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value).format('YYYY-MM-DD'));
@@ -38,7 +39,9 @@ const handleDateChange = (value) => {
       )
       .then((res) => {
         setLoading(false);
-        setAdminData(res?.data?.result);
+        setAdminData(res?.data?.result?.erp_users);
+        setStartDate(res?.data?.result?.session_start);
+        setIsLoad(false);
         if (res.status !== 200) {
           alert.warning('something went wrong please try again ');
           setLoading(true);
@@ -46,7 +49,6 @@ const handleDateChange = (value) => {
       })
       .catch((err) => {
         setLoading(true);
-        console.log(err);
       });
   };
 
@@ -81,14 +83,14 @@ const handleDateChange = (value) => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700'>PRESENT</span>,
+      title: <span className='th-white th-fw-700'>TOTAL PRESENT</span>,
       dataIndex: 'total_present',
       width: '15%',
       align: 'center',
       render: (data) => <span className='th-green th-16'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>ABSENT</span>,
+      title: <span className='th-white th-fw-700'>TOTAL ABSENT</span>,
       dataIndex: 'total_absent',
       width: '15%',
       align: 'center',
@@ -121,7 +123,7 @@ const handleDateChange = (value) => {
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
             <DatePicker
-              disabledDate={(current) => current.isAfter(moment())}
+              disabledDate={(current) => current.isAfter(moment()) || current.isBefore(moment.utc(startDate).subtract(1,"days"))}
               allowClear={false}
               bordered={false}
               placement='bottomRight'
@@ -136,20 +138,22 @@ const handleDateChange = (value) => {
           </span>
         </div>
         <div className='col-12'>
-          <div className='row pt-2 my-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
-            <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+          <div className='d-flex justify-content-between pt-2 my-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
+           <div className='th-15 col-md-6 th-black-1 th-fw-500' style={{marginLeft:"12px", marginBottom:"12px"}}>Attendance Summary for the Academic Year</div>
+            <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
               <Input
                 className='th-bg-grey th-br-4'
                 placeholder='Search'
                 suffix={<SearchOutlined className='th-grey' />}
                 bordered={false}
-                onChange={(e) => setSearchedValue(e.target.value)}
+                onChange={(e) => setSearchedValue(e.target.value)} 
               />
             </div>
           </div>
+          {isLoad? null : <span className='th-15' style={{marginLeft:"25px"}}>Date Range : {moment.utc(startDate).format('DD/MM/YYYY')} - {moment(date).format('DD/MM/YYYY')}</span>}
         </div>
 
-        <div className='row mt-3'>
+        <div className='row mt-2'>
           <div className='col-12'>
             <Table
               className='th-table'

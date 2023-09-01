@@ -146,6 +146,12 @@ function SignIn({ history, setTheme }) {
     borderRadius: '10px 10px 0 0',
   };
 
+  useEffect(() => {
+    if (window.innerWidth < 600) {
+      window.location.replace(`https://${window.location.host}/m/`);
+    }
+  }, []);
+
   return (
     <div style={{ height: '100vh', overflowY: 'auto' }}>
       {!loading && (
