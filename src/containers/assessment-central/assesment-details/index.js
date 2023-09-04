@@ -1,6 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid, IconButton, Button } from '@material-ui/core';
+import FileValidators from 'components/file-validation/FileValidators';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
 import './styles.scss';
@@ -14,11 +15,30 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
-import { Drawer, Tooltip, Typography, message } from 'antd';
+import {
+  Drawer,
+  Tooltip,
+  Typography,
+  message,
+  Modal,
+  Progress,
+  Spin,
+  Badge,
+  Divider,
+} from 'antd';
 import { useFormik } from 'formik';
 import { Form, Select, Checkbox } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import Loader from 'components/loader/loader';
+import {
+  DownOutlined,
+  FileAddOutlined,
+  EyeFilled,
+  DownloadOutlined,
+} from '@ant-design/icons';
+import { uploadFilePortion, uploadFilePortionUpdate } from 'redux/actions';
+import { getFileIcon } from 'v2/getFileIcon';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import { saveAs } from 'file-saver';
 
 const { Option } = Select;
 
@@ -42,6 +62,37 @@ const AssesmentDetails = ({
   const [isteacher, setIsTeacher] = useState(false);
   const [allowReview, setAllowReview] = useState(test?.is_review_enabled);
   const [isdisable, setIsDisable] = useState(false);
+  const fileUploadInput = useRef(null);
+  const [percentValue, setPercentValue] = useState(10);
+  const [uploadStart, setUploadStart] = useState(false);
+  const [attachments, setAttachments] = useState(null);
+  const [attachmentPreviews, setAttachmentPreviews] = useState([]);
+  const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
+
+  let idInterval = null;
+  useEffect(() => {
+    if (uploadStart == true && percentValue < 90) {
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
+    }
+
+    return () => {
+      clearInterval(idInterval);
+      setPercentValue(10);
+    };
+  }, [uploadStart]);
+
+  const checkCount = (count) => {
+    if (count < 90) {
+      return count + 5;
+    } else {
+      return count;
+    }
+  };
+
   const {
     test_id: id,
     id: assessmentId,
@@ -49,6 +100,8 @@ const AssesmentDetails = ({
     grade,
     enable,
     subjects,
+    document_portion: portionDocumentData,
+    can_upload: uploadPortion,
     test_name: testName = 'Assessment',
     test_date: testDate,
     test_duration: testDuration,
@@ -291,6 +344,91 @@ const AssesmentDetails = ({
       }
     }
   }, [quizAccess]);
+
+  const handleFileUpload = async (file) => {
+    if (!file) {
+      return null;
+    }
+    const isValid = FileValidators(file);
+    if (isValid?.isValid) {
+      try {
+        if (file.name.toLowerCase().lastIndexOf('.pdf') > 0) {
+          console.log(file.name.length, file.name, 'namefile');
+          const fd = new FormData();
+          fd.append('file', file);
+          fd.append('test_id', assessmentId);
+
+          setUploadStart(true);
+          setPercentValue(10);
+          if (portionDocumentData?.id) {
+            const filePath = await uploadFilePortionUpdate(fd, portionDocumentData?.id);
+
+            console.log(filePath, 'path');
+            if (filePath != undefined) {
+              setAttachments(filePath);
+              setAttachmentPreviews(filePath);
+              setPercentValue(100);
+              setUploadStart(false);
+              setAlert('success', 'File uploaded successfully');
+            } else {
+              setAlert('error', 'Failed to Upload file');
+              setPercentValue(100);
+              setUploadStart(false);
+            }
+          } else {
+            const filePath = await uploadFilePortion(fd);
+
+            console.log(filePath, 'path');
+            if (filePath != undefined) {
+              setAttachments(filePath);
+              setAttachmentPreviews(filePath);
+              setPercentValue(100);
+              setUploadStart(false);
+              setAlert('success', 'File uploaded successfully');
+            } else {
+              setAlert('error', 'Failed to Upload file');
+              setPercentValue(100);
+              setUploadStart(false);
+            }
+          }
+        } else {
+          setAlert('error', 'Please upload valid file');
+          setPercentValue(100);
+          setUploadStart(false);
+        }
+      } catch (e) {
+        // setFileUploadInProgress(false);
+        setPercentValue(100);
+        setUploadStart(false);
+        setAlert('error', 'File upload failed');
+      }
+    } else {
+      if (isValid?.msg) {
+        setAlert('error', isValid?.msg);
+      } else {
+        setAlert('error', 'Please upload valid file');
+      }
+    }
+  };
+
+  console.log(
+    attachmentPreviews,
+    attachments,
+    uploadPortion,
+    portionDocumentData,
+    'previews'
+  );
+  useEffect(() => {
+    if (portionDocumentData?.document_portion) {
+      setAttachments(portionDocumentData?.document_portion);
+    }
+  }, [portionDocumentData]);
+
+  const downloadMaterial = async (url, filename) => {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    saveAs(blob, filename);
+  };
 
   return (
     <Drawer
@@ -600,6 +738,164 @@ const AssesmentDetails = ({
               </div>
             </Grid> */}
             </Grid>
+            {uploadPortion || attachments != null ? (
+              <div
+                className='col-md-12 p-2 my-2'
+                style={{ borderColor: 'black', border: '1px solid' }}
+              >
+                {uploadPortion ? (
+                  <div className='col-md-12 p-0'>
+                    <div>
+                      <div className='th-17 th-fw-600 p-0 mt-2'>Portion Document</div>
+                      <Divider className='m-1' />
+                      <div
+                        className='col-md-12 p-0 card w-100'
+                        onClick={() => fileUploadInput.current.click()}
+                        style={{ padding: '5px', height: '35px', cursor: 'pointer' }}
+                      >
+                        <input
+                          className='file-upload-input-portion-pdf '
+                          type='file'
+                          name='attachments'
+                          accept='.pdf, .PDF'
+                          onChange={(e) => {
+                            handleFileUpload(e.target.files[0]);
+                            e.target.value = null;
+                          }}
+                          ref={fileUploadInput}
+                        />
+                        {fileUploadInProgress ? (
+                          <div>
+                            <Spin
+                              color='primary'
+                              style={{ width: '25px', height: '25px', margin: '5px' }}
+                            />
+                          </div>
+                        ) : (
+                          <>
+                            <div className='row'>
+                              <Badge
+                                count={attachments != null ? 1 : 0}
+                                color='primary'
+                                size='small'
+                                className='p-1'
+                              >
+                                <FileAddOutlined
+                                  color='primary'
+                                  onClick={() => fileUploadInput.current.click()}
+                                  title='Attach files'
+                                  style={{ color: 'primary', fontSize: '20px' }}
+                                />
+                              </Badge>
+                              <span
+                                className='th-16 mx-3'
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                Attach Portion Document
+                              </span>
+                            </div>
+                            {/* <span className='th-12'>Accepted: jpg,png,pdf,mp4</span> */}
+                          </>
+                        )}
+                      </div>
+                      <div className='row th-13 justify-content-between mt-1'>
+                        <span className='my-1 th-14'>Accepted : pdf</span>
+                        <span className='my-1 th-14'> Max File size: 30MB </span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  ''
+                )}
+
+                {attachments != null ? (
+                  <div>
+                    {!uploadPortion ? (
+                      <div className='th-17 th-fw-600 p-0 mt-2'>Portion Document</div>
+                    ) : (
+                      ''
+                    )}
+                    <div
+                      className='row mt-2 py-2 align-items-center'
+                      style={{ border: '1px solid #d9d9d9' }}
+                    >
+                      <div className='col-2'>
+                        <img src={getFileIcon('pdf')} />
+                      </div>
+                      <div className='col-10 px-0 th-pointer'>
+                        <div className='row align-items-center'>
+                          <div className='col-9 px-0'>
+                            <a
+                              onClick={() => {
+                                openPreview({
+                                  currentAttachmentIndex: 0,
+                                  attachmentsArray: [
+                                    {
+                                      src: `${endpoints.assessment.erpBucket}/${attachments}`,
+
+                                      name: attachments,
+                                      extension: '.pdf',
+                                    },
+                                  ],
+                                });
+                              }}
+                              rel='noopener noreferrer'
+                              target='_blank'
+                            >
+                              {attachments}
+                            </a>
+                          </div>
+
+                          <div className='col-1'>
+                            <a
+                              onClick={() => {
+                                openPreview({
+                                  currentAttachmentIndex: 0,
+                                  attachmentsArray: [
+                                    {
+                                      src: `${endpoints.assessment.erpBucket}/${attachments}`,
+
+                                      name: attachments,
+                                      extension: '.pdf',
+                                    },
+                                  ],
+                                });
+                              }}
+                              rel='noopener noreferrer'
+                              target='_blank'
+                            >
+                              <EyeFilled />
+                            </a>
+                          </div>
+                          <div className='col-1'>
+                            <a
+                              rel='noopener noreferrer'
+                              target='_self'
+                              onClick={() =>
+                                downloadMaterial(
+                                  `${endpoints.assessment.erpBucket}/${attachments}`,
+                                  attachments
+                                )
+                              }
+                            >
+                              <DownloadOutlined />
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  ''
+                )}
+              </div>
+            ) : (
+              ''
+            )}
             {(!testselection || !handleClose) && (
               <Grid container>
                 {/* <Grid item xs={12} style={{ margin: '4% 0' }} >
@@ -607,6 +903,7 @@ const AssesmentDetails = ({
                        Upload Marks
                      </Button>
                    </Grid> */}
+
                 <div className='row mt-4'>
                   {filterData?.status?.children === 'Completed' &&
                     test?.test_mode == 2 && (
@@ -794,6 +1091,24 @@ const AssesmentDetails = ({
           )}
         </DialogActions>
       </Dialog>
+      <Modal
+        maskClosable={false}
+        closable={false}
+        footer={null}
+        visible={uploadStart}
+        width={1000}
+        centered
+      >
+        <Progress
+          strokeColor={{
+            from: '#108ee9',
+            to: '#87d068',
+          }}
+          percent={percentValue}
+          status='active'
+          className='p-4'
+        />
+      </Modal>
     </Drawer>
   );
 };

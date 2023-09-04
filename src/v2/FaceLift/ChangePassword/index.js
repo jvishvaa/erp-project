@@ -121,7 +121,7 @@ const ChangePassword = () => {
           setValidationCheck(null);
           setTimeout(() => {
             localStorage.clear();
-            history.push('/');
+            window.location.href = '/';
           }, 1000);
         } else {
           message.error(res?.data?.message);

@@ -12,6 +12,29 @@ export const uploadFile = async (file) => {
     throw new Error(error);
   }
 };
+export const uploadFilePortion = async (fd) => {
+  // const formData = new FormData();
+  // formData.append('test_id', id);
+  // formData.append('file', file);
+  try {
+    const response = await axiosInstance.post('/assessment/document-portion/', fd);
+    console.log(response, 'resss');
+    return response.data.result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+export const uploadFilePortionUpdate = async (fd, id) => {
+  // const formData = new FormData();
+  // formData.append('test_id', id);
+  // formData.append('file', file);
+  try {
+    const response = await axiosInstance.put(`/assessment/${id}/document-portion/`, fd);
+    return response.data.result?.portion_file;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 export const AssessuploadFile = async (file) => {
   try {

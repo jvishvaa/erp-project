@@ -477,6 +477,7 @@ import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
 import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAcademicSttaff';
 import PrincipalDashboardTableActivity from 'containers/newBlog/PrincipalDashboardTableActivity';
 import SubjectWiseRatings from 'containers/newBlog/CreateRating/SubjectWiseRatings';
+import ErpAdminViewClassv2 from 'v2/FaceLift/OnlineClass/ErpViewClass';
 // import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
@@ -970,13 +971,13 @@ const V1Router = [
     {({ match }) => <Reshuffle match={match} />}
   </Route>,
   <Route exact path='/erp-online-class'>
-    {({ match }) => <ErpAdminViewClass match={match} />}
+    {({ match }) => <ErpAdminViewClassv2 match={match} />}
   </Route>,
   <Route exact path='/erp-online-class-teacher-view'>
-    {({ match }) => <ErpAdminViewClass match={match} />}
+    {({ match }) => <ErpAdminViewClassv2 match={match} />}
   </Route>,
   <Route exact path='/erp-online-class-student-view'>
-    {({ match }) => <ErpAdminViewClass match={match} />}
+    {({ match }) => <ErpAdminViewClassv2 match={match} />}
   </Route>,
   <Route exact path='/erp-online-resources'>
     {({ match }) => <OnlineClassResource match={match} />}

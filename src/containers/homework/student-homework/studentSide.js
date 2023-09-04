@@ -48,7 +48,7 @@ const { TabPane } = Tabs;
 
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
+  window.location.host.split('.')[0] === 'qa'
     ? true
     : false;
 
@@ -136,6 +136,8 @@ const StudentHomeworkNew = withRouter(
     };
 
     const dateToday = moment();
+    const cutOffDate = moment(new Date(2023, 3, 1));
+
     const startDay = moment().subtract(1, 'w');
     const dateFrom = moment().subtract(3, 'd');
     const dateTo = moment().add(3, 'd');
@@ -154,7 +156,6 @@ const StudentHomeworkNew = withRouter(
 
     useEffect(() => {
       if (acad_session_id && endDate != undefined && endDate != 'Invalid date') {
-
         if (SubjectSelected == 'all') {
           getTodayshw({
             acad_session_id: acad_session_id,
@@ -376,10 +377,14 @@ const StudentHomeworkNew = withRouter(
       if (!dates) {
         return false;
       }
-      const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
-      const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
-      return !!tooEarly || !!tooLate;
+      const tooLate = dates[0] && current.diff(dates[0], 'days') > 30;
+      const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30;
+      const tooLateAuto = dateToday && current.diff(dateToday, 'days') > 6;
+      const beforeAcademicYearBegins = cutOffDate > current;
+
+      return !!tooEarly || !!tooLate || !!tooLateAuto || beforeAcademicYearBegins;
     };
+
     const onOpenChange = (open) => {
       if (open) {
         setDates([null, null]);
@@ -584,7 +589,6 @@ const StudentHomeworkNew = withRouter(
       }
       if (sub == 'all') {
         if (acad_session_id && endDate != undefined && hwSelect == false) {
-
           getTodayshw({
             acad_session_id: acad_session_id,
             start_date: startDate,
@@ -659,25 +663,28 @@ const StudentHomeworkNew = withRouter(
               >
                 <div className='col-md-10 my-4 p-0 row'>
                   <div className='col-md-2 col-6 p-1'>
-
                     <Button
                       onClick={() => handleSubjectFilter('all')}
-                      className={`${SubjectSelected == 'all' ? 'th-button-active' : 'th-button'
-                        } th-width-100 th-br-6 text-truncate th-pointer`}
+                      className={`${
+                        SubjectSelected == 'all' ? 'th-button-active' : 'th-button'
+                      } th-width-100 th-br-6 text-truncate th-pointer`}
                     >
                       All Subject
                     </Button>
                   </div>
                   {subjectList?.slice(0, showSubjectCount).map((sub) => (
                     <div className='col-md-2 col-6 p-1'>
-                      <Tooltip title={sub?.subject_name} >
-                      <Button
-                        className={`${sub?.id == SubjectSelected?.id ? 'th-button-active' : 'th-button'
+                      <Tooltip title={sub?.subject_name}>
+                        <Button
+                          className={`${
+                            sub?.id == SubjectSelected?.id
+                              ? 'th-button-active'
+                              : 'th-button'
                           } th-width-100 th-br-6 text-truncate th-pointer`}
-                        onClick={() => handleSubjectFilter(sub)}
-                      >
-                        {sub?.subject_name}
-                      </Button>
+                          onClick={() => handleSubjectFilter(sub)}
+                        >
+                          {sub?.subject_name}
+                        </Button>
                       </Tooltip>
                     </div>
                   ))}
@@ -823,7 +830,6 @@ const StudentHomeworkNew = withRouter(
                                           )}
                                         </div>
                                       </div>
-                              
                                     </div>
                                   </div>
                                 </div>
@@ -841,12 +847,9 @@ const StudentHomeworkNew = withRouter(
                           >
                             <Empty
                               description={
-                                <span className='th-18 ' >
-                                  No Homework Assigned Today
-                                </span>
+                                <span className='th-18 '>No Homework Assigned Today</span>
                               }
-                            >
-                            </Empty>
+                            ></Empty>
                           </div>
                         )}
                       </div>
@@ -979,12 +982,9 @@ const StudentHomeworkNew = withRouter(
                           >
                             <Empty
                               description={
-                                <span className='th-18 '>
-                                  No Homeworks Are Pending
-                                </span>
+                                <span className='th-18 '>No Homeworks Are Pending</span>
                               }
-                            >
-                            </Empty>
+                            ></Empty>
                           </div>
                         )}
                       </div>
@@ -1098,12 +1098,9 @@ const StudentHomeworkNew = withRouter(
                           >
                             <Empty
                               description={
-                                <span className='th-18 '>
-                                  No Homeworks Are Submitted
-                                </span>
+                                <span className='th-18 '>No Homeworks Are Submitted</span>
                               }
-                            >
-                            </Empty>
+                            ></Empty>
                           </div>
                         )}
                       </div>
@@ -1217,12 +1214,9 @@ const StudentHomeworkNew = withRouter(
                           >
                             <Empty
                               description={
-                                <span className='th-18 '>
-                                  No Homeworks Are Evaluated
-                                </span>
+                                <span className='th-18 '>No Homeworks Are Evaluated</span>
                               }
-                            >
-                            </Empty>
+                            ></Empty>
                           </div>
                         )}
                       </div>

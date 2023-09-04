@@ -12,6 +12,7 @@ import {
   message,
   Result,
   Empty,
+  Tooltip,
 } from 'antd';
 import QuestionPaperInfo from './questionPaperInfo';
 import endpoints from '../../../config/endpoints';
@@ -22,7 +23,9 @@ import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import FeeReminderAssesment from 'containers/assessment-central/Feereminder';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import { SmileOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { SmileOutlined, InfoCircleOutlined, EyeFilled } from '@ant-design/icons';
+import { getFileIcon } from 'v2/getFileIcon';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 
 const { Option } = Select;
 
@@ -71,6 +74,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [showInfoDrawer, setShowInfoDrawer] = useState(false);
   const [subjectData, setSubjectData] = useState([]);
   const [subjectId, setSubjectId] = useState();
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
 
   const fetchGradeData = () => {
     const params = {
@@ -256,9 +260,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
             ? row?.is_test_completed?.marks_obtained
             : row?.test_mode == '1'
             ? 'Not Attempted'
-            : row?.is_completed
-            ? 'Marks entry under progress'
-            : 'Not Attempted'}
+            : 'Marks entry under progress'}
         </span>
       ),
       visible: status == 1 ? true : false,
@@ -291,6 +293,70 @@ const ViewAssessments = ({ history, ...restProps }) => {
           >
             View More
           </Tag>
+          {data?.document_portion?.document_portion ? (
+            <div
+              className='row mt-2 py-2 align-items-center col-md-12 px-0'
+              style={{ border: '1px solid #d9d9d9' }}
+            >
+              <div className='col-12 px-0 th-pointer'>
+                <div className='row align-items-center'>
+                  <div className='col-md-2 px-0'>
+                    <img
+                      style={{ width: '15px' }}
+                      className='mx-2'
+                      src={getFileIcon('pdf')}
+                    />
+                  </div>
+                  <Tooltip title={data?.document_portion?.document_portion}>
+                    <div className='col-md-8 px-2 text-truncate'>
+                      <a
+                        onClick={() => {
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: [
+                              {
+                                src: `${endpoints.assessment.erpBucket}/${data?.document_portion?.document_portion}`,
+
+                                name: data?.document_portion?.document_portion,
+                                extension: '.pdf',
+                              },
+                            ],
+                          });
+                        }}
+                        rel='noopener noreferrer'
+                        target='_blank'
+                      >
+                        {data?.document_portion?.document_portion}
+                      </a>
+                    </div>
+                  </Tooltip>
+                  <div className='col-md-2 px-0'>
+                    <a
+                      onClick={() => {
+                        openPreview({
+                          currentAttachmentIndex: 0,
+                          attachmentsArray: [
+                            {
+                              src: `${endpoints.assessment.erpBucket}/${data?.document_portion?.document_portion}`,
+
+                              name: data?.document_portion?.document_portion,
+                              extension: '.pdf',
+                            },
+                          ],
+                        });
+                      }}
+                      rel='noopener noreferrer'
+                      target='_blank'
+                    >
+                      <EyeFilled />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
         </div>
       ),
       visible: true,

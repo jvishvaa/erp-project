@@ -57,6 +57,8 @@ const CreateAnnouncement = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [notiConfig, setNotiConfig] = useState();
+  const [feeReminderSelected, setFeeReminderSelected] = useState();
+
   const { TextArea } = Input;
 
   const handleUploadModalClose = () => {
@@ -78,6 +80,29 @@ const CreateAnnouncement = () => {
 
   const handleChange = (value) => {
     setSelectedCategory(value);
+
+    if (value == 11) {
+      setFeeReminderSelected(true);
+      handleUserLevel([13]);
+      formRef.current.setFieldsValue({
+        user_level: [13],
+      });
+      if (sectionIds.length > 0) {
+        fetchMembersCount({
+          role_id: 13,
+          branch_id: branchId,
+          is_allowed_for_all: true,
+          section_id: sectionIds.join(','),
+          grade_id: gradeIds.join(','),
+        });
+      }
+    } else {
+      setFeeReminderSelected(false);
+      handleUserLevel([]);
+      formRef.current.setFieldsValue({
+        user_level: [],
+      });
+    }
   };
 
   useEffect(() => {
@@ -135,6 +160,10 @@ const CreateAnnouncement = () => {
       .get(`${endpoints.createAnnouncement.membersCount}`, {
         params: {
           ...params,
+          ...(feeReminderSelected ? { is_fee_reminder: true } : {}),
+          ...(feeReminderSelected
+            ? { session_year: selectedAcademicYear?.session_year }
+            : { session_year: selectedAcademicYear?.id }),
         },
       })
       .then((res) => {
@@ -218,7 +247,7 @@ const CreateAnnouncement = () => {
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
         branch_id: e,
-        module_id: moduleId,
+        // module_id: moduleId,
       });
     }
   };
@@ -249,7 +278,7 @@ const CreateAnnouncement = () => {
     const newGradeList = gradeIds.slice();
     newGradeList.splice(index, 1);
     setGradeIds(newGradeList);
-    if(newGradeList.length == 0) {
+    if (newGradeList.length == 0) {
       setMembersCount(0);
     }
   };
@@ -286,8 +315,8 @@ const CreateAnnouncement = () => {
     setSectionMappingIds([]);
   };
   const handleUserLevel = (e) => {
-    setSelectedUserLevels(e.join(','));
-    if(e.length == 0) {
+    setSelectedUserLevels(e?.join(','));
+    if (e?.length == 0) {
       setMembersCount(null);
       formRef.current.setFieldsValue({
         grade: [],
@@ -427,7 +456,6 @@ const CreateAnnouncement = () => {
         if (sectionIds.length > 0) {
           fetchMembersCount({
             role_id: selectedUserLevels,
-            session_year: selectedAcademicYear?.id,
             branch_id: branchId,
             is_allowed_for_all: true,
             section_id: sectionIds.join(','),
@@ -439,7 +467,6 @@ const CreateAnnouncement = () => {
       } else {
         fetchMembersCount({
           role_id: selectedUserLevels,
-          session_year: selectedAcademicYear?.id,
           branch_id: branchId,
           is_allowed_for_all: true,
         });
@@ -453,7 +480,7 @@ const CreateAnnouncement = () => {
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
         branch_id: branchId,
-        module_id: moduleId,
+        // module_id: moduleId,
         grade_id: gradeIds.join(','),
       });
     }
@@ -468,7 +495,7 @@ const CreateAnnouncement = () => {
       setSectionIds(sectionData?.map((item) => item?.section_id));
       setSectionMappingIds(sectionData?.map((item) => item?.id));
       // }
-    } 
+    }
   }, [sectionData]);
   return (
     <Layout>
@@ -556,26 +583,30 @@ const CreateAnnouncement = () => {
                   </div>
                   <div className='col-md-6 py-3 py-md-0'>
                     <span className='th-grey th-14'>Choose User Level*</span>
-                    <Select
-                      mode='multiple'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      maxTagCount={5}
-                      // allowClear={true}
-                      suffixIcon={<DownOutlined className='th-grey' />}
-                      className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                      placement='bottomRight'
-                      showArrow={true}
-                      onChange={(e, value) => handleUserLevel(e, value)}
-                      onClear={handleClearUserLevel}
-                      dropdownMatchSelectWidth={false}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {userLevelListOptions}
-                    </Select>
+                    <Form.Item name='user_level'>
+                      <Select
+                        mode='multiple'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        maxTagCount={5}
+                        // allowClear={true}
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                        placement='bottomRight'
+                        showArrow={true}
+                        disabled={feeReminderSelected}
+                        onChange={(e, value) => handleUserLevel(e, value)}
+                        onClear={handleClearUserLevel}
+                        dropdownMatchSelectWidth={false}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                      >
+                        {userLevelListOptions}
+                      </Select>
+                    </Form.Item>
                   </div>
                   {isStudentIncluded && (
                     <div className='row mt-3 py-2'>
@@ -624,6 +655,7 @@ const CreateAnnouncement = () => {
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
+                            disabled={gradeIds.length > 0 && feeReminderSelected}
                             value={sectionMappingIds}
                             getPopupContainer={(trigger) => trigger.parentNode}
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
