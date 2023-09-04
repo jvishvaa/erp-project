@@ -259,4 +259,3 @@ deploy_UiVersion2:
       - acadfaceliftui
     only:
       - dev-facelift
-
