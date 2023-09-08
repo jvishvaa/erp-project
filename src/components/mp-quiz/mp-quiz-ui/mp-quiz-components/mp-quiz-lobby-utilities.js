@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { Modal, Avatar } from '@material-ui/core';
 import LinkTag from '@material-ui/core/Link';
 import IconButton from '@material-ui/core/IconButton';
@@ -76,8 +76,8 @@ export function ClearOrPauseBtn(props) {
   const [open, setOpen] = useState(false);
 
   const handletoggle = () => {
-    setOpen(!open) 
-  }
+    setOpen(!open);
+  };
 
   const socket = useSocket();
   return (
@@ -87,12 +87,11 @@ export function ClearOrPauseBtn(props) {
       component='span'
       // onClick={() => { this.props.websocket.close() }}
       onClick={() => {
-        let confirmed
-        if(redirectionView!== 0){
+        let confirmed;
+        if (redirectionView !== 0) {
           // confirmed = true
-          handletoggle()
-          
-        }else{
+          handletoggle();
+        } else {
           confirmed = window.confirm('Are you sure you want to exit from this quiz?');
         }
         // eslint-disable-next-line no-alert
@@ -102,11 +101,13 @@ export function ClearOrPauseBtn(props) {
       }}
     >
       <ClearIcon className='topbar-btn-icon' />
-      {open && <EndquizDialog
-              open = {open}
-              handletoggle = {handletoggle}
-              closeSocket = {()=>socket.close()}
-              />}
+      {open && (
+        <EndquizDialog
+          open={open}
+          handletoggle={handletoggle}
+          closeSocket={() => socket.close()}
+        />
+      )}
     </IconButton>
   );
 }
@@ -148,15 +149,13 @@ export function FullScreenBtn() {
   );
 }
 
-
 export function HostQuizTopBarContent() {
   const { endQuizTrigger } = useQuizEventTriggers();
   const [open, setOpen] = useState(false);
 
   const handletoggle = () => {
-    setOpen(!open) 
-  }
-
+    setOpen(!open);
+  };
 
   // return <p>Host quiz topbar cnt</p>
   return (
@@ -165,13 +164,13 @@ export function HostQuizTopBarContent() {
         type='button'
         className='btn__end--quiz'
         onClick={() => {
-          let ifYes
-        if(redirectionView!== 0){
-          handletoggle()
-          // ifYes = true
-        }  else{
-          ifYes = window.confirm('Are you sure on your action?');
-        }
+          let ifYes;
+          if (redirectionView !== 0) {
+            handletoggle();
+            // ifYes = true
+          } else {
+            ifYes = window.confirm('Are you sure on your action?');
+          }
           // eslint-disable-next-line no-alert
           if (ifYes) {
             endQuizTrigger();
@@ -180,11 +179,13 @@ export function HostQuizTopBarContent() {
       >
         End Quiz
       </button>
-      {open && <EndquizDialog
-              open = {open}
-              handletoggle = {handletoggle}
-              endQuizTrigger = {()=> endQuizTrigger()}
-              />}
+      {open && (
+        <EndquizDialog
+          open={open}
+          handletoggle={handletoggle}
+          endQuizTrigger={() => endQuizTrigger()}
+        />
+      )}
     </>
   );
 }
@@ -232,7 +233,7 @@ export function getDurationCounter(props) {
   const isHost = true;
   // logic to run counter equally
   if (isHost === true) {
-    quizDuration = durationInSec ;
+    quizDuration = durationInSec;
     // + totalNoOfQuestions * sagDuration + counterDuration;
     quizStartedAt = startedAt;
     startImmediately = !!(startedAt && startedAt !== 'None');
@@ -273,7 +274,7 @@ function GetAvatar({ url = '', firstName = '' }) {
   const { openSettingsModal } = useQuizUitilityContext || {};
   url =
     // 'https://omrsheet.s3.ap-south-1.amazonaws.com/media/user_profile/download_wchd7Wo.png'; // Please handle
-    'https://d2r9gkgplfhsr2.cloudfront.net/media/user_profile/download_wchd7Wo.png';
+    'https://mgmt-cdn-stage.stage-gke.letseduvate.com/media/user_profile/download_wchd7Wo.png';
   if (url) {
     return (
       <Avatar
@@ -546,11 +547,7 @@ export function HostAndQuizEnded(props) {
     // getCurrentPlayerInfo,
     // [fetchParticipantsLabel]: { data: { data: participants = [] } = {} } = {},
     [fetchLeaderboardLabel]: { data: { data: leaderboardData = [] } = {} } = {},
-    quiz_details: {
-      data: {
-        data: { quiz_summary: quizSummary = {} } = {},
-      },
-    } = {},
+    quiz_details: { data: { data: { quiz_summary: quizSummary = {} } = {} } } = {},
   } = useQuizContext() || {};
 
   return (

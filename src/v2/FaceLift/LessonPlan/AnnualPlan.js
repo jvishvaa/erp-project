@@ -200,9 +200,9 @@ const AnnualPlan = () => {
 
   useEffect(() => {
     // if (moduleId) {
-      fetchGradeData();
-      fetchBoardListData();
-      // fetchResourceYear();
+    fetchGradeData();
+    fetchBoardListData();
+    // fetchResourceYear();
     // }
   }, []);
 
@@ -367,7 +367,7 @@ const AnnualPlan = () => {
                                   const fileName = item?.ycp_files?.filter(
                                     (item) => item?.lesson_type == '1'
                                   )[0]?.media_file[0];
-                                  const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                                  const fileSrc = `${endpoints.lessonPlan.ibookBucket}/${fileName}`;
                                   openPreview({
                                     currentAttachmentIndex: 0,
                                     attachmentsArray: [
@@ -411,7 +411,7 @@ const AnnualPlan = () => {
                                   const fileName = item?.ycp_files?.filter(
                                     (item) => item?.lesson_type == '2'
                                   )[0]?.media_file[0];
-                                  const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                                  const fileSrc = `${endpoints.lessonPlan.ibookBucket}/${fileName}`;
                                   openPreview({
                                     currentAttachmentIndex: 0,
                                     attachmentsArray: [
