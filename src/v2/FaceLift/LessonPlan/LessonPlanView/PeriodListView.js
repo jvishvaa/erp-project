@@ -1120,7 +1120,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           const fileName = YCPData?.filter(
                             (item) => item?.lesson_type == '1'
                           )[0]?.media_file[0];
-                          const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                          const fileSrc = `${endpoints.lessonPlan.ibookBucket}/${fileName}`;
                           openPreview({
                             currentAttachmentIndex: 0,
                             attachmentsArray: [
@@ -1154,7 +1154,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           const fileName = YCPData?.filter(
                             (item) => item?.lesson_type == '2'
                           )[0]?.media_file[0];
-                          const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                          const fileSrc = `${endpoints.lessonPlan.ibookBucket}/${fileName}`;
                           openPreview({
                             currentAttachmentIndex: 0,
                             attachmentsArray: [
@@ -2416,8 +2416,16 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
             ?.filter((item) => item.is_complete == true)
             .map((item) => (
               <div className='d-flex px-md-4 py-2 justify-content-start'>
-                <span style={{ color: 'blue', fontSize: "25px", marginRight: "5px", marginTop: "-9px"}}
-                >&bull;</span>
+                <span
+                  style={{
+                    color: 'blue',
+                    fontSize: '25px',
+                    marginRight: '5px',
+                    marginTop: '-9px',
+                  }}
+                >
+                  &bull;
+                </span>
                 <span>
                   Completed in Sec {item?.section_name?.slice(-1).toUpperCase()} by{' '}
                   {item?.completed_by_user_id == user_id
