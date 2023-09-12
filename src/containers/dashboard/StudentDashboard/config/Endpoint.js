@@ -2,7 +2,7 @@ import ENVCONFIG from '../../../../config/config';
 
 const {
   apiGateway: { baseURLCentral, baseUdaan },
-  s3: { BUCKET: s3BUCKET, ERP_BUCKET },
+  s3: { BUCKET: s3BUCKET, ERP_BUCKET, CENTRAL_BUCKET: CENTRAL_BUCKET },
 } = ENVCONFIG;
 
 console.log('apigateway', ENVCONFIG);
@@ -19,7 +19,7 @@ export default {
     login: '/auth/login/',
   },
   s3: {
-    BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com/',
+    BUCKET: `${CENTRAL_BUCKET}`,
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     Userstories: 'https://d3ka3pry54wyko.cloudfront.net/dev/media/',
     Audio: 'https://d3ka3pry54wyko.cloudfront.net/',
