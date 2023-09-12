@@ -12,7 +12,12 @@ const {
     msReportsUrlNew,
     newBlogURL,
   },
-  s3: { BUCKET: s3BUCKET, ERP_BUCKET, CENTRAL_BUCKET: CENTRAL_BUCKET },
+  s3: {
+    BUCKET: s3BUCKET,
+    ERP_BUCKET,
+    CENTRAL_BUCKET: CENTRAL_BUCKET,
+    IBOOK_BUCKET: IBOOK_BUCKET,
+  },
 } = ENVCONFIG;
 
 export default {
@@ -193,6 +198,7 @@ export default {
     keyConceptList: 'academic/get-key-concept-list/',
     questionPaperPreview: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     bucket: `${CENTRAL_BUCKET}`,
+    ibookBucket: IBOOK_BUCKET,
   },
   homework: {
     resourcesFiles: `${CENTRAL_BUCKET}`,

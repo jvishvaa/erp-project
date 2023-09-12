@@ -200,9 +200,9 @@ const AnnualPlan = () => {
 
   useEffect(() => {
     // if (moduleId) {
-      fetchGradeData();
-      fetchBoardListData();
-      // fetchResourceYear();
+    fetchGradeData();
+    fetchBoardListData();
+    // fetchResourceYear();
     // }
   }, []);
 
