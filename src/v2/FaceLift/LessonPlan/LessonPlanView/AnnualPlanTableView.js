@@ -1014,7 +1014,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                     const fileName = YCPData?.filter(
                       (item) => item?.lesson_type == '1'
                     )[0]?.media_file[0];
-                    const fileSrc = `${endpoints.lessonPlan.ibookBucket}/${fileName}`;
+                    const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
                     openPreview({
                       currentAttachmentIndex: 0,
                       attachmentsArray: [
@@ -1056,7 +1056,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                     const fileName = YCPData?.filter(
                       (item) => item?.lesson_type == '2'
                     )[0]?.media_file[0];
-                    const fileSrc = `${endpoints.lessonPlan.ibookBucket}/${fileName}`;
+                    const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
                     openPreview({
                       currentAttachmentIndex: 0,
                       attachmentsArray: [

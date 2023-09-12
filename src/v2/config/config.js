@@ -53,8 +53,8 @@ const dev = {
 
 const qa = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     //CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
     CENTRAL_BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com',
     IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
@@ -77,9 +77,10 @@ const qa = {
 
 const stage = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
-    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    BUCKET: 'https://mgmt-cdn.letseduvate.com',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
+    IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -96,9 +97,10 @@ const stage = {
 
 const prod = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
-    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    BUCKET: 'https://mgmt-cdn.letseduvate.com',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
+    IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
