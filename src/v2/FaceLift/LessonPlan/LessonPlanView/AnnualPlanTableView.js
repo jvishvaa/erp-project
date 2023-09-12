@@ -669,8 +669,8 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
 
   useEffect(() => {
     // if (moduleId) {
-      fetchGradeData();
-      fetchVolumeListData();
+    fetchGradeData();
+    fetchVolumeListData();
     // }
   }, []);
 

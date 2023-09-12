@@ -63,10 +63,11 @@ const qa = {
   s3: {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    CENTRAL_BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
+    IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -75,8 +76,7 @@ const qa = {
     // baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
-    baseURLCentral: 'https://mgmt.qa.letseduvate.com/qbox',
-    baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',
+    baseURLCentral: 'https://mgmt-stage.stage-gke.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.qa.letseduvate.com',
     msReportsUrl: 'https://reports.qa.letseduvate.com',
@@ -92,10 +92,11 @@ const stage = {
   s3: {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    BUCKET: 'https://mgmt-cdn.letseduvate.com',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
+    IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -117,10 +118,11 @@ const prod = {
   s3: {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    BUCKET: 'https://mgmt-cdn.letseduvate.com',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
+    CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
+    IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
