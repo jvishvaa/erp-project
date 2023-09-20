@@ -28,10 +28,9 @@ import ViewBook from '../chapterpage/ViewBook';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import unfiltered from 'assets/images/unfiltered.svg';
 
-
 const isOrchids =
   window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
+  window.location.host.split('.')[0] === 'qa'
     ? true
     : false;
 
@@ -75,7 +74,7 @@ const AllBooksPage = () => {
   const [chapter, setChapter] = useState('');
   const [keyConcept, setKeyConcept] = useState('');
   const [open, setOpen] = useState(false);
-  const [bookImage, setBookImage] = useState('https://d3ka3pry54wyko.cloudfront.net/');
+  const [bookImage, setBookImage] = useState(endpoints.erpBucket);
   const [bookId, setbookId] = useState('');
   const [chapterId, setchapterId] = useState('');
   const [bookUid, setbookUid] = useState('');
@@ -85,7 +84,7 @@ const AllBooksPage = () => {
   const [bookName, setbookName] = useState('');
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  const [filtered, setFiltered] = useState(false)
+  const [filtered, setFiltered] = useState(false);
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL);
@@ -161,7 +160,7 @@ const AllBooksPage = () => {
     setChapter(chapter);
     setKeyConcept(keyConcept);
     getEbook(acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept);
-    setFiltered(true)
+    setFiltered(true);
   };
 
   const getEbook = (
@@ -183,8 +182,9 @@ const AllBooksPage = () => {
     const filterBoard = `${board?.length !== 0 ? `&board_id=${board}` : ''}`;
     const filterModule = `${moduleId?.length !== 0 ? `&lt_module=${moduleId?.id}` : ''}`;
     const filterChapter = `${chapter?.length !== 0 ? `&chapter_id=${chapter?.id}` : ''}`;
-    const filterKeyConcept = `${keyConcept?.length !== 0 ? `&key_concept_id=${keyConcept?.id}` : ''
-      }`;
+    const filterKeyConcept = `${
+      keyConcept?.length !== 0 ? `&key_concept_id=${keyConcept?.id}` : ''
+    }`;
     if (!branch) {
       setAlert('warning', 'Please Select Branch');
       setBooksData([]);
@@ -221,7 +221,8 @@ const AllBooksPage = () => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.ibook.studentBook
+          `${
+            endpoints.ibook.studentBook
           }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
         )
         .then((result) => {
@@ -385,17 +386,18 @@ const AllBooksPage = () => {
                   })}
               </>
             ) : (
-              <div className='d-flex justify-content-center p-4 w-100' >
+              <div className='d-flex justify-content-center p-4 w-100'>
                 <div className='d-flex flex-md-column align-items-center'>
                   <SvgIcon component={() => <img src={unfiltered} alt='crash' />} />
-                  {filtered == true ?
+                  {filtered == true ? (
                     <Typography variant='h6' color='secondary'>
                       No Ibooks Available For The Selected Subject
-                    </Typography> :
+                    </Typography>
+                  ) : (
                     <Typography variant='h6' color='secondary'>
                       Please Select Filters
                     </Typography>
-                  }
+                  )}
                 </div>
               </div>
             )}

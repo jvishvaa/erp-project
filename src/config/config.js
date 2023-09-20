@@ -26,7 +26,7 @@ const local = {
     msReportsUrl: 'https://dev.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
-    crm: 'https://marketing.dev-k8.letseduvate.com'
+    crm: 'https://marketing.dev-k8.letseduvate.com',
   },
 };
 const dev = {
@@ -55,7 +55,7 @@ const dev = {
     newBlogURL: 'https://activities-ms.dev-k8.letseduvate.com',
     // newBlogURL:'https://activities-revamp.dev-k8.letseduvate.com',
     erpBlogURL: 'https://dev.olvorchidnaigaon.letseduvate.com/mb_droid/',
-    crm: 'https://marketing.dev-k8.letseduvate.com'
+    crm: 'https://marketing.dev-k8.letseduvate.com',
   },
 };
 
@@ -84,7 +84,7 @@ const qa = {
     finance: 'https://qafinance.school.letseduvate.com',
     newBlogURL: 'https://activities-ms.qa.letseduvate.com',
     erpBlogURL: 'https://qa.olvorchidnaigaon.letseduvate.com/mb_droid/',
-    crm: 'https://marketing.qa.letseduvate.com'
+    crm: 'https://marketing.qa.letseduvate.com',
   },
 };
 
@@ -93,7 +93,7 @@ const stage = {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://mgmt-cdn.letseduvate.com',
-    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    ERP_BUCKET: 'https://acad-cdn-stage.stage-vm.letseduvate.com/', // ALERT GCP STAGE CDN
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
     CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
     IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
@@ -110,7 +110,7 @@ const stage = {
     newBlogURL: 'https://activities.letseduvate.com',
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     msReportsUrl: 'https://reports.qa.letseduvate.com',
-    crm: 'https://marketing-stage.letseduvate.com'
+    crm: 'https://marketing-stage.letseduvate.com',
   },
 };
 
@@ -140,7 +140,7 @@ const prod = {
     finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
     newBlogURL: 'https://activities.letseduvate.com',
     erpBlogURL: `${window.location.origin}/mb_droid/`,
-    crm: 'https://marketing.letseduvate.com'
+    crm: 'https://marketing.letseduvate.com',
   },
 };
 
