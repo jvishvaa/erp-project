@@ -29,6 +29,7 @@ import { Table , Pagination, Spin } from 'antd';
 import Layout from '../../Layout';
 import { SearchOutlined } from '@material-ui/icons';
 // import './assign-role.css';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const debounce = (fn, delay) => {
   let timeoutId;
@@ -82,11 +83,12 @@ const AssignRole = (props) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
   useEffect(() => {
     if (NavData && NavData.length) {

@@ -35,12 +35,14 @@ import TabPanel from './tab-panel/TabPanel';
 import APIREQUEST from '../../../../config/apiRequest';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 
 const ErpAdminViewClass = ({ history }) => {
   let filteredData = JSON.parse(localStorage.getItem('filterData'));

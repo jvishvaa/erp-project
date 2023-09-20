@@ -18,6 +18,7 @@ import 'react-pdf/dist/umd/Page/AnnotationLayer.css';
 import endpoints from 'v2/config/endpoints';
 import axiosInstance from 'config/axios';
 import Loader from 'components/loader/loader';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import {
   FullscreenOutlined,
   CloseSquareOutlined,
@@ -51,12 +52,13 @@ function AttachmentPreviewerUI() {
   const user_level = userData?.user_level;
   const levelMatch =
     user_level == 11 || user_level == 10 || user_level == 8 ? true : false;
-  const isOrchids =
-    (window.location.host.split('.')[0] === 'orchids' && levelMatch) ||
-    (window.location.host.split('.')[0] === 'localhost:3000' && levelMatch) ||
-    (window.location.host.split('.')[0] === 'qa' && levelMatch)
-      ? true
-      : false;
+  // const isOrchids =
+  //   (window.location.host.split('.')[0] === 'orchids' && levelMatch) ||
+  //   (window.location.host.split('.')[0] === 'localhost:3000' && levelMatch) ||
+  //   (window.location.host.split('.')[0] === 'qa' && levelMatch)
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker() && levelMatch ? true : false;
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
   }

@@ -9,6 +9,7 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import BlockOutlined from '@material-ui/icons/BlockOutlined';
 import RestoreIcon from '@material-ui/icons/Restore';
 import useStyles from './useStyles';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const ViewUserCard = ({
   user,
@@ -25,11 +26,12 @@ const ViewUserCard = ({
       : 'Activated'
     : 'Deactivated';
   const classes = useStyles();
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const user_level = userData?.user_level;
   return (

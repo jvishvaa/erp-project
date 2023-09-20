@@ -11,13 +11,15 @@ import DailyDiaryCard from 'v2/FaceLift/Diary/DiaryNew/Diary-Card/DailyDiaryCard
 import { PlusOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const dateFormat = 'YYYY-MM-DD';
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 const Diary = () => {
   const history = useHistory();
   const selectedAcademicYear = useSelector(

@@ -42,15 +42,17 @@ import Atachment from 'assets/images/attachmenticon.svg';
 import HomeworkSubmissionNew from './studenthwsubmission';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import Loader from 'components/loader/loader';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 
 const StudentHomeworkNew = withRouter(
   ({

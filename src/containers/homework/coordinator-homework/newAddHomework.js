@@ -55,6 +55,7 @@ import {
 } from '@ant-design/icons';
 import QuestionCardNew from './questioncardnew';
 import Loader from 'components/loader/loader';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const { confirm } = Modal;
 
@@ -263,13 +264,14 @@ const AddHomeworkCordNew = ({
     });
   };
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa' ||
-    window.location.host.split('.')[0] === 'localhost:3000'
-      ? // window.location.host.split('.')[0] === 'test'
-        true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa' ||
+  //   window.location.host.split('.')[0] === 'localhost:3000'
+  //     ? // window.location.host.split('.')[0] === 'test'
+  //       true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
   useEffect(() => {
     fetchHwTimeConfig();

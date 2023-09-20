@@ -62,7 +62,7 @@ const ChapterBook = (props) => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-  const chapterImage = 'https://d3ka3pry54wyko.cloudfront.net/';
+  const chapterImage = `${endpoints.erpBucket}`;
 
   const handlePagination = (event, page) => {
     setPageNo(page);

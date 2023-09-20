@@ -19,13 +19,14 @@ import ViewBook from 'containers/intelligent-textbook/chapterpage/ViewBook';
 import { useSelector } from 'react-redux';
 import { Card, Divider, Tag, Button, Pagination, Empty, Tooltip } from 'antd';
 import { LeftOutlined, EditOutlined, ClearOutlined, CloseSquareOutlined, UndoOutlined , EyeFilled} from '@ant-design/icons';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-
-const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-        window.location.host.split('.')[0] === 'qa'
-        ? true
-        : false;
+// const isOrchids =
+//     window.location.host.split('.')[0] === 'orchids' ||
+//         window.location.host.split('.')[0] === 'qa'
+//         ? true
+//         : false;
+const isOrchids = IsOrchidsChecker();
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -72,7 +73,7 @@ const IbookList = (props) => {
     const [chapter, setChapter] = useState('');
     const [keyConcept, setKeyConcept] = useState('');
     const [open, setOpen] = useState(false);
-    const [bookImage, setBookImage] = useState('https://d3ka3pry54wyko.cloudfront.net/');
+    const [bookImage, setBookImage] = useState(endpoints.erpBucket);
     const [bookId, setbookId] = useState('');
     const [chapterId, setchapterId] = useState('');
     const [bookUid, setbookUid] = useState('');

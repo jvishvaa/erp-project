@@ -20,12 +20,15 @@ import {
 } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import './newebook.scss';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,7 +75,7 @@ const NewIbook = (props) => {
   const [chapter, setChapter] = useState('');
   const [keyConcept, setKeyConcept] = useState('');
   const [open, setOpen] = useState(false);
-  const [bookImage, setBookImage] = useState('https://d3ka3pry54wyko.cloudfront.net/');
+  const [bookImage, setBookImage] = useState(endpoints.erpBucket);
   const [bookId, setbookId] = useState('');
   const [chapterId, setchapterId] = useState('');
   const [bookUid, setbookUid] = useState('');
