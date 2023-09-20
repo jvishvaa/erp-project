@@ -20,12 +20,15 @@ import {
 } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import './newebook.scss';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
+
 
 const useStyles = makeStyles((theme) => ({
   root: {

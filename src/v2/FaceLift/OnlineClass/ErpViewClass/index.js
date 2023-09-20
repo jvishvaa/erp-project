@@ -26,13 +26,15 @@ import moment from 'moment';
 import APIREQUEST from 'config/apiRequest';
 import SideDrawer from './side-drawer';
 import Countdown, { zeroPad } from 'react-countdown';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 // import Loader from '../../../../components/loader/loader';
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 
 const ErpAdminViewClassv2 = () => {
   const { RangePicker } = DatePicker;

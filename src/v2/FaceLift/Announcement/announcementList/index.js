@@ -20,6 +20,7 @@ import { DownOutlined, PlusOutlined, CheckOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import '../index.css';
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -31,11 +32,12 @@ const AnnouncementList = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'localhost:3000'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'localhost:3000'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
   const [loading, setLoading] = useState(false);

@@ -48,6 +48,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import ReactPlayer from 'react-player';
 import { getActivityIcon } from 'v2/generalActivityFunction';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -627,11 +628,12 @@ const BlogWall = () => {
   let schoolDetails = JSON.parse(localStorage.getItem('schoolDetails'));
   const { school_logo } = schoolDetails;
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
   const PostContent = () => {
     return (

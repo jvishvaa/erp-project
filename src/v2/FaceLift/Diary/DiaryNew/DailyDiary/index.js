@@ -42,6 +42,7 @@ import AssessmentIcon from 'v2/Assets/dashboardIcons/diaryIcons/AssessmentIcon.s
 import _ from 'lodash';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 let boardFilterArr = [
   'orchids.letseduvate.com',
@@ -185,13 +186,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setShowPeriodInfoModal(false);
   };
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa' ||
-    window.location.host.split('.')[0] === 'localhost:3000'
-      ? // window.location.host.split('.')[0] === 'test'
-        true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa' ||
+  //   window.location.host.split('.')[0] === 'localhost:3000'
+  //     ? // window.location.host.split('.')[0] === 'test'
+  //       true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
   const handleChange = (index, field, value) => {
     const form = questionList[index];

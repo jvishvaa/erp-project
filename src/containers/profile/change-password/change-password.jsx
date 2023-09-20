@@ -16,6 +16,7 @@ import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './change-password.css';
 import { makeStyles } from '@material-ui/core';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const useStyles = makeStyles((theme) => ({
   profilePasswordWrapper: {
@@ -40,11 +41,12 @@ const ChangePassword = (props) => {
   const [errorPassword, setErrorPassword] = useState('');
   const classes = useStyles();
   const erp_id = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
-  const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+  // const isOrchids =
+  // window.location.host.split('.')[0] === 'orchids' ||
+  // window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'qa'
+  //   ? true
+  //   : false;
+  const isOrchids = IsOrchidsChecker();
   const handleCancel = () => {
     close(false);
   };

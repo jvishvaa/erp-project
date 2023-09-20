@@ -50,7 +50,8 @@
       const arr = window.location.host.split('.');
       const schools = ['localhost:3001', 'orchids'];
       const isOrchids =
-        window.location.host.split('.')[0] === 'orchids' 
+        window.location.host.split('.')[0] === 'orchids' || 
+        window.location.host.split('.')[0] === 'orchids-stage'
           ? true
           : false;
       if (!isOrchids) {

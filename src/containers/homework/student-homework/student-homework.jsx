@@ -41,12 +41,14 @@ import StudenthomeworkMobileScreen from './student-homework-mobile-screen';
 import MobileIconScreen from './student-homework-mobileScreen-Icon';
 import MobileDatepicker from './student-homework-mobile-datepicker';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 
 const useStyles = makeStyles((theme) => ({
   root: {
