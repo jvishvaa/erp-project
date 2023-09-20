@@ -146,7 +146,8 @@ const SchoolInformation = ({
     window.location.host.split('.')[0] === 'mcollege' ||
     window.location.host.split('.')[0] === 'aolschool' ||
     window.location.host.split('.')[0] === 'dps' ||
-    window.location.host.split('.')[0] === 'localhost:3000'
+    window.location.host.split('.')[0] === 'localhost:3000' ||
+    window.location.host.split('.')[0] === 'orchids-stage'
       ? true
       : false;
   return (

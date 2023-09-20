@@ -15,6 +15,7 @@ import moment from 'moment';
 import useStyles from './useStyles';
 import { useSelector } from 'react-redux';
 import './styles.scss';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const columns = [
   //   { id: 'id', label: 'Id', minWidth: 170 },
@@ -37,11 +38,12 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'localhost:3000'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'localhost:3000'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
   return (
     <Paper className={`${classes.root} roles-table`}>
       <TableContainer className={classes.container}>

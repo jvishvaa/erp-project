@@ -16,6 +16,7 @@ import Layout from 'containers/Layout';
 import React, { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const AssignUserRole = () => {
   const { Option } = Select;
@@ -45,17 +46,18 @@ const AssignUserRole = () => {
   );
   const isSuperUser = JSON.parse(localStorage.getItem('userDetails'))?.is_superuser;
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'qa' ||
-    window.location.host.split('.')[0] === 'orchids'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'qa' ||
+  //   window.location.host.split('.')[0] === 'orchids'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
-  const isOrchidsbachu =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'localhost:3000'
-      ? true
-      : false;
+  // const isOrchidsbachu =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'localhost:3000'
+  //     ? true
+  //     : false;
 
   useEffect(() => {
     if (NavData && NavData.length) {

@@ -27,13 +27,14 @@ import { Close } from '@material-ui/icons';
 import ViewBook from '../chapterpage/ViewBook';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import unfiltered from 'assets/images/unfiltered.svg';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//     window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 
 const useStyles = makeStyles((theme) => ({
   root: {

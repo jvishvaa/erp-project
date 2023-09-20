@@ -75,6 +75,7 @@ import StudentStrength from 'v2/FaceLift/SchoolStrength';
 import StudentCountReport from 'v2/FaceLift/SchoolStrength/StudentCountReport';
 import ChangePassword from '../v2/FaceLift/ChangePassword';
 import SignatureUploadv2 from 'v2/FaceLift/MasterManagement/signature-upload/signature-table';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const V2Router = () => {
   useEffect(() => {
@@ -111,11 +112,12 @@ const V2Router = () => {
       });
     }
   }, []);
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
   return (
     <Router>

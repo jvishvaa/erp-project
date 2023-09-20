@@ -26,14 +26,16 @@ import { useSelector } from 'react-redux';
 import { SmileOutlined, InfoCircleOutlined, EyeFilled } from '@ant-design/icons';
 import { getFileIcon } from 'v2/getFileIcon';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const { Option } = Select;
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 
 const getSearchParams = (propsObj) => {
   const { location: { search = '' } = {} } = propsObj;

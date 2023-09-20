@@ -30,6 +30,7 @@ import Loader from 'components/loader/loader'
 import { SearchOutlined } from '@material-ui/icons';
 import { Pagination, Table } from 'antd';
 // import './assign-role.css';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const debounce = (fn, delay) => {
   let timeoutId;
@@ -89,11 +90,12 @@ const [ loading , setLoading ] = useState(false)
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa'
+  //     ? true
+  //     : false;
+const isOrchids = IsOrchidsChecker();
 
 
   useEffect(() => {
