@@ -169,7 +169,7 @@ deploy_stage_gcp:
       name: stage
       url: 
     tags:
-      - erp-stage-fe
+      - erp-stage-gcp
     only:
       - stage-gcp_
 
