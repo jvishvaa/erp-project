@@ -11,6 +11,7 @@ import {
 import ReactHtmlParser from 'react-html-parser';
 import { generateHeaderColspan } from './transform-report-card-data';
 import ENVCONFIG from '../../../config/config';
+import endpoints from '../../../config/endpoints';
 
 const orchidsLogo =
   'https://www.orchidsinternationalschool.com/wp-content/uploads/2019/08/logo-01.png';
@@ -67,7 +68,7 @@ const ReportCardHeader = ({
             <Box>
               {cbseAffiliationCode && (
                 <img
-                  src={`https://d3ka3pry54wyko.cloudfront.net/homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512`}
+                  src={`${endpoints.erpBucket}homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512`}
                   alt=''
                   style={{ width: '160px', height: '160px', borderRadius: '50px' }}
                 />

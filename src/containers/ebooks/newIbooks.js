@@ -75,7 +75,7 @@ const NewIbook = (props) => {
   const [chapter, setChapter] = useState('');
   const [keyConcept, setKeyConcept] = useState('');
   const [open, setOpen] = useState(false);
-  const [bookImage, setBookImage] = useState('https://d3ka3pry54wyko.cloudfront.net/');
+  const [bookImage, setBookImage] = useState(endpoints.erpBucket);
   const [bookId, setbookId] = useState('');
   const [chapterId, setchapterId] = useState('');
   const [bookUid, setbookUid] = useState('');

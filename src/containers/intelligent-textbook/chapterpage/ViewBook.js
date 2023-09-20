@@ -6,7 +6,13 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { Card, Divider, Tag, Button, Pagination } from 'antd';
-import { LeftOutlined, EditOutlined, ClearOutlined, CloseSquareOutlined, UndoOutlined } from '@ant-design/icons';
+import {
+  LeftOutlined,
+  EditOutlined,
+  ClearOutlined,
+  CloseSquareOutlined,
+  UndoOutlined,
+} from '@ant-design/icons';
 import axios from 'axios';
 import Auth from './auth';
 
@@ -40,10 +46,7 @@ const ViewBook = (props) => {
   let bookmarksLocalStoreName = `bookmark_${host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
   let highlightsLocalstoreName = `hlight_${host}ibook-static${environment}${type}${bookUid}index.html${localStorageName}`;
 
-  console.log(
-    `${origin}/qbox/${endpoints.ibook.createStudentNotes}`,
-    'checkEndPoint'
-  );
+  console.log(`${origin}/qbox/${endpoints.ibook.createStudentNotes}`, 'checkEndPoint');
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   let notes = [];
@@ -321,10 +324,7 @@ const ViewBook = (props) => {
       setLoading(true);
       const { role_details } = new Auth().isAuthenticated() || {};
       const { token } = new Auth().isAuthenticated() || {};
-      console.log(
-        `${origin}/qbox/${endpoints.ibook.listStudentNotes}`,
-        'checkEndPoint'
-      );
+      console.log(`${origin}/qbox/${endpoints.ibook.listStudentNotes}`, 'checkEndPoint');
       const url = `${origin}/qbox/${endpoints.ibook.listStudentNotes}?book=${bookId}&student=${role_details.erp_user_id}`;
       const result = await axios.get(url);
       console.log({ result });
@@ -421,10 +421,9 @@ const ViewBook = (props) => {
 
   return (
     <>
-   
-      <div >
+      <div>
         <iframe
-          src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}`}
+          src={`${endpoints.erpBucket}${bookPath}${bookUrl}`}
           id='bookReader'
           className='bookReader'
           style={{

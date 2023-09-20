@@ -296,6 +296,7 @@ export default {
     studentSportsSubActivityId: `${newBlogURL}/api/physical_activity_subtype_id/`,
   },
   s3: s3BUCKET,
+  erpBucket: ERP_BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   baseURLCentral,

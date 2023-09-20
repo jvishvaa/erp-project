@@ -221,7 +221,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
               </td>
               <td width='15%' className='text-center'>
                 <img
-                  src={`https://d3ka3pry54wyko.cloudfront.net/${schoolData?.branch_logo}`}
+                  src={`${endpoints.erpBucket}${schoolData?.branch_logo}`}
                   width={'120px'}
                 />
               </td>
