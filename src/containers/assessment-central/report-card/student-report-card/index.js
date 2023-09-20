@@ -26,12 +26,14 @@ import ReportCardNewBack from 'containers/assessment-central/assesment-report-ca
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import EypReportCardPdf from 'containers/assessment-central/assesment-report-card/eypReportCard/eypPdf';
 import FeeReminderAssesment from 'containers/assessment-central/Feereminder';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 
 const StudentReportCard = () => {
   const themeContext = useTheme();

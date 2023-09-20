@@ -17,6 +17,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const PublicSpeakingPrincipalTable = (props) => {
   let userERP = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -372,11 +373,12 @@ const PublicSpeakingPrincipalTable = (props) => {
     setCurrentPageAssigned(page);
   };
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
   return (
     <>

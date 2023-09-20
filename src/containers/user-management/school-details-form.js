@@ -72,7 +72,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     window.location.host.split('.')[0] === 'orchids' ||
     window.location.host.split('.')[0] === 'qa' ||
     window.location.host.split('.')[0] === 'mcollege' ||
-    window.location.host.split('.')[0] === 'dps'
+    window.location.host.split('.')[0] === 'dps' ||
+    window.location.host.split('.')[0] === 'orchids-stage'
       ? true
       : false;
 

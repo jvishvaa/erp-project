@@ -20,12 +20,14 @@ import './viewEbook.css';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import Loader from 'components/loader/loader';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//     window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 

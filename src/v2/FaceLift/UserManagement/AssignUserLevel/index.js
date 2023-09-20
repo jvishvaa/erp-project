@@ -17,6 +17,7 @@ import Layout from 'containers/Layout';
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const AssignUserLevel = () => {
   const { Option } = Select;
@@ -36,21 +37,22 @@ const AssignUserLevel = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [assignUserLevel, setAssignUserLevel] = useState('');
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'qa'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
-  const isOrchidsbachu =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'localhost:3000'
-      ? true
-      : false;
+  // const isOrchidsbachu =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'localhost:3000'
+  //     ? true
+  //     : false;
 
   useEffect(() => {
     fetchUserLevel();

@@ -21,12 +21,14 @@ import { useLocation } from 'react-router-dom';
 import DailyDairy from '../daily-dairy/dairy-card/index';
 import ViewMoreDailyDairyCard from '../daily-dairy/view-more-card/index';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
-const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' ||
-  window.location.host.split('.')[0] === 'qa'
-    ? true
-    : false;
+// const isOrchids =
+//   window.location.host.split('.')[0] === 'orchids' ||
+//   window.location.host.split('.')[0] === 'qa'
+//     ? true
+//     : false;
+const isOrchids = IsOrchidsChecker();
 
 const useStyles = makeStyles((theme) => ({
   root: {

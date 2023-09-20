@@ -51,6 +51,7 @@ import './styles.scss';
 import { IsV2Checker } from 'v2/isV2Checker';
 import { isMsAPI } from 'utility-functions';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
 
@@ -64,11 +65,12 @@ const Appbar = ({ children, history, ...props }) => {
   let acdemicCurrentYear = useSelector((state) => state.commonFilterReducer.selectedYear);
   let branchList = useSelector((state) => state.commonFilterReducer.branchList);
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-      window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'test' || window.location.host.split('.')[0] === 'dev'
-      ? true
-      : false;
+  // const isOrchids =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //     window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'test' || window.location.host.split('.')[0] === 'dev'
+  //     ? true
+  //     : false;
+  const isOrchids = IsOrchidsChecker();
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [centralSchoolLogo, setCentralSchoolLogo] = useState('');

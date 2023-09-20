@@ -64,17 +64,18 @@ const User = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const isOrchidsbachu =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'localhost:3000'
-      ? true
-      : false;
+  // const isOrchidsbachu =
+  //   window.location.host.split('.')[0] === 'orchids' ||
+  //   window.location.host.split('.')[0] === 'localhost:3000'
+  //     ? true
+  //     : false;
 
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
     window.location.host.split('.')[0] === 'qa' ||
     window.location.host.split('.')[0] === 'mcollege' ||
-    window.location.host.split('.')[0] === 'dps'
+    window.location.host.split('.')[0] === 'dps' ||
+    window.location.host.split('.')[0] === 'orchids-stage'
       ? true
       : false;
 
