@@ -15,7 +15,7 @@ import GridList from './gridList';
 import axios from 'axios';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
-
+import { domain_name } from 'v2/commonDomain';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -201,6 +201,7 @@ class ViewEbook extends Component {
       subDomain = hostSplitArray[0];
     }
     const domainTobeSent = subDomain;
+
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
@@ -211,13 +212,13 @@ class ViewEbook extends Component {
     if (tabValue === 0 || tabValue === 1) {
       urlPath = `${
         endpoints.ebook.ebook
-      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
+      }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
         tabValue + 1
       }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     } else if (tabValue === 2) {
       urlPath = `${
         endpoints.ebook.ebook
-      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
 
     axios

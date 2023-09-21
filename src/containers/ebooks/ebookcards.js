@@ -12,6 +12,7 @@ import { Card, Divider, Tag, Button, Pagination, Empty, message } from 'antd';
 import moment from 'moment';
 import './newebook.scss';
 import { EyeFilled } from '@ant-design/icons';
+import { domain_name } from 'v2/commonDomain';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -54,12 +55,7 @@ const EbookCards = (props) => {
 
   const env = window.location.host;
   const domain = window.location.host.split('.');
-  let domain_name =
-    env.includes('qa') || env.includes('localhost')
-      ? 'olvorchidnaigaon'
-      : env.includes('test')
-      ? 'orchids'
-      : domain[0];
+
   const user_level = JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
 
   const handleClickOpen = (data) => {

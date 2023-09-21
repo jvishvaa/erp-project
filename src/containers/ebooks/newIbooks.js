@@ -21,14 +21,13 @@ import {
 import { Tooltip } from 'antd';
 import './newebook.scss';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
-
+import { domain_name } from '../../v2/commonDomain';
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //   window.location.host.split('.')[0] === 'qa'
 //     ? true
 //     : false;
 const isOrchids = IsOrchidsChecker();
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,6 +94,7 @@ const NewIbook = (props) => {
     const { host } = new URL(axiosInstance.defaults.baseURL);
     const hostSplitArray = host.split('.');
     const subDomainLevels = hostSplitArray.length - 2;
+    console.log(hostSplitArray, subDomainLevels, host, 'domain');
     let domain = '';
     let subDomain = '';
     let subSubDomain = '';
@@ -109,6 +109,7 @@ const NewIbook = (props) => {
     }
     return subDomain;
   };
+
   const handleCloseGrievanceModal = () => {
     setShowGrievanceModal(false);
   };
@@ -225,9 +226,7 @@ const NewIbook = (props) => {
       setLoading(true);
       axiosInstance
         .get(
-          `${
-            endpoints.ibook.studentBook
-          }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
+          `${endpoints.ibook.studentBook}?domain_name=${domain_name}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

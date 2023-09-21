@@ -28,7 +28,7 @@ import ViewBook from '../chapterpage/ViewBook';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import unfiltered from 'assets/images/unfiltered.svg';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
-
+import { domain_name } from 'v2/commonDomain';
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //     window.location.host.split('.')[0] === 'qa'
@@ -223,9 +223,7 @@ const AllBooksPage = () => {
       setLoading(true);
       axiosInstance
         .get(
-          `${
-            endpoints.ibook.studentBook
-          }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
+          `${endpoints.ibook.studentBook}?domain_name=${domain_name}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

@@ -17,6 +17,7 @@ import { Card, Divider, Tag, Button, Pagination } from 'antd';
 import moment from 'moment';
 import EbookCards from './ebookcards.js';
 import NewIbook from './newIbooks';
+import { domain_name } from '../../v2/commonDomain';
 const { Option } = Select;
 
 const EbookView = (props) => {
@@ -64,12 +65,6 @@ const EbookView = (props) => {
 
   const env = window.location.host;
   const domain = window.location.host.split('.');
-  let domain_name =
-    env.includes('qa') || env.includes('localhost')
-      ? 'olvorchidnaigaon'
-      : env.includes('test')
-      ? 'orchids'
-      : domain[0];
 
   const fetchVolumeData = () => {
     axios
@@ -133,7 +128,7 @@ const EbookView = (props) => {
     });
     setSubjectData([]);
     handleClearSubject();
-    setPage(1)
+    setPage(1);
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
@@ -183,7 +178,7 @@ const EbookView = (props) => {
     });
   };
   const handleSubject = (item) => {
-    setPage(1)
+    setPage(1);
     if (item) {
       setSubjectId(item.value);
       setCentralSubject(item.centralId);
@@ -197,7 +192,7 @@ const EbookView = (props) => {
   };
   const handleBoard = (e) => {
     setvolumeId(e);
-    setPage(1)
+    setPage(1);
   };
   const handleClearBoard = () => {
     setvolumeId('');
@@ -236,12 +231,12 @@ const EbookView = (props) => {
   });
 
   useEffect(() => {
-      // if (moduleId) {
-      fetchGradeData();
-      fetchVolumeData();
-      setSubjectData([]);
-      // }
-      setRecently(true);
+    // if (moduleId) {
+    fetchGradeData();
+    fetchVolumeData();
+    setSubjectData([]);
+    // }
+    setRecently(true);
   }, [props?.showTab]);
 
   useEffect(() => {
@@ -454,8 +449,7 @@ const EbookView = (props) => {
     return sortedConceptData;
   };
 
-  const handleReadEbook = (data) => {
-  };
+  const handleReadEbook = (data) => {};
 
   return (
     <>
