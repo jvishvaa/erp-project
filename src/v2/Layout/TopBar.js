@@ -52,6 +52,7 @@ import { IsV2Checker } from 'v2/isV2Checker';
 import { isMsAPI } from 'utility-functions';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import { domain_name } from 'v2/commonDomain';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
 
@@ -99,8 +100,8 @@ const Appbar = ({ children, history, ...props }) => {
   const [branch, setBranch] = useState(selectedBranch?.branch?.branch_name);
   const profileDetails = JSON.parse(localStorage.getItem('profileDetails')) || {};
   const [profile, setProfile] = useState(selectedProfileDetails.name);
-  const [hmac, setHmac] = useState(null)
-  const getHmac = localStorage.getItem('hmac') || null
+  const [hmac, setHmac] = useState(null);
+  const getHmac = localStorage.getItem('hmac') || null;
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
     if (navigationData) {
@@ -157,18 +158,18 @@ const Appbar = ({ children, history, ...props }) => {
   const handleFinance = () => {
     window.location.href.includes('dheerajinternational')
       ? window.open(
-        `https://formbuilder.ccavenue.com/live/dheeraj-international-school`,
-        '_blank'
-      )
+          `https://formbuilder.ccavenue.com/live/dheeraj-international-school`,
+          '_blank'
+        )
       : window.open(
-        `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
-        '_blank'
-      );
+          `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+          '_blank'
+        );
   };
 
   const handleCrm = () => {
     console.log(erpID, 'erp', typeof erpID);
-    let onlyId = erpID?.erp
+    let onlyId = erpID?.erp;
     let encryptedID = encodeURIComponent(
       window.btoa(
         JSON.stringify({
@@ -182,25 +183,25 @@ const Appbar = ({ children, history, ...props }) => {
       `${ENVCONFIG?.apiGateway?.crm}/sso-login/?token=${encryptedID}`,
       '_blank'
     );
-  }
+  };
 
   useEffect(() => {
     if (getHmac == null && erpID?.erp && isOrchids) {
-      fetchTokenCrm()
+      fetchTokenCrm();
     }
-  }, [erpID])
+  }, [erpID]);
 
   const fetchTokenCrm = () => {
-    let onlyId = erpID?.erp
+    let onlyId = erpID?.erp;
     let body = {
-      erp: onlyId?.substr(0, onlyId.length - 4)
-    }
+      erp: onlyId?.substr(0, onlyId.length - 4),
+    };
     axios
       .post(`${endpoints.auth.crmHcmToken}`, body)
       .then((response) => {
         console.log(response, 'response');
-        setHmac(response.data.result)
-        localStorage.setItem('hmac' ,response.data.result )
+        setHmac(response.data.result);
+        localStorage.setItem('hmac', response.data.result);
       })
       .catch((error) => {
         console.error('error', error?.message);
@@ -306,7 +307,7 @@ const Appbar = ({ children, history, ...props }) => {
         'x-api-key': 'vikash@12345#1231',
       };
       axios
-        .get(`${endpoints.appBar.schoolLogo}?school_sub_domain_name=${domainTobeSent}`, {
+        .get(`${endpoints.appBar.schoolLogo}?school_sub_domain_name=${domain_name}`, {
           headers,
         })
         .then((response) => {
@@ -550,7 +551,7 @@ const Appbar = ({ children, history, ...props }) => {
                     <img
                       className={classes.logoMObile}
                       src={centralSchoolLogo}
-                    // alt='logo-small'
+                      // alt='logo-small'
                     />
                     {/* <Divider
                       variant='middle'
@@ -636,9 +637,9 @@ const Appbar = ({ children, history, ...props }) => {
                 >
                   <div className='ml-3 d-flex align-items-center'>
                     {userData?.user_level == 1 ||
-                      userData?.user_level == 25 ||
-                      userData?.user_level == 13 ||
-                      userData?.is_superuser == true ? (
+                    userData?.user_level == 25 ||
+                    userData?.user_level == 13 ||
+                    userData?.is_superuser == true ? (
                       <>
                         {apps?.finance == true ? (
                           <>
@@ -660,9 +661,9 @@ const Appbar = ({ children, history, ...props }) => {
                       <></>
                     )}
                     {userData?.user_level == 1 ||
-                      userData?.user_level == 25 ||
-                      userData?.user_level == 13 ||
-                      userData?.is_superuser == true ? (
+                    userData?.user_level == 25 ||
+                    userData?.user_level == 13 ||
+                    userData?.is_superuser == true ? (
                       <>
                         {isMobile ? (
                           <IconButton
@@ -823,9 +824,9 @@ const Appbar = ({ children, history, ...props }) => {
             )}
 
             {userData?.user_level == 1 ||
-              userData?.user_level == 25 ||
-              userData?.user_level == 13 ||
-              userData?.is_superuser == true ? (
+            userData?.user_level == 25 ||
+            userData?.user_level == 13 ||
+            userData?.is_superuser == true ? (
               <>
                 {apps?.finance == true ? (
                   <>
@@ -847,11 +848,11 @@ const Appbar = ({ children, history, ...props }) => {
               <></>
             )}
             {userData?.user_level == 1 ||
-              userData?.user_level == 8 ||
-              userData?.user_level == 13 ||
-              userData?.user_level == 14 ||
-              userData?.user_level == 35 ||
-              userData?.is_superuser == true ? (
+            userData?.user_level == 8 ||
+            userData?.user_level == 13 ||
+            userData?.user_level == 14 ||
+            userData?.user_level == 35 ||
+            userData?.is_superuser == true ? (
               <>
                 {isMobile ? null : (
                   <IconButton
@@ -866,17 +867,16 @@ const Appbar = ({ children, history, ...props }) => {
             ) : (
               <></>
             )}
-            {userData?.user_level == 14 && isOrchids || userData?.user_level == 8 && isOrchids ?
-              <Tooltip title='Redirect to CRM' >
-                <div
-                  className='py-2 th-icon-no-hover th-pointer'
-                  onClick={handleCrm}
-                >
+            {(userData?.user_level == 14 && isOrchids) ||
+            (userData?.user_level == 8 && isOrchids) ? (
+              <Tooltip title='Redirect to CRM'>
+                <div className='py-2 th-icon-no-hover th-pointer' onClick={handleCrm}>
                   <img src={CrmIcon} width='24px' height='24px' />
-
                 </div>
               </Tooltip>
-              : ''}
+            ) : (
+              ''
+            )}
 
             {isMobile ? null : (
               <>
@@ -925,7 +925,6 @@ const Appbar = ({ children, history, ...props }) => {
                     )}
                   </Link>
                 </IconButton>
-
                 <div className={classes.sectionDesktop}>
                   <IconButton
                     className='py-2 th-icon-no-hover'

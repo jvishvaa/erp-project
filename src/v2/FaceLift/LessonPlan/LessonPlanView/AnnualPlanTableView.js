@@ -57,7 +57,7 @@ import diaryIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/diaryIcon.png';
 import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
 import moment from 'moment';
 import { getFileIcon } from 'v2/getFileIcon';
-
+import { domain_name } from '../../../commonDomain';
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -121,15 +121,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const [assignedHWList, setAssignedHWList] = useState([]);
   const [assignedDiaryList, setAssignedDiaryList] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState();
-
-  const env = window.location.host;
-  const domain = window.location.host.split('.');
-  let domain_name =
-    env.includes('qa') || env.includes('localhost')
-      ? 'olvorchidnaigaon'
-      : env.includes('test')
-      ? 'orchids'
-      : domain[0];
 
   const showEbookDrawer = () => {
     setOpenEbook(true);

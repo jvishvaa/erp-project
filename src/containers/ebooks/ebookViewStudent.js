@@ -17,6 +17,7 @@ import { Card, Divider, Tag, Button, Pagination } from 'antd';
 import moment from 'moment';
 import EbookCards from './ebookcards.js';
 import NewIbook from './newIbooks';
+import { domain_name } from '../../v2/commonDomain';
 const { Option } = Select;
 
 const EbookViewStudent = (props) => {
@@ -63,14 +64,6 @@ const EbookViewStudent = (props) => {
   const [ibookSortedData, setIbookSortedData] = useState([]);
   const [showCategoryCount, setShowCategoryCount] = useState(5);
   const [selectedSubject, setSelectedSUbject] = useState('');
-  const env = window.location.host;
-  const domain = window.location.host.split('.');
-  let domain_name =
-    env.includes('qa') || env.includes('localhost')
-      ? 'olvorchidnaigaon'
-      : env.includes('test')
-      ? 'orchids'
-      : domain[0];
 
   const fetchVolumeData = () => {
     axios

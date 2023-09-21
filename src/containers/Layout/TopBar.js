@@ -50,7 +50,7 @@ import MusicIcon from 'assets/dashboardIcons/topbarIcons/music.svg';
 import EventsIcon from 'assets/dashboardIcons/topbarIcons/events.svg';
 import NotificationsIcon from 'assets/dashboardIcons/topbarIcons/notifications.svg';
 import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
-
+import { domain_name } from 'v2/commonDomain';
 import './styles.scss';
 // import { Item } from 'semantic-ui-react';
 
@@ -196,7 +196,7 @@ const Appbar = ({ children, history, ...props }) => {
         'x-api-key': 'vikash@12345#1231',
       };
       axios
-        .get(`${endpoints.appBar.schoolLogo}?school_sub_domain_name=${domainTobeSent}`, {
+        .get(`${endpoints.appBar.schoolLogo}?school_sub_domain_name=${domain_name}`, {
           headers,
         })
         .then((response) => {

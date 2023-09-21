@@ -1,6 +1,7 @@
 if (
   window.location.href.includes('localhost') ||
-  window.location.href.includes('ui-revamp1')
+  window.location.href.includes('ui-revamp1') ||
+  window.location.href.includes('orchids-stage')
 ) {
   var X_DTS_HOST = 'qa.olvorchidnaigaon.letseduvate.com';
 } else if (window.location.href.includes('test.orchids')) {

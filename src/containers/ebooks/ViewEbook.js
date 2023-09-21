@@ -21,7 +21,7 @@ import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import Loader from 'components/loader/loader';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
-
+import { domain_name } from '../../v2/commonDomain';
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //     window.location.host.split('.')[0] === 'qa'
@@ -109,8 +109,7 @@ class ViewEbook extends Component {
       //   }&module_id=${getModuleInfo('Ebook View').id}`
       // )
       .get(
-        `${endpoints.communication.branches}?session_year=${this.state.sessionYear?.id
-        }`
+        `${endpoints.communication.branches}?session_year=${this.state.sessionYear?.id}`
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -255,7 +254,7 @@ class ViewEbook extends Component {
   };
 
   getEbook = (acad, branch, grade, subject, vol, customGrade) => {
-    this.setState({ loading: true })
+    this.setState({ loading: true });
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL);
     const hostSplitArray = host.split('.');
@@ -274,6 +273,7 @@ class ViewEbook extends Component {
     }
 
     const domainTobeSent = subDomain;
+
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterAcadYear = `${acad ? `&session_year=${acad?.session_year}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
@@ -291,17 +291,22 @@ class ViewEbook extends Component {
 
     if (tabValue === 0 || tabValue === 1) {
       if (filterGrade === '') {
-        urlPath = `${endpoints.ebook.ebook
-          }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${tabValue + 1
-          }&grade=[${this.state.central_grade}]`;
+        urlPath = `${
+          endpoints.ebook.ebook
+        }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
+          tabValue + 1
+        }&grade=[${this.state.central_grade}]`;
       } else {
-        urlPath = `${endpoints.ebook.ebook
-          }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${tabValue + 1
-          }${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+        urlPath = `${
+          endpoints.ebook.ebook
+        }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
+          tabValue + 1
+        }${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
       }
     } else if (tabValue === 2) {
-      urlPath = `${endpoints.ebook.ebook
-        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      urlPath = `${
+        endpoints.ebook.ebook
+      }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterAcadYear}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
     axiosInstance
       .get(urlPath, {
@@ -319,10 +324,10 @@ class ViewEbook extends Component {
               result.data.result.data,
             totalEbooks: result.data.result.total_ebooks,
           });
-          this.setState({ loading: false })
+          this.setState({ loading: false });
         } else {
           console.log(result.data.message);
-          this.setState({ loading: false })
+          this.setState({ loading: false });
         }
       })
       .catch((error) => {
@@ -330,7 +335,7 @@ class ViewEbook extends Component {
         if (error.message === 'Request failed with status code 402') {
           this.context.setAlert('error', 'Access Error');
         }
-        this.setState({ loading: false })
+        this.setState({ loading: false });
       });
   };
 
