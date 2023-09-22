@@ -827,7 +827,7 @@ const SubmissionData = withRouter(
                                                 urlPrefix={
                                                   item.includes('/lesson_plan_file/')
                                                     ? `${endpoints.homework.resourcesFiles}`
-                                                    : `${endpoints.discussionForum.s3}/homework`
+                                                    : `${endpoints.discussionForum.s3}`
                                                 }
                                                 index={i + cindex}
                                                 actions={
@@ -857,7 +857,7 @@ const SubmissionData = withRouter(
                                               urlPrefix={
                                                 url.includes('/lesson_plan_file/')
                                                   ? `${endpoints.homework.resourcesFiles}`
-                                                  : `${endpoints.discussionForum.s3}/homework`
+                                                  : `${endpoints.discussionForum.s3}`
                                               }
                                               index={cindex}
                                               actions={
@@ -935,20 +935,21 @@ const SubmissionData = withRouter(
               </Panel>
             </Collapse>
           </div>
-          <div className='d-flex justify-content-between mx-auto' style={{width: '95%', marginBottom: '2px'}}>
-          <span
-            className='th-13 th-fw-600'
-            style={{ color: '#A0A0A1'}}
+          <div
+            className='d-flex justify-content-between mx-auto'
+            style={{ width: '95%', marginBottom: '2px' }}
           >
-            Created By: {selectedHomeworkDetails?.created_by}
-          </span>
-          <span
-            className='th-13 th-fw-600'
-            style={{ color: '#A0A0A1'}}
-          >
-            Creation Date: <span className='th-13 th-fw-600'>{moment(selectedHomeworkDetails?.uploaded_at).format('DD-MM-YYYY, hh:mm A')} </span>
-                  
-          </span>
+            <span className='th-13 th-fw-600' style={{ color: '#A0A0A1' }}>
+              Created By: {selectedHomeworkDetails?.created_by}
+            </span>
+            <span className='th-13 th-fw-600' style={{ color: '#A0A0A1' }}>
+              Creation Date:{' '}
+              <span className='th-13 th-fw-600'>
+                {moment(selectedHomeworkDetails?.uploaded_at).format(
+                  'DD-MM-YYYY, hh:mm A'
+                )}{' '}
+              </span>
+            </span>
           </div>
         </div>
         <Tabs

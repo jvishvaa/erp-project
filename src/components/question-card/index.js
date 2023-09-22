@@ -784,7 +784,7 @@ const QuestionCard = ({
                                     urlPrefix={
                                       item.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}`
-                                        : `${endpoints.discussionForum.s3}/homework`
+                                        : `${endpoints.discussionForum.s3}`
                                     }
                                     index={i + cindex}
                                     actions={
@@ -814,7 +814,7 @@ const QuestionCard = ({
                                   urlPrefix={
                                     url.includes('/lesson_plan_file/')
                                       ? `${endpoints.homework.resourcesFiles}`
-                                      : `${endpoints.discussionForum.s3}/homework`
+                                      : `${endpoints.discussionForum.s3}`
                                   }
                                   index={cindex}
                                   actions={

@@ -7,7 +7,7 @@ import {
   IconButton,
   Badge,
   makeStyles,
-  Button
+  Button,
 } from '@material-ui/core';
 import FileValidators from 'components/file-validation/FileValidators';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -21,7 +21,6 @@ import placeholder from '../../../assets/images/placeholder_small.jpg';
 import DeleteIcon from '@material-ui/icons/Delete';
 import './styles.scss';
 import Loader from '../../../components/loader/loader';
-
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -42,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NewQuestionCard(props) {
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState('');
   const firstUpdate = useRef(true);
   const fileUploadInput = useRef(null);
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
@@ -63,20 +62,20 @@ export default function NewQuestionCard(props) {
   };
 
   useEffect(() => {
-    if(props?.reset){
-        setQuestion("");
-        setAttachmentPreviews([])
-        setAttachments([])
-        setshowPrev(0)
+    if (props?.reset) {
+      setQuestion('');
+      setAttachmentPreviews([]);
+      setAttachments([]);
+      setshowPrev(0);
     }
-  }, [props?.reset])
+  }, [props?.reset]);
 
   useEffect(() => {
     setQuestion(props?.question?.question);
-    setAttachmentPreviews(props?.question?.attachments || [])
-    setAttachments(props?.question?.attachments || [])
-    setshowPrev(0)
-  }, [])
+    setAttachmentPreviews(props?.question?.attachments || []);
+    setAttachments(props?.question?.attachments || []);
+    setshowPrev(0);
+  }, []);
 
   useEffect(() => {
     if (firstUpdate.current) {
@@ -317,7 +316,7 @@ export default function NewQuestionCard(props) {
                             key={`homework_student_question_attachment_${i}`}
                             fileUrl={item}
                             fileName={`${i + 1 + cindex}`}
-                            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                            urlPrefix={`${endpoints.discussionForum.s3}`}
                             index={i}
                             actions={['preview', 'download', 'delete']}
                             onDelete={(index, deletePdf) =>
@@ -335,7 +334,7 @@ export default function NewQuestionCard(props) {
                           key={`homework_student_question_attachment_${pdfindex}`}
                           fileUrl={url}
                           fileName={`${1 + cindex}`}
-                          urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                          urlPrefix={`${endpoints.discussionForum.s3}`}
                           index={pdfindex}
                           actions={['preview', 'download', 'delete']}
                           onDelete={(index, deletePdf) =>
