@@ -78,7 +78,7 @@ export default {
   },
   profile: {
     userDetails: '/erp_user/user-data/',
-    Profilestories: 'https://d3ka3pry54wyko.cloudfront.net/',
+    Profilestories: 'https://acad-cdn-stage.stage-vm.letseduvate.com/',
     studentDetails: '/erp_user/fetch-user-info/',
     getUserStatus: '/erp_user/user-information/',
     getPendingFeeStatus: '/apiV1/fee-defaulters-list/',
@@ -271,7 +271,7 @@ export default {
     getSignatureList: '/erp_user/principle-signature/',
     getErpList: '/erp_user/branch-list/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    s3: 'https://d3ka3pry54wyko.cloudfront.net/',
+    s3: 'https://acad-cdn-stage.stage-vm.letseduvate.com/',
   },
 
   coordinatorTeacherHomeworkApi: {
@@ -309,7 +309,7 @@ export default {
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     overviewSynopsis: `/academic/list-lesson-overview/`,
     s3: `${CENTRAL_BUCKET}`,
-    s3erp: 'https://d3ka3pry54wyko.cloudfront.net/',
+    s3erp: 'https://acad-cdn-stage.stage-vm.letseduvate.com/',
     // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
     // s3: ERP_BUCKET,
     lessonFeedback: `${baseURLCentral}/lesson_plan/lessonplan-feedback/`,
@@ -359,7 +359,7 @@ export default {
     commentList: '/academic/comments-list/',
     replyToAnswer: '/academic/create-answer-replay/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
-    s3: 'https://d3ka3pry54wyko.cloudfront.net',
+    s3: 'https://acad-cdn-stage.stage-vm.letseduvate.com',
     deletePost: '/academic/',
   },
   circular: {
@@ -505,7 +505,7 @@ export default {
     createAssessment: '/assessment/test/',
     deleteAssessmentTest: '/assessment/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
-    s3: 'https://d3ka3pry54wyko.cloudfront.net',
+    s3: 'https://acad-cdn-stage.stage-vm.letseduvate.com',
     examTypeList: '/assessment/exam-type-list/',
     downloadAssessmentPdf: '/assessment/test1/',
     getGroups: '/assessment/list-create-groups/',
@@ -533,7 +533,7 @@ export default {
     imageupload: '/assessment/assessment-document-upload/',
     studentImgs: '/assessment/assessment-document-upload/',
     reUpload: '/assessment/enable-assessment-re-upload/',
-    erpBucket: 'https://d3ka3pry54wyko.cloudfront.net',
+    erpBucket: 'https://acad-cdn-stage.stage-vm.letseduvate.com',
   },
   reportCardConfig: {
     reportcardcomponent: '/assessment/report-card-component/',
@@ -584,7 +584,7 @@ export default {
     ebook: `erp_user/publication/`,
     update_delete: `erp_user/update-destroy-publication/`,
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
-    s3: 'https://d3ka3pry54wyko.cloudfront.net',
+    s3: 'https://acad-cdn-stage.stage-vm.letseduvate.com',
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
@@ -659,7 +659,7 @@ export default {
     ListenedPercentage: '/academic/',
     AddParticipants: '/academic/branch_students/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
-    s3: 'https://d3ka3pry54wyko.cloudfront.net',
+    s3: 'https://acad-cdn-stage.stage-vm.letseduvate.com',
   },
   homeworkReport: {
     branchWiseData: '/academic/teacher_homework_report/',

@@ -69,7 +69,7 @@ export default {
     getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
     getStudentCountReportDataV2: '/erp_user/grade-section-wise-student-count-v2/',
     getConfigAnnouncement: '/assessment/check-sys-config/',
-    erpBucket: 'https://d3ka3pry54wyko.cloudfront.net',
+    erpBucket: 'https://acad-cdn-stage.stage-vm.letseduvate.com',
   },
   adminDashboard: {
     announcements: '/announcement/v2/inbox/',
@@ -275,7 +275,7 @@ export default {
     observationAreaList: '/teacher_observation/create-observation-area/',
     updateObservationArea: '/teacher_observation/update-observation-area/',
   },
-  announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
+  announcementList: { s3erp: 'https://acad-cdn-stage.stage-vm.letseduvate.com/' },
   principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
 
   appVersion: `${baseURLCentral}/central-admin/app-versioning/`,
