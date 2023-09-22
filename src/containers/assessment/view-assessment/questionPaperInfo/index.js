@@ -715,7 +715,7 @@ const QuestionPaperInfo = ({
                                       urlPrefix={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesS3}`
-                                          : `${endpoints.discussionForum.s3}/homework`
+                                          : `${endpoints.discussionForum.s3}`
                                       }
                                       index={i}
                                       actions={['preview', 'download', 'delete']}
@@ -744,7 +744,7 @@ const QuestionPaperInfo = ({
                                     urlPrefix={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesS3}`
-                                        : `${endpoints.discussionForum.s3}/homework`
+                                        : `${endpoints.discussionForum.s3}`
                                     }
                                     index={pdfindex}
                                     actions={['preview', 'download', 'delete']}
@@ -881,7 +881,7 @@ const QuestionPaperInfo = ({
                                       urlPrefix={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesS3}`
-                                          : `${endpoints.discussionForum.s3}/homework`
+                                          : `${endpoints.discussionForum.s3}`
                                       }
                                       index={i}
                                       actions={['preview']}
@@ -905,7 +905,7 @@ const QuestionPaperInfo = ({
                                     urlPrefix={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesS3}`
-                                        : `${endpoints.discussionForum.s3}/homework`
+                                        : `${endpoints.discussionForum.s3}`
                                     }
                                     index={pdfindex}
                                     actions={['preview']}

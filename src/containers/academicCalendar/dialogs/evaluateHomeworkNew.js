@@ -58,7 +58,6 @@ const EvaluateHomeworkOld = withRouter(
     const [hwsubmissionID, setHomeworkSubmissionID] = useState();
 
     useEffect(() => {
-
       fetchHomeworkDetails();
     }, [props?.studentData?.student_homework_id]);
     const handleFinalEvaluationForHomework = async () => {
@@ -94,7 +93,6 @@ const EvaluateHomeworkOld = withRouter(
       } catch (e) {
         setAlert('error', 'Homework Evaluation Failed');
         setLoading(false);
-
       }
     };
     const openInPenTool = (url, fileName, i) => {
@@ -135,7 +133,6 @@ const EvaluateHomeworkOld = withRouter(
         await evaluateHomework(id, reqData);
         setAlert('success', 'Saved Successfully');
         setLoading(false);
-
       } catch (e) {
         setLoading(false);
         setAlert('error', 'Evaluation failed');
@@ -264,7 +261,7 @@ const EvaluateHomeworkOld = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}`}
                                   index={i}
                                   actions={actions}
                                   onOpenInPenTool={openInPenTool}
@@ -305,77 +302,75 @@ const EvaluateHomeworkOld = withRouter(
                     </div>
                   </div>
                 )}
-                {collatedQuestionState.evaluated_files?.length > 0 &&
-                  (
-                    (
-                      <div className='attachments-container with-margin'>
-                        <Typography component='h4' color='primary' className='header'>
-                          Evaluated Attachments
-                        </Typography>
-                        <div className='attachments-list-outer-container'>
-                          <div className='prev-btn'>
-                            {collatedQuestionState.evaluated_files?.length > 2 && (
-                              <IconButton onClick={() => handleScrollEvaluate('left')}>
-                                <ArrowBackIosIcon />
-                              </IconButton>
-                            )}
-                          </div>
-                          <SimpleReactLightbox>
-                            <div
-                              className='attachments-list'
-                              ref={scrollableContainerEvaluated}
-                              onScroll={(e) => {
-                                e.preventDefault();
-                              }}
-                            >
-                              {collatedQuestionState.evaluated_files.map((url, i) => (
-                                <div className='attachment'>
-                                  <Attachment
-                                    key={`homework_student_question_attachment_${i}`}
-                                    fileUrl={url}
-                                    fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                    index={i}
-                                    actions={['preview', 'download', 'delete']}
-                                    onOpenInPenTool={openInPenTool}
-                                  // onDelete={deleteEvaluated}
-                                  />
-                                </div>
-                              ))}
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  width: '0',
-                                  height: '0',
-                                  visibility: 'hidden',
-                                }}
-                              >
-                                <SRLWrapper>
-                                  {collatedQuestionState.evaluated_files?.length &&
-                                    collatedQuestionState.evaluated_files.map((url, i) => (
-                                      <img
-                                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                                        onError={(e) => {
-                                          e.target.src = placeholder;
-                                        }}
-                                        alt={`Attachment-${i + 1}`}
-                                        style={{ width: '0', height: '0' }}
-                                      />
-                                    ))}
-                                </SRLWrapper>
-                              </div>{' '}
-                            </div>
-                          </SimpleReactLightbox>
-                          <div className='next-btn'>
-                            {collatedQuestionState.evaluated_files?.length > 2 && (
-                              <IconButton onClick={() => handleScrollEvaluate('right')}>
-                                <ArrowForwardIosIcon color='primary' />
-                              </IconButton>
-                            )}
-                          </div>
-                        </div>
+                {collatedQuestionState.evaluated_files?.length > 0 && (
+                  <div className='attachments-container with-margin'>
+                    <Typography component='h4' color='primary' className='header'>
+                      Evaluated Attachments
+                    </Typography>
+                    <div className='attachments-list-outer-container'>
+                      <div className='prev-btn'>
+                        {collatedQuestionState.evaluated_files?.length > 2 && (
+                          <IconButton onClick={() => handleScrollEvaluate('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        )}
                       </div>
-                    ))}
+                      <SimpleReactLightbox>
+                        <div
+                          className='attachments-list'
+                          ref={scrollableContainerEvaluated}
+                          onScroll={(e) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          {collatedQuestionState.evaluated_files.map((url, i) => (
+                            <div className='attachment'>
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={url}
+                                fileName={`Attachment-${i + 1}`}
+                                urlPrefix={`${endpoints.discussionForum.s3}`}
+                                index={i}
+                                actions={['preview', 'download', 'delete']}
+                                onOpenInPenTool={openInPenTool}
+                                // onDelete={deleteEvaluated}
+                              />
+                            </div>
+                          ))}
+                          <div
+                            style={{
+                              position: 'absolute',
+                              width: '0',
+                              height: '0',
+                              visibility: 'hidden',
+                            }}
+                          >
+                            <SRLWrapper>
+                              {collatedQuestionState.evaluated_files?.length &&
+                                collatedQuestionState.evaluated_files.map((url, i) => (
+                                  <img
+                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                    style={{ width: '0', height: '0' }}
+                                  />
+                                ))}
+                            </SRLWrapper>
+                          </div>{' '}
+                        </div>
+                      </SimpleReactLightbox>
+                      <div className='next-btn'>
+                        {collatedQuestionState.evaluated_files?.length > 2 && (
+                          <IconButton onClick={() => handleScrollEvaluate('right')}>
+                            <ArrowForwardIosIcon color='primary' />
+                          </IconButton>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div
                   className='comments-remarks-container'
                   style={{ display: 'flex', width: '95%', margin: '0 auto' }}
@@ -465,7 +460,7 @@ const EvaluateHomeworkOld = withRouter(
         {penToolOpen && (
           <DescriptiveTestcorrectionModule
             index={imageIndex}
-            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+            urlPrefix={`${endpoints.discussionForum.s3}`}
             fileUrl={collatedSubmissionFiles}
             // savedFiles={savedFiles}
             desTestDetails={desTestDetails}
@@ -473,9 +468,9 @@ const EvaluateHomeworkOld = withRouter(
             handleClose={handleCloseCorrectionModal}
             alert={undefined}
             open={penToolOpen}
-            callBackOnPageChange={() => { }}
+            callBackOnPageChange={() => {}}
             handleSaveFile={handleSaveEvaluatedFile}
-          // setImage={setImage}
+            // setImage={setImage}
           />
         )}
       </>

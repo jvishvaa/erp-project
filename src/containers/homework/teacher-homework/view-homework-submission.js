@@ -238,11 +238,10 @@ const ViewHomework = withRouter(
       if (isQuestionwise) {
         const currentQuestion = questionsState[activeQuestion - 1];
         const valueToRemove = currentQuestion.corrected_submission[index];
-        currentQuestion.corrected_submission = currentQuestion.corrected_submission.filter(
-          function (item) {
+        currentQuestion.corrected_submission =
+          currentQuestion.corrected_submission.filter(function (item) {
             return item !== valueToRemove;
-          }
-        );
+          });
         setQuestionsState([...questionsState, currentQuestion]);
       } else {
         const currentQuestion = { ...collatedQuestionState };
@@ -596,7 +595,7 @@ const ViewHomework = withRouter(
                                     urlPrefix={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}`
-                                        : `${endpoints.discussionForum.s3}/homework`
+                                        : `${endpoints.discussionForum.s3}`
                                     }
                                     index={i}
                                     actions={actions}
@@ -671,7 +670,7 @@ const ViewHomework = withRouter(
                                     urlPrefix={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}`
-                                        : `${endpoints.discussionForum.s3}/homework`
+                                        : `${endpoints.discussionForum.s3}`
                                     }
                                     index={i}
                                     actions={['preview', 'download', 'delete']}
@@ -748,7 +747,7 @@ const ViewHomework = withRouter(
                                       urlPrefix={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesFiles}`
-                                          : `${endpoints.discussionForum.s3}/homework`
+                                          : `${endpoints.discussionForum.s3}`
                                       }
                                       index={i}
                                       actions={['preview', 'download', 'delete']}
@@ -915,7 +914,7 @@ const ViewHomework = withRouter(
         {penToolOpen && (
           <DescriptiveTestcorrectionModule
             index={imageIndex}
-            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+            urlPrefix={`${endpoints.discussionForum.s3}`}
             fileUrl={!isQuestionwise && collatedSubmissionFiles}
             savedFiles={savedFiles}
             desTestDetails={desTestDetails}

@@ -517,7 +517,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                                         urlPrefix={
                                           item.includes('/lesson_plan_file/')
                                             ? `${endpoints.discussionForum.s3}`
-                                            : `${endpoints.discussionForum.s3}/homework`
+                                            : `${endpoints.discussionForum.s3}`
                                         }
                                         index={i + cindex}
                                         onOpenInPenTool={(item) =>
@@ -542,7 +542,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                                       urlPrefix={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.discussionForum.s3}`
-                                          : `${endpoints.discussionForum.s3}/homework`
+                                          : `${endpoints.discussionForum.s3}`
                                       }
                                       index={cindex}
                                       onOpenInPenTool={(url) => openInPenTool(url, index)}
@@ -664,7 +664,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                               key={`homework_student_question_attachment_${i}`}
                               fileUrl={item}
                               fileName={`Attachment-${i + 1 + cindex}`}
-                              urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                              urlPrefix={`${endpoints.discussionForum.s3}`}
                               index={i + cindex}
                               actions={['preview', 'download', 'delete']}
                               onDelete={(index, deletePdf) =>
@@ -687,7 +687,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             urlPrefix={
                               url.includes('/lesson_plan_file/')
                                 ? `${endpoints.discussionForum.s3}`
-                                : `${endpoints.discussionForum.s3}/homework`
+                                : `${endpoints.discussionForum.s3}`
                             }
                             index={cindex}
                             actions={['preview', 'download', 'delete']}
@@ -790,7 +790,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                               urlPrefix={
                                 item.includes('/lesson_plan_file/')
                                   ? `${endpoints.discussionForum.s3}`
-                                  : `${endpoints.discussionForum.s3}/homework`
+                                  : `${endpoints.discussionForum.s3}`
                               }
                               index={i}
                               actions={['preview', 'download']}
@@ -814,7 +814,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             urlPrefix={
                               url.includes('/lesson_plan_file/')
                                 ? `${endpoints.discussionForum.s3}`
-                                : `${endpoints.discussionForum.s3}/homework`
+                                : `${endpoints.discussionForum.s3}`
                             }
                             index={pdfindex}
                             actions={['preview', 'download']}

@@ -66,31 +66,31 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
-  navCard:{
-    border : `1px solid ${theme.palette.primary.main}`
+  navCard: {
+    border: `1px solid ${theme.palette.primary.main}`,
   },
-  homeworkblock:{
-    color : theme.palette.secondary.main,
-    fontWeight: 600
-  },
-   headerText: {
+  homeworkblock: {
     color: theme.palette.secondary.main,
     fontWeight: 600,
-    fontSize: "1rem",
-    ['@media screen(min-width:768px)']: {
-      fontSize: "0.85rem",
-    }
   },
-  homeworkSubmitwrapper:{
-    border: `1px solid ${theme.palette.primary.main}`,  
-    borderRadius: "10px",
-    padding: "20px",
+  headerText: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    fontSize: '1rem',
     ['@media screen(min-width:768px)']: {
-      margin: "10px",
-      width: "90% !important",
-      height: "auto !important",
-    }
-  }
+      fontSize: '0.85rem',
+    },
+  },
+  homeworkSubmitwrapper: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '10px',
+    padding: '20px',
+    ['@media screen(min-width:768px)']: {
+      margin: '10px',
+      width: '90% !important',
+      height: 'auto !important',
+    },
+  },
 }));
 
 const ViewHomework = withRouter(
@@ -127,8 +127,12 @@ const ViewHomework = withRouter(
         <Grid container spacing={2} className='message_log_container'>
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
-             <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
-                <div className={` ${classes.headerText} text-center non_selected_homework_type_item`}>All Homeworks</div>
+              <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
+                <div
+                  className={` ${classes.headerText} text-center non_selected_homework_type_item`}
+                >
+                  All Homeworks
+                </div>
               </div>
               <div className={` ${classes.navCard} nav-card`}>
                 <div className={` ${classes.headerText} text-center`}>{date}</div>
@@ -145,90 +149,94 @@ const ViewHomework = withRouter(
             <div className={classes.homeworkSubmitwrapper}>
               <div className='homework_block_wrapper'>
                 <div className={`${classes.homeworkblock} homework_submit_tag`}>
-                  Homework - {subjectName}:{' '}{selectedHomeworkDetails?.homework_name}, {date}
+                  Homework - {subjectName}: {selectedHomeworkDetails?.homework_name},{' '}
+                  {date}
                 </div>
               </div>
 
-              {selectedHomeworkDetails && selectedHomeworkDetails?.hw_questions?.map((question, index) => (
-                <div
-                  className='homework-question-container-coordinator'
-                  key={`homework_student_question_${index}`}
-                >
-                  <div className='homework-question'>
-                    <div className='question'>{question.question}</div>
-                  </div>
-                  <div className='attachments-container'>
-                    <Typography component='h4' color='primary' className='header'>
-                      Attachments
-                    </Typography>
-                    <div className='attachments-list-outer-container'>
-                      <div className='prev-btn'>
-                        {question.question_files.length > 1 && (
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
-                        )}
-                      </div>
-                      <SimpleReactLightbox>
-                        <div
-                          className='attachments-list'
-                          ref={scrollableContainer}
-                          onScroll={(e) => {
-                            e.preventDefault();
-                          }}
-                        >
-                          {question.question_files.length === 0 && (
-                            <Typography style={{margin: 'auto'}}>Attachment NOT Found</Typography>
+              {selectedHomeworkDetails &&
+                selectedHomeworkDetails?.hw_questions?.map((question, index) => (
+                  <div
+                    className='homework-question-container-coordinator'
+                    key={`homework_student_question_${index}`}
+                  >
+                    <div className='homework-question'>
+                      <div className='question'>{question.question}</div>
+                    </div>
+                    <div className='attachments-container'>
+                      <Typography component='h4' color='primary' className='header'>
+                        Attachments
+                      </Typography>
+                      <div className='attachments-list-outer-container'>
+                        <div className='prev-btn'>
+                          {question.question_files.length > 1 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
                           )}
-
-                          {question.question_files.map((url, i) => (
-                            <>
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url}
-                                  fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                  index={i}
-                                  actions={['preview', 'download']}
-                                />
-                              </div>
-                            </>
-                          ))}
+                        </div>
+                        <SimpleReactLightbox>
                           <div
-                            style={{
-                              position: 'absolute',
-                              width: '0',
-                              height: '0',
-                              visibility: 'hidden',
+                            className='attachments-list'
+                            ref={scrollableContainer}
+                            onScroll={(e) => {
+                              e.preventDefault();
                             }}
                           >
-                            <SRLWrapper>
-                              {question.question_files.map((url, i) => (
-                                <img
-                                  src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                                  onError={(e) => {
-                                    e.target.src = placeholder;
-                                  }}
-                                  alt={`Attachment-${i + 1}`}
-                                  style={{ width: '0', height: '0' }}
-                                />
-                              ))}
-                            </SRLWrapper>
+                            {question.question_files.length === 0 && (
+                              <Typography style={{ margin: 'auto' }}>
+                                Attachment NOT Found
+                              </Typography>
+                            )}
+
+                            {question.question_files.map((url, i) => (
+                              <>
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${i}`}
+                                    fileUrl={url}
+                                    fileName={`Attachment-${i + 1}`}
+                                    urlPrefix={`${endpoints.discussionForum.s3}`}
+                                    index={i}
+                                    actions={['preview', 'download']}
+                                  />
+                                </div>
+                              </>
+                            ))}
+                            <div
+                              style={{
+                                position: 'absolute',
+                                width: '0',
+                                height: '0',
+                                visibility: 'hidden',
+                              }}
+                            >
+                              <SRLWrapper>
+                                {question.question_files.map((url, i) => (
+                                  <img
+                                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                    style={{ width: '0', height: '0' }}
+                                  />
+                                ))}
+                              </SRLWrapper>
+                            </div>
                           </div>
+                        </SimpleReactLightbox>
+                        <div className='next-btn'>
+                          {question.question_files.length > 1 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
-                      </SimpleReactLightbox>
-                      <div className='next-btn'>
-                        {question.question_files.length > 1 && (
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
-                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
               <div className='homework_submit_button_wrapper'>
                 <Button

@@ -920,7 +920,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   urlPrefix={
                                     file.includes('/lesson_plan_file/')
                                       ? `${endpoints.homework.resourcesFiles}`
-                                      : `${endpoints.discussionForum.s3}/homework`
+                                      : `${endpoints.discussionForum.s3}`
                                   }
                                   index={i}
                                   //onOpenInPenTool={(url) => openInPenTool(url, index)}
@@ -1050,7 +1050,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                       urlPrefix={
                                         file.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesFiles}`
-                                          : `${endpoints.discussionForum.s3}/homework`
+                                          : `${endpoints.discussionForum.s3}`
                                       }
                                       index={i}
                                       //onOpenInPenTool={(url) => openInPenTool(url, index)}
@@ -1142,7 +1142,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           urlPrefix={
                                             item.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}`
-                                              : `${endpoints.discussionForum.s3}/homework`
+                                              : `${endpoints.discussionForum.s3}`
                                           }
                                           index={i + cindex}
                                           onOpenInPenTool={(item) =>
@@ -1170,7 +1170,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                         urlPrefix={
                                           url.includes('/lesson_plan_file/')
                                             ? `${endpoints.homework.resourcesFiles}`
-                                            : `${endpoints.discussionForum.s3}/homework`
+                                            : `${endpoints.discussionForum.s3}`
                                         }
                                         index={cindex}
                                         onOpenInPenTool={(url) =>
@@ -1332,7 +1332,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           urlPrefix={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}`
-                                              : `${endpoints.discussionForum.s3}/homework`
+                                              : `${endpoints.discussionForum.s3}`
                                           }
                                           index={i}
                                           actions={['preview', 'download']}
@@ -1381,7 +1381,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           urlPrefix={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}`
-                                              : `${endpoints.discussionForum.s3}/homework`
+                                              : `${endpoints.discussionForum.s3}`
                                           }
                                           index={i}
                                           actions={['preview', 'download']}
@@ -1465,7 +1465,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                       urlPrefix={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesFiles}`
-                                          : `${endpoints.discussionForum.s3}/homework`
+                                          : `${endpoints.discussionForum.s3}`
                                       }
                                       index={i}
                                       actions={['preview', 'download']}

@@ -68,31 +68,31 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
-  navCard:{
-    border : `1px solid ${theme.palette.primary.main}`
+  navCard: {
+    border: `1px solid ${theme.palette.primary.main}`,
   },
-  homeworkblock:{
-    color : theme.palette.secondary.main,
-    fontWeight: 600
-  },
-   headerText: {
+  homeworkblock: {
     color: theme.palette.secondary.main,
     fontWeight: 600,
-    fontSize: "1rem",
-    ['@media screen(min-width:768px)']: {
-      fontSize: "0.85rem",
-    }
   },
-  homeworkSubmitwrapper:{
-    border: `1px solid ${theme.palette.primary.main}`,  
-    borderRadius: "10px",
-    padding: "20px",
+  headerText: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    fontSize: '1rem',
     ['@media screen(min-width:768px)']: {
-      margin: "10px",
-      width: "90% !important",
-      height: "auto !important",
-    }
-  }
+      fontSize: '0.85rem',
+    },
+  },
+  homeworkSubmitwrapper: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '10px',
+    padding: '20px',
+    ['@media screen(min-width:768px)']: {
+      margin: '10px',
+      width: '90% !important',
+      height: 'auto !important',
+    },
+  },
 }));
 
 const ViewHomework = withRouter(
@@ -132,7 +132,6 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft -= 150;
       } else {
         scrollableContainer.current.scrollLeft += 150;
-       
       }
     };
 
@@ -156,7 +155,7 @@ const ViewHomework = withRouter(
       //   setAlert('error', 'Please provide a remark');
       //   return;
       // }
-      
+
       if (!score) {
         setAlert('error', 'Please provide a score');
         return;
@@ -212,11 +211,10 @@ const ViewHomework = withRouter(
       if (isQuestionwise) {
         const currentQuestion = questionsState[activeQuestion - 1];
         const valueToRemove = currentQuestion.corrected_submission[index];
-        currentQuestion.corrected_submission = currentQuestion.corrected_submission.filter(
-          function (item) {
+        currentQuestion.corrected_submission =
+          currentQuestion.corrected_submission.filter(function (item) {
             return item !== valueToRemove;
-          }
-        );
+          });
         setQuestionsState([...questionsState, currentQuestion]);
       } else {
         const currentQuestion = { ...collatedQuestionState };
@@ -261,7 +259,13 @@ const ViewHomework = withRouter(
     const fetchHomeworkDetails = async () => {
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
-      const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, overall_remark: overallRemarks, score: scores,  id } = data;
+      const {
+        hw_questions: hwQuestions,
+        is_question_wise: isQuestionwise,
+        overall_remark: overallRemarks,
+        score: scores,
+        id,
+      } = data;
       setHomeworkId(id);
       setRemark(overallRemarks);
       setScore(scores);
@@ -284,7 +288,7 @@ const ViewHomework = withRouter(
           remarks: hwQuestions.remark,
           // comments: hwQuestions.comment,
           comments: hwQuestions?.teacher_comment,
-          student_comment: hwQuestions.student_comment
+          student_comment: hwQuestions.student_comment,
         });
       }
     };
@@ -321,17 +325,21 @@ const ViewHomework = withRouter(
         <Grid container spacing={2} className='message_log_container'>
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
-              <div className={` ${classes.navCard} nav-card`}
-                onClick={onClose}>
-                <div className={` ${classes.headerText} text-center non_selected_homework_type_item`}>
+              <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
+                <div
+                  className={` ${classes.headerText} text-center non_selected_homework_type_item`}
+                >
                   All Homeworks
                 </div>
               </div>
-              <div className={` ${classes.navCard} nav-card`}
->
+              <div className={` ${classes.navCard} nav-card`}>
                 <div className={` ${classes.headerText} text-center`}>{date}</div>
-                <div className={` ${classes.headerText} text-center`}>{subject?.split('_')[1]}</div>
-                <div className={` ${classes.headerText} text-center`}>{subject?.split('_')[2]}</div>
+                <div className={` ${classes.headerText} text-center`}>
+                  {subject?.split('_')[1]}
+                </div>
+                <div className={` ${classes.headerText} text-center`}>
+                  {subject?.split('_')[2]}
+                </div>
               </div>
             </div>
           </Grid>
@@ -385,23 +393,28 @@ const ViewHomework = withRouter(
 
               {!isQuestionwise &&
                 submittedHomeworkDetails?.length &&
-                submittedHomeworkDetails.map((question,i) => (
+                submittedHomeworkDetails.map((question, i) => (
                   <>
-                  <div
-                    className='homework-question-container-coordinator'
-                    key={`homework_student_question_${1}`}
-                  >
-                    <div className='homework-question'>
-                      <div className='question'>{question.question}</div>
+                    <div
+                      className='homework-question-container-coordinator'
+                      key={`homework_student_question_${1}`}
+                    >
+                      <div className='homework-question'>
+                        <div className='question'>{question.question}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="overallContainer">
-                  {collatedQuestionState?.student_comment && collatedQuestionState.student_comment[i] &&
-                    <div className="scoreBox1" style={{width:'49%',margin:'1%',marginLeft:'2%'}}>
-                      Student Comment : {collatedQuestionState.student_comment[i]}
-                    </div>}
-                </div>
-                </>
+                    <div className='overallContainer'>
+                      {collatedQuestionState?.student_comment &&
+                        collatedQuestionState.student_comment[i] && (
+                          <div
+                            className='scoreBox1'
+                            style={{ width: '49%', margin: '1%', marginLeft: '2%' }}
+                          >
+                            Student Comment : {collatedQuestionState.student_comment[i]}
+                          </div>
+                        )}
+                    </div>
+                  </>
                 ))}
               {!isQuestionwise && (
                 <>
@@ -432,7 +445,7 @@ const ViewHomework = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}`}
                                   index={i}
                                   actions={['preview', 'download', 'pentool']}
                                   onOpenInPenTool={openInPenTool}
@@ -499,7 +512,7 @@ const ViewHomework = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}`}
                                   index={i}
                                   actions={['preview', 'download', 'delete']}
                                   onOpenInPenTool={openInPenTool}

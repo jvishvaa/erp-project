@@ -38,12 +38,10 @@ const SubmittedQuestion = ({
       scrollableContainer.current.scrollLeft -= 150;
     } else {
       scrollableContainer.current.scrollLeft += 150;
-     
     }
   };
   useEffect(() => {
     // if(scrollableContainer.current.offsetWidth > = )
-   
   }, [scrollableContainer.current]);
 
   const onEvaluate = () => {
@@ -83,7 +81,6 @@ const SubmittedQuestion = ({
             </Button>
           </>
         )}
-
       </div>
       <div className='homework-question'>
         <div className='question'>{question.question}</div>
@@ -118,7 +115,7 @@ const SubmittedQuestion = ({
                         key={`homework_student_question_attachment_${i}`}
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
-                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                        urlPrefix={`${endpoints.discussionForum.s3}`}
                         index={i}
                         actions={['preview', 'download', 'pentool']}
                         onOpenInPenTool={onOpenInPenTool}
@@ -183,7 +180,7 @@ const SubmittedQuestion = ({
                         key={`homework_student_question_attachment_${i}`}
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
-                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                        urlPrefix={`${endpoints.discussionForum.s3}`}
                         index={i}
                         actions={['preview', 'download', 'delete']}
                         onOpenInPenTool={onOpenInPenTool}

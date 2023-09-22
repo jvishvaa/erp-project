@@ -39,12 +39,10 @@ const SubmittedQuestion = ({
   const evaluatedAttachmentsOuterContainer = useRef(null);
   const evaluatedAttachmentsInnerContainer = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [showSubmittedAttachmentArrows, setShowSubmittedAttachmentArrows] = useState(
-    false
-  );
-  const [showEvaluatedAttachmentArrows, setShowEvaluatedAttachmentArrows] = useState(
-    false
-  );
+  const [showSubmittedAttachmentArrows, setShowSubmittedAttachmentArrows] =
+    useState(false);
+  const [showEvaluatedAttachmentArrows, setShowEvaluatedAttachmentArrows] =
+    useState(false);
   const [defaultCommentRemarks, setdefaultCommentRemarks] = useState([
     submittedHomeworkDetails,
   ]);
@@ -185,7 +183,7 @@ const SubmittedQuestion = ({
                         urlPrefix={
                           url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}`
-                            : `${endpoints.discussionForum.s3}/homework`
+                            : `${endpoints.discussionForum.s3}`
                         }
                         index={i}
                         actions={actions}
@@ -262,7 +260,7 @@ const SubmittedQuestion = ({
                         urlPrefix={
                           url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}`
-                            : `${endpoints.discussionForum.s3}/homework`
+                            : `${endpoints.discussionForum.s3}`
                         }
                         index={i}
                         actions={['preview', 'delete', 'download']}
