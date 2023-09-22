@@ -200,8 +200,8 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     className='text-center'
                     src={
                       schoolData?.board_logo
-                        ? `https://acad-cdn-stage.stage-vm.letseduvate.com/${schoolData?.board_logo}`
-                        : 'https://acad-cdn-stage.stage-vm.letseduvate.com/homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512'
+                        ? `${endpoints.announcementList.s3erp}${schoolData?.board_logo}`
+                        : `${endpoints.announcementList.s3erp}homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512`
                     }
                     width={'120px'}
                   />

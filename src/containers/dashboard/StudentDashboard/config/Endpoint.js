@@ -20,9 +20,9 @@ export default {
   },
   s3: {
     BUCKET: `${CENTRAL_BUCKET}`,
-    ERP_BUCKET: 'https://acad-cdn-stage.stage-vm.letseduvate.com/',
-    Userstories: 'https://acad-cdn-stage.stage-vm.letseduvate.com/dev/media/',
-    Audio: 'https://acad-cdn-stage.stage-vm.letseduvate.com/',
+    ERP_BUCKET: ERP_BUCKET,
+    Userstories: `${ERP_BUCKET}dev/media/`,
+    Audio: ERP_BUCKET,
   },
   dashboard: {
     student: {
