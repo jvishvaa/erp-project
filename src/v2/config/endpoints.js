@@ -15,6 +15,7 @@ const {
   s3: {
     BUCKET: s3BUCKET,
     ERP_BUCKET,
+    ERP_BUCKET_2,
     CENTRAL_BUCKET: CENTRAL_BUCKET,
     IBOOK_BUCKET: IBOOK_BUCKET,
   },
@@ -69,7 +70,7 @@ export default {
     getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
     getStudentCountReportDataV2: '/erp_user/grade-section-wise-student-count-v2/',
     getConfigAnnouncement: '/assessment/check-sys-config/',
-    erpBucket: 'https://acad-cdn-stage.stage-vm.letseduvate.com',
+    erpBucket: ERP_BUCKET_2,
   },
   adminDashboard: {
     announcements: '/announcement/v2/inbox/',
@@ -275,7 +276,7 @@ export default {
     observationAreaList: '/teacher_observation/create-observation-area/',
     updateObservationArea: '/teacher_observation/update-observation-area/',
   },
-  announcementList: { s3erp: 'https://acad-cdn-stage.stage-vm.letseduvate.com/' },
+  announcementList: { s3erp: ERP_BUCKET },
   principalSign: `${baseFinanceURL}/apiV1/get-principle-sign/`,
 
   appVersion: `${baseURLCentral}/central-admin/app-versioning/`,
