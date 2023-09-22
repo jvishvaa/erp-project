@@ -78,8 +78,8 @@ const qa = {
 const stage = {
   s3: {
     BUCKET: 'https://mgmt-cdn.letseduvate.com',
-    ERP_BUCKET: 'https://acad-cdn-stage.stage-vm.letseduvate.com/', // ALERT GCP STAGE CDN
-    ERP_BUCKET_2: 'https://acad-cdn-stage.stage-vm.letseduvate.com', // ALERT GCP STAGE CDN
+    ERP_BUCKET: 'https://storage.cloud.google.com/erp-academic-stage/', // ALERT GCP STAGE CDN
+    ERP_BUCKET_2: 'https://storage.cloud.google.com/erp-academic-stage', // ALERT GCP STAGE CDN
     CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
     IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
