@@ -108,7 +108,7 @@ const stage = {
     msOriginUrl: 'https://classes.letseduvate.com',
     xAPIKey: 'vikash@12345#1231',
     baseEvent: 'http://events.letseduvate.com/',
-    newBlogURL: 'https://activities.letseduvate.com',
+    newBlogURL: 'http://activities-stage.stage-gke.letseduvate.com',
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     msReportsUrl: 'https://reports.qa.letseduvate.com',
     crm: 'https://marketing-stage.letseduvate.com',
