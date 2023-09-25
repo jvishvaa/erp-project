@@ -197,6 +197,7 @@ const PhysicalActivityReview = () => {
     'dev.olvorchidnaigaon.letseduvate.com',
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
+    'orchids-stage.stage-vm.letseduvate.com',
   ];
 
   const handleClearBoard = () => {

@@ -15,12 +15,11 @@ import { getModuleInfo } from '../../../utility-functions';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
   overviewSynopsisTag: {
-    fontSize: "16px",
-    fontWeight: "600",
+    fontSize: '16px',
+    fontWeight: '600',
     color: theme.palette.secondary.main,
-  }
-
-}))
+  },
+}));
 
 const LessonViewFilters = ({
   handlePeriodList,
@@ -69,8 +68,9 @@ const LessonViewFilters = ({
     'orchids.letseduvate.com',
     'localhost:3000',
     'dev.olvorchidnaigaon.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com'
-  ]
+    'qa.olvorchidnaigaon.letseduvate.com',
+    'orchids-stage.stage-vm.letseduvate.com',
+  ];
 
   const [filterData, setFilterData] = useState({
     academic: '',
@@ -118,32 +118,74 @@ const LessonViewFilters = ({
   }, [location.pathname]);
 
   const handleAcademicYear = (event, value) => {
-    setFilterData({ ...filterData, year: '', volume: '', branch: '', grade: '', subject: '', chapter: '', board: '', module: '', keyconcept: '' });
-    setBranchDropdown([])
+    setFilterData({
+      ...filterData,
+      year: '',
+      volume: '',
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      board: '',
+      module: '',
+      keyconcept: '',
+    });
+    setBranchDropdown([]);
     setSubjectDropdown([]);
     setChapterDropdown([]);
-    setGradeDropdown([])
-    setBoardDropdown([])
-    setSelectedBoardId([])
-    setModuleDropdown([])
-    setKeyConceptDropdown([])
+    setGradeDropdown([]);
+    setBoardDropdown([]);
+    setSelectedBoardId([]);
+    setModuleDropdown([]);
+    setKeyConceptDropdown([]);
     if (value) {
-      setFilterData({ ...filterData, year: value, volume: '', branch: '', grade: '', subject: '', chapter: '', board: '', module: '', keyconcept: '' });
-      setBranchDropdown([])
+      setFilterData({
+        ...filterData,
+        year: value,
+        volume: '',
+        branch: '',
+        grade: '',
+        subject: '',
+        chapter: '',
+        board: '',
+        module: '',
+        keyconcept: '',
+      });
+      setBranchDropdown([]);
     }
   };
 
   const handleVolume = (event, value) => {
-    setFilterData({ ...filterData, volume: '', branch: '', grade: '', subject: '', chapter: '', board: '', module: '', keyconcept: '' });
+    setFilterData({
+      ...filterData,
+      volume: '',
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      board: '',
+      module: '',
+      keyconcept: '',
+    });
     setSubjectDropdown([]);
     setChapterDropdown([]);
-    setGradeDropdown([])
-    setBoardDropdown([])
-    setSelectedBoardId([])
-    setModuleDropdown([])
-    setKeyConceptDropdown([])
+    setGradeDropdown([]);
+    setBoardDropdown([]);
+    setSelectedBoardId([]);
+    setModuleDropdown([]);
+    setKeyConceptDropdown([]);
     if (value) {
-      setFilterData({ ...filterData, volume: value, branch: '', grade: '', subject: '', chapter: '', board: '', module: '', keyconcept: '' });
+      setFilterData({
+        ...filterData,
+        volume: value,
+        branch: '',
+        grade: '',
+        subject: '',
+        chapter: '',
+        board: '',
+        module: '',
+        keyconcept: '',
+      });
     }
   };
 
@@ -154,7 +196,7 @@ const LessonViewFilters = ({
         handleBoard('', data);
       }
     }
-  }, [filterData?.subject, boardDropdown])
+  }, [filterData?.subject, boardDropdown]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -194,14 +236,23 @@ const LessonViewFilters = ({
     return getModuleInfo(moduleName).id;
   }
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '', board: '', module: '', keyconcept: '', });
+    setFilterData({
+      ...filterData,
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      board: '',
+      module: '',
+      keyconcept: '',
+    });
     setSubjectDropdown([]);
     setChapterDropdown([]);
-    setGradeDropdown([])
-    setBoardDropdown([])
-    setSelectedBoardId([])
-    setModuleDropdown([])
-    setKeyConceptDropdown([])
+    setGradeDropdown([]);
+    setBoardDropdown([]);
+    setSelectedBoardId([]);
+    setModuleDropdown([]);
+    setKeyConceptDropdown([]);
     setOverviewSynopsis([]);
     if (value) {
       setFilterData({
@@ -210,23 +261,27 @@ const LessonViewFilters = ({
         grade: '',
         subject: '',
         chapter: '',
-        board: '', module: '', keyconcept: '',
+        board: '',
+        module: '',
+        keyconcept: '',
       });
-      setSessionBranchGrade({...sessionBranchGrade, branch: value})
+      setSessionBranchGrade({ ...sessionBranchGrade, branch: value });
       setSubjectDropdown([]);
       setChapterDropdown([]);
-      setGradeDropdown([])
-      setBoardDropdown([])
-      setSelectedBoardId([])
-      setModuleDropdown([])
-      setKeyConceptDropdown([])
+      setGradeDropdown([]);
+      setBoardDropdown([]);
+      setSelectedBoardId([]);
+      setModuleDropdown([]);
+      setKeyConceptDropdown([]);
       setOverviewSynopsis([]);
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?session_year=${erpYear?.id}&branch_id=${value.id
-          }&module_id=${location.pathname === '/lesson-plan/student-view'
-            ? studentModuleId
-            : teacherModuleId
+          `${endpoints.communication.grades}?session_year=${erpYear?.id}&branch_id=${
+            value.id
+          }&module_id=${
+            location.pathname === '/lesson-plan/student-view'
+              ? studentModuleId
+              : teacherModuleId
           }`
         )
         .then((result) => {
@@ -253,28 +308,46 @@ const LessonViewFilters = ({
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: '', subject: '', chapter: '', board: '', module: '', keyconcept: '', });
+    setFilterData({
+      ...filterData,
+      grade: '',
+      subject: '',
+      chapter: '',
+      board: '',
+      module: '',
+      keyconcept: '',
+    });
     setChapterDropdown([]);
-    setBoardDropdown([])
-    setSelectedBoardId([])
-    setModuleDropdown([])
-    setKeyConceptDropdown([])
+    setBoardDropdown([]);
+    setSelectedBoardId([]);
+    setModuleDropdown([]);
+    setKeyConceptDropdown([]);
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
-      setFilterData({ ...filterData, grade: value, subject: '', chapter: '', board: '', module: '', keyconcept: '', });
-      setSessionBranchGrade({...sessionBranchGrade,grade:value})
+      setFilterData({
+        ...filterData,
+        grade: value,
+        subject: '',
+        chapter: '',
+        board: '',
+        module: '',
+        keyconcept: '',
+      });
+      setSessionBranchGrade({ ...sessionBranchGrade, grade: value });
       setChapterDropdown([]);
-      setBoardDropdown([])
-      setSelectedBoardId([])
-      setModuleDropdown([])
-      setKeyConceptDropdown([])
+      setBoardDropdown([]);
+      setSelectedBoardId([]);
+      setModuleDropdown([]);
+      setKeyConceptDropdown([]);
       setOverviewSynopsis([]);
       axiosInstance
         .get(
-          `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${erpYear?.id
-          }&branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${location.pathname === '/lesson-plan/student-view'
-            ? studentModuleId
-            : teacherModuleId
+          `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${
+            erpYear?.id
+          }&branch=${filterData.branch.id}&grade=${value.grade_id}&module_id=${
+            location.pathname === '/lesson-plan/student-view'
+              ? studentModuleId
+              : teacherModuleId
           }`
         )
         .then((result) => {
@@ -298,20 +371,34 @@ const LessonViewFilters = ({
   };
 
   const handleSubject = (event, value) => {
-    setFilterData({ ...filterData, subject: '', chapter: '', board: '', module: '', keyconcept: '' });
+    setFilterData({
+      ...filterData,
+      subject: '',
+      chapter: '',
+      board: '',
+      module: '',
+      keyconcept: '',
+    });
     // setSessionBranchGrade({...sessionBranchGrade,grade:value})
     setChapterDropdown([]);
-    setSelectedBoardId([])
-    setModuleDropdown([])
-    setKeyConceptDropdown([])
+    setSelectedBoardId([]);
+    setModuleDropdown([]);
+    setKeyConceptDropdown([]);
     setOverviewSynopsis([]);
     if (filterData.grade && filterData.year && filterData.volume && value) {
-      setLoading(true)
-      setFilterData({ ...filterData, subject: value, chapter: '', board: '', module: '', keyconcept: '' });
+      setLoading(true);
+      setFilterData({
+        ...filterData,
+        subject: value,
+        chapter: '',
+        board: '',
+        module: '',
+        keyconcept: '',
+      });
       setChapterDropdown([]);
-      setSelectedBoardId([])
-      setModuleDropdown([])
-      setKeyConceptDropdown([])
+      setSelectedBoardId([]);
+      setModuleDropdown([]);
+      setKeyConceptDropdown([]);
       setOverviewSynopsis([]);
       if (
         value &&
@@ -325,61 +412,60 @@ const LessonViewFilters = ({
           .then((result) => {
             if (result?.data?.status_code === 200) {
               if (!boardFilterArr.includes(window.location.host)) {
-                setBoardDropdown(result?.data?.result)
+                setBoardDropdown(result?.data?.result);
               }
-              setLoading(false)
-              setBoardDropdown(result?.data?.result)
+              setLoading(false);
+              setBoardDropdown(result?.data?.result);
             } else {
-              setLoading(false)
+              setLoading(false);
               setAlert('error', result.data.message);
               setBoardDropdown([]);
               setChapterDropdown([]);
             }
           })
           .catch((error) => {
-            setLoading(false)
+            setLoading(false);
             setAlert('error', error.message);
             setChapterDropdown([]);
             setBoardDropdown([]);
           });
       }
     } else {
-      setLoading(false)
+      setLoading(false);
       setChapterDropdown([]);
       setBoardDropdown([]);
     }
   };
 
   const handleChapter = (event, value) => {
-    setLoading(true)
+    setLoading(true);
     setFilterData({ ...filterData, chapter: '', keyconcept: '' });
     setOverviewSynopsis([]);
     if (value) {
-      setLoading(true)
-      setSelectedKeyConceptId(value)
+      setLoading(true);
+      setSelectedKeyConceptId(value);
       setFilterData({ ...filterData, chapter: value, keyconcept: '' });
       if (filterData.year && filterData.volume && value.length !== 0) {
-        axiosInstance.get(`academic/get-key-concept-list/?chapter=${value?.id}`)
-          .then(result => {
+        axiosInstance
+          .get(`academic/get-key-concept-list/?chapter=${value?.id}`)
+          .then((result) => {
             if (result.data.status_code === 200) {
-              setLoading(false)
+              setLoading(false);
               setKeyConceptDropdown(result.data.result);
-            }
-            else {
-              setLoading(false)
+            } else {
+              setLoading(false);
               setAlert('error', result.data.message);
               setKeyConceptDropdown([]);
             }
           })
-          .catch(error => {
-            setLoading(false)
+          .catch((error) => {
+            setLoading(false);
             setAlert('error', error.message);
             setKeyConceptDropdown([]);
-          })
+          });
       }
-    }
-    else {
-      setLoading(false)
+    } else {
+      setLoading(false);
       setKeyConceptDropdown([]);
     }
   };
@@ -475,7 +561,7 @@ const LessonViewFilters = ({
         if (year?.session_year === filterData.year?.session_year) {
           erp_year = year;
           setErpYear(year);
-          setSessionBranchGrade({...sessionBranchGrade,session: year})
+          setSessionBranchGrade({ ...sessionBranchGrade, session: year });
           setFilterData({ ...filterData, academic: year });
           return year;
         }
@@ -484,7 +570,8 @@ const LessonViewFilters = ({
       if (erp_year && erp_year?.id) {
         axiosInstance
           .get(
-            `${endpoints.communication.branches}?session_year=${erp_year?.id
+            `${endpoints.communication.branches}?session_year=${
+              erp_year?.id
             }&module_id=${getModuleId()}`
           )
           .then((response) => {
@@ -502,9 +589,11 @@ const LessonViewFilters = ({
             setAlert('error', error.message);
           });
       } else {
-        setAlert('error', `No Data Found For The Academic Year ${filterData.year?.session_year}`)
+        setAlert(
+          'error',
+          `No Data Found For The Academic Year ${filterData.year?.session_year}`
+        );
       }
-
     }
   }, [filterData.year, academicYear]);
 
@@ -515,74 +604,80 @@ const LessonViewFilters = ({
     if (value) {
       setFilterData({ ...filterData, keyconcept: value });
     }
-
-
-
   };
 
-
   const handleModule = (event = {}, value = []) => {
-    setLoading(true)
+    setLoading(true);
     setFilterData({ ...filterData, module: '', chapter: '', keyconcept: '' });
-    setKeyConceptDropdown([])
+    setKeyConceptDropdown([]);
     setOverviewSynopsis([]);
     if (value) {
-      setLoading(true)
-      setSelectedModuleId(value?.id)
-      setKeyConceptDropdown([])
+      setLoading(true);
+      setSelectedModuleId(value?.id);
+      setKeyConceptDropdown([]);
       setFilterData({ ...filterData, chapter: '', module: value, keyconcept: '' });
       axiosInstance
         .get(
-          `${`/academic/central-chapters-list-v3/`}?subject_id=${filterData?.subject?.subject_id
-          }&volume=${filterData.volume.id}&academic_year=${filterData.year.id
-          }&grade_id=${filterData.grade.grade_id}&branch_id=${filterData.branch.id}&board=${selectedBoardId}&module_id=${value?.id}`
+          `${`/academic/central-chapters-list-v3/`}?subject_id=${
+            filterData?.subject?.subject_id
+          }&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${
+            filterData.grade.grade_id
+          }&branch_id=${filterData.branch.id}&board=${selectedBoardId}&module_id=${
+            value?.id
+          }`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
-            setLoading(false)
+            setLoading(false);
             setChapterDropdown(result?.data?.result?.chapter_list);
           } else {
-            setLoading(false)
+            setLoading(false);
             setAlert('error', result.data.message);
             setChapterDropdown([]);
           }
         })
         .catch((error) => {
-          setLoading(false)
+          setLoading(false);
           setAlert('error', error.message);
           setChapterDropdown([]);
         });
     } else {
-      setLoading(false)
+      setLoading(false);
       setChapterDropdown([]);
     }
-
-
   };
 
   const handleBoard = (event = {}, values = []) => {
     setFilterData({ ...filterData, board: '', module: '', chapter: '', keyconcept: '' });
     setChapterDropdown([]);
-    setKeyConceptDropdown([])
-    setModuleDropdown([])
+    setKeyConceptDropdown([]);
+    setModuleDropdown([]);
     setOverviewSynopsis([]);
     if (values.length > 0) {
       setChapterDropdown([]);
-      setKeyConceptDropdown([])
-      setLoading(true)
+      setKeyConceptDropdown([]);
+      setLoading(true);
       const ids = values.map((el) => el);
-      const selectedId = values.map((el) => el?.id)
-      setSelectedBoardId(selectedId)
-      setFilterData({ ...filterData, chapter: '', board: ids, module: '', keyconcept: '' });
+      const selectedId = values.map((el) => el?.id);
+      setSelectedBoardId(selectedId);
+      setFilterData({
+        ...filterData,
+        chapter: '',
+        board: ids,
+        module: '',
+        keyconcept: '',
+      });
       axiosInstance
         .get(
-          `${`academic/get-module-list/`}?subject_id=${filterData?.subject?.subject_id
-          }&volume=${filterData.volume.id}&academic_year=${filterData.year.id
-          }&grade_id=${filterData.grade.grade_id}&branch_id=${filterData.branch.id}&board=${selectedId}`
+          `${`academic/get-module-list/`}?subject_id=${
+            filterData?.subject?.subject_id
+          }&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&grade_id=${
+            filterData.grade.grade_id
+          }&branch_id=${filterData.branch.id}&board=${selectedId}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
-            setLoading(false)
+            setLoading(false);
             setModuleDropdown(result?.data?.result?.module_list);
             setCentralGsMappingId(result?.data?.result?.central_gs_mapping_id);
             setCentralSubjectName(result?.data?.result?.central_subject_name);
@@ -590,27 +685,24 @@ const LessonViewFilters = ({
           } else {
             setAlert('error', result?.data?.message);
             setChapterDropdown([]);
-            setLoading(false)
-            setSelectedBoardId([])
-            setModuleDropdown([])
+            setLoading(false);
+            setSelectedBoardId([]);
+            setModuleDropdown([]);
           }
         })
         .catch((error) => {
-          setLoading(false)
+          setLoading(false);
           setAlert('error', error.message);
           setSelectedBoardId([]);
-          setModuleDropdown([])
-
+          setModuleDropdown([]);
         });
-
     } else {
       setChapterDropdown([]);
-      setLoading(false)
+      setLoading(false);
       setSelectedBoardId([]);
-      setModuleDropdown([])
-
+      setModuleDropdown([]);
     }
-  }
+  };
 
   return (
     <Grid
@@ -716,7 +808,13 @@ const LessonViewFilters = ({
           getOptionLabel={(option) => option?.grade__grade_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' required />
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Grade'
+              placeholder='Grade'
+              required
+            />
           )}
         />
       </Grid>
@@ -747,29 +845,37 @@ const LessonViewFilters = ({
           )}
         />
       </Grid>
-      {(boardFilterArr.includes(window.location.host)) && <Grid
-        item
-        xs={12}
-        sm={4}
-        className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-      >
-        <Autocomplete
-          multiple
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleBoard}
-          id='board'
-          className='dropdownIcon'
-          value={filterData.board || []}
-          options={boardDropdown || []}
-          getOptionLabel={(option) => option?.board_name || ''}
-          // filterSelectedOptions
-          getOptionSelected={(option, value) => option?.id == value?.id}
-          renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Board' placeholder='Board' required />
-          )}
-        />
-      </Grid>}
+      {boardFilterArr.includes(window.location.host) && (
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+        >
+          <Autocomplete
+            multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleBoard}
+            id='board'
+            className='dropdownIcon'
+            value={filterData.board || []}
+            options={boardDropdown || []}
+            getOptionLabel={(option) => option?.board_name || ''}
+            // filterSelectedOptions
+            getOptionSelected={(option, value) => option?.id == value?.id}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Board'
+                placeholder='Board'
+                required
+              />
+            )}
+          />
+        </Grid>
+      )}
       <Grid
         item
         xs={12}
@@ -828,7 +934,8 @@ const LessonViewFilters = ({
           )}
         />
       </Grid>
-      <Grid item
+      <Grid
+        item
         xs={12}
         sm={4}
         className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
@@ -901,10 +1008,11 @@ const LessonViewFilters = ({
                 attachmentsArray: [
                   {
                     src: fileSrc,
-                    name: `${obj.lesson_type === '1'
+                    name: `${
+                      obj.lesson_type === '1'
                         ? 'Portion Document'
                         : 'Yearly Curriculum on the ERP (new)'
-                      }`,
+                    }`,
                     extension: '.' + fileSrc.split('.')[fileSrc.split('.').length - 1],
                   },
                 ],

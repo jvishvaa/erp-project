@@ -97,7 +97,7 @@ const PhysicalActivity = () => {
   );
   const [subActivityId, setSubActivityId] = useState('');
   const [sudActId, setSubActId] = useState(history?.location?.state?.subActiveId[0]);
-  const [subOptId, setSubOptId] = useState(history?.location?.state?.subActiveId)
+  const [subOptId, setSubOptId] = useState(history?.location?.state?.subActiveId);
   const [subActivityListData, setSubActivityListData] = useState([]);
   const [previewLoading, setPreviewLoading] = useState(false);
 
@@ -107,6 +107,7 @@ const PhysicalActivity = () => {
     'dev.olvorchidnaigaon.letseduvate.com',
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
+    'orchids-stage.stage-vm.letseduvate.com',
   ];
 
   useEffect(() => {
@@ -281,10 +282,10 @@ const PhysicalActivity = () => {
 
   useEffect(() => {
     getAssinged();
-    let defaultId = physicalActivityId[0]
+    let defaultId = physicalActivityId[0];
     formRef.current.setFieldsValue({
-      sub_activity: sudActId ? sudActId : defaultId
-    })
+      sub_activity: sudActId ? sudActId : defaultId,
+    });
   }, [currentPageAssigned, sudActId]);
   const getAssinged = () => {
     setLoading(true);
