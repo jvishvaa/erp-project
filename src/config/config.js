@@ -101,7 +101,7 @@ const stage = {
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
-    baseUdaan: 'https://udaansurelearning.com/qbox',
+    baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: 'https://mgmt-stage.stage-gke.letseduvate.com/qbox',
