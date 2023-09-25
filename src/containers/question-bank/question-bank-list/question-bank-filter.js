@@ -24,7 +24,6 @@ const {
 
 const { Option } = Select;
 
-
 const QuestionBankFilters = ({
   questionList,
   questionId,
@@ -40,7 +39,7 @@ const QuestionBankFilters = ({
   setFilter,
   setPage,
   FilteredData,
-  tabIsErpCentral
+  tabIsErpCentral,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -69,7 +68,7 @@ const QuestionBankFilters = ({
   const [moduleDropdown, setModuleDropdown] = useState([]);
   const [selectedKeyConceptId, setSelectedKeyConceptId] = useState([]);
   const [keyConceptDropdown, setKeyConceptDropdown] = useState([]);
-  const [flag,setFlag] = useState(false);
+  const [flag, setFlag] = useState(false);
   const location = useLocation();
   const is_ERP_CENTRAL = [
     { id: 1, flag: false, name: 'ERP' },
@@ -87,7 +86,7 @@ const QuestionBankFilters = ({
     question_level: '',
     question_category: '',
     is_erp_central: tabIsErpCentral,
-    erp_category : ''
+    erp_category: '',
   });
 
   const question_level_options = [
@@ -111,7 +110,6 @@ const QuestionBankFilters = ({
     { value: 5, q_cat: 'Remembering' },
     { value: 6, q_cat: 'Evaluation' },
     { value: 7, q_cat: 'Creating' },
-
   ];
   const questioncategoryoptions = question_categories_options?.map((each) => {
     return (
@@ -138,8 +136,8 @@ const QuestionBankFilters = ({
   });
 
   useEffect(() => {
-  //  if(filterData?.quesType || filterData?.question_category || filterData?.question_level || filterData?.erp_category){
-  handlePeriodList(
+    //  if(filterData?.quesType || filterData?.question_category || filterData?.question_level || filterData?.erp_category){
+    handlePeriodList(
       filterData?.quesType,
       filterData?.question_category,
       filterData?.subject,
@@ -150,13 +148,13 @@ const QuestionBankFilters = ({
       filterData?.chapter,
       filterData?.is_erp_central,
       tabIsErpCentral ? 2 : 0,
-      filterData?.erp_category,
+      filterData?.erp_category
     );
 
-  //  }
-      
-      // setSelectedIndex(-1);
-  },[filterData])
+    //  }
+
+    // setSelectedIndex(-1);
+  }, [filterData]);
 
   // const erpCategorys = erpCategoryDropdown?.map((each) => {
   //   return (
@@ -166,15 +164,14 @@ const QuestionBankFilters = ({
   //   );
   // });
 
-
-
   let boardFilterArr = [
     'orchids.letseduvate.com',
     'localhost:3000',
     'localhost:3001',
     'dev.olvorchidnaigaon.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com'
-  ]
+    'qa.olvorchidnaigaon.letseduvate.com',
+    'orchids-stage.stage-vm.letseduvate.com',
+  ];
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -204,11 +201,10 @@ const QuestionBankFilters = ({
   }, [questionList?.length]);
 
   useEffect(() => {
-    if(selectedBranch && filterData?.year?.id && moduleId){
-      handleBranch('',selectedBranch)
-
+    if (selectedBranch && filterData?.year?.id && moduleId) {
+      handleBranch('', selectedBranch);
     }
-  },[selectedBranch,filterData?.year?.id,moduleId])
+  }, [selectedBranch, filterData?.year?.id, moduleId]);
 
   useEffect(() => {
     if (!boardFilterArr.includes(window.location.host)) {
@@ -217,7 +213,7 @@ const QuestionBankFilters = ({
         handleBoard('', data);
       }
     }
-  }, [filterData?.subject, boardDropdown])
+  }, [filterData?.subject, boardDropdown]);
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
@@ -259,10 +255,10 @@ const QuestionBankFilters = ({
       .catch((error) => {
         setAlert('error', error?.message);
       });
-      axiosInstance
+    axiosInstance
       .get(`${endpoints.questionBank.erpCategory}`)
       .then((result) => {
-        setErpGradeDropdown(result?.data?.result)
+        setErpGradeDropdown(result?.data?.result);
       })
       .catch((error) => {
         setAlert('error', error?.message);
@@ -333,13 +329,14 @@ const QuestionBankFilters = ({
   }
 
   function handleBranch(event, value) {
-    setPage(1)
+    setPage(1);
     setFilterData({
       ...filterData,
       branch: '',
       grade: '',
       subject: '',
-      board: '', module: '',
+      board: '',
+      module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -373,7 +370,7 @@ const QuestionBankFilters = ({
   }
 
   const handleTopic = (event, value) => {
-    setPage(1)
+    setPage(1);
     setFilterData({
       ...filterData,
       topicId: '',
@@ -393,7 +390,7 @@ const QuestionBankFilters = ({
   };
 
   const handleQuestionCategory = (value) => {
-    setPage(1)
+    setPage(1);
     setFilterData({ ...filterData, question_category: '', quesType: '' });
     setPeriodData([]);
     setLoading(true);
@@ -405,12 +402,12 @@ const QuestionBankFilters = ({
     }
   };
   const handleerpCategory = (value) => {
-    setPage(1)
-    setFilterData({ ...filterData, erp_category: '',  });
+    setPage(1);
+    setFilterData({ ...filterData, erp_category: '' });
     setLoading(true);
-    setFlag(false)
+    setFlag(false);
     if (value) {
-      setFlag(true)
+      setFlag(true);
       setFilterData({ ...filterData, erp_category: value });
       setLoading(false);
     } else {
@@ -418,7 +415,7 @@ const QuestionBankFilters = ({
     }
   };
   const handleQuestionLevel = (value) => {
-    setPage(1)
+    setPage(1);
     setFilterData({
       ...filterData,
       question_level: '',
@@ -430,11 +427,10 @@ const QuestionBankFilters = ({
       setLoading(false);
     } else {
       setLoading(false);
-
     }
   };
-  const handleQuestionType = ( value) => {
-    setPage(1)
+  const handleQuestionType = (value) => {
+    setPage(1);
     setFilterData({ ...filterData, quesType: '' });
     setPeriodData([]);
     setPeriodData([]);
@@ -453,7 +449,8 @@ const QuestionBankFilters = ({
       grade: '',
       section: '',
       subject: '',
-      board: '', module: '',
+      board: '',
+      module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -492,11 +489,12 @@ const QuestionBankFilters = ({
   };
 
   const handleSubject = (event, value) => {
-    setPage(1)
+    setPage(1);
     setFilterData({
       ...filterData,
       subject: '',
-      board: '', module: '',
+      board: '',
+      module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -509,18 +507,16 @@ const QuestionBankFilters = ({
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
       if (value) {
         axios
-          .get(`${baseURLCentral}/central-admin/boards/`,
-            {
-              headers: { 'x-api-key': 'vikash@12345#1231' }
-            }
-          )
+          .get(`${baseURLCentral}/central-admin/boards/`, {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          })
           .then((result) => {
             if (result?.data?.status_code === 200) {
               // setChapterDropdown(result?.data?.result);
               if (!boardFilterArr.includes(window.location.host)) {
-                setBoardDropdown(result?.data?.result)
+                setBoardDropdown(result?.data?.result);
               }
-              setBoardDropdown(result?.data?.result)
+              setBoardDropdown(result?.data?.result);
               setLoading(false);
             } else {
               setAlert('error', result?.data?.message);
@@ -539,7 +535,7 @@ const QuestionBankFilters = ({
       if (value) {
         axiosInstance
           .get(
-            `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${value?.id}&subject=${value?.subject_id}`,
+            `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${value?.id}&subject=${value?.subject_id}`
           )
           .then((result) => {
             if (result?.data?.status_code === 200) {
@@ -566,11 +562,10 @@ const QuestionBankFilters = ({
       ...filterData,
       question_level: '',
     });
-  }
-
+  };
 
   const handleBoard = (event = {}, values = []) => {
-    setPage(1)
+    setPage(1);
     setFilterData({ ...filterData, board: '', module: '', chapter: '', keyconcept: '' });
     setChapterDropdown([]);
     setKeyConceptDropdown([]);
@@ -592,7 +587,7 @@ const QuestionBankFilters = ({
       // axios
       axiosInstance
         .get(
-          `academic/get-central-module-list/?subject_id=${filterData?.subject?.subject_id}&grade_id=${filterData.grade.grade_id}&branch_id=${filterData?.branch?.branch?.id}&board=${selectedId}`,
+          `academic/get-central-module-list/?subject_id=${filterData?.subject?.subject_id}&grade_id=${filterData.grade.grade_id}&branch_id=${filterData?.branch?.branch?.id}&board=${selectedId}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
@@ -625,7 +620,7 @@ const QuestionBankFilters = ({
   };
 
   const handleModule = (event = {}, value = []) => {
-    setPage(1)
+    setPage(1);
     setLoading(true);
     setFilterData({ ...filterData, module: '', chapter: '', keyconcept: '' });
     if (value) {
@@ -634,7 +629,7 @@ const QuestionBankFilters = ({
       setFilterData({ ...filterData, chapter: '', module: value, keyconcept: '' });
       axiosInstance
         .get(
-          `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.id}&subject=${filterData?.subject?.subject_id}&board_id=${selectedBoardId}&module_id=${value?.id}`,
+          `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.id}&subject=${filterData?.subject?.subject_id}&board_id=${selectedBoardId}&module_id=${value?.id}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
@@ -659,7 +654,7 @@ const QuestionBankFilters = ({
   };
 
   const handleChapter = (event, value) => {
-    setPage(1)
+    setPage(1);
     setFilterData({
       ...filterData,
       chapter: '',
@@ -718,7 +713,7 @@ const QuestionBankFilters = ({
   }
 
   const handleFilter = () => {
-    setFilter(true)
+    setFilter(true);
     if (!filterData?.year) {
       setAlert('error', 'Select Academic Year!');
       return;
@@ -750,7 +745,7 @@ const QuestionBankFilters = ({
       filterData?.chapter,
       filterData?.is_erp_central,
       0,
-      filterData?.erp_category,
+      filterData?.erp_category
     );
     setSelectedIndex(-1);
   };
@@ -759,120 +754,116 @@ const QuestionBankFilters = ({
     <>
       {loading ? <Loading message='Loading...' /> : null}
 
-  
       <div className='col-12 mt-2 th-bg-white'>
-            <Form id='filterForm' ref={formRef} layout={'horizontal'}>
-              <div className='row align-items-center'>
-                {/* {boardFilterArr.includes(window.location.host) && ( */}
-                  <div className='col-md-2 col-6 pl-0'>
-                    <div className='mb-2 text-left'>Question Level</div>
-                    <Form.Item name='question_level'>
-                      <Select
-                        allowClear
-                        placeholder='Question Level'
-                        showSearch
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                        onChange={(e) => {
-                          handleQuestionLevel(e);
-                        }}
-                        onClear={Clearquestionlevel}
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                        bordered={false}
-                      >
-                        {questionLeveloptions}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                {/* )} */}
-                <div className='col-md-2 col-6'>
-                  <div className='mb-2 text-left'>Question Category</div>
-                  <Form.Item name='question category'>
-                    <Select
-                      allowClear
-                      placeholder= 'Question category'
-                      showSearch
-                      // disabled={user_level == 13}
-                      optionFilterProp='children'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e) => {
-                        handleQuestionCategory(e);
-                      }}
-                      // onClear={handleClearGrade}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={false}
-                    >
-                      {questioncategoryoptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-2 col-6 '>
-                  <div className='mb-2 text-left'>Question Type</div>
-                  <Form.Item name='question type'>
-                    <Select
-                    allowClear
-                      placeholder='Question Type'
-                      showSearch
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(e, value) => {
-                        handleQuestionType(e,value)}}
-                      // onClear={handleClearSubject}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={false}
-                    >
-                      {questionTypes}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-2 col-6'>
-                  <div className='mb-2 text-left'>ERP Category</div>
-                  <Form.Item name='ERP category'>
-                    <Select
-                      allowClear
-                      placeholder= 'ERP category'
-                      showSearch
-                      // disabled={user_level == 13}
-                      optionFilterProp='children'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      onChange={(value) => {
-                        handleerpCategory(value);
-                      }}
-                      // onClear={handleClearGrade}
-                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                      bordered={false}
-                    >
-                      {erpCategories}
-                    </Select>
-                  </Form.Item>
-                </div>
-              </div>
-              
-            </Form>
-          </div> 
-
-
+        <Form id='filterForm' ref={formRef} layout={'horizontal'}>
+          <div className='row align-items-center'>
+            {/* {boardFilterArr.includes(window.location.host) && ( */}
+            <div className='col-md-2 col-6 pl-0'>
+              <div className='mb-2 text-left'>Question Level</div>
+              <Form.Item name='question_level'>
+                <Select
+                  allowClear
+                  placeholder='Question Level'
+                  showSearch
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e) => {
+                    handleQuestionLevel(e);
+                  }}
+                  onClear={Clearquestionlevel}
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {questionLeveloptions}
+                </Select>
+              </Form.Item>
+            </div>
+            {/* )} */}
+            <div className='col-md-2 col-6'>
+              <div className='mb-2 text-left'>Question Category</div>
+              <Form.Item name='question category'>
+                <Select
+                  allowClear
+                  placeholder='Question category'
+                  showSearch
+                  // disabled={user_level == 13}
+                  optionFilterProp='children'
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e) => {
+                    handleQuestionCategory(e);
+                  }}
+                  // onClear={handleClearGrade}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {questioncategoryoptions}
+                </Select>
+              </Form.Item>
+            </div>
+            <div className='col-md-2 col-6 '>
+              <div className='mb-2 text-left'>Question Type</div>
+              <Form.Item name='question type'>
+                <Select
+                  allowClear
+                  placeholder='Question Type'
+                  showSearch
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e, value) => {
+                    handleQuestionType(e, value);
+                  }}
+                  // onClear={handleClearSubject}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {questionTypes}
+                </Select>
+              </Form.Item>
+            </div>
+            <div className='col-md-2 col-6'>
+              <div className='mb-2 text-left'>ERP Category</div>
+              <Form.Item name='ERP category'>
+                <Select
+                  allowClear
+                  placeholder='ERP category'
+                  showSearch
+                  // disabled={user_level == 13}
+                  optionFilterProp='children'
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(value) => {
+                    handleerpCategory(value);
+                  }}
+                  // onClear={handleClearGrade}
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                  bordered={false}
+                >
+                  {erpCategories}
+                </Select>
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
+      </div>
 
       {/* <Grid
         container

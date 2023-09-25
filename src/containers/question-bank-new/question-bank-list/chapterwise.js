@@ -1,5 +1,16 @@
 import React, { useState, useEffect, createRef } from 'react';
-import { Select, Form, message, Spin, Breadcrumb, Table, Tooltip, Button, Tabs, Pagination } from 'antd';
+import {
+  Select,
+  Form,
+  message,
+  Spin,
+  Breadcrumb,
+  Table,
+  Tooltip,
+  Button,
+  Tabs,
+  Pagination,
+} from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
@@ -39,6 +50,7 @@ const Chapterwise = () => {
     'dev.olvorchidnaigaon.letseduvate.com',
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
+    'orchids-stage.stage-vm.letseduvate.com',
   ];
 
   const selectedAcademicYear = useSelector(
@@ -70,35 +82,35 @@ const Chapterwise = () => {
   const [selectedChapter, setSelectedChapter] = useState([]);
   const [loadingInner, setLoadingInner] = useState(false);
   const [selectedKeyConcept, setSelectedKeyConcept] = useState([]);
-  const [boardName, setBoardName] = useState('CBSE')
-  const filters = history?.location?.state?.filters
-  const [questionId, setQuestionId] = useState(query.get('question'))
-  const [section, setSection] = useState(query.get('section'))
-  const [isEdit, setIsEdit] = useState(query.get('isedit'))
-  const [Historic, setHistoric] = useState(false)
+  const [boardName, setBoardName] = useState('CBSE');
+  const filters = history?.location?.state?.filters;
+  const [questionId, setQuestionId] = useState(query.get('question'));
+  const [section, setSection] = useState(query.get('section'));
+  const [isEdit, setIsEdit] = useState(query.get('isedit'));
+  const [Historic, setHistoric] = useState(false);
   const [showTab, setShowTab] = useState('1');
-  const [changeRecent, setChangeRecent] = useState(false)
+  const [changeRecent, setChangeRecent] = useState(false);
   const [HistoricData, setHistoricData] = useState([]);
-  const [page, setPage] = useState(1)
-  const [totalPage, setTotalpage] = useState('')
-  const [ chapterType , setChapterType ] = useState(0)
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalpage] = useState('');
+  const [chapterType, setChapterType] = useState(0);
 
   const onChangeTab = (e) => {
-    console.log(e , 'tab');
-    if(e == 1){
-      setPage(1)
-      setChapterType(0)
+    console.log(e, 'tab');
+    if (e == 1) {
+      setPage(1);
+      setChapterType(0);
     } else {
-      setPage(1)
-      setChapterType(1)
+      setPage(1);
+      setChapterType(1);
     }
-    setShowTab(e)
-  }
+    setShowTab(e);
+  };
 
   const handlePagechange = (e) => {
-    setPage(e)
+    setPage(e);
     console.log(e, page);
-  }
+  };
   // const fetchchapterwiseData = (params = {}) => {
   //   setFiltered(true);
   //   setLoading(true);
@@ -123,34 +135,33 @@ const Chapterwise = () => {
 
   useEffect(() => {
     if (filters) {
-      setBoardName(filters?.boardName)
-      setSubjectName(filters?.subjectName)
+      setBoardName(filters?.boardName);
+      setSubjectName(filters?.subjectName);
       // setGradeName(filters?.gradeName)
-      setBoardId(filters?.boardId)
+      setBoardId(filters?.boardId);
       // setGradeId(filters?.gradeId)
       // setSubjectId(filters?.subjectId)
       handleGrade({
         value: filters?.grade,
-        children: filters?.gradeName
-      })
+        children: filters?.gradeName,
+      });
       handleSubject({
         value: filters?.subjectId,
-        children: filters?.subjectName
-      })
+        children: filters?.subjectName,
+      });
       if (filters.questionId) {
-        setQuestionId(filters?.questionId)
-        setSection(filters?.section)
-        setIsEdit(filters?.isEdit)
+        setQuestionId(filters?.questionId);
+        setSection(filters?.section);
+        setIsEdit(filters?.isEdit);
       }
-
     }
-  }, [filters])
+  }, [filters]);
 
   useEffect(() => {
-    if(history?.location?.state?.filters?.Historic == true){
-      setHistoric(true)
+    if (history?.location?.state?.filters?.Historic == true) {
+      setHistoric(true);
     }
-  },[history])
+  }, [history]);
 
   // useEffect(()=>{
   //   if(filters && gradeId){
@@ -254,11 +265,11 @@ const Chapterwise = () => {
   };
   const handleBoard = (e, value) => {
     setBoardId(e);
-    setBoardName(value?.children)
+    setBoardName(value?.children);
   };
   const handleClearBoard = () => {
     setBoardId('');
-    setBoardName('')
+    setBoardName('');
   };
 
   const gradeOptions = gradeData?.map((each) => {
@@ -312,14 +323,13 @@ const Chapterwise = () => {
   useEffect(() => {
     if (subjectId && gradeId) {
       if (Historic == false) {
-
         fetchAnnualPlanData({
           grade: gradeId,
           // volume_id: 38,
           subject: subjectId,
           academic_session: selectedBranch?.id,
           academic_year: selectedAcademicYear?.session_year,
-          session_year: selectedAcademicYear?.id
+          session_year: selectedAcademicYear?.id,
           // board: boardId,
         });
       } else {
@@ -328,20 +338,26 @@ const Chapterwise = () => {
           subject: subjectId,
           page: page,
           page_size: 10,
-          chapter_type : chapterType
-        })
+          chapter_type: chapterType,
+        });
       }
     }
-  }, [subjectId, boardId, gradeId , page , chapterType]);
+  }, [subjectId, boardId, gradeId, page, chapterType]);
 
   const fetchKeyConceptsData = (params = {}) => {
     setLoadingInner(true);
-    const url = Historic == true ? "assessment/v2/question_count/" : "assessment/question_count/"
+    const url =
+      Historic == true ? 'assessment/v2/question_count/' : 'assessment/question_count/';
     axios
-      .get(`${url}?chapter_id=${params?.chapter_id}&is_central=${params?.is_central ? 1 : 0}`, {
-        // .get(`academic/annual-plan/key-concepts/`, { 
-        // params: { ...params },
-      })
+      .get(
+        `${url}?chapter_id=${params?.chapter_id}&is_central=${
+          params?.is_central ? 1 : 0
+        }`,
+        {
+          // .get(`academic/annual-plan/key-concepts/`, {
+          // params: { ...params },
+        }
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setKeyConceptsData(result?.data?.result);
@@ -360,12 +376,15 @@ const Chapterwise = () => {
     setFiltered(true);
     setLoading(true);
     axios
-      .get(`assessment/v1/questions-list/`, { //questions-list-V1/
+      .get(`assessment/v1/questions-list/`, {
+        //questions-list-V1/
         params: { ...params },
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          let filteredchapters = result?.data?.result?.filter((item) => item?.keyconcept !== null)
+          let filteredchapters = result?.data?.result?.filter(
+            (item) => item?.keyconcept !== null
+          );
           setAnnualPlanData(filteredchapters);
           // setYCPData(result?.data?.data?.lp_ycp_data);
           // setFiltered(false)
@@ -388,14 +407,15 @@ const Chapterwise = () => {
     setFiltered(true);
     setLoading(true);
     axios
-      .get(endpoints.teacherAssessment.historicQuestion, { //questions-list-V1/
+      .get(endpoints.teacherAssessment.historicQuestion, {
+        //questions-list-V1/
         params: { ...params },
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
           console.log(result);
-          setHistoricData(result.data.result)
-          setTotalpage(result.data.result?.total)
+          setHistoricData(result.data.result);
+          setTotalpage(result.data.result?.total);
           setLoading(false);
         } else {
           setLoading(false);
@@ -416,7 +436,7 @@ const Chapterwise = () => {
       setSelectedChapter(record);
       fetchKeyConceptsData({
         chapter_id: record.chapter_id,
-        is_central: record?.is_central
+        is_central: record?.is_central,
       });
     }
 
@@ -439,15 +459,15 @@ const Chapterwise = () => {
       section: section,
       isEdit: isEdit,
       showTab: showTab,
-      Historic: Historic
+      Historic: Historic,
 
       // request_type : 1
     };
     history.push({
       pathname: '/question-bank',
       state: {
-        params: params
-      }
+        params: params,
+      },
     });
   };
 
@@ -481,14 +501,11 @@ const Chapterwise = () => {
           return (
             <div
               className='th-black-1 th-pointer'
-            // style={{ maxWidth: window.innerWidth < 768 ? '140px' : '300px' }}
+              // style={{ maxWidth: window.innerWidth < 768 ? '140px' : '300px' }}
             >
               {/* <div className='col-md-2 col-0'></div>
               <div className='col-md-10 col-12 px-md-0'> */}
-              <Tooltip
-                placement='bottom'
-                title={<span>{row.topic_name}</span>}
-              >
+              <Tooltip placement='bottom' title={<span>{row.topic_name}</span>}>
                 {/* <div className='text-truncate th-width-95 text-center'> */}
                 {index + 1}. {row.topic_name}
                 {/* </div> */}
@@ -508,24 +525,38 @@ const Chapterwise = () => {
             // <span className='th-black-1'>{data}</span>
             <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
               <div className='w-20 eduvate'>
-                {row?.eduvate_qp_count >= 0 ? <div //onClick={fetchQuestionCards(data)}
-                  style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color: '#3d69be', borderRadius: '15px' }}
-                >
-                  {row?.eduvate_qp_count}
-                </div> : null}
+                {row?.eduvate_qp_count >= 0 ? (
+                  <div //onClick={fetchQuestionCards(data)}
+                    style={{
+                      border: '1px solid #Ecf2ff',
+                      background: '#Ecf2ff',
+                      width: '100%',
+                      color: '#3d69be',
+                      borderRadius: '15px',
+                    }}
+                  >
+                    {row?.eduvate_qp_count}
+                  </div>
+                ) : null}
               </div>
               <div className='w-20 school'>
-                {row?.school_qp_count >= 0 ? <div
-                  style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%', color: '#b33dbe', borderRadius: '15px' }}
-                >
-                  {row?.school_qp_count}
-
-                </div> : null}
+                {row?.school_qp_count >= 0 ? (
+                  <div
+                    style={{
+                      border: '1px solid #f0d8f2',
+                      background: '#f0d8f2',
+                      width: '100%',
+                      color: '#b33dbe',
+                      borderRadius: '15px',
+                    }}
+                  >
+                    {row?.school_qp_count}
+                  </div>
+                ) : null}
               </div>
-
             </div>
-          )
-        }
+          );
+        },
       },
       {
         title: '',
@@ -548,7 +579,15 @@ const Chapterwise = () => {
         pagination={false}
         showHeader={false}
         bordered={false}
-        rowClassName={(record, index) => `th-pointer th-row ${Historic == true && showTab == 1 ? 'school-qp-count' : Historic == true && showTab == 2 ? 'eduvate-qp-count' : ''}`}
+        rowClassName={(record, index) =>
+          `th-pointer th-row ${
+            Historic == true && showTab == 1
+              ? 'school-qp-count'
+              : Historic == true && showTab == 2
+              ? 'eduvate-qp-count'
+              : ''
+          }`
+        }
         onRow={(row, rowIndex) => {
           return {
             onClick: (event) => {
@@ -603,37 +642,55 @@ const Chapterwise = () => {
           // <div style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width:'45%' }}>{data}</div>
           // </div>
           <div row style={{ display: 'flex', justifyContent: 'space-around' }}>
-            <div className='w-20 eduvate'>{(row?.eduvate_qp_count != null) ? <div
-              style={{ border: '1px solid #Ecf2ff', background: '#Ecf2ff', width: '100%', color: '#3d69be', borderRadius: '15px' , whiteSpace: 'nowrap' }}
-            >
-              {row?.eduvate_qp_count}
-            </div> : null}</div>
-            <div className='w-20 school'>
-              {(row?.school_qp_count != null) ? <div
-                style={{ border: '1px solid #f0d8f2', background: '#f0d8f2', width: '100%', color: '#b33dbe', borderRadius: '15px' ,  whiteSpace: 'nowrap' }}
-              >
-                {row?.school_qp_count}
-              </div> : null}
+            <div className='w-20 eduvate'>
+              {row?.eduvate_qp_count != null ? (
+                <div
+                  style={{
+                    border: '1px solid #Ecf2ff',
+                    background: '#Ecf2ff',
+                    width: '100%',
+                    color: '#3d69be',
+                    borderRadius: '15px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {row?.eduvate_qp_count}
+                </div>
+              ) : null}
             </div>
-
+            <div className='w-20 school'>
+              {row?.school_qp_count != null ? (
+                <div
+                  style={{
+                    border: '1px solid #f0d8f2',
+                    background: '#f0d8f2',
+                    width: '100%',
+                    color: '#b33dbe',
+                    borderRadius: '15px',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {row?.school_qp_count}
+                </div>
+              ) : null}
+            </div>
           </div>
         );
       },
     },
   ].filter((item) => item.visible !== 'false');
 
-
   const handleHistoric = () => {
-    handleClearGrade()
-    setAnnualPlanData([])
-    setHistoricData([])
-    setPage(1)
+    handleClearGrade();
+    setAnnualPlanData([]);
+    setHistoricData([]);
+    setPage(1);
     if (Historic == false) {
-      setHistoric(true)
+      setHistoric(true);
     } else {
-      setHistoric(false)
+      setHistoric(false);
     }
-  }
+  };
 
   return (
     <React.Fragment>
@@ -645,16 +702,20 @@ const Chapterwise = () => {
               <Breadcrumb.Item className='th-black-1 th-18'>
                 Question Bank
               </Breadcrumb.Item>
-              {Historic == true ?
+              {Historic == true ? (
                 <Breadcrumb.Item className='th-black-1 th-18'>
                   Historical Questions
-                </Breadcrumb.Item> : ''
-              }
+                </Breadcrumb.Item>
+              ) : (
+                ''
+              )}
             </Breadcrumb>
           </div>
         </div>
-        <div className={Historic == false ? 'row th-bg-white py-2' : 'row th-bg-grey py-2'}>
-          {Historic == false ?
+        <div
+          className={Historic == false ? 'row th-bg-white py-2' : 'row th-bg-grey py-2'}
+        >
+          {Historic == false ? (
             <div className='col-12'>
               <Form id='filterForm' ref={formRef} layout={'horizontal'}>
                 <div className='row align-items-center'>
@@ -687,7 +748,9 @@ const Chapterwise = () => {
                   </div> */}
                   {/* )} */}
                   <div className='col-md-2 col-6 px-0 pl-0'>
-                    <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Grade</div>
+                    <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>
+                      Grade
+                    </div>
                     <Form.Item name='grade'>
                       <Select
                         allowClear
@@ -704,7 +767,8 @@ const Chapterwise = () => {
                         optionFilterProp='children'
                         filterOption={(input, options) => {
                           return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
                           );
                         }}
                         onChange={(e, value) => {
@@ -719,7 +783,9 @@ const Chapterwise = () => {
                     </Form.Item>
                   </div>
                   <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-                    <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Subject</div>
+                    <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>
+                      Subject
+                    </div>
                     <Form.Item name='subject'>
                       <Select
                         allowClear
@@ -736,7 +802,8 @@ const Chapterwise = () => {
                         // defaultValue={subjectName}
                         filterOption={(input, options) => {
                           return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
                           );
                         }}
                         onChange={(e, value) => {
@@ -750,54 +817,58 @@ const Chapterwise = () => {
                       </Select>
                     </Form.Item>
                   </div>
-                  <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'>
-
-                  </div>
+                  <div className='col-md-2 col-6 pr-0 px-0 pl-md-3'></div>
                   <div
                     className='col-md-6 col-12 px-0'
                     style={{ display: 'flex', justifyContent: 'end' }}
                   >
-                    {section && questionId && <Button
-                      type='primary'
-                      onClick={
-                        isEdit
-                          ? () => history.push(`/create-question-paper/${isEdit}`)
-                          : () => history.push(`/create-question-paper?show-question-paper=true`)
-                      }
-                      shape="round"
-                      style={{ marginLeft: '30%' }}
-                      className='th-br-6 w-30 th-fw-500'
-                    >
-                      Back
-                    </Button>}
-                    {Historic == false ?
+                    {section && questionId && (
+                      <Button
+                        type='primary'
+                        onClick={
+                          isEdit
+                            ? () => history.push(`/create-question-paper/${isEdit}`)
+                            : () =>
+                                history.push(
+                                  `/create-question-paper?show-question-paper=true`
+                                )
+                        }
+                        shape='round'
+                        style={{ marginLeft: '30%' }}
+                        className='th-br-6 w-30 th-fw-500'
+                      >
+                        Back
+                      </Button>
+                    )}
+                    {Historic == false ? (
                       <Button
                         type='primary'
                         onClick={handleHistoric}
                         style={{ marginRight: '2%' }}
                         // size={'small'}
-                        shape="round"
+                        shape='round'
                         className='th-br-6 th-fw-500'
                       >
                         Historical Questions
-                      </Button> :
+                      </Button>
+                    ) : (
                       <Button
                         type='primary'
                         onClick={handleHistoric}
                         style={{ marginRight: '2%' }}
                         // size={'small'}
-                        shape="round"
+                        shape='round'
                         className='th-br-6 w-30 th-fw-500'
                       >
                         Normal Questions
                       </Button>
-                    }
+                    )}
                     <Button
                       type='primary'
                       onClick={() => history.push('/create-question')}
                       style={{ marginRight: '2%' }}
                       // size={'small'}
-                      shape="round"
+                      shape='round'
                       className='th-br-6 th-fw-500'
                     >
                       <PlusOutlined size='small' />
@@ -807,10 +878,19 @@ const Chapterwise = () => {
                 </div>
               </Form>
             </div>
-            : ''}
-          {Historic == false ?
+          ) : (
+            ''
+          )}
+          {Historic == false ? (
             <>
-              <div className='col-12' style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1%' }}>
+              <div
+                className='col-12'
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  marginBottom: '1%',
+                }}
+              >
                 <div
                   className='col-md-6 col-8 pl-0'
                   style={{ display: 'flex', justifyContent: 'end' }}
@@ -826,7 +906,7 @@ const Chapterwise = () => {
                       justifyContent: 'center',
                       borderRadius: '15px',
                       marginRight: '32px',
-                      color: '#3d69be'
+                      color: '#3d69be',
                     }}
                   >
                     Eduvate
@@ -840,7 +920,7 @@ const Chapterwise = () => {
                       alignItems: 'center',
                       justifyContent: 'center',
                       borderRadius: '15px',
-                      color: '#b33dbe'
+                      color: '#b33dbe',
                     }}
                   >
                     School
@@ -897,7 +977,8 @@ const Chapterwise = () => {
                   )}
                 </>
               )}
-            </> :
+            </>
+          ) : (
             <div className='row py-3 px-2'>
               <div className='col-md-4'>
                 <Button
@@ -905,7 +986,7 @@ const Chapterwise = () => {
                   onClick={handleHistoric}
                   style={{ marginRight: '2%', zIndex: '10' }}
                   // size={'small'}
-                  shape="round"
+                  shape='round'
                   className='th-br-6 w-30 th-fw-500'
                 >
                   New Questions
@@ -915,13 +996,18 @@ const Chapterwise = () => {
                 <div className='col-12'>
                   <div className='th-tabs th-bg-white'>
                     <Tabs type='card' onChange={onChangeTab} activeKey={showTab}>
-                      <TabPane tab='Eduvate' key='1' className='eduvateTab' >
+                      <TabPane tab='Eduvate' key='1' className='eduvateTab'>
                         <div>
                           <div className='col-md-6 ' style={{ zIndex: 2 }}>
                             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
                               <div className='row align-items-center'>
                                 <div className='col-md-3 col-6 px-0 pl-0'>
-                                  <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Grade</div>
+                                  <div
+                                    className='mb-2 text-left'
+                                    style={{ marginLeft: '4%' }}
+                                  >
+                                    Grade
+                                  </div>
                                   <Form.Item name='grade'>
                                     <Select
                                       allowClear
@@ -938,12 +1024,14 @@ const Chapterwise = () => {
                                       optionFilterProp='children'
                                       filterOption={(input, options) => {
                                         return (
-                                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                          options.children
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
                                         );
                                       }}
                                       onChange={(e, value) => {
                                         handleGrade(value);
-                                        setPage(1)
+                                        setPage(1);
                                       }}
                                       onClear={handleClearGrade}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -954,13 +1042,20 @@ const Chapterwise = () => {
                                   </Form.Item>
                                 </div>
                                 <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
-                                  <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Subject</div>
+                                  <div
+                                    className='mb-2 text-left'
+                                    style={{ marginLeft: '4%' }}
+                                  >
+                                    Subject
+                                  </div>
                                   <Form.Item name='subject'>
                                     <Select
                                       allowClear
                                       placeholder={
                                         subjectName ? (
-                                          <span className='th-black-1'>{subjectName}</span>
+                                          <span className='th-black-1'>
+                                            {subjectName}
+                                          </span>
                                         ) : (
                                           'Select Subject'
                                         )
@@ -971,12 +1066,14 @@ const Chapterwise = () => {
                                       // defaultValue={subjectName}
                                       filterOption={(input, options) => {
                                         return (
-                                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                          options.children
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
                                         );
                                       }}
                                       onChange={(e, value) => {
                                         handleSubject(value);
-                                        setPage(1)
+                                        setPage(1);
                                       }}
                                       onClear={handleClearSubject}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1004,7 +1101,9 @@ const Chapterwise = () => {
                                   <Table
                                     className='th-table '
                                     rowClassName={(record, index) =>
-                                      `th-pointer school-qp-count ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                      `th-pointer school-qp-count ${
+                                        index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                                      }`
                                     }
                                     expandRowByClick={true}
                                     columns={columns}
@@ -1031,10 +1130,15 @@ const Chapterwise = () => {
                                     }
                                     scroll={{ x: 'max-content', y: 600 }}
                                   />
-                                  <div className='d-flex justify-content-end my-2' >
-                                    <Pagination current={page} total={totalPage} onChange={(page) => {
-                                      setPage(page);
-                                    }} showSizeChanger={false} />
+                                  <div className='d-flex justify-content-end my-2'>
+                                    <Pagination
+                                      current={page}
+                                      total={totalPage}
+                                      onChange={(page) => {
+                                        setPage(page);
+                                      }}
+                                      showSizeChanger={false}
+                                    />
                                   </div>
                                 </div>
                               ) : (
@@ -1046,13 +1150,18 @@ const Chapterwise = () => {
                           )}
                         </div>
                       </TabPane>
-                      <TabPane tab='School' key='2' className='schoolTab' >
+                      <TabPane tab='School' key='2' className='schoolTab'>
                         <div>
                           <div className='col-md-6' style={{ zIndex: 2 }}>
                             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
                               <div className='row align-items-center'>
                                 <div className='col-md-3 col-6 px-0 pl-0'>
-                                  <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Grade</div>
+                                  <div
+                                    className='mb-2 text-left'
+                                    style={{ marginLeft: '4%' }}
+                                  >
+                                    Grade
+                                  </div>
                                   <Form.Item name='grade'>
                                     <Select
                                       allowClear
@@ -1069,12 +1178,14 @@ const Chapterwise = () => {
                                       optionFilterProp='children'
                                       filterOption={(input, options) => {
                                         return (
-                                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                          options.children
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
                                         );
                                       }}
                                       onChange={(e, value) => {
                                         handleGrade(value);
-                                        setPage(1)
+                                        setPage(1);
                                       }}
                                       onClear={handleClearGrade}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1085,13 +1196,20 @@ const Chapterwise = () => {
                                   </Form.Item>
                                 </div>
                                 <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
-                                  <div className='mb-2 text-left' style={{ marginLeft: '4%' }}>Subject</div>
+                                  <div
+                                    className='mb-2 text-left'
+                                    style={{ marginLeft: '4%' }}
+                                  >
+                                    Subject
+                                  </div>
                                   <Form.Item name='subject'>
                                     <Select
                                       allowClear
                                       placeholder={
                                         subjectName ? (
-                                          <span className='th-black-1'>{subjectName}</span>
+                                          <span className='th-black-1'>
+                                            {subjectName}
+                                          </span>
                                         ) : (
                                           'Select Subject'
                                         )
@@ -1102,12 +1220,14 @@ const Chapterwise = () => {
                                       // defaultValue={subjectName}
                                       filterOption={(input, options) => {
                                         return (
-                                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                          options.children
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
                                         );
                                       }}
                                       onChange={(e, value) => {
                                         handleSubject(value);
-                                        setPage(1)
+                                        setPage(1);
                                       }}
                                       onClear={handleClearSubject}
                                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
@@ -1135,7 +1255,9 @@ const Chapterwise = () => {
                                   <Table
                                     className='th-table '
                                     rowClassName={(record, index) =>
-                                      `th-pointer eduvate-qp-count ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
+                                      `th-pointer eduvate-qp-count ${
+                                        index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                                      }`
                                     }
                                     expandRowByClick={true}
                                     columns={columns}
@@ -1162,10 +1284,15 @@ const Chapterwise = () => {
                                     }
                                     scroll={{ x: 'max-content', y: 600 }}
                                   />
-                                     <div className='d-flex justify-content-end my-2' >
-                                    <Pagination current={page} total={totalPage} onChange={(page) => {
-                                      setPage(page);
-                                    }} showSizeChanger={false} />
+                                  <div className='d-flex justify-content-end my-2'>
+                                    <Pagination
+                                      current={page}
+                                      total={totalPage}
+                                      onChange={(page) => {
+                                        setPage(page);
+                                      }}
+                                      showSizeChanger={false}
+                                    />
                                   </div>
                                 </div>
                               ) : (
@@ -1182,7 +1309,7 @@ const Chapterwise = () => {
                 </div>
               </div>
             </div>
-          }
+          )}
         </div>
         {/* <TableView /> */}
       </Layout>

@@ -59,6 +59,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter, setFiltered }) => {
     'orchids.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
     'test.orchids.letseduvate.com',
+    'orchids-stage.stage-vm.letseduvate.com',
   ];
   useEffect(() => {
     axiosInstance
