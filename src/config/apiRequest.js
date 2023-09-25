@@ -15,7 +15,7 @@ const APIREQUEST = async (method, path, payload, responseType, isReportsURL) => 
     };
     isReportsURL
       ? (headers['X-DTS-HOST'] = X_DTS_HOST)
-      : (headers['X-DTS-SCHEMA'] = window.location.host);
+      : (headers['X-DTS-SCHEMA'] = X_DTS_HOST);
     axios({
       method: method,
       url: `${isReportsURL ? msReportsUrl : msOriginUrl}/api${path}`,
