@@ -13,26 +13,14 @@ import endpoints from 'v2/config/endpoints';
 import { useHistory } from 'react-router-dom';
 import { UsergroupAddOutlined } from '@ant-design/icons';
 import StudentAttendanceNew from './components/StudentAttendanceNew';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const StudentDashboardConfigOn = () => {
+  const isOrchids = IsOrchidsChecker();
   const [showDoodle, setShowDoodle] = useState(false);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
   const history = useHistory();
-  const [checkOrigin, setCheckOrigin] = useState(false);
-
-  useEffect(() => {
-    const origin = window.location.origin;
-    if (
-      origin.indexOf('orchids.') > -1 ||
-      origin.indexOf('dev.') > -1 ||
-      origin.indexOf('qa.') > -1 ||
-      origin.indexOf('localhost') > -1 ||
-      origin.indexOf('ui-revamp1.') > -1
-    ) {
-      setCheckOrigin(true);
-    }
-  }, []);
 
   const fetchDoodle = () => {
     axios
@@ -61,7 +49,7 @@ const StudentDashboardConfigOn = () => {
           <span className='text-capitalize pr-2'>{first_name}</span>
           <span className='th-14'>({getRole(user_level)})</span>
         </div>
-        {checkOrigin ? (
+        {isOrchids ? (
           <>
             {user_level === 13 ? (
               <div className='col-md-6 text-right'>

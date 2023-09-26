@@ -32,6 +32,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 // import MomentUtils from '@date-io/moment';
 import { fetchAssesmentTypes } from '../../../../../redux/actions';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 export default function AssessmentReport(props) {
   const [loading, setLoading] = React.useState(false);
@@ -92,9 +93,9 @@ export default function AssessmentReport(props) {
   // }, [window.location.pathname]);
 
   useEffect(() => {
-    if (selectedAcademicYear?.id){
-    getBranch();
-    getAssesmentTypes();
+    if (selectedAcademicYear?.id) {
+      getBranch();
+      getAssesmentTypes();
     }
   }, [selectedAcademicYear]);
 
@@ -267,7 +268,7 @@ export default function AssessmentReport(props) {
           `${endpoints.academicTestReport.assessmentReport}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&test_type=${selectedTestId}&date_gte=${startDate}&date_lte=${endDate}`,
           {
             headers: {
-              'X-DTS-HOST': window.location.host,
+              'X-DTS-HOST': X_DTS_HOST,
             },
           }
         )

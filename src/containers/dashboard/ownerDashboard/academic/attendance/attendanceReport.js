@@ -23,7 +23,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Paper
+  Paper,
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
@@ -55,6 +55,7 @@ import DownloadReport from '../downloadReport';
 import { connect, useSelector } from 'react-redux';
 import { DashboardContextProvider } from 'containers/dashboard/dashboard-context';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const useStyles = makeStyles((theme) => ({
   gradeBoxContainer: {
@@ -169,7 +170,7 @@ const AttendanceReport = (props) => {
       .get(`${endpoints.ownerDashboard.gradeWiseStudentAttendanceState}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': window.location.host,
+          'X-DTS-HOST': X_DTS_HOST,
           // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
         },
       })
@@ -212,7 +213,7 @@ const AttendanceReport = (props) => {
               // childComponentName='Attendance Report'
             />
           </Grid>
-          <Grid item xs={12} style={{display : 'flex',justifyContent:'space-between'}}>
+          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
             <IconButton size='small' onClick={() => history.goBack()}>
               <ArrowBackIcon />
             </IconButton>
@@ -222,82 +223,82 @@ const AttendanceReport = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Paper elevation={1}>
-            <Accordion
-              elevation={0}
-              className={clsx(classes.accordion)}
-              expanded={expanded}
-              onChange={handleChange}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>{gradeList && gradeList[0]?.grade_name}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div style={{ width: '100%' }}>
-                  <TableContainer>
-                    <Table size='small'>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell></TableCell>
-                          <TableCell>Total</TableCell>
-                          <TableCell>Present</TableCell>
-                          <TableCell>Absent</TableCell>
-                          {/* <TableCell>Half Day</TableCell> */}
-                          {/* <TableCell>Late</TableCell> */}
-                          <TableCell>Absent for more than 5 continuous days.</TableCell>
-                          <TableCell></TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {gradeWiseState?.map((eachSection, index) => {
-                          return (
-                            <TableRow key={index}>
-                              <TableCell align='center'>
-                                {eachSection.section_name}
-                              </TableCell>
-                              <TableCell align='center'>
-                                {eachSection.total_count}
-                              </TableCell>
-                              <TableCell align='center'>
-                                {eachSection.present_count}
-                              </TableCell>
-                              <TableCell align='center'>
-                                {eachSection.total_count - eachSection.present_count}
-                              </TableCell>
-                              <TableCell
-                                align='center'
-                                className={clsx(classes.colorRed)}
-                              >
-                                {/* {eachSection.moreAbsent} */}0
-                              </TableCell>
-                              <TableCell align='center'>
-                                {index !== 0 && (
-                                  <IconButton
-                                    size='small'
-                                    disabled={index === 0}
-                                    onClick={() =>
-                                      history.push({
-                                        // pathname: `/student-attendance-report/subject-wise/${branchId}/${gradeList[0]?.grade_id}/${eachSection?.section_mapping_id}`,
-                                        pathname: `/student-attendance-report/student-wise/${branchId}/${gradeList[0]?.grade_id}/${eachSection?.section_id}/${acad_session_id}`,
-                                        state: {
-                                          grade_name: `${gradeList[0]?.grade_name}`,
-                                          section_name: `${eachSection.section_name}`,
-                                        },
-                                      })
-                                    }
-                                  >
-                                    <ArrowForwardIcon />
-                                  </IconButton>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </div>
-              </AccordionDetails>
-            </Accordion>
+              <Accordion
+                elevation={0}
+                className={clsx(classes.accordion)}
+                expanded={expanded}
+                onChange={handleChange}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>{gradeList && gradeList[0]?.grade_name}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <div style={{ width: '100%' }}>
+                    <TableContainer>
+                      <Table size='small'>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell></TableCell>
+                            <TableCell>Total</TableCell>
+                            <TableCell>Present</TableCell>
+                            <TableCell>Absent</TableCell>
+                            {/* <TableCell>Half Day</TableCell> */}
+                            {/* <TableCell>Late</TableCell> */}
+                            <TableCell>Absent for more than 5 continuous days.</TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {gradeWiseState?.map((eachSection, index) => {
+                            return (
+                              <TableRow key={index}>
+                                <TableCell align='center'>
+                                  {eachSection.section_name}
+                                </TableCell>
+                                <TableCell align='center'>
+                                  {eachSection.total_count}
+                                </TableCell>
+                                <TableCell align='center'>
+                                  {eachSection.present_count}
+                                </TableCell>
+                                <TableCell align='center'>
+                                  {eachSection.total_count - eachSection.present_count}
+                                </TableCell>
+                                <TableCell
+                                  align='center'
+                                  className={clsx(classes.colorRed)}
+                                >
+                                  {/* {eachSection.moreAbsent} */}0
+                                </TableCell>
+                                <TableCell align='center'>
+                                  {index !== 0 && (
+                                    <IconButton
+                                      size='small'
+                                      disabled={index === 0}
+                                      onClick={() =>
+                                        history.push({
+                                          // pathname: `/student-attendance-report/subject-wise/${branchId}/${gradeList[0]?.grade_id}/${eachSection?.section_mapping_id}`,
+                                          pathname: `/student-attendance-report/student-wise/${branchId}/${gradeList[0]?.grade_id}/${eachSection?.section_id}/${acad_session_id}`,
+                                          state: {
+                                            grade_name: `${gradeList[0]?.grade_name}`,
+                                            section_name: `${eachSection.section_name}`,
+                                          },
+                                        })
+                                      }
+                                    >
+                                      <ArrowForwardIcon />
+                                    </IconButton>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </div>
+                </AccordionDetails>
+              </Accordion>
             </Paper>
             {gradeList &&
               gradeList
@@ -342,7 +343,7 @@ const AccordionLable = ({ data, acad_session_id, branchId }) => {
       .get(`${endpoints.ownerDashboard.gradeWiseStudentAttendanceState}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': window.location.host,
+          'X-DTS-HOST': X_DTS_HOST,
           // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
         },
       })
@@ -383,7 +384,7 @@ const AccordionLable = ({ data, acad_session_id, branchId }) => {
           <AccordionTable
             data={gradeWiseState}
             details={{ grade: data, branchId: branchId }}
-            acad_session_id = {acad_session_id}
+            acad_session_id={acad_session_id}
           />
         </div>
       </AccordionDetails>
@@ -414,7 +415,9 @@ const AccordionTable = ({ data, details, acad_session_id }) => {
                 <TableCell align='center'>{eachSection.section_name}</TableCell>
                 <TableCell align='center'>{eachSection.total_count}</TableCell>
                 <TableCell align='center'>{eachSection.present_count}</TableCell>
-                <TableCell align='center'>{eachSection.total_count - eachSection.present_count}</TableCell>
+                <TableCell align='center'>
+                  {eachSection.total_count - eachSection.present_count}
+                </TableCell>
                 <TableCell align='center' className={clsx(classes.colorRed)}>
                   {/* {eachSection.moreAbsent} */}0
                 </TableCell>
