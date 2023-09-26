@@ -153,22 +153,18 @@ deploy_stage_gcp:
       - pwd
       - sudo systemctl restart nginx
       - echo "Deploy to stage server"
-      #- sudo npm install
+      - sudo npm install
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=8096
       - export REACT_APP_UI_ENV=STAGE
       - sudo service uwsgi restart
-      #- sudo -E bash -c "set \"CI=false\" &&  npm run build"
-      #- sudo rm -rf /home/ubuntu/build_test | true
-      #- sudo cp -r build/ /home/ubuntu/build_test
+      - sudo -E bash -c "set \"CI=false\" &&  npm run build"
+      - sudo rm -rf /home/ubuntu/build_test | true
+      - sudo cp -r build/ /home/ubuntu/build_test
       - sudo chown -R gitlab-runner:gitlab-runner /home/gitlab-runner/builds/
       - forever stop erp-frontend-stage || true
       - forever start -v --uid "erp-frontend-stage" -a -l /var/log/frontend/forever.log -o /var/log/frontend/out_test.log -e /var/log/frontend/err_test.log $(which serve) -s /home/ubuntu/build_test/ -l 4000 
-      #- snap remove google-cloud-sdk
-      #- snap install google-cloud-cli --classic
-      #- gcloud components update -q
-      #- gsutil --version
       - sudo gsutil rm -r gs://erp-academic-stage/mig-config/build
       - sudo gsutil rsync -r /home/ubuntu/build_test gs://erp-academic-stage/mig-config/build/
     environment:
