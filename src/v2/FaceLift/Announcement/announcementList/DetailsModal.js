@@ -290,7 +290,7 @@ const DetailsModal = (props) => {
                   return (
                     <div className='d-flex th-primary'>
                       <img
-                        src={`${endpoints.announcementList.s3erp}announcement/${item}`}
+                        src={`${endpoints.announcementList.s3erp}${item}`}
                         style={{
                           width: '100%',
                           height: '100%',
