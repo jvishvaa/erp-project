@@ -17,6 +17,7 @@ const local = {
     // baseURL: 'http://localhost:8000/qbox',
     // baseURL: `${window.location.origin}/qbox`,
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
+    finance: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com`,
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
@@ -70,8 +71,9 @@ const qa = {
     msReportsUrl: 'https://reports.qa.letseduvate.com',
     msReportsUrlNew: 'https://reports.qa.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
-    finance: 'https://uidev.erpfinance.letseduvate.com',
+    finance: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com`,
     newBlogURL: 'https://activities-ms.qa.letseduvate.com',
+    baseFinanceURL: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com/qbox`,
   },
 };
 
@@ -95,6 +97,8 @@ const stage = {
     newBlogURL: 'https://activities-stage.stage-gke.letseduvate.com',
     msReportsUrl: 'https://api-reports-stage.stage-gke.letseduvate.com',
     msReportsUrlNew: 'https://reports.qa.letseduvate.com',
+    baseFinanceURL: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com/qbox`,
+    finance: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com`,
   },
 };
 
