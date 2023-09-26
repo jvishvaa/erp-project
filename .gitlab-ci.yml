@@ -168,9 +168,9 @@ deploy_stage_gcp:
       #- snap remove google-cloud-sdk
       #- snap install google-cloud-cli --classic
       #- gcloud components update -q
-      - gsutil --version
-      - gsutil rm -r gs://erp-academic-stage/mig-config/build
-      - gsutil rsync -r /home/ubuntu/build_test gs://erp-academic-stage/mig-config/build/
+      #- gsutil --version
+      - sudo gsutil rm -r gs://erp-academic-stage/mig-config/build
+      - sudo gsutil rsync -r /home/ubuntu/build_test gs://erp-academic-stage/mig-config/build/
     environment:
       name: stage
       url: 
