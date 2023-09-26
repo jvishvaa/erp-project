@@ -3,7 +3,7 @@ const orchidsLsit = [
   'localhost:3000',
   'dev.olvorchidnaigaon.letseduvate.com',
   'qa.olvorchidnaigaon.letseduvate.com',
-  'orchids-stage.stage-vm.letseduavate.com'
+  'orchids-stage.stage-vm.letseduvate.com',
 ];
 
 export function IsOrchidsChecker() {

@@ -89,11 +89,11 @@ const stage = {
     baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
     // baseURLCentral: 'https://mgmt-stage.letseduvate.com/qbox',
     baseURLCentral: 'https://mgmt-stage.stage-gke.letseduvate.com/qbox',
-    msOriginUrl: 'https://classes.letseduvate.com',
+    msOriginUrl: 'https://api-classes-stage.stage-gke.letseduvate.com',
     xAPIKey: 'vikash@12345#1231',
     baseEvent: 'http://events.letseduvate.com/',
     newBlogURL: 'https://activities-stage.stage-gke.letseduvate.com',
-    msReportsUrl: 'https://reports.qa.letseduvate.com',
+    msReportsUrl: 'https://api-reports-stage.stage-gke.letseduvate.com',
     msReportsUrlNew: 'https://reports.qa.letseduvate.com',
   },
 };
