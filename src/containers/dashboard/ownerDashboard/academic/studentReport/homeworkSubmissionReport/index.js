@@ -28,6 +28,7 @@ import endpoints from '../../../../../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { AlertNotificationContext } from '../../../../../../context-api/alert-context/alert-state';
 import { useDashboardContext } from '../../../../dashboard-context';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const reportTypes = [
   { type: 'Yesterday Report', days: '1' },
@@ -283,7 +284,7 @@ export default function HomeworkReport(props) {
             `${endpoints.academicTestReport.homeworkSubmissionReport}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&date_gte=${startDate}&date_lte=${endDate}`,
             {
               headers: {
-                'X-DTS-HOST': window.location.host,
+                'X-DTS-HOST': X_DTS_HOST,
               },
             }
           )
