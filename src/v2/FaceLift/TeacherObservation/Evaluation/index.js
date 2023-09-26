@@ -271,10 +271,10 @@ const Evaluation = () => {
   }, []);
 
   useEffect(() => {
-    if (moduleId && selectedBranch) {
+    if (selectedBranch) {
       fetchGradeData();
     }
-  }, [moduleId]);
+  }, [selectedBranch]);
 
   const fetchTeacherList = (gradeId) => {
     const params = {
@@ -310,6 +310,9 @@ const Evaluation = () => {
 
   const handleGrade = (e, value) => {
     setSectionDropdown([]);
+    setSectionID();
+    setSubjectID();
+    setTeacherData([]);
     if (e) {
       setGradeID(e);
       const params = {
@@ -348,14 +351,20 @@ const Evaluation = () => {
       .catch((error) => message.error('error', error?.message));
   };
   const handleClearGrade = () => {
+    setSectionID();
+    setGradeID();
+    setSubjectID();
     setSectionDropdown([]);
     setSubjectDropdown([]);
   };
 
   const handleClearSection = () => {
+    setSubjectID();
+    setSubjectID();
     setSubjectDropdown([]);
   };
   const handleSection = (each) => {
+    setSubjectID();
     if (each) {
       fetchStudentList(each?.value);
       setSectionID(each?.value);
@@ -381,6 +390,8 @@ const Evaluation = () => {
   const handleSubject = (e) => {
     if (e) {
       setSubjectID(e.value);
+    } else {
+      setSubjectID();
     }
   };
   const handleClearTeacher = () => {

@@ -311,20 +311,22 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
         setLoadingResources(false);
       });
   };
-  const handleDownloadAll = (files) => {
-    files.map((item) => {
+  const handleDownload = async (files) => {
+    for (const item of files) {
       const fullName = item?.split('_')[item?.split('_').length - 1];
-
-      axios
-        .get(`${endpoints.announcementList.s3erp}${item}`, {
-          responseType: 'blob',
-        })
-        .then((res) => {
-          fileDownload(res.data, fullName);
-        });
+      let url = `${endpoints.announcementList.s3erp}${item}`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fullName;
+      await downloadFile(link); // Wait for the download to finish before proceeding to the next iteration
+    }
+  };
+  const downloadFile = (link) => {
+    return new Promise((resolve) => {
+      link.click();
+      setTimeout(resolve, 1000); // Wait for a short duration to ensure the download has started
     });
   };
-
   const deleteDiary = (id) => {
     axios
       .delete(`${endpoints?.dailyDiary?.updateDelete}${id}/update-delete-dairy/`)
@@ -1307,7 +1309,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                   <div className='col-6 text-right'>
                     <u
                       className='th-pointer th-12'
-                      onClick={() => handleDownloadAll(diary?.documents)}
+                      onClick={() => handleDownload(diary?.documents)}
                     >
                       Download All
                     </u>
