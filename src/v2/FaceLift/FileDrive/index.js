@@ -46,7 +46,7 @@ const FileDrive = () => {
   const branchId = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch?.branch?.id
   );
-
+  console.log({ fileSizeConfig });
   const getSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
