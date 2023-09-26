@@ -83,7 +83,7 @@ const DetailsModal = (props) => {
   const handleDownload = async (files) => {
     for (const item of files) {
       const fullName = item?.split('_')[item?.split('_').length - 1];
-      let url = `${endpoints.announcementList.s3erp}announcement/${item}`;
+      let url = `${endpoints.announcementList.s3erp}${item}`;
       const link = document.createElement('a');
       link.href = url;
       link.download = fullName;
@@ -454,10 +454,7 @@ const DetailsModal = (props) => {
                         <div className='col-5 text-truncate'>{filename}</div>
                         <div className='col-4 pr-0'>.{extension}</div>
                         <div className='col-2 text-center'>
-                          <a
-                            href={`${endpoints.announcementList.s3erp}announcement/${item}`}
-                            download
-                          >
+                          <a href={`${endpoints.announcementList.s3erp}${item}`} download>
                             <ArrowDownOutlined className='th-primary th-pointer' />
                           </a>
                         </div>
