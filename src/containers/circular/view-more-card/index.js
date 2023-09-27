@@ -8,13 +8,13 @@ import endpoints from '../../../config/endpoints';
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
-  bodyContentCircular:{
-    fontSize: "1rem",
+  bodyContentCircular: {
+    fontSize: '1rem',
     color: theme.palette.primary.main,
-    margin: "5px 10px 0px 20px",
-    display: "flex",
-    justifyContent: "space-between",
-  }
+    margin: '5px 10px 0px 20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
 }));
 const ViewMoreCard = ({ viewMoreData, setViewMore, setSelectedIndex, branch }) => {
   const classes = useStyles();
@@ -22,19 +22,12 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, setSelectedIndex, branch }) =
   const handleBulkDownload = (files) => {
     if (window.location.pathname === '/teacher-circular') {
       for (let i = 0; i < files?.length; i++) {
-        window.open(
-          `${endpoints.signature.s3}dev/circular_files/${branch?.branch?.branch_name}/${files[i]}`
-        );
+        window.open(`${endpoints.signature.s3}/${files[i]}`);
       }
     } else {
       // >>>>>>>>>>>>>>>>>>>>STUDENT SIDE VIEW<<<<<<<<<<<<<<<<<<<<<<<<
       for (let i = 0; i < files?.length; i++) {
-        window.open(
-          `${endpoints.signature.s3}dev/circular_files/${
-            studentBranchName?.role_details &&
-            studentBranchName?.role_details?.branch.map((el) => el.branch_name)
-          }/${files[i]}`
-        );
+        window.open(`${endpoints.signature.s3}/${files[i]}`);
       }
     }
   };
@@ -80,10 +73,14 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, setSelectedIndex, branch }) =
           </div>
         </div>
         <div className='headerTitle_circular'>
-          <Typography color = "primary">Description</Typography>
+          <Typography color='primary'>Description</Typography>
         </div>
         <div className={classes.bodyContentCircular}>
-        <div style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{viewMoreData?.description}</div>
+          <div
+            style={{ maxWidth: '350px', wordWrap: 'break-word', whiteSpace: 'pre-line' }}
+          >
+            {viewMoreData?.description}
+          </div>
         </div>
       </Paper>
     </>
