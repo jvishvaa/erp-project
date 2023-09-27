@@ -41,34 +41,15 @@ const ObservationReport = () => {
   const [sectionID, setSectionID] = useState(null);
   const [subjectID, setSubjectID] = useState();
   const [sectionMappingID, setSectionMappingID] = useState([]);
-  const [moduleId, setModuleId] = useState();
   const [teacherName, setTeacherName] = useState('');
   const [studentName, setStudentName] = useState('');
   const [tableView, setTableView] = useState('teacher');
 
   useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Ebook' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (moduleId && selectedBranch) {
+    if (selectedBranch) {
       fetchGradeData();
     }
-  }, [moduleId]);
+  }, [selectedBranch]);
 
   const handleSearch = () => {
     if (tableView === 'teacher') {
@@ -116,7 +97,6 @@ const ObservationReport = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
       branch_id: selectedBranch?.branch?.id,
-      module_id: moduleId,
     };
     axios
       .get(`${endpoints.academics.grades}`, { params })
@@ -141,7 +121,6 @@ const ObservationReport = () => {
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
         grade_id: e,
-        module_id: moduleId,
       };
       axios
         .get(`${endpoints.academics.sections}`, { params })
@@ -185,7 +164,6 @@ const ObservationReport = () => {
         branch: selectedBranch?.branch?.id,
         grade: gradeID,
         section: each.value,
-        module_id: moduleId,
       };
       axios
         .get(`${endpoints.academics.subjects}`, { params })
@@ -210,7 +188,7 @@ const ObservationReport = () => {
   const gradeOptions = gradeDropdown?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each?.grade_id}>
-        {each?.grade__grade_name}
+        {each?.grade_name}
       </Option>
     );
   });
