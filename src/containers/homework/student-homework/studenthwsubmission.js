@@ -1162,7 +1162,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         src={
                                           url.includes('/lesson_plan_file/')
                                             ? `${endpoints.homework.resourcesFiles}${url}`
-                                            : `${endpoints.discussionForum.s3}/homework/${url}`
+                                            : `${endpoints.discussionForum.s3}/${url}`
                                         }
                                         onError={(e) => {
                                           e.target.src = placeholder;
@@ -1320,7 +1320,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                             src={
                                               item.includes('/lesson_plan_file/')
                                                 ? `${endpoints.homework.resourcesFiles}${item}`
-                                                : `${endpoints.discussionForum.s3}/homework/${item}`
+                                                : `${endpoints.discussionForum.s3}/${item}`
                                             }
                                             onError={(e) => {
                                               e.target.src = placeholder;
@@ -1336,7 +1336,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           src={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}${url}`
-                                              : `${endpoints.discussionForum.s3}/homework/${url}`
+                                              : `${endpoints.discussionForum.s3}/${url}`
                                           }
                                           onError={(e) => {
                                             e.target.src = placeholder;
@@ -1472,7 +1472,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           src={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}${url}`
-                                              : `${endpoints.discussionForum.s3}/homework/${url}`
+                                              : `${endpoints.discussionForum.s3}/${url}`
                                           }
                                           onError={(e) => {
                                             e.target.src = placeholder;
@@ -1523,7 +1523,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           src={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}${url}`
-                                              : `${endpoints.discussionForum.s3}/homework/${url}`
+                                              : `${endpoints.discussionForum.s3}/${url}`
                                           }
                                           onError={(e) => {
                                             e.target.src = placeholder;
@@ -1655,7 +1655,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                     src={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}${url}`
-                                        : `${endpoints.discussionForum.s3}/homework/${url}`
+                                        : `${endpoints.discussionForum.s3}/${url}`
                                     }
                                     onError={(e) => {
                                       e.target.src = placeholder;
@@ -1739,7 +1739,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                       src={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesFiles}${url}`
-                                          : `${endpoints.discussionForum.s3}/homework/${url}`
+                                          : `${endpoints.discussionForum.s3}/${url}`
                                       }
                                       onError={(e) => {
                                         e.target.src = placeholder;
