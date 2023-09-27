@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiConfig, responseConverters } from '../dashboard-constants';
 import ENVCONFIG from '../../../config/config';
 import axios from 'axios';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 export const DashboardContext = React.createContext();
 
@@ -41,7 +42,7 @@ export function DashboardContextProvider({ children }) {
   const { userLevel } = welcomeDetails || {};
 
   const headers = {
-    'X-DTS-HOST': window.location.host,
+    'X-DTS-HOST': X_DTS_HOST,
     // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
     // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
     // 'X-DTS-HOST': 'dev.mit.letseduvate.com',
@@ -52,17 +53,17 @@ export function DashboardContextProvider({ children }) {
     const params = { ...param, level: userLevel };
     const config = { headers, params };
     const url = msReportsUrl + apiConfig[decisionParam]['report'];
-    setLoading(true)
+    setLoading(true);
     return axios
       .get(url, config)
       .then((response) => {
         const { data: { status_code: status, result } = {} } = response || {};
-        setLoading(false)
+        setLoading(false);
         setCard('');
         return result || [];
       })
-      .catch(() => { 
-        setLoading(false)
+      .catch(() => {
+        setLoading(false);
         setCard('');
       });
   };
@@ -76,7 +77,7 @@ export function DashboardContextProvider({ children }) {
       .then((response) => {
         return response || {};
       })
-      .catch(() => { });
+      .catch(() => {});
   };
 
   return (
