@@ -58,7 +58,6 @@ const Subjectgrade = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = React.useState();
-  
 
   const [modules] = React.useState(modulesArray);
   // const [selectedModule, selectModule] = React.useState(modulesArray[0])
@@ -269,7 +268,11 @@ const Subjectgrade = (props) => {
     } else if (subDomainLevels === 1) {
       subDomain = hostSplitArray[0];
     }
-    const domainTobeSent = subDomain;
+    const domainTobeSent = hostSplitArray.includes('orchids-stage')
+      ? 'olvorchidnaigaon'
+      : hostSplitArray.includes('b2b-stage')
+      ? 'mit'
+      : subDomain;
 
     const apiURL = `${endpoints.mappingStudentGrade.centralGradeSubjects}?domain_name=${domainTobeSent}&${moduleKey}=${value}`;
     const headers = { headers: { 'x-api-key': 'vikash@12345#1231' } };
@@ -360,7 +363,16 @@ const Subjectgrade = (props) => {
   };
 
   const submit = () => {
-    if (selectedYear === null || branchValue === null || gradeValue === null || subjectUpdateValue === null || selectedModule === null || centralGradeValue === null || centralGradeValue === null || centralSubValue === null )  {
+    if (
+      selectedYear === null ||
+      branchValue === null ||
+      gradeValue === null ||
+      subjectUpdateValue === null ||
+      selectedModule === null ||
+      centralGradeValue === null ||
+      centralGradeValue === null ||
+      centralSubValue === null
+    ) {
       // setErrorMessage('Please select all the fields');
       setAlert('error', 'Please select all the fields');
       return;
