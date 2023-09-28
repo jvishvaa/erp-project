@@ -403,7 +403,7 @@ const EbookPdf = (props) => {
             <div>
               <img
                 onLoad={detectImageLoad}
-                src={bookPage}
+                src={`${endpoints.centralBucket}/${bookPage}`}
                 id='canvastyleview'
                 alt='No'
                 style={{

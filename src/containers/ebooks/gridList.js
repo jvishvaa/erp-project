@@ -131,7 +131,7 @@ function GridList(props) {
                       <Grid container spacing={2}>
                         <Grid item md={5} xs={6}>
                           <img
-                            src={item && item.ebook_thumbnail}
+                            src={`${endpoints.centralBucket}/${item.ebook_thumbnail}`}
                             alt='crash'
                             width='100%'
                             height='150px'
