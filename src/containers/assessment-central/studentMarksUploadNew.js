@@ -725,7 +725,7 @@ const StudentMarkNew = () => {
                                 style={{ cursor: 'pointer' }}
                                 className={classes.eyeIcon}
                                 onClick={() => {
-                                  const fileSrc = `${endpoints.lessonPlan.s3erp}homework/${list}`;
+                                  const fileSrc = `${endpoints.lessonPlan.s3erp}${list}`;
                                   openPreview({
                                     currentAttachmentIndex: 0,
                                     attachmentsArray: [

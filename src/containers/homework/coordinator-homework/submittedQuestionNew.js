@@ -171,7 +171,7 @@ const SubmittedQuestionNew = ({
                         src={
                           url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}/${url}`
-                            : `${endpoints.discussionForum.s3}/homework/${url}`
+                            : `${endpoints.discussionForum.s3}/${url}`
                         }
                         onError={(e) => {
                           e.target.src = placeholder;
@@ -256,7 +256,7 @@ const SubmittedQuestionNew = ({
                 <SRLWrapper>
                   {question.submitted_files.map((url, i) => (
                     <img
-                      src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                      src={`${endpoints.discussionForum.s3}/${url}`}
                       onError={(e) => {
                         e.target.src = placeholder;
                       }}
@@ -348,7 +348,7 @@ const SubmittedQuestionNew = ({
                   <SRLWrapper>
                     {correctedQuestions.map((url, i) => (
                       <img
-                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                        src={`${endpoints.discussionForum.s3}/${url}`}
                         onError={(e) => {
                           e.target.src = placeholder;
                         }}
