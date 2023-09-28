@@ -93,11 +93,11 @@ const stage = {
   s3: {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    BUCKET: 'https://mgmt-cdn.letseduvate.com',
+    BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com',
     ERP_BUCKET: 'https://acad-cdn-stage.stage-vm.letseduvate.com/', // ALERT GCP STAGE CDN
     ERP_BUCKET_2: 'https://acad-cdn-stage.stage-vm.letseduvate.com', // ALERT GCP STAGE CDN
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-    CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
+    CENTRAL_BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
     IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   apiGateway: {
