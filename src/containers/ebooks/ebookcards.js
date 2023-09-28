@@ -181,7 +181,7 @@ const EbookCards = (props) => {
                     cover={
                       <img
                         alt='example'
-                        src={item?.ebook_thumbnail}
+                        src={`${endpoints.centralBucket}/${item?.ebook_thumbnail}`}
                         style={{ width: '150px', height: '150px', padding: '1%' }}
                       />
                     }
