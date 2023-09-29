@@ -222,12 +222,11 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
                     //   fullName.split('.')[fullName?.split('.').length - 1];
 
                     const fullName = each?.split('_')[each?.split('_').length - 1];
-                      const fileName =
-                        fullName.split('.')[fullName?.split('.').length - 2];
-                      const extension =
-                        fullName.split('.')[fullName?.split('.').length - 1];
+                    const fileName = fullName.split('.')[fullName?.split('.').length - 2];
+                    const extension =
+                      fullName.split('.')[fullName?.split('.').length - 1];
 
-                      const fileName2 = each?.split('/')[each?.split('/').length - 1]
+                    const fileName2 = each?.split('/')[each?.split('/').length - 1];
 
                     return (
                       <div
@@ -256,7 +255,19 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
                             target='_blank'
                           >
                             <div className='row align-items-center'>
-                              <div className='col-10 px-1'>{fileName2}</div>
+                              <div className='col-10 px-1'>
+                                <p
+                                  style={{
+                                    width: 250,
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                  title={`${fileName2}.${extension}`}
+                                >
+                                  {fileName2}
+                                </p>
+                              </div>
                               <div className='col-2'>
                                 <EyeFilled />
                               </div>
