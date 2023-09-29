@@ -746,12 +746,19 @@ const CreateAnnouncement = () => {
                               fullName.split('.')[fullName?.split('.').length - 2];
                             const extension =
                               fullName.split('.')[fullName?.split('.').length - 1];
+
+                            const fileName2 =
+                              item[0]?.split('/')[item[0]?.split('/').length - 1];
+
                             return (
-                              <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 mr-1 mb-1 th-bg-grey text-center d-flex align-items-center'>
+                              <div
+                                title={fileName2}
+                                className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 mr-1 mb-1 th-bg-grey text-center d-flex align-items-center'
+                              >
                                 <span className='th-12 th-black-1 text-truncate'>
-                                  {fileName}
+                                  {fileName2}
                                 </span>
-                                <span className='th-12 th-black-1 '>.{extension}</span>
+                                {/* <span className='th-12 th-black-1 '>.{extension}</span> */}
 
                                 <span className='ml-md-3 ml-1 th-pointer '>
                                   <img

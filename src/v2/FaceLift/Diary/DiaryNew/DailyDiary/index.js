@@ -2097,12 +2097,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                             const extension =
                               fullName.split('.')[fullName?.split('.').length - 1];
 
+                            const fileName2 =
+                              item?.split('/')[item?.split('/').length - 1];
+
                             return (
-                              <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                              <div title={fileName2} className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
                                 <span className='th-12 th-black-1 text-truncate'>
-                                  {fileName}
+                                  {fileName2}
                                 </span>
-                                <span className='th-12 th-black-1 '>.{extension}</span>
+                                {/* <span className='th-12 th-black-1 '>.{extension}</span> */}
 
                                 <span className='ml-md-3 ml-1 th-pointer '>
                                   <img
