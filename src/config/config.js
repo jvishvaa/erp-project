@@ -114,7 +114,7 @@ const stage = {
     newBlogURL: 'https://activities-stage.stage-gke.letseduvate.com',
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     msReportsUrl: 'https://api-reports-stage.stage-gke.letseduvate.com',
-    crm: 'https://marketing.stage-gke.letseduvate.com/',
+    crm: 'https://marketing.stage-gke.letseduvate.com',
   },
 };
 
