@@ -1362,7 +1362,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                                       overflow: 'hidden',
                                       textOverflow: 'ellipsis',
                                     }}
-                                    title={fileName}
+                                    title={`${fileName}.${extension}`}
                                   >
                                     {fileName}
                                   </p>

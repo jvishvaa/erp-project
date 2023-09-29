@@ -316,7 +316,7 @@ export default function NewQuestionCard(props) {
                             key={`homework_student_question_attachment_${i}`}
                             fileUrl={item}
                             fileName={`${i + 1 + cindex}`}
-                            urlPrefix={`${endpoints.discussionForum.s3}`}
+                            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                             index={i}
                             actions={['preview', 'download', 'delete']}
                             onDelete={(index, deletePdf) =>
@@ -334,7 +334,7 @@ export default function NewQuestionCard(props) {
                           key={`homework_student_question_attachment_${pdfindex}`}
                           fileUrl={url}
                           fileName={`${1 + cindex}`}
-                          urlPrefix={`${endpoints.discussionForum.s3}`}
+                          urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                           index={pdfindex}
                           actions={['preview', 'download', 'delete']}
                           onDelete={(index, deletePdf) =>
