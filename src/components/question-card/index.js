@@ -785,7 +785,7 @@ const QuestionCard = ({
                                     urlPrefix={
                                       item.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}`
-                                        : `${endpoints.discussionForum.s3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i + cindex}
                                     actions={
@@ -815,7 +815,7 @@ const QuestionCard = ({
                                   urlPrefix={
                                     url.includes('/lesson_plan_file/')
                                       ? `${endpoints.homework.resourcesFiles}`
-                                      : `${endpoints.discussionForum.s3}`
+                                      : `${endpoints.discussionForum.s3}/homework`
                                   }
                                   index={cindex}
                                   actions={
@@ -844,7 +844,7 @@ const QuestionCard = ({
                                       src={
                                         item.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesFiles}/${item}`
-                                          : `${endpoints.discussionForum.s3}/${item}`
+                                          : `${endpoints.discussionForum.s3}/homework/${item}`
                                       }
                                       onError={(e) => {
                                         e.target.src = placeholder;
@@ -859,7 +859,7 @@ const QuestionCard = ({
                                     src={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}/${url}`
-                                        : `${endpoints.discussionForum.s3}/${url}`
+                                        : `${endpoints.discussionForum.s3}/homework/${url}`
                                     }
                                     onError={(e) => {
                                       e.target.src = placeholder;

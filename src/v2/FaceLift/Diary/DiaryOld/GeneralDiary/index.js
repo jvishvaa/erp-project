@@ -403,16 +403,24 @@ const GeneralDiary = () => {
                       <div className='col-md-10 col-8'>
                         <div className='row'>
                           {uploadedFiles?.map((item, index) => {
-                            const fullName =
-                              item?.split('_')[item?.split('_').length - 1];
+                            // const fullName =
+                            //   item?.split('_')[item?.split('_').length - 1];
 
-                            const fileName =
-                              fullName.split('.')[fullName?.split('.').length - 2];
+                            // const fileName =
+                            //   fullName.split('.')[fullName?.split('.').length - 2];
+                            // const extension =
+                            //   fullName.split('.')[fullName?.split('.').length - 1];
+
+                            const fullName = item?.split('_.')[0]?.split('/');
+                            const fileName = fullName[fullName.length - 1];
                             const extension =
-                              fullName.split('.')[fullName?.split('.').length - 1];
+                              item.split('_.')[item?.split('_.').length - 1];
 
                             return (
-                              <div className='th-br-15  col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                              <div
+                                title={`${fileName}.${extension}`}
+                                className='th-br-15  col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'
+                              >
                                 <span className='th-12 th-black-1 text-truncate'>
                                   {fileName}
                                 </span>

@@ -595,7 +595,7 @@ const ViewHomework = withRouter(
                                     urlPrefix={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}`
-                                        : `${endpoints.discussionForum.s3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i}
                                     actions={actions}
@@ -670,7 +670,7 @@ const ViewHomework = withRouter(
                                     urlPrefix={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesFiles}`
-                                        : `${endpoints.discussionForum.s3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i}
                                     actions={['preview', 'download', 'delete']}
@@ -747,7 +747,7 @@ const ViewHomework = withRouter(
                                       urlPrefix={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesFiles}`
-                                          : `${endpoints.discussionForum.s3}`
+                                          : `${endpoints.discussionForum.s3}/homework`
                                       }
                                       index={i}
                                       actions={['preview', 'download', 'delete']}
@@ -914,7 +914,7 @@ const ViewHomework = withRouter(
         {penToolOpen && (
           <DescriptiveTestcorrectionModule
             index={imageIndex}
-            urlPrefix={`${endpoints.discussionForum.s3}`}
+            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
             fileUrl={!isQuestionwise && collatedSubmissionFiles}
             savedFiles={savedFiles}
             desTestDetails={desTestDetails}

@@ -261,7 +261,7 @@ const EvaluateHomeworkOld = withRouter(
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
                                   fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.discussionForum.s3}`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={actions}
                                   onOpenInPenTool={openInPenTool}
@@ -460,7 +460,7 @@ const EvaluateHomeworkOld = withRouter(
         {penToolOpen && (
           <DescriptiveTestcorrectionModule
             index={imageIndex}
-            urlPrefix={`${endpoints.discussionForum.s3}`}
+            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
             fileUrl={collatedSubmissionFiles}
             // savedFiles={savedFiles}
             desTestDetails={desTestDetails}

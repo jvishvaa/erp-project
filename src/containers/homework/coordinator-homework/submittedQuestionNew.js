@@ -145,7 +145,7 @@ const SubmittedQuestionNew = ({
                           urlPrefix={
                             url.includes('/lesson_plan_file/')
                               ? `${endpoints.homework.resourcesFiles}`
-                              : `${endpoints.discussionForum.s3}`
+                              : `${endpoints.discussionForum.s3}/homework`
                           }
                           index={i}
                           actions={['preview', 'download']}
@@ -171,7 +171,7 @@ const SubmittedQuestionNew = ({
                         src={
                           url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}/${url}`
-                            : `${endpoints.discussionForum.s3}/${url}`
+                            : `${endpoints.discussionForum.s3}/homework/${url}`
                         }
                         onError={(e) => {
                           e.target.src = placeholder;
@@ -232,7 +232,7 @@ const SubmittedQuestionNew = ({
                         key={`homework_student_question_attachment_${i}`}
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
-                        urlPrefix={`${endpoints.discussionForum.s3}`}
+                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                         index={i}
                         actions={
                           url.includes('.doc')
@@ -256,7 +256,7 @@ const SubmittedQuestionNew = ({
                 <SRLWrapper>
                   {question.submitted_files.map((url, i) => (
                     <img
-                      src={`${endpoints.discussionForum.s3}/${url}`}
+                      src={`${endpoints.discussionForum.s3}/homework/${url}`}
                       onError={(e) => {
                         e.target.src = placeholder;
                       }}
@@ -301,7 +301,7 @@ const SubmittedQuestionNew = ({
                         key={`homework_student_question_attachment_${i}`}
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
-                        urlPrefix={`${endpoints.discussionForum.s3}`}
+                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                         index={i}
                         actions={['preview', 'download', 'delete']}
                         onOpenInPenTool={onOpenInPenTool}
@@ -348,7 +348,7 @@ const SubmittedQuestionNew = ({
                   <SRLWrapper>
                     {correctedQuestions.map((url, i) => (
                       <img
-                        src={`${endpoints.discussionForum.s3}/${url}`}
+                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
                         onError={(e) => {
                           e.target.src = placeholder;
                         }}

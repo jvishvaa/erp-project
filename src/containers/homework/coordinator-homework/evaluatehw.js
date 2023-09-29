@@ -546,7 +546,7 @@ const ViewHomeworkNew = withRouter(
                                           urlPrefix={
                                             item.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}`
-                                              : `${endpoints.discussionForum.s3}`
+                                              : `${endpoints.discussionForum.s3}/homework`
                                           }
                                           index={i + cindex}
                                           onOpenInPenTool={(item) =>
@@ -567,7 +567,7 @@ const ViewHomeworkNew = withRouter(
                                         urlPrefix={
                                           url.includes('/lesson_plan_file/')
                                             ? `${endpoints.homework.resourcesFiles}`
-                                            : `${endpoints.discussionForum.s3}`
+                                            : `${endpoints.discussionForum.s3}/homework`
                                         }
                                         index={cindex}
                                         onOpenInPenTool={(url) =>
@@ -683,7 +683,7 @@ const ViewHomeworkNew = withRouter(
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
                                     fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.discussionForum.s3}`}
+                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                     index={i}
                                     actions={
                                       url.includes('.doc')
@@ -755,7 +755,7 @@ const ViewHomeworkNew = withRouter(
                                       key={`homework_student_question_attachment_${i}`}
                                       fileUrl={url}
                                       fileName={`Attachment-${i + 1}`}
-                                      urlPrefix={`${endpoints.discussionForum.s3}`}
+                                      urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                       index={i}
                                       actions={
                                         url.includes('.doc')

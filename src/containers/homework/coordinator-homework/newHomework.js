@@ -827,7 +827,7 @@ const SubmissionData = withRouter(
                                                 urlPrefix={
                                                   item.includes('/lesson_plan_file/')
                                                     ? `${endpoints.homework.resourcesFiles}`
-                                                    : `${endpoints.discussionForum.s3}`
+                                                    : `${endpoints.discussionForum.s3}/homework`
                                                 }
                                                 index={i + cindex}
                                                 actions={
@@ -857,7 +857,7 @@ const SubmissionData = withRouter(
                                               urlPrefix={
                                                 url.includes('/lesson_plan_file/')
                                                   ? `${endpoints.homework.resourcesFiles}`
-                                                  : `${endpoints.discussionForum.s3}`
+                                                  : `${endpoints.discussionForum.s3}/homework`
                                               }
                                               index={cindex}
                                               actions={
@@ -890,7 +890,7 @@ const SubmissionData = withRouter(
                                                   src={
                                                     item.includes('/lesson_plan_file/')
                                                       ? `${endpoints.homework.resourcesFiles}/${item}`
-                                                      : `${endpoints.discussionForum.s3}/${item}`
+                                                      : `${endpoints.discussionForum.s3}/homework/${item}`
                                                   }
                                                   onError={(e) => {
                                                     e.target.src = placeholder;
@@ -905,7 +905,7 @@ const SubmissionData = withRouter(
                                                 src={
                                                   url.includes('/lesson_plan_file/')
                                                     ? `${endpoints.homework.resourcesFiles}/${url}`
-                                                    : `${endpoints.discussionForum.s3}/${url}`
+                                                    : `${endpoints.discussionForum.s3}/homework/${url}`
                                                 }
                                                 onError={(e) => {
                                                   e.target.src = placeholder;
