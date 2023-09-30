@@ -224,7 +224,7 @@ deploy_prod_gcp:
       - sudo chmod 777 -R /home/gitlab-runner/
       - whoami
       - pwd
-      - sudo chmod 777 -R /home/gitlab-runner/ 
+      - sudo chmod 777 -R /home/gitlab-runner/ && sudo chown gitlab-runner:gitlab-runner -R /home/gitlab-runner/
     variables:
       GIT_STRATEGY: clone
     stage: deploy
@@ -232,12 +232,12 @@ deploy_prod_gcp:
       - whoami
       - pwd
       - echo "Deploy to production server"
-      - sudo npm install
+      - npm install
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=8196
       - export REACT_APP_UI_ENV=PROD
-      - sudo -E bash -c "set \"CI=false\" &&  npm run build"
+      - npm run build"
       - sudo gsutil rm -r gs://erp-configs/academic/mig-config/build
       - sudo gsutil rsync -r build/ gs://erp-configs/academic/mig-config/build
     environment:
