@@ -23,18 +23,34 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
     setDrawerVisible(false);
   };
 
-  const handleDownloadAll = (files) => {
-    files.map((item) => {
-      const fullName = item?.split('_')[item?.split('_').length - 1];
+  // const handleDownloadAll = (files) => {
+  //   files.map((item) => {
+  //     const fullName = item?.split('_')[item?.split('_').length - 1];
 
-      axios
-        .get(`${endpoints.announcementList.s3erp}${item}`, {
-          responseType: 'blob',
-        })
-        .then((res) => {
-          fileDownload(res.data, fullName);
-        });
+  //     axios
+  //       .get(`${endpoints.announcementList.s3erp}${item}`, {
+  //         responseType: 'blob',
+  //       })
+  //       .then((res) => {
+  //         fileDownload(res.data, fullName);
+  //       });
+  //   });
+  // };
+  const downloadFile = (link) => {
+    return new Promise((resolve) => {
+      link.click();
+      setTimeout(resolve, 1000); // Wait for a short duration to ensure the download has started
     });
+  };
+  const handleDownloadAll = async (files) => {
+    for (const item of files) {
+      const fullName = item?.split('_')[item?.split('_').length - 1];
+      let url = `${endpoints.announcementList.s3erp}${item}`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fullName;
+      await downloadFile(link); // Wait for the download to finish before proceeding to the next iteration
+    }
   };
 
   const deleteDiary = (id) => {
@@ -200,10 +216,17 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
               >
                 <div className='th-16' style={{ height: 120, overflowY: 'auto' }}>
                   {diary?.documents?.map((each) => {
+                    // const fullName = each?.split('_')[each?.split('_').length - 1];
+                    // const fileName = fullName.split('.')[fullName?.split('.').length - 2];
+                    // const extension =
+                    //   fullName.split('.')[fullName?.split('.').length - 1];
+
                     const fullName = each?.split('_')[each?.split('_').length - 1];
                     const fileName = fullName.split('.')[fullName?.split('.').length - 2];
                     const extension =
                       fullName.split('.')[fullName?.split('.').length - 1];
+
+                    const fileName2 = each?.split('/')[each?.split('/').length - 1];
 
                     return (
                       <div
@@ -232,7 +255,19 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
                             target='_blank'
                           >
                             <div className='row align-items-center'>
-                              <div className='col-10 px-1'>{fileName}</div>
+                              <div className='col-10 px-1'>
+                                <p
+                                  style={{
+                                    width: 250,
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                  title={`${fileName2}.${extension}`}
+                                >
+                                  {fileName2}
+                                </p>
+                              </div>
                               <div className='col-2'>
                                 <EyeFilled />
                               </div>

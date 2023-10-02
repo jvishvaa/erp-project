@@ -84,7 +84,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                           urlPrefix={
                             item.includes('/lesson_plan_file/')
                               ? `${endpoints.homework.resourcesFiles}`
-                              : `${endpoints.discussionForum.s3}`
+                              : `${endpoints.discussionForum.s3}/homework`
                           }
                           index={i + cindex}
                           actions={
@@ -107,7 +107,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                         urlPrefix={
                           url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}`
-                            : `${endpoints.discussionForum.s3}`
+                            : `${endpoints.discussionForum.s3}/homework`
                         }
                         index={cindex}
                         actions={

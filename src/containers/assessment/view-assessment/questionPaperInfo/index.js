@@ -715,7 +715,7 @@ const QuestionPaperInfo = ({
                                       urlPrefix={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesS3}`
-                                          : `${endpoints.discussionForum.s3}`
+                                          : `${endpoints.discussionForum.s3}/homework`
                                       }
                                       index={i}
                                       actions={['preview', 'download', 'delete']}
@@ -745,7 +745,7 @@ const QuestionPaperInfo = ({
                                     urlPrefix={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesS3}`
-                                        : `${endpoints.discussionForum.s3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={pdfindex}
                                     actions={['preview', 'download', 'delete']}
@@ -776,7 +776,7 @@ const QuestionPaperInfo = ({
                                         src={
                                           url.includes('/lesson_plan_file/')
                                             ? `${endpoints.homework.resourcesS3}`
-                                            : `${endpoints.discussionForum.s3}/${item}`
+                                            : `${endpoints.discussionForum.s3}/homework/${item}`
                                         }
                                         onError={(e) => {
                                           e.target.src = placeholder;
@@ -791,7 +791,7 @@ const QuestionPaperInfo = ({
                                       src={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesS3}`
-                                          : `${endpoints.discussionForum.s3}/${url}`
+                                          : `${endpoints.discussionForum.s3}/homework/${url}`
                                       }
                                       onError={(e) => {
                                         e.target.src = placeholder;
@@ -882,7 +882,7 @@ const QuestionPaperInfo = ({
                                       urlPrefix={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesS3}`
-                                          : `${endpoints.discussionForum.s3}`
+                                          : `${endpoints.discussionForum.s3}/homework`
                                       }
                                       index={i}
                                       actions={['preview']}
@@ -906,7 +906,7 @@ const QuestionPaperInfo = ({
                                     urlPrefix={
                                       url.includes('/lesson_plan_file/')
                                         ? `${endpoints.homework.resourcesS3}`
-                                        : `${endpoints.discussionForum.s3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={pdfindex}
                                     actions={['preview']}
@@ -931,7 +931,7 @@ const QuestionPaperInfo = ({
                                         src={
                                           url.includes('/lesson_plan_file/')
                                             ? `${endpoints.homework.resourcesS3}`
-                                            : `${endpoints.discussionForum.s3}/${item}`
+                                            : `${endpoints.discussionForum.s3}/homework/${item}`
                                         }
                                         onError={(e) => {
                                           e.target.src = placeholder;
@@ -946,7 +946,7 @@ const QuestionPaperInfo = ({
                                       src={
                                         url.includes('/lesson_plan_file/')
                                           ? `${endpoints.homework.resourcesS3}`
-                                          : `${endpoints.discussionForum.s3}/${url}`
+                                          : `${endpoints.discussionForum.s3}/homework/${url}`
                                       }
                                       onError={(e) => {
                                         e.target.src = placeholder;

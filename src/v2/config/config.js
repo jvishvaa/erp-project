@@ -99,6 +99,7 @@ const stage = {
     msReportsUrlNew: 'https://reports.qa.letseduvate.com',
     baseFinanceURL: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com/qbox`,
     finance: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com`,
+    crm: 'https://marketing.stage-gke.letseduvate.com',
   },
 };
 

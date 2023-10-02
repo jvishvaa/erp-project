@@ -1322,11 +1322,20 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                 >
                   <div className='th-16' style={{ height: 120, overflowY: 'auto' }}>
                     {diary?.documents?.map((each) => {
+                      // const fullName = each?.split('.')[0]?.split('/');
+                      // // const fileName = fullName.split('.')[fullName?.split('.').length - 2];
+                      // const fileName = fullName[fullName.length - 1];
+                      // // const extension = fullName.split('.')[fullName?.split('.').length - 1];
+                      // const extension = each.split('_.')[each?.split('_.').length - 1];
+
                       const fullName = each?.split('_')[each?.split('_').length - 1];
                       const fileName =
                         fullName.split('.')[fullName?.split('.').length - 2];
                       const extension =
                         fullName.split('.')[fullName?.split('.').length - 1];
+
+                      const fileName2 = each?.split('/')[each?.split('/').length - 1]
+
                       return (
                         <div
                           className='row mt-2 py-2 align-items-center th-bg-grey'
@@ -1352,9 +1361,22 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                               }}
                               rel='noopener noreferrer'
                               target='_blank'
+                              style={{ wordWrap: 'break-word' }}
                             >
                               <div className='row align-items-center'>
-                                <div className='col-10 px-1'>{fileName}</div>
+                                <div className='col-10 px-1'>
+                                  <p
+                                    style={{
+                                      width: 250,
+                                      whiteSpace: 'nowrap',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                    }}
+                                    title={`${fileName2}.${extension}`}
+                                  >
+                                    {fileName2}
+                                  </p>
+                                </div>
                                 <div className='col-2'>
                                   <EyeFilled />
                                 </div>

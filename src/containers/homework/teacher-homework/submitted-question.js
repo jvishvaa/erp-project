@@ -183,7 +183,7 @@ const SubmittedQuestion = ({
                         urlPrefix={
                           url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}`
-                            : `${endpoints.discussionForum.s3}`
+                            : `${endpoints.discussionForum.s3}/homework`
                         }
                         index={i}
                         actions={actions}
@@ -260,7 +260,7 @@ const SubmittedQuestion = ({
                         urlPrefix={
                           url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}`
-                            : `${endpoints.discussionForum.s3}`
+                            : `${endpoints.discussionForum.s3}/homework`
                         }
                         index={i}
                         actions={['preview', 'delete', 'download']}

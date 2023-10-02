@@ -1187,7 +1187,7 @@ const NewCommunication = () => {
                                 <VisibilityIcon
                                   style={{ width: 30, height: 30, cursor: 'pointer' }}
                                   onClick={() => {
-                                    const fileSrc = `${endpoints.lessonPlan.s3erp}${item}`;
+                                    const fileSrc = `${endpoints.lessonPlan.s3erp}announcement/${item}`;
                                     openPreview({
                                       currentAttachmentIndex: 0,
                                       attachmentsArray: [
