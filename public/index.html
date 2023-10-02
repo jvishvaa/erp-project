@@ -51,7 +51,7 @@
       const schools = ['localhost:3001', 'orchids'];
       const isOrchids =
         window.location.host.split('.')[0] === 'orchids' || 
-        window.location.host.split('.')[0] === 'orchids-stage'
+        window.location.host.split('.')[0] === 'orchids-stage' || window.location.host.split('.')[0] === 'orchids-prod'
           ? true
           : false;
       if (!isOrchids) {
