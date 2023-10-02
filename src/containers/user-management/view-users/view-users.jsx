@@ -166,7 +166,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const user_level = userData?.user_level;
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa' || window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps'  || window.location.host.split('.')[0] === 'localhost:3000' || window.location.host.split('.')[0] === 'orchids-stage'
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'mcollege' ||
+    window.location.host.split('.')[0] === 'dps' ||
+    window.location.host.split('.')[0] === 'localhost:3000' ||
+    window.location.host.split('.')[0] === 'orchids-stage' ||
+    window.location.host.split('.')[0] === 'orchids-prod'
       ? true
       : false;
   const headers = [
@@ -671,7 +676,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   useEffect(() => {
     // if (moduleId && selectedYear) getBranchApi();
     if (selectedYear) getBranchApi();
-
   }, [selectedYear]);
 
   useEffect(() => {

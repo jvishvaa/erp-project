@@ -56,10 +56,14 @@ const EditSchoolDetailsForm = ({
   const [designation, setDesignation] = useState('');
   const [selectedDesignation, setSelectedDesignation] = useState('');
   const isOrchids =
-  window.location.host.split('.')[0] === 'orchids' || 
-  window.location.host.split('.')[0] === 'qa' ||  window.location.host.split('.')[0] === 'mcollege' || window.location.host.split('.')[0] === 'dps' || window.location.host.split('.')[0] === 'orchids-stage'
-    ? true
-    : false;
+    window.location.host.split('.')[0] === 'orchids' ||
+    window.location.host.split('.')[0] === 'qa' ||
+    window.location.host.split('.')[0] === 'mcollege' ||
+    window.location.host.split('.')[0] === 'dps' ||
+    window.location.host.split('.')[0] === 'orchids-stage' ||
+    window.location.host.split('.')[0] === 'orchids-prod'
+      ? true
+      : false;
   // useEffect(() => {
   //   if (NavData && NavData.length) {
   //     NavData.forEach((item) => {
@@ -77,7 +81,7 @@ const EditSchoolDetailsForm = ({
   //     });
   //   }
   // }, []);
-  console.log(details , 'details edit');
+  console.log(details, 'details edit');
   const formik = useFormik({
     initialValues: {
       academic_year: details.academic_year,
@@ -86,7 +90,7 @@ const EditSchoolDetailsForm = ({
       section: details.section,
       subjects: details.subjects,
       designation: details.designation,
-      userLevel: details.user_level
+      userLevel: details.user_level,
     },
     // validationSchema,
     onSubmit: (values) => {
@@ -98,7 +102,7 @@ const EditSchoolDetailsForm = ({
 
   const fetchAcademicYears = () => {
     // getAcademicYears(moduleId).then((data) => {
-      getAcademicYears().then((data) => {
+    getAcademicYears().then((data) => {
       let transformedData = '';
       transformedData = data?.map((obj = {}) => ({
         id: obj?.id || '',
@@ -111,7 +115,7 @@ const EditSchoolDetailsForm = ({
 
   const fetchBranches = (acadId) => {
     // fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
-      fetchBranchesForCreateUser(acadId).then((data) => {
+    fetchBranchesForCreateUser(acadId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
@@ -138,7 +142,7 @@ const EditSchoolDetailsForm = ({
       section.length > 0
     ) {
       // getSubjects(branch, grade, section, moduleId).then((data) => {
-        getSubjects(branch, grade, section).then((data) => {
+      getSubjects(branch, grade, section).then((data) => {
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -185,7 +189,7 @@ const EditSchoolDetailsForm = ({
           : values;
       formik.setFieldValue('branch', values);
       // fetchGrades(acadId, values, moduleId).then((data) => {
-        fetchGrades(acadId, values).then((data) => {
+      fetchGrades(acadId, values).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
               item_id: grade?.id,
@@ -222,7 +226,7 @@ const EditSchoolDetailsForm = ({
       formik.setFieldValue('grade', values);
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch;
       // fetchSections(acadId, branchList, values, moduleId).then((data) => {
-        fetchSections(acadId, branchList, values).then((data) => {
+      fetchSections(acadId, branchList, values).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
@@ -260,7 +264,7 @@ const EditSchoolDetailsForm = ({
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch;
       const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade;
       // getSubjects(acadId, branchList, gradeList, values, moduleId).then((data) => {
-        getSubjects(acadId, branchList, gradeList, values).then((data) => {
+      getSubjects(acadId, branchList, gradeList, values).then((data) => {
         const transformedData =
           data &&
           data.map((obj) => ({
@@ -282,33 +286,29 @@ const EditSchoolDetailsForm = ({
 
   useEffect(() => {
     // if (moduleId) {
-      fetchAcademicYears();
-      getRoleApi()
-      getDesignation(details.user_level)
-      if (details?.academic_year?.length > 0) {
-        handleChangeAcademicYear(details.academic_year[0]);
-        if (details.branch) {
-          handleChangeBranch(details.branch, details.academic_year[0]?.id);
-          if (details?.grade?.length > 0) {
-            handleChangeGrade(
-              details.grade,
+    fetchAcademicYears();
+    getRoleApi();
+    getDesignation(details.user_level);
+    if (details?.academic_year?.length > 0) {
+      handleChangeAcademicYear(details.academic_year[0]);
+      if (details.branch) {
+        handleChangeBranch(details.branch, details.academic_year[0]?.id);
+        if (details?.grade?.length > 0) {
+          handleChangeGrade(details.grade, details.academic_year[0]?.id, details.branch);
+          if (details?.section?.length > 0) {
+            handleChangeSection(
+              details.section,
               details.academic_year[0]?.id,
-              details.branch
+              details.branch,
+              details.grade
             );
-            if (details?.section?.length > 0) {
-              handleChangeSection(
-                details.section,
-                details.academic_year[0]?.id,
-                details.branch,
-                details.grade
-              );
-              if (details?.subjects?.length > 0) {
-                formik.setFieldValue('subjects', details.subjects);
-              }
+            if (details?.subjects?.length > 0) {
+              formik.setFieldValue('subjects', details.subjects);
             }
           }
         }
       }
+    }
     // }
   }, []);
 
@@ -363,12 +363,12 @@ const EditSchoolDetailsForm = ({
         },
       });
       if (result.status === 200) {
-        setRoles(result?.data?.result)
-        let filter = result?.data?.result.filter((e) => e?.id == details.user_level )
-        console.log(filter , 'fil');
-        if(filter?.length > 0){
-          formik.setFieldValue('userLevel' , filter[0])
-          setSelectedRole(filter[0])
+        setRoles(result?.data?.result);
+        let filter = result?.data?.result.filter((e) => e?.id == details.user_level);
+        console.log(filter, 'fil');
+        if (filter?.length > 0) {
+          formik.setFieldValue('userLevel', filter[0]);
+          setSelectedRole(filter[0]);
         }
       } else {
         setAlert('error', result?.data?.message);
@@ -380,16 +380,18 @@ const EditSchoolDetailsForm = ({
 
   const getDesignation = async (id) => {
     try {
-      const result = await axios.get(`${endpoints.lessonPlan.designation}?user_level=${id}`, {
-        headers: {
-          // Authorization: `Bearer ${token}`,
-          'x-api-key': 'vikash@12345#1231',
-        },
-      });
+      const result = await axios.get(
+        `${endpoints.lessonPlan.designation}?user_level=${id}`,
+        {
+          headers: {
+            // Authorization: `Bearer ${token}`,
+            'x-api-key': 'vikash@12345#1231',
+          },
+        }
+      );
       if (result.status === 200) {
         console.log(result);
-        setDesignation(result?.data?.result)
-    
+        setDesignation(result?.data?.result);
       } else {
         setAlert('error', result?.data?.message);
       }
@@ -401,67 +403,71 @@ const EditSchoolDetailsForm = ({
   return (
     <>
       <Grid container spacing={4} className='school-details-form-container'>
-      {isOrchids == true && index == 0 ? 
-      <div className='w-100 d-flex' >
-        <div className='col-md-4' >
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={(event, value) => {
-            setSelectedDesignation('');
-            formik.setFieldValue('designation', '');
-            setSelectedRole(value);
-            formik.setFieldValue('userLevel', value);
-            getDesignation(value?.id)
-            formik.setFieldValue('designation', '');
-            console.log(value);
-          
-          }}
-          id='branch_id'
-          className='dropdownIcon'
-          value={formik.values.userLevel || ''}
-          options={roles || []}
-          getOptionLabel={(option) => option?.level_name || ''}
-          disabled={details?.user_level == 13 ? true : false}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='User Level'
-              placeholder='Select User Level'
-            />
-          )}
-        />
-        </div> 
-        {selectedRole?.id == 13 ? '' : 
-        <div className='col-md-4' >
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={(event, value) => {
-            console.log(value , 'designation');
-            setSelectedDesignation(value);
-            formik.setFieldValue('designation', value);
-          }}
-          id='branch_id'
-          className='dropdownIcon'
-          value={formik.values.designation || ''}
-          options={designation  || []}
-          getOptionLabel={(option) => option?.designation || ''}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Designation'
-              placeholder='Select Designation'
-            />
-          )}
-        />
-        </div>
-        }
-      </div> : '' }
+        {isOrchids == true && index == 0 ? (
+          <div className='w-100 d-flex'>
+            <div className='col-md-4'>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  setSelectedDesignation('');
+                  formik.setFieldValue('designation', '');
+                  setSelectedRole(value);
+                  formik.setFieldValue('userLevel', value);
+                  getDesignation(value?.id);
+                  formik.setFieldValue('designation', '');
+                  console.log(value);
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={formik.values.userLevel || ''}
+                options={roles || []}
+                getOptionLabel={(option) => option?.level_name || ''}
+                disabled={details?.user_level == 13 ? true : false}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='User Level'
+                    placeholder='Select User Level'
+                  />
+                )}
+              />
+            </div>
+            {selectedRole?.id == 13 ? (
+              ''
+            ) : (
+              <div className='col-md-4'>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={(event, value) => {
+                    console.log(value, 'designation');
+                    setSelectedDesignation(value);
+                    formik.setFieldValue('designation', value);
+                  }}
+                  id='branch_id'
+                  className='dropdownIcon'
+                  value={formik.values.designation || ''}
+                  options={designation || []}
+                  getOptionLabel={(option) => option?.designation || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Designation'
+                      placeholder='Select Designation'
+                    />
+                  )}
+                />
+              </div>
+            )}
+          </div>
+        ) : (
+          ''
+        )}
         <Grid item xs={12}>
           <Divider />
         </Grid>
@@ -661,7 +667,8 @@ const EditSchoolDetailsForm = ({
         </Grid>
         {details?.user_level == 13 && index < currentFormLength && isOrchids
           ? null
-          : !formik.values.academic_year?.[0]?.is_default && details.mapping_bgs?.length > 1 && (
+          : !formik.values.academic_year?.[0]?.is_default &&
+            details.mapping_bgs?.length > 1 && (
               <Grid item md={2} xs={12}>
                 <Button
                   variant='contained'

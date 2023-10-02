@@ -6,7 +6,10 @@ if (
   var X_DTS_HOST = 'qa.olvorchidnaigaon.letseduvate.com';
 } else if (window.location.href.includes('b2b-stage')) {
   var X_DTS_HOST = 'qa.mit.letseduvate.com';
-} else if (window.location.href.includes('test.orchids')) {
+} else if (
+  window.location.href.includes('test.orchids') ||
+  window.location.href.includes('orchids-prod')
+) {
   var X_DTS_HOST = 'orchids.letseduvate.com';
 } else {
   var X_DTS_HOST = window.location.host;

@@ -147,7 +147,8 @@ const SchoolInformation = ({
     window.location.host.split('.')[0] === 'aolschool' ||
     window.location.host.split('.')[0] === 'dps' ||
     window.location.host.split('.')[0] === 'localhost:3000' ||
-    window.location.host.split('.')[0] === 'orchids-stage'
+    window.location.host.split('.')[0] === 'orchids-stage' ||
+    window.location.host.split('.')[0] === 'orchids-prod'
       ? true
       : false;
   return (

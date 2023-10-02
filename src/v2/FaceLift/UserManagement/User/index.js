@@ -75,7 +75,8 @@ const User = () => {
     window.location.host.split('.')[0] === 'qa' ||
     window.location.host.split('.')[0] === 'mcollege' ||
     window.location.host.split('.')[0] === 'dps' ||
-    window.location.host.split('.')[0] === 'orchids-stage'
+    window.location.host.split('.')[0] === 'orchids-stage' ||
+    window.location.host.split('.')[0] === 'orchids-prod'
       ? true
       : false;
 

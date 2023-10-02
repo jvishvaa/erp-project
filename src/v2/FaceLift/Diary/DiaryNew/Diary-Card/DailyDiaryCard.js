@@ -48,6 +48,7 @@ let boardFilterArr = [
   'ui-revamp1.letseduvate.com',
   'qa.olvorchidnaigaon.letseduvate.com',
   'orchids-stage.stage-vm.letseduvate.com',
+  'orchids-prod.letseduvate.com',
 ];
 
 const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {

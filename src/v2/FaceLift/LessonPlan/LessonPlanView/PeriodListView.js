@@ -139,6 +139,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
     'qa.olvorchidnaigaon.letseduvate.com',
     'test.orchids.letseduvate.com',
     'orchids-stage.stage-vm.letseduvate.com',
+    'orchids-prod.letseduvate.com',
   ];
 
   const showEbookDrawer = () => {
