@@ -73,7 +73,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     window.location.host.split('.')[0] === 'qa' ||
     window.location.host.split('.')[0] === 'mcollege' ||
     window.location.host.split('.')[0] === 'dps' ||
-    window.location.host.split('.')[0] === 'orchids-stage'
+    window.location.host.split('.')[0] === 'orchids-stage' ||
+    window.location.host.split('.')[0] === 'orchids-prod'
       ? true
       : false;
 
@@ -196,7 +197,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       section.length > 0
     ) {
       // getSubjects(branch, grade, section, moduleId).then((data) => {
-        getSubjects(branch, grade, section).then((data) => {
+      getSubjects(branch, grade, section).then((data) => {
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -223,7 +224,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     formik.setFieldValue('branch', values);
     if (values?.length > 0) {
       // fetchGrades(selectedYear?.id, values, moduleId).then((data) => {
-        fetchGrades(selectedYear?.id, values).then((data) => {
+      fetchGrades(selectedYear?.id, values).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
               item_id: grade?.id,
@@ -256,7 +257,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     if (values?.length > 0) {
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
       // fetchSections(selectedYear?.id, branchList, values, moduleId).then((data) => {
-        fetchSections(selectedYear?.id, branchList, values).then((data) => {
+      fetchSections(selectedYear?.id, branchList, values).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
@@ -298,29 +299,27 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
       const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade; // Added
       // getSubjects(selectedYear?.id, branchList, gradeList, values, moduleId).then(
-        getSubjects(selectedYear?.id, branchList, gradeList, values).then(
-        (data) => {
-          const transformedData =
-            data &&
-            data.map((obj) => ({
-              id: obj.subject__id,
-              item_id: obj.id,
-              subject_name: obj.subject__subject_name,
-            }));
-          // if (transformedData?.length > 1) {
-          //   transformedData.unshift({
-          //     id: 'all',
-          //     item_id: 'all',
-          //     subject_name: 'Select All',
-          //   });
-          // }
-          setSubjects(transformedData);
-          // const filteredSelectedSections = formik.values.section.filter(
-          //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
-          // );
-          // formik.setFieldValue('section', filteredSelectedSections);
-        }
-      );
+      getSubjects(selectedYear?.id, branchList, gradeList, values).then((data) => {
+        const transformedData =
+          data &&
+          data.map((obj) => ({
+            id: obj.subject__id,
+            item_id: obj.id,
+            subject_name: obj.subject__subject_name,
+          }));
+        // if (transformedData?.length > 1) {
+        //   transformedData.unshift({
+        //     id: 'all',
+        //     item_id: 'all',
+        //     subject_name: 'Select All',
+        //   });
+        // }
+        setSubjects(transformedData);
+        // const filteredSelectedSections = formik.values.section.filter(
+        //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
+        // );
+        // formik.setFieldValue('section', filteredSelectedSections);
+      });
       // fetchSubjects(branch, values);
     }
   };

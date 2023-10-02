@@ -171,6 +171,7 @@ const QuestionBankFilters = ({
     'dev.olvorchidnaigaon.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
     'orchids-stage.stage-vm.letseduvate.com',
+    'orchids-prod.letseduvate.com',
   ];
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
