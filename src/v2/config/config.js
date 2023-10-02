@@ -114,14 +114,14 @@ const prod = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
-    baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
+    baseURLCentral: 'https://mgmt-stage.stage-gke.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
-    msOriginUrl: 'https://classes.letseduvate.com',
-    msReportsUrl: 'https://reports.letseduvate.com',
-    msReportsUrlNew: 'https://reports.letseduvate.com',
+    msOriginUrl: 'https://api-classes-prod.letseduvate.com',
+    msReportsUrl: 'https://api-reports-prod.letseduvate.com',
+    msReportsUrlNew: 'https://api-reports-prod.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
-    newBlogURL: 'https://activities.letseduvate.com',
+    newBlogURL: 'https://activities-prod.letseduvate.com',
     baseFinanceURL: chechUrl
       ? 'https://orchids.finance.letseduvate.com/qbox'
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
