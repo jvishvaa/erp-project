@@ -22,12 +22,12 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, setSelectedIndex, branch }) =
   const handleBulkDownload = (files) => {
     if (window.location.pathname === '/teacher-circular') {
       for (let i = 0; i < files?.length; i++) {
-        window.open(`${endpoints.signature.s3}/${files[i]}`);
+        window.open(`${endpoints.signature.s3}${files[i]}`);
       }
     } else {
       // >>>>>>>>>>>>>>>>>>>>STUDENT SIDE VIEW<<<<<<<<<<<<<<<<<<<<<<<<
       for (let i = 0; i < files?.length; i++) {
-        window.open(`${endpoints.signature.s3}/${files[i]}`);
+        window.open(`${endpoints.signature.s3}${files[i]}`);
       }
     }
   };
