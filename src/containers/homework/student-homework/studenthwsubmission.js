@@ -1162,7 +1162,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                         src={
                                           url.includes('/lesson_plan_file/')
                                             ? `${endpoints.homework.resourcesFiles}${url}`
-                                            : `${endpoints.discussionForum.s3}/${url}`
+                                            : `${endpoints.discussionForum.s3}/homework/${url}`
                                         }
                                         onError={(e) => {
                                           e.target.src = placeholder;
@@ -1336,7 +1336,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           src={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}${url}`
-                                              : `${endpoints.discussionForum.s3}/${url}`
+                                              : `${endpoints.discussionForum.s3}/homework/${url}`
                                           }
                                           onError={(e) => {
                                             e.target.src = placeholder;
@@ -1450,7 +1450,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           urlPrefix={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}`
-                                              : `${endpoints.discussionForum.s3}`
+                                              : `${endpoints.discussionForum.s3}/homework`
                                           }
                                           index={i}
                                           actions={['preview', 'download']}
@@ -1472,7 +1472,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           src={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}${url}`
-                                              : `${endpoints.discussionForum.s3}/${url}`
+                                              : `${endpoints.discussionForum.s3}/homework/${url}`
                                           }
                                           onError={(e) => {
                                             e.target.src = placeholder;
@@ -1506,7 +1506,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           urlPrefix={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}`
-                                              : `${endpoints.discussionForum.s3}`
+                                              : `${endpoints.discussionForum.s3}/homework`
                                           }
                                           index={i}
                                           actions={['preview', 'download']}
@@ -1523,7 +1523,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                                           src={
                                             url.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}${url}`
-                                              : `${endpoints.discussionForum.s3}/${url}`
+                                              : `${endpoints.discussionForum.s3}/homework/${url}`
                                           }
                                           onError={(e) => {
                                             e.target.src = placeholder;
