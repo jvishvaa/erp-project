@@ -1,7 +1,7 @@
 const webUrl = window.location.host;
 const hostUrl = webUrl.split('.');
 
-const chechUrl = hostUrl[0] === 'orchids' ? true : false;
+const chechUrl = hostUrl[0] === 'orchids' || hostUrl[0] === 'orchids-prod' ? true : false;
 const local = {
   s3: {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
