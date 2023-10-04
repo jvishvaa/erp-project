@@ -108,7 +108,7 @@ const SuperAdmindashboardNew = () => {
             </Select>
           </div>
         </div>
-        {showDoodle && <Doodle />}
+        {/* {showDoodle && <Doodle />} */}
         <AttendanceReport selectedBranchList={selectedBranchList} />
 
         <div className='row pt-3'>
