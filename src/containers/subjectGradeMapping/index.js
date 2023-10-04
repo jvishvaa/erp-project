@@ -272,6 +272,10 @@ const Subjectgrade = (props) => {
       ? 'olvorchidnaigaon'
       : hostSplitArray.includes('b2b-stage')
       ? 'mit'
+      : hostSplitArray.includes('orchids-prod')
+      ? 'orchids'
+      : hostSplitArray.includes('b2b-prod')
+      ? 'b2b'
       : subDomain;
 
     const apiURL = `${endpoints.mappingStudentGrade.centralGradeSubjects}?domain_name=${domainTobeSent}&${moduleKey}=${value}`;
