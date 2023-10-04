@@ -114,7 +114,7 @@ const prod = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
-    baseURLCentral: 'https://mgmt-stage.stage-gke.letseduvate.com/qbox',
+    baseURLCentral: 'https://mgmt-prod.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://api-classes-prod.letseduvate.com',
     msReportsUrl: 'https://api-reports-prod.letseduvate.com',
