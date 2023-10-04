@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Announcement from './components/Announcement';
 import CalendarCard from './components/Calendar';
 import PendingHomework from './components/PendingHomework';
@@ -20,9 +21,14 @@ const StudentDashboardConfigOff = () => {
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
   const history = useHistory();
+  const [doodleData, setDoodleData] = useState([]);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   useEffect(() => {
     fetchDoodle();
+    fetchDoodleData();
   }, []);
 
   const fetchDoodle = () => {
@@ -31,6 +37,16 @@ const StudentDashboardConfigOff = () => {
       .then((response) => {
         if (response?.data?.result[0] === 'True') {
           setShowDoodle(true);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+  const fetchDoodleData = () => {
+    axios
+      .get(`${endpoints.doodle.fetchDoodle}`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          setDoodleData(response?.data?.data);
         }
       })
       .catch((error) => message.error('error', error?.message));
@@ -71,7 +87,11 @@ const StudentDashboardConfigOff = () => {
           ''
         )}
       </div>
-      {showDoodle && <Doodle />}
+      {showDoodle &&
+        user_level === 13 &&
+        (doodleData?.enable_branches || []).some(
+          (branchId) => branchId === selectedBranch?.id
+        ) && <Doodle />}
       <div className='row pt-3'>
         <div className='col-md-4 th-custom-col-padding'>
           <TodaysClass />
