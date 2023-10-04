@@ -134,7 +134,7 @@ const prod = {
     baseUdaan: 'https://udaansurelearning.com/qbox',
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
-    baseURLCentral: 'https://mgmt-stage.stage-gke.letseduvate.com/qbox',
+    baseURLCentral: 'https://mgmt-prod.letseduvate.com/qbox',
     baseFinanceURL: chechUrl
       ? 'https://orchids.finance.letseduvate.com/qbox'
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
