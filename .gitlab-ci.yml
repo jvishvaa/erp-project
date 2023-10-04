@@ -215,7 +215,7 @@ deploy_prod:
       - erp_revamp_frontend-prod
     only:
       - master
-    when: manual
+
 
 deploy_prod_gcp:
     before_script:
@@ -247,7 +247,6 @@ deploy_prod_gcp:
       - docker-build-master
     only:
       - master-gcp
-    when: manual
 
 stages:
   - deploy
