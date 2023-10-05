@@ -120,7 +120,9 @@ const prod = {
     msReportsUrl: 'https://api-reports-prod.letseduvate.com',
     msReportsUrlNew: 'https://api-reports-prod.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
-    finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
+    finance: chechUrl
+      ? 'https://orchids.finance.letseduvate.com'
+      : `https://${hostUrl[0]}.finance.letseduvate.com`,
     newBlogURL: 'https://activities-prod.letseduvate.com',
     baseFinanceURL: chechUrl
       ? 'https://orchids.finance.letseduvate.com/qbox'
