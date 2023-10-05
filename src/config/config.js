@@ -142,7 +142,9 @@ const prod = {
     msOriginUrl: 'https://api-classes-prod.letseduvate.com',
     msReportsUrl: 'https://api-reports-prod.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
-    finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
+    finance: chechUrl
+      ? 'https://orchids.finance.letseduvate.com'
+      : `https://${hostUrl[0]}.finance.letseduvate.com`,
     newBlogURL: 'https://activities-prod.letseduvate.com',
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     crm: 'https://marketing.letseduvate.com',
