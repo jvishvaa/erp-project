@@ -221,10 +221,9 @@ deploy_prod_gcp:
     before_script:
       - sleep 10
       - ip a
-      - sudo chmod 777 -R /home/gitlab-runner/
+      - sudo chmod 777 -R /home/gitlab-runner/builds/
       - whoami
       - pwd
-      - sudo chmod 777 -R /home/gitlab-runner/ && sudo chown gitlab-runner:gitlab-runner -R /home/gitlab-runner/
     variables:
       GIT_STRATEGY: clone
     stage: deploy
