@@ -5,6 +5,8 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import ENVCONFIG from 'v2/config/config';
+import ReactHtmlParser from 'react-html-parser'
+
 
 const Doodle = () => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -61,7 +63,7 @@ const Doodle = () => {
               className='row py-3 th-black-2 pr-2 mt-1 text-wrap text-justify'
               style={{ height: '220px', overflowY: 'scroll' }}
             >
-              {doodleData?.description}
+              {ReactHtmlParser(doodleData?.description?.replace(/(?:\r\n|\r|\n)/g, '<br />'))}
             </div>
           </div>
           <div className='col-md-8 shadow-sm px-0 '>
@@ -101,7 +103,7 @@ const Doodle = () => {
                   }}
                   onClick={handleFinance}
                 >
-                  Pay Now 
+                  Pay Now
                 </Button>
               </div>
             )}
