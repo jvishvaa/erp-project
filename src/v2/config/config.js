@@ -1,6 +1,6 @@
 const webUrl = window.location.host;
 const hostUrl = webUrl.split('.');
-const chechUrl = hostUrl[0] === 'orchids' ? true : false;
+const chechUrl = hostUrl[0] === 'orchids' || hostUrl[0] === 'orchids-prod' ? true : false;
 
 const local = {
   s3: {

@@ -1,11 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Popover, message } from 'antd';
+import { useSelector } from 'react-redux';
+import { Button, Popover, message } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
+import ENVCONFIG from 'v2/config/config';
 
 const Doodle = () => {
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [doodleData, setDoodleData] = useState([]);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const handleFinance = () => {
+    window.location.href.includes('dheerajinternational')
+      ? window.open(
+          `https://formbuilder.ccavenue.com/live/dheeraj-international-school`,
+          '_blank'
+        )
+      : window.open(
+          `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+          '_blank'
+        );
+  };
   const fetchDoodle = () => {
     axios
       .get(`${endpoints.doodle.fetchDoodle}`)
@@ -69,6 +86,25 @@ const Doodle = () => {
                 width: '100%',
               }}
             />
+            {(doodleData?.enable_branches || []).some(
+              (branchId) => branchId === selectedBranch?.id
+            ) && (
+              <div style={{ position: 'absolute', bottom: '20px', right: '60px' }}>
+                <Button
+                  type='primary'
+                  className='btn-block th-br-4 th-14'
+                  style={{
+                    width: '80px',
+                    height: '30px',
+                    fontWeight: 'bold',
+                    padding: '0px 2px',
+                  }}
+                  onClick={handleFinance}
+                >
+                  Pay Now 
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -46,7 +46,7 @@ const TeacherdashboardNew = () => {
           <span className='th-14'>({getRole(user_level)})</span>
         </div>
       </div>
-      {showDoodle && <Doodle />}
+      {/* {showDoodle && <Doodle />} */}
       <AttendanceReport />
 
       <div className='row pt-3'>

@@ -5,6 +5,8 @@ let domain_name =
     ? 'olvorchidnaigaon'
     : env.includes('test') || env.includes('orchids-prod')
     ? 'orchids'
+    : env.includes('b2b-prod')
+    ? 'b2b'
     : domainSplit[0];
 
 export { domain_name };
