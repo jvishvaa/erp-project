@@ -96,8 +96,7 @@ const AssesmentCard = ({
     //   return
     // }
     const { checked } = e.target;
-    console.log('treechckvlue', checked, value);
-    selectAssetmentCard(value?.id, checked);
+    selectAssetmentCard(value?.id, checked, value);
     // filterbasedonsub()
   };
 

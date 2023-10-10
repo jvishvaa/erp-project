@@ -26,7 +26,7 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Modal from "@material-ui/core/Modal";
+import Modal from '@material-ui/core/Modal';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
@@ -62,11 +62,11 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(2),
   },
   modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width : '50%',
-    height : '50%'
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    height: '50%',
   },
 }));
 
@@ -92,7 +92,7 @@ const columns = [
     align: 'center',
     labelAlign: 'center',
   },
-  
+
   {
     id: 'priority',
     label: 'Priority',
@@ -101,7 +101,7 @@ const columns = [
     labelAlign: 'center',
   },
   {
-    id: 'optional', 
+    id: 'optional',
     label: 'Marks/Metrics',
     minWidth: 70,
     align: 'center',
@@ -131,7 +131,6 @@ const moreDetailscolumns = [
     labelAlign: 'center',
   },
 ];
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -187,20 +186,16 @@ const ReportConfigTable = () => {
   const [selectedbranch, setSelectedbranch] = useState();
   const [selectedGrade, setSelectedGrade] = useState();
   const [openModal, setOpenModal] = useState(false);
-  const [deleteId , setDeleteId ] = useState()
-  const [openDetails, setopenDetails] = useState(false)
-  const [detailsData , setDetailsData] = useState()
-  const [tabValue , setTabValue] = useState(0)
-  const [totalsub, settotalSub] = useState()
-  const [totalTests , setTotalTests] = useState()
-  const [table, setTable] = useState([])
-  const [openPublishModal, setopenPublishModal] = useState(false)
-  const [ispublished, setIsPublished] = useState(false)
-  const [publishId, setPublishId] = useState()
-
-
-
-  
+  const [deleteId, setDeleteId] = useState();
+  const [openDetails, setopenDetails] = useState(false);
+  const [detailsData, setDetailsData] = useState();
+  const [tabValue, setTabValue] = useState(0);
+  const [totalsub, settotalSub] = useState();
+  const [totalTests, setTotalTests] = useState();
+  const [table, setTable] = useState([]);
+  const [openPublishModal, setopenPublishModal] = useState(false);
+  const [ispublished, setIsPublished] = useState(false);
+  const [publishId, setPublishId] = useState();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -292,10 +287,9 @@ const ReportConfigTable = () => {
 
   const FilterData = () => {
     {
-      if(selectedbranch?.length === 0 || !selectedGrade){
-        setAlert('error', 'Please Select Filters !')
-      }else
-      {
+      if (selectedbranch?.length === 0 || !selectedGrade) {
+        setAlert('error', 'Please Select Filters !');
+      } else {
         setLoading(true);
         let url = `${
           endpoints.questionBank.reportConfig
@@ -330,61 +324,59 @@ const ReportConfigTable = () => {
     axiosInstance
       .delete(url)
       .then((res) => {
-        if(res?.data?.status_code == 200 || res?.status == 200){
-          setAlert('success', res?.data?.message || 'Deleted Successfully')
-          if(selectedbranch?.length && selectedGrade){
+        if (res?.data?.status_code == 200 || res?.status == 200) {
+          setAlert('success', res?.data?.message || 'Deleted Successfully');
+          if (selectedbranch?.length && selectedGrade) {
             FilterData();
-          }else{
+          } else {
             // TotalData()
-          }setLoading(false);
-        }else{
-          setAlert('error', res?.data?.message || 'Deletion Failed')
+          }
+          setLoading(false);
+        } else {
+          setAlert('error', res?.data?.message || 'Deletion Failed');
           setLoading(false);
         }
       })
       .catch((err) => {
-        setAlert('error', err?.response?.data?.message || 'Deletion Failed')
+        setAlert('error', err?.response?.data?.message || 'Deletion Failed');
         setLoading(false);
       });
   };
 
-  const ClosePublishModal = () => [
-    setopenPublishModal(false)
-  ]
+  const ClosePublishModal = () => [setopenPublishModal(false)];
 
   const submitPublish = () => {
-    setLoading(true)
+    setLoading(true);
     let url = `${endpoints.questionBank.reportConfig}${publishId}/`;
 
     axiosInstance
-      .put(url,{
-        is_publish : !ispublished
+      .put(url, {
+        is_publish: !ispublished,
       })
       .then((res) => {
-        if(res?.data?.status_code == 200 || res?.status == 200){
-        setAlert('success', res?.data?.message || 'Updated Successfully')
-        // if(selectedbranch?.length && selectedGrade){
-        //   FilterData();
-        // }else{
-        //   TotalData()
-        // }
-        FilterData()
-        setLoading(false);
-        }else{
-          setAlert('error', res?.data?.message || 'Updation Failed')
-        setLoading(false);
+        if (res?.data?.status_code == 200 || res?.status == 200) {
+          setAlert('success', res?.data?.message || 'Updated Successfully');
+          // if(selectedbranch?.length && selectedGrade){
+          //   FilterData();
+          // }else{
+          //   TotalData()
+          // }
+          FilterData();
+          setLoading(false);
+        } else {
+          setAlert('error', res?.data?.message || 'Updation Failed');
+          setLoading(false);
         }
       })
       .catch((err) => {
-        setAlert('error', err?.response?.data?.message || 'Updation Failed')
+        setAlert('error', err?.response?.data?.message || 'Updation Failed');
         setLoading(false);
       });
-    }
-  const handlePublish = (id,ispublish) => {
-    setopenPublishModal(true)
-    setPublishId(id)
-    setIsPublished(ispublish)
-    
+  };
+  const handlePublish = (id, ispublish) => {
+    setopenPublishModal(true);
+    setPublishId(id);
+    setIsPublished(ispublish);
   };
 
   // const TotalData = () => {
@@ -411,63 +403,74 @@ const ReportConfigTable = () => {
     history.push('/report-config/create');
   };
   const handleClose = () => {
-    setopenDetails(false)
-    setTabValue(0)
-  }
+    setopenDetails(false);
+    setTabValue(0);
+  };
 
   const getTestsummary = () => {
-    axiosInstance.get(`${endpoints.reportCardConfig.reportcardconfigsummary}`).then((res) => {
-      let subjects = [];
-      let branches = res?.data?.result?.map((data) => {
-       let subject = data?.data?.map((subject) => subject?.subject?.subjects__subject_name)
-       subjects.push(subject)
-     return data?.branch?.branch_name
-      })
-      let totalSubjects = ["Branch/Subject"]
-      subjects.forEach((item)=> {
-        totalSubjects =  totalSubjects.concat(item)
-      }
-        )
-        let subset = [...new Set(totalSubjects)]
-     settotalSub(subset)
+    axiosInstance
+      .get(`${endpoints.reportCardConfig.reportcardconfigsummary}`)
+      .then((res) => {
+        let subjects = [];
+        let branches = res?.data?.result?.map((data) => {
+          let subject = data?.data?.map(
+            (subject) => subject?.subject?.subjects__subject_name
+          );
+          subjects.push(subject);
+          return data?.branch?.branch_name;
+        });
+        let totalSubjects = ['Branch/Subject'];
+        subjects.forEach((item) => {
+          totalSubjects = totalSubjects.concat(item);
+        });
+        let subset = [...new Set(totalSubjects)];
+        settotalSub(subset);
 
-     let finalres = []
-     let subjectList = [...subset]
-     subjectList.shift()
-    // let data =  subset.forEach((subject,i) => {
-      let rr = res?.data?.result?.forEach((data) => {
-        let emptyarr = new Array(subjectList.length).fill(0)
-       let r = data?.data?.forEach((item) => {
+        let finalres = [];
+        let subjectList = [...subset];
+        subjectList.shift();
+        // let data =  subset.forEach((subject,i) => {
+        let rr = res?.data?.result?.forEach((data) => {
+          let emptyarr = new Array(subjectList.length).fill(0);
+          let r = data?.data?.forEach((item) => {
             // if(item?.subject?.subjects__subject_name in subjectList){
-              let index = subjectList.indexOf(item?.subject?.subjects__subject_name)
-              if(index != -1){
-                emptyarr[index] = item?.tests
-              }
+            let index = subjectList.indexOf(item?.subject?.subjects__subject_name);
+            if (index != -1) {
+              emptyarr[index] = item?.tests;
+            }
             // }
-        })
-        finalres.push(emptyarr)
+          });
+          finalres.push(emptyarr);
+        });
+        // })
+
+        setTotalTests(finalres);
+
+        setTable(res.data.result);
       })
-    // })
-
-    setTotalTests(finalres)
-
-      setTable(res.data.result)
-    }).catch(err => {
-      console.log(err)
-    })
-  }
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleOpenDetails = (data) => {
-    getTestsummary()
-    setopenDetails(true)
-    setDetailsData(data)
-  }
+    getTestsummary();
+    setopenDetails(true);
+    setDetailsData(data);
+  };
+
+  const handleEdit = (id, data) => {
+    history.push({
+      pathname: `/report-config/edit/${id}`,
+      state: data,
+    });
+  };
 
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div style={{overflowX:'hidden'}}>
+        <div style={{ overflowX: 'hidden' }}>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Assessment'
@@ -481,10 +484,9 @@ const ReportConfigTable = () => {
               //   }
             />
           </div>
-        
 
-        <Grid container spacing={5} style={{ margin: '0px' }}>
-          {/* <Grid item xs={12} sm={3} className={'addButtonPadding'}>
+          <Grid container spacing={5} style={{ margin: '0px' }}>
+            {/* <Grid item xs={12} sm={3} className={'addButtonPadding'}>
             <Autocomplete
               style={{ width: 350 }}
               // value={selectedCentralCategory}
@@ -503,167 +505,174 @@ const ReportConfigTable = () => {
             />
           </Grid>
         </Grid> */}
-          <Grid item md={3} xs={12} style={{ marginLeft: '20px' }}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleBranch}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedbranch || []}
-              options={branchList || []}
-              getOptionLabel={(option) => option?.branch?.branch_name || ''}
-              filterSelectedOptions
-              multiple
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                  required
-                />
-              )}
-            />
-          </Grid>
+            <Grid item md={3} xs={12} style={{ marginLeft: '20px' }}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleBranch}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedbranch || []}
+                options={branchList || []}
+                getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                filterSelectedOptions
+                multiple
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                    required
+                  />
+                )}
+              />
+            </Grid>
 
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleGrade}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedGrade || ''}
-              options={gradeList || []}
-              // getOptionLabel={(option) => option?.grade__grade_name || ''}
-              getOptionLabel={(option) => option?.grade_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                  required
-                />
-              )}
-            />
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleGrade}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedGrade || ''}
+                options={gradeList || []}
+                // getOptionLabel={(option) => option?.grade__grade_name || ''}
+                getOptionLabel={(option) => option?.grade_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Grade'
+                    placeholder='Grade'
+                    required
+                  />
+                )}
+              />
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container spacing={2} style={{ margin: '0px' }}>
-          <Grid item xs={3} sm={2} className={'addButtonPadding'}>
-            <Button
-              // startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-              variant='contained'
-              color='primary'
-              size='medium'
-              style={{ color: 'white', width: '120px', marginLeft: '20px' }}
-              title='Filter'
-              onClick={FilterData}
-            >
-              Filter
-            </Button>
+          <Grid container spacing={2} style={{ margin: '0px' }}>
+            <Grid item xs={3} sm={2} className={'addButtonPadding'}>
+              <Button
+                // startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                variant='contained'
+                color='primary'
+                size='medium'
+                style={{ color: 'white', width: '120px', marginLeft: '20px' }}
+                title='Filter'
+                onClick={FilterData}
+              >
+                Filter
+              </Button>
+            </Grid>
+            <Grid item xs={3} sm={3} className={'addButtonPadding'}>
+              <Button
+                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                variant='contained'
+                color='primary'
+                size='medium'
+                style={{ color: 'white' }}
+                title='Create'
+                onClick={handleCreate}
+              >
+                Create
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={3} sm={3} className={'addButtonPadding'}>
-            <Button
-              startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-              variant='contained'
-              color='primary'
-              size='medium'
-              style={{ color: 'white' }}
-              title='Create'
-              onClick={handleCreate}
-            >
-              Create
-            </Button>
-          </Grid>
-        </Grid>
-        <hr />
-        <Paper className={`${classes.root} common-table`}>
-          <TableContainer className={classes.container}>
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead className='table-header-row'>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                      className={classes.columnHeader}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {configData.map((data, index) => {
-                  return (
-                    <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                      <TableCell className={classes.tableCell}>
-                        {data?.component_name}
+          <hr />
+          <Paper className={`${classes.root} common-table`}>
+            <TableContainer className={classes.container}>
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead className='table-header-row'>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                        className={classes.columnHeader}
+                      >
+                        {column.label}
                       </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {data?.sub_component_name}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {data?.column_text}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {data?.priority}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {data?.weightage === 0 ? 'NA' : data?.weightage}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {data?.component_description}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <Button
-                          onClick={() => handleOpenDetails(data)}
-                          color='primary'
-                          variant='contained'
-                        >
-                          Details
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            // setOpenModal(true);
-                            // setDeleteId(data?.id)
-                            handlePublish(data?.id, data?.is_publish);
-                          }}
-                          style={{ marginLeft: '5%' }}
-                          color='primary'
-                          variant='contained'
-                        >
-                          {/* {ispublished ? 'Publish' : 'Unpublish'} */}
-                          {data?.is_publish ? 'Unpublish' : 'Publish'}
-                        </Button>
-                        <IconButton
-                          onClick={() => {
-                            setOpenModal(true);
-                            setDeleteId(data?.id);
-                          }}
-                          title='Delete'
-                        >
-                          <DeleteOutlinedIcon />
-                        </IconButton>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {configData.map((data, index) => {
+                    return (
+                      <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
+                        <TableCell className={classes.tableCell}>
+                          {data?.component_name}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {data?.sub_component_name}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {data?.column_text}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {data?.priority}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {data?.weightage === 0 ? 'NA' : data?.weightage}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {data?.component_description}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          <Button
+                            onClick={() => handleOpenDetails(data)}
+                            color='primary'
+                            variant='contained'
+                          >
+                            Details
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              // setOpenModal(true);
+                              // setDeleteId(data?.id)
+                              handlePublish(data?.id, data?.is_publish);
+                            }}
+                            style={{ marginLeft: '5%' }}
+                            color='primary'
+                            variant='contained'
+                          >
+                            {/* {ispublished ? 'Publish' : 'Unpublish'} */}
+                            {data?.is_publish ? 'Unpublish' : 'Publish'}
+                          </Button>
+                          <Button
+                            onClick={() => handleEdit(data?.id, data)}
+                            color='primary'
+                            variant='contained'
+                          >
+                            Edit
+                          </Button>
+                          <IconButton
+                            onClick={() => {
+                              setOpenModal(true);
+                              setDeleteId(data?.id);
+                            }}
+                            title='Delete'
+                          >
+                            <DeleteOutlinedIcon />
+                          </IconButton>
 
-                        {/* <IconButton
+                          {/* <IconButton
                           //   onClick={(e) => handleEditSubject(configData)}
                           title='Edit'
                         >
                           <EditOutlinedIcon />
                         </IconButton> */}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          {/* <div className='paginateData'>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {/* <div className='paginateData'>
                   <TablePagination
                     component='div'
                     count={totalCount}
@@ -674,51 +683,59 @@ const ReportConfigTable = () => {
                     rowsPerPageOptions={false}
                   />
                 </div> */}
-        </Paper>
-        {openModal && (
-          <ConfirmModal
-            submit={() => DeleteData()}
-            openModal={openModal}
-            setOpenModal={setOpenModal}
-          />
-        )}
-        {openDetails && (
-          <Dialog
-            open={openDetails}
-            fullWidth
-            onClose={handleClose}
-            // aria-labelledby="simple-modal-title"
-            // aria-describedby="simple-modal-description"
-            // className={classes.modal}
-          >
-            <Grid>
-              <Tabs
-                indicatorColor='primary'
-                textColor='primary'
-                value={tabValue}
-                onChange={handleTabChange}
-                aria-label='simple tabs example'
-              >
-                <Tab label='Test Wise' {...a11yProps(0)} style={{fontWeight : '900'}} />
-                <Tab label='Branch wise' {...a11yProps(1)} style={{fontWeight : '900'}}/>
-              </Tabs>
+          </Paper>
+          {openModal && (
+            <ConfirmModal
+              submit={() => DeleteData()}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+            />
+          )}
+          {openDetails && (
+            <Dialog
+              open={openDetails}
+              fullWidth
+              onClose={handleClose}
+              // aria-labelledby="simple-modal-title"
+              // aria-describedby="simple-modal-description"
+              // className={classes.modal}
+            >
+              <Grid>
+                <Tabs
+                  indicatorColor='primary'
+                  textColor='primary'
+                  value={tabValue}
+                  onChange={handleTabChange}
+                  aria-label='simple tabs example'
+                >
+                  <Tab
+                    label='Test Wise'
+                    {...a11yProps(0)}
+                    style={{ fontWeight: '900' }}
+                  />
+                  <Tab
+                    label='Branch wise'
+                    {...a11yProps(1)}
+                    style={{ fontWeight: '900' }}
+                  />
+                </Tabs>
 
-            <TabPanel value={tabValue} index={0}>
-              {/* <DialogContent> */}
-              <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label='simple table'>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell component='th' scope='row'>
-                        S.NO
-                      </TableCell>
-                      <TableCell component='th' scope='row'>
-                        Test Name
-                      </TableCell>
-                      <TableCell component='th' scope='row'>
-                        Subject Name
-                      </TableCell>
-                      {/* {detailsData?.map((data) =>
+                <TabPanel value={tabValue} index={0}>
+                  {/* <DialogContent> */}
+                  <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label='simple table'>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell component='th' scope='row'>
+                            S.NO
+                          </TableCell>
+                          <TableCell component='th' scope='row'>
+                            Test Name
+                          </TableCell>
+                          <TableCell component='th' scope='row'>
+                            Subject Name
+                          </TableCell>
+                          {/* {detailsData?.map((data) =>
                           (
                             <>
 
@@ -729,100 +746,103 @@ const ReportConfigTable = () => {
                               )}
                             </>
                           ))} */}
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {detailsData?.test_details.map((row, index) => (
-                      <TableRow>
-                        <TableCell component='th' scope='row'>
-                          {index + 1}
-                        </TableCell>
-                        <TableCell component='th' scope='row'>
-                          {row?.test_name}
-                        </TableCell>
-                        <TableCell component='th' scope='row'>
-                          {row?.subjects__subject_name}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            {/* </DialogContent>  */}
-              </TabPanel>
-              <TabPanel value={tabValue} index={1}>
-              <div
-                className={classes.paper}
-                // style={{ width: "60%", height: "60%" }}
-              >
-                <div>
-                  <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                            <>
-
-                          {totalsub?.map((sub) => (
-                            <TableCell align="right">{sub}</TableCell>
-                            ) )}
-                            </>
                         </TableRow>
                       </TableHead>
 
                       <TableBody>
-                        {table.map((row, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="right">{row.branch.branch_name}&nbsp;(g)
+                        {detailsData?.test_details.map((row, index) => (
+                          <TableRow>
+                            <TableCell component='th' scope='row'>
+                              {index + 1}
                             </TableCell>
-                              {totalTests[index].map((tests) => 
-                               <TableCell align="right">
-                                {tests}
-                               </TableCell>)}
+                            <TableCell component='th' scope='row'>
+                              {row?.test_name}
+                            </TableCell>
+                            <TableCell component='th' scope='row'>
+                              {row?.subjects__subject_name}
+                            </TableCell>
                           </TableRow>
-                          ))
-
-                        }
+                        ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
-                </div>
-              </div>
-              </TabPanel>
-            </Grid>            
-          </Dialog>
-        )}
-        {openPublishModal && 
-           <Dialog
-           className='reminderDialog'
-           open={openPublishModal}
-           onClose={ClosePublishModal}
-           aria-labelledby='draggable-dialog-title'
-         >
-           <DialogTitle
-             style={{ cursor: 'move', color: '#014b7e' }}
-             id='draggable-dialog-title'
-           >
-             <div>{`Are you sure you want to ${ispublished ? 'unpublish' : 'publish'}`}</div>
-           </DialogTitle>
-           <DialogActions>
-             <Button onClick={ClosePublishModal} style={{ fontWeight: 600 }} className='labelColor cancelButton'>
-               Cancel
-             </Button>
-             <Button
-               color='primary'
-               variant='contained'
-               onClick={() => {
-                 submitPublish();
-                 ClosePublishModal();
-               }}
-             >
-               Submit
-             </Button>
-           </DialogActions>
-         </Dialog>
-        }
-        {configData.length === 0 && <NoFilterData data="No Data Found"/>}
+                  {/* </DialogContent>  */}
+                </TabPanel>
+                <TabPanel value={tabValue} index={1}>
+                  <div
+                    className={classes.paper}
+                    // style={{ width: "60%", height: "60%" }}
+                  >
+                    <div>
+                      <TableContainer component={Paper}>
+                        <Table className={classes.table} aria-label='simple table'>
+                          <TableHead>
+                            <TableRow>
+                              <>
+                                {totalsub?.map((sub) => (
+                                  <TableCell align='right'>{sub}</TableCell>
+                                ))}
+                              </>
+                            </TableRow>
+                          </TableHead>
+
+                          <TableBody>
+                            {table.map((row, index) => (
+                              <TableRow key={index}>
+                                <TableCell align='right'>
+                                  {row.branch.branch_name}&nbsp;(g)
+                                </TableCell>
+                                {totalTests[index].map((tests) => (
+                                  <TableCell align='right'>{tests}</TableCell>
+                                ))}
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </div>
+                  </div>
+                </TabPanel>
+              </Grid>
+            </Dialog>
+          )}
+          {openPublishModal && (
+            <Dialog
+              className='reminderDialog'
+              open={openPublishModal}
+              onClose={ClosePublishModal}
+              aria-labelledby='draggable-dialog-title'
+            >
+              <DialogTitle
+                style={{ cursor: 'move', color: '#014b7e' }}
+                id='draggable-dialog-title'
+              >
+                <div>{`Are you sure you want to ${
+                  ispublished ? 'unpublish' : 'publish'
+                }`}</div>
+              </DialogTitle>
+              <DialogActions>
+                <Button
+                  onClick={ClosePublishModal}
+                  style={{ fontWeight: 600 }}
+                  className='labelColor cancelButton'
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color='primary'
+                  variant='contained'
+                  onClick={() => {
+                    submitPublish();
+                    ClosePublishModal();
+                  }}
+                >
+                  Submit
+                </Button>
+              </DialogActions>
+            </Dialog>
+          )}
+          {configData.length === 0 && <NoFilterData data='No Data Found' />}
         </div>
       </Layout>
     </>
