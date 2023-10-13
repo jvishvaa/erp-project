@@ -32,7 +32,7 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
     }
   };
   const fetchERPSystemConfig = async (status) => {
-    let data = await JSON.parse(localStorage.getItem('userDetails')) || {};
+    let data = (await JSON.parse(localStorage.getItem('userDetails'))) || {};
     const { branch } = data?.role_details;
     let payload = [];
     const result = axiosInstance
@@ -44,11 +44,11 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
           } else if (res?.data?.result[0] == 'False') {
             return false;
           } else if (res?.data?.result[0]) {
-            let resData = res?.data?.result[0]
-          
+            let resData = res?.data?.result[0];
+
             const selectedId = branch?.map((el) => el?.id);
-            let checkData = resData?.some(item => selectedId.includes(Number(item)))
-            console.log(checkData, "check");
+            let checkData = resData?.some((item) => selectedId.includes(Number(item)));
+            console.log(checkData, 'check');
             return checkData;
           }
         }
@@ -69,36 +69,32 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
           fetchERPSystemConfig(response?.isLogin).then((res) => {
             let erpConfig;
             let userData = JSON.parse(localStorage.getItem('userDetails'));
-            if(res === true || res.length > 0) {
+            if (res === true || res.length > 0) {
               erpConfig = res;
-              if(userData?.user_level === 11 || userData?.user_level ===  13){
+              if (userData?.user_level === 11 || userData?.user_level === 13) {
                 history.push('/acad-calendar');
-                console.log(userData?.user_level , "level");
-                } else {
-                history.push('/dashboard');
-                }
-            } else if(res === false) {
+                console.log(userData?.user_level, 'level');
+              } else {
+                history.push('/profile');
+              }
+            } else if (res === false) {
               erpConfig = res;
-              history.push('/dashboard');
+              history.push('/profile');
             } else {
               erpConfig = res;
-              history.push('/dashboard');
+              history.push('/profile');
             }
             userData['erp_config'] = erpConfig;
-            localStorage.setItem(
-              'userDetails',
-              JSON.stringify(userData)
-            );
+            localStorage.setItem('userDetails', JSON.stringify(userData));
             window.location.reload();
           });
-        }
-         else {
+        } else {
           setAlert('error', response?.message);
           setDisableLogin(false);
         }
       });
     } else {
-      setAlert('error','Please Enter OTP')
+      setAlert('error', 'Please Enter OTP');
     }
   };
 

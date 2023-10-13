@@ -117,14 +117,14 @@ function LoginForm(props) {
               } else if (userData?.user_level !== 4) {
                 history.push('/acad-calendar');
               } else {
-                history.push('/dashboard');
+                history.push('/profile');
               }
             } else if (res === false) {
               erpConfig = res;
-              history.push('/dashboard');
+              history.push('/profile');
             } else {
               erpConfig = res;
-              history.push('/dashboard');
+              history.push('/profile');
             }
             userData['erp_config'] = erpConfig;
             localStorage.setItem('userDetails', JSON.stringify(userData));

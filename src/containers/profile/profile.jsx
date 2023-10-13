@@ -331,12 +331,14 @@ const Profile = (props) => {
     setInputFields(inputDetails);
   };
   useEffect(() => {
-    if (userLevel == 13) {
-      getStudentDetails();
-    } else {
-      getUserDetails();
+    if (selectedAcademicYear?.id) {
+      if (userLevel == 13) {
+        getStudentDetails();
+      } else {
+        getUserDetails();
+      }
     }
-  }, [userLevel]);
+  }, [userLevel, selectedAcademicYear]);
   return (
     <>
       <Layout>

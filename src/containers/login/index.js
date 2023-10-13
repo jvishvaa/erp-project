@@ -61,9 +61,9 @@ function SignIn({ history, setTheme }) {
     if (erp_config === true || erp_config?.length > 0) {
       history.push('/acad-calendar');
     } else if (erp_config === false) {
-      history.push('/dashboard');
+      history.push('/profile');
     } else {
-      history.push('/dashboard');
+      history.push('/profile');
     }
   }
   const theme = useTheme();
