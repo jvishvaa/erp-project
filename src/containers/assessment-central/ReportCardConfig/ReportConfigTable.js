@@ -24,6 +24,7 @@ import {
   Box,
   DialogActions,
 } from '@material-ui/core';
+import { Tabs as AntTabs, Breadcrumb } from 'antd';
 import PropTypes from 'prop-types';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Modal from '@material-ui/core/Modal';
@@ -37,6 +38,7 @@ import { useSelector } from 'react-redux';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import ConfirmModal from '../../../../src/containers/assessment-central/assesment-card/confirm-modal';
 import NoFilterData from 'components/noFilteredData/noFilterData';
+import PeReportConfig from './PeReportConfig';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -166,6 +168,8 @@ function a11yProps(index) {
 }
 
 const ReportConfigTable = () => {
+  const { TabPane } = AntTabs;
+
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const selectedAcademicYear = useSelector(
@@ -196,6 +200,11 @@ const ReportConfigTable = () => {
   const [openPublishModal, setopenPublishModal] = useState(false);
   const [ispublished, setIsPublished] = useState(false);
   const [publishId, setPublishId] = useState();
+
+  const [showTab, setShowTab] = useState('2');
+  const onTabChange = (key) => {
+    setShowTab(key);
+  };
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -471,7 +480,7 @@ const ReportConfigTable = () => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div style={{ overflowX: 'hidden' }}>
-          <div style={{ width: '95%', margin: '20px auto' }}>
+          {/* <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Assessment'
               childComponentName='Report Card Config'
@@ -483,10 +492,28 @@ const ReportConfigTable = () => {
               //   : null
               //   }
             />
+          </div> */}
+
+          <div className='row pt-3'>
+            <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item className='th-black-1 th-16 th-grey'>
+                  Assessment
+                </Breadcrumb.Item>
+                <Breadcrumb.Item className='th-black-1 th-16'>
+                  Report Card Config
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
           </div>
 
-          <Grid container spacing={5} style={{ margin: '0px' }}>
-            {/* <Grid item xs={12} sm={3} className={'addButtonPadding'}>
+          <div className='row mb-3'>
+            <div className='col-md-12'>
+              <div className='th-tabs th-bg-white'>
+                <AntTabs type='card' onChange={onTabChange} activeKey={showTab}>
+                  <TabPane tab='Academic' key='1'>
+                    <Grid container spacing={5} style={{ margin: '0px' }}>
+                      {/* <Grid item xs={12} sm={3} className={'addButtonPadding'}>
             <Autocomplete
               style={{ width: 350 }}
               // value={selectedCentralCategory}
@@ -505,174 +532,179 @@ const ReportConfigTable = () => {
             />
           </Grid>
         </Grid> */}
-            <Grid item md={3} xs={12} style={{ marginLeft: '20px' }}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleBranch}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedbranch || []}
-                options={branchList || []}
-                getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                filterSelectedOptions
-                multiple
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                    required
-                  />
-                )}
-              />
-            </Grid>
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={handleBranch}
+                          id='branch_id'
+                          className='dropdownIcon'
+                          value={selectedbranch || []}
+                          options={branchList || []}
+                          getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                          filterSelectedOptions
+                          multiple
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Branch'
+                              placeholder='Branch'
+                              required
+                            />
+                          )}
+                        />
+                      </Grid>
 
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleGrade}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedGrade || ''}
-                options={gradeList || []}
-                // getOptionLabel={(option) => option?.grade__grade_name || ''}
-                getOptionLabel={(option) => option?.grade_name || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                    required
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={2} style={{ margin: '0px' }}>
-            <Grid item xs={3} sm={2} className={'addButtonPadding'}>
-              <Button
-                // startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                variant='contained'
-                color='primary'
-                size='medium'
-                style={{ color: 'white', width: '120px', marginLeft: '20px' }}
-                title='Filter'
-                onClick={FilterData}
-              >
-                Filter
-              </Button>
-            </Grid>
-            <Grid item xs={3} sm={3} className={'addButtonPadding'}>
-              <Button
-                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                variant='contained'
-                color='primary'
-                size='medium'
-                style={{ color: 'white' }}
-                title='Create'
-                onClick={handleCreate}
-              >
-                Create
-              </Button>
-            </Grid>
-          </Grid>
-          <hr />
-          <Paper className={`${classes.root} common-table`}>
-            <TableContainer className={classes.container}>
-              <Table stickyHeader aria-label='sticky table'>
-                <TableHead className='table-header-row'>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth }}
-                        className={classes.columnHeader}
-                      >
-                        {column.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {configData.map((data, index) => {
-                    return (
-                      <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                        <TableCell className={classes.tableCell}>
-                          {data?.component_name}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {data?.sub_component_name}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {data?.column_text}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {data?.priority}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {data?.weightage === 0 ? 'NA' : data?.weightage}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {data?.component_description}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          <Button
-                            onClick={() => handleOpenDetails(data)}
-                            color='primary'
-                            variant='contained'
-                          >
-                            Details
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              // setOpenModal(true);
-                              // setDeleteId(data?.id)
-                              handlePublish(data?.id, data?.is_publish);
-                            }}
-                            style={{ marginLeft: '5%' }}
-                            color='primary'
-                            variant='contained'
-                          >
-                            {/* {ispublished ? 'Publish' : 'Unpublish'} */}
-                            {data?.is_publish ? 'Unpublish' : 'Publish'}
-                          </Button>
-                          <Button
-                            onClick={() => handleEdit(data?.id, data)}
-                            color='primary'
-                            variant='contained'
-                          >
-                            Edit
-                          </Button>
-                          <IconButton
-                            onClick={() => {
-                              setOpenModal(true);
-                              setDeleteId(data?.id);
-                            }}
-                            title='Delete'
-                          >
-                            <DeleteOutlinedIcon />
-                          </IconButton>
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={handleGrade}
+                          id='branch_id'
+                          className='dropdownIcon'
+                          value={selectedGrade || ''}
+                          options={gradeList || []}
+                          // getOptionLabel={(option) => option?.grade__grade_name || ''}
+                          getOptionLabel={(option) => option?.grade_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Grade'
+                              placeholder='Grade'
+                              required
+                            />
+                          )}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid container spacing={2} style={{ margin: '0px' }}>
+                      <Grid item xs={3} sm={2} className={'addButtonPadding'}>
+                        <Button
+                          // startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                          variant='contained'
+                          color='primary'
+                          size='medium'
+                          style={{ color: 'white', width: '100%' }}
+                          title='Filter'
+                          onClick={FilterData}
+                        >
+                          Filter
+                        </Button>
+                      </Grid>
+                      <Grid item xs={3} sm={3} className={'addButtonPadding'}>
+                        <Button
+                          startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                          variant='contained'
+                          color='primary'
+                          size='medium'
+                          style={{ color: 'white', width: '70%' }}
+                          title='Create'
+                          onClick={handleCreate}
+                        >
+                          Create
+                        </Button>
+                      </Grid>
+                    </Grid>
+                    <hr />
+                    <Paper className={`${classes.root} common-table`}>
+                      <TableContainer className={classes.container}>
+                        <Table stickyHeader aria-label='sticky table'>
+                          <TableHead className='table-header-row'>
+                            <TableRow>
+                              {columns.map((column) => (
+                                <TableCell
+                                  key={column.id}
+                                  align={column.align}
+                                  style={{ minWidth: column.minWidth }}
+                                  className={classes.columnHeader}
+                                >
+                                  {column.label}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {configData.map((data, index) => {
+                              return (
+                                <TableRow
+                                  hover
+                                  subject='checkbox'
+                                  tabIndex={-1}
+                                  key={index}
+                                >
+                                  <TableCell className={classes.tableCell}>
+                                    {data?.component_name}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {data?.sub_component_name}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {data?.column_text}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {data?.priority}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {data?.weightage === 0 ? 'NA' : data?.weightage}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    {data?.component_description}
+                                  </TableCell>
+                                  <TableCell className={classes.tableCell}>
+                                    <Button
+                                      onClick={() => handleOpenDetails(data)}
+                                      color='primary'
+                                      variant='contained'
+                                    >
+                                      Details
+                                    </Button>
+                                    <Button
+                                      onClick={() => {
+                                        // setOpenModal(true);
+                                        // setDeleteId(data?.id)
+                                        handlePublish(data?.id, data?.is_publish);
+                                      }}
+                                      style={{ marginLeft: '5%' }}
+                                      color='primary'
+                                      variant='contained'
+                                    >
+                                      {/* {ispublished ? 'Publish' : 'Unpublish'} */}
+                                      {data?.is_publish ? 'Unpublish' : 'Publish'}
+                                    </Button>
+                                    <Button
+                                      onClick={() => handleEdit(data?.id, data)}
+                                      color='primary'
+                                      variant='contained'
+                                    >
+                                      Edit
+                                    </Button>
+                                    <IconButton
+                                      onClick={() => {
+                                        setOpenModal(true);
+                                        setDeleteId(data?.id);
+                                      }}
+                                      title='Delete'
+                                    >
+                                      <DeleteOutlinedIcon />
+                                    </IconButton>
 
-                          {/* <IconButton
+                                    {/* <IconButton
                           //   onClick={(e) => handleEditSubject(configData)}
                           title='Edit'
                         >
                           <EditOutlinedIcon />
                         </IconButton> */}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            {/* <div className='paginateData'>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                      {/* <div className='paginateData'>
                   <TablePagination
                     component='div'
                     count={totalCount}
@@ -683,59 +715,59 @@ const ReportConfigTable = () => {
                     rowsPerPageOptions={false}
                   />
                 </div> */}
-          </Paper>
-          {openModal && (
-            <ConfirmModal
-              submit={() => DeleteData()}
-              openModal={openModal}
-              setOpenModal={setOpenModal}
-            />
-          )}
-          {openDetails && (
-            <Dialog
-              open={openDetails}
-              fullWidth
-              onClose={handleClose}
-              // aria-labelledby="simple-modal-title"
-              // aria-describedby="simple-modal-description"
-              // className={classes.modal}
-            >
-              <Grid>
-                <Tabs
-                  indicatorColor='primary'
-                  textColor='primary'
-                  value={tabValue}
-                  onChange={handleTabChange}
-                  aria-label='simple tabs example'
-                >
-                  <Tab
-                    label='Test Wise'
-                    {...a11yProps(0)}
-                    style={{ fontWeight: '900' }}
-                  />
-                  <Tab
-                    label='Branch wise'
-                    {...a11yProps(1)}
-                    style={{ fontWeight: '900' }}
-                  />
-                </Tabs>
+                    </Paper>
+                    {openModal && (
+                      <ConfirmModal
+                        submit={() => DeleteData()}
+                        openModal={openModal}
+                        setOpenModal={setOpenModal}
+                      />
+                    )}
+                    {openDetails && (
+                      <Dialog
+                        open={openDetails}
+                        fullWidth
+                        onClose={handleClose}
+                        // aria-labelledby="simple-modal-title"
+                        // aria-describedby="simple-modal-description"
+                        // className={classes.modal}
+                      >
+                        <Grid>
+                          <Tabs
+                            indicatorColor='primary'
+                            textColor='primary'
+                            value={tabValue}
+                            onChange={handleTabChange}
+                            aria-label='simple tabs example'
+                          >
+                            <Tab
+                              label='Test Wise'
+                              {...a11yProps(0)}
+                              style={{ fontWeight: '900' }}
+                            />
+                            <Tab
+                              label='Branch wise'
+                              {...a11yProps(1)}
+                              style={{ fontWeight: '900' }}
+                            />
+                          </Tabs>
 
-                <TabPanel value={tabValue} index={0}>
-                  {/* <DialogContent> */}
-                  <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label='simple table'>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell component='th' scope='row'>
-                            S.NO
-                          </TableCell>
-                          <TableCell component='th' scope='row'>
-                            Test Name
-                          </TableCell>
-                          <TableCell component='th' scope='row'>
-                            Subject Name
-                          </TableCell>
-                          {/* {detailsData?.map((data) =>
+                          <TabPanel value={tabValue} index={0}>
+                            {/* <DialogContent> */}
+                            <TableContainer component={Paper}>
+                              <Table className={classes.table} aria-label='simple table'>
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell component='th' scope='row'>
+                                      S.NO
+                                    </TableCell>
+                                    <TableCell component='th' scope='row'>
+                                      Test Name
+                                    </TableCell>
+                                    <TableCell component='th' scope='row'>
+                                      Subject Name
+                                    </TableCell>
+                                    {/* {detailsData?.map((data) =>
                           (
                             <>
 
@@ -746,103 +778,114 @@ const ReportConfigTable = () => {
                               )}
                             </>
                           ))} */}
-                        </TableRow>
-                      </TableHead>
+                                  </TableRow>
+                                </TableHead>
 
-                      <TableBody>
-                        {detailsData?.test_details.map((row, index) => (
-                          <TableRow>
-                            <TableCell component='th' scope='row'>
-                              {index + 1}
-                            </TableCell>
-                            <TableCell component='th' scope='row'>
-                              {row?.test_name}
-                            </TableCell>
-                            <TableCell component='th' scope='row'>
-                              {row?.subjects__subject_name}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  {/* </DialogContent>  */}
-                </TabPanel>
-                <TabPanel value={tabValue} index={1}>
-                  <div
-                    className={classes.paper}
-                    // style={{ width: "60%", height: "60%" }}
-                  >
-                    <div>
-                      <TableContainer component={Paper}>
-                        <Table className={classes.table} aria-label='simple table'>
-                          <TableHead>
-                            <TableRow>
-                              <>
-                                {totalsub?.map((sub) => (
-                                  <TableCell align='right'>{sub}</TableCell>
-                                ))}
-                              </>
-                            </TableRow>
-                          </TableHead>
+                                <TableBody>
+                                  {detailsData?.test_details.map((row, index) => (
+                                    <TableRow>
+                                      <TableCell component='th' scope='row'>
+                                        {index + 1}
+                                      </TableCell>
+                                      <TableCell component='th' scope='row'>
+                                        {row?.test_name}
+                                      </TableCell>
+                                      <TableCell component='th' scope='row'>
+                                        {row?.subjects__subject_name}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                            {/* </DialogContent>  */}
+                          </TabPanel>
+                          <TabPanel value={tabValue} index={1}>
+                            <div
+                              className={classes.paper}
+                              // style={{ width: "60%", height: "60%" }}
+                            >
+                              <div>
+                                <TableContainer component={Paper}>
+                                  <Table
+                                    className={classes.table}
+                                    aria-label='simple table'
+                                  >
+                                    <TableHead>
+                                      <TableRow>
+                                        <>
+                                          {totalsub?.map((sub) => (
+                                            <TableCell align='right'>{sub}</TableCell>
+                                          ))}
+                                        </>
+                                      </TableRow>
+                                    </TableHead>
 
-                          <TableBody>
-                            {table.map((row, index) => (
-                              <TableRow key={index}>
-                                <TableCell align='right'>
-                                  {row.branch.branch_name}&nbsp;(g)
-                                </TableCell>
-                                {totalTests[index].map((tests) => (
-                                  <TableCell align='right'>{tests}</TableCell>
-                                ))}
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div>
-                  </div>
-                </TabPanel>
-              </Grid>
-            </Dialog>
-          )}
-          {openPublishModal && (
-            <Dialog
-              className='reminderDialog'
-              open={openPublishModal}
-              onClose={ClosePublishModal}
-              aria-labelledby='draggable-dialog-title'
-            >
-              <DialogTitle
-                style={{ cursor: 'move', color: '#014b7e' }}
-                id='draggable-dialog-title'
-              >
-                <div>{`Are you sure you want to ${
-                  ispublished ? 'unpublish' : 'publish'
-                }`}</div>
-              </DialogTitle>
-              <DialogActions>
-                <Button
-                  onClick={ClosePublishModal}
-                  style={{ fontWeight: 600 }}
-                  className='labelColor cancelButton'
-                >
-                  Cancel
-                </Button>
-                <Button
-                  color='primary'
-                  variant='contained'
-                  onClick={() => {
-                    submitPublish();
-                    ClosePublishModal();
-                  }}
-                >
-                  Submit
-                </Button>
-              </DialogActions>
-            </Dialog>
-          )}
-          {configData.length === 0 && <NoFilterData data='No Data Found' />}
+                                    <TableBody>
+                                      {table.map((row, index) => (
+                                        <TableRow key={index}>
+                                          <TableCell align='right'>
+                                            {row.branch.branch_name}&nbsp;(g)
+                                          </TableCell>
+                                          {totalTests[index].map((tests) => (
+                                            <TableCell align='right'>{tests}</TableCell>
+                                          ))}
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </TableContainer>
+                              </div>
+                            </div>
+                          </TabPanel>
+                        </Grid>
+                      </Dialog>
+                    )}
+                    {openPublishModal && (
+                      <Dialog
+                        className='reminderDialog'
+                        open={openPublishModal}
+                        onClose={ClosePublishModal}
+                        aria-labelledby='draggable-dialog-title'
+                      >
+                        <DialogTitle
+                          style={{ cursor: 'move', color: '#014b7e' }}
+                          id='draggable-dialog-title'
+                        >
+                          <div>{`Are you sure you want to ${
+                            ispublished ? 'unpublish' : 'publish'
+                          }`}</div>
+                        </DialogTitle>
+                        <DialogActions>
+                          <Button
+                            onClick={ClosePublishModal}
+                            style={{ fontWeight: 600 }}
+                            className='labelColor cancelButton'
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            color='primary'
+                            variant='contained'
+                            onClick={() => {
+                              submitPublish();
+                              ClosePublishModal();
+                            }}
+                          >
+                            Submit
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    )}
+                    {configData.length === 0 && <NoFilterData data='No Data Found' />}
+                  </TabPane>
+                  <TabPane tab='Physical Education' key='2'>
+                    <PeReportConfig />
+                  </TabPane>
+                </AntTabs>
+              </div>
+            </div>
+          </div>
         </div>
       </Layout>
     </>

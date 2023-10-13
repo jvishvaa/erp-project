@@ -543,6 +543,11 @@ export default {
     submitAPI: '/assessment/report-card-config-api/',
     branchAPI: '/erp_user/grade/',
   },
+  peReportCardConfig: {
+    categoryList: `${newBlogURL}/api/get_activity_types/`,
+    criteriaList: `${newBlogURL}/api/fetch-criteria`,
+    addConfig: `${newBlogURL}/api/add-report-config`,
+  },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
     reportTopicWise: `/assessment/report-topic-wise/`,

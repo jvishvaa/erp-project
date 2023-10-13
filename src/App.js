@@ -492,6 +492,7 @@ import axiosInstance from './config/axios';
 import moment from 'moment';
 import axios from 'axios';
 import ChangePassword from './v2/FaceLift/ChangePassword';
+import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig/PhysicalEducation/CreatePeReportConfig';
 
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
@@ -1083,6 +1084,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/report-config/edit/:id'>
                               {({ match }) => <EditReportConfig match={match} />}
+                            </Route>
+                            <Route exact path='/pe-report-config/create'>
+                              {({ match }) => <CreatePeReportConfig match={match} />}
                             </Route>
                             <Route exact path='/master-management/event-category'>
                               {({ match }) => <EventCategory match={match} />}

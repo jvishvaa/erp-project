@@ -63,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
 const EditReportConfig = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  console.log('data', history.location.state);
   const { id: editId } = useParams();
   const {
     acad_session_id,
@@ -128,10 +127,8 @@ const EditReportConfig = (props) => {
   const [curriculamTypeList, setCurriculamTypeList] = useState([]);
   const [curriculamNameList, setCurriculamNameList] = useState([]);
   const [moduleId, setModuleId] = useState('');
-  const [selectedbranch, setSelectedbranch] = useState();
+  const [selectedbranch, setSelectedbranch] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState();
-  console.log({ selectedGrade });
-  console.log({ gradeList });
   const [reportcardTermList, setReportCardTermList] = useState();
   const [priority, setPriority] = useState(initialPriority);
   const [assesmentType, setAssesmentType] = useState(column_text);
@@ -151,6 +148,8 @@ const EditReportConfig = (props) => {
   const [selectedTestId, setSelectedTestId] = useState();
   const [openModal, setOpenModal] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
+
+  console.log({ testDetails });
 
   const handleOpenAssesmentModal = () => {
     setOpenAssesmentSelectModal(true);
@@ -177,13 +176,6 @@ const EditReportConfig = (props) => {
   useEffect(() => {
     if (moduleId) {
       getBranch();
-      // if (branchID) {
-
-      console.log(
-        branchList?.filter((item) => item?.branch?.id === 456),
-        branchList
-      );
-      // }
     }
   }, [moduleId]);
 
@@ -205,26 +197,26 @@ const EditReportConfig = (props) => {
     }
   }, [window.location.pathname]);
 
-  const handleBranch = (e, value = []) => {
-    setSelectedbranch();
-    setSelectedGrade();
-    setGradeList([]);
-    // const Ids = value.map((i)=>i.id)
-    if (value) {
-      value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...branchList].filter(({ id }) => id !== 'all')
-          : value;
-      console.log({ value });
-      setSelectedbranch(value);
-      getGrade(value);
-      // setSelectBranchId(Ids)
-    } else {
-      // setSelectBranchId([])
-      setSelectedbranch();
-      setSelectedGrade();
-    }
-  };
+  // const handleBranch = (e, value = []) => {
+  //   setSelectedbranch();
+  //   setSelectedGrade();
+  //   setGradeList([]);
+  //   // const Ids = value.map((i)=>i.id)
+  //   if (value) {
+  //     value =
+  //       value.filter(({ id }) => id === 'all').length === 1
+  //         ? [...branchList].filter(({ id }) => id !== 'all')
+  //         : value;
+  //     console.log({ value });
+  //     setSelectedbranch(value);
+  //     getGrade(value);
+  //     // setSelectBranchId(Ids)
+  //   } else {
+  //     // setSelectBranchId([])
+  //     setSelectedbranch();
+  //     setSelectedGrade();
+  //   }
+  // };
 
   const handleGrade = (e, value) => {
     if (value) {
@@ -256,7 +248,13 @@ const EditReportConfig = (props) => {
             });
           }
           setBranchList(res?.data?.data?.results);
-          getGrade(res?.data?.data?.results?.filter((item) => item?.branch?.id === 456));
+          if (branchID) {
+            let newBranch = branches?.filter((item) => item?.branch?.id === branchID);
+            setSelectedbranch(newBranch);
+            getGrade(
+              res?.data?.data?.results?.filter((item) => item?.branch?.id === branchID)
+            );
+          }
         } else {
           // setBranchList([]);
         }
@@ -297,7 +295,6 @@ const EditReportConfig = (props) => {
         let selectgrading = res?.data?.result?.find(
           (item) => item?.id === grading_system_id
         );
-        console.log({ selectgrading });
         setSelectedGrading(selectgrading);
       })
       .catch((error) => {
@@ -314,7 +311,6 @@ const EditReportConfig = (props) => {
         let selectedType = res?.data?.result?.find((item) => item?.id === ComponentID);
         setSelectedCurriculamType(selectedType);
         setSelectedCurriculamName(selectedType);
-        // console.log({ selectedType });
       })
       .catch((err) => {
         console.log(err);
@@ -335,7 +331,6 @@ const EditReportConfig = (props) => {
   };
 
   const handleColumnSelectedTestChange = (test, data) => {
-    console.log('test', data);
     //new
     const newComponent = components[0];
     setComponentDetails(
@@ -349,14 +344,10 @@ const EditReportConfig = (props) => {
       })
     );
     let allTest = [...testDetails, ...data];
-    console.log({ allTest });
     // let filteredTest = allTest.filter((item, index) => allTest.indexOf(item) === index);
     let filteredTest = [...new Map(allTest.map((obj) => [obj.id, obj])).values()];
     setTestDetails(filteredTest);
-    console.log(test, newComponent, 'test');
   };
-
-  console.log({ components });
 
   const removeTest = (id) => {
     let testids = testIds.filter((item) => item !== id);
@@ -375,15 +366,6 @@ const EditReportConfig = (props) => {
   };
 
   const updateReportCardConfig = () => {
-    console.log('components update', components);
-    console.log(
-      priority,
-      assesmentType,
-      marks,
-      selectedLogicValue,
-      testIds,
-      'edited data'
-    );
     if (!priority) {
       setAlert('error', 'Priority can not be empty');
       return;
@@ -393,7 +375,6 @@ const EditReportConfig = (props) => {
       return;
     }
     if (selectedCurriculamType?.component_name !== 'PTSD') {
-      console.log('not ptsd');
       if (!marks) {
         setAlert('error', 'Marks can not be empty');
         return;
@@ -432,8 +413,6 @@ const EditReportConfig = (props) => {
       });
   };
 
-  console.log({ selectedCurriculamType });
-
   return (
     <React.Fragment>
       <Layout>
@@ -453,7 +432,6 @@ const EditReportConfig = (props) => {
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
-                onChange={handleBranch}
                 id='branch_id'
                 limitTags={1}
                 className='dropdownIcon'
@@ -507,7 +485,6 @@ const EditReportConfig = (props) => {
                   size='small'
                   value={selectedCurriculamType ?? null}
                   onChange={(event, data) => {
-                    console.log('orchids', data);
                     setCurriculamNameList([]);
                     if (data) {
                       for (let val of curriculamTypeList) {
@@ -730,7 +707,7 @@ const EditReportConfig = (props) => {
                               <TableRow key={index}>
                                 <TableCell>{item?.id}</TableCell>
                                 <TableCell>{item?.test_name}</TableCell>
-                                <TableCell>{item?.subjects__subject_name}</TableCell>
+                                <TableCell>{item?.subjects__subject_name ? item?.subjects__subject_name : item?.subject_names }</TableCell>
                                 <TableCell>
                                   <Button
                                     startIcon={
@@ -805,7 +782,6 @@ const EditReportConfig = (props) => {
                           return newComponent;
                         })
                       );
-                      console.log(value);
                       setselectedLogicValue(value?.value);
                       setSelectedLogic(value);
                     }}
