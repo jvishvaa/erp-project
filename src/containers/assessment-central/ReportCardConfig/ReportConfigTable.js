@@ -167,6 +167,7 @@ function a11yProps(index) {
 
 const ReportConfigTable = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -196,6 +197,7 @@ const ReportConfigTable = () => {
   const [openPublishModal, setopenPublishModal] = useState(false);
   const [ispublished, setIsPublished] = useState(false);
   const [publishId, setPublishId] = useState();
+  const [unlockLoading, setUnlockLoading] = useState(false);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -458,6 +460,28 @@ const ReportConfigTable = () => {
     setopenDetails(true);
     setDetailsData(data);
   };
+  const handleUnlockDetails = (data) => {
+    setUnlockLoading(true);
+    axiosInstance
+      .put(`${endpoints.reportCardConfig.submitAPI}${data?.id}/`, { is_locked: false })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAlert('success', result.data.message);
+          FilterData();
+        }
+      })
+      .catch((error) => {
+        setAlert(
+          'error',
+          error?.response?.data?.message ||
+            error?.response?.data?.message ||
+            'Updation Failed'
+        );
+      })
+      .finally(() => {
+        setUnlockLoading(false);
+      });
+  };
 
   const handleEdit = (id, data) => {
     history.push({
@@ -642,23 +666,42 @@ const ReportConfigTable = () => {
                             {/* {ispublished ? 'Publish' : 'Unpublish'} */}
                             {data?.is_publish ? 'Unpublish' : 'Publish'}
                           </Button>
-                          <Button
-                            onClick={() => handleEdit(data?.id, data)}
-                            color='primary'
-                            variant='contained'
-                          >
-                            Edit
-                          </Button>
+                          {!data?.is_locked ? (
+                            is_superuser ? (
+                              <Button
+                                onClick={() => {
+                                  if (!unlockLoading) {
+                                    handleUnlockDetails(data);
+                                  }
+                                }}
+                                color='primary'
+                                variant='contained'
+                                style={{ marginTop: '5%' }}
+                              >
+                                Unlock
+                              </Button>
+                            ) : null
+                          ) : (
+                            <>
+                              <Button
+                                onClick={() => handleEdit(data?.id, data)}
+                                color='primary'
+                                variant='contained'
+                              >
+                                Edit
+                              </Button>
 
-                          <IconButton
-                            onClick={() => {
-                              setOpenModal(true);
-                              setDeleteId(data?.id);
-                            }}
-                            title='Delete'
-                          >
-                            <DeleteOutlinedIcon />
-                          </IconButton>
+                              <IconButton
+                                onClick={() => {
+                                  setOpenModal(true);
+                                  setDeleteId(data?.id);
+                                }}
+                                title='Delete'
+                              >
+                                <DeleteOutlinedIcon />
+                              </IconButton>
+                            </>
+                          )}
 
                           {/* <IconButton
                           //   onClick={(e) => handleEditSubject(configData)}
