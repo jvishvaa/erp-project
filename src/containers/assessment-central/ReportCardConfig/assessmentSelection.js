@@ -103,9 +103,8 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
   const [assesmentTestsTotalPage, setAssesmentTestsTotalPage] = useState(0);
   const [filteredAssesmentTests, setFilteredAssesmentTests] = useState([]);
   const [filteredAssesmentTestsPage, setFilteredAssesmentTestPage] = useState(1);
-  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] = useState(
-    0
-  );
+  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] =
+    useState(0);
   const [showFilteredList, setShowFilteredList] = useState(false);
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
@@ -759,10 +758,12 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
   };
 
   const [addedId, setAddedId] = useState([]);
+  const [addedTest, setAddedTest] = useState([]);
 
-  const selectAssetmentCard = (id, checked) => {
+  const selectAssetmentCard = (id, checked, testDetails) => {
     if (checked) {
       setAddedId([...addedId, id]);
+      setAddedTest([...addedTest, testDetails]);
     } else {
       const previousArr = [...addedId];
       const index = addedId.indexOf(id);
@@ -885,7 +886,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
             <span
               className='th-pointer'
               onClick={() => {
-                handleColumnSelectedTestChange(addedId);
+                // handleColumnSelectedTestChange(addedId, addedTest);
                 handleClose();
               }}
             >
@@ -1278,7 +1279,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
                 className={'th-br-6 th-button th-width-100 mt-2'}
                 startIcon={<AddIcon style={{ fontSize: '30px' }} />}
                 onClick={() => {
-                  handleColumnSelectedTestChange(addedId);
+                  handleColumnSelectedTestChange(addedId, addedTest);
                   handleClose();
                 }}
               >
@@ -1381,6 +1382,7 @@ const AssesmentSelection = ({ handleColumnSelectedTestChange, handleClose }) => 
                       filterResults={filterResults}
                       activeTab={activeTab}
                       addedId={addedId}
+                      addedTest={addedTest}
                       selectAssetmentCard={selectAssetmentCard}
                       handleClose={handleClose}
                       filteredAssesmentTests={filteredAssesmentTests}

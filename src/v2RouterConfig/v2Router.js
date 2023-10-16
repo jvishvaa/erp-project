@@ -76,6 +76,7 @@ import StudentCountReport from 'v2/FaceLift/SchoolStrength/StudentCountReport';
 import ChangePassword from '../v2/FaceLift/ChangePassword';
 import SignatureUploadv2 from 'v2/FaceLift/MasterManagement/signature-upload/signature-table';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import EditReportConfig from '../containers/assessment-central/ReportCardConfig/EditReportConfig';
 
 const V2Router = () => {
   useEffect(() => {
@@ -230,6 +231,9 @@ const V2Router = () => {
                         <Route exact path='/report-config/create'>
                           {({ match }) => <CreateReportConfig match={match} />}
                         </Route>
+                        <Route exact path='/report-config/edit/:id'>
+                          {({ match }) => <EditReportConfig match={match} />}
+                        </Route>
                         <Route path='/lesson-plan/teacher-view/period-view/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
                         </Route>
@@ -374,8 +378,7 @@ const V2Router = () => {
                         <Route path='/master-management/signature-upload'>
                           {({ match }) => <SignatureUploadv2 match={match} />}
                         </Route>
-                        ,
-                        {/* v1 router */}
+                        ,{/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}

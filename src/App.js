@@ -491,6 +491,7 @@ import axiosInstance from './config/axios';
 import moment from 'moment';
 import axios from 'axios';
 import ChangePassword from './v2/FaceLift/ChangePassword';
+import EditReportConfig from './containers/assessment-central/ReportCardConfig/EditReportConfig';
 
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
@@ -1079,6 +1080,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/report-config/create'>
                               {({ match }) => <CreateReportConfig match={match} />}
+                            </Route>
+                            <Route exact path='/report-config/edit/:id'>
+                              {({ match }) => <EditReportConfig match={match} />}
                             </Route>
                             <Route exact path='/master-management/event-category'>
                               {({ match }) => <EventCategory match={match} />}
