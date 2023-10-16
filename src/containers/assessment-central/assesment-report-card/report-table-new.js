@@ -778,7 +778,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                 (eachMarks, marksIndex) => {
                                   return eachMarks?.subject?.id === x.id;
                                 }
-                              )[0]?.normalized_marks;
+                              )[0]?.normalised_marks_grade;
 
                               return (
                                 <>
