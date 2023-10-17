@@ -349,13 +349,14 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   <td
                                     className='th-width-12 th-fw-600 text-center'
                                     rowSpan={2}
+                                    colSpan={2}
                                   >
                                     {'Grade'}
                                   </td>
                                 ) : null}
 
                                 {/* Inserting OSR column for each semester */}
-                                {subjectIndex ==
+                                {/* {subjectIndex ==
                                 eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
                                     className='th-width-12 th-fw-600 text-center'
@@ -363,7 +364,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   >
                                     {'OSR'}
                                   </td>
-                                ) : null}
+                                ) : null} */}
 
                                 {/* Inserting AIR column for each semester */}
                                 {/* {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
@@ -383,15 +384,19 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       {eachScholastic?.sub_component?.length > 1 ? (
                         <>
                           {' '}
-                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          <td
+                            className='th-width-12 th-fw-600 text-center'
+                            rowSpan={2}
+                            colSpan={2}
+                          >
                             {'(S1 +S2)/2'}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                             {'Grade'}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                             {'OSR'}
-                          </td>
+                          </td> */}
                           {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                           {'AIR'}
                         </td> */}
@@ -464,20 +469,21 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   {j == eachSem?.marks_with_subject?.length - 1 ? (
                                     <td
                                       className='th-width-12 text-center'
+                                      colSpan={2}
                                       style={{ backgroundColor: '#ffffff' }}
                                     >
                                       {eachSem?.grade[subjectIndex]}
                                     </td>
                                   ) : null}
                                   {/* Inserting Total OSR column for each semester */}
-                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                  {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                     <td
                                       className='th-width-12 text-center'
                                       style={{ backgroundColor: '#ffffff' }}
                                     >
                                       {eachSem?.OSR[subjectIndex]}
                                     </td>
-                                  ) : null}
+                                  ) : null} */}
                                   {/* Inserting Total AIR column for each semester */}
                                   {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
@@ -498,6 +504,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                               <td
                                 className='th-width-10  text-center'
                                 style={{ backgroundColor: '#ffffff' }}
+                                colSpan={2}
                               >
                                 {eachScholastic?.annual_score?.marks[subjectIndex]}
                               </td>
@@ -509,12 +516,12 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                 {eachScholastic?.annual_score?.grade[subjectIndex]}
                               </td>
                               {/* Avg OSR */}
-                              <td
+                              {/* <td
                                 className='th-width-10  text-center'
                                 style={{ backgroundColor: '#ffffff' }}
                               >
                                 {eachScholastic?.annual_score?.OSR[subjectIndex]}
-                              </td>
+                              </td> */}
                               {/* Avg AIR */}
                               {/* <td
                               className='th-width-10  text-center'
@@ -544,12 +551,12 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                 : eachSem?.total_marks_percentage?.toFixed(2)}
                               %)
                             </td>
-                            <td className='th-width-12 th-fw-600 text-center'>
+                            <td className='th-width-12 th-fw-600 text-center' colSpan='2'>
                               {eachSem.total_grade}
                             </td>
-                            <td className='th-width-12 th-fw-600 text-center'>
+                            {/* <td className='th-width-12 th-fw-600 text-center'>
                               {eachSem.overall_osr}
-                            </td>
+                            </td> */}
                             {/* <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.overall_air}
                           </td> */}
@@ -640,7 +647,11 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                         return (
                           <td
                             className={`th-fw-600`} //calculating column width
-                            colSpan={eachSem?.marks_with_subject?.length + 3}
+                            colSpan={
+                              eachSem?.marks_with_subject?.length == 1
+                                ? 4
+                                : eachSem?.marks_with_subject?.length + 1
+                            }
                             style={{
                               backgroundColor: '#fdbf8e',
                               width: `${72 / eachScholastic?.sub_component?.length}%`,
@@ -669,30 +680,40 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           (eachSubject, subjectIndex) => {
                             return (
                               <>
-                                <td className='th-width-10 th-fw-600 text-center'>
+                                {/* <td
+                                  className='th-width-10 th-fw-600 text-center'
+                                  colspan={
+                                    eachSem?.marks_with_subject?.length == 1 ? 2 : ''
+                                  }
+                                >
                                   {eachSubject?.column_text}
-                                </td>
+                                </td> */}
 
                                 {/* Inserting Total marks column for each semester */}
-                                {subjectIndex ==
+                                {/* {subjectIndex ==
                                 eachSem?.marks_with_subject?.length - 1 ? (
                                   <td className='th-width-12 th-fw-600 text-center'>
-                                    {'Total'}
+                                    {'TotalRavi'}
                                   </td>
-                                ) : null}
+                                ) : null} */}
                                 {/* Inserting Grade column for each semester */}
                                 {subjectIndex ==
                                 eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
                                     className='th-width-12 th-fw-600 text-center'
                                     rowSpan={2}
+                                    colSpan={
+                                      eachSem?.marks_with_subject?.length == 1
+                                        ? 4
+                                        : eachSem?.marks_with_subject?.length + 1
+                                    }
                                   >
                                     {'Grade'}
                                   </td>
                                 ) : null}
 
                                 {/* Inserting OSR column for each semester */}
-                                {subjectIndex ==
+                                {/* {subjectIndex ==
                                 eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
                                     className='th-width-12 th-fw-600 text-center'
@@ -700,7 +721,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   >
                                     {'OSR'}
                                   </td>
-                                ) : null}
+                                ) : null} */}
 
                                 {/* Inserting AIR column for each semester */}
                                 {/* {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
@@ -720,15 +741,19 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       {eachScholastic?.sub_component?.length > 1 ? (
                         <>
                           {' '}
-                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          <td
+                            className='th-width-18 th-fw-600 text-center'
+                            colSpan={2}
+                            rowSpan={2}
+                          >
                             {'(S1 +S2)/2'}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          <td className='th-width-18 th-fw-600 text-center' rowSpan={2}>
                             {'Grade'}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                             {'OSR'}
-                          </td>
+                          </td> */}
                           {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                           {'AIR'}
                         </td> */}
@@ -738,27 +763,32 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     {/* Subject/Exam type Header End */}
                     {/* Weightage Header Start */}
                     <tr>
-                      <td className='th-width-12 th-fw-600'>{'WEIGHTAGE(%)'}</td>
-                      {eachScholastic?.sub_component?.map((eachSem) => {
+                      {/* <td className='th-width-12 th-fw-600'>{'WEIGHTAGE(%)'}</td> */}
+                      {/* {eachScholastic?.sub_component?.map((eachSem) => {
                         return eachSem?.marks_with_subject?.map(
                           (eachSubject, subjectIndex) => {
                             return (
                               <>
-                                <td className='th-width-10 th-fw-600 text-center'>
+                                <td
+                                  className='th-width-10 th-fw-600 text-center'
+                                  colspan={
+                                    eachSem?.marks_with_subject?.length == 1 ? 2 : ''
+                                  }
+                                >
                                   {eachSubject?.weightage}
                                 </td>
                                 {/* Inserting Total marks column for each semester */}
-                                {subjectIndex ==
+                      {/* {subjectIndex ==
                                 eachSem?.marks_with_subject?.length - 1 ? (
                                   <td className='th-width-12 th-fw-600 text-center'>
                                     {eachSem?.total_weightage}
                                   </td>
-                                ) : null}
+                                ) : null} 
                               </>
                             );
                           }
                         );
-                      })}
+                      })} */}
                     </tr>
                     {/* Weightage Header End */}
                     {/* Subject With Marks Start */}
@@ -778,43 +808,49 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                 (eachMarks, marksIndex) => {
                                   return eachMarks?.subject?.id === x.id;
                                 }
-                              )[0]?.normalized_marks;
+                              )[0]?.normalised_marks_grade;
 
                               return (
                                 <>
-                                  <td
+                                  {/* <td
                                     className='th-width-10  text-center'
                                     style={{ backgroundColor: '#ffffff' }}
                                   >
                                     {isNaN(subMarks) ? 'NA' : subMarks}
-                                  </td>
+                                  </td> */}
                                   {/* Inserting Total marks column for each semester */}
-                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                  {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                     <td
                                       className='th-width-12 text-center'
                                       style={{ backgroundColor: '#ffffff' }}
+                                      colspan={
+                                        eachSem?.marks_with_subject?.length == 1 ? 2 : ''
+                                      }
                                     >
                                       {eachSem?.subject_wise_secured_marks[subjectIndex]}
                                     </td>
-                                  ) : null}
+                                  ) : null} */}
                                   {/* Inserting Total Grade column for each semester */}
                                   {j == eachSem?.marks_with_subject?.length - 1 ? (
                                     <td
                                       className='th-width-12 text-center'
                                       style={{ backgroundColor: '#ffffff' }}
+                                      colspan={
+                                        eachSem?.marks_with_subject?.length == 1 ? 4 : ''
+                                      }
                                     >
                                       {eachSem?.grade[subjectIndex]}
                                     </td>
                                   ) : null}
                                   {/* Inserting Total OSR column for each semester */}
-                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                  {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                     <td
                                       className='th-width-12 text-center'
                                       style={{ backgroundColor: '#ffffff' }}
                                     >
                                       {eachSem?.OSR[subjectIndex]}
                                     </td>
-                                  ) : null}
+                                  ) : null} */}
                                   {/* Inserting Total AIR column for each semester */}
                                   {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
@@ -834,6 +870,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                               {' '}
                               <td
                                 className='th-width-10  text-center'
+                                colSpan={2}
                                 style={{ backgroundColor: '#ffffff' }}
                               >
                                 {eachScholastic?.annual_score?.marks[subjectIndex]}
@@ -846,12 +883,12 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                 {eachScholastic?.annual_score?.grade[subjectIndex]}
                               </td>
                               {/* Avg OSR */}
-                              <td
+                              {/* <td
                                 className='th-width-10  text-center'
                                 style={{ backgroundColor: '#ffffff' }}
                               >
                                 {eachScholastic?.annual_score?.OSR[subjectIndex]}
-                              </td>
+                              </td> */}
                               {/* Avg AIR */}
                               {/* <td
                               className='th-width-10  text-center'
@@ -871,22 +908,30 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       {eachScholastic?.sub_component?.map((eachSem, x) => {
                         return (
                           <>
-                            <td
+                            {/* <td
                               className='th-width-10 th-fw-600 text-center'
-                              colSpan={coschSxamTypeHeader[coI][x].length + 1}
+                              // colSpan={coschSxamTypeHeader[coI][x].length}
+                              colspan={
+                                coschSxamTypeHeader[coI][x].length == 1
+                                  ? 2
+                                  : coschSxamTypeHeader[coI][x].length
+                              }
                             >
                               {eachSem.total_secured_marks} out of {eachSem.total_marks} (
                               {isNaN(eachSem?.total_marks_percentage)
                                 ? eachSem?.total_marks_percentage
                                 : eachSem?.total_marks_percentage?.toFixed(2)}
                               %)
-                            </td>
-                            <td className='th-width-12 th-fw-600 text-center'>
+                            </td> */}
+                            <td
+                              className='th-width-12 th-fw-600 text-center'
+                              colspan={eachSem?.marks_with_subject?.length == 1 ? 4 : ''}
+                            >
                               {eachSem.total_grade}
                             </td>
-                            <td className='th-width-12 th-fw-600 text-center'>
+                            {/* <td className='th-width-12 th-fw-600 text-center'>
                               {eachSem.overall_osr}
-                            </td>
+                            </td> */}
                             {/* <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.overall_air}
                           </td> */}
@@ -896,15 +941,15 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       {eachScholastic?.sub_component?.length > 1 ? (
                         <>
                           {' '}
-                          <td className='th-width-12 th-fw-600 text-center'>
+                          <td className='th-width-12 th-fw-600 text-center' colSpan='2'>
                             {eachScholastic?.annual_score?.overall_mark}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachScholastic?.annual_score?.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
+                          {/* <td className='th-width-12 th-fw-600 text-center'>
                             {eachScholastic?.annual_score?.overall_osr}
-                          </td>
+                          </td> */}
                           {/* <td className='th-width-12 th-fw-600 text-center'>
                           {eachScholastic?.annual_score?.overall_air}
                         </td> */}
@@ -1023,13 +1068,14 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   <td
                                     className='th-width-12 th-fw-600 text-center'
                                     rowSpan={2}
+                                    colSpan={2}
                                   >
                                     {'Grade'}
                                   </td>
                                 ) : null}
 
                                 {/* Inserting OSR column for each semester */}
-                                {subjectIndex ==
+                                {/* {subjectIndex ==
                                 eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
                                     className='th-width-12 th-fw-600 text-center'
@@ -1037,7 +1083,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   >
                                     {'OSR'}
                                   </td>
-                                ) : null}
+                                ) : null} */}
 
                                 {/* Inserting AIR column for each semester */}
                                 {/* {subjectIndex == eachSem?.marks_with_subject?.length - 1 ? (
@@ -1063,9 +1109,9 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                             {'Grade'}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                             {'OSR'}
-                          </td>
+                          </td> */}
                           {/* <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
                           {'AIR'}
                         </td> */}
@@ -1139,19 +1185,20 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                     <td
                                       className='th-width-12 text-center'
                                       style={{ backgroundColor: '#ffffff' }}
+                                      colSpan={2}
                                     >
                                       {eachSem?.grade[subjectIndex]}
                                     </td>
                                   ) : null}
                                   {/* Inserting Total OSR column for each semester */}
-                                  {j == eachSem?.marks_with_subject?.length - 1 ? (
+                                  {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                     <td
                                       className='th-width-12 text-center'
                                       style={{ backgroundColor: '#ffffff' }}
                                     >
                                       {eachSem?.OSR[subjectIndex]}
                                     </td>
-                                  ) : null}
+                                  ) : null} */}
                                   {/* Inserting Total AIR column for each semester */}
                                   {/* {j == eachSem?.marks_with_subject?.length - 1 ? (
                                   <td

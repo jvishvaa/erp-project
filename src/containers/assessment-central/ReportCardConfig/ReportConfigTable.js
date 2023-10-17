@@ -171,6 +171,7 @@ const ReportConfigTable = () => {
   const { TabPane } = AntTabs;
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -200,6 +201,7 @@ const ReportConfigTable = () => {
   const [openPublishModal, setopenPublishModal] = useState(false);
   const [ispublished, setIsPublished] = useState(false);
   const [publishId, setPublishId] = useState();
+  const [unlockLoading, setUnlockLoading] = useState(false);
 
   const [showTab, setShowTab] = useState('1');
   const onTabChange = (key) => {
@@ -465,6 +467,32 @@ const ReportConfigTable = () => {
     setopenDetails(true);
     setDetailsData(data);
   };
+  const handleUnlockDetails = (data) => {
+    setUnlockLoading(true);
+    axiosInstance
+      .put(`${endpoints.reportCardConfig.submitAPI}${data?.id}/`, {
+        is_locked: !data?.is_locked,
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAlert('success', result.data.message);
+          setTimeout(() => {
+            FilterData();
+          }, 100);
+        }
+      })
+      .catch((error) => {
+        setAlert(
+          'error',
+          error?.response?.data?.message ||
+            error?.response?.data?.message ||
+            'Updation Failed'
+        );
+      })
+      .finally(() => {
+        setUnlockLoading(false);
+      });
+  };
 
   const handleEdit = (id, data) => {
     history.push({
@@ -652,43 +680,62 @@ const ReportConfigTable = () => {
                                     {data?.component_description}
                                   </TableCell>
                                   <TableCell className={classes.tableCell}>
-                                    <Button
-                                      onClick={() => handleOpenDetails(data)}
-                                      color='primary'
-                                      variant='contained'
-                                    >
-                                      Details
-                                    </Button>
-                                    <Button
-                                      onClick={() => {
-                                        // setOpenModal(true);
-                                        // setDeleteId(data?.id)
-                                        handlePublish(data?.id, data?.is_publish);
-                                      }}
-                                      style={{ marginLeft: '5%' }}
-                                      color='primary'
-                                      variant='contained'
-                                    >
-                                      {/* {ispublished ? 'Publish' : 'Unpublish'} */}
-                                      {data?.is_publish ? 'Unpublish' : 'Publish'}
-                                    </Button>
-                                    <Button
-                                      onClick={() => handleEdit(data?.id, data)}
-                                      color='primary'
-                                      variant='contained'
-                                    >
-                                      Edit
-                                    </Button>
-                                    <IconButton
-                                      onClick={() => {
-                                        setOpenModal(true);
-                                        setDeleteId(data?.id);
-                                      }}
-                                      title='Delete'
-                                    >
-                                      <DeleteOutlinedIcon />
-                                    </IconButton>
-
+                                    <div className='mb-2'>
+                                      <Button
+                                        onClick={() => handleOpenDetails(data)}
+                                        color='primary'
+                                        variant='contained'
+                                      >
+                                        Details
+                                      </Button>
+                                      <Button
+                                        onClick={() => {
+                                          // setOpenModal(true);
+                                          // setDeleteId(data?.id)
+                                          handlePublish(data?.id, data?.is_publish);
+                                        }}
+                                        style={{ marginLeft: '5%' }}
+                                        color='primary'
+                                        variant='contained'
+                                      >
+                                        {/* {ispublished ? 'Publish' : 'Unpublish'} */}
+                                        {data?.is_publish ? 'Unpublish' : 'Publish'}
+                                      </Button>
+                                    </div>
+                                    {is_superuser ? (
+                                      <Button
+                                        onClick={() => {
+                                          if (!unlockLoading) {
+                                            handleUnlockDetails(data);
+                                          }
+                                        }}
+                                        color='primary'
+                                        variant='contained'
+                                      >
+                                        {data?.is_locked ? 'Unlock' : 'Lock'}
+                                      </Button>
+                                    ) : null}
+                                    {data?.is_locked ? null : (
+                                      <>
+                                        <Button
+                                          onClick={() => handleEdit(data?.id, data)}
+                                          color='primary'
+                                          variant='contained'
+                                          style={{ marginLeft: '5%' }}
+                                        >
+                                          Edit
+                                        </Button>
+                                        <IconButton
+                                          onClick={() => {
+                                            setOpenModal(true);
+                                            setDeleteId(data?.id);
+                                          }}
+                                          title='Delete'
+                                        >
+                                          <DeleteOutlinedIcon />
+                                        </IconButton>
+                                      </>
+                                    )}
                                     {/* <IconButton
                           //   onClick={(e) => handleEditSubject(configData)}
                           title='Edit'

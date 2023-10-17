@@ -149,8 +149,6 @@ const EditReportConfig = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
 
-  console.log({ testDetails });
-
   const handleOpenAssesmentModal = () => {
     setOpenAssesmentSelectModal(true);
   };
@@ -197,26 +195,25 @@ const EditReportConfig = (props) => {
     }
   }, [window.location.pathname]);
 
-  // const handleBranch = (e, value = []) => {
-  //   setSelectedbranch();
-  //   setSelectedGrade();
-  //   setGradeList([]);
-  //   // const Ids = value.map((i)=>i.id)
-  //   if (value) {
-  //     value =
-  //       value.filter(({ id }) => id === 'all').length === 1
-  //         ? [...branchList].filter(({ id }) => id !== 'all')
-  //         : value;
-  //     console.log({ value });
-  //     setSelectedbranch(value);
-  //     getGrade(value);
-  //     // setSelectBranchId(Ids)
-  //   } else {
-  //     // setSelectBranchId([])
-  //     setSelectedbranch();
-  //     setSelectedGrade();
-  //   }
-  // };
+  const handleBranch = (e, value = []) => {
+    setSelectedbranch();
+    setSelectedGrade();
+    setGradeList([]);
+    // const Ids = value.map((i)=>i.id)
+    if (value) {
+      value =
+        value.filter(({ id }) => id === 'all').length === 1
+          ? [...branchList].filter(({ id }) => id !== 'all')
+          : value;
+      setSelectedbranch(value);
+      getGrade(value);
+      // setSelectBranchId(Ids)
+    } else {
+      // setSelectBranchId([])
+      setSelectedbranch();
+      setSelectedGrade();
+    }
+  };
 
   const handleGrade = (e, value) => {
     if (value) {
@@ -432,6 +429,7 @@ const EditReportConfig = (props) => {
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
+                onChange={handleBranch}
                 id='branch_id'
                 limitTags={1}
                 className='dropdownIcon'
@@ -707,7 +705,11 @@ const EditReportConfig = (props) => {
                               <TableRow key={index}>
                                 <TableCell>{item?.id}</TableCell>
                                 <TableCell>{item?.test_name}</TableCell>
-                                <TableCell>{item?.subjects__subject_name ? item?.subjects__subject_name : item?.subject_names }</TableCell>
+                                <TableCell>
+                                  {item?.subjects__subject_name
+                                    ? item?.subjects__subject_name
+                                    : item?.subject_names}
+                                </TableCell>
                                 <TableCell>
                                   <Button
                                     startIcon={

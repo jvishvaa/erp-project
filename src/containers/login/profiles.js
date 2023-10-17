@@ -11,9 +11,7 @@ import './styles.scss';
 import { Grid } from '@material-ui/core';
 import Loader from 'components/loader/loader';
 import { green } from '@material-ui/core/colors';
-import ENVCONFIG from 'config/config.js'
-
-
+import ENVCONFIG from 'config/config.js';
 
 const UserProfiles = () => {
   const history = useHistory();
@@ -51,7 +49,7 @@ const UserProfiles = () => {
   };
 
   const profileLogin = (item) => {
-    setLoading(true)
+    setLoading(true);
     localStorage.setItem('selectProfileDetails', JSON.stringify(item));
     const phone_number = JSON.parse(localStorage?.getItem('profileNumber')) || {};
     if (phone_number && item) {
@@ -64,7 +62,7 @@ const UserProfiles = () => {
         .post(endpoints.auth.mobileLogin, payload)
         .then((result) => {
           if (result.status === 200) {
-            setLoading(false)
+            setLoading(false);
             localStorage.setItem('mobileLoginDetails', JSON.stringify(result));
             localStorage.setItem(
               'userDetails',
@@ -93,14 +91,14 @@ const UserProfiles = () => {
                   history.push('/acad-calendar');
                   console.log(userData?.user_level, 'level');
                 } else {
-                  history.push('/dashboard');
+                  history.push('/profile');
                 }
               } else if (res === false) {
                 erpConfig = res;
-                history.push('/dashboard');
+                history.push('/profile');
               } else {
                 erpConfig = res;
-                history.push('/dashboard');
+                history.push('/profile');
               }
               userData['erp_config'] = erpConfig;
               localStorage.setItem('userDetails', JSON.stringify(userData));
@@ -108,12 +106,12 @@ const UserProfiles = () => {
             });
           } else {
             setAlert('error', result.data.message);
-            setLoading(false)
+            setLoading(false);
             // setDisableLogin(false)
           }
         })
         .catch((error) => {
-          setLoading(false)
+          setLoading(false);
           setAlert('error', error.message);
         });
     }
@@ -123,86 +121,103 @@ const UserProfiles = () => {
     <>
       <div style={{ margin: '50px' }}>
         {loading ? (
-          <Loader/>
-        ): (
+          <Loader />
+        ) : (
           <>
-          <Grid container spacing={2}>
-          </Grid>
-          <Grid container spacing={2}>
-            <Grid item md={12} style={{marginLeft:'25px'}}>
-            <p style={{ fontWeight: '600', fontSize: '30px' }}>Welcome,</p>
-            <p style={{ fontSize: '20px' }}>Select Profile to explore account</p>
-            </Grid>
+            <Grid container spacing={2}></Grid>
+            <Grid container spacing={2}>
+              <Grid item md={12} style={{ marginLeft: '25px' }}>
+                <p style={{ fontWeight: '600', fontSize: '30px' }}>Welcome,</p>
+                <p style={{ fontSize: '20px' }}>Select Profile to explore account</p>
+              </Grid>
 
-            <Grid item
-              md={12}
-              className='card_container'
-            >
-              {profileData?.profile_data?.data?.map((item, i) => (
-                <Card
-                  size='small'
-                  title={item?.branch_name}
-                  headStyle={{ backgroundColor: '#e0e0e0', color: 'black' }}
-                  // style={{
-                  //   width: 400,
-                  //   height: 150,
-                  // }}
-                  className='card_style'
-                  onClick={() => profileLogin(item)}
-
-                >
-                  <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                  {window.location.href.slice(8, 10) == 'qa' ||
-                        window.location.href.slice(8, 18) == 'ui-revamp1' ||
-                        window.location.href.slice(7, 12) == 'local' ? (
-                          <>
+              <Grid item md={12} className='card_container'>
+                {profileData?.profile_data?.data?.map((item, i) => (
+                  <Card
+                    size='small'
+                    title={item?.branch_name}
+                    headStyle={{ backgroundColor: '#e0e0e0', color: 'black' }}
+                    // style={{
+                    //   width: 400,
+                    //   height: 150,
+                    // }}
+                    className='card_style'
+                    onClick={() => profileLogin(item)}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                      {window.location.href.slice(8, 10) == 'qa' ||
+                      window.location.href.slice(8, 18) == 'ui-revamp1' ||
+                      window.location.href.slice(7, 12) == 'local' ? (
+                        <>
                           <Avatar
-                          size={64}
-                          src={`${endpoints.profile.Profilestories}dev/media/${item?.profile}`}
-                          icon={item?.profile  === "" ?   <UserOutlined/> : ''}   
-                        />
-                          </>
-                        ) : (
-                          <Avatar
+                            size={64}
+                            src={`${endpoints.profile.Profilestories}dev/media/${item?.profile}`}
+                            icon={item?.profile === '' ? <UserOutlined /> : ''}
+                          />
+                        </>
+                      ) : (
+                        <Avatar
                           size={64}
                           src={`${endpoints.profile.Profilestories}prod/media/${item?.profile}`}
-                          icon={item?.profile  === "" ?   <UserOutlined/> : ''}   
+                          icon={item?.profile === '' ? <UserOutlined /> : ''}
                         />
-                        )}
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        margin: 'inherit',
-                      }}
-                    >
-                      <p
-                        style={{ marginLeft: '10px', fontWeight: '800', fontSize: '18px', margin: '0px 10px' }}
+                      )}
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          margin: 'inherit',
+                        }}
                       >
-                        {item?.name}
-                      </p>
-                      <p style={{ marginLeft: '10px', fontSize: '12px', color:'green', fontWeight:'bolder',margin:'0px 10px'}}>{item?.erp_id}</p>
-                      <div style={{display:"flex", color:'green', margin:'2px 10px'}}>
-                      <p style={{ fontSize: '12px', fontWeight:'bolder' }}>{item?.grade_name}</p>
-                      <p style={{fontSize:'12px', marginLeft:'10px'}}> | </p>
-                      <p style={{ marginLeft: '10px', fontSize: '12px', fontWeight:'bolder' }}>{item?.section_name}</p>
-
+                        <p
+                          style={{
+                            marginLeft: '10px',
+                            fontWeight: '800',
+                            fontSize: '18px',
+                            margin: '0px 10px',
+                          }}
+                        >
+                          {item?.name}
+                        </p>
+                        <p
+                          style={{
+                            marginLeft: '10px',
+                            fontSize: '12px',
+                            color: 'green',
+                            fontWeight: 'bolder',
+                            margin: '0px 10px',
+                          }}
+                        >
+                          {item?.erp_id}
+                        </p>
+                        <div
+                          style={{ display: 'flex', color: 'green', margin: '2px 10px' }}
+                        >
+                          <p style={{ fontSize: '12px', fontWeight: 'bolder' }}>
+                            {item?.grade_name}
+                          </p>
+                          <p style={{ fontSize: '12px', marginLeft: '10px' }}> | </p>
+                          <p
+                            style={{
+                              marginLeft: '10px',
+                              fontSize: '12px',
+                              fontWeight: 'bolder',
+                            }}
+                          >
+                            {item?.section_name}
+                          </p>
+                        </div>
                       </div>
-
                     </div>
-                  </div>
-                  {/* <p>{item?.grade_name}</p> */}
-                </Card>
-              ))}
+                    {/* <p>{item?.grade_name}</p> */}
+                  </Card>
+                ))}
+              </Grid>
+
+              {/* </Grid> */}
             </Grid>
-
-            {/* </Grid> */}
-          </Grid>
-          
           </>
-          
         )}
-
       </div>
     </>
   );

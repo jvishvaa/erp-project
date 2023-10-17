@@ -65,7 +65,7 @@ export default function AssesmentReportBackNew({ reportCardDataNew }) {
                     <div className='d-flex justify-content-between px-2 th-fw-600 '>
                       <div>MARKS - {eachData?.marks}</div>
                       <div>Grade - {eachData?.grade_name} </div>
-                      <div>OSR - {eachData?.OSR}</div>
+                      <div></div>
 
                       {/* <div>AIR - {eachData?.AIR}</div> */}
                     </div>
