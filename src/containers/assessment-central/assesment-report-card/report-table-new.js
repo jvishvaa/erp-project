@@ -908,7 +908,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       {eachScholastic?.sub_component?.map((eachSem, x) => {
                         return (
                           <>
-                            <td
+                            {/* <td
                               className='th-width-10 th-fw-600 text-center'
                               // colSpan={coschSxamTypeHeader[coI][x].length}
                               colspan={
@@ -922,10 +922,10 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                 ? eachSem?.total_marks_percentage
                                 : eachSem?.total_marks_percentage?.toFixed(2)}
                               %)
-                            </td>
+                            </td> */}
                             <td
                               className='th-width-12 th-fw-600 text-center'
-                              colspan={eachSem?.marks_with_subject?.length == 1 ? 2 : ''}
+                              colspan={eachSem?.marks_with_subject?.length == 1 ? 4 : ''}
                             >
                               {eachSem.total_grade}
                             </td>
@@ -1185,6 +1185,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                     <td
                                       className='th-width-12 text-center'
                                       style={{ backgroundColor: '#ffffff' }}
+                                      colSpan={2}
                                     >
                                       {eachSem?.grade[subjectIndex]}
                                     </td>
