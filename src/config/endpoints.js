@@ -563,6 +563,7 @@ export default {
     reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
     reportCardData: '/assessment/generate-report/',
     reportCardDataNew: '/assessment/report-card-generation/',
+    physicalEducationReportCard: `${newBlogURL}/api/get-report/`,
     eypReportCard: '/assessment/eyp-report-card-generation/',
     eypReportCardBulk: '/assessment/eyp-bulk-report-card-generation/',
     normalReportCardBulk: '/assessment/fetch-s3-reports/',
