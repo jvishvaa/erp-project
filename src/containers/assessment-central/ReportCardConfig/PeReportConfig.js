@@ -1,10 +1,29 @@
-import { Button, Form, Select, message } from 'antd';
+import {
+  Button,
+  Form,
+  Modal,
+  Pagination,
+  Popconfirm,
+  Result,
+  Select,
+  Space,
+  Table,
+  Tag,
+  message,
+} from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import { DownOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import {
+  CloseCircleOutlined,
+  DownOutlined,
+  EditOutlined,
+  InfoCircleOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const PeReportConfig = () => {
   const history = useHistory();
@@ -14,9 +33,92 @@ const PeReportConfig = () => {
   const [selectedBranch, setSelectedBranch] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [reportData, setReportData] = useState([]);
+  const [pageNo, setPageNo] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+  //eslint-disable-next-line
+  const [pageLimit, setPageLimit] = useState(15);
+  const [detailsModal, setDetailsModal] = useState(false);
+  const [activityDetails, setActivityDetails] = useState();
+  const [showFilterPage, setShowFilterPage] = useState(true);
+
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
+
+  const columns = [
+    {
+      title: <span className='th-white th-fw-700 '>Terms</span>,
+      dataIndex: 'semesters',
+      width: '30%',
+      render: (data) => (
+        <span className='th-black-1 th-14 text-break'>{data?.semester_name}</span>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Grades</span>,
+      dataIndex: 'grade_name',
+      width: '30%',
+      render: (data) => <span className='th-black-1 th-14 text-break'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Action</span>,
+      align: 'center',
+      key: 'actiom',
+      width: '40%',
+      render: (data) => {
+        return (
+          <Space>
+            <Tag
+              icon={<InfoCircleOutlined />}
+              color='processing'
+              onClick={() => openDetailsModal(data)}
+              style={{ cursor: 'pointer' }}
+            >
+              Details
+            </Tag>
+            {/* <Tag
+              icon={<EditOutlined />}
+              color='processing'
+              onClick={() => handleEdit(data, data?.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              Edit
+            </Tag> */}
+
+            <Popconfirm
+              title='Sure to delete?'
+              onConfirm={(e) => handleDeleteConfig(data.id)}
+            >
+              <Tag
+                icon={<CloseCircleOutlined />}
+                color='error'
+                style={{ cursor: 'pointer' }}
+              >
+                Delete
+              </Tag>
+            </Popconfirm>
+          </Space>
+        );
+      },
+    },
+  ];
+
+  const detailsColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>Activity </span>,
+      dataIndex: 'name',
+      width: '30%',
+      render: (data) => <span className='th-black-1 th-14 text-break'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Criteria Title</span>,
+      dataIndex: 'criteria_title',
+      width: '30%',
+      render: (data) => <span className='th-black-1 th-14 text-break'>{data}</span>,
+    },
+  ];
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -51,7 +153,6 @@ const PeReportConfig = () => {
         if (res?.data?.status_code == 200) {
           // const allBranchData = res?.data?.data?.results.map((item) => item.branch);
           setBranchList(res?.data?.data?.results);
-          console.log(res?.data?.data?.results);
         } else {
           message.error(res?.data?.message);
         }
@@ -73,8 +174,67 @@ const PeReportConfig = () => {
     }
   };
 
+  const fetchPeReportCardConfig = (branch_ids, grade_id, page) => {
+    if (!selectedBranch) {
+      message.error('Please Select branch');
+      return;
+    }
+    if (!selectedGrade) {
+      message.error('Please Select grade');
+      return;
+    }
+    setLoading(true);
+    setShowFilterPage(false);
+    let params = {
+      grade_id: grade_id?.value,
+      branch_ids,
+      academic_year_id: selectedYear?.id,
+      page,
+      page_size: pageLimit,
+    };
+    axiosInstance
+      .get(`${endpoints.peReportCardConfig.reportConfig}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        if (res?.data?.status == 200) {
+          setReportData(res?.data?.data);
+          setTotalPage(res?.data?.count);
+        } else {
+          message.error(res?.data?.message);
+        }
+      })
+      .catch((err) => {
+        console.log('err', err);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const handleDeleteConfig = async (id) => {
+    try {
+      const deleteConfig = await axiosInstance.delete(
+        `${endpoints.peReportCardConfig.deleteConfig}${id}`,
+        {
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      );
+      if (deleteConfig.status === 200) {
+        fetchPeReportCardConfig(selectedBranch, selectedGrade, 1);
+        message.success(deleteConfig.data.message);
+      } else {
+        message.error(deleteConfig.data.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
   const branchListOptions = branchList?.map((each) => {
-    console.log({ each });
     return (
       <Option key={each?.branch?.id} value={each?.branch?.id}>
         {each?.branch?.branch_name}
@@ -91,20 +251,10 @@ const PeReportConfig = () => {
   });
 
   const handleChangeBranch = (each) => {
-    console.log(each, 'testing');
     if (each.length > 0) {
       if (each.some((item) => item === 'all')) {
-        //   const allBranch = branchList.map((item) => {
-        //     console.log(item);
-        //   });
-        console.log(
-          branchList.map((item) => item?.branch?.id),
-          'branchhhh'
-        );
-        // const allBranch = branchList.map((item) => item);
         const allBranch = branchList.map((item) => item?.branch?.id);
-        console.log({ allBranch });
-        setSelectedBranch(allBranch);
+        setSelectedBranch(...allBranch);
         fetchGrade(allBranch);
         formRef.current.setFieldsValue({
           branch: branchList.map((item) => item?.branch?.id),
@@ -113,8 +263,6 @@ const PeReportConfig = () => {
       } else {
         const singleBranch = each.map((item) => item).join(',');
         setSelectedBranch(singleBranch);
-        console.log({ singleBranch });
-        console.log({ selectedBranch });
         fetchGrade(singleBranch);
         formRef.current.setFieldsValue({
           grade: null,
@@ -146,6 +294,8 @@ const PeReportConfig = () => {
     setGradeList([]);
     setSelectedBranch(null);
     setSelectedGrade(null);
+    setReportData([]);
+    setShowFilterPage(true);
     formRef.current.resetFields();
   };
 
@@ -153,10 +303,38 @@ const PeReportConfig = () => {
     history.push('/pe-report-config/create');
   };
 
+  const openDetailsModal = (data) => {
+    const extractedData = [];
+    const filteredData = data?.mappings?.forEach((item) => {
+      item.activities.forEach((activity) => {
+        activity.activity_criterias.forEach((criteria) => {
+          extractedData.push({
+            name: activity.name,
+            criteria_title: criteria.title,
+          });
+        });
+      });
+    });
+    setActivityDetails(extractedData);
+    setDetailsModal(true);
+  };
+
+  const handleCloaseDetailsModal = (data) => {
+    setActivityDetails([]);
+    setDetailsModal(false);
+  };
+
+  const handleEdit = (data, id) => {
+    history.push({
+      pathname: `/pe-report-config/edit/${id}`,
+      state: { isEdit: true, data },
+    });
+  };
+
   return (
     <React.Fragment>
       <div className='row mb-3'>
-        <div className='col-md-12'>
+        <div className='col-md-12 px-0'>
           <Form id='filterForm' className='mt-1' layout={'vertical'} ref={formRef}>
             <div className='row'>
               <div className='col-md-3 col-sm-6 col-12'>
@@ -179,7 +357,7 @@ const PeReportConfig = () => {
                     placeholder='Select Branch*'
                     mode='multiple'
                   >
-                    {branchList.length > 0 && (
+                    {branchList.length > 1 && (
                       <>
                         <Option key={0} value={'all'}>
                           Select All
@@ -218,7 +396,13 @@ const PeReportConfig = () => {
               <div className='col-md-3 col-sm-6 col-12 text-right'>
                 <div className='row no-gutters'>
                   <div className='col-md-6 col-sm-6 col-6 pr-2'>
-                    <Button type='primary' className='btn-block th-br-4'>
+                    <Button
+                      type='primary'
+                      className='btn-block th-br-4'
+                      onClick={() =>
+                        fetchPeReportCardConfig(selectedBranch, selectedGrade, 1)
+                      }
+                    >
                       Filter
                     </Button>
                   </div>
@@ -245,6 +429,79 @@ const PeReportConfig = () => {
             </div>
           </Form>
         </div>
+
+        {!showFilterPage ? (
+          <div className='col-md-12'>
+            <Table
+              className='th-table'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+              }
+              loading={loading}
+              columns={columns}
+              // rowKey={(record) => record?.user_id}
+              dataSource={reportData}
+              pagination={false}
+              scroll={{ y: '300px' }}
+            />
+
+            {reportData?.length > 0 && (
+              <div className='pt-3 '>
+                <Pagination
+                  current={pageNo}
+                  total={totalPage}
+                  showSizeChanger={false}
+                  pageSize={pageLimit}
+                  onChange={(current) => {
+                    setPageNo(current);
+                    fetchPeReportCardConfig(selectedBranch, selectedGrade, current);
+                  }}
+                  className='text-center'
+                />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className='col-12'>
+            <Result
+              status='warning'
+              title={<span className='th-grey'>Please apply filter to view data</span>}
+            />
+          </div>
+        )}
+        {/* INFO MODAL */}
+
+        <Modal
+          centered
+          open={detailsModal}
+          visible={detailsModal}
+          width={'50%'}
+          onCancel={handleCloaseDetailsModal}
+          footer={[
+            <Button key='back' onClick={handleCloaseDetailsModal}>
+              Close
+            </Button>,
+          ]}
+        >
+          <div className='th-g-white p-3'>
+            <h6>Activities Details</h6>
+            <p className='text-right'></p>
+            <Table
+              className='th-table'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+              }
+              columns={detailsColumns}
+              rowKey={(record) => record?.id}
+              dataSource={activityDetails}
+              pagination={false}
+              scroll={{
+                x: window.innerWidth < 600 ? 'max-content' : null,
+                y: 'calc(60vh - 220px)',
+              }}
+            />
+          </div>
+        </Modal>
       </div>
     </React.Fragment>
   );

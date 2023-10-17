@@ -4,7 +4,6 @@ import { Button, Form, Select } from 'antd';
 import { DownOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
-import cuid from 'cuid';
 
 const PeReportCardActivity = ({
   termIndex,
@@ -13,6 +12,7 @@ const PeReportCardActivity = ({
   semIndex,
   terms,
   setTerms,
+  isEdit,
 }) => {
   const { Option } = Select;
   const activityformRef = useRef();
@@ -23,11 +23,23 @@ const PeReportCardActivity = ({
     fetchCategory();
   }, []);
 
+  useEffect(() => {
+    if (isEdit) {
+      semItem?.activity_type_id && fetchCriteria('Gym');
+      activityformRef.current.setFieldsValue({
+        [`activity${termIndex}${semIndex}`]: semItem?.criterias,
+        [`category${termIndex}${semIndex}`]: !semItem?.activity_type_id
+          ? null
+          : semItem?.activity_type_id,
+      });
+    }
+  }, [semItem]);
+
   const fetchCriteria = (sub_activity) => {
     axiosInstance
       .get(`${endpoints.peReportCardConfig.criteriaList}?sub_activity=${sub_activity}`, {
         headers: {
-          'X-DTS-Host': X_DTS_HOST,
+          'X-DTS-HOST': X_DTS_HOST,
         },
       })
       .then((res) => {
@@ -46,7 +58,6 @@ const PeReportCardActivity = ({
         },
       })
       .then((result) => {
-        console.log({ result });
         if (result?.data?.status_code === 200) {
           setCategoryList(result?.data?.sub_types);
         }
@@ -57,21 +68,16 @@ const PeReportCardActivity = ({
   };
 
   const handleRemoveTermsActivity = (termIndex, activityIndex) => {
-    console.log('termdet', termIndex, terms[termIndex]?.activities);
     let filteredActivity = terms[termIndex]?.activities.filter(
       (item, index) => index !== activityIndex
     );
-    console.log({ filteredActivity }, termIndex);
     // let newActivity = [...terms[termIndex]?.activities, ...newSemester];
     let updatedTerms = [...terms];
     updatedTerms[termIndex].activities = filteredActivity;
-    console.log('final term', updatedTerms);
     setTerms(updatedTerms);
-    console.log('formRef', activityformRef.current.getFieldsValue());
   };
 
   const handleCategory = (e, value, termIndex, semIndex) => {
-    console.log({ value });
     if (e) {
       fetchCriteria(value?.name);
       let updatedTerms = [...terms];
@@ -92,11 +98,9 @@ const PeReportCardActivity = ({
   };
 
   const handleActivity = (each, value, termIndex, semIndex) => {
-    console.log(each, termIndex, semIndex, 'testing');
     if (each.length > 0) {
       if (each.some((item) => item === 'all')) {
         const allActivity = activityList.map((item) => item?.id);
-        console.log({ allActivity });
         let updatedTerms = [...terms];
         updatedTerms[termIndex].activities[semIndex].criterias = allActivity;
         setTerms(updatedTerms);
@@ -106,7 +110,6 @@ const PeReportCardActivity = ({
       } else {
         //set null
         const singleActivity = each.map((item) => item);
-        console.log({ singleActivity });
         let updatedTerms = [...terms];
         updatedTerms[termIndex].activities[semIndex].criterias = singleActivity;
         setTerms(updatedTerms);
@@ -146,7 +149,6 @@ const PeReportCardActivity = ({
               <Form.Item name={`category${termIndex}${semIndex}`}>
                 <Select
                   getPopupContainer={(trigger) => trigger.parentNode}
-                  maxTagCount={5}
                   allowClear={true}
                   suffixIcon={<DownOutlined className='th-grey' />}
                   className='th-grey th-bg-grey th-br-4 w-100 text-left'
@@ -229,7 +231,6 @@ const PeReportCardActivity = ({
                   {activityOptions}
                 </Select>
               </Form.Item>
-              {console.log(semItem.activity, 'asdfghjkl')}
             </div>
             {termItem?.activities?.length > 1 && (
               <div className='col-md-3 col-sm-6 col-12 mt-2' style={{ display: 'flex' }}>

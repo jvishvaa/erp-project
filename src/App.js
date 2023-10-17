@@ -1088,6 +1088,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/pe-report-config/create'>
                               {({ match }) => <CreatePeReportConfig match={match} />}
                             </Route>
+                            {/* <Route exact path='/pe-report-config/edit/:id'>
+                              {({ match }) => <CreatePeReportConfig match={match} />}
+                            </Route> */}
                             <Route exact path='/master-management/event-category'>
                               {({ match }) => <EventCategory match={match} />}
                             </Route>

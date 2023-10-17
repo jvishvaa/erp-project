@@ -201,7 +201,7 @@ const ReportConfigTable = () => {
   const [ispublished, setIsPublished] = useState(false);
   const [publishId, setPublishId] = useState();
 
-  const [showTab, setShowTab] = useState('2');
+  const [showTab, setShowTab] = useState('1');
   const onTabChange = (key) => {
     setShowTab(key);
   };
@@ -259,7 +259,6 @@ const ReportConfigTable = () => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           // setGradeList(res?.data?.data);
-          console.log('new', res?.data?.data);
           setGradeList(res?.data?.data);
         } else {
           // setBranchList([]);
@@ -309,7 +308,6 @@ const ReportConfigTable = () => {
           acad_session: selectedbranch?.session_year?.id,
           grade: selectedGrade?.grade_id,
         };
-        console.log('run', params);
         axiosInstance
           .get(url)
           .then((res) => {

@@ -1,13 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { DownOutlined, MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { Breadcrumb, Button, Checkbox, Divider, Form, Select, message } from 'antd';
+import { Breadcrumb, Button, Divider, Form, Select, message } from 'antd';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import Layout from 'containers/Layout';
 import PeReportCardActivity from './PeReportCardActivity';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const CreatePeReportConfig = () => {
+  const history = useHistory();
+  const { isEdit = false, data: editedData = {} } = history.location.state || {};
+
   const { Option } = Select;
   const formRef = useRef();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -18,9 +23,7 @@ const CreatePeReportConfig = () => {
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
   const [semesterList, setSemesterList] = useState([]);
-  const [categoryList, setCategoryList] = useState([]);
-  const [activityList, setActivityList] = useState([]);
-  const [fakeState, setFakeState] = useState('');
+
   const [terms, setTerms] = useState([
     {
       semester_id: '',
@@ -51,6 +54,28 @@ const CreatePeReportConfig = () => {
   }, []);
 
   useEffect(() => {
+    if (isEdit) {
+      let editedActivity = editedData?.mappings?.map((item, index) => {
+        return {
+          activity_type_id: item?.activity_type_id,
+          criterias: item.criterias.split(',')?.map(Number),
+        };
+      });
+      let editedterms = {
+        activities: editedActivity,
+        semester_id: editedData?.semesters?.id,
+      };
+      setTerms([editedterms]);
+      setSelectedBranch(editedData?.branch_id);
+      setSelectedGrade(editedData?.grade_id);
+      formRef.current.setFieldsValue({
+        branch: editedData?.branch_id,
+        grade: editedData?.grade_id,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -65,6 +90,14 @@ const CreatePeReportConfig = () => {
           });
         }
       });
+    }
+
+    if (
+      window.location.pathname !== '/pe-report-config/create' &&
+      !history.location.state
+    ) {
+      // history.goBack();
+      history.push('/assessment/report-config');
     }
   }, [window.location.pathname]);
 
@@ -83,7 +116,6 @@ const CreatePeReportConfig = () => {
         if (res?.data?.status_code == 200) {
           // const allBranchData = res?.data?.data?.results.map((item) => item.branch);
           setBranchList(res?.data?.data?.results);
-          console.log(res?.data?.data?.results);
         } else {
           message.error(res?.data?.message);
         }
@@ -107,7 +139,7 @@ const CreatePeReportConfig = () => {
 
   const fetchSemester = () => {
     axiosInstance
-      .get(`${endpoints.reportCardConfig.reportcardsubcomponent}`)
+      .get(`${endpoints.peReportCardConfig.semesterList}`)
       .then((res) => {
         setSemesterList(res.data.result);
       })
@@ -135,7 +167,6 @@ const CreatePeReportConfig = () => {
   // };
 
   const branchListOptions = branchList?.map((each) => {
-    console.log({ each });
     return (
       <Option key={each?.branch?.id} value={each?.branch?.id}>
         {each?.branch?.branch_name}
@@ -151,30 +182,22 @@ const CreatePeReportConfig = () => {
     );
   });
 
-  console.log({ semesterList });
-
   const semesterOptions = semesterList?.map((each) => {
     return (
       <Option key={each?.id} value={each.id}>
-        {each?.sub_component_name}
+        {each?.semester_name}
       </Option>
     );
   });
 
   const handleChangeBranch = (each) => {
-    console.log(each, 'testing');
     if (each.length > 0) {
       if (each.some((item) => item === 'all')) {
         //   const allBranch = branchList.map((item) => {
         //     console.log(item);
         //   });
-        console.log(
-          branchList.map((item) => item?.branch?.id),
-          'branchhhh'
-        );
         // const allBranch = branchList.map((item) => item);
         const allBranch = branchList.map((item) => item?.branch?.id);
-        console.log({ allBranch });
         setSelectedBranch(allBranch);
         fetchGrade(allBranch);
         formRef.current.setFieldsValue({
@@ -184,8 +207,6 @@ const CreatePeReportConfig = () => {
       } else {
         const singleBranch = each.map((item) => item);
         setSelectedBranch(singleBranch);
-        console.log({ singleBranch });
-        console.log({ selectedBranch });
         fetchGrade(singleBranch);
         formRef.current.setFieldsValue({
           grade: null,
@@ -219,22 +240,16 @@ const CreatePeReportConfig = () => {
   };
 
   const handleRemoveTerms = (termIndex) => {
-    console.log({ termIndex });
     let remainsTerm = terms?.filter((item, index) => index !== termIndex);
     setTerms(remainsTerm);
   };
 
   const handleAddTermsActivity = (termIndex) => {
-    console.log('termdet', termIndex, terms[termIndex]?.activities);
     let newActivity = [...terms[termIndex]?.activities, ...newSemester];
-    console.log({ newActivity }, termIndex);
     let updatedTerms = [...terms];
     updatedTerms[termIndex].activities = newActivity;
-    console.log('final term', terms);
     setTerms(updatedTerms);
   };
-
-  console.log({ terms });
 
   const handleSemester = (e, value, termIndex) => {
     if (e) {
@@ -290,8 +305,6 @@ const CreatePeReportConfig = () => {
 
     let semesterdetailsArr = terms.map((item) => item.activities).flat();
 
-    console.log('sd', semesterdetailsArr.flat());
-
     const isCategoryNull = semesterdetailsArr.filter(function (el) {
       return el.activity_type_id == '' || el.activity_type_id == undefined;
     });
@@ -310,37 +323,35 @@ const CreatePeReportConfig = () => {
       return;
     }
     submitReportCardConfig();
-    // console.log({ isCategoryNull });
-
-    console.log(terms?.flat());
   };
 
   const submitReportCardConfig = () => {
     let formData = {
-      session_year_id: selectedYear?.id,
-      branch_id: selectedBranch,
-      grade_id: selectedGrade,
-      semester: [...terms],
+      academic_year_id: selectedYear?.id,
+      branch_ids: isEdit ? editedData?.branch_id : selectedBranch,
+      grade_id: isEdit ? editedData?.grade_id : selectedGrade,
+      semesters: [...terms],
     };
 
-    console.log({ formData });
     axiosInstance
-      .post(`${endpoints.peReportCardConfig.addConfig}`, formData)
+      .post(`${endpoints.peReportCardConfig.addConfig}`, formData, {
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
+      })
       .then((result) => {
-        if (result?.data?.status_code === 200) {
-          message.success('Submited successfully');
+        if (result?.data?.status === 200) {
+          message.success(result?.data?.message);
+          history.push('/assessment/report-config');
         } else {
           message.error(result?.data?.message);
         }
-        console.log({ result });
       })
       .catch((error) => {
         console.log('err', error);
         message.error(error?.response?.data?.message);
       });
   };
-
-  console.log({ terms });
 
   return (
     <React.Fragment>
@@ -383,6 +394,7 @@ const CreatePeReportConfig = () => {
                         getPopupContainer={(trigger) => trigger.parentNode}
                         placeholder='Select Branch*'
                         mode='multiple'
+                        disabled={isEdit}
                       >
                         {branchList.length > 1 && (
                           <>
@@ -417,24 +429,27 @@ const CreatePeReportConfig = () => {
                         }}
                         showSearch
                         placeholder='Select Grade*'
+                        disabled={isEdit}
                       >
                         {gradeOptions}
                       </Select>
                     </Form.Item>
                   </div>
-                  <div
-                    className='col-md-2 col-sm-4 mt-1'
-                    style={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    <Button
-                      type='primary'
-                      className='btn-block mt-0 th-br-4'
-                      onClick={handleAddTerms}
-                      style={{ width: 'fit-content' }}
+                  {!isEdit && (
+                    <div
+                      className='col-md-2 col-sm-4 mt-1'
+                      style={{ display: 'flex', alignItems: 'center' }}
                     >
-                      <PlusCircleOutlined /> Add Terms
-                    </Button>
-                  </div>
+                      <Button
+                        type='primary'
+                        className='btn-block mt-0 th-br-4'
+                        onClick={handleAddTerms}
+                        style={{ width: 'fit-content' }}
+                      >
+                        <PlusCircleOutlined /> Add Terms
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 <Divider className='mt-1 mb-2' />
@@ -464,6 +479,10 @@ const CreatePeReportConfig = () => {
                           }}
                           showSearch
                           placeholder='Select Semester*'
+                          disabled={isEdit}
+                          defaultValue={
+                            isEdit ? editedData?.semesters?.semester_name : null
+                          }
                         >
                           {semesterOptions}
                         </Select>
@@ -500,7 +519,6 @@ const CreatePeReportConfig = () => {
                         </div>
                       </div>
                     </div>
-
                     {/* CATEGORY AND ACTIVITY */}
                     {termItem?.activities?.map((semItem, semIndex) => (
                       <PeReportCardActivity
@@ -510,6 +528,7 @@ const CreatePeReportConfig = () => {
                         termIndex={termIndex}
                         semItem={semItem}
                         semIndex={semIndex}
+                        isEdit={isEdit}
                       />
                     ))}
                   </>
@@ -523,7 +542,7 @@ const CreatePeReportConfig = () => {
                       style={{ width: 'fit-content' }}
                       onClick={handleReportCardConfig}
                     >
-                      Submit Report Config
+                      {isEdit ? 'Update' : 'Submit'} Report Config
                     </Button>
                   </div>
                 </div>

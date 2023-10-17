@@ -238,6 +238,9 @@ const V2Router = () => {
                         <Route exact path='/pe-report-config/create'>
                           {({ match }) => <CreatePeReportConfig match={match} />}
                         </Route>
+                        {/* <Route exact path='/pe-report-config/edit/:id'>
+                          {({ match }) => <CreatePeReportConfig match={match} />}
+                        </Route> */}
                         <Route path='/lesson-plan/teacher-view/period-view/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
                         </Route>
