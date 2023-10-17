@@ -127,7 +127,7 @@ const EditReportConfig = (props) => {
   const [curriculamTypeList, setCurriculamTypeList] = useState([]);
   const [curriculamNameList, setCurriculamNameList] = useState([]);
   const [moduleId, setModuleId] = useState('');
-  const [selectedbranch, setSelectedbranch] = useState();
+  const [selectedbranch, setSelectedbranch] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState();
   const [reportcardTermList, setReportCardTermList] = useState();
   const [priority, setPriority] = useState(initialPriority);
@@ -308,7 +308,6 @@ const EditReportConfig = (props) => {
         let selectedType = res?.data?.result?.find((item) => item?.id === ComponentID);
         setSelectedCurriculamType(selectedType);
         setSelectedCurriculamName(selectedType);
-        // console.log({ selectedType });
       })
       .catch((err) => {
         console.log(err);

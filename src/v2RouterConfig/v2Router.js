@@ -76,7 +76,8 @@ import StudentCountReport from 'v2/FaceLift/SchoolStrength/StudentCountReport';
 import ChangePassword from '../v2/FaceLift/ChangePassword';
 import SignatureUploadv2 from 'v2/FaceLift/MasterManagement/signature-upload/signature-table';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
-import EditReportConfig from '../containers/assessment-central/ReportCardConfig/EditReportConfig';
+import EditReportConfig from 'containers/assessment-central/ReportCardConfig/EditReportConfig';
+import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig/PhysicalEducation/CreatePeReportConfig';
 
 const V2Router = () => {
   useEffect(() => {
@@ -234,6 +235,12 @@ const V2Router = () => {
                         <Route exact path='/report-config/edit/:id'>
                           {({ match }) => <EditReportConfig match={match} />}
                         </Route>
+                        <Route exact path='/pe-report-config/create'>
+                          {({ match }) => <CreatePeReportConfig match={match} />}
+                        </Route>
+                        {/* <Route exact path='/pe-report-config/edit/:id'>
+                          {({ match }) => <CreatePeReportConfig match={match} />}
+                        </Route> */}
                         <Route path='/lesson-plan/teacher-view/period-view/list-view'>
                           {({ match }) => <LessonPlanView match={match} />}
                         </Route>
