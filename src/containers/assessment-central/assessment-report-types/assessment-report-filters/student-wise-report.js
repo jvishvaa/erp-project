@@ -28,6 +28,9 @@ import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest'
 import Modal from '@material-ui/core/Modal';
 import NoFilterData from 'components/noFilteredData/noFilterData';
 import EypReportCard from 'containers/assessment-central/assesment-report-card/eypReportCard';
+import axios from 'axios';
+import { message } from 'antd';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -83,6 +86,7 @@ const StudentWiseReport = ({
   setIsPreview,
   filterData,
   setReportCardDataNew,
+  setPEReportCardData,
   setIsFilter,
   isFilter,
   eypConfig,
@@ -130,7 +134,7 @@ const StudentWiseReport = ({
       });
   };
 
-  const handleNewPreview = (erpId) => {
+  const handleNewPreview = (erpId, ID) => {
     let paramObj = {
       acad_session_id: filterData.branch?.id,
       erp_id: erpId,
@@ -149,9 +153,18 @@ const StudentWiseReport = ({
       setIsLoading(true);
       let params = `?${generateQueryParamSting({ ...paramObj })}`;
       fetchNewReportCardData(params);
+      fetchPEReprtCardData({
+        // branch_id: 390,
+        // grade_id: 475,
+        // user_id: 2972,
+        branch_id: filterData?.branch?.branch?.id,
+        grade_id: filterData?.grade?.grade_id,
+        user_id: ID,
+      });
     }
   };
 
+  console.log({ filterData });
   const fetchNewReportCardData = (params) => {
     setIsLoading(true);
     apiRequest(
@@ -184,7 +197,27 @@ const StudentWiseReport = ({
         setisstudentList(false);
       });
   };
-
+  const fetchPEReprtCardData = (params = {}) => {
+    setIsLoading(true);
+    axios
+      .get(`${endpoints.assessmentReportTypes.physicalEducationReportCard}`, {
+        params: params,
+        headers: { 'X-DTS-HOST': X_DTS_HOST },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setPEReportCardData(response.data[0]);
+        } else {
+          setPEReportCardData([]);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
   const handleClose = () => {
     setOpenModal(false);
   };
@@ -324,7 +357,7 @@ const StudentWiseReport = ({
                     <Button
                       variant='contained'
                       color='primary'
-                      onClick={() => handleNewPreview(items.erp_id)}
+                      onClick={() => handleNewPreview(items.erp_id, items?.id)}
                     >
                       View
                     </Button>
