@@ -45,6 +45,7 @@ import ReportCardNewBack from '../assesment-report-card/reportCardNewBack';
 import StudentWiseReport from './assessment-report-filters/student-wise-report';
 import LeftArrow from 'components/icon/LeftArrow';
 import { useHistory } from 'react-router';
+import PhysicalEducationReportCard from '../assesment-report-card/physicalEducationReportCard/physicalEducationReportCard';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
   const limit = 10;
@@ -74,6 +75,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
 
   const [reportCardData, setReportCardData] = useState([]);
   const [reportCardDataNew, setReportCardDataNew] = useState([]);
+  const [peReportCardData, setPEReportCardData] = useState([]);
   const [isPreview, setIsPreview] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const [isstudentList, setisstudentList] = useState(false);
@@ -81,6 +83,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const [selectedERP, setSelectedERP] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [eypConfig, setEypConfig] = useState([]);
+  const [showPEConfig, setShowPEConfig] = useState(true);
 
   useEffect(() => {
     if (isFilter) {
@@ -100,6 +103,15 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
       .then((response) => {
         if (response?.data) {
           setEypConfig(response?.data?.result);
+        }
+      });
+  };
+  const checkPhysicalEducationConfig = (params = {}) => {
+    axiosInstance
+      .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data) {
+          if (filterData?.grade?.grade_id == 475) setShowPEConfig(true);
         }
       });
   };
@@ -256,7 +268,11 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
         break;
     }
   }, [selectedReportType?.id]);
-
+  useEffect(() => {
+    // if (filterData?.grade?.grade_id) {
+    //   checkPhysicalEducationConfig();
+    // }
+  }, [filterData?.grade]);
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
@@ -336,6 +352,8 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
         return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
       case 1:
         return <ReportCardNewBack reportCardDataNew={reportCardDataNew} />;
+      case 2:
+        return <PhysicalEducationReportCard peReportCardData={peReportCardData} />;
     }
   };
 
@@ -423,7 +441,11 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
               <TabPanel
                 tabValue={tabValue}
                 setTabValue={setTabValue}
-                tabValues={['Front', 'Back']}
+                tabValues={
+                  showPEConfig
+                    ? ['Front', 'Back', 'Physical Education']
+                    : ['Front', 'Back']
+                }
               />
             </Box>
             <Box style={{ margin: '20px auto', width: '95%' }}>
@@ -619,6 +641,8 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             setReportCardDataNew={setReportCardDataNew}
             isFilter={isFilter}
             setIsFilter={setIsFilter}
+            setPEReportCardData={setPEReportCardData}
+            peReportCardData={peReportCardData}
             isstudentList={isstudentList}
             eypConfig={eypConfig}
           />
