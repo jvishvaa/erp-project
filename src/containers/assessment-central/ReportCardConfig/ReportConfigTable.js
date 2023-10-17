@@ -463,7 +463,9 @@ const ReportConfigTable = () => {
   const handleUnlockDetails = (data) => {
     setUnlockLoading(true);
     axiosInstance
-      .put(`${endpoints.reportCardConfig.submitAPI}${data?.id}/`, { is_locked: false })
+      .put(`${endpoints.reportCardConfig.submitAPI}${data?.id}/`, {
+        is_locked: !data?.is_locked,
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
@@ -670,27 +672,27 @@ const ReportConfigTable = () => {
                               {data?.is_publish ? 'Unpublish' : 'Publish'}
                             </Button>
                           </div>
-                          {data?.is_locked ? (
-                            is_superuser ? (
-                              <Button
-                                onClick={() => {
-                                  if (!unlockLoading) {
-                                    handleUnlockDetails(data);
-                                  }
-                                }}
-                                color='primary'
-                                variant='contained'
-                                style={{ marginLeft: '5%' }}
-                              >
-                                Unlock
-                              </Button>
-                            ) : null
-                          ) : (
+
+                          {is_superuser ? (
+                            <Button
+                              onClick={() => {
+                                if (!unlockLoading) {
+                                  handleUnlockDetails(data);
+                                }
+                              }}
+                              color='primary'
+                              variant='contained'
+                            >
+                              {data?.is_locked ? 'Unlock' : 'Lock'}
+                            </Button>
+                          ) : null}
+                          {data?.is_locked ? null : (
                             <>
                               <Button
                                 onClick={() => handleEdit(data?.id, data)}
                                 color='primary'
                                 variant='contained'
+                                style={{ marginLeft: '5%' }}
                               >
                                 Edit
                               </Button>
