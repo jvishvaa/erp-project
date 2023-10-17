@@ -467,7 +467,9 @@ const ReportConfigTable = () => {
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
-          FilterData();
+          setTimeout(() => {
+            FilterData();
+          }, 100);
         }
       })
       .catch((error) => {
@@ -646,27 +648,29 @@ const ReportConfigTable = () => {
                           {data?.component_description}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          <Button
-                            onClick={() => handleOpenDetails(data)}
-                            color='primary'
-                            variant='contained'
-                          >
-                            Details
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              // setOpenModal(true);
-                              // setDeleteId(data?.id)
-                              handlePublish(data?.id, data?.is_publish);
-                            }}
-                            style={{ marginLeft: '5%' }}
-                            color='primary'
-                            variant='contained'
-                          >
-                            {/* {ispublished ? 'Publish' : 'Unpublish'} */}
-                            {data?.is_publish ? 'Unpublish' : 'Publish'}
-                          </Button>
-                          {!data?.is_locked ? (
+                          <div className='mb-2'>
+                            <Button
+                              onClick={() => handleOpenDetails(data)}
+                              color='primary'
+                              variant='contained'
+                            >
+                              Details
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                // setOpenModal(true);
+                                // setDeleteId(data?.id)
+                                handlePublish(data?.id, data?.is_publish);
+                              }}
+                              style={{ marginLeft: '5%' }}
+                              color='primary'
+                              variant='contained'
+                            >
+                              {/* {ispublished ? 'Publish' : 'Unpublish'} */}
+                              {data?.is_publish ? 'Unpublish' : 'Publish'}
+                            </Button>
+                          </div>
+                          {data?.is_locked ? (
                             is_superuser ? (
                               <Button
                                 onClick={() => {
@@ -676,7 +680,7 @@ const ReportConfigTable = () => {
                                 }}
                                 color='primary'
                                 variant='contained'
-                                style={{ marginTop: '5%' }}
+                                style={{ marginLeft: '5%' }}
                               >
                                 Unlock
                               </Button>
