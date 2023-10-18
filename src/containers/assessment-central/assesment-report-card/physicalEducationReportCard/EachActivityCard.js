@@ -57,7 +57,7 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
               <tbody className='th-pe-table'>
                 <tr className=''>
                   <td
-                    className='th-width-100 py-2 text-right th-fw-600'
+                    className='th-width-100 py-0 text-right th-fw-600'
                     style={{ background: '#FDBF8E' }}
                   >
                     <img

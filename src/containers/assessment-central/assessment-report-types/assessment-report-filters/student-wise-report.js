@@ -13,19 +13,14 @@ import {
   DialogContent,
   DialogActions,
   DialogTitle,
-  TextareaAutosize,
 } from '@material-ui/core';
-import { connect, useSelector } from 'react-redux';
-
-import Pagination from '@material-ui/lab/Pagination';
-import TextField from '@material-ui/core/TextField';
+import { useSelector } from 'react-redux';
 import Loader from 'components/loader/loader';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import { generateQueryParamSting } from 'utility-functions';
 import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest';
-import Modal from '@material-ui/core/Modal';
 import NoFilterData from 'components/noFilteredData/noFilterData';
 import EypReportCard from 'containers/assessment-central/assesment-report-card/eypReportCard';
 import axios from 'axios';
@@ -91,6 +86,7 @@ const StudentWiseReport = ({
   isFilter,
   eypConfig,
 }) => {
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [studentList, setStudentList] = useState([]);
   const classes = useStyles();
   const [loading, setIsLoading] = useState(false);
@@ -154,12 +150,8 @@ const StudentWiseReport = ({
       let params = `?${generateQueryParamSting({ ...paramObj })}`;
       fetchNewReportCardData(params);
       fetchPEReprtCardData({
-        // branch_id: 390,
-        // grade_id: 475,
-        // user_id: 2972,
         branch_id: filterData?.branch?.branch?.id,
         grade_id: filterData?.grade?.grade_id,
-        user_id: ID,
       });
     }
   };
@@ -202,7 +194,7 @@ const StudentWiseReport = ({
     axios
       .get(`${endpoints.assessmentReportTypes.physicalEducationReportCard}`, {
         params: params,
-        headers: { 'X-DTS-HOST': X_DTS_HOST },
+        headers: { 'X-DTS-HOST': X_DTS_HOST, authorization: `Bearer ${token}` },
       })
       .then((response) => {
         if (response.status === 200) {
