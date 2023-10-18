@@ -152,6 +152,7 @@ const StudentWiseReport = ({
       fetchPEReprtCardData({
         branch_id: filterData?.branch?.branch?.id,
         grade_id: filterData?.grade?.grade_id,
+        erp_id: erpId,
       });
     }
   };
