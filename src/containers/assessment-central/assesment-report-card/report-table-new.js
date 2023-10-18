@@ -680,14 +680,16 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                           (eachSubject, subjectIndex) => {
                             return (
                               <>
-                                {/* <td
+                                <td
                                   className='th-width-10 th-fw-600 text-center'
-                                  colspan={
-                                    eachSem?.marks_with_subject?.length == 1 ? 2 : ''
+                                  colSpan={
+                                    eachSem?.marks_with_subject?.length == 1
+                                      ? 4
+                                      : eachSem?.marks_with_subject?.length + 1
                                   }
                                 >
                                   {eachSubject?.column_text}
-                                </td> */}
+                                </td>
 
                                 {/* Inserting Total marks column for each semester */}
                                 {/* {subjectIndex ==
@@ -697,7 +699,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   </td>
                                 ) : null} */}
                                 {/* Inserting Grade column for each semester */}
-                                {subjectIndex ==
+                                {/* {subjectIndex ==
                                 eachSem?.marks_with_subject?.length - 1 ? (
                                   <td
                                     className='th-width-12 th-fw-600 text-center'
@@ -710,7 +712,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                   >
                                     {'Grade'}
                                   </td>
-                                ) : null}
+                                ) : null} */}
 
                                 {/* Inserting OSR column for each semester */}
                                 {/* {subjectIndex ==
@@ -839,7 +841,11 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                         eachSem?.marks_with_subject?.length == 1 ? 4 : ''
                                       }
                                     >
-                                      {eachSem?.grade[subjectIndex]}
+                                      {
+                                        eachSem?.subject_wise_secured_marks_grade[
+                                          subjectIndex
+                                        ]
+                                      }
                                     </td>
                                   ) : null}
                                   {/* Inserting Total OSR column for each semester */}
@@ -959,7 +965,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     {/* Total End */}
 
                     {/* Grading point descriptions Start */}
-                    {eachScholastic?.grade_description ? (
+                    {eachScholastic?.new_grade_description ? (
                       <tr>
                         <td
                           style={{ backgroundColor: '#ffffff', fontStyle: 'italic' }}
@@ -973,7 +979,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                 2
                           } //exam type length + Tot. column + grade+osr+air+ 4 col of annual+ subject column
                         >
-                          {eachScholastic?.grade_description}
+                          {eachScholastic?.new_grade_description}
                         </td>
                       </tr>
                     ) : null}
