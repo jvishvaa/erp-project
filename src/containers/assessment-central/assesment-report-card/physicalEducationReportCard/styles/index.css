@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
+
+.pe-report-font {
+  font-family: 'Montserrat', sans-serif;
+}
+.th-pe-table tr td {
+  background-color: transparent !important;
+  padding-left: 4px;
+  padding-right: 4px;
+  color: #000000;
+}
+.th-pe-row {
+  border-bottom: 2px solid #a9939a !important;
+  border-radius: 2px;
+}
+.th-pe-checkbox {
+  border-radius: 5px;
+  height: 30px;
+  width: 30px;
+  background-color: #fff;
+  display: inline-block;
+}
+.th-pe-sign {
+  display: inline-block;
+  width: 48%;
+  border-bottom: 2px solid black;
+  margin-top: 2;
+}

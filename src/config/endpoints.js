@@ -542,6 +542,7 @@ export default {
     reportcardconfigsummary: '/assessment/report-card-config-summary/',
     submitAPI: '/assessment/report-card-config-api/',
     branchAPI: '/erp_user/grade/',
+    clearcahe: '/assessment/delete-rc-cache/',
   },
   peReportCardConfig: {
     semesterList: `${newBlogURL}/api/semester-list/`,
@@ -562,6 +563,7 @@ export default {
     reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
     reportCardData: '/assessment/generate-report/',
     reportCardDataNew: '/assessment/report-card-generation/',
+    physicalEducationReportCard: `${newBlogURL}/api/get-report/`,
     eypReportCard: '/assessment/eyp-report-card-generation/',
     eypReportCardBulk: '/assessment/eyp-bulk-report-card-generation/',
     normalReportCardBulk: '/assessment/fetch-s3-reports/',

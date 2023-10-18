@@ -24,10 +24,9 @@ import {
   Box,
   DialogActions,
 } from '@material-ui/core';
-import { Tabs as AntTabs, Breadcrumb } from 'antd';
+import { Tabs as AntTabs, Breadcrumb, Modal, message } from 'antd';
 import PropTypes from 'prop-types';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Modal from '@material-ui/core/Modal';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
@@ -39,6 +38,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import ConfirmModal from '../../../../src/containers/assessment-central/assesment-card/confirm-modal';
 import NoFilterData from 'components/noFilteredData/noFilterData';
 import PeReportConfig from './PeReportConfig';
+import CachedIcon from '@material-ui/icons/Cached';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -205,6 +205,14 @@ const ReportConfigTable = () => {
   const [unlockLoading, setUnlockLoading] = useState(false);
 
   const [showTab, setShowTab] = useState(prevURL === 'PE-REPORT' ? '2' : '1');
+  const [modalOpen, setIsModalOpen] = useState(false);
+
+  const modalopen = () => {
+    setIsModalOpen(true);
+  };
+  const modalClose = () => {
+    setIsModalOpen(false);
+  };
   const onTabChange = (key) => {
     history.push({
       state: { prevURL: 'NORMAL' },
@@ -505,6 +513,35 @@ const ReportConfigTable = () => {
     });
   };
 
+  const clearCache = () => {
+    if (selectedbranch?.length === 0 || !selectedGrade) {
+      setAlert('error', 'Please Select Filters !');
+    } else {
+      setLoading(true);
+      let url = `${
+        endpoints.reportCardConfig.clearcahe
+      }?acad_session=${selectedbranch?.map((branch) => branch?.id)}&grade=${
+        selectedGrade?.grade_id
+      }`;
+
+      axiosInstance
+        .get(url)
+        .then((res) => {
+          if (res?.data) {
+            setLoading(false);
+            message.success('Cache Cleared');
+            modalClose();
+            FilterData();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+          message.error('Failed to Clear Cache');
+        });
+    }
+  };
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -624,19 +661,36 @@ const ReportConfigTable = () => {
                           Filter
                         </Button>
                       </Grid>
-                      <Grid item xs={3} sm={3} className={'addButtonPadding'}>
+                      <Grid item xs={3} sm={2} className={'addButtonPadding'}>
                         <Button
                           startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                           variant='contained'
                           color='primary'
                           size='medium'
-                          style={{ color: 'white', width: '70%' }}
+                          style={{ color: 'white', width: '100%' }}
                           title='Create'
                           onClick={handleCreate}
                         >
                           Create
                         </Button>
                       </Grid>
+                      {is_superuser ? (
+                        <Grid item xs={3} sm={3} className={'addButtonPadding'}>
+                          <Button
+                            startIcon={<CachedIcon style={{ fontSize: '30px' }} />}
+                            variant='contained'
+                            color='primary'
+                            size='medium'
+                            style={{ color: 'white', width: '70%' }}
+                            title='Create'
+                            onClick={modalopen}
+                          >
+                            Clear Cache
+                          </Button>
+                        </Grid>
+                      ) : (
+                        ''
+                      )}
                     </Grid>
                     <hr />
                     <Paper className={`${classes.root} common-table`}>
@@ -936,6 +990,18 @@ const ReportConfigTable = () => {
             </div>
           </div>
         </div>
+        <Modal
+          title={'Clear Cache'}
+          visible={modalOpen}
+          onCancel={modalClose}
+          onOk={clearCache}
+        >
+          <div className='p-4' style={{ background: '#F8F8F8' }}>
+            <span className='col-md-12 th-18 p-2'>
+              Are You Sure,You Want to Clear Cache ?
+            </span>
+          </div>
+        </Modal>
       </Layout>
     </>
   );

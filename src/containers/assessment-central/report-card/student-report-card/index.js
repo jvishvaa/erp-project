@@ -27,7 +27,10 @@ import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import EypReportCardPdf from 'containers/assessment-central/assesment-report-card/eypReportCard/eypPdf';
 import FeeReminderAssesment from 'containers/assessment-central/Feereminder';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
-
+import PhysicalEducationReportCard from '../../assesment-report-card/physicalEducationReportCard/physicalEducationReportCard.js';
+import axios from 'axios';
+import { message } from 'antd';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //   window.location.host.split('.')[0] === 'qa'
@@ -37,6 +40,7 @@ const isOrchids = IsOrchidsChecker();
 
 const StudentReportCard = () => {
   const themeContext = useTheme();
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [loading, setLoading] = useState(false);
@@ -57,6 +61,7 @@ const StudentReportCard = () => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [eypConfig, setEypConfig] = useState([]);
+  const [peReportCardData, setPEReportCardData] = useState([]);
 
   const renderReportCardNew = () => {
     switch (tabValue) {
@@ -64,6 +69,8 @@ const StudentReportCard = () => {
         return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
       case 1:
         return <ReportCardNewBack reportCardDataNew={reportCardDataNew} />;
+      case 2:
+        return <PhysicalEducationReportCard peReportCardData={peReportCardData} />;
     }
   };
   const handleCloseGrievanceModal = () => {
@@ -98,8 +105,33 @@ const StudentReportCard = () => {
         ? fetchEypReportCard(value?.gr_id)
         : fetchReportCardData(params);
     }
+    fetchPEReprtCardData({
+      branch_id: selectedBranch?.branch?.id,
+      grade_id: value?.gr_id,
+    });
   };
 
+  const fetchPEReprtCardData = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.assessmentReportTypes.physicalEducationReportCard}`, {
+        params: params,
+        headers: { 'X-DTS-HOST': X_DTS_HOST, authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setPEReportCardData(response.data[0]);
+        } else {
+          setPEReportCardData([]);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setLoading(true);
+      });
+  };
   const fetchEypReportCard = (grade_id) => {
     let obj = {};
     obj.acad_session_id = selectedBranch?.id;
@@ -159,8 +191,7 @@ const StudentReportCard = () => {
           childComponentName='Report-Card'
           isAcademicYearVisible={true}
         />
-        {user_level == 13 ? 
-        <FeeReminderAssesment /> : '' }
+        {user_level == 13 ? <FeeReminderAssesment /> : ''}
         <div
           className='student-report-card'
           style={{
@@ -208,7 +239,7 @@ const StudentReportCard = () => {
                   <TabPanel
                     tabValue={tabValue}
                     setTabValue={setTabValue}
-                    tabValues={['Front', 'Back']}
+                    tabValues={['Front', 'Back', 'Physical Education']}
                   />
                   <Box style={{ margin: '20px auto' }}>{renderReportCardNew()}</Box>
                 </>
