@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PhysicalEducationReportCard = ({ peReportCardData }) => {
   const classes = useStyles();
-  return peReportCardData?.data.length > 0 ? (
+  return peReportCardData?.data?.length > 0 ? (
     peReportCardData?.data?.map((eachActivity) => {
       return (
         <>
