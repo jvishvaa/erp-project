@@ -342,7 +342,10 @@ const CreatePeReportConfig = () => {
       .then((result) => {
         if (result?.data?.status === 200) {
           message.success(result?.data?.message);
-          history.push('/assessment/report-config');
+          history.push({
+            pathname: `/assessment/report-config`,
+            state: { prevURL: 'PE-REPORT' },
+          });
         } else {
           message.error(result?.data?.message);
         }
@@ -412,7 +415,7 @@ const CreatePeReportConfig = () => {
                     <Form.Item name='grade'>
                       <Select
                         getPopupContainer={(trigger) => trigger.parentNode}
-                        maxTagCount={1}
+                        maxTagCount={2}
                         allowClear={true}
                         suffixIcon={<DownOutlined className='th-grey' />}
                         className='th-grey th-bg-grey th-br-4 w-100 text-left'
@@ -480,9 +483,7 @@ const CreatePeReportConfig = () => {
                           showSearch
                           placeholder='Select Semester*'
                           disabled={isEdit}
-                          defaultValue={
-                            isEdit ? editedData?.semesters?.semester_name : null
-                          }
+                          value={termItem?.semester_id ? termItem?.semester_id : null}
                         >
                           {semesterOptions}
                         </Select>
