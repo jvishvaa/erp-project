@@ -542,6 +542,7 @@ export default {
     reportcardconfigsummary: '/assessment/report-card-config-summary/',
     submitAPI: '/assessment/report-card-config-api/',
     branchAPI: '/erp_user/grade/',
+    clearcahe: '/assessment/delete-rc-cache/',
   },
   peReportCardConfig: {
     semesterList: `${newBlogURL}/api/semester-list/`,
