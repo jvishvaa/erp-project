@@ -76,15 +76,17 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
                     className='th-width-75 py-0 text-center th-fw-600 th-24'
                     style={{ background: '#FDBF8E', color: '#000000' }}
                   >
-                    {/* <img
-                      src={branchLogo}
-                      style={{
-                        objectFit: 'cover',
-                        width: 80,
-                        height: 75,
-                        marginTop: '-5px',
-                      }}
-                    />{' '} */}
+                    {activityReportData?.activity_logo && (
+                      <img
+                        src={activityReportData?.activity_logo}
+                        style={{
+                          objectFit: 'contain',
+                          width: 80,
+                          height: 75,
+                          marginTop: '-5px',
+                        }}
+                      />
+                    )}{' '}
                     {activityReportData?.activity_name}
                   </td>
                 </tr>
