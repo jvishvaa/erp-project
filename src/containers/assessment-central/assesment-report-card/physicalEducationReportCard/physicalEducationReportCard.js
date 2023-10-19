@@ -32,17 +32,31 @@ const useStyles = makeStyles((theme) => ({
 const PhysicalEducationReportCard = ({ peReportCardData }) => {
   const classes = useStyles();
   return peReportCardData?.data?.length > 0 ? (
-    peReportCardData?.data?.map((eachActivity) => {
-      return (
-        <>
-          <EachActivityCard
-            activityReportData={eachActivity}
-            branchLogo={peReportCardData?.user_data[0]?.branch_logo}
-            username={peReportCardData?.user_data[0]?.name}
-          />
-        </>
-      );
-    })
+    peReportCardData?.data?.map((item) => item?.criteria_title).flat()?.length > 0 ? (
+      peReportCardData?.data?.map((eachActivity) => {
+        return (
+          <>
+            {eachActivity?.criteria_title.length > 0 && (
+              <EachActivityCard
+                activityReportData={eachActivity}
+                branchLogo={peReportCardData?.user_data[0]?.branch_logo}
+                username={peReportCardData?.user_data[0]?.name}
+              />
+            )}
+          </>
+        );
+      })
+    ) : (
+      <Paper component={'div'} elevation={2} className={classes.root}>
+        <div className='row'>
+          <div className='col-12 text-center'>
+            <span className='th-22 th-fw-600 th-grey'>
+              &#9432; Kindly reach out to the school management to obtain the report card.
+            </span>
+          </div>
+        </div>
+      </Paper>
+    )
   ) : (
     <Paper component={'div'} elevation={2} className={classes.root}>
       <div className='row'>
