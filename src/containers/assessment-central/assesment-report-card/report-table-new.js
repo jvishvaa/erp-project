@@ -933,7 +933,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                               className='th-width-12 th-fw-600 text-center'
                               colspan={eachSem?.marks_with_subject?.length == 1 ? 4 : ''}
                             >
-                              {eachSem.total_grade}
+                              {eachSem.total_marks_percentage_grade}
                             </td>
                             {/* <td className='th-width-12 th-fw-600 text-center'>
                               {eachSem.overall_osr}
