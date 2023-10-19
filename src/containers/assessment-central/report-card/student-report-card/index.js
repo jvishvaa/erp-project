@@ -61,6 +61,7 @@ const StudentReportCard = () => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [eypConfig, setEypConfig] = useState([]);
+  const [showPEConfig, setShowPEConfig] = useState([]);
   const [peReportCardData, setPEReportCardData] = useState([]);
 
   const renderReportCardNew = () => {
@@ -105,13 +106,9 @@ const StudentReportCard = () => {
         ? fetchEypReportCard(value?.gr_id)
         : fetchReportCardData(params);
     }
-    fetchPEReprtCardData({
-      branch_id: selectedBranch?.branch?.id,
-      grade_id: value?.gr_id,
-    });
   };
 
-  const fetchPEReprtCardData = (params = {}) => {
+  const fetchPEReportCardData = (params = {}) => {
     setLoading(true);
     axios
       .get(`${endpoints.assessmentReportTypes.physicalEducationReportCard}`, {
@@ -129,7 +126,7 @@ const StudentReportCard = () => {
         message.error(error.message);
       })
       .finally(() => {
-        setLoading(true);
+        setLoading(false);
       });
   };
   const fetchEypReportCard = (grade_id) => {
@@ -166,11 +163,31 @@ const StudentReportCard = () => {
       });
     setLoading(false);
   };
+  const checkPhysicalEducationConfig = (params = {}) => {
+    axiosInstance
+      .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data) {
+          setShowPEConfig(response?.data?.result);
+        }
+      });
+  };
 
   useEffect(() => {
     getGrades();
     checkEypConfig({ config_key: 'eyp_rc_grades' });
+    checkPhysicalEducationConfig({ config_key: 'rc-pe-enle-grades' });
   }, []);
+
+  console.log({ showPEConfig });
+
+  useEffect(() => {
+    if (showPEConfig?.includes(String(selectedGrade?.gr_id)))
+      fetchPEReportCardData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: selectedGrade?.gr_id,
+      });
+  }, [selectedGrade]);
 
   const checkEypConfig = (params = {}) => {
     axiosInstance
@@ -239,7 +256,11 @@ const StudentReportCard = () => {
                   <TabPanel
                     tabValue={tabValue}
                     setTabValue={setTabValue}
-                    tabValues={['Front', 'Back', 'Physical Education']}
+                    tabValues={
+                      showPEConfig
+                        ? ['Front', 'Back', 'Physical Education']
+                        : ['Front', 'Back']
+                    }
                   />
                   <Box style={{ margin: '20px auto' }}>{renderReportCardNew()}</Box>
                 </>

@@ -111,7 +111,9 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
       .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
       .then((response) => {
         if (response?.data) {
-          if (filterData?.grade?.grade_id == 475) setShowPEConfig(true);
+          if (response?.data?.result?.includes(String(filterData?.grade?.grade_id))) {
+            setShowPEConfig(true);
+          }
         }
       });
   };
@@ -269,9 +271,9 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   }, [selectedReportType?.id]);
   useEffect(() => {
-    // if (filterData?.grade?.grade_id) {
-    //   checkPhysicalEducationConfig();
-    // }
+    if (filterData?.grade?.grade_id) {
+      checkPhysicalEducationConfig({ config_key: 'rc-pe-enle-grades' });
+    }
   }, [filterData?.grade]);
   useEffect(() => {
     setLoading(true);
