@@ -83,7 +83,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const [selectedERP, setSelectedERP] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [eypConfig, setEypConfig] = useState([]);
-  const [showPEConfig, setShowPEConfig] = useState(true);
+  const [showPEConfig, setShowPEConfig] = useState([]);
 
   useEffect(() => {
     if (isFilter) {
@@ -110,11 +110,14 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     axiosInstance
       .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
       .then((response) => {
-        if (response?.data) {
-          if (response?.data?.result?.includes(String(filterData?.grade?.grade_id))) {
-            setShowPEConfig(true);
-          }
+        if (response?.data?.status_code == 200) {
+          setShowPEConfig(response?.data?.result);
+        } else {
+          setShowPEConfig([]);
         }
+      })
+      .catch((error) => {
+        console.error(error);
       });
   };
 
@@ -271,10 +274,8 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   }, [selectedReportType?.id]);
   useEffect(() => {
-    if (filterData?.grade?.grade_id) {
-      checkPhysicalEducationConfig({ config_key: 'rc-pe-enle-grades' });
-    }
-  }, [filterData?.grade]);
+    checkPhysicalEducationConfig({ config_key: 'rc-pe-enle-grades' });
+  }, []);
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
@@ -444,7 +445,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                 tabValue={tabValue}
                 setTabValue={setTabValue}
                 tabValues={
-                  showPEConfig
+                  showPEConfig?.includes(String(filterData?.grade?.grade_id))
                     ? ['Front', 'Back', 'Physical Education']
                     : ['Front', 'Back']
                 }
@@ -647,6 +648,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             peReportCardData={peReportCardData}
             isstudentList={isstudentList}
             eypConfig={eypConfig}
+            showPEConfig={showPEConfig?.includes(String(filterData?.grade?.grade_id))}
           />
         )}
       </Layout>
