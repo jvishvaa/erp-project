@@ -396,8 +396,10 @@ const EditReportConfig = (props) => {
       .put(`${endpoints.reportCardConfig.submitAPI}${editId}/`, editedData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
+          setAlert('success', result?.data?.message);
           history.goBack();
+        } else if (result.data.status_code === 409) {
+          setAlert('error', result?.data?.developer_msg);
         }
       })
       .catch((error) => {
