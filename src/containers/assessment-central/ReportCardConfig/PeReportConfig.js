@@ -290,7 +290,7 @@ const PeReportConfig = () => {
   };
 
   const handleClearFilter = () => {
-    setBranchList([]);
+    // setBranchList([]);
     setGradeList([]);
     setSelectedBranch(null);
     setSelectedGrade(null);
