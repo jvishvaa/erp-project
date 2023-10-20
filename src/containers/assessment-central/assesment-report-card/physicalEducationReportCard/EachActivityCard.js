@@ -113,7 +113,7 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
                       {each?.levels?.map((item) => {
                         let checkedYes =
                           JSON.parse(item?.user_review_remarks)
-                            .find((el) => el?.status)
+                            ?.find((el) => el?.status)
                             ?.name.trim() == 'Yes';
                         return (
                           <tr className='th-pe-row'>
