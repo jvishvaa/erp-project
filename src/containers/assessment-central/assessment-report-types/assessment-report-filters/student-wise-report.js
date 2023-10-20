@@ -202,7 +202,7 @@ const StudentWiseReport = ({
       })
       .then((response) => {
         if (response.status === 200) {
-          setPEReportCardData(response.data[0]);
+          setPEReportCardData(response.data);
         } else {
           setPEReportCardData([]);
         }

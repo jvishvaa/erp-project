@@ -35,7 +35,14 @@ const useStyles = makeStyles((theme) => ({
 const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
   const classes = useStyles();
   const componentRef = useRef();
-  console.log({ activityReportData });
+  function IsJsonString(str) {
+    try {
+      var json = JSON.parse(str);
+      return typeof json === 'object';
+    } catch (e) {
+      return false;
+    }
+  }
   return (
     <Box style={{ position: 'relative' }}>
       <Paper component={'div'} elevation={2} className={classes.root} ref={componentRef}>
@@ -111,10 +118,13 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
                         </td>
                       </tr>
                       {each?.levels?.map((item) => {
-                        let checkedYes =
-                          JSON.parse(item?.user_review_remarks)
-                            ?.find((el) => el?.status)
-                            ?.name.trim() == 'Yes';
+                        const checkedYes =
+                          item?.user_review_remarks !== null &&
+                          IsJsonString(item?.user_review_remarks)
+                            ? JSON.parse(item?.user_review_remarks)
+                                ?.find((el) => el?.status)
+                                ?.name.trim() == 'Yes'
+                            : false;
                         return (
                           <tr className='th-pe-row'>
                             <td className='th-width-80 th-14 text-left pl-3 th-fw-500'>
