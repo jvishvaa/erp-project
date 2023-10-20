@@ -8,6 +8,7 @@ import UploadDocument from '../UploadDocument';
 import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
+import { Profanity } from 'components/file-validation/Profanity.js';
 
 const GeneralDiary = ({ isSubstituteDiary }) => {
   const selectedAcademicYear = useSelector(
@@ -152,6 +153,14 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
     }
     if (!description) {
       message.error('Please add message');
+      return;
+    }
+    if (title && Profanity(title)) {
+      message.error('Title Contains Banned Words , Please Check');
+      return;
+    }
+    if (description && Profanity(description)) {
+      message.error('Description Contains Banned Words , Please Check');
       return;
     }
 

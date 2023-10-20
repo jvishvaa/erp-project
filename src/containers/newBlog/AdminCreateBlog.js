@@ -1222,12 +1222,12 @@ const AdminCreateBlog = () => {
                 <Input
                   className='th-br-4 mt-1 th-16'
                   showCount
-                  maxLength='30'
+                  maxLength='100'
                   value={title}
                   onChange={handleTitle}
                 />
                 <div className='text-right'>
-                  <span className='th-red th-12 text-right'>Max. 30 Characters</span>
+                  <span className='th-red th-12 text-right'>Max. 100 Characters</span>
                 </div>
               </div>
               <div className='col-md-6'>
