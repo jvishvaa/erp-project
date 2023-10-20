@@ -43,6 +43,7 @@ import _ from 'lodash';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import { Profanity } from 'components/file-validation/Profanity.js';
 
 let boardFilterArr = [
   'orchids.letseduvate.com',
@@ -375,6 +376,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
     if (!gradeID) {
       message.error('Please select Grade');
+      return;
+    }
+    if (summary && Profanity(summary)) {
+      message.error('Note Contains Banned Words , Please Check');
       return;
     }
     if (isAutoAssignDiary) {
@@ -2102,7 +2107,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               item?.split('/')[item?.split('/').length - 1];
 
                             return (
-                              <div title={fileName2} className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                              <div
+                                title={fileName2}
+                                className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'
+                              >
                                 <span className='th-12 th-black-1 text-truncate'>
                                   {fileName2}
                                 </span>

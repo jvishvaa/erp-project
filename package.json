@@ -63,6 +63,7 @@
     "node-vibrant": "^3.1.6",
     "pdf-viewer-reactjs": "^2.2.3",
     "pdfjs-dist": "^2.5.207",
+    "profanity-hindi": "^1.1.0",
     "prop-types": "^15.7.2",
     "qrcode": "^1.4.4",
     "qs": "^6.9.4",
