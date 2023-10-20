@@ -13,6 +13,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import UploadModal from './UploadModal';
 import MembersModal from './MembersModal';
 import { useHistory } from 'react-router-dom';
+import { Profanity } from 'components/file-validation/Profanity.js';
 
 const { Option } = Select;
 
@@ -379,6 +380,15 @@ const CreateAnnouncement = () => {
         message.error('Please select atleast one section');
         return;
       }
+    }
+
+    if (Profanity(description)) {
+      message.error('Description Contains Banned Words , Please Check');
+      return;
+    }
+    if (Profanity(title)) {
+      message.error('Title Contains Banned Words , Please Check');
+      return;
     }
 
     let payLoad = {
