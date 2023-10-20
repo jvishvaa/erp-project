@@ -85,6 +85,7 @@ const StudentWiseReport = ({
   setIsFilter,
   isFilter,
   eypConfig,
+  showPEConfig,
 }) => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [studentList, setStudentList] = useState([]);
@@ -149,11 +150,13 @@ const StudentWiseReport = ({
       setIsLoading(true);
       let params = `?${generateQueryParamSting({ ...paramObj })}`;
       fetchNewReportCardData(params);
-      fetchPEReprtCardData({
-        branch_id: filterData?.branch?.branch?.id,
-        grade_id: filterData?.grade?.grade_id,
-        erp_id: erpId,
-      });
+      if (showPEConfig) {
+        fetchPEReprtCardData({
+          branch_id: filterData?.branch?.branch?.id,
+          grade_id: filterData?.grade?.grade_id,
+          erp_id: erpId,
+        });
+      }
     }
   };
 
