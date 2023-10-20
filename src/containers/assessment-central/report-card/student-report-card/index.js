@@ -27,7 +27,10 @@ import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import EypReportCardPdf from 'containers/assessment-central/assesment-report-card/eypReportCard/eypPdf';
 import FeeReminderAssesment from 'containers/assessment-central/Feereminder';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
-
+import PhysicalEducationReportCard from '../../assesment-report-card/physicalEducationReportCard/physicalEducationReportCard.js';
+import axios from 'axios';
+import { message } from 'antd';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //   window.location.host.split('.')[0] === 'qa'
@@ -37,6 +40,7 @@ const isOrchids = IsOrchidsChecker();
 
 const StudentReportCard = () => {
   const themeContext = useTheme();
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [loading, setLoading] = useState(false);
@@ -57,6 +61,8 @@ const StudentReportCard = () => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [eypConfig, setEypConfig] = useState([]);
+  const [showPEConfig, setShowPEConfig] = useState([]);
+  const [peReportCardData, setPEReportCardData] = useState([]);
 
   const renderReportCardNew = () => {
     switch (tabValue) {
@@ -64,6 +70,8 @@ const StudentReportCard = () => {
         return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
       case 1:
         return <ReportCardNewBack reportCardDataNew={reportCardDataNew} />;
+      case 2:
+        return <PhysicalEducationReportCard peReportCardData={peReportCardData} />;
     }
   };
   const handleCloseGrievanceModal = () => {
@@ -100,6 +108,27 @@ const StudentReportCard = () => {
     }
   };
 
+  const fetchPEReportCardData = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.assessmentReportTypes.physicalEducationReportCard}`, {
+        params: params,
+        headers: { 'X-DTS-HOST': X_DTS_HOST, authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          setPEReportCardData(response.data[0]);
+        } else {
+          setPEReportCardData([]);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
   const fetchEypReportCard = (grade_id) => {
     let obj = {};
     obj.acad_session_id = selectedBranch?.id;
@@ -134,11 +163,31 @@ const StudentReportCard = () => {
       });
     setLoading(false);
   };
+  const checkPhysicalEducationConfig = (params = {}) => {
+    axiosInstance
+      .get(`${endpoints.doodle.checkDoodle}`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data) {
+          setShowPEConfig(response?.data?.result);
+        }
+      });
+  };
 
   useEffect(() => {
     getGrades();
     checkEypConfig({ config_key: 'eyp_rc_grades' });
+    checkPhysicalEducationConfig({ config_key: 'rc-pe-enle-grades' });
   }, []);
+
+  console.log({ showPEConfig });
+
+  useEffect(() => {
+    if (showPEConfig?.includes(String(selectedGrade?.gr_id)))
+      fetchPEReportCardData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: selectedGrade?.gr_id,
+      });
+  }, [selectedGrade]);
 
   const checkEypConfig = (params = {}) => {
     axiosInstance
@@ -159,8 +208,7 @@ const StudentReportCard = () => {
           childComponentName='Report-Card'
           isAcademicYearVisible={true}
         />
-        {user_level == 13 ? 
-        <FeeReminderAssesment /> : '' }
+        {user_level == 13 ? <FeeReminderAssesment /> : ''}
         <div
           className='student-report-card'
           style={{
@@ -208,7 +256,11 @@ const StudentReportCard = () => {
                   <TabPanel
                     tabValue={tabValue}
                     setTabValue={setTabValue}
-                    tabValues={['Front', 'Back']}
+                    tabValues={
+                      showPEConfig
+                        ? ['Front', 'Back', 'Physical Education']
+                        : ['Front', 'Back']
+                    }
                   />
                   <Box style={{ margin: '20px auto' }}>{renderReportCardNew()}</Box>
                 </>

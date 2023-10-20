@@ -182,6 +182,7 @@ const ReportConfigTable = () => {
 
   const classes = useStyles();
   const history = useHistory();
+  const { prevURL } = history.location.state || {};
   const [loading, setLoading] = useState(false);
   const [configData, setConfigData] = useState([]);
 
@@ -203,17 +204,19 @@ const ReportConfigTable = () => {
   const [publishId, setPublishId] = useState();
   const [unlockLoading, setUnlockLoading] = useState(false);
 
-  const [showTab, setShowTab] = useState('1');
+  const [showTab, setShowTab] = useState(prevURL === 'PE-REPORT' ? '2' : '1');
   const [modalOpen, setIsModalOpen] = useState(false);
 
   const modalopen = () => {
-    console.log('hit');
     setIsModalOpen(true);
   };
   const modalClose = () => {
     setIsModalOpen(false);
   };
   const onTabChange = (key) => {
+    history.push({
+      state: { prevURL: 'NORMAL' },
+    });
     setShowTab(key);
   };
 

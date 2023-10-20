@@ -24,14 +24,15 @@ const PeReportCardActivity = ({
   }, []);
 
   useEffect(() => {
+    if (semItem?.activity_type_id) {
+      let sub_name = categoryList.find((e) => e.act_type_id == semItem.activity_type_id);
+      fetchCriteria(sub_name?.sub_type);
+    }
+  }, [terms]);
+
+  useEffect(() => {
     if (isEdit) {
       semItem?.activity_type_id && fetchCriteria('Gym');
-      activityformRef.current.setFieldsValue({
-        [`activity${termIndex}${semIndex}`]: semItem?.criterias,
-        [`category${termIndex}${semIndex}`]: !semItem?.activity_type_id
-          ? null
-          : semItem?.activity_type_id,
-      });
     }
   }, [semItem]);
 
@@ -68,16 +69,30 @@ const PeReportCardActivity = ({
   };
 
   const handleRemoveTermsActivity = (termIndex, activityIndex) => {
-    let filteredActivity = terms[termIndex]?.activities.filter(
-      (item, index) => index !== activityIndex
-    );
+
+    // activityformRef.current.setFieldsValue({
+    //   [`activity${termIndex}${activityIndex}`]: [],
+    //   [`category${termIndex}${activityIndex}`]: null,
+    // });
+    // let resetField = activityformRef.current.resetFields()
+    let filteredActivity = terms[termIndex]?.activities.filter((item, index) => {
+      // if (index !== activityIndex) {
+      //   let sub_name = categoryList.find((e) => e.act_type_id == item.activity_type_id);
+      //   console.log({ sub_name });
+      //   fetchCriteria(sub_name?.sub_type);
+      // }
+      return index !== activityIndex;
+    });
     // let newActivity = [...terms[termIndex]?.activities, ...newSemester];
     let updatedTerms = [...terms];
     updatedTerms[termIndex].activities = filteredActivity;
     setTerms(updatedTerms);
+    // activityformRef.current.setFieldsValue({
+    //   [`activity${termIndex}${activityIndex}`]: [],
+    // });
   };
-
   const handleCategory = (e, value, termIndex, semIndex) => {
+    setActivityList([]);
     if (e) {
       fetchCriteria(value?.name);
       let updatedTerms = [...terms];
@@ -87,7 +102,6 @@ const PeReportCardActivity = ({
         [`activity${termIndex}${semIndex}`]: [],
       });
     } else {
-      setActivityList([]);
       let updatedTerms = [...terms];
       updatedTerms[termIndex].activities[semIndex].activity_type_id = '';
       setTerms(updatedTerms);
@@ -146,91 +160,64 @@ const PeReportCardActivity = ({
           <div className='row pl-5'>
             <div className='col-md-3 col-sm-6 col-12'>
               <div className='text-left'>Category*</div>
-              <Form.Item name={`category${termIndex}${semIndex}`}>
-                <Select
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  allowClear={true}
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                  className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                  placement='bottomRight'
-                  showArrow={true}
-                  onChange={(e, value) => handleCategory(e, value, termIndex, semIndex)}
-                  dropdownMatchSelectWidth={true}
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  showSearch
-                  placeholder='Select Category*'
-                >
-                  {categoryOptions}
-                </Select>
-              </Form.Item>
+              {/* <Form.Item name={`category${termIndex}${semIndex}`} key={`category${termIndex}${semIndex}`} > */}
+              <Select
+                getPopupContainer={(trigger) => trigger.parentNode}
+                allowClear={true}
+                suffixIcon={<DownOutlined className='th-grey' />}
+                className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                placement='bottomRight'
+                showArrow={true}
+                onChange={(e, value) => handleCategory(e, value, termIndex, semIndex)}
+                dropdownMatchSelectWidth={true}
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                showSearch
+                placeholder='Select Category*'
+                value={semItem.activity_type_id ? semItem.activity_type_id : null}
+                defaultValue={semItem.activity_type_id ? semItem.activity_type_id : null}
+              >
+                {categoryOptions}
+              </Select>
+              {/* </Form.Item> */}
             </div>
             <div className='col-md-3 col-sm-6 col-12'>
               <div className='text-left'>Activity*</div>
-              <Form.Item name={`activity${termIndex}${semIndex}`}>
-                <Select
-                  key={semItem.activity?.length}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  maxTagCount={5}
-                  mode='multiple'
-                  allowClear={true}
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                  className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                  placement='bottomRight'
-                  showArrow={true}
-                  onChange={(e, value) => handleActivity(e, value, termIndex, semIndex)}
-                  value={semItem.activity}
-                  onClear={() => handleCleaActivity(termIndex, semIndex)}
-                  // dropdownRender={(menu) => (
-                  //   <div>
-                  //     <Checkbox
-                  //       defaultChecked={
-                  //         activityList?.length ==
-                  //           semItem?.activity?.length &&
-                  //         activityList.length > 0
-                  //           ? true
-                  //           : false
-                  //       }
-                  //       onChange={(e, value) => {
-                  //         handleAllActivity(e, termIndex, semIndex);
-                  //         console.log(
-                  //           'length',
-                  //           activityList?.length,
-                  //           semItem?.activity?.length
-                  //         );
-                  //       }}
-                  //       // defaultChecked={activityList?.length === semItem.activity.length}
-                  //       style={{ margin: '8px 8px 4px' }}
-                  //     >
-                  //       Select All
-                  //     </Checkbox>
-                  //     {menu}
-                  //   </div>
-                  // )}
-                  defaultValue={semItem.activity}
-                  // value={1}
-                  dropdownMatchSelectWidth={true}
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  showSearch
-                  placeholder='Select Activity*'
-                >
-                  {activityList.length > 1 && (
-                    <>
+              {/* <Form.Item name={`activity${termIndex}${semIndex}`} key={`activity${termIndex}${semIndex}`}> */}
+              <Select
+                key={semItem.activity_type_id}
+                getPopupContainer={(trigger) => trigger.parentNode}
+                maxTagCount={2}
+                mode='multiple'
+                allowClear={true}
+                suffixIcon={<DownOutlined className='th-grey' />}
+                className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                placement='bottomRight'
+                showArrow={true}
+                onChange={(e, value) => handleActivity(e, value, termIndex, semIndex)}
+                value={semItem.criterias ? semItem.criterias : null}
+                onClear={() => handleCleaActivity(termIndex, semIndex)}
+                // value={1}
+                dropdownMatchSelectWidth={true}
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                showSearch
+                placeholder='Select Activity*'
+              >
+                {semItem.activity_type_id && (
+                  <>
+                    {activityList.length > 1 && (
                       <Option key={0} value={'all'}>
                         Select All
                       </Option>
-                    </>
-                  )}
-                  {activityOptions}
-                </Select>
-              </Form.Item>
+                    )}
+                    {activityOptions}
+                  </>
+                )}
+              </Select>
+              {/* </Form.Item> */}
             </div>
             {termItem?.activities?.length > 1 && (
               <div className='col-md-3 col-sm-6 col-12 mt-2' style={{ display: 'flex' }}>

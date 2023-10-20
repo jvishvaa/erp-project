@@ -19,6 +19,8 @@
   width: 30px;
   background-color: #fff;
   display: inline-block;
+  vertical-align: middle !important;
+  margin: 1px;
 }
 .th-pe-sign {
   display: inline-block;

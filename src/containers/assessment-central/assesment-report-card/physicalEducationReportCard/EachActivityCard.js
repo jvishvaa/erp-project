@@ -52,29 +52,42 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
             position: 'relative',
           }}
         >
-          <div className='w-80' style={{ padding: '5% 0%' }}>
+          <div className='w-80' style={{ padding: '2% 0%' }}>
             <table className='w-100 mt-3 th-12 th-report-table '>
               <tbody className='th-pe-table'>
                 <tr className=''>
                   <td
-                    className='th-width-100 py-2 text-right th-fw-600'
+                    className='th-width-100 py-0 text-right th-fw-600'
                     style={{ background: '#FDBF8E' }}
                   >
                     <img
                       src={branchLogo}
                       style={{
-                        objectFit: 'cover',
-                        width: 80,
-                        marginTop: '-20px',
+                        objectFit: 'contain',
+                        width: 200,
+                        height: 80,
+                        marginRight: -40,
+                        marginTop: -15,
                       }}
                     />
                   </td>
                 </tr>
                 <tr>
                   <td
-                    className='th-width-75 py-2 text-center th-fw-600 th-20'
-                    style={{ background: '#FDBF8E', color: 'grey' }}
+                    className='th-width-75 py-0 text-center th-fw-600 th-28'
+                    style={{ background: '#FDBF8E', color: '#000000' }}
                   >
+                    {activityReportData?.activity_logo && (
+                      <img
+                        src={activityReportData?.activity_logo}
+                        style={{
+                          objectFit: 'contain',
+                          width: 80,
+                          height: 75,
+                          marginTop: '-5px',
+                        }}
+                      />
+                    )}{' '}
                     {activityReportData?.activity_name}
                   </td>
                 </tr>
@@ -99,8 +112,9 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
                       </tr>
                       {each?.levels?.map((item) => {
                         let checkedYes =
-                          JSON.parse(item?.user_review_remarks).find((el) => el?.status)
-                            ?.name == 'Yes';
+                          JSON.parse(item?.user_review_remarks)
+                            .find((el) => el?.status)
+                            ?.name.trim() == 'Yes';
                         return (
                           <tr className='th-pe-row'>
                             <td className='th-width-80 th-14 text-left pl-3 th-fw-500'>
@@ -111,7 +125,7 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
                                 {checkedYes && (
                                   <img
                                     src={CheckMark}
-                                    style={{ height: 30, width: 20 }}
+                                    style={{ height: 25, width: 20 }}
                                   />
                                 )}
                               </div>
@@ -121,7 +135,7 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
                                 {!checkedYes && (
                                   <img
                                     src={CheckMark}
-                                    style={{ height: 30, width: 20 }}
+                                    style={{ height: 25, width: 20 }}
                                   />
                                 )}
                               </div>
@@ -129,7 +143,7 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
                           </tr>
                         );
                       })}
-                      <p></p>
+                      <p className='mb-1'></p>
                     </>
                   );
                 })}
@@ -162,7 +176,7 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
           </div>
           <div
             className='w-90 th-16'
-            style={{ position: 'absolute', left: '5%', bottom: '10%' }}
+            style={{ position: 'absolute', left: '5%', bottom: '2%' }}
           >
             <table className='th-width-100 th-report-table '>
               <tbody className='th-pe-table'>
