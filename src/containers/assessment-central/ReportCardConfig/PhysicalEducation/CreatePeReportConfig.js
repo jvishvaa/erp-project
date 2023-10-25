@@ -139,7 +139,11 @@ const CreatePeReportConfig = () => {
 
   const fetchSemester = () => {
     axiosInstance
-      .get(`${endpoints.peReportCardConfig.semesterList}`)
+      .get(`${endpoints.peReportCardConfig.semesterList}`, {
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
+      })
       .then((res) => {
         setSemesterList(res.data.result);
       })
