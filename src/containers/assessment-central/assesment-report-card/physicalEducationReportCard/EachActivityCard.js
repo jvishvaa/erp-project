@@ -123,7 +123,13 @@ const EachActivityCard = ({ activityReportData, username, branchLogo }) => {
                           IsJsonString(item?.user_review_remarks)
                             ? JSON.parse(item?.user_review_remarks)
                                 ?.find((el) => el?.status)
-                                ?.name.trim() == 'Yes'
+                                ?.name.trim() == 'Yes' ||
+                              JSON.parse(item?.user_review_remarks)
+                                ?.find((el) => el?.status)
+                                ?.name.trim() == 'yes' ||
+                              JSON.parse(item?.user_review_remarks)
+                                ?.find((el) => el?.status)
+                                ?.name.trim() == 'YES'
                             : false;
                         return (
                           <tr className='th-pe-row'>
