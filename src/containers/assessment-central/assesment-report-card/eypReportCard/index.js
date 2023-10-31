@@ -6,11 +6,14 @@ import endpoints from 'config/endpoints';
 import 'jspdf-autotable';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import EypReportCardPdf from './eypPdf';
+import { useSelector } from 'react-redux';
 
 const EypReportCard = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
-
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const getEypReprtData = (params = {}) => {
     let obj = {};
     obj.acad_session_id = props.acadSessionId;
@@ -21,7 +24,11 @@ const EypReportCard = (props) => {
       .get(`${endpoints.assessmentReportTypes.eypReportCard}`, { params: { ...obj } })
       .then((response) => {
         if (response?.data) {
-          EypReportCardPdf(response?.data?.result, props.branchName);
+          EypReportCardPdf(
+            response?.data?.result,
+            props.branchName,
+            selectedAcademicYear
+          );
         }
         setLoading(false);
       })
