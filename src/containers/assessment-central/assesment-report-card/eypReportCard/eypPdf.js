@@ -7,7 +7,7 @@ import './customFont';
 import FrontImg from './img/frontPage.png';
 import BodyBg from './img/report-card-bg.png';
 
-const EypReportCardPdf = (reportCardData, branchName) => {
+const EypReportCardPdf = (reportCardData, branchName, selectedAcademicYear) => {
   const doc = new JSPDF({
     orientation: 'l',
     unit: 'mm',
@@ -27,7 +27,14 @@ const EypReportCardPdf = (reportCardData, branchName) => {
 
   doc.setFontSize(24);
   doc.setTextColor(107, 76, 109);
-  doc.text(`Academic Year 2022 - 2023`, 155, 140, null, null, 'center');
+  doc.text(
+    `Academic Year ${selectedAcademicYear?.session_year}`,
+    155,
+    140,
+    null,
+    null,
+    'center'
+  );
 
   doc.setFontSize(18);
   doc.setFont('Karla-VariableFont_wght', 'normal');

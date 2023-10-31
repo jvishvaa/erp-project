@@ -339,9 +339,7 @@ const AssessmentReportFilters = ({
 
   function getGrade(acadId, branchId) {
     axiosInstance
-      .get(
-        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}`
-      )
+      .get(`${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
@@ -966,8 +964,7 @@ const AssessmentReportFilters = ({
             MultiEypPdf(
               response?.data,
               filterData?.branch?.branch?.branch_name,
-              filterData?.grade?.grade__grade_name,
-              filterData?.section?.section__section_name
+              selectedAcademicYear
             )
               .then((data) => {
                 setMultiEypLoading(false);
