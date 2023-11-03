@@ -118,7 +118,42 @@ const AssessmentView = () => {
         if (result?.data?.status_code === 200) {
           setTotalCount(result?.data?.result?.count);
           setLoading(false);
-          setPeriodData(result?.data?.result?.results);
+          console.log(result?.data?.result?.results, 'result?.data?.result?.results');
+
+          let tempData = result?.data?.result?.results?.map((each) => {
+            if (!each?.hasOwnProperty('template_id')) {
+              return { ...each };
+            } else {
+              return {
+                ...each,
+                grade: each.grade.id,
+                subjects: each.subjects.map((each) => {
+                  return each.id;
+                }),
+                grade_subject_mapping: each.subjects.map((each) => {
+                  return each.grade_subject_mapping;
+                }),
+                question_details: [].concat(
+                  ...each.section
+                    .filter((eachSecection, index) => index < each.section.length - 1)
+                    .map((each) => {
+                      return each.question;
+                    })
+                ),
+                section: each.section
+                  .filter((eachSecection, index) => index < each.section.length - 1)
+                  .map((eachSec) => {
+                    return {
+                      [eachSec.header[0]]: eachSec.question.map((each) => {
+                        return each.id;
+                      }),
+                      discription: eachSec.description[0],
+                    };
+                  }),
+              };
+            }
+          });
+          setPeriodData(tempData);
           setViewMore(false);
           setViewMoreData([]);
         } else {
@@ -156,11 +191,11 @@ const AssessmentView = () => {
     // setTabIsErpCentral(isErpCentral);
     setErpCategory(erpCategory);
     const branchIds = branch.map((element) => element?.branch?.id) || [];
-    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${
+    let requestURL = `${endpoints.assessmentErp.listQuestionPaperV2}?academic_year=${
       academic?.id
     }&branch=${branchIds}&grade=${
       grade?.value
-    }&page=${page}&page_size=${limit}&request_type=${tabIsErpCentral ? 2 : 1} `;
+    }&page=${page}&page_size=${25}&request_type=${tabIsErpCentral ? 2 : 1} `;
     if (qpValue) {
       requestURL += `&paper_level=${qpValue?.value}`;
     }

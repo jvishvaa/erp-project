@@ -72,6 +72,16 @@ const ViewMoreCard = ({
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  useEffect(()=>{
+    console.log({period,
+      viewMoreData,
+      setViewMore,
+      filterDataDown,
+      periodDataForView,
+      setSelectedIndex,
+      setPublishFlag,
+      tabValue},"alllog viewmore");
+  })
   const fetchquesPaperStatus = () => {
     // setLoading(true);
     axios
