@@ -11,6 +11,7 @@ import {
   Spin,
   message,
   Pagination,
+  Divider,
 } from 'antd';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
@@ -43,6 +44,7 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [requestSent, setRequestSent] = useState(false);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const formRef = createRef();
   const { Option } = Select;
@@ -230,7 +232,7 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
       bgs_mapping: sectionMappingID,
       module_id: moduleId,
       academic_year: selectedAcademicYear?.id,
-      page_size: 10,
+      page_size: pageSize,
       page: page,
     };
     axios
@@ -286,12 +288,28 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
     }
   }, [moduleId]);
 
+
+  const returnHeader = () => {
+    return (
+      <div>
+      <div className='col-md-12 p-0 d-flex justify-content-between'>
+        <span className='th-16 th-fw-600'>Filter Students</span>
+        {studentCheckedID?.length > 0 ? <span className='th-14 th-fw-600'>{studentCheckedID?.length} items Selected</span> : ''}
+      </div>
+      <Divider className='p-0 m-0' />
+      <div>
+        <span className='th-13' >Note: General diary will be sent to the selected student Page wise (select all option is provided page wise).<br/> Kindly ensure to select all student across each page for sending them.**</span>
+      </div>
+      </div>
+    )
+  }
+
   const columns = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>Sl No.</span>,
       align: 'center',
       width: '10%',
-      render: (text, row, index) => index + 1,
+      render: (text, row, index) => (pageSize * (page - 1)) + index + 1,
     },
 
     {
@@ -387,7 +405,7 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
               <Table
                 className='th-table'
                 columns={columns}
-                title={() => 'Filter Students'}
+                title={() => returnHeader()}
                 rowKey={(record) => record?.id}
                 dataSource={generalDairyUsers}
                 pagination={false}
