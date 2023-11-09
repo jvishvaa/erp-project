@@ -54,6 +54,7 @@ const AssesmentDetails = ({
   userLevel,
   filterResults,
   allowChangeReviewStatus,
+  allowLockAssesment,
 }) => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
@@ -61,6 +62,7 @@ const AssesmentDetails = ({
   const [loading, setLoading] = useState(false);
   const [isteacher, setIsTeacher] = useState(false);
   const [allowReview, setAllowReview] = useState(test?.is_review_enabled);
+  const [isLocked, setIsLocked] = useState(test?.is_lock);
   const [isdisable, setIsDisable] = useState(false);
   const fileUploadInput = useRef(null);
   const [percentValue, setPercentValue] = useState(10);
@@ -144,12 +146,28 @@ const AssesmentDetails = ({
     onClose();
   };
 
-  const handleTestReviewStatus = (status) => {
+  const handleTestReviewStatus = (status, UpdateType) => {
+    let updateParams = {};
+    let updateMessage = '';
+    if (UpdateType === 'review') {
+      updateParams = { is_review_enabled: status };
+      updateMessage = status
+        ? 'Assesment review allowed successfully'
+        : 'Assesment review denied successfully';
+    } else if (UpdateType === 'lock') {
+      updateParams = { is_lock: status };
+      updateMessage = status
+        ? 'Assesment locked successfully'
+        : 'Assesment unlocked successfully';
+    } else {
+      return;
+    }
+
     axiosInstance
-      .patch(`/assessment/${assessmentId}/test/`, { is_review_enabled: status })
+      .patch(`/assessment/${assessmentId}/test/`, { ...updateParams })
       .then((res) => {
         if (res?.data?.status_code == 200) {
-          message.success('Successfully updated status');
+          message.success(updateMessage);
         } else {
           message.error(res?.data?.message);
         }
@@ -661,15 +679,29 @@ const AssesmentDetails = ({
             </Tooltip>
           </div>
           {allowChangeReviewStatus && (
-            <div className='col-12 pl-0 py-2'>
+            <div className='col-6 pl-0 py-2'>
               <Checkbox
                 onChange={() => {
                   setAllowReview(!allowReview);
-                  handleTestReviewStatus(!allowReview);
+                  handleTestReviewStatus(!allowReview, 'review');
                 }}
                 checked={allowReview}
               >
                 <span className='th-16 th-fw-600'>Allow Review</span>
+              </Checkbox>
+            </div>
+          )}
+
+          {test?.test_mode == 2 && allowLockAssesment && (
+            <div className='col-6 text-right pr-0 py-2'>
+              <Checkbox
+                onChange={() => {
+                  setIsLocked(!isLocked);
+                  handleTestReviewStatus(!isLocked, 'lock');
+                }}
+                checked={isLocked}
+              >
+                <span className='th-16 th-fw-600'>Lock Test</span>
               </Checkbox>
             </div>
           )}

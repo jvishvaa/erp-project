@@ -147,6 +147,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const [checkDel, setCheckDel] = useState(false);
   const [showFilter, setShowfilter] = useState(false);
   const [allowChangeReviewStatus, setAllowChangeReviewStatus] = useState(false);
+  const [allowLockAssesment, setAllowLockAssesment] = useState(false);
   const filtersData = history?.location?.state?.filtersData;
 
   useEffect(() => {
@@ -698,6 +699,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     fetchUserAccessQuiz();
     getErpCategory();
     fetchAllowChangeReviewConfig();
+    fetchLockConfig();
   }, []);
   const fetchUserAccessQuiz = () => {
     axiosInstance
@@ -719,6 +721,26 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
         }
       })
       .catch((error) => message.error('error', error?.message));
+  };
+
+  const fetchLockConfig = () => {
+    let userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
+    axiosInstance
+      .get(`/assessment/check-sys-config/?config_key=is_test_lock_enabled`)
+      .then((response) => {
+        console.log({ response });
+        if (response?.data?.status_code === 200) {
+          let userLevel = JSON.parse(response?.data?.result[0]);
+          if (userLevel.includes(userDetails?.user_level)) {
+            setAllowLockAssesment(true);
+          } else {
+            setAllowLockAssesment(false);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching config data:', error);
+      });
   };
 
   const { token: TOKEN = '' } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -1434,6 +1456,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                     userLevel={userLevel}
                     filterResults={filterResults}
                     allowChangeReviewStatus={allowChangeReviewStatus}
+                    allowLockAssesment={allowLockAssesment}
                   />
                 </Grid>
               )}
