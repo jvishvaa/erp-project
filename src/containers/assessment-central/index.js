@@ -728,10 +728,13 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     axiosInstance
       .get(`/assessment/check-sys-config/?config_key=is_test_lock_enabled`)
       .then((response) => {
-        console.log({ response });
         if (response?.data?.status_code === 200) {
-          let userLevel = JSON.parse(response?.data?.result[0]);
-          if (userLevel.includes(userDetails?.user_level)) {
+          let userLevel = response?.data?.result;
+          if (
+            userLevel.includes(userDetails?.user_level?.toString()) ||
+            isSuperAdmin ||
+            isSuperuser
+          ) {
             setAllowLockAssesment(true);
           } else {
             setAllowLockAssesment(false);
