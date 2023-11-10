@@ -428,10 +428,11 @@ const StudentRefer = () => {
       return;
     } else if (!isChecked) {
       setCheckBoxError('Please check the terms and conditions');
-      setAlert('Check the terms and condition');
+      setAlert('error', 'Check the terms and condition');
       setLoading(false);
       return;
     } else {
+      console.log('Checking');
       branchCheck();
       const data = {
         parent_name: parent,
@@ -441,7 +442,7 @@ const StudentRefer = () => {
         phone_number: phone,
         referral_code: userDetails?.erp,
       };
-      if (student && parent && valid) {
+      if (student && parent && mail && phone && valid) {
         axiosInstance
           .post(`${endpoints.referral.studentReferV2}`, data, {
             headers: {
