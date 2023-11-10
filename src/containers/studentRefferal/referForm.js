@@ -185,6 +185,7 @@ const StudentRefer = () => {
   const [parentError, setParentError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [cityError, setCityError] = useState('');
+  const [checkBoxError, setCheckBoxError] = useState('');
 
   const [mailError, setMailError] = useState('');
   const [valid, setValid] = useState(true);
@@ -426,6 +427,7 @@ const StudentRefer = () => {
       setLoading(false);
       return;
     } else if (!isChecked) {
+      setCheckBoxError('Please check the terms and conditions');
       setAlert('Check the terms and condition');
       setLoading(false);
       return;
@@ -500,6 +502,7 @@ const StudentRefer = () => {
 
   const onchangeCheckbox = (e) => {
     setChecked(e.target.checked);
+    setCheckBoxError('');
   };
 
   const showModal = () => {
@@ -683,6 +686,9 @@ const StudentRefer = () => {
                               </p>
                             </div>
                           </Modal>
+                        </div>
+                        <div style={{ color: 'red', marginBottom: '2px' }}>
+                          {checkBoxError}
                         </div>
 
                         <div className='submit-btn-area'>
