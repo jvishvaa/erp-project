@@ -438,8 +438,8 @@ const StudentRefer = () => {
       setLoading(false);
       return;
     } else if (!isChecked) {
-      setCheckBoxError('Please check the terms and conditions');
-      setAlert('error', 'Check the terms and condition');
+      setCheckBoxError('Please agree to the terms and conditions before  proceeding');
+      setAlert('error', 'Please agree to the terms and conditions before  proceeding');
       setLoading(false);
       return;
     } else {
@@ -619,7 +619,7 @@ const StudentRefer = () => {
                           onChange={(e) => handleMail(e)}
                           required={true}
                         />
-                        <div className='d-flex align-items-center justify-content-center mb-2 th-width-60'>
+                        <div className='d-flex align-items-center justify-content-center mb-2 th-width-60 ml-3'>
                           <div className='mb-3'>
                             <Checkbox onChange={onchangeCheckbox} checked={isChecked} />
                           </div>
@@ -635,7 +635,7 @@ const StudentRefer = () => {
                             title='Referral Policy Terms & Conditions:'
                             visible={isModalOpen}
                             onOk={handleOk}
-                            // onCancel={handleCancel}
+                            onCancel={handleCancel}
                             footer={[
                               <Button key='ok' type='primary' onClick={handleOk}>
                                 OK
@@ -643,7 +643,7 @@ const StudentRefer = () => {
                             ]}
                             width={'50%'}
                           >
-                            <div className='"p-5 pt-2 pb-0"'>
+                            <div className='pl-4 pt-2 pb-0 pr-4 text-justify'>
                               <p>
                                 <b>Referral Concession Eligibility: </b>
                                 The referral concession pertains exclusively to the
