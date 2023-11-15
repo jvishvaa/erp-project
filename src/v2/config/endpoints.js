@@ -309,4 +309,16 @@ export default {
     downloadBranchWiseStudent2: '/academic/branch_strength_excel_data/',
     downloadExcelAllstudents2: '/academic/all_branch_strength_excel_data/',
   },
+
+  timeTableNewFlow: {
+    availableTimeSlots: '/acad-tt/time-set',
+    weeklyTimeSlots: '/acad-tt/week-tt',
+    periodSlots: '/acad-tt/period-slots',
+    weeklyTimeSlotSectionList: '/acad-tt/grade-sec',
+    getDateRangeList: '/acad-tt/ttdate',
+    dateRangeSectionList: '/acad-tt/tt-view',
+    sectionPeriodData: '/acad-tt/periods',
+    teacherList: '/acad-tt/teacher-list',
+    studentTimeTableView: '/acad-tt/sview',
+  },
 };

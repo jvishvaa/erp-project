@@ -14,6 +14,7 @@ import {
   DatePicker,
   TimePicker,
   Collapse,
+  Spin,
 } from 'antd';
 import {
   DeleteOutlined,
@@ -29,58 +30,64 @@ import {
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
+import { handleDaytoText, handleTexttoWeekDay } from 'v2/weekdayConversions';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { Panel } = Collapse;
 
-const CreateTimeTable = () => {
+const CreateTimeTable = ({ showTab }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+
+  const LectureTypeChoices = [
+    {
+      id: 1,
+      type: 'Split Lecture',
+    },
+    {
+      id: 2,
+      type: 'Buddy Lecture',
+    },
+    {
+      id: 3,
+      type: 'Substitute Lecture',
+    },
+  ];
+
   const [gradeID, setGradeID] = useState();
-  const [timingGradeID, setTimingGradeID] = useState();
   const [gradeList, setGradeList] = useState([]);
-  const [sectionID, setSectionID] = useState();
-  const [timingSectionID, setTimingSectionID] = useState();
+  const [sectionMappingID, setSectionMappingID] = useState();
   const [sectionList, setSectionList] = useState([]);
   const [creationSectionList, setCreationSectionList] = useState([]);
+  const [subjectList, setSubjectList] = useState([]);
+  const [teacherList, setTeacherList] = useState([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [innerExpandedRowKeys, setInnerExpandedRowKeys] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [currentGradePanel, setCurrentGradePanel] = useState(0);
+  const [availableDateRangesData, setAvailableDateRangesData] = useState([]);
+  const [sectionListLoading, setSectionListLoading] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [dateRangeSectionList, setDateRangeSectionList] = useState([]);
+  const [periodListLoading, setPeriodListLoading] = useState(false);
+  const [periodListData, setPeriodListData] = useState([]);
+  const [selectedSectionData, setSelectedSectionData] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [currentDay, setCurrentDay] = useState('Monday');
-  const [currentSlotData, setCurrentSlotData] = useState({
-    grade: '',
-    section: '',
-    timings: [
-      {
-        weekday: 'Monday',
-        slot: '',
-      },
-      {
-        weekday: 'Tuesday',
-        slot: '',
-      },
-      {
-        weekday: 'Wednesday',
-        slot: '',
-      },
-      {
-        weekday: 'Thursday',
-        slot: '',
-      },
-    ],
-  });
+  const [currentDay, setCurrentDay] = useState(null);
+  const [currentDayPeriodData, setCurrentDayPeriodData] = useState([]);
+  const [editPeriodLoading, setEditPeriodLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showAssignPeriodDetailsModal, setShowAssignPeriodDetailsModal] = useState(false);
+
   const [currentTimeTable, setCurrentTimeTable] = useState({
     start_date: moment().format('YYYY-MM-DD'),
     end_date: moment().format('YYYY-MM-DD'),
-    grade: null,
-    section: null,
+    grade: [],
+    section: [],
   });
 
   const [showEditTimeModal, setShowEditTimeModal] = useState(false);
@@ -88,78 +95,7 @@ const CreateTimeTable = () => {
   const [showEditLectureModal, setShowEditLectureModal] = useState(false);
   const [showEditSubjectModal, setShowEditSubjectModal] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState();
-  const dummyData = [
-    {
-      id: 1,
-      start_date: '2023-10-26',
-      end_date: '2023-10-31',
-      created_on: '2023-10-25',
-      allocation_status: 'Allocated',
-      status: true,
-      grades: [
-        {
-          id: 1,
-          grade: 'Grade 1 Section D',
-          allocation_status: 'Allocated',
-          created_on: '2023-10-25',
-        },
-        {
-          id: 2,
-          grade: 'Grade 2 Section F',
-          allocation_status: 'Allocated',
-          created_on: '2023-10-25',
-        },
-      ],
-    },
-    {
-      id: 2,
-      start_date: '2023-11-26',
-      end_date: '2023-11-30',
-      created_on: '2023-11-25',
-      allocation_status: 'Partially Allocated',
-      status: false,
-      grades: [
-        {
-          id: 1,
-          grade: 'Grade 1 Section D',
-          allocation_status: 'Allocated',
-          created_on: '2023-10-25',
-        },
-        {
-          id: 2,
-          grade: 'Grade 2 Section F',
-          allocation_status: 'Partially Allocated',
-          created_on: '2023-10-25',
-        },
-      ],
-    },
-  ];
-  const dummyPeriodData = [
-    {
-      period_name: 'Period-1',
-      start_time: '09:00:00',
-      end_time: '10:35:00',
-      teacher: ['Rashid Khan', 'Virat Kohli', 'Rashid Khan', 'Virat Kohli'],
-      lecture_type: 'Buddy Lecture',
-      subject: ['English, Mathematics, Science', 'English, Mathematics, Science'],
-    },
-    {
-      period_name: 'Period-2',
-      start_time: '09:00:00',
-      end_time: '10:35:00',
-      teacher: ['Rashid Khan', 'Virat Kohli'],
-      lecture_type: 'Split Lecture',
-      subject: [],
-    },
-    {
-      period_name: 'Period-3',
-      start_time: '09:00:00',
-      end_time: '10:35:00',
-      teacher: ['Rashid Khan', 'Virat Kohli'],
-      lecture_type: 'Subtitute Lecture',
-      subject: ['English, Mathematics, Science'],
-    },
-  ];
+
   const gradeOptions = gradeList?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each?.grade_id}>
@@ -170,15 +106,29 @@ const CreateTimeTable = () => {
 
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.id} mappingId={each.id} value={each?.section_id}>
-        {each?.sec_name}
+      <Option key={each?.id} value={each.id} sectionId={each?.section_id}>
+        {`${each?.grade__grade_name} ${each?.sec_name}`}
       </Option>
     );
   });
   const creationSectionOptions = creationSectionList?.map((each) => {
     return (
-      <Option key={each?.id} mappingId={each.id} value={each?.section_id}>
-        {each?.sec_name}
+      <Option key={each?.id} sectionId={each.section_id} value={each?.id}>
+        {`${each?.grade__grade_name} ${each?.sec_name}`}
+      </Option>
+    );
+  });
+  const subjectOptions = subjectList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id} subjectId={each?.subject_id}>
+        {each?.subject_name}
+      </Option>
+    );
+  });
+  const teacherOptions = teacherList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id}>
+        {each?.name}
       </Option>
     );
   });
@@ -199,7 +149,7 @@ const CreateTimeTable = () => {
     const params = {
       session_year: year,
       branch_id: branch,
-      grade_id: grade,
+      grade_id: outerFilter ? grade : grade.join(','),
     };
     axios
       .get(`${endpoints.academics.sections}`, { params: { ...params } })
@@ -216,45 +166,114 @@ const CreateTimeTable = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
+  const fetchDateRangeList = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.timeTableNewFlow.getDateRangeList}/`, { params: params })
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          setAvailableDateRangesData(res?.data?.result);
+        } else {
+          setAvailableDateRangesData([]);
+        }
+      })
+      .catch((error) => message.error('error', error?.message))
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const fetchDayWisePeriods = (params = {}) => {
+    setPeriodListLoading(true);
+    axios
+      .get(`${endpoints.timeTableNewFlow.sectionPeriodData}/`, { params: params })
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          let list = res?.data?.result;
+          console.log('fffffffff', list);
+          setPeriodListData(list);
+          if (currentDay) {
+            let currentData = list.find(
+              (item) => item?.week_days == handleTexttoWeekDay(currentDay)
+            );
+            setCurrentDayPeriodData(currentData?.period_slot);
+          } else {
+            let currentData = list.find(
+              (item) =>
+                item?.week_days ==
+                handleTexttoWeekDay(moment(params?.start_date).format('dddd'))
+            );
+            setCurrentDay(handleDaytoText(currentData?.week_days));
+            console.log(
+              'currentData',
+              handleDaytoText(currentData?.week_days),
+              currentData
+            );
+            setCurrentDayPeriodData(currentData?.period_slot);
+          }
+        } else {
+          setPeriodListData({});
+        }
+      })
+      .catch((error) => message.error('error', error?.message))
+      .finally(() => {
+        setPeriodListLoading(false);
+      });
+  };
 
   const handleGrade = (e, value) => {
     setSectionList([]);
-    setSectionID();
+    setSectionMappingID();
     setGradeID();
     if (e) {
-      setGradeID(e);
-      fetchSectionData(selectedAcademicYear?.id, selectedBranch?.branch?.id, e, true);
-    }
-  };
-  const handleTimingGrade = (e, value) => {
-    setCreationSectionList([]);
-    setTimingSectionID();
-    setTimingGradeID();
-    if (e) {
-      setTimingGradeID(e);
-      fetchSectionData(selectedAcademicYear?.id, selectedBranch?.branch?.id, e, false);
+      if (e == 'All') {
+        let allGrades = gradeList?.map((item) => item?.grade_id);
+        setGradeID('All');
+        fetchSectionData(
+          selectedAcademicYear?.id,
+          selectedBranch?.branch?.id,
+          allGrades.join(','),
+          true
+        );
+      } else {
+        setGradeID(e);
+        fetchSectionData(selectedAcademicYear?.id, selectedBranch?.branch?.id, e, true);
+      }
     }
   };
   const handleSection = (e) => {
+    setExpandedRowKeys([]);
     if (e) {
-      setSectionID(e);
+      if (e == 'All') {
+        let allSection = sectionList?.map((item) => item?.id);
+        setSectionMappingID(e);
+        fetchDateRangeList({ sec_map: allSection.join(',') });
+      } else {
+        setSectionMappingID(e);
+        fetchDateRangeList({ sec_map: e });
+      }
     } else {
-      setSectionID();
-    }
-  };
-  const handleTimingSection = (e) => {
-    if (e) {
-      setTimingSectionID(e);
-    } else {
-      setTimingSectionID();
+      setSectionMappingID();
     }
   };
 
-  const handleDeleteRecord = () => {};
+  const handleDeleteRecord = (id) => {
+    setDeleteLoading(true);
+    axios
+      .delete(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/?sec_map=${id}`)
+      .then((res) => {
+        console.log('dfsdfsdf', res);
+      })
+      .catch((error) => message.error('error', error?.message))
+      .finally(() => {
+        setDeleteLoading(false);
+      });
+  };
   const handleViewCreateModal = () => {
     setShowCreateModal(true);
   };
 
+  console.log('dfsdfsdfds22', selectedSectionData);
   const handleShowEditTimeModal = (record) => {
     setSelectedPeriod(record);
     setShowEditTimeModal(true);
@@ -274,6 +293,10 @@ const CreateTimeTable = () => {
   const handleShowEditTeacherModal = (record) => {
     setSelectedPeriod(record);
     setShowEditTeacherModal(true);
+    fetchTeacherList({
+      sec_map: selectedSectionData?.sec_map,
+      subject: record?.sub?.map((item) => item.subject_id)?.join(','),
+    });
   };
   const handleCloseEditTeacherModal = (record) => {
     setShowEditTeacherModal(false);
@@ -287,7 +310,165 @@ const CreateTimeTable = () => {
     setShowEditSubjectModal(false);
     setSelectedPeriod();
   };
+  const handleShowPeriodDetailsModal = (record) => {
+    setShowAssignPeriodDetailsModal(true);
+    let data = {
+      ...record,
+      tt_id: selectedSectionData?.id,
+      sec_map: selectedSectionData?.sec_map,
+      date: moment(selectedSectionData?.start_date)
+        .add(handleTexttoWeekDay(currentDay), 'days')
+        .format('YYYY-MM-DD'),
+    };
+    setSelectedPeriod(data);
+  };
+  const handleClosePeriodDetailsModal = (record) => {
+    setShowAssignPeriodDetailsModal(false);
+    setSelectedPeriod();
+  };
 
+  const handleAssignDateRange = () => {
+    setCreateLoading(true);
+    let payload = {
+      start_date: currentTimeTable?.start_date,
+      end_date: currentTimeTable?.end_date,
+      sec_map: currentTimeTable?.sectionMappingID,
+    };
+    axios
+      .post(`${endpoints.timeTableNewFlow.dateRangeSectionList}/`, payload)
+      .then((res) => {
+        if (res?.data?.status_code == 201) {
+          message.success('Time table created successfully');
+          setShowCreateModal(false);
+          setCurrentTimeTable({});
+          if (sectionMappingID) {
+            fetchDateRangeList({ sec_map: sectionMappingID });
+          }
+        }
+      })
+      .catch((error) => message.error('error', error?.message))
+      .finally(() => {
+        setCreateLoading(false);
+      });
+  };
+  const fetchRangeSectionList = (params = {}) => {
+    setSectionListLoading(true);
+    axios
+      .get(`${endpoints.timeTableNewFlow.dateRangeSectionList}/`, { params: params })
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          setDateRangeSectionList(res?.data?.result);
+        } else {
+          setDateRangeSectionList([]);
+        }
+      })
+      .catch((error) => message.error('error', error?.message))
+      .finally(() => {
+        setSectionListLoading(false);
+      });
+  };
+  const handleEditPeriodTimings = () => {
+    setEditPeriodLoading(true);
+    axios
+      .put(`${endpoints?.timeTableNewFlow?.periodSlots}/${selectedPeriod?.id}/`, {
+        start_time: selectedPeriod?.start_time,
+        end_time: selectedPeriod?.end_time,
+      })
+      .then((res) => {
+        if (res?.status == 200) {
+          message.success('Periods Timings updated successfully');
+          fetchDayWisePeriods({
+            start_date: selectedSectionData?.start_date,
+            end_date: selectedSectionData?.end_date,
+            sec_map: selectedSectionData?.sec_map,
+          });
+          handleCloseEditTimeModal();
+        }
+      })
+      .catch((error) => message.error('error', error?.message))
+      .finally(() => {
+        setEditPeriodLoading(false);
+      });
+  };
+  const handleAssignPeriodDetails = () => {
+    if (!selectedPeriod?.lecture_type) {
+      message.error('Please select Lecture Type');
+      return false;
+    }
+
+    if (!selectedPeriod?.sub_map.length > 0) {
+      message.error('Please select subject');
+      return false;
+    }
+
+    if (!selectedPeriod?.teacher?.length > 0) {
+      message.error('Please select teacher');
+      return false;
+    }
+    setEditPeriodLoading(true);
+    axios
+      .post(`${endpoints?.timeTableNewFlow?.sectionPeriodData}/`, selectedPeriod)
+      .then((res) => {
+        if (res.data?.status_code == 201) {
+          message.success('Periods Details assigned successfully');
+          fetchDayWisePeriods({
+            start_date: selectedSectionData?.start_date,
+            end_date: selectedSectionData?.end_date,
+            sec_map: selectedSectionData?.sec_map,
+          });
+          handleClosePeriodDetailsModal();
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setEditPeriodLoading(false);
+      });
+  };
+  console.log({ selectedPeriod, currentDayPeriodData });
+  const handleUpdatePeriod = (type) => {
+    let payload = {
+      week_day: handleTexttoWeekDay(currentDay),
+      sec_map: selectedSectionData?.sec_map,
+    };
+    if (type == 'lecture') {
+      payload['lecture_type'] = selectedPeriod?.lecture_type;
+    } else if (type == 'subject') {
+      payload['sub_map'] = selectedPeriod?.sub_map;
+    } else if (type == 'teacher') {
+      payload['teacher'] = selectedPeriod?.teacher;
+    }
+    setEditPeriodLoading(true);
+    axios
+      .patch(
+        `${endpoints?.timeTableNewFlow?.sectionPeriodData}/${selectedPeriod?.id}/`,
+        payload
+      )
+      .then((res) => {
+        if (res.status == 200) {
+          message.success('Periods Details updated successfully');
+          fetchDayWisePeriods({
+            start_date: selectedSectionData?.start_date,
+            end_date: selectedSectionData?.end_date,
+            sec_map: selectedSectionData?.sec_map,
+          });
+          if (type == 'lecture') {
+            handleCloseEditLectureModal();
+          } else if (type == 'subject') {
+            handleCloseEditSubjectModal();
+          } else if (type == 'teacher') {
+            handleCloseEditTeacherModal();
+          }
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setEditPeriodLoading(false);
+      });
+  };
   const columns = [
     {
       title: <span className='th-white th-fw-700'>Date Range</span>,
@@ -302,28 +483,37 @@ const CreateTimeTable = () => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700'>Allocation Status</span>,
-      dataIndex: 'allocation_status',
+      title:
+        dateRangeSectionList.length > 0 ? (
+          <span className='th-white th-fw-700'>Allocation Status</span>
+        ) : null,
+      // dataIndex: 'allocation_status',
       width: '15%',
       align: 'center',
     },
     {
-      title: <span className='th-white th-fw-700'>Created On</span>,
-      dataIndex: 'created_on',
+      title:
+        dateRangeSectionList.length > 0 ? (
+          <span className='th-white th-fw-700'>Created On</span>
+        ) : null,
+      // dataIndex: 'created_on',
       width: '15%',
       align: 'center',
-      render: (data) => <span>{moment(data).format('DD-MM-YYYY')}</span>,
+      // render: (data) => <span>{moment(data).format('DD-MM-YYYY')}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>Status</span>,
-      dataIndex: 'status',
+      title:
+        dateRangeSectionList.length > 0 ? (
+          <span className='th-white th-fw-700'>Status</span>
+        ) : null,
+      // dataIndex: 'status',
       width: '15%',
       align: 'center',
-      render: (data) => (
-        <span>
-          <Switch checked={data} />
-        </span>
-      ),
+      // render: (data) => (
+      //   <span>
+      //     <Switch checked={data} />
+      //   </span>
+      // ),
     },
     {
       title: <span className='th-white th-fw-700'>Actions</span>,
@@ -336,10 +526,10 @@ const CreateTimeTable = () => {
             color='processing'
             className='th-pointer th-br-4'
             onClick={() => {
-              handleViewCreateModal(record);
+              // handleViewCreateModal(record);
             }}
           >
-            Edit
+            Duplicate
           </Tag>
           <Popconfirm
             placement='bottomRight'
@@ -347,6 +537,7 @@ const CreateTimeTable = () => {
             onConfirm={() => handleDeleteRecord(record.id)}
             okText='Yes'
             cancelText='No'
+            okButtonProps={{ loading: deleteLoading }}
           >
             <Tag icon={<DeleteOutlined />} color='volcano' className='th-pointer th-br-4'>
               Delete
@@ -361,19 +552,19 @@ const CreateTimeTable = () => {
       title: <span className='th-white th-fw-700'>Periods</span>,
       align: 'center',
       render: (text, row) => (
-        <div className='d-flex text-left flex-column'>
+        <div
+          className='d-flex text-left flex-column'
+          onClick={() => {
+            handleShowEditTimeModal(row);
+          }}
+        >
           <div className='th-fw-500 th-18'>{row?.period_name}</div>
           <div>
             <span>{moment(row?.start_time, 'hh:mm A').format('hh:mm A')}</span> -
             <span className='mr-1'>
               {moment(row?.end_time, 'hh:mm A').format('hh:mm A')}
             </span>
-            <EditFilled
-              className='th-pointer'
-              onClick={() => {
-                handleShowEditTimeModal(row);
-              }}
-            />
+            <EditFilled className='th-pointer' />
           </div>
         </div>
       ),
@@ -383,11 +574,29 @@ const CreateTimeTable = () => {
 
       align: 'center',
       render: (text, row) => (
-        <span className='th-pointer' onClick={() => handleShowEditLectureModal(row)}>
-          {row?.lecture_type ? (
+        <span
+          className='th-pointer'
+          onClick={() => {
+            console.log('row clicked', row, currentDay);
+            if (row.periods.length > 0) {
+              handleShowEditLectureModal(row?.periods[0]);
+            } else {
+              handleShowPeriodDetailsModal({
+                period_slot: row?.id,
+                period_name: row?.period_name,
+              });
+            }
+          }}
+        >
+          {row?.periods?.[0]?.lecture_type ? (
             <span>
               {' '}
-              {row.lecture_type} <EditFilled className='pl-2' />
+              {
+                LectureTypeChoices.filter(
+                  (el) => el?.id == row?.periods?.[0]?.lecture_type
+                )[0]?.type
+              }{' '}
+              <EditFilled className='pl-2' />
             </span>
           ) : (
             <span className='th-grey'>+ Add</span>
@@ -402,28 +611,66 @@ const CreateTimeTable = () => {
       render: (text, row) => (
         <span
           className='th-pointer'
-          onClick={() => handleShowEditSubjectModal(row)}
-          title={row?.subject?.length > 0 ? row?.subject?.join(',') : null}
+          onClick={() => {
+            if (row.periods.length > 0) {
+              handleShowEditSubjectModal({
+                ...row?.periods[0],
+                sub_map: row?.periods[0]?.sub?.map((item) => item.id),
+              });
+            } else {
+              handleShowPeriodDetailsModal({
+                period_slot: row?.id,
+                period_name: row?.period_name,
+              });
+            }
+          }}
+          title={
+            row?.periods?.[0]?.sub.length > 0
+              ? row?.periods?.[0]?.sub?.map((el) => el?.subject_name).join(',')
+              : null
+          }
         >
           {' '}
-          + {row?.subject?.length > 0 ? row?.subject?.join(',') : 'Add'}
+          +{' '}
+          {row?.periods?.[0]?.sub.length > 0
+            ? row?.periods?.[0]?.sub?.map((el) => el?.subject_name).join(',')
+            : 'Add'}
         </span>
       ),
     },
     {
       title: <span className='th-white th-fw-700'>Teacher</span>,
-      dataIndex: 'teacher',
+      dataIndex: 'sub_teacher',
       align: 'center',
       ellipsis: true,
       render: (data) => <span>+{data?.join(',')}</span>,
       render: (text, row) => (
         <span
           className='th-pointer'
-          onClick={() => handleShowEditTeacherModal(row)}
-          title={row?.teacher?.length > 0 ? row?.teacher?.join(',') : null}
+          onClick={() => {
+            if (row.periods.length > 0) {
+              handleShowEditTeacherModal({
+                ...row?.periods[0],
+                teacher: row?.periods[0]?.sub_teacher?.map((item) => item.id),
+              });
+            } else {
+              handleShowPeriodDetailsModal({
+                period_slot: row?.id,
+                period_name: row?.period_name,
+              });
+            }
+          }}
+          title={
+            row?.periods?.[0]?.sub_teacher?.length > 0
+              ? row?.periods?.[0]?.sub_teacher.map((el) => el?.name)?.join(',')
+              : null
+          }
         >
           {' '}
-          + {row?.teacher?.length > 0 ? row?.teacher?.join(',') : 'Add'}
+          +{' '}
+          {row?.periods?.[0]?.sub_teacher?.length > 0
+            ? row?.periods?.[0]?.sub_teacher.map((el) => el?.name)?.join(',')
+            : 'Add'}
         </span>
       ),
     },
@@ -431,7 +678,12 @@ const CreateTimeTable = () => {
 
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
+    setDateRangeSectionList([]);
     if (expanded) {
+      fetchRangeSectionList({
+        start_date: record?.start_date,
+        end_date: record?.end_date,
+      });
       keys.push(record.id);
     }
 
@@ -439,29 +691,49 @@ const CreateTimeTable = () => {
   };
   const onInnerTableRowExpand = (expanded, record) => {
     const keys = [];
+    setInnerExpandedRowKeys([]);
+    setPeriodListData([]);
+    setCurrentDay();
+    setSelectedSectionData(null);
     if (expanded) {
+      setSelectedSectionData(record);
+      fetchDayWisePeriods({
+        start_date: record?.start_date,
+        end_date: record?.end_date,
+        sec_map: record?.sec_map,
+      });
+      fetchSubjectList({
+        section_mapping: record?.sec_map,
+        session_year: selectedAcademicYear?.id,
+      });
+
       keys.push(record.id);
     }
 
     setInnerExpandedRowKeys(keys);
   };
   const expandedRowRender = (record) => {
-    let currentData = record.grades;
-    const innerColumns = [
+    // let currentData = record.grades;
+    const sectionListColumns = [
       {
-        dataIndex: 'grade',
+        dataIndex: 'grade_sec',
         align: 'center',
         width: tableWidthCalculator(30) + '%',
-        render: (data) => <span className='th-black-2'>{data}</span>,
+        render: (data) => (
+          <span className='th-black-2'>
+            {data?.grade} &nbsp;
+            {data?.section}
+          </span>
+        ),
       },
       {
-        dataIndex: 'allocation_status',
+        dataIndex: 'status',
         align: 'center',
         width: '15%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
-        dataIndex: 'created_on',
+        dataIndex: 'created_at',
         align: 'center',
         width: '15%',
         render: (data) => (
@@ -469,9 +741,14 @@ const CreateTimeTable = () => {
         ),
       },
       {
-        dataIndex: '',
+        dataIndex: 'is_active',
         align: 'center',
         width: '15%',
+        render: (data) => (
+          <span>
+            <Switch checked={data} />
+          </span>
+        ),
       },
       {
         dataIndex: '',
@@ -483,8 +760,8 @@ const CreateTimeTable = () => {
     return (
       <div className='d-flex justify-content-center'>
         <Table
-          columns={innerColumns}
-          dataSource={currentData}
+          columns={sectionListColumns}
+          dataSource={dateRangeSectionList}
           rowKey={(record) => record?.id}
           pagination={false}
           expandable={{
@@ -493,6 +770,7 @@ const CreateTimeTable = () => {
             onExpand: onInnerTableRowExpand,
           }}
           showHeader={false}
+          loading={sectionListLoading}
           style={{ width: '100%' }}
           scroll={{ x: null }}
           className='th-table'
@@ -503,40 +781,55 @@ const CreateTimeTable = () => {
       </div>
     );
   };
-  const innerExpandedRowRender = () => {
+  const innerExpandedRowRender = (record) => {
     return (
+      // <Spin spinning={periodListLoading}>
       <div className='row th-bg-grey p-2 th-br-4' style={{ border: '1px solid #d9d9d9' }}>
         <div className='col-12'>
           <div
             className='d-flex justify-content-between pb-2'
             style={{ borderBottom: '2px solid #d9d9d9' }}
           >
-            <div className='th-fw-700'>26th,June-29th July,2016</div>
+            <div className='th-fw-700'>
+              {moment(record?.start_date).format('Do MMM')}-
+              {moment(record?.start_date).add(6, 'days').format('Do MMM, YYYY')}
+            </div>
             <div className='th-fw-600'>BTM Time Slot 1</div>
           </div>
+
           <div className='d-flex justify-content-between mt-2'>
-            {[
-              'Monday',
-              'Tuesday',
-              'Wednesday',
-              'Thursday',
-              'Friday',
-              'Saturday',
-              'Sunday',
-            ]?.map((item) => {
+            {periodListData?.map((item, index) => {
+              let currentWeekday = moment(record?.start_date)
+                .add(item?.week_days, 'days')
+                .format('dddd');
+              {
+                console.log('rohan', currentDay, currentWeekday);
+              }
               return (
                 <div
                   className={`d-flex flex-column th-bg-grey p-2 th-br-4 text-center  th-pointer ${
-                    currentDay == item
+                    currentDay === currentWeekday
                       ? 'th-button-active th-fw-600'
                       : 'th-button th-fw-500'
                   }`}
                   onClick={() => {
-                    setCurrentDay(item);
+                    setCurrentDay(currentWeekday);
+                    let currentData = periodListData.find(
+                      (el) => el?.week_days == handleTexttoWeekDay(currentWeekday)
+                    );
+                    setCurrentDayPeriodData(currentData?.period_slot);
                   }}
                 >
-                  <div>{moment().format('DD MMM')}</div>
-                  <div>{item}</div>
+                  <div>
+                    {moment(record?.start_date)
+                      .add(item?.week_days, 'days')
+                      .format('Do MMM')}
+                  </div>
+                  <div>
+                    {moment(record?.start_date)
+                      .add(item?.week_days, 'days')
+                      .format('dddd')}
+                  </div>
                 </div>
               );
             })}
@@ -546,8 +839,9 @@ const CreateTimeTable = () => {
               columns={periodTableColumn}
               className='th-table'
               rowKey={(record) => record?.id}
-              dataSource={dummyPeriodData}
+              dataSource={currentDayPeriodData}
               pagination={false}
+              loading={periodListLoading}
               rowClassName={(record, index) =>
                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
               }
@@ -564,14 +858,48 @@ const CreateTimeTable = () => {
           </div>
         </div>
       </div>
+      // </Spin>
     );
   };
+
+  const fetchSubjectList = (params = {}) => {
+    axios
+      .get(`/erp_user/v2/mapped-subjects-list/`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setSubjectList(result?.data?.result);
+        } else {
+          setSubjectList([]);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+
+  const fetchTeacherList = (params = {}) => {
+    axios
+      .get(`${endpoints?.timeTableNewFlow?.teacherList}/`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setTeacherList(result?.data?.result);
+        } else {
+          setTeacherList([]);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
   useEffect(() => {
-    fetchGradeData({
-      session_year: selectedAcademicYear?.id,
-      branch_id: selectedBranch?.branch?.id,
-    });
-  }, []);
+    if (showTab == '3') {
+      setGradeID();
+      setSectionMappingID();
+      setSectionList([]);
+      setAvailableDateRangesData([]);
+      fetchGradeData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
+      });
+    }
+  }, [showTab]);
+
   return (
     <div>
       <React.Fragment>
@@ -591,6 +919,11 @@ const CreateTimeTable = () => {
               }}
               value={gradeID}
             >
+              {gradeList?.length > 0 && (
+                <Option value='All' key='All'>
+                  All
+                </Option>
+              )}
               {gradeOptions}
             </Select>
           </div>
@@ -607,8 +940,13 @@ const CreateTimeTable = () => {
               filterOption={(input, options) => {
                 return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}
-              value={sectionID}
+              value={sectionMappingID}
             >
+              {sectionList?.length > 0 && (
+                <Option value='All' key='All'>
+                  All
+                </Option>
+              )}
               {sectionOptions}
             </Select>
           </div>
@@ -631,7 +969,7 @@ const CreateTimeTable = () => {
             className='th-table'
             columns={columns}
             rowKey={(record) => record?.id}
-            dataSource={dummyData}
+            dataSource={availableDateRangesData}
             pagination={false}
             loading={loading}
             expandable={{
@@ -653,7 +991,6 @@ const CreateTimeTable = () => {
           title='Create New Time Table'
           onCancel={() => {
             setShowCreateModal(false);
-            setCurrentSlotData({ name: '', start_time: '', end_time: '' });
           }}
           footer={
             <div className='row justify-content-end'>
@@ -661,12 +998,19 @@ const CreateTimeTable = () => {
                 type='default'
                 onClick={() => {
                   setShowCreateModal(false);
-                  setCurrentSlotData({ name: '', start_time: '', end_time: '' });
                 }}
               >
                 Close
               </Button>
-              <Button type='primary'>Create</Button>
+              <Button
+                type='primary'
+                loading={createLoading}
+                onClick={() => {
+                  handleAssignDateRange();
+                }}
+              >
+                Create
+              </Button>
             </div>
           }
         >
@@ -690,7 +1034,6 @@ const CreateTimeTable = () => {
                         start_date: startDate,
                         end_date: endDate,
                       });
-                      console.log({ startDate, endDate });
                     }}
                   />
                 </div>
@@ -702,12 +1045,16 @@ const CreateTimeTable = () => {
                 <div className='col-7'>
                   <Select
                     className='th-width-100 th-br-6'
+                    mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
                     onChange={(e) => {
                       setCurrentTimeTable({
                         ...currentTimeTable,
                         section: null,
                         grade: e,
                       });
+                      setCreationSectionList([]);
                       fetchSectionData(
                         selectedAcademicYear?.id,
                         selectedBranch?.branch?.id,
@@ -717,6 +1064,7 @@ const CreateTimeTable = () => {
                     }}
                     placeholder='Grade *'
                     allowClear
+                    maxTagCount={2}
                     showSearch
                     getPopupContainer={(trigger) => trigger.parentNode}
                     optionFilterProp='children'
@@ -738,12 +1086,20 @@ const CreateTimeTable = () => {
                 <div className='col-7'>
                   <Select
                     className='th-width-100 th-br-6'
+                    mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
                     onChange={(e) =>
-                      setCurrentTimeTable({ ...currentTimeTable, section: e })
+                      setCurrentTimeTable({
+                        ...currentTimeTable,
+                        // sectionID: each?.value,
+                        sectionMappingID: e,
+                      })
                     }
                     placeholder='Section *'
                     allowClear
                     showSearch
+                    maxTagCount={2}
                     getPopupContainer={(trigger) => trigger.parentNode}
                     optionFilterProp='children'
                     filterOption={(input, options) => {
@@ -751,7 +1107,7 @@ const CreateTimeTable = () => {
                         options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       );
                     }}
-                    value={currentTimeTable?.section}
+                    value={currentTimeTable?.sectionMappingID}
                   >
                     {creationSectionOptions}
                   </Select>
@@ -779,7 +1135,13 @@ const CreateTimeTable = () => {
               >
                 Close
               </Button>
-              <Button type='primary'>Update</Button>
+              <Button
+                type='primary'
+                loading={editPeriodLoading}
+                onClick={() => handleEditPeriodTimings()}
+              >
+                Update
+              </Button>
             </div>
           }
         >
@@ -848,7 +1210,15 @@ const CreateTimeTable = () => {
               >
                 Close
               </Button>
-              <Button type='primary'>Update</Button>
+              <Button
+                type='primary'
+                loading={editPeriodLoading}
+                onClick={() => {
+                  handleUpdatePeriod('lecture');
+                }}
+              >
+                Update
+              </Button>
             </div>
           }
         >
@@ -877,9 +1247,13 @@ const CreateTimeTable = () => {
                     }}
                     value={selectedPeriod?.lecture_type}
                   >
-                    <Option value='Split Lecture'>Split Lecture</Option>
-                    <Option value='Buddy Lecture'>Buddy Lecture</Option>
-                    <Option value='Substitute Lecture'>Substitute Lecture</Option>
+                    {LectureTypeChoices?.map((el) => {
+                      return (
+                        <Option value={el?.id} key={el?.id}>
+                          {el?.type}
+                        </Option>
+                      );
+                    })}
                   </Select>
                 </div>
               </div>
@@ -905,7 +1279,15 @@ const CreateTimeTable = () => {
               >
                 Close
               </Button>
-              <Button type='primary'>Update</Button>
+              <Button
+                type='primary'
+                loading={editPeriodLoading}
+                onClick={() => {
+                  handleUpdatePeriod('subject');
+                }}
+              >
+                Update
+              </Button>
             </div>
           }
         >
@@ -920,10 +1302,14 @@ const CreateTimeTable = () => {
                   <Select
                     className='th-width-100 th-br-6'
                     onChange={(e) => {
-                      setSelectedPeriod({ ...selectedPeriod, lecture_type: e });
+                      setSelectedPeriod({ ...selectedPeriod, sub_map: e });
                     }}
                     placeholder='Select Subjects'
                     allowClear
+                    mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
+                    maxTagCount={2}
                     showSearch
                     getPopupContainer={(trigger) => trigger.parentNode}
                     optionFilterProp='children'
@@ -932,11 +1318,9 @@ const CreateTimeTable = () => {
                         options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       );
                     }}
-                    value={selectedPeriod?.lecture_type}
+                    value={selectedPeriod?.sub_map}
                   >
-                    <Option value='Split Lecture'>Split Lecture</Option>
-                    <Option value='Buddy Lecture'>Buddy Lecture</Option>
-                    <Option value='Substitute Lecture'>Substitute Lecture</Option>
+                    {subjectOptions}
                   </Select>
                 </div>
               </div>
@@ -962,7 +1346,15 @@ const CreateTimeTable = () => {
               >
                 Close
               </Button>
-              <Button type='primary'>Update</Button>
+              <Button
+                type='primary'
+                loading={editPeriodLoading}
+                onClick={() => {
+                  handleUpdatePeriod('teacher');
+                }}
+              >
+                Update
+              </Button>
             </div>
           }
         >
@@ -976,8 +1368,12 @@ const CreateTimeTable = () => {
                 <div className='col-8'>
                   <Select
                     className='th-width-100 th-br-6'
+                    mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
+                    maxTagCount={2}
                     onChange={(e) => {
-                      setSelectedPeriod({ ...selectedPeriod, lecture_type: e });
+                      setSelectedPeriod({ ...selectedPeriod, teacher: e });
                     }}
                     placeholder='Select Teachers'
                     allowClear
@@ -989,11 +1385,144 @@ const CreateTimeTable = () => {
                         options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       );
                     }}
+                    value={selectedPeriod?.teacher}
+                  >
+                    {teacherOptions}
+                  </Select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal>
+        {/* Assign Subject Periods Modal */}
+        <Modal
+          visible={showAssignPeriodDetailsModal}
+          centered
+          className='th-upload-modal'
+          title='Assign Period Details'
+          onCancel={() => {
+            handleClosePeriodDetailsModal();
+          }}
+          footer={
+            <div className='row justify-content-end'>
+              <Button
+                type='default'
+                onClick={() => {
+                  handleClosePeriodDetailsModal();
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                type='primary'
+                loading={editPeriodLoading}
+                onClick={() => {
+                  handleAssignPeriodDetails();
+                }}
+              >
+                Assign
+              </Button>
+            </div>
+          }
+        >
+          <div className='row p-3'>
+            <div className='col-12'>
+              <div className='th-black d-flex th-fw-700 th-20 mb-2'>
+                {selectedPeriod?.period_name}
+              </div>
+              <div className='row justify-content-between align-items-center pb-2'>
+                <div className='th-fw-500 col-4 pl-0'>Select Lecture Type</div>
+                <div className='col-8'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    onChange={(e) => {
+                      setSelectedPeriod({ ...selectedPeriod, lecture_type: e });
+                    }}
+                    placeholder='Select Lecture Type'
+                    allowClear
+                    showSearch
+                    optionFilterProp='children'
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
                     value={selectedPeriod?.lecture_type}
                   >
-                    <Option value='Split Lecture'>Split Lecture</Option>
-                    <Option value='Buddy Lecture'>Buddy Lecture</Option>
-                    <Option value='Substitute Lecture'>Substitute Lecture</Option>
+                    {LectureTypeChoices?.map((el) => {
+                      return (
+                        <Option value={el?.id} key={el?.id}>
+                          {el?.type}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </div>
+              </div>
+
+              <div className='row justify-content-between align-items-center pb-2'>
+                <div className='th-fw-500 col-4 pl-0'>Select Subjects</div>
+                <div className='col-8'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    onChange={(e, each) => {
+                      console.log({ each });
+                      setSelectedPeriod({
+                        ...selectedPeriod,
+                        sub_map: each?.map((item) => item?.value),
+                      });
+                      fetchTeacherList({
+                        sec_map: selectedSectionData?.sec_map,
+                        subject: each?.map((item) => item?.subjectId)?.join(','),
+                      });
+                    }}
+                    placeholder='Select Subjects'
+                    allowClear
+                    mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
+                    maxTagCount={2}
+                    showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    value={selectedPeriod?.sub_map ?? []}
+                  >
+                    {subjectOptions}
+                  </Select>
+                </div>
+              </div>
+
+              <div className='row justify-content-between align-items-center'>
+                <div className='th-fw-500 col-4 pl-0'>Select Teachers</div>
+                <div className='col-8'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
+                    maxTagCount={2}
+                    onChange={(e) => {
+                      setSelectedPeriod({ ...selectedPeriod, teacher: e });
+                    }}
+                    placeholder='Select Teachers'
+                    allowClear
+                    showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    value={selectedPeriod?.teacher ?? []}
+                  >
+                    {teacherOptions}
                   </Select>
                 </div>
               </div>

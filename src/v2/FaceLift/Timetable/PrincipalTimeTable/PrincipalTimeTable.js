@@ -8,7 +8,7 @@ const { TabPane } = Tabs;
 const { Option } = Select;
 
 const PrincipalTimeTable = () => {
-  const [showTab, setShowTab] = useState('2');
+  const [showTab, setShowTab] = useState('3');
   const onChange = (key) => {
     setShowTab(key.toString());
   };
@@ -16,7 +16,7 @@ const PrincipalTimeTable = () => {
     <>
       <Layout>
         <div className='row py-3 px-2'>
-          <div className='col-md-9' style={{ zIndex: 2 }}>
+          <div className='col-md-4' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
@@ -28,16 +28,16 @@ const PrincipalTimeTable = () => {
 
         <div className='row px-3'>
           <div className='col-12 th-bg-white'>
-            <div className='th-bg-white th-tabs'>
+            <div className='th-bg-white th-tabs th-activity-tabs'>
               <Tabs type='card' onChange={onChange} activeKey={showTab}>
                 <TabPane tab={<div>SET TIMETABLE</div>} key='1'>
-                  <SetTimeTable />
+                  <SetTimeTable showTab={showTab} />
                 </TabPane>
                 <TabPane tab={<div>WEEKLY TIMETABLE</div>} key='2'>
-                  <WeeklyTimeTable />
+                  <WeeklyTimeTable showTab={showTab} />
                 </TabPane>
                 <TabPane tab={<div>CREATE TIMETABLE</div>} key='3'>
-                  <CreateTimeTable />
+                  <CreateTimeTable showTab={showTab} />
                 </TabPane>
               </Tabs>
             </div>
