@@ -534,11 +534,7 @@ const StudentRefer = () => {
           childComponentName='Orchids Ambassador Program'
           isAcademicYearVisible={true}
         />
-        <Tabs
-          activeKey={activeKey}
-          onChange={handleTabChange}
-          style={{ padding: '1%', paddingTop: 0 }}
-        >
+        <Tabs activeKey={activeKey} onChange={handleTabChange} className='p-1 pt-0'>
           <TabPane tab='Refer Now' key='1'>
             <Paper>
               <div className='student-refer-container'>
@@ -647,13 +643,7 @@ const StudentRefer = () => {
                             ]}
                             width={'50%'}
                           >
-                            <div
-                              style={{
-                                padding: '5%',
-                                paddingTop: '2%',
-                                paddingBottom: 0,
-                              }}
-                            >
+                            <div className='"p-5 pt-2 pb-0"'>
                               <p>
                                 <b>Referral Concession Eligibility: </b>
                                 The referral concession pertains exclusively to the
@@ -730,7 +720,7 @@ const StudentRefer = () => {
             )}
 
             {!loading && refferList.length > 0 && (
-              <div className='text-center' style={{ marginTop: '2%' }}>
+              <div className='text-center mt-2'>
                 <Pagination
                   current={refferListPageData.currentPage}
                   total={refferListPageData.totalCount}
@@ -753,10 +743,6 @@ const StudentRefer = () => {
               <div
                 style={{
                   color: '#3956A1',
-                  // display: 'flex',
-                  // alignItems: 'center',
-                  // justifyContent: 'center',
-                  // marginTop: '1%',
                 }}
                 className='d-flex align-items-center justify-content-center mt-4'
               >
