@@ -209,7 +209,7 @@ const StudentRefer = () => {
 
   const columns = [
     {
-      title: 'S.no',
+      title: 'Sl.no',
       dataIndex: 'id', // Use 'sno' as the dataIndex for the row number
       key: 'id',
       // render: (text, record, index) => index + 1, // Render the row number
@@ -400,6 +400,17 @@ const StudentRefer = () => {
     });
   };
 
+  const handleTabChange = (key) => {
+    setActiveKey(key);
+
+    if (key === '2') {
+      setRefferListPageData({
+        ...refferListPageData,
+        currentPage: 1,
+      });
+    }
+  };
+
   useEffect(() => {
     getData(refferListPageData.currentPage);
   }, [refferListPageData.currentPage]);
@@ -497,10 +508,6 @@ const StudentRefer = () => {
       });
   };
 
-  const handleTabChange = (key) => {
-    setActiveKey(key);
-  };
-
   const onchangeCheckbox = (e) => {
     setChecked(e.target.checked);
     setCheckBoxError('');
@@ -527,11 +534,7 @@ const StudentRefer = () => {
           childComponentName='Orchids Ambassador Program'
           isAcademicYearVisible={true}
         />
-        <Tabs
-          activeKey={activeKey}
-          onChange={handleTabChange}
-          style={{ padding: '1%', paddingTop: 0 }}
-        >
+        <Tabs activeKey={activeKey} onChange={handleTabChange} className='p-1 pt-0'>
           <TabPane tab='Refer Now' key='1'>
             <Paper>
               <div className='student-refer-container'>
@@ -552,7 +555,7 @@ const StudentRefer = () => {
                       <div className='header-refer-container'>
                         <p className='referHeader'>Refer Now</p>
                         <p className='small-header'>
-                          Take advantage of the ORCHIDS AMBASSADOR PROGRAME
+                          Take advantage of the ORCHIDS AMBASSADOR PROGRAM
                         </p>
                       </div>
                       <div className='form-area'>
@@ -616,42 +619,31 @@ const StudentRefer = () => {
                           onChange={(e) => handleMail(e)}
                           required={true}
                         />
-                        <div
-                          style={{
-                            flexDirection: 'row',
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: '60%',
-                            justifyContent: 'center',
-                            marginBottom: '2%',
-                          }}
-                        >
-                          <Checkbox onChange={onchangeCheckbox} checked={isChecked} />
-                          <div
-                            style={{
-                              marginLeft: '2%',
-                              color: 'blue',
-                              textDecoration: 'underline',
-                              cursor: 'pointer',
-                            }}
-                            onClick={showModal}
-                          >
-                            Terms and Conditions
+                        <div className='d-flex align-items-center justify-content-center mb-2 th-width-60'>
+                          <div className='mb-3'>
+                            <Checkbox onChange={onchangeCheckbox} checked={isChecked} />
+                          </div>
+
+                          <div className='ml-2'>
+                            I have read and agree to the{' '}
+                            <u className='th-primary th-pointer ' onClick={showModal}>
+                              Terms & Conditions
+                            </u>{' '}
+                            of Referral Program.
                           </div>
                           <Modal
                             title='Referral Policy Terms & Conditions:'
                             visible={isModalOpen}
                             onOk={handleOk}
-                            onCancel={handleCancel}
+                            // onCancel={handleCancel}
+                            footer={[
+                              <Button key='ok' type='primary' onClick={handleOk}>
+                                OK
+                              </Button>,
+                            ]}
                             width={'50%'}
                           >
-                            <div
-                              style={{
-                                padding: '5%',
-                                paddingTop: '2%',
-                                paddingBottom: 0,
-                              }}
-                            >
+                            <div className='"p-5 pt-2 pb-0"'>
                               <p>
                                 <b>Referral Concession Eligibility: </b>
                                 The referral concession pertains exclusively to the
@@ -728,7 +720,7 @@ const StudentRefer = () => {
             )}
 
             {!loading && refferList.length > 0 && (
-              <div className='text-center' style={{ marginTop: '2%' }}>
+              <div className='text-center mt-2'>
                 <Pagination
                   current={refferListPageData.currentPage}
                   total={refferListPageData.totalCount}
@@ -740,11 +732,22 @@ const StudentRefer = () => {
                     })
                   }
                   showSizeChanger={false} // Optional: hide the page size changer
-                  showQuickJumper={true}
+                  showQuickJumper={false}
                   showTotal={(total, range) =>
                     `${range[0]}-${range[1]} of ${total} items`
                   }
                 />
+              </div>
+            )}
+            {!loading && (
+              <div
+                style={{
+                  color: '#3956A1',
+                }}
+                className='d-flex align-items-center justify-content-center mt-4'
+              >
+                Note: Referral concession will be applied once your referral successfully
+                pays their tuition fees
               </div>
             )}
           </TabPane>

@@ -97,9 +97,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '16px',
     padding: '10px',
   },
-  headers : {
-      color : theme.palette.primary.main
-  }
+  headers: {
+    color: theme.palette.primary.main,
+  },
 }));
 
 const StyledButton = withStyles((theme) => ({
@@ -155,13 +155,12 @@ const ReferSuccess = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
 
-
   const [moduleId, setModuleId] = useState('');
   // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
 
   const referOther = () => {
-    history.push('/studentrefer')
-  }
+    history.push('/studentrefer');
+  };
 
   return (
     <Layout className='student-refer-whole-container'>
@@ -171,41 +170,188 @@ const ReferSuccess = () => {
           childComponentName='Orchids Ambassador Program'
           isAcademicYearVisible={true}
         />
+        <div style={{ marginLeft: '1%' }}>
+          <Button onClick={referOther}>Back</Button>
+        </div>
         <Paper>
           <div className='success-refer-container'>
             <div className='refer-header'>
-              <p className={classes.headers} id='refer-para'>Referral Successful</p>
+              <p className={classes.headers} id='refer-para'>
+                Referral Successful
+              </p>
             </div>
-            <div className='city-res' style={{display: 'flex' , flexDirection: 'column'}}  >
-                <p style={{textAlign: 'center' , fontSize: '23px' , fontWeight: '600' , color: '' }} className={classes.headers} >City</p>
-                <p style={{textAlign: 'center' , fontSize: '18px' , fontWeight: '600' , marginTop: '10px' }} >{history?.location?.state?.data?.city}</p>
+            <div
+              className='city-res'
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '23px',
+                  fontWeight: '600',
+                  color: '',
+                }}
+                className={classes.headers}
+              >
+                City
+              </p>
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  marginTop: '10px',
+                }}
+              >
+                {history?.location?.state?.data?.city}
+              </p>
             </div>
-            <div className='city-res' style={{display: 'flex' , flexDirection: 'column'}}  >
-                <p style={{textAlign: 'center' , fontSize: '23px' , fontWeight: '600' , color: '' }} className={classes.headers} >Student Name</p>
-                <p style={{textAlign: 'center' , fontSize: '18px' , fontWeight: '600' , marginTop: '10px' }} >{history?.location?.state?.data?.student_name}</p>
+            <div
+              className='city-res'
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '23px',
+                  fontWeight: '600',
+                  color: '',
+                }}
+                className={classes.headers}
+              >
+                Student Name
+              </p>
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  marginTop: '10px',
+                }}
+              >
+                {history?.location?.state?.data?.student_name}
+              </p>
             </div>
-            <div className='city-res' style={{display: 'flex' , flexDirection: 'column'}}  >
-                <p style={{textAlign: 'center' , fontSize: '23px' , fontWeight: '600' , color: '' }} className={classes.headers} >Parents Name</p>
-                <p style={{textAlign: 'center' , fontSize: '18px' , fontWeight: '600' , marginTop: '10px' }} >{history?.location?.state?.data?.parent_name}</p>
+            <div
+              className='city-res'
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '23px',
+                  fontWeight: '600',
+                  color: '',
+                }}
+                className={classes.headers}
+              >
+                Parents Name
+              </p>
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  marginTop: '10px',
+                }}
+              >
+                {history?.location?.state?.data?.parent_name}
+              </p>
             </div>
-            <div className='city-res' style={{display: 'flex' , flexDirection: 'column'}}  >
-                <p style={{textAlign: 'center' , fontSize: '23px' , fontWeight: '600' , color: '' }} className={classes.headers} >Phone Number</p>
-                <p style={{textAlign: 'center' , fontSize: '18px' , fontWeight: '600' , marginTop: '10px' }} >{history?.location?.state?.data?.phone_number}</p>
+            <div
+              className='city-res'
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '23px',
+                  fontWeight: '600',
+                  color: '',
+                }}
+                className={classes.headers}
+              >
+                Phone Number
+              </p>
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  marginTop: '10px',
+                }}
+              >
+                {history?.location?.state?.data?.phone_number}
+              </p>
             </div>
-            <div className='city-res' style={{display: 'flex' , flexDirection: 'column'}}  >
-                <p style={{textAlign: 'center' , fontSize: '23px' , fontWeight: '600' , color: '' }} className={classes.headers} >Mail Id</p>
-                <p style={{textAlign: 'center' , fontSize: '18px' , fontWeight: '600' , marginTop: '10px' }} >{history?.location?.state?.data?.email_id}</p>
+            <div
+              className='city-res'
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '23px',
+                  fontWeight: '600',
+                  color: '',
+                }}
+                className={classes.headers}
+              >
+                Mail Id
+              </p>
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  marginTop: '10px',
+                }}
+              >
+                {history?.location?.state?.data?.email_id}
+              </p>
             </div>
-            <div className='city-res' style={{display: 'flex' , flexDirection: 'column'}}  >
-                <p style={{textAlign: 'center' , fontSize: '23px' , fontWeight: '600' , color: '' }} className={classes.headers} >Referral Number :</p>
-                <p style={{textAlign: 'center' , fontSize: '40px' , fontWeight: '600' , margin: 'auto' , width: 'fit-content' , background: 'aliceblue' }} >{history?.location?.state?.data?.referral_code}</p>
+            <div
+              className='city-res'
+              style={{ display: 'flex', flexDirection: 'column' }}
+            >
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '23px',
+                  fontWeight: '600',
+                  color: '',
+                }}
+                className={classes.headers}
+              >
+                Referral Number :
+              </p>
+              <p
+                style={{
+                  textAlign: 'center',
+                  fontSize: '40px',
+                  fontWeight: '600',
+                  margin: 'auto',
+                  width: 'fit-content',
+                  background: 'aliceblue',
+                }}
+              >
+                {history?.location?.state?.data?.referral_code}
+              </p>
             </div>
-            <div id='thank-res' >
-                <p style={{textAlign: 'center' , marginTop: '10px' , fontSize: '20px'}} >Thank You for Referring us.  </p>
+            <div id='thank-res'>
+              <p style={{ textAlign: 'center', marginTop: '10px', fontSize: '20px' }}>
+                Thank You for Referring us.{' '}
+              </p>
 
-                <p id='refer-another' style={{textAlign: 'center'  , fontSize: '20px' , cursor: 'pointer'}} className={classes.headers} onClick={referOther} >Refer Another</p>
+              <p
+                id='refer-another'
+                style={{ textAlign: 'center', fontSize: '20px', cursor: 'pointer' }}
+                className={classes.headers}
+                onClick={referOther}
+              >
+                Refer Another
+              </p>
             </div>
-
           </div>
         </Paper>
       </div>
