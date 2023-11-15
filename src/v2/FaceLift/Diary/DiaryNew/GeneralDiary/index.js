@@ -1,7 +1,18 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
-import { Breadcrumb, Form, Select, Input, Table, Button, Spin, message } from 'antd';
+import {
+  Breadcrumb,
+  Form,
+  Select,
+  Input,
+  Table,
+  Button,
+  Spin,
+  message,
+  Pagination,
+  Divider,
+} from 'antd';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
@@ -32,7 +43,9 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [requestSent, setRequestSent] = useState(false);
-
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const formRef = createRef();
   const { Option } = Select;
   const { TextArea } = Input;
@@ -71,6 +84,8 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
   };
 
   const handleSection = (e) => {
+    setPage(1);
+    setTotalCount(0);
     setSectionID(e.value);
     setSectionMappingID(e.mappingId);
   };
@@ -90,6 +105,8 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
     setSectionDropdown([]);
     setSectionMappingID();
     setSectionID();
+    setPage(1);
+    setTotalCount(0);
     if (e) {
       setGradeID(e);
       const params = {
@@ -215,12 +232,15 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
       bgs_mapping: sectionMappingID,
       module_id: moduleId,
       academic_year: selectedAcademicYear?.id,
+      page_size: pageSize,
+      page: page,
     };
     axios
       .get(`${endpoints?.dailyDiary?.generalDiaryUsers}`, { params: { ...params } })
       .then((result) => {
         if (result?.data?.status_code == 200) {
           setGeneralDiaryUsers(result?.data?.result?.results);
+          setTotalCount(result?.data?.result?.count);
           setLoading(false);
         }
       })
@@ -229,12 +249,19 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    if (totalCount > 0) {
+      fetchGeneralDiaryusers();
+    }
+  }, [page]);
   const studentsSelected = (studentCheckedID) => {
     setStudentCheckedID(studentCheckedID);
   };
   const rowSelection = {
     selectedRowKeys: studentCheckedID,
     onChange: studentsSelected,
+    preserveSelectedRowKeys: true,
   };
 
   useEffect(() => {
@@ -261,12 +288,28 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
     }
   }, [moduleId]);
 
+
+  const returnHeader = () => {
+    return (
+      <div>
+      <div className='col-md-12 p-0 d-flex justify-content-between'>
+        <span className='th-16 th-fw-600'>Filter Students</span>
+        {studentCheckedID?.length > 0 ? <span className='th-14 th-fw-600'>{studentCheckedID?.length} items Selected</span> : ''}
+      </div>
+      <Divider className='p-0 m-0' />
+      <div>
+        <span className='th-13' >Note: General diary will be sent to the selected student Page wise (select all option is provided page wise).<br/> Kindly ensure to select all student across each page for sending them.**</span>
+      </div>
+      </div>
+    )
+  }
+
   const columns = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>Sl No.</span>,
       align: 'center',
       width: '10%',
-      render: (text, row, index) => index + 1,
+      render: (text, row, index) => (pageSize * (page - 1)) + index + 1,
     },
 
     {
@@ -358,20 +401,38 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
               <Spin tip='Loading...' size='large' />
             </div>
           ) : generalDairyUsers?.length > 0 ? (
-            <Table
-              className='th-table'
-              columns={columns}
-              title={() => 'Filter Students'}
-              rowKey={(record) => record?.id}
-              dataSource={generalDairyUsers}
-              pagination={false}
-              bordered={false}
-              rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-              }
-              rowSelection={{ ...rowSelection }}
-              style={{ width: '100%' }}
-            />
+            <>
+              <Table
+                className='th-table'
+                columns={columns}
+                title={() => returnHeader()}
+                rowKey={(record) => record?.id}
+                dataSource={generalDairyUsers}
+                pagination={false}
+                bordered={false}
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                rowSelection={{ ...rowSelection }}
+                style={{ width: '100%' }}
+              />
+              {totalCount > 0 ? (
+                <div className='col-md-12 py-2' >
+                  <Pagination
+                    current={page}
+                    total={totalCount}
+                    showSizeChanger={false}
+                    pageSize={10}
+                    onChange={(current) => {
+                      setPage(current);
+                    }}
+                    className='text-center'
+                  />
+                </div>
+              ) : (
+                ''
+              )}
+            </>
           ) : (
             ''
           )}
