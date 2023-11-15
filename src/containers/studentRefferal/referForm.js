@@ -209,7 +209,7 @@ const StudentRefer = () => {
 
   const columns = [
     {
-      title: 'S.no',
+      title: 'Sl.no',
       dataIndex: 'id', // Use 'sno' as the dataIndex for the row number
       key: 'id',
       // render: (text, record, index) => index + 1, // Render the row number
@@ -400,6 +400,17 @@ const StudentRefer = () => {
     });
   };
 
+  const handleTabChange = (key) => {
+    setActiveKey(key);
+
+    if (key === '2') {
+      setRefferListPageData({
+        ...refferListPageData,
+        currentPage: 1,
+      });
+    }
+  };
+
   useEffect(() => {
     getData(refferListPageData.currentPage);
   }, [refferListPageData.currentPage]);
@@ -497,10 +508,6 @@ const StudentRefer = () => {
       });
   };
 
-  const handleTabChange = (key) => {
-    setActiveKey(key);
-  };
-
   const onchangeCheckbox = (e) => {
     setChecked(e.target.checked);
     setCheckBoxError('');
@@ -552,7 +559,7 @@ const StudentRefer = () => {
                       <div className='header-refer-container'>
                         <p className='referHeader'>Refer Now</p>
                         <p className='small-header'>
-                          Take advantage of the ORCHIDS AMBASSADOR PROGRAME
+                          Take advantage of the ORCHIDS AMBASSADOR PROGRAM
                         </p>
                       </div>
                       <div className='form-area'>
@@ -626,23 +633,35 @@ const StudentRefer = () => {
                             marginBottom: '2%',
                           }}
                         >
-                          <Checkbox onChange={onchangeCheckbox} checked={isChecked} />
-                          <div
-                            style={{
-                              marginLeft: '2%',
-                              color: 'blue',
-                              textDecoration: 'underline',
-                              cursor: 'pointer',
-                            }}
-                            onClick={showModal}
-                          >
-                            Terms and Conditions
+                          <div style={{ marginBottom: '5%' }}>
+                            <Checkbox onChange={onchangeCheckbox} checked={isChecked} />
+                          </div>
+
+                          <div style={{ marginLeft: '2%' }}>
+                            I have read and agree to the{' '}
+                            <span
+                              style={{
+                                color: 'blue',
+                                textDecoration: 'underline',
+                                cursor: 'pointer',
+                              }}
+                              onClick={showModal}
+                            >
+                              Terms & Conditions
+                            </span>{' '}
+                            of Referral Program.
                           </div>
                           <Modal
                             title='Referral Policy Terms & Conditions:'
                             visible={isModalOpen}
                             onOk={handleOk}
-                            onCancel={handleCancel}
+                            // onCancel={handleCancel}
+                            footer={[
+                              <Button key='ok' type='primary' onClick={handleOk}>
+                                OK
+                              </Button>,
+                            ]}
+                            // onCancel={false}
                             width={'50%'}
                           >
                             <div
@@ -740,11 +759,25 @@ const StudentRefer = () => {
                     })
                   }
                   showSizeChanger={false} // Optional: hide the page size changer
-                  showQuickJumper={true}
+                  showQuickJumper={false}
                   showTotal={(total, range) =>
                     `${range[0]}-${range[1]} of ${total} items`
                   }
                 />
+              </div>
+            )}
+            {!loading && (
+              <div
+                style={{
+                  color: '#3956A1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: '1%',
+                }}
+              >
+                Note: Referral concession will be applied once your referral successfully
+                pays their tuition fees
               </div>
             )}
           </TabPane>

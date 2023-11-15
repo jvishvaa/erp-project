@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom';
 import { UsergroupAddOutlined } from '@ant-design/icons';
 import StudentAttendanceNew from './components/StudentAttendanceNew';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import Endpoint from 'config/endpoints';
 
 const StudentDashboardConfigOn = () => {
   const isOrchids = IsOrchidsChecker();
@@ -23,9 +24,12 @@ const StudentDashboardConfigOn = () => {
   const time = new Date().getHours();
   const history = useHistory();
   const [doodleData, setDoodleData] = useState([]);
+  const [isReferal, setIsReferal] = useState(false);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+
+  const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const fetchDoodle = () => {
     axios
@@ -48,9 +52,23 @@ const StudentDashboardConfigOn = () => {
       .catch((error) => message.error('error', error?.message));
   };
 
+  const studentConditionReferal = () => {
+    const erpCode = userDetails?.erp;
+    axios
+      .get(`${Endpoint.referral.studentConditionReferal}?erp_id=${erpCode}`)
+      .then((response) => {
+        if (response.status === 200) {
+          // console.log(response.data.result.is_referral, 'response');
+          setIsReferal(response.data.result.is_referral);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+
   useEffect(() => {
     fetchDoodle();
     fetchDoodleData();
+    studentConditionReferal();
   }, []);
 
   const studentrefer = () => {
@@ -65,7 +83,7 @@ const StudentDashboardConfigOn = () => {
           <span className='text-capitalize pr-2'>{first_name}</span>
           <span className='th-14'>({getRole(user_level)})</span>
         </div>
-        {isOrchids ? (
+        {isOrchids && isReferal ? (
           <>
             {user_level === 13 ? (
               <div className='col-md-6 text-right'>
