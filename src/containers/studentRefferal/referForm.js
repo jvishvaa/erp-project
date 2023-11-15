@@ -623,32 +623,16 @@ const StudentRefer = () => {
                           onChange={(e) => handleMail(e)}
                           required={true}
                         />
-                        <div
-                          style={{
-                            flexDirection: 'row',
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: '60%',
-                            justifyContent: 'center',
-                            marginBottom: '2%',
-                          }}
-                        >
-                          <div style={{ marginBottom: '5%' }}>
+                        <div className='d-flex align-items-center justify-content-center mb-2 th-width-60'>
+                          <div className='mb-3'>
                             <Checkbox onChange={onchangeCheckbox} checked={isChecked} />
                           </div>
 
-                          <div style={{ marginLeft: '2%' }}>
+                          <div className='ml-2'>
                             I have read and agree to the{' '}
-                            <span
-                              style={{
-                                color: 'blue',
-                                textDecoration: 'underline',
-                                cursor: 'pointer',
-                              }}
-                              onClick={showModal}
-                            >
+                            <u className='th-primary th-pointer ' onClick={showModal}>
                               Terms & Conditions
-                            </span>{' '}
+                            </u>{' '}
                             of Referral Program.
                           </div>
                           <Modal
@@ -661,7 +645,6 @@ const StudentRefer = () => {
                                 OK
                               </Button>,
                             ]}
-                            // onCancel={false}
                             width={'50%'}
                           >
                             <div
@@ -770,11 +753,12 @@ const StudentRefer = () => {
               <div
                 style={{
                   color: '#3956A1',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginTop: '1%',
+                  // display: 'flex',
+                  // alignItems: 'center',
+                  // justifyContent: 'center',
+                  // marginTop: '1%',
                 }}
+                className='d-flex align-items-center justify-content-center mt-4'
               >
                 Note: Referral concession will be applied once your referral successfully
                 pays their tuition fees
