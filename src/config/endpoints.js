@@ -910,6 +910,9 @@ export default {
 
   referral: {
     studentRefer: '/erp_user/student_refferal/',
+    studentReferV2: '/erp_user/student-referral-v2/',
+    studentReferralList: '/erp_user/student-referral-list/',
+    studentConditionReferal: '/erp_user/student-referral-condition/',
   },
 
   period: {
