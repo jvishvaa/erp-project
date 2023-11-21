@@ -476,7 +476,7 @@ const OfflineStudentAssessment = () => {
       setSelectedSection(filterData?.selectedSection);
       axiosInstance
         .get(
-          `${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${filterData?.testId}&section_mapping_id=${filterData?.sectionId}`
+          `${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${filterData?.sectionId}`
         )
         .then((result) => {
           console.log(result);
