@@ -40,6 +40,7 @@ import Loader from './../../components/loader/loader';
 import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
 import axios from 'axios';
+import fileDownload from 'js-file-download';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -176,6 +177,22 @@ const StyledClearButton = withStyles((theme) => ({
   },
 }))(Button);
 
+const StyledButtonLabel = withStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.primary.main,
+    color: '#FFFFFF !important',
+    padding: '8px 15px',
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
+    },
+    width: 'fit-content',
+    minWidth: '64px',
+    borderRadius: '10px',
+    lineHeight: '1.5',
+    cursor: 'pointer',
+  },
+}))(InputLabel);
+
 const OfflineStudentAssessment = () => {
   const history = useHistory();
   const classes = useStyles({});
@@ -224,7 +241,8 @@ const OfflineStudentAssessment = () => {
   const [checkBoxFlag, setCheckBoxFlag] = useState(false);
   const [showNewAsses, setShowNewAsses] = useState(true);
 
-  console.log(createFilterData, '@@');
+  const [bulkMarksUploadFileLoader, setBulkMarksUploadFileLoader] = useState(false);
+
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -242,14 +260,12 @@ const OfflineStudentAssessment = () => {
         }
       });
     }
-    console.log(filterData);
     checkOMR();
   }, []);
   const checkOMR = () => {
     axiosInstance
       .get(`${endpoints?.academics?.checkOMR}`)
       .then((result) => {
-        console.log(result);
         setBranchOMR(result?.data?.result);
         // enableOMR(result?.data?.result)
       })
@@ -277,9 +293,6 @@ const OfflineStudentAssessment = () => {
     });
     setUploadBranchOMR(filterBranch);
     // setDisplayOMR(filterBranch?.length > 0 ? true : false )
-    console.log(filterBranch);
-    console.log(branchList);
-    console.log(branchOMR);
   };
 
   useEffect(() => {
@@ -297,7 +310,6 @@ const OfflineStudentAssessment = () => {
   const handleTextSearch = (e) => {
     setIsNewSearch(true);
     setSearchText(e.target.value);
-    console.log(e.target.value.length, 'event');
     if (e.target.value.length === 0) {
       setIsNewSearch(false);
     }
@@ -313,7 +325,6 @@ const OfflineStudentAssessment = () => {
 
   const handleGrade = (value) => {
     if (moduleId) {
-      console.log(value);
       let selectedId = [];
       if (value) {
         axiosInstance
@@ -322,12 +333,10 @@ const OfflineStudentAssessment = () => {
           )
           .then((result) => {
             setSectionList(result?.data?.data);
-            console.log(result?.data?.data);
             if (history?.location?.state?.test?.section_mapping[0] != null) {
               const filterSection = result?.data?.data.filter((ele) =>
                 history?.location?.state?.test?.section_mapping.includes(ele?.id)
               );
-              console.log(filterSection);
               // setSelectedSection(filterSection)
               setSectionList(filterSection);
             }
@@ -352,8 +361,6 @@ const OfflineStudentAssessment = () => {
 
   const offlineMarks = () => {
     setLoading(true);
-    console.log(history?.location?.state?.test, 'test');
-    console.log(selectedGrade);
     // const secId = selectedSection.map((ele) => ele?.id)
     const payload = {
       branchId: selectedBranch?.value,
@@ -377,7 +384,6 @@ const OfflineStudentAssessment = () => {
         }`
       )
       .then((result) => {
-        console.log(result);
         setStudentList(result?.data?.result?.user_reponse);
         setQuesList(result?.data?.result?.questions);
         setLoading(false);
@@ -419,15 +425,12 @@ const OfflineStudentAssessment = () => {
   }, [selectedBranch]);
 
   const uploadMarks = (data) => {
-    console.log(data);
     let student = [];
     let studentCheck = studentList.map((i) => {
       if (i?.atdnce_status == true) {
         student.push(i);
       }
     });
-    console.log(student);
-    console.log(studentList);
     history.push({
       pathname: quesList[0].sections?.mandatory_questions
         ? 'student-marks-upload'
@@ -459,7 +462,6 @@ const OfflineStudentAssessment = () => {
       .post(`${endpoints.assessment.reUpload}?`, param)
       .then((result) => {
         setLoading(false);
-        console.log(result);
         setCheckBoxFlag(!checkBoxFlag);
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
@@ -479,7 +481,6 @@ const OfflineStudentAssessment = () => {
           `${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${filterData?.sectionId}`
         )
         .then((result) => {
-          console.log(result);
           setLoading(false);
           setStudentList(result?.data?.result?.user_reponse);
           setQuesList(result?.data?.result?.questions);
@@ -491,11 +492,9 @@ const OfflineStudentAssessment = () => {
   }, [checkBoxFlag]);
 
   const deleteMarks = (item) => {
-    console.log(item);
     axiosInstance
       .delete(`assessment/${item?.test_details?.usresponse_id}/ru-offline-asmnt/`)
       .then((result) => {
-        console.log(result);
         setLoading(false);
         setAlert('success', 'Response Deleted Successfully');
         offlineMarks();
@@ -517,7 +516,6 @@ const OfflineStudentAssessment = () => {
       setAlert('error', 'Please select section');
       return;
     }
-    // console.log("data12378",history?.location?.state?.test);
     history.push({
       pathname: '/uploadOMR',
       state: {
@@ -526,6 +524,64 @@ const OfflineStudentAssessment = () => {
         test_id: history?.location?.state?.test,
       },
     });
+  };
+
+  const downloadBulkMarksTemplate = () => {
+    let param = {
+      test_id: filterData?.testId,
+      subject_id: filterData?.subjId,
+      section_mapping_id: filterData?.sectionId,
+    };
+    axiosInstance
+      .post(`${endpoints.assessment.assessmentMarksDownload}`, param, {
+        responseType: 'blob',
+      })
+      .then((res) => {
+        fileDownload(res.data, 'bulkUploadMarks.xlsx');
+      })
+      .catch((error) => {
+        console.log('err', error);
+        setAlert('error', 'Something went wrong');
+      });
+  };
+
+  const uploadBulkMarks = (event) => {
+    const { files } = event.target;
+
+    const fil = files[0] || '';
+    if (fil.name.lastIndexOf('.xls') > 0 || fil.name.lastIndexOf('.xlsx') > 0) {
+      const formData = new FormData();
+      formData.append('test_id', filterData?.testId);
+      formData.append('file', files[0]);
+      setBulkMarksUploadFileLoader(true);
+      axiosInstance
+        .post(`${endpoints.assessment.assessmentMarksUpload}`, formData)
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            setAlert('success', 'File uploaded successfully');
+            fileRef.current.value = null;
+          } else {
+            setAlert('error', res.data.message);
+          }
+        })
+        .catch((error) => {
+          if(error.response.status === 400){
+            fileDownload(error.data, 'error_log.xlsx');
+            setAlert('error', 'File not uploaded successfully, check error logs');
+          } else{
+            setAlert('error', 'Something went wrong catch');
+          }
+        })
+        .finally(() => {
+          setBulkMarksUploadFileLoader(false);
+        });
+    } else {
+      setAlert(
+        'error',
+        'Only excel file is acceptable either with .xls or .xlsx extension'
+      );
+      return;
+    }
   };
 
   return (
@@ -599,7 +655,6 @@ const OfflineStudentAssessment = () => {
                   if (value) {
                     setSelectedSection(value);
                     setCheckFilter(true);
-                    console.log(value, 'section id');
                   }
                 }}
                 id='branch_id'
@@ -644,6 +699,33 @@ const OfflineStudentAssessment = () => {
             ) : (
               ''
             )}
+
+            {studentList?.length > 0 && (
+              <Grid sm={3} xs={6}>
+                {bulkMarksUploadFileLoader ? (
+                  <StyledButtonLabel>Uploading...</StyledButtonLabel>
+                ) : (
+                  <StyledButtonLabel htmlFor='bulkMarksUpload'>
+                    Marks Bulk Upload
+                  </StyledButtonLabel>
+                )}
+                <Input
+                  type='file'
+                  id='bulkMarksUpload'
+                  style={{ display: 'none' }}
+                  inputProps={{ accept: '.xlsx,.xls' }}
+                  onChange={(e) => uploadBulkMarks(e)}
+                />
+                <a
+                  style={{ cursor: 'pointer', fontWeight: 600 }}
+                  // href='/assets/download-format/bulk_marks_upload.xlsx'
+                  // download='bulkUploadMarks.xlsx'
+                  onClick={downloadBulkMarksTemplate}
+                >
+                  Download marks upload template
+                </a>
+              </Grid>
+            )}
           </div>
           <Paper className={`${classes.root} common-table`} id='singleStudent'>
             <div className='searchArea'>
@@ -662,7 +744,6 @@ const OfflineStudentAssessment = () => {
                                 />
                             </FormControl> */}
             </div>
-            {console.log(studentList)}
             {studentList?.length > 0 ? (
               <TableContainer
                 className={`table table-shadow view_users_table ${classes.container}`}
@@ -691,7 +772,6 @@ const OfflineStudentAssessment = () => {
                           {items?.name}
                         </TableCell>
                         <TableCell className={classes.tableCell} id='blockArea'>
-                          {console.log(items)}
                           {items?.atdnce_status == true ? (
                             <>
                               {items?.test_details?.total_marks != null ? (
