@@ -243,7 +243,6 @@ const OfflineStudentAssessment = () => {
 
   const [bulkMarksUploadFileLoader, setBulkMarksUploadFileLoader] = useState(false);
 
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -565,10 +564,11 @@ const OfflineStudentAssessment = () => {
           }
         })
         .catch((error) => {
-          if(error.response.status === 400){
-            fileDownload(error.data, 'error_log.xlsx');
+          console.log(error.response, 'err');
+          if (error.response.status === 400) {
+            fileDownload(error.response.data, 'error_log.xlsx');
             setAlert('error', 'File not uploaded successfully, check error logs');
-          } else{
+          } else {
             setAlert('error', 'Something went wrong catch');
           }
         })
@@ -714,7 +714,7 @@ const OfflineStudentAssessment = () => {
                   id='bulkMarksUpload'
                   style={{ display: 'none' }}
                   inputProps={{ accept: '.xlsx,.xls' }}
-                  onChange={(e) => uploadBulkMarks(e)}
+                  onChange={uploadBulkMarks}
                 />
                 <a
                   style={{ cursor: 'pointer', fontWeight: 600 }}
