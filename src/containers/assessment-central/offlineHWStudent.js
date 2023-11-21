@@ -527,7 +527,7 @@ const OfflineStudentAssessment = () => {
 
   const downloadBulkMarksTemplate = () => {
     let param = {
-      test_id: filterData?.testId,
+      test_id: history?.location?.state?.test?.id,
       subject_id: filterData?.subjId,
       section_mapping_id: filterData?.sectionId,
     };
@@ -550,7 +550,7 @@ const OfflineStudentAssessment = () => {
     const fil = files[0] || '';
     if (fil.name.lastIndexOf('.xls') > 0 || fil.name.lastIndexOf('.xlsx') > 0) {
       const formData = new FormData();
-      formData.append('test_id', filterData?.testId);
+      formData.append('test_id', history?.location?.state?.test?.id);
       formData.append('file', files[0]);
       setBulkMarksUploadFileLoader(true);
       axiosInstance
@@ -559,8 +559,6 @@ const OfflineStudentAssessment = () => {
           if (res.data.status_code === 200) {
             setAlert('success', 'File uploaded successfully');
             fileRef.current.value = null;
-          } else {
-            setAlert('error', res.data.message);
           }
         })
         .catch((error) => {
