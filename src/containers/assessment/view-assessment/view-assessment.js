@@ -257,12 +257,26 @@ const ViewAssessments = ({ history, ...restProps }) => {
       align: 'center',
       width: '10%',
       render: (text, row) => (
-        <span className='th-black-1 th-14'>
-          {row?.is_test_completed?.marks_obtained != 'null'
+        // <span className='th-black-1 th-14'>
+        //   {row?.is_test_completed?.marks_obtained != 'null'
+        //     ? row?.is_test_completed?.marks_obtained
+        //     : row?.test_mode == '1'
+        //     ? 'Not Attempted'
+        //     : 'Marks entry under progress'}
+        // </span>
+        <span>
+          {row?.is_test_completed?.atdnce_status && !row?.is_test_completed?.is_completed
+            ? 'Marks upload in progress'
+            : !row?.is_test_completed?.atdnce_status &&
+              row?.is_test_completed?.is_completed
             ? row?.is_test_completed?.marks_obtained
-            : row?.test_mode == '1'
-            ? 'Not Attempted'
-            : 'Marks entry under progress'}
+            : !row?.is_test_completed?.atdnce_status &&
+              !row?.is_test_completed?.is_completed
+            ? 'Absent for exam'
+            : row?.is_test_completed?.atdnce_status &&
+              row?.is_test_completed?.is_completed
+            ? row?.is_test_completed?.marks_obtained
+            : null}
         </span>
       ),
       visible: status == 1 ? true : false,
