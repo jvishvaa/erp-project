@@ -196,7 +196,6 @@ const StyledButtonLabel = withStyles((theme) => ({
 const OfflineStudentAssessment = () => {
   const history = useHistory();
   const classes = useStyles({});
-  const fileRef = useRef();
   const { setAlert } = useContext(AlertNotificationContext);
   const [file, setFile] = useState(null);
   const [uploadFlag, setUploadFlag] = useState(false);
@@ -525,6 +524,13 @@ const OfflineStudentAssessment = () => {
     });
   };
 
+  const excelDownload = (data, filename) => {
+    const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    FileSaver.saveAs(blob, filename);
+  };
+
   const downloadBulkMarksTemplate = () => {
     let param = {
       test_id: history?.location?.state?.test?.id,
@@ -536,7 +542,10 @@ const OfflineStudentAssessment = () => {
         responseType: 'blob',
       })
       .then((res) => {
-        fileDownload(res.data, 'bulkUploadMarks.xlsx');
+        excelDownload(
+          res.data,
+          `${history?.location?.state?.test?.test_name}_download_report.xlsx`
+        );
       })
       .catch((error) => {
         console.log('err', error);
@@ -556,19 +565,25 @@ const OfflineStudentAssessment = () => {
       axiosInstance
         .post(`${endpoints.assessment.assessmentMarksUpload}`, formData)
         .then((res) => {
-          if (res.data.status_code === 200) {
+          console.log({ res });
+          if (res?.status === 200) {
             setAlert('success', 'File uploaded successfully');
-            fileRef.current.value = null;
+            console.log(res?.data);
+            excelDownload(
+              res?.data,
+              `${history?.location?.state?.test?.test_name}_upload_report.xlsx`
+            );
+          } else if (res?.status === 201) {
+            excelDownload(
+              res?.data,
+              `${history?.location?.state?.test?.test_name}_upload_error_report.xlsx`
+            );
+            setAlert('error', 'File not uploaded successfully, check error logs');
           }
         })
         .catch((error) => {
-          console.log(error.response, 'err');
-          if (error.response.status === 400) {
-            fileDownload(error.response.data, 'error_log.xlsx');
-            setAlert('error', 'File not uploaded successfully, check error logs');
-          } else {
-            setAlert('error', 'Something went wrong catch');
-          }
+          console.log(error, 'err');
+          setAlert('error', error?.response?.message);
         })
         .finally(() => {
           setBulkMarksUploadFileLoader(false);
@@ -755,7 +770,8 @@ const OfflineStudentAssessment = () => {
                       <TableCell className={classes.tableCell}>Total Marks</TableCell>
                       <TableCell className={classes.tableCell}>Action</TableCell>
                       <TableCell className={classes.tableCell}>
-                        Enable Re-Upload
+                        {/* Enable Re-Upload */}
+                        Attendace
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -770,7 +786,7 @@ const OfflineStudentAssessment = () => {
                           {items?.name}
                         </TableCell>
                         <TableCell className={classes.tableCell} id='blockArea'>
-                          {items?.atdnce_status == true ? (
+                          {/* {items?.atdnce_status == true ? (
                             <>
                               {items?.test_details?.total_marks != null ? (
                                 items?.test_details?.total_marks.toFixed(2)
@@ -791,7 +807,41 @@ const OfflineStudentAssessment = () => {
                             <>
                               <p>Absent</p>
                             </>
-                          )}
+                          )} */}
+
+                          {items?.atdnce_status &&
+                          Object.keys(items?.test_details).length === 0 ? (
+                            <StyledButton
+                              onClick={() => uploadMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Upload Marks
+                            </StyledButton>
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            <StyledButton
+                              onClick={() => uploadMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Edit Marks
+                            </StyledButton>
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length === 0 ? (
+                            <StyledButton
+                              onClick={() => uploadMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Upload Marks
+                            </StyledButton>
+                          ) : items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            <StyledButton
+                              onClick={() => uploadMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Edit Marks
+                            </StyledButton>
+                          ) : null}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           {items?.atdnce_status == true &&
@@ -834,7 +884,7 @@ const OfflineStudentAssessment = () => {
                             ''
                           )}
                         </TableCell>
-                        <TableCell className={classes.tableCell} id='blockArea'>
+                        {/* <TableCell className={classes.tableCell} id='blockArea'>
                           {items?.can_reupload && (
                             <Checkbox
                               checked={items?.can_reupload}
@@ -854,6 +904,26 @@ const OfflineStudentAssessment = () => {
                               inputProps={{ 'aria-label': 'controlled' }}
                             />
                           )}
+                        </TableCell> */}
+                        <TableCell className={classes.tableCell} id='blockArea'>
+                          <>
+                            {}
+                            <Checkbox
+                              checked={
+                                (items?.atdnce_status &&
+                                  Object.keys(items?.test_details).length === 0) ||
+                                (!items?.atdnce_status &&
+                                  Object.keys(items?.test_details).length > 0) ||
+                                (items?.atdnce_status &&
+                                  Object.keys(items?.test_details).length > 0)
+                                  ? true
+                                  : false
+                              }
+                              disabled
+                              iconStyle={{ fill: 'red' }}
+                              inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                          </>
                         </TableCell>
                       </TableRow>
                     ))}
