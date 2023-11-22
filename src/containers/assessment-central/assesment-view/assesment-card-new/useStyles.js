@@ -43,6 +43,17 @@ const useStyles = makeStyles((theme) => ({
     // color: theme.palette.primary.main,
     color: 'primarytemp',
     fontSize: "0.99rem"
+  },
+  identifier_icon:{
+    marginRight:"30px",
+    height:"25px",
+    width:"25px"
+  },
+  "@media screen":{
+
+    printContent:{
+      display:"none"
+    }
   }
 }));
 
