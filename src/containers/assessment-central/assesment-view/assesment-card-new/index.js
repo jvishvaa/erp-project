@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
@@ -18,7 +18,9 @@ import Divider from '@material-ui/core/Divider';
 import ConfirmPopOver from '../../../../../src/containers/time-table/ConfirmPopOver';
 import { message } from 'antd';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-
+import diamond from '../../../../../src/assets/images/diamond.png';
+import ReactToPrint from 'react-to-print';
+import QuestionPreview from '../QuestionPreview';
 const AssessmentCard = ({
   period,
   setPeriodDataForView,
@@ -37,10 +39,13 @@ const AssessmentCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
+  let printRef = useRef();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState();
+  // const [loading, setLoading] = useState(false);
+  const [printData, setPrintData] = useState(null);
 
   const history = useHistory();
   const handlePeriodMenuOpen = (index, id) => {
@@ -183,7 +188,83 @@ const AssessmentCard = ({
           message.error(error.message);
           setSelectedIndex(-1);
         });
-    } else {
+    } else if (tabIsErpCentral && period?.hasOwnProperty('template_id')) {
+      axios
+        .get(endpoints?.assessmentErp?.autoQuestionPaper, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+          params: { id: period?.id },
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            let temp_response = result?.data?.result?.results[0];
+            let temp_response1 = {
+              ...temp_response,
+              grade: temp_response.grade.id,
+              subjects: temp_response.subjects.map((each) => {
+                return each.id;
+              }),
+              grade_subject_mapping: temp_response.subjects.map((each) => {
+                return each.grade_subject_mapping;
+              }),
+              questions: [].concat(
+                ...temp_response.section
+                  .filter(
+                    (eachSecection, index) => index < temp_response.section.length - 1
+                  )
+                  .map((each) => {
+                    return each.question;
+                  })
+              ),
+              sections: temp_response.section
+                .filter(
+                  (eachSecection, index) => index < temp_response.section.length - 1
+                )
+                .map((eachSec) => {
+                  return {
+                    [eachSec.header[0]]: eachSec.question.map((each) => {
+                      return each.id;
+                    }),
+                    description: eachSec.description[0],
+                  };
+                }),
+            };
+            const { sections, questions } = temp_response1;
+            const parsedResponse = [];
+            sections.forEach((sec) => {
+              const sectionObject = { name: '', questions: [] };
+              const sectionName = Object.keys(sec)[0];
+              sectionObject.name = sectionName;
+              sec[sectionName].forEach((qId) => {
+                const questionFound = questions.find((q) => q?.id === qId);
+                if (questionFound) {
+                  sectionObject.questions.push(questionFound);
+                }
+              });
+              parsedResponse.push(sectionObject);
+            });
+            setLoading(false);
+            setViewMore(true);
+            setViewMoreData(parsedResponse);
+            setPeriodDataForView(period);
+            setSelectedIndex(index);
+          } else {
+            setLoading(false);
+            setViewMore(false);
+            setViewMoreData([]);
+            setPeriodDataForView();
+            message.error(result.data.message);
+            setSelectedIndex(-1);
+          }
+        })
+        .catch((error) => {
+          // setLoading(false);
+          // setViewMore(false);
+          // setViewMoreData([]);
+          // setPeriodDataForView();
+          // message.error(error.message);
+          // setSelectedIndex(-1);
+        });
+    } else if (tabIsErpCentral && !period?.hasOwnProperty('template_id')) {
       const url = endpoints.assessmentErp?.questionPaperViewMoreCentral.replace(
         '<question-paper-id>',
         period?.id
@@ -206,7 +287,6 @@ const AssessmentCard = ({
               });
               parsedResponse.push(sectionObject);
             });
-
             setLoading(false);
             setViewMore(true);
             setViewMoreData(parsedResponse);
@@ -232,63 +312,237 @@ const AssessmentCard = ({
     }
   };
 
+  const handlePrintData = async (period) => {
+    await new Promise((resolve) => {
+      setLoading(true);
+      // setPrintData(period);
+      // handlePrintData(period)
+      // setTimeout(resolve, 200);
+      // setTimeout(() => handleMenuClose(), 400);
+
+      axios
+        .get(endpoints?.assessmentErp?.autoQuestionPaper, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+          params: { id: period?.id },
+        })
+        .then((res) => {
+          let tempAllTemplate = res.data.result.results.map((each) => {
+            let tempEachAllTemplate = {
+              ...each,
+              title: each?.paper_name,
+              subject:
+                each?.subjects?.length > 0
+                  ? {
+                      id: each?.subjects[0]?.grade_subject_mapping,
+                      subject: each?.subjects[0],
+                    }
+                  : null,
+
+              section: each?.section
+                .filter((eachSec, index) => index < each.section.length - 1)
+                .map((eachSection, index) => {
+                  return {
+                    ...eachSection,
+                    header: eachSection?.header[0],
+                    description: eachSection?.description[0],
+                    totalQuestion: eachSection?.totalQuestion[0],
+                    question: eachSection?.question.map((eachQuestion, qIndex) => {
+                      return {
+                        // ...eachQuestion,
+                        bloom: {
+                          id: eachQuestion?.question_categories,
+                          category_name: eachQuestion?.question_categories_display,
+                        },
+                        difficult: {
+                          id: eachQuestion?.question_level,
+                          level_name: eachQuestion?.question_level_display,
+                        },
+                        type: {
+                          id: eachQuestion?.question_type_sub_type_id,
+                          type_name: eachQuestion?.question_type_sub_type_name,
+                        },
+                        subType: {
+                          id: eachQuestion?.question_type,
+                          type_name: eachQuestion?.question_type_name,
+                          sub_type_id: eachQuestion?.question_type_sub_type_id,
+                        },
+                        marks: eachQuestion?.question_mark[0],
+                        question: eachQuestion,
+                      };
+                    }),
+                  };
+                }),
+              volume: each?.volume ? each?.volume : [], //need
+              chapter: each?.chapter ? each?.chapter : [], //need
+              total_marks: each.total_mark,
+              duration: each.duration ? each?.duration : null, //need
+              instruction: each?.instructions ? each?.instructions : '', //need
+              questionGenerate: true,
+              currentPaper: 1,
+              exportType: 'Publish',
+              // // subject: each?.subjects[0],
+              // duration: each?.total_duration,
+              // instruction: each?.instructions,
+            };
+            return { ...tempEachAllTemplate };
+          });
+          setPrintData(tempAllTemplate[0]);
+          setTimeout(resolve, 200);
+        });
+    }).catch((err) => {
+    });
+    // axios
+    //   .get(endpoints.assessmentErp.listQuestionPaperV2, { headers: { 'x-api-key': 'vikash@12345#1231' }, params: { id: period.id,autoQp:true } })
+  };
+
   return (
-    <Paper
-      className={`${periodColor ? classes.selectedRoot : classes.root} ${
-        period.is_verified ? classes.verifiedColor : classes.notverified
-      }`}
-      style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
-    >
-      <Grid container spacing={2}>
-        <Grid item xs={9}>
-          <Box>
-            <Typography
-              className={classes.title}
-              variant='p'
-              component='p'
-              color='primary'
-              noWrap
-            >
-              {period.paper_name}
-            </Typography>
-          </Box>
-          <Box>
-            <Typography
-              className={classes.content}
-              variant='p'
-              component='p'
-              color='secondary'
-              noWrap
-            >
-              {period.is_draft ? 'Draft' : null}
-              {period.is_review ? 'Review' : null}
-              {period.is_verified ? 'Published' : null}
-            </Typography>
-          </Box>
-        </Grid>
-        {/* {period.is_verified && ( */}
-        <Grid item xs={3} className={classes.textRight}>
-          <Box>
-            <span
-              className='period_card_menu'
-              onClick={() => handlePeriodMenuOpen(index)}
-              onMouseLeave={handlePeriodMenuClose}
-            >
-              <IconButton className='moreHorizIcon' color='primary'>
-                <MoreHorizIcon />
-              </IconButton>
-              {showPeriodIndex === index && showMenu ? (
-                <div className='tooltipContainer'>
-                  {period.is_verified && !period?.is_delete && (
-                    <span
-                      className={` ${classes.tooltiptext} tooltiptext`}
-                      style={{ width: '140px', marginLeft: '-100px' }}
-                    >
-                      <span onClick={handleAssign} style={{ marginBottom: 10 }}>
-                        Assign Test
+    <>
+      <Paper
+        className={`${periodColor ? classes.selectedRoot : classes.root} ${
+          period.is_verified ? classes.verifiedColor : classes.notverified
+        }`}
+        style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={9}>
+            <Box>
+              <Typography
+                className={classes.title}
+                variant='p'
+                component='p'
+                color='primary'
+                noWrap
+              >
+                {period.paper_name}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography
+                className={classes.content}
+                variant='p'
+                component='p'
+                color='secondary'
+                noWrap
+              >
+                {period.is_draft ? 'Draft' : null}
+                {period.is_review ? 'Review' : null}
+                {period.is_verified ? 'Published' : null}
+              </Typography>
+            </Box>
+          </Grid>
+          {/* {period.is_verified && ( */}
+          <Grid item xs={3} className={classes.textRight}>
+            <Box>
+              {period.hasOwnProperty('template_id') && (
+                <>
+                  {' '}
+                  <img src={diamond} className={classes.identifier_icon} />
+                </>
+              )}
+              <span
+                className='period_card_menu'
+                onClick={() => handlePeriodMenuOpen(index)}
+                // onMouseLeave={handlePeriodMenuClose}
+              >
+                <IconButton className='moreHorizIcon' color='primary'>
+                  <MoreHorizIcon />
+                </IconButton>
+                {showPeriodIndex === index && showMenu ? (
+                  <div className='tooltipContainer'>
+                    {period.is_verified && !period?.is_delete && (
+                      <span
+                        className={` ${classes.tooltiptext} tooltiptext`}
+                        style={{ width: '140px', marginLeft: '-100px' }}
+                      >
+                        {period.is_central && period.hasOwnProperty('template_id') && (
+                          <>
+                            <ReactToPrint
+                              onBeforeGetContent={() => handlePrintData(period)}
+                              onAfterPrint={() => {
+                                setLoading(false);
+                                setPrintData(null);
+                              }}
+                              trigger={() => (
+                                <span style={{ marginBottom: 10 }}>Print</span>
+                              )}
+                              content={() => printRef}
+                              documentTitle={`Print`}
+                            />
+                            <Divider />
+                          </>
+                        )}
+                        {!period.hasOwnProperty('template_id') && (
+                          <>
+                            <span onClick={handleAssign} style={{ marginBottom: 10 }}>
+                              Assign Test
+                            </span>
+                            <Divider />
+                          </>
+                        )}
+                        {!period.is_central && (
+                          <span
+                            onClick={() => {
+                              setConfirmMessage('delete');
+                              setOpenModal(true);
+                            }}
+                            style={{ marginTop: 10 }}
+                          >
+                            Delete
+                          </span>
+                        )}
                       </span>
-                      <Divider />
-                      {!period.is_central && (
+                    )}
+                    {period?.is_delete && (
+                      <span
+                        className={` ${classes.tooltiptext} tooltiptext`}
+                        style={{ width: '140px', marginLeft: '-100px' }}
+                      >
+                        {period.is_central && period.hasOwnProperty('template_id') && (
+                          <>
+                            <ReactToPrint
+                              onBeforeGetContent={() => handlePrintData(period)}
+                              onAfterPrint={() => {
+                                setLoading(false);
+                                setPrintData(null);
+                              }}
+                              trigger={() => (
+                                <span style={{ marginBottom: 10 }}>Print</span>
+                              )}
+                              content={() => printRef}
+                              documentTitle={`Print`}
+                            />
+                            <Divider />
+                          </>
+                        )}
+                        <span onClick={handleRestore}>Restore</span>
+                      </span>
+                    )}
+                    {!period.is_verified && !period?.is_delete && (
+                      <span
+                        className='tooltiptext'
+                        style={{ width: '160px', marginLeft: '-120px' }}
+                      >
+                        {period.is_central && period.hasOwnProperty('template_id') && (
+                          <>
+                            <ReactToPrint
+                              onBeforeGetContent={() => handlePrintData(period)}
+                              onAfterPrint={() => {
+                                setLoading(false);
+                                setPrintData(null);
+                              }}
+                              trigger={() => (
+                                <span style={{ marginBottom: 10 }}>Print</span>
+                              )}
+                              content={() => printRef}
+                              documentTitle={`Print`}
+                            />
+                            <Divider />
+                          </>
+                        )}
+                        <span onClick={handlePublish} style={{ marginBottom: 10 }}>
+                          Publish Paper
+                        </span>
+                        <Divider />
                         <span
                           onClick={() => {
                             setConfirmMessage('delete');
@@ -298,69 +552,40 @@ const AssessmentCard = ({
                         >
                           Delete
                         </span>
-                      )}
-                    </span>
-                  )}
-                  {period?.is_delete && (
-                    <span
-                      className={` ${classes.tooltiptext} tooltiptext`}
-                      style={{ width: '140px', marginLeft: '-100px' }}
-                    >
-                      <span onClick={handleRestore}>Restore</span>
-                    </span>
-                  )}
-                  {!period.is_verified && !period?.is_delete && (
-                    <span
-                      className='tooltiptext'
-                      style={{ width: '160px', marginLeft: '-120px' }}
-                    >
-                      <span onClick={handlePublish} style={{ marginBottom: 10 }}>
-                        Publish Paper
                       </span>
-                      <Divider />
-                      <span
-                        onClick={() => {
-                          setConfirmMessage('delete');
-                          setOpenModal(true);
-                        }}
-                        style={{ marginTop: 10 }}
-                      >
-                        Delete
-                      </span>
-                    </span>
-                  )}
-                  {openModal && (
-                    <ConfirmPopOver
-                      submit={() => handleDelete()}
-                      openModal={openModal}
-                      setOpenModal={setOpenModal}
-                      operation={confirmMessage}
-                      opendelete={true}
-                    />
-                  )}
-                </div>
-              ) : null}
-            </span>
-          </Box>
-        </Grid>
-        {/* <Grid item xs={12} sm={12} /> */}
-        <Grid item xs={8}>
-          <Box>
-            <Typography
-              className={classes.content}
-              variant='p'
-              component='p'
-              color='secondary'
-            >
-              {tabIsErpCentral.id == 1 ? (
-                <FlagIcon className={classes.checkCentral} />
-              ) : (
-                <FlagIcon className={classes.checkCentralNot} />
-              )}
-              Created On :{period.created_at.substring(0, 10)}
-            </Typography>
-          </Box>
-          {/* <Box>
+                    )}
+                    {openModal && (
+                      <ConfirmPopOver
+                        submit={() => handleDelete()}
+                        openModal={openModal}
+                        setOpenModal={setOpenModal}
+                        operation={confirmMessage}
+                        opendelete={true}
+                      />
+                    )}
+                  </div>
+                ) : null}
+              </span>
+            </Box>
+          </Grid>
+          {/* <Grid item xs={12} sm={12} /> */}
+          <Grid item xs={8}>
+            <Box>
+              <Typography
+                className={classes.content}
+                variant='p'
+                component='p'
+                color='secondary'
+              >
+                {tabIsErpCentral.id == 1 ? (
+                  <FlagIcon className={classes.checkCentral} />
+                ) : (
+                  <FlagIcon className={classes.checkCentralNot} />
+                )}
+                Created On :{period.created_at.substring(0, 10)}
+              </Typography>
+            </Box>
+            {/* <Box>
             <Typography
               className={classes.content}
               variant='p'
@@ -370,27 +595,35 @@ const AssessmentCard = ({
               {period.created_at.substring(0, 10)}
             </Typography>
           </Box> */}
+          </Grid>
+          <Grid item xs={2} className={classes.textRight} style={{ marginLeft: '16%' }}>
+            {!periodColor && (
+              <Button
+                variant='contained'
+                style={{
+                  color: 'white',
+                  width: '100%',
+                  borderRadius: '6px',
+                  height: '32px',
+                }}
+                color='primary'
+                size='small'
+                onClick={handleViewMore}
+              >
+                VIEW MORE
+              </Button>
+            )}
+          </Grid>
         </Grid>
-        <Grid item xs={2} className={classes.textRight} style={{ marginLeft: '16%' }}>
-          {!periodColor && (
-            <Button
-              variant='contained'
-              style={{
-                color: 'white',
-                width: '100%',
-                borderRadius: '6px',
-                height: '32px',
-              }}
-              color='primary'
-              size='small'
-              onClick={handleViewMore}
-            >
-              VIEW MORE
-            </Button>
-          )}
-        </Grid>
-      </Grid>
-    </Paper>
+      </Paper>
+      {printData && (
+        <div>
+          <div ref={(el) => (printRef = el)} className={classes.printContent}>
+            <QuestionPreview templateFrom={printData} currentStep={4} isPrint={true} />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

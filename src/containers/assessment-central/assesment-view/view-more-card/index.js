@@ -72,6 +72,7 @@ const ViewMoreCard = ({
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+
   const fetchquesPaperStatus = () => {
     // setLoading(true);
     axios
