@@ -99,13 +99,6 @@ const resolveQuestionTypeName = (type, subtype) => {
         return '--';
     }
   } else {
-    console.log("typeeeee",configFEHardcodedTypeSubTypeAutoAssessment?.filter((each) =>
-    each.subTypeId?.includes(subtype)
-  )?.length
-    ? configFEHardcodedTypeSubTypeAutoAssessment?.filter((each) =>
-        each.subTypeId?.includes(subtype)
-      )[0].label
-    : '--');
     return configFEHardcodedTypeSubTypeAutoAssessment?.filter((each) =>
       each.subTypeId?.includes(subtype)
     )?.length
@@ -133,9 +126,7 @@ const QuestionView = ({ question, showHeader, index }) => {
     setExpand((prev) => !prev);
   };
 
-  useEffect(() => {
-    console.log({ question, showHeader, index }, 'alllog QuestionView');
-  });
+
 
   useEffect(() => {
     if ([null, undefined].includes(question.question_type_sub_type_id)) {
@@ -178,7 +169,6 @@ const QuestionView = ({ question, showHeader, index }) => {
       let newarr = s.replace(/</g, '&lt;');
       newarr = newarr.replace('&lt;p>', '');
       newarr = newarr.replace('&lt;/p>', '');
-      console.log('extract', newarr);
       // newarr = newarr.replaceAll('&lt;br />',' ');
       newarr = newarr.split('&lt;br />').join(' ');
       const span = document.createElement('span');

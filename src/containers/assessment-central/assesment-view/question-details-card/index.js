@@ -66,13 +66,6 @@ const resolveQuestionTypeName = (type, subtype) => {
         return '--';
     }
   } else {
-    console.log("typeeeee", subtype, configFEHardcodedTypeSubTypeAutoAssessment?.filter((each) =>
-    each.subTypeId?.includes(type)
-  )?.length
-    ? configFEHardcodedTypeSubTypeAutoAssessment?.filter((each) =>
-        each.subTypeId?.includes(type)
-      )[0].label
-    : '--');
     return configFEHardcodedTypeSubTypeAutoAssessment?.filter((each) =>
       each.subTypeId?.includes(type)
     )?.length

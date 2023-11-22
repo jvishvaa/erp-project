@@ -118,7 +118,6 @@ const AssessmentView = () => {
         if (result?.data?.status_code === 200) {
           setTotalCount(result?.data?.result?.count);
           setLoading(false);
-          console.log(result?.data?.result?.results, 'result?.data?.result?.results');
 
           let tempData = result?.data?.result?.results?.map((each) => {
             if (!each?.hasOwnProperty('template_id')) {
@@ -187,7 +186,6 @@ const AssessmentView = () => {
     setTabGradeId(grade);
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
-    console.log(qpValue, tabQpValue, '@@');
     // setTabIsErpCentral(isErpCentral);
     setErpCategory(erpCategory);
     const branchIds = branch.map((element) => element?.branch?.id) || [];
@@ -195,7 +193,7 @@ const AssessmentView = () => {
       academic?.id
     }&branch=${branchIds}&grade=${
       grade?.value
-    }&page=${page}&page_size=${25}&request_type=${tabIsErpCentral ? 2 : 1} `;
+    }&page=${page}&page_size=${limit}&request_type=${tabIsErpCentral ? 2 : 1} `;
     if (qpValue) {
       requestURL += `&paper_level=${qpValue?.value}`;
     }

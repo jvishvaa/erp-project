@@ -195,11 +195,8 @@ const AssessmentCard = ({
           params: { id: period?.id },
         })
         .then((result) => {
-          console.log(result, 'autoassess');
           if (result.data.status_code === 200) {
-            console.log('calling..');
             let temp_response = result?.data?.result?.results[0];
-            console.log(temp_response, 'temp_resp');
             let temp_response1 = {
               ...temp_response,
               grade: temp_response.grade.id,
@@ -231,12 +228,7 @@ const AssessmentCard = ({
                   };
                 }),
             };
-            console.log(temp_response1, 'temp');
             const { sections, questions } = temp_response1;
-
-            console.log(sections, 'sections');
-            console.log(questions, 'questions');
-
             const parsedResponse = [];
             sections.forEach((sec) => {
               const sectionObject = { name: '', questions: [] };
@@ -244,23 +236,18 @@ const AssessmentCard = ({
               sectionObject.name = sectionName;
               sec[sectionName].forEach((qId) => {
                 const questionFound = questions.find((q) => q?.id === qId);
-
-                console.log(questionFound, 'secobj');
                 if (questionFound) {
                   sectionObject.questions.push(questionFound);
                 }
               });
               parsedResponse.push(sectionObject);
             });
-
-            console.log(parsedResponse, 'parRes');
             setLoading(false);
             setViewMore(true);
             setViewMoreData(parsedResponse);
             setPeriodDataForView(period);
             setSelectedIndex(index);
           } else {
-            console.log('calling else..');
             setLoading(false);
             setViewMore(false);
             setViewMoreData([]);
@@ -300,8 +287,6 @@ const AssessmentCard = ({
               });
               parsedResponse.push(sectionObject);
             });
-            console.log(parsedResponse, 'secobj');
-
             setLoading(false);
             setViewMore(true);
             setViewMoreData(parsedResponse);
@@ -335,14 +320,12 @@ const AssessmentCard = ({
       // setTimeout(resolve, 200);
       // setTimeout(() => handleMenuClose(), 400);
 
-      console.log({ period }, 'data');
       axios
         .get(endpoints?.assessmentErp?.autoQuestionPaper, {
           headers: { 'x-api-key': 'vikash@12345#1231' },
           params: { id: period?.id },
         })
         .then((res) => {
-          console.log(res, 'res');
           let tempAllTemplate = res.data.result.results.map((each) => {
             let tempEachAllTemplate = {
               ...each,
@@ -403,12 +386,10 @@ const AssessmentCard = ({
             };
             return { ...tempEachAllTemplate };
           });
-          console.log(tempAllTemplate, 'tempAllTemplate');
           setPrintData(tempAllTemplate[0]);
           setTimeout(resolve, 200);
         });
     }).catch((err) => {
-      console.log(err, 'err');
     });
     // axios
     //   .get(endpoints.assessmentErp.listQuestionPaperV2, { headers: { 'x-api-key': 'vikash@12345#1231' }, params: { id: period.id,autoQp:true } })
