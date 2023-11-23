@@ -865,7 +865,9 @@ const OfflineStudentAssessment = () => {
 
                   <Upload {...draggerProps}>
                     <StyledButtonLabel>
-                      <Button style={{width : '100%'}} icon={<UploadOutlined />}>Marks Bulk Upload</Button>
+                      <Button style={{ width: '100%' }} icon={<UploadOutlined />}>
+                        Marks Bulk Upload
+                      </Button>
                     </StyledButtonLabel>
                   </Upload>
                   {selectedFile && (
@@ -880,6 +882,7 @@ const OfflineStudentAssessment = () => {
                         style={{ cursor: 'pointer', fontWeight: 600, color: '#1890ff' }}
                         // href='/assets/download-format/bulk_user_upload_v2.xlsx'
                         // download='bulk_user_upload_v2.xlsx'onClick={downloadBulkMarksTemplate}
+                        onClick={downloadBulkMarksTemplate}
                       >
                         Download marks upload template
                       </a>
