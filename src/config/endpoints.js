@@ -535,6 +535,8 @@ export default {
     studentImgs: '/assessment/assessment-document-upload/',
     reUpload: '/assessment/enable-assessment-re-upload/',
     erpBucket: ERP_BUCKET_2,
+    assessmentMarksDownload: '/assessment/marks-download/',
+    assessmentMarksUpload: '/assessment/student-marks-upload/'
   },
   reportCardConfig: {
     reportcardcomponent: '/assessment/report-card-component/',
