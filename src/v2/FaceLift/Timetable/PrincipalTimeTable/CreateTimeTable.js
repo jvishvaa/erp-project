@@ -25,7 +25,8 @@ import {
   DownOutlined,
   FilePdfOutlined,
   FileExcelOutlined,
-  CaretRightOutlined,
+  StepForwardOutlined,
+  StepBackwardOutlined,
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
@@ -77,11 +78,14 @@ const CreateTimeTable = ({ showTab }) => {
   const [periodListData, setPeriodListData] = useState([]);
   const [selectedSectionData, setSelectedSectionData] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [currentDay, setCurrentDay] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [currentDayPeriodData, setCurrentDayPeriodData] = useState([]);
   const [editPeriodLoading, setEditPeriodLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showAssignPeriodDetailsModal, setShowAssignPeriodDetailsModal] = useState(false);
+  const [timeTableOverlapError, setTimeTableOverlapError] = useState(null);
+  const [selectedPeriodSlot, setSelectedPeriodSlot] = useState(null);
+  const [currentDatePeriod, setCurrentDatePeriod] = useState({});
 
   const [currentTimeTable, setCurrentTimeTable] = useState({
     start_date: moment().format('YYYY-MM-DD'),
@@ -190,11 +194,12 @@ const CreateTimeTable = ({ showTab }) => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           let list = res?.data?.result;
-          console.log('fffffffff', list);
           setPeriodListData(list);
-          if (currentDay) {
+          if (selectedDate) {
             let currentData = list.find(
-              (item) => item?.week_days == handleTexttoWeekDay(currentDay)
+              (item) =>
+                item?.week_days ==
+                handleTexttoWeekDay(moment(selectedDate).format('dddd'))
             );
             setCurrentDayPeriodData(currentData?.period_slot);
           } else {
@@ -203,12 +208,7 @@ const CreateTimeTable = ({ showTab }) => {
                 item?.week_days ==
                 handleTexttoWeekDay(moment(params?.start_date).format('dddd'))
             );
-            setCurrentDay(handleDaytoText(currentData?.week_days));
-            console.log(
-              'currentData',
-              handleDaytoText(currentData?.week_days),
-              currentData
-            );
+            setSelectedDate(moment(params?.start_date)?.format('YYYY-MM-DD'));
             setCurrentDayPeriodData(currentData?.period_slot);
           }
         } else {
@@ -220,7 +220,6 @@ const CreateTimeTable = ({ showTab }) => {
         setPeriodListLoading(false);
       });
   };
-
   const handleGrade = (e, value) => {
     setSectionList([]);
     setSectionMappingID();
@@ -260,9 +259,12 @@ const CreateTimeTable = ({ showTab }) => {
   const handleDeleteRecord = (id) => {
     setDeleteLoading(true);
     axios
-      .delete(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/?sec_map=${id}`)
+      .delete(`${endpoints.timeTableNewFlow.dateRangeSectionList}/${id}/`)
       .then((res) => {
-        console.log('dfsdfsdf', res);
+        if (res?.data?.status_code == 200) {
+          message.success('Time table deleted successfully');
+          fetchDateRangeList({ sec_map: sectionMappingID });
+        }
       })
       .catch((error) => message.error('error', error?.message))
       .finally(() => {
@@ -273,7 +275,6 @@ const CreateTimeTable = ({ showTab }) => {
     setShowCreateModal(true);
   };
 
-  console.log('dfsdfsdfds22', selectedSectionData);
   const handleShowEditTimeModal = (record) => {
     setSelectedPeriod(record);
     setShowEditTimeModal(true);
@@ -316,9 +317,7 @@ const CreateTimeTable = ({ showTab }) => {
       ...record,
       tt_id: selectedSectionData?.id,
       sec_map: selectedSectionData?.sec_map,
-      date: moment(selectedSectionData?.start_date)
-        .add(handleTexttoWeekDay(currentDay), 'days')
-        .format('YYYY-MM-DD'),
+      date: moment(selectedDate).format('YYYY-MM-DD'),
     };
     setSelectedPeriod(data);
   };
@@ -340,10 +339,18 @@ const CreateTimeTable = ({ showTab }) => {
         if (res?.data?.status_code == 201) {
           message.success('Time table created successfully');
           setShowCreateModal(false);
-          setCurrentTimeTable({});
+          setTimeTableOverlapError(null);
+          setCurrentTimeTable({
+            start_date: moment().format('YYYY-MM-DD'),
+            end_date: moment().format('YYYY-MM-DD'),
+            grade: [],
+            section: [],
+          });
           if (sectionMappingID) {
             fetchDateRangeList({ sec_map: sectionMappingID });
           }
+        } else if (res?.data?.status_code == 409) {
+          setTimeTableOverlapError(res?.data);
         }
       })
       .catch((error) => message.error('error', error?.message))
@@ -378,8 +385,8 @@ const CreateTimeTable = ({ showTab }) => {
         if (res?.status == 200) {
           message.success('Periods Timings updated successfully');
           fetchDayWisePeriods({
-            start_date: selectedSectionData?.start_date,
-            end_date: selectedSectionData?.end_date,
+            start_date: currentDatePeriod?.start_date,
+            end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
           });
           handleCloseEditTimeModal();
@@ -412,8 +419,8 @@ const CreateTimeTable = ({ showTab }) => {
         if (res.data?.status_code == 201) {
           message.success('Periods Details assigned successfully');
           fetchDayWisePeriods({
-            start_date: selectedSectionData?.start_date,
-            end_date: selectedSectionData?.end_date,
+            start_date: currentDatePeriod?.start_date,
+            end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
           });
           handleClosePeriodDetailsModal();
@@ -426,11 +433,13 @@ const CreateTimeTable = ({ showTab }) => {
         setEditPeriodLoading(false);
       });
   };
-  console.log({ selectedPeriod, currentDayPeriodData });
+
   const handleUpdatePeriod = (type) => {
     let payload = {
-      week_day: handleTexttoWeekDay(currentDay),
+      week_day: Number(handleTexttoWeekDay(moment(selectedDate).format('dddd'))),
       sec_map: selectedSectionData?.sec_map,
+      tt_id: selectedSectionData?.id,
+      slot_id: selectedPeriodSlot?.id,
     };
     if (type == 'lecture') {
       payload['lecture_type'] = selectedPeriod?.lecture_type;
@@ -449,8 +458,8 @@ const CreateTimeTable = ({ showTab }) => {
         if (res.status == 200) {
           message.success('Periods Details updated successfully');
           fetchDayWisePeriods({
-            start_date: selectedSectionData?.start_date,
-            end_date: selectedSectionData?.end_date,
+            start_date: currentDatePeriod?.start_date,
+            end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
           });
           if (type == 'lecture') {
@@ -577,9 +586,9 @@ const CreateTimeTable = ({ showTab }) => {
         <span
           className='th-pointer'
           onClick={() => {
-            console.log('row clicked', row, currentDay);
             if (row.periods.length > 0) {
               handleShowEditLectureModal(row?.periods[0]);
+              setSelectedPeriodSlot(row);
             } else {
               handleShowPeriodDetailsModal({
                 period_slot: row?.id,
@@ -617,6 +626,7 @@ const CreateTimeTable = ({ showTab }) => {
                 ...row?.periods[0],
                 sub_map: row?.periods[0]?.sub?.map((item) => item.id),
               });
+              setSelectedPeriodSlot(row);
             } else {
               handleShowPeriodDetailsModal({
                 period_slot: row?.id,
@@ -653,6 +663,7 @@ const CreateTimeTable = ({ showTab }) => {
                 ...row?.periods[0],
                 teacher: row?.periods[0]?.sub_teacher?.map((item) => item.id),
               });
+              setSelectedPeriodSlot(row);
             } else {
               handleShowPeriodDetailsModal({
                 period_slot: row?.id,
@@ -679,6 +690,15 @@ const CreateTimeTable = ({ showTab }) => {
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
     setDateRangeSectionList([]);
+    setInnerExpandedRowKeys([]);
+    setPeriodListData([]);
+    setSelectedDate(null);
+    setSelectedSectionData(null);
+    setCurrentDayPeriodData([]);
+    setCurrentDatePeriod({
+      start_date: record?.start_date,
+      end_date: moment(record?.start_date).add(6, 'days').format('YYYY-MM-DD'),
+    });
     if (expanded) {
       fetchRangeSectionList({
         start_date: record?.start_date,
@@ -693,13 +713,14 @@ const CreateTimeTable = ({ showTab }) => {
     const keys = [];
     setInnerExpandedRowKeys([]);
     setPeriodListData([]);
-    setCurrentDay();
+    setSelectedDate(null);
     setSelectedSectionData(null);
+    setCurrentDayPeriodData([]);
     if (expanded) {
       setSelectedSectionData(record);
       fetchDayWisePeriods({
-        start_date: record?.start_date,
-        end_date: record?.end_date,
+        start_date: currentDatePeriod?.start_date,
+        end_date: currentDatePeriod?.end_date,
         sec_map: record?.sec_map,
       });
       fetchSubjectList({
@@ -713,7 +734,6 @@ const CreateTimeTable = ({ showTab }) => {
     setInnerExpandedRowKeys(keys);
   };
   const expandedRowRender = (record) => {
-    // let currentData = record.grades;
     const sectionListColumns = [
       {
         dataIndex: 'grade_sec',
@@ -783,37 +803,98 @@ const CreateTimeTable = ({ showTab }) => {
   };
   const innerExpandedRowRender = (record) => {
     return (
-      // <Spin spinning={periodListLoading}>
       <div className='row th-bg-grey p-2 th-br-4' style={{ border: '1px solid #d9d9d9' }}>
         <div className='col-12'>
           <div
-            className='d-flex justify-content-between pb-2'
+            className='d-flex justify-content-between pb-2 align-items-center'
             style={{ borderBottom: '2px solid #d9d9d9' }}
           >
-            <div className='th-fw-700'>
-              {moment(record?.start_date).format('Do MMM')}-
-              {moment(record?.start_date).add(6, 'days').format('Do MMM, YYYY')}
+            <div className=' d-flex align-items-center th-fw-700'>
+              <span className='mx-2'>
+                <StepBackwardOutlined
+                  title='Previous Week'
+                  className='th-24 th-pointer'
+                  onClick={() => {
+                    setSelectedDate(null);
+                    const newStartDate = moment(currentDatePeriod?.start_date)
+                      .subtract(7, 'days')
+                      .format('YYYY-MM-DD');
+
+                    const newEndDate = moment(currentDatePeriod?.end_date)
+                      .subtract(7, 'days')
+                      .format('YYYY-MM-DD');
+                    setCurrentDatePeriod({
+                      start_date: newStartDate,
+                      end_date: newEndDate,
+                    });
+                    fetchDayWisePeriods({
+                      start_date: newStartDate,
+                      end_date: newEndDate,
+                      sec_map: selectedSectionData?.sec_map,
+                    });
+                  }}
+                />
+              </span>
+              <span>
+                {moment(currentDatePeriod?.start_date).format('Do MMM')}-
+                {moment(currentDatePeriod?.start_date)
+                  .add(6, 'days')
+                  .format('Do MMM, YYYY')}
+              </span>
             </div>
-            <div className='th-fw-600'>BTM Time Slot 1</div>
+            <div className=' d-flex align-items-center th-fw-600'>
+              <span>BTM Time Slot 1</span>
+              <span className='mx-2'>
+                <StepForwardOutlined
+                  title='Next Week'
+                  className='th-24 th-pointer'
+                  onClick={() => {
+                    setSelectedDate(null);
+
+                    const newStartDate = moment(currentDatePeriod?.start_date)
+                      .add(7, 'days')
+                      .format('YYYY-MM-DD');
+
+                    const newEndDate = moment(currentDatePeriod?.end_date)
+                      .add(7, 'days')
+                      .format('YYYY-MM-DD');
+                    setCurrentDatePeriod({
+                      start_date: newStartDate,
+                      end_date: newEndDate,
+                    });
+
+                    fetchDayWisePeriods({
+                      start_date: newStartDate,
+                      end_date: newEndDate,
+                      sec_map: selectedSectionData?.sec_map,
+                    });
+                  }}
+                />
+              </span>
+            </div>
           </div>
 
           <div className='d-flex justify-content-between mt-2'>
             {periodListData?.map((item, index) => {
-              let currentWeekday = moment(record?.start_date)
+              let currentWeekday = moment(currentDatePeriod?.start_date)
                 .add(item?.week_days, 'days')
                 .format('dddd');
-              {
-                console.log('rohan', currentDay, currentWeekday);
-              }
+              let currentDate = moment(currentDatePeriod?.start_date)
+                .add(item?.week_days, 'days')
+                .format('YYYY-MM-DD');
               return (
                 <div
-                  className={`d-flex flex-column th-bg-grey p-2 th-br-4 text-center  th-pointer ${
-                    currentDay === currentWeekday
+                  className={`d-flex flex-column th-bg-grey p-2 th-br-4 text-center th-pointer ${
+                    currentDate === selectedDate
                       ? 'th-button-active th-fw-600'
                       : 'th-button th-fw-500'
                   }`}
                   onClick={() => {
-                    setCurrentDay(currentWeekday);
+                    setSelectedDate(
+                      moment(currentDatePeriod?.start_date)
+                        .add(item?.week_days, 'days')
+                        .format('YYYY-MM-DD')
+                    );
                     let currentData = periodListData.find(
                       (el) => el?.week_days == handleTexttoWeekDay(currentWeekday)
                     );
@@ -821,12 +902,12 @@ const CreateTimeTable = ({ showTab }) => {
                   }}
                 >
                   <div>
-                    {moment(record?.start_date)
+                    {moment(currentDatePeriod?.start_date)
                       .add(item?.week_days, 'days')
                       .format('Do MMM')}
                   </div>
                   <div>
-                    {moment(record?.start_date)
+                    {moment(currentDatePeriod?.start_date)
                       .add(item?.week_days, 'days')
                       .format('dddd')}
                   </div>
@@ -858,7 +939,6 @@ const CreateTimeTable = ({ showTab }) => {
           </div>
         </div>
       </div>
-      // </Spin>
     );
   };
 
@@ -905,7 +985,7 @@ const CreateTimeTable = ({ showTab }) => {
       <React.Fragment>
         <div className='row mt-2 align-items-center'>
           <div className='col-md-3 py-2'>
-            <div className='th-fw-600'>Select Grade</div>
+            <div className='th-fw-600 pb-2'>Select Grade</div>
             <Select
               className='th-width-100 th-br-6'
               onChange={handleGrade}
@@ -928,7 +1008,7 @@ const CreateTimeTable = ({ showTab }) => {
             </Select>
           </div>
           <div className='col-md-3 py-2'>
-            <div className='th-fw-600'>Select Section</div>
+            <div className='th-fw-600 pb-2'>Select Section</div>
             <Select
               className='th-width-100 th-br-6'
               onChange={(e) => handleSection(e)}
@@ -1114,6 +1194,18 @@ const CreateTimeTable = ({ showTab }) => {
                 </div>
               </div>
             </div>
+            {timeTableOverlapError && (
+              <div className='col-12 py-2'>
+                <div className='th-red th-14 th-fw-500'>
+                  {timeTableOverlapError?.developer_msg}
+                </div>
+                <div className='th-red th-fw-500'>
+                  {timeTableOverlapError?.sections
+                    .map((el) => el?.grade + ' ' + el?.section)
+                    .join(',')}
+                </div>
+              </div>
+            )}
           </div>
         </Modal>
         {/* Edit Period Time Modal */}
@@ -1157,6 +1249,7 @@ const CreateTimeTable = ({ showTab }) => {
                     <TimePicker
                       popupStyle={{ zIndex: 2100 }}
                       use12Hours
+                      inputReadOnly
                       showNow={false}
                       value={moment(selectedPeriod?.start_time, 'hh:mm A')}
                       format='hh:mm A'
@@ -1174,6 +1267,7 @@ const CreateTimeTable = ({ showTab }) => {
                     <TimePicker
                       popupStyle={{ zIndex: 2100 }}
                       use12Hours
+                      inputReadOnly
                       showNow={false}
                       value={moment(selectedPeriod?.end_time, 'hh:mm A')}
                       format='hh:mm A'
@@ -1467,7 +1561,6 @@ const CreateTimeTable = ({ showTab }) => {
                   <Select
                     className='th-width-100 th-br-6'
                     onChange={(e, each) => {
-                      console.log({ each });
                       setSelectedPeriod({
                         ...selectedPeriod,
                         sub_map: each?.map((item) => item?.value),
