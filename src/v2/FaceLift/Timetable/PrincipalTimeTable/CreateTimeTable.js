@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'v2/config/axios';
+import FileSaver from 'file-saver';
 import endpoints from 'v2/config/endpoints';
 import {
   Select,
@@ -99,6 +100,12 @@ const CreateTimeTable = ({ showTab }) => {
   const [showEditLectureModal, setShowEditLectureModal] = useState(false);
   const [showEditSubjectModal, setShowEditSubjectModal] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState();
+  const [duplicateData, setDuplicateData] = useState(null);
+  const [duplicateLoading, setDuplicateLoading] = useState(false);
+  const [showDuplicateModal, setShowDuplicateModal] = useState(null);
+
+  const [excelLoading, setExcelLoading] = useState(false);
+  const [PDFLoading, setPDFLoading] = useState(false);
 
   const gradeOptions = gradeList?.map((each) => {
     return (
@@ -274,6 +281,13 @@ const CreateTimeTable = ({ showTab }) => {
   const handleViewCreateModal = () => {
     setShowCreateModal(true);
   };
+  const handleViewDuplicateModal = () => {
+    setShowDuplicateModal(true);
+  };
+  const handleCloseDuplicateModal = () => {
+    setShowDuplicateModal(false);
+    setDuplicateData(null);
+  };
 
   const handleShowEditTimeModal = (record) => {
     setSelectedPeriod(record);
@@ -356,6 +370,33 @@ const CreateTimeTable = ({ showTab }) => {
       .catch((error) => message.error('error', error?.message))
       .finally(() => {
         setCreateLoading(false);
+      });
+  };
+
+  const handleDuplicateTimeTable = (record) => {
+    setDuplicateLoading(true);
+    axios
+      .post(`${endpoints?.timeTableNewFlow?.duplicateTimeTable}/`, {
+        start_date: duplicateData?.start_date,
+        end_date: duplicateData?.end_date,
+        sec_map: [duplicateData?.sec_map],
+        id: duplicateData?.id,
+      })
+      .then((res) => {
+        if (res.data?.status_code == 201) {
+          message.success('Timetable duplicated successfully');
+          fetchDateRangeList({ sec_map: sectionMappingID });
+          setInnerExpandedRowKeys([]);
+          handleCloseDuplicateModal();
+        } else if (res.data?.status_code == 409) {
+          message.error(res.data?.developer_msg);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setDuplicateLoading(false);
       });
   };
   const fetchRangeSectionList = (params = {}) => {
@@ -478,6 +519,40 @@ const CreateTimeTable = ({ showTab }) => {
         setEditPeriodLoading(false);
       });
   };
+
+  const AttachmentDownload = (data, filename, isExcel) => {
+    const FileType = isExcel
+      ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+      : 'application/pdf;base64';
+    const blob = new Blob([data], {
+      type: FileType,
+    });
+    FileSaver.saveAs(blob, filename);
+  };
+  const handleAttachmentDownload = (params = {}) => {
+    if (params?.excel) {
+      setExcelLoading(true);
+    } else {
+      setPDFLoading(true);
+    }
+    axios
+      .get('/acad-tt/excel/', {
+        params: { ...params },
+        responseType: 'blob',
+      })
+      .then((response) => {
+        let file = `TimeTable_${currentDatePeriod?.start_date}-${currentDatePeriod?.end_date}_${selectedSectionData?.grade_sec?.grade}-${selectedSectionData?.grade_sec?.section}`;
+        let fullName = `${file}.${params?.excel ? 'xlsx' : 'pdf'}`;
+        AttachmentDownload(response?.data, fullName, params?.excel ? true : false);
+      })
+      .catch((e) => {
+        message.error(e.message);
+      })
+      .finally(() => {
+        setExcelLoading(false);
+        setPDFLoading(false);
+      });
+  };
   const columns = [
     {
       title: <span className='th-white th-fw-700'>Date Range</span>,
@@ -530,16 +605,6 @@ const CreateTimeTable = ({ showTab }) => {
       width: '20%',
       render: (record) => (
         <Space size=''>
-          <Tag
-            icon={<EditFilled />}
-            color='processing'
-            className='th-pointer th-br-4'
-            onClick={() => {
-              // handleViewCreateModal(record);
-            }}
-          >
-            Duplicate
-          </Tag>
           <Popconfirm
             placement='bottomRight'
             title={'Are you sure you want to delete this item?'}
@@ -771,9 +836,24 @@ const CreateTimeTable = ({ showTab }) => {
         ),
       },
       {
-        dataIndex: '',
+        dataIndex: 'Actions',
         align: 'center',
         width: '20%',
+        render: (text, record) => {
+          return (
+            <Tag
+              icon={<EditFilled />}
+              color='processing'
+              className='th-pointer th-br-4'
+              onClick={() => {
+                setDuplicateData(record);
+                handleViewDuplicateModal();
+              }}
+            >
+              Duplicate
+            </Tag>
+          );
+        },
       },
     ];
 
@@ -930,10 +1010,35 @@ const CreateTimeTable = ({ showTab }) => {
             />
           </div>
           <div className='d-flex mt-2'>
-            <Button type='primary' className='th-br-4' icon={<FileExcelOutlined />}>
+            <Button
+              type='primary'
+              className='th-br-4'
+              loading={excelLoading}
+              icon={<FileExcelOutlined />}
+              onClick={() => {
+                handleAttachmentDownload({
+                  start_date: currentDatePeriod?.start_date,
+                  end_date: currentDatePeriod?.end_date,
+                  sec_map: selectedSectionData?.sec_map,
+                  excel: true,
+                });
+              }}
+            >
               Export (CSV)
             </Button>
-            <Button type='primary' className=' th-br-4 ml-2' icon={<FilePdfOutlined />}>
+            <Button
+              type='primary'
+              className=' th-br-4 ml-2'
+              loading={PDFLoading}
+              icon={<FilePdfOutlined />}
+              onClick={() => {
+                handleAttachmentDownload({
+                  start_date: currentDatePeriod?.start_date,
+                  end_date: currentDatePeriod?.end_date,
+                  sec_map: selectedSectionData?.sec_map,
+                });
+              }}
+            >
               Download (PDF)
             </Button>
           </div>
@@ -1194,6 +1299,77 @@ const CreateTimeTable = ({ showTab }) => {
                 </div>
               </div>
             </div>
+            {timeTableOverlapError && (
+              <div className='col-12 py-2'>
+                <div className='th-red th-14 th-fw-500'>
+                  {timeTableOverlapError?.developer_msg}
+                </div>
+                <div className='th-red th-fw-500'>
+                  {timeTableOverlapError?.sections
+                    .map((el) => el?.grade + ' ' + el?.section)
+                    .join(',')}
+                </div>
+              </div>
+            )}
+          </div>
+        </Modal>
+        {/* Duplicate Time table Modal */}
+        <Modal
+          visible={showDuplicateModal}
+          centered
+          className='th-upload-modal'
+          title='Duplicate Time Table'
+          onCancel={() => {
+            handleCloseDuplicateModal();
+          }}
+          footer={
+            <div className='row justify-content-end'>
+              <Button
+                type='default'
+                onClick={() => {
+                  handleCloseDuplicateModal();
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                type='primary'
+                loading={duplicateLoading}
+                onClick={() => {
+                  handleDuplicateTimeTable();
+                }}
+              >
+                Create
+              </Button>
+            </div>
+          }
+        >
+          <div className='row p-3'>
+            <div className='col-12'>
+              <div className='row justify-content-between align-items-center'>
+                <div className='th-black th-500 col-5'>Select Date Range</div>
+                <div className='col-7'>
+                  <RangePicker
+                    className='w-100'
+                    popupStyle={{ zIndex: 2100 }}
+                    value={[
+                      moment(duplicateData?.start_date, 'YYYY-MM-DD'),
+                      moment(duplicateData?.end_date, 'YYYY-MM-DD'),
+                    ]}
+                    onChange={(e) => {
+                      const startDate = moment(e[0]).format('YYYY-MM-DD');
+                      const endDate = moment(e[1]).format('YYYY-MM-DD');
+                      setDuplicateData({
+                        ...duplicateData,
+                        start_date: startDate,
+                        end_date: endDate,
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
             {timeTableOverlapError && (
               <div className='col-12 py-2'>
                 <div className='th-red th-14 th-fw-500'>

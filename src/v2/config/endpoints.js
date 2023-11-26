@@ -321,5 +321,6 @@ export default {
     teacherList: '/acad-tt/teacher-list',
     studentTimeTableView: '/acad-tt/sview',
     teacherTimeTableView: '/acad-tt/tea-view',
+    duplicateTimeTable: '/acad-tt/duplicate',
   },
 };
