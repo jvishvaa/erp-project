@@ -333,8 +333,6 @@ const TimeTableNewUI = withRouter(() => {
     ],
   ];
 
-  console.log(periods, 'peri');
-
   return (
     <>
       <div className='tablewrap'>

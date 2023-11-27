@@ -205,7 +205,6 @@ const SetTimeTable = ({ showTab }) => {
           `${endpoints?.timeTableNewFlow?.periodSlots}/${currentSlotPeriods[index].id}/`
         )
         .then((res) => {
-          console.log('rteeeeeeeeeeeeeeerterte', res);
           if (res?.data?.status_code == 200) {
             fetchCurrentSlotPeriods({ time_set_id: selectedSlotData?.id });
           }

@@ -190,7 +190,6 @@ const CreateTimeTable = ({ showTab }) => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           let list = res?.data?.result;
-          console.log('fffffffff', list);
           setPeriodListData(list);
           if (currentDay) {
             let currentData = list.find(
@@ -204,11 +203,6 @@ const CreateTimeTable = ({ showTab }) => {
                 handleTexttoWeekDay(moment(params?.start_date).format('dddd'))
             );
             setCurrentDay(handleDaytoText(currentData?.week_days));
-            console.log(
-              'currentData',
-              handleDaytoText(currentData?.week_days),
-              currentData
-            );
             setCurrentDayPeriodData(currentData?.period_slot);
           }
         } else {
@@ -262,7 +256,7 @@ const CreateTimeTable = ({ showTab }) => {
     axios
       .delete(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/?sec_map=${id}`)
       .then((res) => {
-        console.log('dfsdfsdf', res);
+        // console.log('dfsdfsdf', res);
       })
       .catch((error) => message.error('error', error?.message))
       .finally(() => {
@@ -273,7 +267,6 @@ const CreateTimeTable = ({ showTab }) => {
     setShowCreateModal(true);
   };
 
-  console.log('dfsdfsdfds22', selectedSectionData);
   const handleShowEditTimeModal = (record) => {
     setSelectedPeriod(record);
     setShowEditTimeModal(true);
@@ -426,7 +419,6 @@ const CreateTimeTable = ({ showTab }) => {
         setEditPeriodLoading(false);
       });
   };
-  console.log({ selectedPeriod, currentDayPeriodData });
   const handleUpdatePeriod = (type) => {
     let payload = {
       week_day: handleTexttoWeekDay(currentDay),
@@ -577,7 +569,6 @@ const CreateTimeTable = ({ showTab }) => {
         <span
           className='th-pointer'
           onClick={() => {
-            console.log('row clicked', row, currentDay);
             if (row.periods.length > 0) {
               handleShowEditLectureModal(row?.periods[0]);
             } else {
@@ -802,9 +793,6 @@ const CreateTimeTable = ({ showTab }) => {
               let currentWeekday = moment(record?.start_date)
                 .add(item?.week_days, 'days')
                 .format('dddd');
-              {
-                console.log('rohan', currentDay, currentWeekday);
-              }
               return (
                 <div
                   className={`d-flex flex-column th-bg-grey p-2 th-br-4 text-center  th-pointer ${
@@ -1467,7 +1455,6 @@ const CreateTimeTable = ({ showTab }) => {
                   <Select
                     className='th-width-100 th-br-6'
                     onChange={(e, each) => {
-                      console.log({ each });
                       setSelectedPeriod({
                         ...selectedPeriod,
                         sub_map: each?.map((item) => item?.value),

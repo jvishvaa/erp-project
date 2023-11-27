@@ -756,7 +756,6 @@ const StudentTimeTable = () => {
     }
   };
 
-  console.log('dates', dates, value);
   useEffect(() => {
     if (value.length > 1) {
       fetchCurrentWeekTimeTable({

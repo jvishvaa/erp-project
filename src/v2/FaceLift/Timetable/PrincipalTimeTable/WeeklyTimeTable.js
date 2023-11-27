@@ -195,7 +195,6 @@ const WeeklyTimeTable = ({ showTab }) => {
             color='processing'
             className='th-pointer th-br-4'
             onClick={() => {
-              console.log({ record });
               handleViewSlotDetails(record);
             }}
           >
@@ -320,7 +319,6 @@ const WeeklyTimeTable = ({ showTab }) => {
       })
       .then((res) => {
         if (res?.data?.status_code == 200) {
-          console.log('fdgfdf', editSection);
           let data = {
             grade: editSection?.grade__grade_name,
             gradeID: editSection?.grade_id,
@@ -349,7 +347,6 @@ const WeeklyTimeTable = ({ showTab }) => {
     axios
       .delete(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/?sec_map=${id}`)
       .then((res) => {
-        console.log('dfsdfsdf', res);
         if (res?.data?.status_code == 200) {
           message.success('Weekly Time table deleted successfully');
           fetchWeeklyTimeSlotData({
@@ -380,7 +377,6 @@ const WeeklyTimeTable = ({ showTab }) => {
       axios
         .patch(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/`, payload)
         .then((res) => {
-          console.log('responsepatch', res);
           if (res?.data?.status_code == 201) {
             message.success('Weekly Time Slot updated successfully');
             setShowAssignSlotModal(false);
