@@ -392,7 +392,6 @@ const OfflineStudentAssessment = () => {
         setFilterClicked(true);
       })
       .catch((error) => {
-        console.log('');
         setLoading(false);
       });
   };
@@ -470,7 +469,6 @@ const OfflineStudentAssessment = () => {
         }
       })
       .catch((error) => {
-        console.log('');
         setLoading(false);
       });
   };
@@ -555,7 +553,6 @@ const OfflineStudentAssessment = () => {
         );
       })
       .catch((error) => {
-        console.log('err', error, error.response);
         setAlert('error', 'Something went wrong');
       });
   };
@@ -574,7 +571,6 @@ const OfflineStudentAssessment = () => {
       const file = e.dataTransfer.files;
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      console.log(type, allowedFiles);
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file);
         // setFileTypeError(false);
@@ -614,14 +610,13 @@ const OfflineStudentAssessment = () => {
 
     axiosInstance
       .post(`${endpoints.assessment.assessmentMarksUpload}`, formData, {
-        responseType: 'arraybuffer',
+        responseType: 'blob',
       })
       .then((res) => {
         if (res?.status === 200) {
           offlineMarks();
           setAlert('success', 'File uploaded successfully');
           setSelectedFile('');
-          console.log(res?.data);
           excelDownload(
             res?.data,
             `${history?.location?.state?.test?.test_name}_upload_report.xlsx`
@@ -637,12 +632,13 @@ const OfflineStudentAssessment = () => {
         }
       })
       .catch((error) => {
-        console.log(error, error.response, 'err');
+        const fileReader = new FileReader();
+        fileReader.onload = function (event) {
+          const text = event.target.result; // The resulting text from the Blob
+          setAlert('error', text ? JSON.parse(text).message : 'Something went wrong');
+        };
+        fileReader.readAsText(error.response.data);
         // setAlert('error', error?.error);
-        setAlert(
-          'error',
-          error?.response?.message ? error?.response?.message : 'Something went wrong'
-        );
       })
       .finally(() => {
         setLoading(false);
@@ -1030,7 +1026,6 @@ const OfflineStudentAssessment = () => {
                             Object.keys(items?.test_details).length > 0)
                             ? 'Present'
                             : 'Absent'}
-                          
                         </TableCell>
                       </TableRow>
                     ))}
