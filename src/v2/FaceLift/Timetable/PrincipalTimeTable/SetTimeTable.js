@@ -56,7 +56,7 @@ const SetTimeTable = ({ showTab }) => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700'>TimeTable Name</span>,
+      title: <span className='th-white th-fw-700'>TimeTable Slot Name</span>,
       dataIndex: 'name',
       align: 'center',
     },
@@ -154,8 +154,8 @@ const SetTimeTable = ({ showTab }) => {
     if (data?.total_periods == 0) {
       setCurrentSlotPeriods([
         {
-          start_time: '09:00:00',
-          end_time: '16:00:00',
+          start_time: data?.start_time,
+          end_time: data?.end_time,
           period_name: 'Period 1',
           time_set: data?.id,
         },
@@ -177,8 +177,8 @@ const SetTimeTable = ({ showTab }) => {
 
   const handleAddPeriod = (id, period_number) => {
     let obj = {
-      start_time: '08:00:00',
-      end_time: '16:00:00',
+      start_time: selectedSlotData?.start_time,
+      end_time: selectedSlotData?.end_time,
       period_name: `Period ${period_number + 1}`,
       time_set: id,
     };
@@ -342,6 +342,8 @@ const SetTimeTable = ({ showTab }) => {
             page: pageDetails?.current,
           });
           setEditCurrentSlotPeriod(false);
+        } else if (res?.data?.status_code == 409) {
+          message.error(res?.data?.developer_msg);
         }
       })
       .catch((error) => message.error('error', error?.message))
@@ -367,7 +369,7 @@ const SetTimeTable = ({ showTab }) => {
           className='th-br-4'
           onClick={() => handleAddTimeSlot()}
         >
-          Create Time Table
+          Create Time Table Slot
         </Button>
       </div>
       <div className='col-12 pt-3'>
@@ -404,7 +406,11 @@ const SetTimeTable = ({ showTab }) => {
         title={`${editSlotData ? 'Update' : 'Create'} Time Table Slot`}
         onCancel={() => {
           setShowTimeSlotModal(false);
-          setCurrentSlotData({ name: '', start_time: '', end_time: '' });
+          setCurrentSlotData({
+            name: '',
+            start_time: moment().format('HH:mm:ss'),
+            end_time: moment().format('HH:mm:ss'),
+          });
         }}
         footer={
           <div className='row justify-content-end'>
@@ -412,7 +418,11 @@ const SetTimeTable = ({ showTab }) => {
               type='default'
               onClick={() => {
                 setShowTimeSlotModal(false);
-                setCurrentSlotData({ name: '', start_time: '', end_time: '' });
+                setCurrentSlotData({
+                  name: '',
+                  start_time: moment().format('HH:mm:ss'),
+                  end_time: moment().format('HH:mm:ss'),
+                });
               }}
             >
               Close
@@ -449,6 +459,7 @@ const SetTimeTable = ({ showTab }) => {
                 <TimePicker
                   popupStyle={{ zIndex: 2100 }}
                   use12Hours
+                  inputReadOnly
                   showNow={false}
                   value={moment(currentSlotData?.start_time, 'HH:mm:ss')}
                   format='hh:mm A'
@@ -466,6 +477,7 @@ const SetTimeTable = ({ showTab }) => {
                 <TimePicker
                   popupStyle={{ zIndex: 2100 }}
                   use12Hours
+                  inputReadOnly
                   showNow={false}
                   format='hh:mm A'
                   value={moment(currentSlotData?.end_time, 'HH:mm:ss')}
@@ -551,6 +563,7 @@ const SetTimeTable = ({ showTab }) => {
                             key={`start_time_${index}`}
                             popupStyle={{ zIndex: 2100 }}
                             use12Hours
+                            inputReadOnly
                             showNow={false}
                             value={moment(item?.start_time, 'hh:mm:ss')}
                             format='hh:mm A'
@@ -570,6 +583,7 @@ const SetTimeTable = ({ showTab }) => {
                             key={`end_time_${index}`}
                             popupStyle={{ zIndex: 2100 }}
                             use12Hours
+                            inputReadOnly
                             showNow={false}
                             value={moment(item?.end_time, 'hh:mm:ss')}
                             format='hh:mm A'
