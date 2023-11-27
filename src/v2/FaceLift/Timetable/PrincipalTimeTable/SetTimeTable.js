@@ -372,33 +372,42 @@ const SetTimeTable = ({ showTab }) => {
           Create Time Table Slot
         </Button>
       </div>
-      <div className='col-12 pt-3'>
-        <Table
-          className='th-table'
-          columns={columns}
-          loading={loading}
-          rowKey={(record) => record?.id}
-          dataSource={availableTimeSlotDats}
-          pagination={{
-            position: ['bottomCenter'],
-            total: pageDetails.total,
-            current: pageDetails.current,
-            pageSize: 15,
-            showSizeChanger: false,
-            onChange: (page) => {
-              setPageDetails({ ...pageDetails, current: page });
-            },
-            limit: 15,
-          }}
-          rowClassName={(record, index) =>
-            index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-          }
-          scroll={{
-            x: availableTimeSlotDats?.length > 0 ? 'max-content' : null,
-            y: '50vh',
-          }}
-        />
+      <div className='col-12 py-3'>
+        {availableTimeSlotDats.length > 0 ? (
+          <Table
+            className='th-table'
+            columns={columns}
+            loading={loading}
+            rowKey={(record) => record?.id}
+            dataSource={availableTimeSlotDats}
+            pagination={{
+              position: ['bottomCenter'],
+              total: pageDetails.total,
+              current: pageDetails.current,
+              pageSize: 15,
+              showSizeChanger: false,
+              onChange: (page) => {
+                setPageDetails({ ...pageDetails, current: page });
+              },
+              limit: 15,
+            }}
+            rowClassName={(record, index) =>
+              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+            }
+            scroll={{
+              x: availableTimeSlotDats?.length > 0 ? 'max-content' : null,
+              y: '50vh',
+            }}
+          />
+        ) : (
+          <div className='text-center py-5'>
+            <span className='th-25 th-fw-500'>
+              Please select the filters to show data!
+            </span>
+          </div>
+        )}
       </div>
+
       <Modal
         visible={showTimeSlotModal}
         centered

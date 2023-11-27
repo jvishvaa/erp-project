@@ -16,7 +16,7 @@ const PrincipalTimeTable = () => {
     <>
       <Layout>
         <div className='row py-3 px-2'>
-          <div className='col-md-4' style={{ zIndex: 2 }}>
+          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
@@ -24,11 +24,9 @@ const PrincipalTimeTable = () => {
               <Breadcrumb.Item className='th-black-1 th-16'>TimeTable</Breadcrumb.Item>
             </Breadcrumb>
           </div>
-        </div>
-
-        <div className='row px-3'>
-          <div className='col-12 th-bg-white'>
-            <div className='th-bg-white th-tabs th-activity-tabs'>
+      
+          <div className='col-12'>
+            <div className='th-tabs th-bg-white'>
               <Tabs type='card' onChange={onChange} activeKey={showTab}>
                 <TabPane tab={<div>SET TIMETABLE</div>} key='1'>
                   <SetTimeTable showTab={showTab} />

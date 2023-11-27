@@ -537,7 +537,7 @@ const WeeklyTimeTable = ({ showTab }) => {
           </div>
         </div>
 
-        <div className='col-12 mt-3'>
+        <div className='col-12 py-3'>
           {sectionMappingID ? (
             <Table
               className='th-table'
@@ -559,7 +559,7 @@ const WeeklyTimeTable = ({ showTab }) => {
           ) : (
             <div className='text-center py-5'>
               <span className='th-25 th-fw-500'>
-                Please select the section first you wish to display
+                Please select the filters to show data!
               </span>
             </div>
           )}
