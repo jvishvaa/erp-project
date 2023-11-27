@@ -40,6 +40,9 @@ import Loader from './../../components/loader/loader';
 import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
 import axios from 'axios';
+import fileDownload from 'js-file-download';
+import { FileExcelTwoTone, UploadOutlined } from '@ant-design/icons';
+import { Upload, message } from 'antd';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -176,10 +179,25 @@ const StyledClearButton = withStyles((theme) => ({
   },
 }))(Button);
 
+const StyledButtonLabel = withStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.primary.main,
+    color: '#FFFFFF !important',
+    padding: '8px 15px',
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
+    },
+    width: 'fit-content',
+    minWidth: '64px',
+    borderRadius: '10px',
+    lineHeight: '1.5',
+    cursor: 'pointer',
+  },
+}))(InputLabel);
+
 const OfflineStudentAssessment = () => {
   const history = useHistory();
   const classes = useStyles({});
-  const fileRef = useRef();
   const { setAlert } = useContext(AlertNotificationContext);
   const [file, setFile] = useState(null);
   const [uploadFlag, setUploadFlag] = useState(false);
@@ -224,7 +242,9 @@ const OfflineStudentAssessment = () => {
   const [checkBoxFlag, setCheckBoxFlag] = useState(false);
   const [showNewAsses, setShowNewAsses] = useState(true);
 
-  console.log(createFilterData, '@@');
+  const [bulkMarksUploadFileLoader, setBulkMarksUploadFileLoader] = useState(false);
+
+  const [selectedFile, setSelectedFile] = useState('');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -242,14 +262,12 @@ const OfflineStudentAssessment = () => {
         }
       });
     }
-    console.log(filterData);
     checkOMR();
   }, []);
   const checkOMR = () => {
     axiosInstance
       .get(`${endpoints?.academics?.checkOMR}`)
       .then((result) => {
-        console.log(result);
         setBranchOMR(result?.data?.result);
         // enableOMR(result?.data?.result)
       })
@@ -277,9 +295,6 @@ const OfflineStudentAssessment = () => {
     });
     setUploadBranchOMR(filterBranch);
     // setDisplayOMR(filterBranch?.length > 0 ? true : false )
-    console.log(filterBranch);
-    console.log(branchList);
-    console.log(branchOMR);
   };
 
   useEffect(() => {
@@ -297,7 +312,6 @@ const OfflineStudentAssessment = () => {
   const handleTextSearch = (e) => {
     setIsNewSearch(true);
     setSearchText(e.target.value);
-    console.log(e.target.value.length, 'event');
     if (e.target.value.length === 0) {
       setIsNewSearch(false);
     }
@@ -313,7 +327,6 @@ const OfflineStudentAssessment = () => {
 
   const handleGrade = (value) => {
     if (moduleId) {
-      console.log(value);
       let selectedId = [];
       if (value) {
         axiosInstance
@@ -322,12 +335,10 @@ const OfflineStudentAssessment = () => {
           )
           .then((result) => {
             setSectionList(result?.data?.data);
-            console.log(result?.data?.data);
             if (history?.location?.state?.test?.section_mapping[0] != null) {
               const filterSection = result?.data?.data.filter((ele) =>
                 history?.location?.state?.test?.section_mapping.includes(ele?.id)
               );
-              console.log(filterSection);
               // setSelectedSection(filterSection)
               setSectionList(filterSection);
             }
@@ -352,8 +363,6 @@ const OfflineStudentAssessment = () => {
 
   const offlineMarks = () => {
     setLoading(true);
-    console.log(history?.location?.state?.test, 'test');
-    console.log(selectedGrade);
     // const secId = selectedSection.map((ele) => ele?.id)
     const payload = {
       branchId: selectedBranch?.value,
@@ -377,7 +386,6 @@ const OfflineStudentAssessment = () => {
         }`
       )
       .then((result) => {
-        console.log(result);
         setStudentList(result?.data?.result?.user_reponse);
         setQuesList(result?.data?.result?.questions);
         setLoading(false);
@@ -419,15 +427,12 @@ const OfflineStudentAssessment = () => {
   }, [selectedBranch]);
 
   const uploadMarks = (data) => {
-    console.log(data);
     let student = [];
     let studentCheck = studentList.map((i) => {
       if (i?.atdnce_status == true) {
         student.push(i);
       }
     });
-    console.log(student);
-    console.log(studentList);
     history.push({
       pathname: quesList[0].sections?.mandatory_questions
         ? 'student-marks-upload'
@@ -459,7 +464,6 @@ const OfflineStudentAssessment = () => {
       .post(`${endpoints.assessment.reUpload}?`, param)
       .then((result) => {
         setLoading(false);
-        console.log(result);
         setCheckBoxFlag(!checkBoxFlag);
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
@@ -476,10 +480,9 @@ const OfflineStudentAssessment = () => {
       setSelectedSection(filterData?.selectedSection);
       axiosInstance
         .get(
-          `${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${filterData?.testId}&section_mapping_id=${filterData?.sectionId}`
+          `${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${filterData?.sectionId}`
         )
         .then((result) => {
-          console.log(result);
           setLoading(false);
           setStudentList(result?.data?.result?.user_reponse);
           setQuesList(result?.data?.result?.questions);
@@ -491,17 +494,18 @@ const OfflineStudentAssessment = () => {
   }, [checkBoxFlag]);
 
   const deleteMarks = (item) => {
-    console.log(item);
+    setLoading(true);
     axiosInstance
       .delete(`assessment/${item?.test_details?.usresponse_id}/ru-offline-asmnt/`)
       .then((result) => {
-        console.log(result);
-        setLoading(false);
-        setAlert('success', 'Response Deleted Successfully');
         offlineMarks();
+        setAlert('success', 'Response Deleted Successfully');
       })
       .catch((error) => {
         console.log('');
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -517,7 +521,6 @@ const OfflineStudentAssessment = () => {
       setAlert('error', 'Please select section');
       return;
     }
-    // console.log("data12378",history?.location?.state?.test);
     history.push({
       pathname: '/uploadOMR',
       state: {
@@ -526,6 +529,124 @@ const OfflineStudentAssessment = () => {
         test_id: history?.location?.state?.test,
       },
     });
+  };
+
+  const excelDownload = (data, filename) => {
+    const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+    FileSaver.saveAs(blob, filename);
+  };
+
+  const downloadBulkMarksTemplate = () => {
+    let param = {
+      test_id: history?.location?.state?.test?.id,
+      subject_id: filterData?.subjId,
+      section_mapping_id: filterData?.sectionId,
+    };
+    axiosInstance
+      .post(`${endpoints.assessment.assessmentMarksDownload}`, param, {
+        responseType: 'blob',
+      })
+      .then((res) => {
+        excelDownload(
+          res.data,
+          `${history?.location?.state?.test?.test_name}_download_report.xlsx`
+        );
+      })
+      .catch((error) => {
+        console.log('err', error, error.response);
+        setAlert('error', 'Something went wrong');
+      });
+  };
+
+  const allowedFiles = ['.xls', '.xlsx'];
+  const draggerProps = {
+    showUploadList: false,
+    disabled: false,
+    accept: allowedFiles.join(),
+    // '.xls,.xlsx',
+    multiple: false,
+    onRemove: () => {
+      setSelectedFile(null);
+    },
+    onDrop: (e) => {
+      const file = e.dataTransfer.files;
+      setSelectedFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      console.log(type, allowedFiles);
+      if (allowedFiles.includes(type)) {
+        setSelectedFile(...file);
+        // setFileTypeError(false);
+      } else {
+        message.error('Only .xls, .xlsx files are allowed!');
+        // setFileTypeError(true);
+      }
+
+      return false;
+    },
+    beforeUpload: (...file) => {
+      setSelectedFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      if (allowedFiles.includes(type)) {
+        setSelectedFile(...file[1]);
+        // setFileTypeError(false);
+      } else {
+        message.error('Only .xls, .xlsx files are allowed!');
+        // setFileTypeError(true);
+      }
+
+      return false;
+    },
+
+    selectedFile,
+  };
+
+  const uploadBulkMarks = () => {
+    if (selectedFile === '') {
+      setAlert('error', 'Please select a file to upload');
+      return;
+    }
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('test_id', history?.location?.state?.test?.id);
+    formData.append('file', selectedFile);
+
+    axiosInstance
+      .post(`${endpoints.assessment.assessmentMarksUpload}`, formData, {
+        responseType: 'arraybuffer',
+      })
+      .then((res) => {
+        if (res?.status === 200) {
+          offlineMarks();
+          setAlert('success', 'File uploaded successfully');
+          setSelectedFile('');
+          console.log(res?.data);
+          excelDownload(
+            res?.data,
+            `${history?.location?.state?.test?.test_name}_upload_report.xlsx`
+          );
+        } else if (res?.status === 201) {
+          setSelectedFile('');
+          offlineMarks();
+          excelDownload(
+            res?.data,
+            `${history?.location?.state?.test?.test_name}_upload_error_report.xlsx`
+          );
+          setAlert('error', 'File not uploaded successfully, check error logs');
+        }
+      })
+      .catch((error) => {
+        console.log(error, error.response, 'err');
+        // setAlert('error', error?.error);
+        setAlert(
+          'error',
+          error?.response?.message ? error?.response?.message : 'Something went wrong'
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -599,7 +720,6 @@ const OfflineStudentAssessment = () => {
                   if (value) {
                     setSelectedSection(value);
                     setCheckFilter(true);
-                    console.log(value, 'section id');
                   }
                 }}
                 id='branch_id'
@@ -644,6 +764,49 @@ const OfflineStudentAssessment = () => {
             ) : (
               ''
             )}
+
+            {studentList?.length > 0 && (
+              <>
+                <Grid sm={2} xs={4}>
+                  <div className='th-upload-input'>
+                    <Upload {...draggerProps}>
+                      <button
+                        className='ant-btn'
+                        style={{ width: '100%', height: 40 }}
+                        icon={<UploadOutlined />}
+                      >
+                        <UploadOutlined /> Marks Bulk Upload
+                      </button>
+                    </Upload>
+                  </div>
+                  {selectedFile && (
+                    <span className='th-fw-300 th-13'>
+                      <FileExcelTwoTone className='pr-2' />
+                      {selectedFile?.name}
+                    </span>
+                  )}
+                  <p>
+                    <span className='text-muted'>
+                      <a
+                        style={{ cursor: 'pointer', fontWeight: 600, color: '#1890ff' }}
+                        onClick={downloadBulkMarksTemplate}
+                      >
+                        Download marks upload template
+                      </a>
+                    </span>
+                  </p>
+                </Grid>
+                <Grid sm={2} xs={6} className='mx-2'>
+                  <StyledButtonLabel
+                    onClick={uploadBulkMarks}
+                    style={{ width: '90%', textAlign: 'center' }}
+                    htmlFor='bulkMarksUpload'
+                  >
+                    Upload
+                  </StyledButtonLabel>
+                </Grid>
+              </>
+            )}
           </div>
           <Paper className={`${classes.root} common-table`} id='singleStudent'>
             <div className='searchArea'>
@@ -662,7 +825,6 @@ const OfflineStudentAssessment = () => {
                                 />
                             </FormControl> */}
             </div>
-            {console.log(studentList)}
             {studentList?.length > 0 ? (
               <TableContainer
                 className={`table table-shadow view_users_table ${classes.container}`}
@@ -676,7 +838,8 @@ const OfflineStudentAssessment = () => {
                       <TableCell className={classes.tableCell}>Total Marks</TableCell>
                       <TableCell className={classes.tableCell}>Action</TableCell>
                       <TableCell className={classes.tableCell}>
-                        Enable Re-Upload
+                        {/* Enable Re-Upload */}
+                        Attendance
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -691,8 +854,7 @@ const OfflineStudentAssessment = () => {
                           {items?.name}
                         </TableCell>
                         <TableCell className={classes.tableCell} id='blockArea'>
-                          {console.log(items)}
-                          {items?.atdnce_status == true ? (
+                          {/* {items?.atdnce_status == true ? (
                             <>
                               {items?.test_details?.total_marks != null ? (
                                 items?.test_details?.total_marks.toFixed(2)
@@ -713,50 +875,132 @@ const OfflineStudentAssessment = () => {
                             <>
                               <p>Absent</p>
                             </>
-                          )}
+                          )} */}
+
+                          {items?.atdnce_status &&
+                          Object.keys(items?.test_details).length === 0 ? (
+                            <StyledButton
+                              onClick={() => uploadMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Upload Marks
+                            </StyledButton>
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            items?.test_details?.total_marks
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length === 0 ? (
+                            <StyledButton
+                              onClick={() => uploadMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Upload Marks
+                            </StyledButton>
+                          ) : items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            items?.test_details?.total_marks
+                          ) : null}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {items?.atdnce_status == true &&
+                          {items?.atdnce_status &&
+                          Object.keys(items?.test_details).length === 0 ? (
+                            ''
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            <>
+                              <StyledButton
+                                onClick={() => uploadMarks(items)}
+                                startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                              >
+                                Edit Marks
+                              </StyledButton>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                className='ml-3'
+                              >
+                                <DeleteOutlineIcon style={{ fontSize: '30px' }} />
+                              </StyledButton>
+                            </>
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length === 0 ? (
+                            ''
+                          ) : items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            <>
+                              <StyledButton
+                                onClick={() => uploadMarks(items)}
+                                startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                              >
+                                Edit Marks
+                              </StyledButton>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                className='ml-3'
+                              >
+                                <DeleteOutlineIcon style={{ fontSize: '30px' }} />
+                              </StyledButton>
+                            </>
+                          ) : null}
+
+                          {/* {items?.atdnce_status == true &&
                           items?.test_details?.total_marks != null ? (
                             <>
                               {items?.test_details?.total_marks != null ? (
-                                <StyledButton
-                                  onClick={() => uploadMarks(items)}
-                                  startIcon={<EditIcon style={{ fontSize: '30px' }} />}
-                                >
-                                  Edit Marks
-                                </StyledButton>
+                                <>
+                                  <StyledButton
+                                    onClick={() => uploadMarks(items)}
+                                    startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                                  >
+                                    Edit Marks
+                                  </StyledButton>
+                                  <StyledButton
+                                    onClick={() => deleteMarks(items)}
+                                    className='ml-3'
+                                  >
+                                    <DeleteOutlineIcon style={{ fontSize: '30px' }} />
+                                  </StyledButton>
+                                </>
                               ) : (
                                 ''
                               )}
                             </>
                           ) : items?.atdnce_status == null &&
-                            items?.test_details?.total_marks != null ? (
+                            items?.test_details?.total_marks ? (
                             <>
                               <StyledButton
-                                onClick={() => deleteMarks(items)}
-                                startIcon={
-                                  <DeleteOutlineIcon style={{ fontSize: '30px' }} />
-                                }
+                                onClick={() => uploadMarks(items)}
+                                startIcon={<EditIcon style={{ fontSize: '30px' }} />}
                               >
-                                Delete Marks
+                                Edit Marks
+                              </StyledButton>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                className='ml-3'
+                              >
+                                <DeleteOutlineIcon style={{ fontSize: '30px' }} />
                               </StyledButton>
                             </>
                           ) : items?.atdnce_status == false &&
                             items?.test_details?.total_marks != null ? (
                             <>
                               <StyledButton
-                                onClick={() => deleteMarks(items)}
+                                onClick={() => uploadMarks(items)}
                                 startIcon={<EditIcon style={{ fontSize: '30px' }} />}
                               >
-                                Delete Marks
+                                Edit Marks
+                              </StyledButton>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                className='ml-3'
+                              >
+                                <DeleteOutlineIcon style={{ fontSize: '30px' }} />
                               </StyledButton>
                             </>
                           ) : (
                             ''
-                          )}
+                          )} */}
                         </TableCell>
-                        <TableCell className={classes.tableCell} id='blockArea'>
+                        {/* <TableCell className={classes.tableCell} id='blockArea'>
                           {items?.can_reupload && (
                             <Checkbox
                               checked={items?.can_reupload}
@@ -776,6 +1020,17 @@ const OfflineStudentAssessment = () => {
                               inputProps={{ 'aria-label': 'controlled' }}
                             />
                           )}
+                        </TableCell> */}
+                        <TableCell className={classes.tableCell} id='blockArea'>
+                          {(items?.atdnce_status &&
+                            Object.keys(items?.test_details).length === 0) ||
+                          (!items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0) ||
+                          (items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0)
+                            ? 'Present'
+                            : 'Absent'}
+                          
                         </TableCell>
                       </TableRow>
                     ))}
