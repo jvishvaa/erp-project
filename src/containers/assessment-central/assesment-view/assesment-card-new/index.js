@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton, SvgIcon } from '@material-ui/core';
+import { Button, useTheme, IconButton, SvgIcon, Menu, MenuItem } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import FlagIcon from '@material-ui/icons/Flag';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -46,6 +46,9 @@ const AssessmentCard = ({
   const [confirmMessage, setConfirmMessage] = useState();
   // const [loading, setLoading] = useState(false);
   const [printData, setPrintData] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [menuOpenIndex, setMenuOpenIndex] = useState(null);
+  const open = Boolean(anchorEl);
 
   const history = useHistory();
   const handlePeriodMenuOpen = (index, id) => {
@@ -56,6 +59,16 @@ const AssessmentCard = ({
   const handlePeriodMenuClose = (index) => {
     setShowMenu(false);
     setShowPeriodIndex();
+  };
+
+  const handleMenuClick = (event, index) => {
+    setAnchorEl(event.currentTarget);
+    setMenuOpenIndex(index);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setMenuOpenIndex(null);
   };
 
   const handleAssign = () => {
@@ -386,11 +399,12 @@ const AssessmentCard = ({
             };
             return { ...tempEachAllTemplate };
           });
+          console.log({ tempAllTemplate: tempAllTemplate[0] }, 'alllog printdata');
           setPrintData(tempAllTemplate[0]);
           setTimeout(resolve, 200);
+          setTimeout(() => handleMenuClose(), 400);
         });
-    }).catch((err) => {
-    });
+    }).catch((err) => {});
     // axios
     //   .get(endpoints.assessmentErp.listQuestionPaperV2, { headers: { 'x-api-key': 'vikash@12345#1231' }, params: { id: period.id,autoQp:true } })
   };
@@ -439,7 +453,141 @@ const AssessmentCard = ({
                   <img src={diamond} className={classes.identifier_icon} />
                 </>
               )}
-              <span
+              <IconButton
+                aria-label='more'
+                aria-controls='long-menu'
+                aria-haspopup='true'
+                size='small'
+                style={{ padding: '0' }}
+                onClick={(e) => {
+                  handleMenuClick(e, index);
+                }}
+              >
+                <MoreHorizIcon style={{ height: 25, width: 25 }} />
+              </IconButton>
+              {menuOpenIndex === index ? (
+                <Menu
+                  id='long-menu'
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={open}
+                  onClose={handleMenuClose}
+                  PaperProps={{
+                    style: {
+                      // maxHeight: ITEM_HEIGHT * 4.5,
+                      // width: '20ch',
+                    },
+                  }}
+                >
+                  {period.is_verified && !period?.is_delete && (
+                    <>
+                      {period.is_central && period.hasOwnProperty('template_id') && (
+                        <ReactToPrint
+                          onBeforeGetContent={() => handlePrintData(period)}
+                          onAfterPrint={() => {
+                            setLoading(false);
+                            setPrintData(null);
+                            // handleMenuClose();
+                          }}
+                          trigger={() => <MenuItem>Print</MenuItem>}
+                          content={() => printRef}
+                          documentTitle={`Print`}
+                        />
+                      )}
+                      {!period.hasOwnProperty('template_id') && (
+                        <MenuItem
+                          onClick={() => {
+                            handleAssign();
+                            handleMenuClose();
+                          }}
+                        >
+                          Assign Test
+                        </MenuItem>
+                      )}
+                      {!period.is_central && (
+                        <MenuItem
+                          onClick={() => {
+                            setConfirmMessage('delete');
+                            setOpenModal(true);
+                            handleMenuClose();
+                          }}
+                        >
+                          Delete
+                        </MenuItem>
+                      )}
+                    </>
+                  )}
+                  {period?.is_delete && (
+                    <>
+                      {period.is_central && period.hasOwnProperty('template_id') && (
+                        <ReactToPrint
+                          onBeforeGetContent={() => handlePrintData(period)}
+                          onAfterPrint={() => {
+                            setLoading(false);
+                            setPrintData(null);
+                            // handleMenuClose();
+                          }}
+                          trigger={() => <MenuItem>Print</MenuItem>}
+                          content={() => printRef}
+                          documentTitle={`Print`}
+                        />
+                      )}
+                      <MenuItem
+                        onClick={() => {
+                          handleMenuClose();
+                          handleRestore();
+                        }}
+                      >
+                        Restore
+                      </MenuItem>
+                    </>
+                  )}
+                  {!period.is_verified && !period?.is_delete && (
+                    <>
+                      {period.is_central && period.hasOwnProperty('template_id') && (
+                        <ReactToPrint
+                          onBeforeGetContent={() => handlePrintData(period)}
+                          onAfterPrint={() => {
+                            setLoading(false);
+                            setPrintData(null);
+                            // handleMenuClose();
+                          }}
+                          trigger={() => <MenuItem>Print</MenuItem>}
+                          content={() => printRef}
+                          documentTitle={`Print`}
+                        />
+                      )}
+                      <MenuItem
+                        onClick={() => {
+                          handleMenuClose();
+                          handlePublish();
+                        }}
+                      >
+                        Publish Paper
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleMenuClose();
+                          setConfirmMessage('delete');
+                          setOpenModal(true);
+                        }}
+                      >
+                        Delete
+                      </MenuItem>
+                    </>
+                  )}
+                </Menu>
+              ) : null}
+              {openModal && (
+                <ConfirmPopOver
+                  submit={() => handleDelete()}
+                  openModal={openModal}
+                  setOpenModal={setOpenModal}
+                  operation={confirmMessage}
+                  opendelete={true}
+                />
+              )}
+              {/* <span
                 className='period_card_menu'
                 onClick={() => handlePeriodMenuOpen(index)}
                 // onMouseLeave={handlePeriodMenuClose}
@@ -563,9 +711,9 @@ const AssessmentCard = ({
                         opendelete={true}
                       />
                     )}
-                  </div>
+                  </div>h
                 ) : null}
-              </span>
+              </span> */}
             </Box>
           </Grid>
           {/* <Grid item xs={12} sm={12} /> */}
