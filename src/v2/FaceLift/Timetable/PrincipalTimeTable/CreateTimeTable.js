@@ -1148,24 +1148,32 @@ const CreateTimeTable = ({ showTab }) => {
           </div>
         </div>
 
-        <div className='col-12 mt-3'>
-          <Table
-            className='th-table'
-            columns={columns}
-            rowKey={(record) => record?.id}
-            dataSource={availableDateRangesData}
-            pagination={false}
-            loading={loading}
-            expandable={{
-              expandedRowRender: expandedRowRender,
-              expandedRowKeys: expandedRowKeys,
-              onExpand: onTableRowExpand,
-            }}
-            rowClassName={(record, index) =>
-              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-            }
-            scroll={{ x: null }}
-          />
+        <div className='col-12 py-3'>
+          {availableDateRangesData.length > 0 ? (
+            <Table
+              className='th-table'
+              columns={columns}
+              rowKey={(record) => record?.id}
+              dataSource={availableDateRangesData}
+              pagination={false}
+              loading={loading}
+              expandable={{
+                expandedRowRender: expandedRowRender,
+                expandedRowKeys: expandedRowKeys,
+                onExpand: onTableRowExpand,
+              }}
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+              }
+              scroll={{ x: null }}
+            />
+          ) : (
+            <div className='text-center py-5'>
+              <span className='th-25 th-fw-500'>
+                Please select the filters to show data!
+              </span>
+            </div>
+          )}
         </div>
         {/* Create Time Table Modal */}
         <Modal
