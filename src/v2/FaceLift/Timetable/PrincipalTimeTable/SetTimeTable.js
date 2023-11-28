@@ -470,6 +470,7 @@ const SetTimeTable = ({ showTab }) => {
                   use12Hours
                   inputReadOnly
                   showNow={false}
+                  allowClear={false}
                   value={moment(currentSlotData?.start_time, 'HH:mm:ss')}
                   format='hh:mm A'
                   className='th-date-picker th-br-4 ml-md-2'
@@ -488,6 +489,7 @@ const SetTimeTable = ({ showTab }) => {
                   use12Hours
                   inputReadOnly
                   showNow={false}
+                  allowClear={false}
                   format='hh:mm A'
                   value={moment(currentSlotData?.end_time, 'HH:mm:ss')}
                   onChange={(e) => {

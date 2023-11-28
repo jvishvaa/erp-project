@@ -9,12 +9,16 @@ import { Breadcrumb, Spin, message, DatePicker, Card } from 'antd';
 const { RangePicker } = DatePicker;
 
 const StudentTimeTable = () => {
+  const today = moment();
+
+  const startOfWeek = today.clone().startOf('isoWeek');
+  const endOfWeek = today.clone().endOf('isoWeek');
+
   const [loading, setLoading] = useState(false);
   const [dates, setDates] = useState(null);
-  const [value, setValue] = useState([
-    moment('2023-12-04'),
-    moment('2023-12-04').add(6, 'days'),
-  ]);
+  const [value, setValue] = useState([startOfWeek, endOfWeek]);
+
+  console.log(startOfWeek, endOfWeek, 'startend');
   const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState([]);
 
   const fetchCurrentWeekTimeTable = (params = {}) => {
@@ -53,7 +57,7 @@ const StudentTimeTable = () => {
   };
 
   useEffect(() => {
-    if (value.length > 1) {
+    if (value?.length > 1) {
       fetchCurrentWeekTimeTable({
         start: moment(value[0]).format('YYYY-MM-DD'),
         end: moment(value[1]).format('YYYY-MM-DD'),

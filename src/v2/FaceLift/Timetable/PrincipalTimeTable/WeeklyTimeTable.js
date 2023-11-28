@@ -532,7 +532,7 @@ const WeeklyTimeTable = ({ showTab }) => {
                 })
               }
             >
-              Create Time Table
+              Create Weekly Time Table
             </Button>
           </div>
         </div>
@@ -572,6 +572,7 @@ const WeeklyTimeTable = ({ showTab }) => {
           onCancel={() => {
             setShowAssignSlotModal(false);
             setCurrentSlotData({});
+            setEditSection(false);
           }}
           footer={
             <div className='row justify-content-end'>

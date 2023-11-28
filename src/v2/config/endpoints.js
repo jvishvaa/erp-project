@@ -322,5 +322,6 @@ export default {
     studentTimeTableView: '/acad-tt/sview',
     teacherTimeTableView: '/acad-tt/tea-view',
     duplicateTimeTable: '/acad-tt/duplicate',
+    activeToggle: '/acad-tt/tt-active',
   },
 };
