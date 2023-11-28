@@ -117,6 +117,9 @@
   .th-tabs {
     margin-top: 15px;
   }
+  .th-activity-tabs {
+    margin-top: 15px;
+  }
 }
 
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {

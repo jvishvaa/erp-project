@@ -41,6 +41,8 @@ import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
 import axios from 'axios';
 import fileDownload from 'js-file-download';
+import { FileExcelTwoTone, UploadOutlined } from '@ant-design/icons';
+import { Upload, message } from 'antd';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -196,7 +198,6 @@ const StyledButtonLabel = withStyles((theme) => ({
 const OfflineStudentAssessment = () => {
   const history = useHistory();
   const classes = useStyles({});
-  const fileRef = useRef();
   const { setAlert } = useContext(AlertNotificationContext);
   const [file, setFile] = useState(null);
   const [uploadFlag, setUploadFlag] = useState(false);
@@ -242,6 +243,8 @@ const OfflineStudentAssessment = () => {
   const [showNewAsses, setShowNewAsses] = useState(true);
 
   const [bulkMarksUploadFileLoader, setBulkMarksUploadFileLoader] = useState(false);
+
+  const [selectedFile, setSelectedFile] = useState('');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -389,7 +392,6 @@ const OfflineStudentAssessment = () => {
         setFilterClicked(true);
       })
       .catch((error) => {
-        console.log('');
         setLoading(false);
       });
   };
@@ -467,7 +469,6 @@ const OfflineStudentAssessment = () => {
         }
       })
       .catch((error) => {
-        console.log('');
         setLoading(false);
       });
   };
@@ -491,15 +492,18 @@ const OfflineStudentAssessment = () => {
   }, [checkBoxFlag]);
 
   const deleteMarks = (item) => {
+    setLoading(true);
     axiosInstance
       .delete(`assessment/${item?.test_details?.usresponse_id}/ru-offline-asmnt/`)
       .then((result) => {
-        setLoading(false);
-        setAlert('success', 'Response Deleted Successfully');
         offlineMarks();
+        setAlert('success', 'Response Deleted Successfully');
       })
       .catch((error) => {
         console.log('');
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -525,6 +529,13 @@ const OfflineStudentAssessment = () => {
     });
   };
 
+  const excelDownload = (data, filename) => {
+    const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8',
+    });
+    FileSaver.saveAs(blob, filename);
+  };
+
   const downloadBulkMarksTemplate = () => {
     let param = {
       test_id: history?.location?.state?.test?.id,
@@ -536,50 +547,102 @@ const OfflineStudentAssessment = () => {
         responseType: 'blob',
       })
       .then((res) => {
-        fileDownload(res.data, 'bulkUploadMarks.xlsx');
+        excelDownload(
+          res.data,
+          `${history?.location?.state?.test?.test_name}_download_report.xlsx`
+        );
       })
       .catch((error) => {
-        console.log('err', error);
         setAlert('error', 'Something went wrong');
       });
   };
 
-  const uploadBulkMarks = (event) => {
-    const { files } = event.target;
+  const allowedFiles = ['.xls', '.xlsx'];
+  const draggerProps = {
+    showUploadList: false,
+    disabled: false,
+    accept: allowedFiles.join(),
+    // '.xls,.xlsx',
+    multiple: false,
+    onRemove: () => {
+      setSelectedFile(null);
+    },
+    onDrop: (e) => {
+      const file = e.dataTransfer.files;
+      setSelectedFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      if (allowedFiles.includes(type)) {
+        setSelectedFile(...file);
+        // setFileTypeError(false);
+      } else {
+        message.error('Only .xls, .xlsx files are allowed!');
+        // setFileTypeError(true);
+      }
 
-    const fil = files[0] || '';
-    if (fil.name.lastIndexOf('.xls') > 0 || fil.name.lastIndexOf('.xlsx') > 0) {
-      const formData = new FormData();
-      formData.append('test_id', history?.location?.state?.test?.id);
-      formData.append('file', files[0]);
-      setBulkMarksUploadFileLoader(true);
-      axiosInstance
-        .post(`${endpoints.assessment.assessmentMarksUpload}`, formData)
-        .then((res) => {
-          if (res.data.status_code === 200) {
-            setAlert('success', 'File uploaded successfully');
-            fileRef.current.value = null;
-          }
-        })
-        .catch((error) => {
-          console.log(error.response, 'err');
-          if (error.response.status === 400) {
-            fileDownload(error.response.data, 'error_log.xlsx');
-            setAlert('error', 'File not uploaded successfully, check error logs');
-          } else {
-            setAlert('error', 'Something went wrong catch');
-          }
-        })
-        .finally(() => {
-          setBulkMarksUploadFileLoader(false);
-        });
-    } else {
-      setAlert(
-        'error',
-        'Only excel file is acceptable either with .xls or .xlsx extension'
-      );
+      return false;
+    },
+    beforeUpload: (...file) => {
+      setSelectedFile(null);
+      const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
+      if (allowedFiles.includes(type)) {
+        setSelectedFile(...file[1]);
+        // setFileTypeError(false);
+      } else {
+        message.error('Only .xls, .xlsx files are allowed!');
+        // setFileTypeError(true);
+      }
+
+      return false;
+    },
+
+    selectedFile,
+  };
+
+  const uploadBulkMarks = () => {
+    if (selectedFile === '') {
+      setAlert('error', 'Please select a file to upload');
       return;
     }
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('test_id', history?.location?.state?.test?.id);
+    formData.append('file', selectedFile);
+
+    axiosInstance
+      .post(`${endpoints.assessment.assessmentMarksUpload}`, formData, {
+        responseType: 'blob',
+      })
+      .then((res) => {
+        if (res?.status === 200) {
+          offlineMarks();
+          setAlert('success', 'File uploaded successfully');
+          setSelectedFile('');
+          excelDownload(
+            res?.data,
+            `${history?.location?.state?.test?.test_name}_upload_report.xlsx`
+          );
+        } else if (res?.status === 201) {
+          setSelectedFile('');
+          offlineMarks();
+          excelDownload(
+            res?.data,
+            `${history?.location?.state?.test?.test_name}_upload_error_report.xlsx`
+          );
+          setAlert('error', 'File not uploaded successfully, check error logs');
+        }
+      })
+      .catch((error) => {
+        const fileReader = new FileReader();
+        fileReader.onload = function (event) {
+          const text = event.target.result; // The resulting text from the Blob
+          setAlert('error', text ? JSON.parse(text).message : 'Something went wrong');
+        };
+        fileReader.readAsText(error.response.data);
+        // setAlert('error', error?.error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -699,30 +762,46 @@ const OfflineStudentAssessment = () => {
             )}
 
             {studentList?.length > 0 && (
-              <Grid sm={3} xs={6}>
-                {bulkMarksUploadFileLoader ? (
-                  <StyledButtonLabel>Uploading...</StyledButtonLabel>
-                ) : (
-                  <StyledButtonLabel htmlFor='bulkMarksUpload'>
-                    Marks Bulk Upload
+              <>
+                <Grid sm={2} xs={4}>
+                  <div className='th-upload-input'>
+                    <Upload {...draggerProps}>
+                      <button
+                        className='ant-btn'
+                        style={{ width: '100%', height: 40 }}
+                        icon={<UploadOutlined />}
+                      >
+                        <UploadOutlined /> Marks Bulk Upload
+                      </button>
+                    </Upload>
+                  </div>
+                  {selectedFile && (
+                    <span className='th-fw-300 th-13'>
+                      <FileExcelTwoTone className='pr-2' />
+                      {selectedFile?.name}
+                    </span>
+                  )}
+                  <p>
+                    <span className='text-muted'>
+                      <a
+                        style={{ cursor: 'pointer', fontWeight: 600, color: '#1890ff' }}
+                        onClick={downloadBulkMarksTemplate}
+                      >
+                        Download marks upload template
+                      </a>
+                    </span>
+                  </p>
+                </Grid>
+                <Grid sm={2} xs={6} className='mx-2'>
+                  <StyledButtonLabel
+                    onClick={uploadBulkMarks}
+                    style={{ width: '90%', textAlign: 'center' }}
+                    htmlFor='bulkMarksUpload'
+                  >
+                    Upload
                   </StyledButtonLabel>
-                )}
-                <Input
-                  type='file'
-                  id='bulkMarksUpload'
-                  style={{ display: 'none' }}
-                  inputProps={{ accept: '.xlsx,.xls' }}
-                  onChange={uploadBulkMarks}
-                />
-                <a
-                  style={{ cursor: 'pointer', fontWeight: 600 }}
-                  // href='/assets/download-format/bulk_marks_upload.xlsx'
-                  // download='bulkUploadMarks.xlsx'
-                  onClick={downloadBulkMarksTemplate}
-                >
-                  Download marks upload template
-                </a>
-              </Grid>
+                </Grid>
+              </>
             )}
           </div>
           <Paper className={`${classes.root} common-table`} id='singleStudent'>
@@ -755,7 +834,8 @@ const OfflineStudentAssessment = () => {
                       <TableCell className={classes.tableCell}>Total Marks</TableCell>
                       <TableCell className={classes.tableCell}>Action</TableCell>
                       <TableCell className={classes.tableCell}>
-                        Enable Re-Upload
+                        {/* Enable Re-Upload */}
+                        Attendance
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -770,7 +850,7 @@ const OfflineStudentAssessment = () => {
                           {items?.name}
                         </TableCell>
                         <TableCell className={classes.tableCell} id='blockArea'>
-                          {items?.atdnce_status == true ? (
+                          {/* {items?.atdnce_status == true ? (
                             <>
                               {items?.test_details?.total_marks != null ? (
                                 items?.test_details?.total_marks.toFixed(2)
@@ -791,50 +871,132 @@ const OfflineStudentAssessment = () => {
                             <>
                               <p>Absent</p>
                             </>
-                          )}
+                          )} */}
+
+                          {items?.atdnce_status &&
+                          Object.keys(items?.test_details).length === 0 ? (
+                            <StyledButton
+                              onClick={() => uploadMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Upload Marks
+                            </StyledButton>
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            items?.test_details?.total_marks
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length === 0 ? (
+                            <StyledButton
+                              onClick={() => uploadMarks(items)}
+                              startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                            >
+                              Upload Marks
+                            </StyledButton>
+                          ) : items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            items?.test_details?.total_marks
+                          ) : null}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {items?.atdnce_status == true &&
+                          {items?.atdnce_status &&
+                          Object.keys(items?.test_details).length === 0 ? (
+                            ''
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            <>
+                              <StyledButton
+                                onClick={() => uploadMarks(items)}
+                                startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                              >
+                                Edit Marks
+                              </StyledButton>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                className='ml-3'
+                              >
+                                <DeleteOutlineIcon style={{ fontSize: '30px' }} />
+                              </StyledButton>
+                            </>
+                          ) : !items?.atdnce_status &&
+                            Object.keys(items?.test_details).length === 0 ? (
+                            ''
+                          ) : items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0 ? (
+                            <>
+                              <StyledButton
+                                onClick={() => uploadMarks(items)}
+                                startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                              >
+                                Edit Marks
+                              </StyledButton>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                className='ml-3'
+                              >
+                                <DeleteOutlineIcon style={{ fontSize: '30px' }} />
+                              </StyledButton>
+                            </>
+                          ) : null}
+
+                          {/* {items?.atdnce_status == true &&
                           items?.test_details?.total_marks != null ? (
                             <>
                               {items?.test_details?.total_marks != null ? (
-                                <StyledButton
-                                  onClick={() => uploadMarks(items)}
-                                  startIcon={<EditIcon style={{ fontSize: '30px' }} />}
-                                >
-                                  Edit Marks
-                                </StyledButton>
+                                <>
+                                  <StyledButton
+                                    onClick={() => uploadMarks(items)}
+                                    startIcon={<EditIcon style={{ fontSize: '30px' }} />}
+                                  >
+                                    Edit Marks
+                                  </StyledButton>
+                                  <StyledButton
+                                    onClick={() => deleteMarks(items)}
+                                    className='ml-3'
+                                  >
+                                    <DeleteOutlineIcon style={{ fontSize: '30px' }} />
+                                  </StyledButton>
+                                </>
                               ) : (
                                 ''
                               )}
                             </>
                           ) : items?.atdnce_status == null &&
-                            items?.test_details?.total_marks != null ? (
+                            items?.test_details?.total_marks ? (
                             <>
                               <StyledButton
-                                onClick={() => deleteMarks(items)}
-                                startIcon={
-                                  <DeleteOutlineIcon style={{ fontSize: '30px' }} />
-                                }
+                                onClick={() => uploadMarks(items)}
+                                startIcon={<EditIcon style={{ fontSize: '30px' }} />}
                               >
-                                Delete Marks
+                                Edit Marks
+                              </StyledButton>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                className='ml-3'
+                              >
+                                <DeleteOutlineIcon style={{ fontSize: '30px' }} />
                               </StyledButton>
                             </>
                           ) : items?.atdnce_status == false &&
                             items?.test_details?.total_marks != null ? (
                             <>
                               <StyledButton
-                                onClick={() => deleteMarks(items)}
+                                onClick={() => uploadMarks(items)}
                                 startIcon={<EditIcon style={{ fontSize: '30px' }} />}
                               >
-                                Delete Marks
+                                Edit Marks
+                              </StyledButton>
+                              <StyledButton
+                                onClick={() => deleteMarks(items)}
+                                className='ml-3'
+                              >
+                                <DeleteOutlineIcon style={{ fontSize: '30px' }} />
                               </StyledButton>
                             </>
                           ) : (
                             ''
-                          )}
+                          )} */}
                         </TableCell>
-                        <TableCell className={classes.tableCell} id='blockArea'>
+                        {/* <TableCell className={classes.tableCell} id='blockArea'>
                           {items?.can_reupload && (
                             <Checkbox
                               checked={items?.can_reupload}
@@ -854,6 +1016,16 @@ const OfflineStudentAssessment = () => {
                               inputProps={{ 'aria-label': 'controlled' }}
                             />
                           )}
+                        </TableCell> */}
+                        <TableCell className={classes.tableCell} id='blockArea'>
+                          {(items?.atdnce_status &&
+                            Object.keys(items?.test_details).length === 0) ||
+                          (!items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0) ||
+                          (items?.atdnce_status &&
+                            Object.keys(items?.test_details).length > 0)
+                            ? 'Present'
+                            : 'Absent'}
                         </TableCell>
                       </TableRow>
                     ))}
