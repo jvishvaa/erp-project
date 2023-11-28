@@ -797,6 +797,34 @@ const CreateTimeTable = ({ showTab }) => {
 
     setInnerExpandedRowKeys(keys);
   };
+
+  const handleToggle = (rec) => {
+    setLoading(true);
+    console.log(rec, 'eventtoggle');
+
+    axios
+      .patch(`${endpoints?.timeTableNewFlow?.activeToggle}/${rec?.id}/`, {
+        active: rec?.is_active ? false : true,
+      })
+      .then((res) => {
+        if (res.data?.status_code == 200) {
+          setLoading(false);
+
+          message.success('Status Updated successfully');
+          fetchRangeSectionList({
+            start_date: rec?.start_date,
+            end_date: rec?.end_date,
+          });
+        } else {
+          message.error('Failed to Update Status');
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false);
+      });
+  };
   const expandedRowRender = (record) => {
     const sectionListColumns = [
       {
@@ -814,7 +842,15 @@ const CreateTimeTable = ({ showTab }) => {
         dataIndex: 'status',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-black-2'>{data}</span>,
+        render: (data, record) => (
+          <span className='th-black-2'>
+            {record?.status == 1
+              ? 'Partially Allocated'
+              : record?.status == 2
+              ? 'Allocated'
+              : ''}
+          </span>
+        ),
       },
       {
         dataIndex: 'created_at',
@@ -828,9 +864,12 @@ const CreateTimeTable = ({ showTab }) => {
         dataIndex: 'is_active',
         align: 'center',
         width: '15%',
-        render: (data) => (
+        render: (data, record) => (
           <span>
-            <Switch checked={data} />
+            <Switch
+              checked={record?.is_active ? true : false}
+              onChange={() => handleToggle(record)}
+            />
           </span>
         ),
       },
@@ -1578,8 +1617,13 @@ const CreateTimeTable = ({ showTab }) => {
                 <div className='col-8'>
                   <Select
                     className='th-width-100 th-br-6'
-                    onChange={(e) => {
+                    onChange={(e, each) => {
+                      console.log(e, each, 'subs');
                       setSelectedPeriod({ ...selectedPeriod, sub_map: e });
+                      fetchTeacherList({
+                        sec_map: selectedSectionData?.sec_map,
+                        subject: each?.map((item) => item?.subjectId)?.join(','),
+                      });
                     }}
                     placeholder='Select Subjects'
                     allowClear
