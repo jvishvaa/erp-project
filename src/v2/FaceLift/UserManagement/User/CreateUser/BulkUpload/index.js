@@ -55,11 +55,11 @@ const BulkUpload = () => {
     },
     {
       name: 'branch_id, Grade, SectionMapping, Subject',
-      field: 'are required fields Where the IDs are mentioned below respectively',
+      field: 'are required fields, Where the IDs are mentioned below respectively',
     },
     {
       name: 'role, user_level, designation, ERP',
-      field: 'are required fields Where the IDs are mentioned below respectively',
+      field: 'are required fields, Where the IDs are mentioned below respectively',
     },
     {
       name: 'Single_Parent',
