@@ -54,6 +54,14 @@ const BulkUpload = () => {
         ' is a mandatory field in which ID has to be passed for Male, Female and Others as 0, 1, 2 respectively',
     },
     {
+      name: 'branch_id, Grade, SectionMapping, Subject',
+      field: 'are required fields Where the IDs are mentioned below respectively',
+    },
+    {
+      name: 'role, user_level, designation, ERP',
+      field: 'are required fields Where the IDs are mentioned below respectively',
+    },
+    {
       name: 'Single_Parent',
       field:
         'is a  field in which ID has to be passed for Mother, Father and Guardian as 1, 2, 3 respectively and should be left if no single parent',
