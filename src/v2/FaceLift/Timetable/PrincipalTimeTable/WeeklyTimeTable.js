@@ -543,13 +543,13 @@ const WeeklyTimeTable = ({ showTab }) => {
                 })
               }
             >
-              Create Weekly Time Table
+              Create Weekly Time Slot
             </Button>
           </div>
         </div>
 
         <div className='col-12 py-3'>
-          {sectionMappingID ? (
+          {sectionMappingID && weeklyTimeSlotData.length > 0 ? (
             <Table
               className='th-table'
               columns={columns}
@@ -579,7 +579,7 @@ const WeeklyTimeTable = ({ showTab }) => {
           visible={showAssignSlotModal}
           centered
           className='th-upload-modal'
-          title={`${editSection ? 'Update' : 'Create'} Time Table Slot`}
+          title={`${editSection ? 'Update' : 'Create'} Weekly Time Slot`}
           onCancel={() => {
             setShowAssignSlotModal(false);
             setCurrentSlotData({});
@@ -621,6 +621,7 @@ const WeeklyTimeTable = ({ showTab }) => {
                       ...currentSlotData,
                       gradeID: e,
                       sectionID: null,
+                      sectionMappingID: null,
                     });
                     fetchSectionData(
                       selectedAcademicYear?.id,
