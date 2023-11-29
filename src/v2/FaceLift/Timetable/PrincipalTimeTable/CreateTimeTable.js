@@ -446,6 +446,7 @@ const CreateTimeTable = ({ showTab }) => {
             start_date: currentDatePeriod?.start_date,
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
+            tt_id: selectedSectionData?.id,
           });
           handleCloseEditTimeModal();
         }
@@ -480,6 +481,7 @@ const CreateTimeTable = ({ showTab }) => {
             start_date: currentDatePeriod?.start_date,
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
+            tt_id: selectedSectionData?.id,
           });
           handleClosePeriodDetailsModal();
         }
@@ -518,6 +520,7 @@ const CreateTimeTable = ({ showTab }) => {
             start_date: currentDatePeriod?.start_date,
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
+            tt_id: selectedSectionData?.id,
           });
           if (type == 'lecture') {
             handleCloseEditLectureModal();
@@ -803,6 +806,7 @@ const CreateTimeTable = ({ showTab }) => {
         start_date: currentDatePeriod?.start_date,
         end_date: currentDatePeriod?.end_date,
         sec_map: record?.sec_map,
+        tt_id: record?.id,
       });
       fetchSubjectList({
         section_mapping: record?.sec_map,
@@ -966,6 +970,7 @@ const CreateTimeTable = ({ showTab }) => {
                       start_date: newStartDate,
                       end_date: newEndDate,
                       sec_map: selectedSectionData?.sec_map,
+                      tt_id: selectedSectionData?.id,
                     });
                   }}
                 />
@@ -1002,6 +1007,7 @@ const CreateTimeTable = ({ showTab }) => {
                       start_date: newStartDate,
                       end_date: newEndDate,
                       sec_map: selectedSectionData?.sec_map,
+                      tt_id: selectedSectionData?.id,
                     });
                   }}
                 />

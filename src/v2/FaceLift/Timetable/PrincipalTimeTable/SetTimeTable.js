@@ -401,9 +401,7 @@ const SetTimeTable = ({ showTab }) => {
           />
         ) : (
           <div className='text-center py-5'>
-            <span className='th-25 th-fw-500'>
-              Please select the filters to show data!
-            </span>
+            <span className='th-25 th-fw-500'>No Slots Created !</span>
           </div>
         )}
       </div>
