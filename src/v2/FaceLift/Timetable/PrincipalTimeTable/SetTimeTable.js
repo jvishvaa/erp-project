@@ -35,6 +35,7 @@ const SetTimeTable = ({ showTab }) => {
   const [showTimeSlotModal, setShowTimeSlotModal] = useState(false);
   const [selectedSlotData, setSelectedSlotData] = useState('');
   const [editSlotData, setEditSlotData] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [currentSlotData, setCurrentSlotData] = useState({
     name: '',
     start_time: moment().format('HH:mm:ss'),
@@ -56,7 +57,7 @@ const SetTimeTable = ({ showTab }) => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700'>TimeTable Slot Name</span>,
+      title: <span className='th-white th-fw-700'>Time Slot Name</span>,
       dataIndex: 'name',
       align: 'center',
     },
@@ -369,7 +370,7 @@ const SetTimeTable = ({ showTab }) => {
           className='th-br-4'
           onClick={() => handleAddTimeSlot()}
         >
-          Create Time Table Slot
+          Create Time Slot
         </Button>
       </div>
       <div className='col-12 py-3'>
@@ -402,7 +403,7 @@ const SetTimeTable = ({ showTab }) => {
         ) : (
           <div className='text-center py-5'>
             <span className='th-25 th-fw-500'>
-              Please select the filters to show data!
+              There is no existing time slot available
             </span>
           </div>
         )}
@@ -412,7 +413,7 @@ const SetTimeTable = ({ showTab }) => {
         visible={showTimeSlotModal}
         centered
         className='th-upload-modal'
-        title={`${editSlotData ? 'Update' : 'Create'} Time Table Slot`}
+        title={`${editSlotData ? 'Update' : 'Create'} Time Slot`}
         onCancel={() => {
           setShowTimeSlotModal(false);
           setCurrentSlotData({
@@ -442,6 +443,7 @@ const SetTimeTable = ({ showTab }) => {
               onClick={() => {
                 handleCreateNewSlot();
               }}
+              disabled={errorMessage}
             >
               {editSlotData ? 'Update' : 'Create'}
             </Button>
@@ -450,15 +452,22 @@ const SetTimeTable = ({ showTab }) => {
       >
         <div className='row p-3'>
           <div className='col-12 pb-3'>
-            <div className='th-primary mb-1'>Time Table Slot Name</div>
+            <div className='th-primary mb-1'>Time Slot Name</div>
             <Input
-              placeholder='Enter Time Table Slot Name'
+              placeholder='Enter Time Slot Name'
               className='pt-1 th-br-4'
               value={currentSlotData?.name}
               onChange={(e) => {
                 setCurrentSlotData({ ...currentSlotData, name: e.target.value });
+                let inputValue = e.target.value;
+                if (inputValue.length > 100) {
+                  setErrorMessage('Name should not exceed 100 characters');
+                } else {
+                  setErrorMessage(''); // Clear error message if within the limit
+                }
               }}
             />
+            {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
           </div>
           <div className='col-12'>
             <div className='th-primary mb-1'>School Timing</div>
@@ -576,6 +585,7 @@ const SetTimeTable = ({ showTab }) => {
                             use12Hours
                             inputReadOnly
                             showNow={false}
+                            allowClear={false}
                             value={moment(item?.start_time, 'hh:mm:ss')}
                             format='hh:mm A'
                             className='th-date-picker th-br-4 ml-2 px-0 px-md-2'
@@ -596,6 +606,7 @@ const SetTimeTable = ({ showTab }) => {
                             use12Hours
                             inputReadOnly
                             showNow={false}
+                            allowClear={false}
                             value={moment(item?.end_time, 'hh:mm:ss')}
                             format='hh:mm A'
                             onChange={(e) => {

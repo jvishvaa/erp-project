@@ -136,13 +136,20 @@ const CreateTimeTable = ({ showTab }) => {
       </Option>
     );
   });
-  const teacherOptions = teacherList?.map((each) => {
-    return (
-      <Option key={each?.id} value={each?.id}>
-        {each?.name}
-      </Option>
-    );
-  });
+  const teacherOptions = teacherList
+    // ?.filter(
+    //   (teacher, index, self) => self.findIndex((t) => t.name === teacher.name) === index
+    // )
+    ?.filter(
+      (teacher, index, self) => self.findIndex((t) => t.name === teacher.name) === index
+    )
+    ?.map((each) => {
+      return (
+        <Option key={each?.id} value={each?.id}>
+          {each?.name}
+        </Option>
+      );
+    });
 
   const fetchGradeData = (params = {}) => {
     axios
@@ -961,7 +968,7 @@ const CreateTimeTable = ({ showTab }) => {
               </span>
             </div>
             <div className=' d-flex align-items-center th-fw-600'>
-              <span>BTM Time Slot 1</span>
+              {/* <span>BTM Time Slot 1</span> */}
               <span className='mx-2'>
                 <StepForwardOutlined
                   title='Next Week'
@@ -1006,7 +1013,8 @@ const CreateTimeTable = ({ showTab }) => {
                     currentDate === selectedDate
                       ? 'th-button-active th-fw-600'
                       : 'th-button th-fw-500'
-                  }`}
+                  } `}
+                  style={{ width: '110px' }}
                   onClick={() => {
                     setSelectedDate(
                       moment(currentDatePeriod?.start_date)
@@ -1222,6 +1230,14 @@ const CreateTimeTable = ({ showTab }) => {
           title='Create New Time Table'
           onCancel={() => {
             setShowCreateModal(false);
+            setCurrentTimeTable({
+              ...currentTimeTable,
+              start_date: moment().format('YYYY-MM-DD'),
+              end_date: moment().format('YYYY-MM-DD'),
+              grade: [],
+              sectionMappingID: [],
+            });
+            setTimeTableOverlapError(null);
           }}
           footer={
             <div className='row justify-content-end'>
@@ -1229,6 +1245,15 @@ const CreateTimeTable = ({ showTab }) => {
                 type='default'
                 onClick={() => {
                   setShowCreateModal(false);
+
+                  setCurrentTimeTable({
+                    ...currentTimeTable,
+                    start_date: moment().format('YYYY-MM-DD'),
+                    end_date: moment().format('YYYY-MM-DD'),
+                    grade: [],
+                    sectionMappingID: [],
+                  });
+                  setTimeTableOverlapError(null);
                 }}
               >
                 Close
