@@ -59,6 +59,14 @@ const CreateTimeTable = ({ showTab }) => {
       id: 3,
       type: 'Substitute Lecture',
     },
+    {
+      id: 4,
+      type: 'Combined Lecture',
+    },
+    {
+      id: 5,
+      type: 'Normal Lecture',
+    },
   ];
 
   const [gradeID, setGradeID] = useState();
@@ -342,6 +350,15 @@ const CreateTimeTable = ({ showTab }) => {
 
   const handleAssignDateRange = () => {
     setCreateLoading(true);
+    if (
+      currentTimeTable?.start_date == null ||
+      currentTimeTable?.end_date == null ||
+      currentTimeTable?.sectionMappingID == null
+    ) {
+      message.error('Please Select All Filters');
+      setCreateLoading(false);
+      return;
+    }
     let payload = {
       start_date: currentTimeTable?.start_date,
       end_date: currentTimeTable?.end_date,
@@ -1618,7 +1635,6 @@ const CreateTimeTable = ({ showTab }) => {
                   <Select
                     className='th-width-100 th-br-6'
                     onChange={(e, each) => {
-                      console.log(e, each, 'subs');
                       setSelectedPeriod({ ...selectedPeriod, sub_map: e });
                       fetchTeacherList({
                         sec_map: selectedSectionData?.sec_map,
