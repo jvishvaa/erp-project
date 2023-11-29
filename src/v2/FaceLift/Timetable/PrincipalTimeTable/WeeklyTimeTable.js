@@ -398,6 +398,13 @@ const WeeklyTimeTable = ({ showTab }) => {
           setCreateLoading(false);
         });
     } else {
+      console.log(currentSlotData, 'currslot');
+      let checkSlot = currentSlotData?.timings.filter((e) => e?.slot != '');
+      if (checkSlot?.length == 0) {
+        message.error('Please Select Timings First');
+        setCreateLoading(false);
+        return;
+      }
       axios
         .post(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/`, payload)
         .then((res) => {
@@ -414,7 +421,11 @@ const WeeklyTimeTable = ({ showTab }) => {
               });
             }
           } else if (res?.data?.status_code == 409) {
-            message.warning(res?.data?.message);
+            if (res?.data?.developer_msg.includes('WTT already exists')) {
+              message.error('Timetable Already Exist');
+            } else {
+              message.warning(res?.data?.message);
+            }
           }
         })
         .catch((error) => message.error('error', error?.message))
