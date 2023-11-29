@@ -332,7 +332,7 @@ const SetTimeTable = ({ showTab }) => {
         currentSlotPeriods
       )
       .then((res) => {
-        if (res?.status == 200) {
+        if (res?.data?.status_code == 200 || res?.data?.status_code == 201) {
           message.success(
             `Periods ${editCurrentSlotPeriod ? 'updated' : 'created'} successfully`
           );
@@ -576,14 +576,14 @@ const SetTimeTable = ({ showTab }) => {
                             use12Hours
                             inputReadOnly
                             showNow={false}
+                            allowClear={false}
                             value={moment(item?.start_time, 'hh:mm:ss')}
                             format='hh:mm A'
                             className='th-date-picker th-br-4 ml-2 px-0 px-md-2'
                             onChange={(e) => {
                               let updatedSlotperiods = [...currentSlotPeriods];
                               updatedSlotperiods[index]['start_time'] =
-                                moment(e).format('hh:mm:ss');
-
+                                moment(e).format('HH:mm:ss');
                               setCurrentSlotPeriods(updatedSlotperiods);
                             }}
                           />
@@ -595,13 +595,14 @@ const SetTimeTable = ({ showTab }) => {
                             popupStyle={{ zIndex: 2100 }}
                             use12Hours
                             inputReadOnly
+                            allowClear={false}
                             showNow={false}
                             value={moment(item?.end_time, 'hh:mm:ss')}
                             format='hh:mm A'
                             onChange={(e) => {
                               let updatedSlotperiods = [...currentSlotPeriods];
                               updatedSlotperiods[index]['end_time'] =
-                                moment(e).format('hh:mm:ss');
+                                moment(e).format('HH:mm:ss');
 
                               setCurrentSlotPeriods(updatedSlotperiods);
                             }}

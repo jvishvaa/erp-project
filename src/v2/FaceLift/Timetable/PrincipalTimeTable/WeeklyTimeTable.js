@@ -370,7 +370,7 @@ const WeeklyTimeTable = ({ showTab }) => {
       return {
         sec_map: [currentSlotData?.sectionMappingID],
         week_days: Number(handleTexttoWeekDay(item?.weekday)),
-        time_set: item?.slot,
+        time_set: item?.slot ? item?.slot : null,
       };
     });
     if (editSection) {
