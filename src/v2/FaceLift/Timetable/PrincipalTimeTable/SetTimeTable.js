@@ -333,7 +333,7 @@ const SetTimeTable = ({ showTab }) => {
         currentSlotPeriods
       )
       .then((res) => {
-        if (res?.status == 200) {
+        if (res?.data?.status_code == 200 || res?.data?.status_code == 201) {
           message.success(
             `Periods ${editCurrentSlotPeriod ? 'updated' : 'created'} successfully`
           );
@@ -402,9 +402,7 @@ const SetTimeTable = ({ showTab }) => {
           />
         ) : (
           <div className='text-center py-5'>
-            <span className='th-25 th-fw-500'>
-              There is no existing time slot available
-            </span>
+            <span className='th-25 th-fw-500'>No Slots Created !</span>
           </div>
         )}
       </div>
@@ -592,8 +590,7 @@ const SetTimeTable = ({ showTab }) => {
                             onChange={(e) => {
                               let updatedSlotperiods = [...currentSlotPeriods];
                               updatedSlotperiods[index]['start_time'] =
-                                moment(e).format('hh:mm:ss');
-
+                                moment(e).format('HH:mm:ss');
                               setCurrentSlotPeriods(updatedSlotperiods);
                             }}
                           />
@@ -605,6 +602,7 @@ const SetTimeTable = ({ showTab }) => {
                             popupStyle={{ zIndex: 2100 }}
                             use12Hours
                             inputReadOnly
+                            allowClear={false}
                             showNow={false}
                             allowClear={false}
                             value={moment(item?.end_time, 'hh:mm:ss')}
@@ -612,7 +610,7 @@ const SetTimeTable = ({ showTab }) => {
                             onChange={(e) => {
                               let updatedSlotperiods = [...currentSlotPeriods];
                               updatedSlotperiods[index]['end_time'] =
-                                moment(e).format('hh:mm:ss');
+                                moment(e).format('HH:mm:ss');
 
                               setCurrentSlotPeriods(updatedSlotperiods);
                             }}
