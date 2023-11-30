@@ -1301,6 +1301,10 @@ const CreateTimeTable = ({ showTab }) => {
                   <RangePicker
                     className='w-100'
                     popupStyle={{ zIndex: 2100 }}
+                    disabledDate={(current) =>
+                      current.isBefore(moment().subtract(1, 'day'))
+                    }
+                    allowClear={false}
                     value={[
                       moment(currentTimeTable?.start_date, 'YYYY-MM-DD'),
                       moment(currentTimeTable?.end_date, 'YYYY-MM-DD'),
