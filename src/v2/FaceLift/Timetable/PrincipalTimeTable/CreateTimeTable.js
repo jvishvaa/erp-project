@@ -96,6 +96,8 @@ const CreateTimeTable = ({ showTab }) => {
   const [selectedPeriodSlot, setSelectedPeriodSlot] = useState(null);
   const [currentDatePeriod, setCurrentDatePeriod] = useState({});
 
+  console.log({ selectedDate });
+
   const [currentTimeTable, setCurrentTimeTable] = useState({
     start_date: moment().format('YYYY-MM-DD'),
     end_date: moment().format('YYYY-MM-DD'),
@@ -335,6 +337,10 @@ const CreateTimeTable = ({ showTab }) => {
   const handleShowEditSubjectModal = (record) => {
     setSelectedPeriod(record);
     setShowEditSubjectModal(true);
+    fetchTeacherList({
+      sec_map: selectedSectionData?.sec_map,
+      subject: record?.sub?.map((item) => item.subject_id)?.join(','),
+    });
   };
   const handleCloseEditSubjectModal = (record) => {
     setShowEditSubjectModal(false);
@@ -509,10 +515,27 @@ const CreateTimeTable = ({ showTab }) => {
     };
     if (type == 'lecture') {
       payload['lecture_type'] = selectedPeriod?.lecture_type;
+      if (!payload['lecture_type']) {
+        message.error('Please select lecture type');
+        return;
+      }
     } else if (type == 'subject') {
       payload['sub_map'] = selectedPeriod?.sub_map;
+      payload['teacher'] = selectedPeriod?.teacher;
+      if (payload['sub_map'].length < 1) {
+        message.error('Please select subject');
+        return;
+      }
+      if (payload['teacher'].length < 1) {
+        message.error('Please select teacher');
+        return;
+      }
     } else if (type == 'teacher') {
       payload['teacher'] = selectedPeriod?.teacher;
+      if (payload['teacher'].length < 1) {
+        message.error('Please select teacher');
+        return;
+      }
     }
     setEditPeriodLoading(true);
     axios
@@ -716,6 +739,7 @@ const CreateTimeTable = ({ showTab }) => {
               handleShowEditSubjectModal({
                 ...row?.periods[0],
                 sub_map: row?.periods[0]?.sub?.map((item) => item.id),
+                teacher: row?.periods[0]?.sub_teacher?.map((item) => item.id),
               });
               setSelectedPeriodSlot(row);
             } else {
@@ -1051,6 +1075,7 @@ const CreateTimeTable = ({ showTab }) => {
                   }}
                 >
                   <div>
+                    {console.log({ currentDatePeriod })}
                     {moment(currentDatePeriod?.start_date)
                       .add(item?.week_days, 'days')
                       .format('Do MMM')}
@@ -1666,11 +1691,17 @@ const CreateTimeTable = ({ showTab }) => {
                   <Select
                     className='th-width-100 th-br-6'
                     onChange={(e, each) => {
-                      setSelectedPeriod({ ...selectedPeriod, sub_map: e });
+                      setSelectedPeriod({
+                        ...selectedPeriod,
+                        sub_map: e,
+                        teacher: [],
+                      });
+
                       fetchTeacherList({
                         sec_map: selectedSectionData?.sec_map,
                         subject: each?.map((item) => item?.subjectId)?.join(','),
                       });
+                      console.log('teachersjad', e, selectedPeriod?.teacher);
                     }}
                     placeholder='Select Subjects'
                     allowClear
@@ -1689,6 +1720,35 @@ const CreateTimeTable = ({ showTab }) => {
                     value={selectedPeriod?.sub_map}
                   >
                     {subjectOptions}
+                  </Select>
+                </div>
+              </div>
+              <div className='row justify-content-between align-items-center mt-2'>
+                <div className='th-fw-500 col-4 pl-0'>Select Teacher</div>
+                {console.log(selectedPeriod)}
+                <div className='col-8'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
+                    maxTagCount={2}
+                    onChange={(e) => {
+                      setSelectedPeriod({ ...selectedPeriod, teacher: e });
+                    }}
+                    placeholder='Select Teachers'
+                    allowClear
+                    showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    value={selectedPeriod?.teacher}
+                  >
+                    {teacherOptions}
                   </Select>
                 </div>
               </div>

@@ -7,7 +7,11 @@ import { handleDaytoText, handleTexttoWeekDay } from 'v2/weekdayConversions';
 
 const TimeTableNewUI = withRouter(
   ({ currentWeekTimeTable, startDate, isTeacherView }) => {
-    const [currentDay, setCurrentDay] = useState(currentWeekTimeTable?.[0]?.week_days);
+    console.log({ currentWeekTimeTable });
+    const today = new Date();
+    console.log(today);
+    console.log(today.getDay());
+    const [currentDay, setCurrentDay] = useState(currentWeekTimeTable?.[today.getDay() - 1]?.week_days);
     const [currentDayPeriodData, setCurrentDayPeriodData] = useState(
       currentWeekTimeTable?.filter(
         (item) => item?.week_days == handleTexttoWeekDay(moment(startDate).format('dddd'))
@@ -41,6 +45,7 @@ const TimeTableNewUI = withRouter(
                 >
                   <div className='th-14 th-fw-600 '>Periods</div>
                 </th>
+                {console.log({ currentDay })}
                 {days?.length > 0 &&
                   days?.map((item, index) => (
                     <th
