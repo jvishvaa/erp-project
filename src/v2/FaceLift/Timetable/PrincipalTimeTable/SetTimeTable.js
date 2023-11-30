@@ -604,7 +604,6 @@ const SetTimeTable = ({ showTab }) => {
                             inputReadOnly
                             allowClear={false}
                             showNow={false}
-                            allowClear={false}
                             value={moment(item?.end_time, 'hh:mm:ss')}
                             format='hh:mm A'
                             onChange={(e) => {
