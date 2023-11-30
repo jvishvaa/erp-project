@@ -409,7 +409,7 @@ const SetTimeTable = ({ showTab }) => {
           />
         ) : (
           <div className='text-center py-5'>
-            <span className='th-25 th-fw-500'>No Slots Created !</span>
+            <span className='th-25 th-fw-500'>There is no existing slots available!</span>
           </div>
         )}
       </div>
@@ -426,6 +426,7 @@ const SetTimeTable = ({ showTab }) => {
             start_time: moment().format('HH:mm:ss'),
             end_time: moment().format('HH:mm:ss'),
           });
+          setErrorMessage('');
         }}
         footer={
           <div className='row justify-content-end'>
@@ -438,6 +439,7 @@ const SetTimeTable = ({ showTab }) => {
                   start_time: moment().format('HH:mm:ss'),
                   end_time: moment().format('HH:mm:ss'),
                 });
+                setErrorMessage('');
               }}
             >
               Close

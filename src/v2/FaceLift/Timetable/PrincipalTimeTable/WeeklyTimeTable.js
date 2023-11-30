@@ -559,24 +559,30 @@ const WeeklyTimeTable = ({ showTab }) => {
         </div>
 
         <div className='col-12 py-3'>
-          {sectionMappingID && weeklyTimeSlotData.length > 0 ? (
-            <Table
-              className='th-table'
-              columns={columns}
-              rowKey={(record) => record?.id}
-              dataSource={weeklyTimeSlotData}
-              pagination={false}
-              loading={loading}
-              expandable={{
-                expandedRowRender: expandedRowRender,
-                expandedRowKeys: expandedRowKeys,
-                onExpand: onTableRowExpand,
-              }}
-              rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-              }
-              scroll={{ x: weeklyTimeSlotData?.length > 0 ? 'scroll' : null }}
-            />
+          {sectionMappingID ? (
+            weeklyTimeSlotData.length > 0 ? (
+              <Table
+                className='th-table'
+                columns={columns}
+                rowKey={(record) => record?.id}
+                dataSource={weeklyTimeSlotData}
+                pagination={false}
+                loading={loading}
+                expandable={{
+                  expandedRowRender: expandedRowRender,
+                  expandedRowKeys: expandedRowKeys,
+                  onExpand: onTableRowExpand,
+                }}
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                scroll={{ x: weeklyTimeSlotData?.length > 0 ? 'scroll' : null }}
+              />
+            ) : (
+              <div className='text-center py-5'>
+                <span className='th-25 th-fw-500'>No weekly time slot available!</span>
+              </div>
+            )
           ) : (
             <div className='text-center py-5'>
               <span className='th-25 th-fw-500'>
