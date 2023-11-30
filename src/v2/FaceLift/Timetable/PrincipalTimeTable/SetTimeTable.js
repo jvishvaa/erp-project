@@ -144,6 +144,8 @@ const SetTimeTable = ({ showTab }) => {
             acad_sess: selectedBranch?.id,
             page: pageDetails?.current,
           });
+        } else if (response.data?.status_code == 409) {
+          message.error(response.data?.message);
         }
       })
       .catch((error) => {
@@ -291,6 +293,11 @@ const SetTimeTable = ({ showTab }) => {
           if (res?.status == 201) {
             message.success('Time Slot created successfully');
             setShowTimeSlotModal(false);
+            setCurrentSlotData({
+              name: '',
+              start_time: moment().format('HH:mm:ss'),
+              end_time: moment().format('HH:mm:ss'),
+            });
             setCurrentSlotPeriods([]);
             fetchAvailableTimeSlots({
               acad_sess: selectedBranch?.id,
