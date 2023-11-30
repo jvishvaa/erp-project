@@ -329,9 +329,11 @@ const WeeklyTimeTable = ({ showTab }) => {
             return {
               weekday: handleDaytoText(el?.week_days),
               slot: el?.time_set,
+              id: el?.id,
             };
           });
-
+          let dhhjsa = { ...data, timings: timings };
+          console.log({ dhhjsa });
           setCurrentSlotData({ ...data, timings: timings });
         } else {
           setCurrentSlotData({});
@@ -347,6 +349,7 @@ const WeeklyTimeTable = ({ showTab }) => {
     axios
       .delete(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/?sec_map=${id}`)
       .then((res) => {
+        console.log({ res });
         if (res?.data?.status_code == 200) {
           message.success('Weekly Time table deleted successfully');
           fetchWeeklyTimeSlotData({
@@ -355,13 +358,18 @@ const WeeklyTimeTable = ({ showTab }) => {
                 ? sectionList?.map((item) => item?.id).join(',')
                 : sectionMappingID,
           });
+        } else {
+          message.error(res?.data?.message);
         }
       })
-      .catch((error) => message.error('error', error?.message))
+      .catch((error) => {
+        message.error('error', error?.message);
+      })
       .finally(() => {
         setDeleteLoading(false);
       });
   };
+  console.log({ currentSlotData });
   const handleCreateWeeklySlot = () => {
     setCreateLoading(true);
     let payload = [];
@@ -371,15 +379,17 @@ const WeeklyTimeTable = ({ showTab }) => {
         sec_map: [currentSlotData?.sectionMappingID],
         week_days: Number(handleTexttoWeekDay(item?.weekday)),
         time_set: item?.slot ? item?.slot : null,
+        id: editSection ? item?.id : null,
       };
     });
     if (editSection) {
       axios
         .patch(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/`, payload)
         .then((res) => {
-          if (res?.data?.status_code == 201) {
+          if (res?.data?.status_code == 200) {
             message.success('Weekly Time Slot updated successfully');
             setShowAssignSlotModal(false);
+            setEditSection(false);
             setCurrentSlotData([]);
             if (sectionMappingID) {
               fetchWeeklyTimeSlotData({
