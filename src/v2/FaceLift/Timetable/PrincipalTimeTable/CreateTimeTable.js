@@ -96,8 +96,6 @@ const CreateTimeTable = ({ showTab }) => {
   const [selectedPeriodSlot, setSelectedPeriodSlot] = useState(null);
   const [currentDatePeriod, setCurrentDatePeriod] = useState({});
 
-  console.log({ selectedDate });
-
   const [currentTimeTable, setCurrentTimeTable] = useState({
     start_date: moment().format('YYYY-MM-DD'),
     end_date: moment().format('YYYY-MM-DD'),
@@ -224,12 +222,13 @@ const CreateTimeTable = ({ showTab }) => {
             );
             setCurrentDayPeriodData(currentData?.period_slot);
           } else {
+            const today = new Date();
             let currentData = list.find(
               (item) =>
-                item?.week_days ==
-                handleTexttoWeekDay(moment(params?.start_date).format('dddd'))
+                item?.week_days == handleTexttoWeekDay(moment(today).format('dddd'))
             );
-            setSelectedDate(moment(params?.start_date)?.format('YYYY-MM-DD'));
+            setSelectedDate(moment(today)?.format('YYYY-MM-DD'));
+            // setSelectedDate(moment(params?.start_date)?.format('YYYY-MM-DD'));
             setCurrentDayPeriodData(currentData?.period_slot);
           }
         } else {
@@ -324,7 +323,10 @@ const CreateTimeTable = ({ showTab }) => {
     setShowEditTeacherModal(true);
     fetchTeacherList({
       sec_map: selectedSectionData?.sec_map,
-      subject: record?.sub?.map((item) => item.subject_id)?.join(','),
+      subject:
+        record?.lecture_type !== 3
+          ? record?.sub?.map((item) => item.subject_id)?.join(',')
+          : 'null',
     });
   };
   const handleCloseEditTeacherModal = (record) => {
@@ -334,10 +336,18 @@ const CreateTimeTable = ({ showTab }) => {
   const handleShowEditSubjectModal = (record) => {
     setSelectedPeriod(record);
     setShowEditSubjectModal(true);
-    fetchTeacherList({
-      sec_map: selectedSectionData?.sec_map,
-      subject: record?.sub?.map((item) => item.subject_id)?.join(','),
-    });
+
+    if (record?.lecture_type === 3) {
+      fetchTeacherList({
+        sec_map: selectedSectionData?.sec_map,
+        subject: 'null',
+      });
+    } else {
+      fetchTeacherList({
+        sec_map: selectedSectionData?.sec_map,
+        subject: record?.sub?.map((item) => item.subject_id)?.join(','),
+      });
+    }
   };
   const handleCloseEditSubjectModal = (record) => {
     setShowEditSubjectModal(false);
@@ -467,7 +477,6 @@ const CreateTimeTable = ({ showTab }) => {
       });
   };
   const handleAssignPeriodDetails = () => {
-    console.log(selectedPeriod, 'periodssssss');
     if (!selectedPeriod?.lecture_type) {
       message.error('Please select Lecture Type');
       return false;
@@ -869,7 +878,6 @@ const CreateTimeTable = ({ showTab }) => {
 
   const handleToggle = (rec) => {
     setLoading(true);
-    console.log(rec, 'eventtoggle');
 
     axios
       .patch(`${endpoints?.timeTableNewFlow?.activeToggle}/${rec?.id}/`, {
@@ -1003,24 +1011,33 @@ const CreateTimeTable = ({ showTab }) => {
                   title='Previous Week'
                   className='th-24 th-pointer'
                   onClick={() => {
-                    setSelectedDate(null);
-                    const newStartDate = moment(currentDatePeriod?.start_date)
-                      .subtract(7, 'days')
-                      .format('YYYY-MM-DD');
+                    if (
+                      moment(dateRangeSectionList[0]?.start_date).diff(
+                        moment(currentDatePeriod?.start_date),
+                        'days'
+                      ) < 0
+                    ) {
+                      setSelectedDate(null);
+                      const newStartDate = moment(currentDatePeriod?.start_date)
+                        .subtract(7, 'days')
+                        .format('YYYY-MM-DD');
 
-                    const newEndDate = moment(currentDatePeriod?.end_date)
-                      .subtract(7, 'days')
-                      .format('YYYY-MM-DD');
-                    setCurrentDatePeriod({
-                      start_date: newStartDate,
-                      end_date: newEndDate,
-                    });
-                    fetchDayWisePeriods({
-                      start_date: newStartDate,
-                      end_date: newEndDate,
-                      sec_map: selectedSectionData?.sec_map,
-                      tt_id: selectedSectionData?.id,
-                    });
+                      const newEndDate = moment(currentDatePeriod?.end_date)
+                        .subtract(7, 'days')
+                        .format('YYYY-MM-DD');
+                      setCurrentDatePeriod({
+                        start_date: newStartDate,
+                        end_date: newEndDate,
+                      });
+                      fetchDayWisePeriods({
+                        start_date: newStartDate,
+                        end_date: newEndDate,
+                        sec_map: selectedSectionData?.sec_map,
+                        tt_id: selectedSectionData?.id,
+                      });
+                    } else {
+                      message.error(<>You can &#39; go to back to the range date</>);
+                    }
                   }}
                 />
               </span>
@@ -1038,32 +1055,40 @@ const CreateTimeTable = ({ showTab }) => {
                   title='Next Week'
                   className='th-24 th-pointer'
                   onClick={() => {
-                    setSelectedDate(null);
+                    if (
+                      moment(dateRangeSectionList[0]?.end_date).diff(
+                        moment(currentDatePeriod?.end_date),
+                        'days'
+                      ) > 0
+                    ) {
+                      setSelectedDate(null);
 
-                    const newStartDate = moment(currentDatePeriod?.start_date)
-                      .add(7, 'days')
-                      .format('YYYY-MM-DD');
+                      const newStartDate = moment(currentDatePeriod?.start_date)
+                        .add(7, 'days')
+                        .format('YYYY-MM-DD');
 
-                    const newEndDate = moment(currentDatePeriod?.end_date)
-                      .add(7, 'days')
-                      .format('YYYY-MM-DD');
-                    setCurrentDatePeriod({
-                      start_date: newStartDate,
-                      end_date: newEndDate,
-                    });
+                      const newEndDate = moment(currentDatePeriod?.end_date)
+                        .add(7, 'days')
+                        .format('YYYY-MM-DD');
+                      setCurrentDatePeriod({
+                        start_date: newStartDate,
+                        end_date: newEndDate,
+                      });
 
-                    fetchDayWisePeriods({
-                      start_date: newStartDate,
-                      end_date: newEndDate,
-                      sec_map: selectedSectionData?.sec_map,
-                      tt_id: selectedSectionData?.id,
-                    });
+                      fetchDayWisePeriods({
+                        start_date: newStartDate,
+                        end_date: newEndDate,
+                        sec_map: selectedSectionData?.sec_map,
+                        tt_id: selectedSectionData?.id,
+                      });
+                    } else {
+                      message.error(<>You can&#39; go forward to range date </>);
+                    }
                   }}
                 />
               </span>
             </div>
           </div>
-
           <div className='d-flex justify-content-between mt-2'>
             {periodListData?.map((item, index) => {
               let currentWeekday = moment(currentDatePeriod?.start_date)
@@ -1093,7 +1118,6 @@ const CreateTimeTable = ({ showTab }) => {
                   }}
                 >
                   <div>
-                    {console.log({ currentDatePeriod })}
                     {moment(currentDatePeriod?.start_date)
                       .add(item?.week_days, 'days')
                       .format('Do MMM')}
@@ -1503,6 +1527,9 @@ const CreateTimeTable = ({ showTab }) => {
                       moment(duplicateData?.start_date, 'YYYY-MM-DD'),
                       moment(duplicateData?.end_date, 'YYYY-MM-DD'),
                     ]}
+                    disabledDate={(current) =>
+                      current.isBefore(moment().subtract(1, 'day'))
+                    }
                     onChange={(e) => {
                       const startDate = moment(e[0]).format('YYYY-MM-DD');
                       const endDate = moment(e[1]).format('YYYY-MM-DD');
@@ -1724,12 +1751,12 @@ const CreateTimeTable = ({ showTab }) => {
                         sub_map: e,
                         teacher: [],
                       });
-
-                      fetchTeacherList({
-                        sec_map: selectedSectionData?.sec_map,
-                        subject: each?.map((item) => item?.subjectId)?.join(','),
-                      });
-                      console.log('teachersjad', e, selectedPeriod?.teacher);
+                      if (selectedPeriod?.lecture_type !== 3) {
+                        fetchTeacherList({
+                          sec_map: selectedSectionData?.sec_map,
+                          subject: each?.map((item) => item?.subjectId)?.join(','),
+                        });
+                      }
                     }}
                     placeholder='Select Subjects'
                     allowClear
@@ -1753,7 +1780,6 @@ const CreateTimeTable = ({ showTab }) => {
               </div>
               <div className='row justify-content-between align-items-center mt-2'>
                 <div className='th-fw-500 col-4 pl-0'>Select Teacher</div>
-                {console.log(selectedPeriod)}
                 <div className='col-8'>
                   <Select
                     className='th-width-100 th-br-6'
@@ -1892,7 +1918,11 @@ const CreateTimeTable = ({ showTab }) => {
                   <Select
                     className='th-width-100 th-br-6'
                     onChange={(e) => {
-                      setSelectedPeriod({ ...selectedPeriod, lecture_type: e });
+                      setSelectedPeriod({
+                        ...selectedPeriod,
+                        lecture_type: e,
+                        sub_map: [],
+                      });
                     }}
                     placeholder='Select Lecture Type'
                     allowClear
@@ -1929,7 +1959,10 @@ const CreateTimeTable = ({ showTab }) => {
                       });
                       fetchTeacherList({
                         sec_map: selectedSectionData?.sec_map,
-                        subject: each?.map((item) => item?.subjectId)?.join(','),
+                        subject:
+                          selectedPeriod?.lecture_type !== 3
+                            ? each?.map((item) => item?.subjectId)?.join(',')
+                            : 'null',
                       });
                     }}
                     placeholder='Select Subjects'

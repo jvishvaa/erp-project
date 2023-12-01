@@ -18,7 +18,6 @@ const StudentTimeTable = () => {
   const [dates, setDates] = useState(null);
   const [value, setValue] = useState([startOfWeek, endOfWeek]);
 
-  console.log(startOfWeek, endOfWeek, 'startend');
   const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState([]);
 
   const fetchCurrentWeekTimeTable = (params = {}) => {
@@ -100,14 +99,22 @@ const StudentTimeTable = () => {
 
             <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
               <Spin spinning={loading}>
-                <Card className='th-br-8'>
-                  {currentWeekTimeTable?.length > 0 && (
+                {currentWeekTimeTable?.length > 0 ? (
+                  <Card className='th-br-8'>
                     <TimeTableNewView
                       currentWeekTimeTable={currentWeekTimeTable}
                       startDate={moment(value[0]).format('YYYY-MM-DD')}
                     />
-                  )}
-                </Card>
+                  </Card>
+                ) : (
+                  <div className='text-center py-5'>
+                    <span className='th-25 th-fw-700'>Timetable Not Created</span>
+                    <p className='th-fw-400'>
+                      Please note that the timetable for this period has not been
+                      generated yet. Kindly stay tuned for updates.
+                    </p>
+                  </div>
+                )}
               </Spin>
             </div>
           </div>
