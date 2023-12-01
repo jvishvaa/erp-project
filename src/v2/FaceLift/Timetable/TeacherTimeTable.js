@@ -252,15 +252,23 @@ const TeacherTimeTable = () => {
               <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
                 {sectionMappingID ? (
                   <Spin spinning={loading}>
-                    <Card>
-                      {currentWeekTimeTable?.length > 0 && (
+                    {currentWeekTimeTable?.length > 0 ? (
+                      <Card>
                         <TimeTableNewView
                           currentWeekTimeTable={currentWeekTimeTable}
                           startDate={moment(value[0]).format('YYYY-MM-DD')}
                           isTeacherView={true}
                         />
-                      )}
-                    </Card>
+                      </Card>
+                    ) : (
+                      <div className='text-center py-5'>
+                        <span className='th-25 th-fw-700'>Timetable Not Created</span>
+                        <p className='th-fw-400'>
+                          Please note that the timetable for this period has not been
+                          generated yet. Kindly stay tuned for updates.
+                        </p>
+                      </div>
+                    )}
                   </Spin>
                 ) : (
                   <div className='text-center py-5'>

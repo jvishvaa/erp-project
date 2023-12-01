@@ -225,8 +225,7 @@ const CreateTimeTable = ({ showTab }) => {
             const today = new Date();
             let currentData = list.find(
               (item) =>
-                item?.week_days ==
-                handleTexttoWeekDay(moment(today).format('dddd'))
+                item?.week_days == handleTexttoWeekDay(moment(today).format('dddd'))
             );
             setSelectedDate(moment(today)?.format('YYYY-MM-DD'));
             // setSelectedDate(moment(params?.start_date)?.format('YYYY-MM-DD'));
@@ -478,7 +477,6 @@ const CreateTimeTable = ({ showTab }) => {
       });
   };
   const handleAssignPeriodDetails = () => {
-    console.log(selectedPeriod, 'periodssssss');
     if (!selectedPeriod?.lecture_type) {
       message.error('Please select Lecture Type');
       return false;
