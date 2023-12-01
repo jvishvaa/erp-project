@@ -147,9 +147,6 @@ const CreateTimeTable = ({ showTab }) => {
     );
   });
   const teacherOptions = teacherList
-    // ?.filter(
-    //   (teacher, index, self) => self.findIndex((t) => t.name === teacher.name) === index
-    // )
     ?.filter(
       (teacher, index, self) => self.findIndex((t) => t.name === teacher.name) === index
     )
@@ -1265,24 +1262,30 @@ const CreateTimeTable = ({ showTab }) => {
         </div>
 
         <div className='col-12 py-3'>
-          {availableDateRangesData.length > 0 ? (
-            <Table
-              className='th-table'
-              columns={columns}
-              rowKey={(record) => record?.id}
-              dataSource={availableDateRangesData}
-              pagination={false}
-              loading={loading}
-              expandable={{
-                expandedRowRender: expandedRowRender,
-                expandedRowKeys: expandedRowKeys,
-                onExpand: onTableRowExpand,
-              }}
-              rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-              }
-              scroll={{ x: null }}
-            />
+          {sectionMappingID ? (
+            availableDateRangesData.length > 0 ? (
+              <Table
+                className='th-table'
+                columns={columns}
+                rowKey={(record) => record?.id}
+                dataSource={availableDateRangesData}
+                pagination={false}
+                loading={loading}
+                expandable={{
+                  expandedRowRender: expandedRowRender,
+                  expandedRowKeys: expandedRowKeys,
+                  onExpand: onTableRowExpand,
+                }}
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                scroll={{ x: null }}
+              />
+            ) : (
+              <div className='text-center py-5'>
+                <span className='th-25 th-fw-500'>No Timetable available!</span>
+              </div>
+            )
           ) : (
             <div className='text-center py-5'>
               <span className='th-25 th-fw-500'>
