@@ -200,11 +200,11 @@ const TeacherTimeTable = () => {
                     }}
                     value={gradeID}
                   >
-                    {gradeList?.length > 0 && (
+                    {/* {gradeList?.length > 0 && (
                       <Option value='All' key='All'>
                         All
                       </Option>
-                    )}
+                    )} */}
                     {gradeOptions}
                   </Select>
                 </div>
@@ -224,11 +224,11 @@ const TeacherTimeTable = () => {
                     }}
                     value={sectionMappingID}
                   >
-                    {sectionList?.length > 0 && (
+                    {/* {sectionList?.length > 0 && (
                       <Option value='All' key='All'>
                         All
                       </Option>
-                    )}
+                    )} */}
                     {sectionOptions}
                   </Select>
                 </div>
