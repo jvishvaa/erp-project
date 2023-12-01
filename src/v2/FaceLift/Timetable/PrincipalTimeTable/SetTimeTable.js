@@ -144,6 +144,8 @@ const SetTimeTable = ({ showTab }) => {
             acad_sess: selectedBranch?.id,
             page: pageDetails?.current,
           });
+        } else if (response.data?.status_code == 409) {
+          message.error(response.data?.message);
         }
       })
       .catch((error) => {
@@ -291,6 +293,11 @@ const SetTimeTable = ({ showTab }) => {
           if (res?.status == 201) {
             message.success('Time Slot created successfully');
             setShowTimeSlotModal(false);
+            setCurrentSlotData({
+              name: '',
+              start_time: moment().format('HH:mm:ss'),
+              end_time: moment().format('HH:mm:ss'),
+            });
             setCurrentSlotPeriods([]);
             fetchAvailableTimeSlots({
               acad_sess: selectedBranch?.id,
@@ -402,7 +409,7 @@ const SetTimeTable = ({ showTab }) => {
           />
         ) : (
           <div className='text-center py-5'>
-            <span className='th-25 th-fw-500'>No Slots Created !</span>
+            <span className='th-25 th-fw-500'>There is no existing slots available!</span>
           </div>
         )}
       </div>
@@ -419,6 +426,7 @@ const SetTimeTable = ({ showTab }) => {
             start_time: moment().format('HH:mm:ss'),
             end_time: moment().format('HH:mm:ss'),
           });
+          setErrorMessage('');
         }}
         footer={
           <div className='row justify-content-end'>
@@ -431,6 +439,7 @@ const SetTimeTable = ({ showTab }) => {
                   start_time: moment().format('HH:mm:ss'),
                   end_time: moment().format('HH:mm:ss'),
                 });
+                setErrorMessage('');
               }}
             >
               Close

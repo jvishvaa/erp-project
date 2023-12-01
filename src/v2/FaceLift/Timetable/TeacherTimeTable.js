@@ -17,16 +17,17 @@ const TeacherTimeTable = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const today = moment();
+
+  const startOfWeek = today.clone().startOf('isoWeek');
+  const endOfWeek = today.clone().endOf('isoWeek');
   const [loading, setLoading] = useState(false);
   const [gradeID, setGradeID] = useState();
   const [gradeList, setGradeList] = useState([]);
   const [sectionMappingID, setSectionMappingID] = useState();
   const [sectionList, setSectionList] = useState([]);
   const [dates, setDates] = useState(null);
-  const [value, setValue] = useState([
-    moment('2023-12-04'),
-    moment('2023-12-04').add(6, 'days'),
-  ]);
+  const [value, setValue] = useState([startOfWeek, endOfWeek]);
   const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState([]);
 
   const gradeOptions = gradeList?.map((each) => {

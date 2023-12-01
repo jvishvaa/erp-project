@@ -16,7 +16,7 @@ const PrincipalTimeTable = () => {
     <>
       <Layout>
         <div className='row py-3 px-2'>
-          <div className='col-md-5 th-bg-grey' style={{ zIndex: 2 }}>
+          <div className='col-md-4 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard

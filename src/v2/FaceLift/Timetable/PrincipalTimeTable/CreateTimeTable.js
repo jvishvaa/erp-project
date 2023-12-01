@@ -145,9 +145,6 @@ const CreateTimeTable = ({ showTab }) => {
     );
   });
   const teacherOptions = teacherList
-    // ?.filter(
-    //   (teacher, index, self) => self.findIndex((t) => t.name === teacher.name) === index
-    // )
     ?.filter(
       (teacher, index, self) => self.findIndex((t) => t.name === teacher.name) === index
     )
@@ -481,6 +478,7 @@ const CreateTimeTable = ({ showTab }) => {
       });
   };
   const handleAssignPeriodDetails = () => {
+    console.log(selectedPeriod, 'periodssssss');
     if (!selectedPeriod?.lecture_type) {
       message.error('Please select Lecture Type');
       return false;
@@ -494,6 +492,12 @@ const CreateTimeTable = ({ showTab }) => {
     if (!selectedPeriod?.teacher?.length > 0) {
       message.error('Please select teacher');
       return false;
+    }
+    if (selectedPeriod?.lecture_type == 2) {
+      if (selectedPeriod?.teacher?.length < 2) {
+        message.error('Please Select Atleast 2 Teachers for Buddy Lecture');
+        return false;
+      }
     }
     setEditPeriodLoading(true);
     axios
@@ -541,11 +545,23 @@ const CreateTimeTable = ({ showTab }) => {
         message.error('Please select teacher');
         return;
       }
+      if (selectedPeriod?.lecture_type == 2) {
+        if (selectedPeriod?.teacher?.length < 2) {
+          message.error('Please Select Atleast 2 Teachers for Buddy Lecture');
+          return false;
+        }
+      }
     } else if (type == 'teacher') {
       payload['teacher'] = selectedPeriod?.teacher;
       if (payload['teacher'].length < 1) {
         message.error('Please select teacher');
         return;
+      }
+      if (selectedPeriod?.lecture_type == 2) {
+        if (selectedPeriod?.teacher?.length < 2) {
+          message.error('Please Select Atleast 2 Teachers for Buddy Lecture');
+          return false;
+        }
       }
     }
     setEditPeriodLoading(true);
@@ -877,6 +893,7 @@ const CreateTimeTable = ({ showTab }) => {
           fetchRangeSectionList({
             start_date: rec?.start_date,
             end_date: rec?.end_date,
+            sec_map: sectionMappingID,
           });
         } else {
           message.error('Failed to Update Status');
@@ -1271,24 +1288,30 @@ const CreateTimeTable = ({ showTab }) => {
         </div>
 
         <div className='col-12 py-3'>
-          {availableDateRangesData.length > 0 ? (
-            <Table
-              className='th-table'
-              columns={columns}
-              rowKey={(record) => record?.id}
-              dataSource={availableDateRangesData}
-              pagination={false}
-              loading={loading}
-              expandable={{
-                expandedRowRender: expandedRowRender,
-                expandedRowKeys: expandedRowKeys,
-                onExpand: onTableRowExpand,
-              }}
-              rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-              }
-              scroll={{ x: null }}
-            />
+          {sectionMappingID ? (
+            availableDateRangesData.length > 0 ? (
+              <Table
+                className='th-table'
+                columns={columns}
+                rowKey={(record) => record?.id}
+                dataSource={availableDateRangesData}
+                pagination={false}
+                loading={loading}
+                expandable={{
+                  expandedRowRender: expandedRowRender,
+                  expandedRowKeys: expandedRowKeys,
+                  onExpand: onTableRowExpand,
+                }}
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                scroll={{ x: null }}
+              />
+            ) : (
+              <div className='text-center py-5'>
+                <span className='th-25 th-fw-500'>No Timetable available!</span>
+              </div>
+            )
           ) : (
             <div className='text-center py-5'>
               <span className='th-25 th-fw-500'>
