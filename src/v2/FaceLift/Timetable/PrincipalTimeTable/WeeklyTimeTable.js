@@ -700,6 +700,7 @@ const WeeklyTimeTable = ({ showTab }) => {
                             className='th-grey th-bg-white  w-100 text-left'
                             placement='bottomRight'
                             showArrow={true}
+                            allowClear
                             onChange={(e) => {
                               let updatedTimings = [...currentSlotData?.timings];
                               updatedTimings[index]['slot'] = e;
