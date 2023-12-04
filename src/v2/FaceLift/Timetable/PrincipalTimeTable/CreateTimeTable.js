@@ -59,10 +59,10 @@ const CreateTimeTable = ({ showTab }) => {
       id: 3,
       type: 'Substitute Lecture',
     },
-    {
-      id: 4,
-      type: 'Combined Lecture',
-    },
+    // {
+    //   id: 4,
+    //   type: 'Combined Lecture',
+    // },
     {
       id: 5,
       type: 'Normal Lecture',
@@ -523,6 +523,9 @@ const CreateTimeTable = ({ showTab }) => {
             tt_id: selectedSectionData?.id,
           });
           handleClosePeriodDetailsModal();
+        }
+        if (res.data?.status_code == 409) {
+          message.error(res.data?.developer_msg);
         }
       })
       .catch((error) => {
@@ -1546,7 +1549,9 @@ const CreateTimeTable = ({ showTab }) => {
                       moment(duplicateData?.start_date, 'YYYY-MM-DD'),
                       moment(duplicateData?.end_date, 'YYYY-MM-DD'),
                     ]}
-                    disabledDate={(current) => current.isBefore(moment(duplicateData?.start_date))}
+                    disabledDate={(current) =>
+                      current.isBefore(moment(duplicateData?.start_date))
+                    }
                     onChange={(e) => {
                       const startDate = moment(e[0]).format('YYYY-MM-DD');
                       const endDate = moment(e[1]).format('YYYY-MM-DD');
