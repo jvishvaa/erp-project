@@ -259,17 +259,18 @@ const SetTimeTable = ({ showTab }) => {
       return;
     }
     setCreateLoading(true);
-    let formData = new FormData();
-    formData.append('name', currentSlotData?.name);
-    formData.append('start_time', currentSlotData?.start_time);
-    formData.append('acad_sess', selectedBranch?.id);
-    formData.append('end_time', currentSlotData?.end_time);
+    let payload = {
+      name: currentSlotData?.name,
+      start_time: currentSlotData?.start_time,
+      acad_sess: selectedBranch?.id,
+      end_time: currentSlotData?.end_time,
+    };
 
     if (editSlotData) {
       axios
         .put(
           `${endpoints.timeTableNewFlow.availableTimeSlots}/${currentSlotData?.id}/`,
-          formData
+          payload
         )
         .then((res) => {
           if (res?.status == 200) {
@@ -288,7 +289,7 @@ const SetTimeTable = ({ showTab }) => {
         });
     } else {
       axios
-        .post(`${endpoints.timeTableNewFlow.availableTimeSlots}/`, formData)
+        .post(`${endpoints.timeTableNewFlow.availableTimeSlots}/`, payload)
         .then((res) => {
           if (res?.status == 201) {
             message.success('Time Slot created successfully');
