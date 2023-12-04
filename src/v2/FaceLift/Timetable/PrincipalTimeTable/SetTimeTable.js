@@ -354,7 +354,7 @@ const SetTimeTable = ({ showTab }) => {
     setCreatePeriodLoading(true);
     axios
       .post(
-        `${endpoints?.timeTableNewFlow?.periodSlots}e/${selectedSlotData?.id}/`,
+        `${endpoints?.timeTableNewFlow?.periodSlots}/${selectedSlotData?.id}/`,
         currentSlotPeriods
       )
       .then((res) => {
