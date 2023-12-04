@@ -50,7 +50,7 @@ const TimeTableCheck = () => {
     <>
       <Spin spinning={loading}>
         {loading ? null : showNewTimeTable ? (
-          !isStudent ? (
+          isStudent ? (
             <StudentTimeTable />
           ) : (
             <PrincipalTimeTable />
