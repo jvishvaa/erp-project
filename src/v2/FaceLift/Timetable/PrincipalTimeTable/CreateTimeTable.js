@@ -585,7 +585,7 @@ const CreateTimeTable = ({ showTab }) => {
         payload
       )
       .then((res) => {
-        if (res.status == 200) {
+        if (res?.data?.status_code == 200) {
           message.success('Periods Details updated successfully');
           fetchDayWisePeriods({
             start_date: currentDatePeriod?.start_date,
@@ -600,6 +600,8 @@ const CreateTimeTable = ({ showTab }) => {
           } else if (type == 'teacher') {
             handleCloseEditTeacherModal();
           }
+        } else if (res?.data?.status_code == 409) {
+          message.error(res.data?.developer_msg);
         }
       })
       .catch((error) => {
