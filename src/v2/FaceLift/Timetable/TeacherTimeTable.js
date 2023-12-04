@@ -159,7 +159,7 @@ const TeacherTimeTable = () => {
     });
   }, []);
   useEffect(() => {
-    if (value.length > 1 && sectionMappingID) {
+    if (value?.length > 1 && sectionMappingID) {
       fetchTeachersTimeTable({
         start: moment(value[0]).format('YYYY-MM-DD'),
         end: moment(value[1]).format('YYYY-MM-DD'),
@@ -256,7 +256,7 @@ const TeacherTimeTable = () => {
                       <Card>
                         <TimeTableNewView
                           currentWeekTimeTable={currentWeekTimeTable}
-                          startDate={moment(value[0]).format('YYYY-MM-DD')}
+                          startDate={moment(value?.[0]).format('YYYY-MM-DD')}
                           isTeacherView={true}
                         />
                       </Card>
