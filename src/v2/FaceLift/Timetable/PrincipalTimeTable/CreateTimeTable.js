@@ -1055,7 +1055,7 @@ const CreateTimeTable = ({ showTab }) => {
                         tt_id: selectedSectionData?.id,
                       });
                     } else {
-                      message.error(<>You can &#39; go to back to the range date</>);
+                      message.error(<>You can &#39;t go to back to the range date</>);
                     }
                   }}
                 />
@@ -1101,7 +1101,7 @@ const CreateTimeTable = ({ showTab }) => {
                         tt_id: selectedSectionData?.id,
                       });
                     } else {
-                      message.error(<>You can&#39; go forward to range date </>);
+                      message.error(<>You can&#39;t go forward to range date </>);
                     }
                   }}
                 />
@@ -1546,9 +1546,7 @@ const CreateTimeTable = ({ showTab }) => {
                       moment(duplicateData?.start_date, 'YYYY-MM-DD'),
                       moment(duplicateData?.end_date, 'YYYY-MM-DD'),
                     ]}
-                    disabledDate={(current) =>
-                      current.isBefore(moment().subtract(1, 'day'))
-                    }
+                    disabledDate={(current) => current.isBefore(moment(duplicateData?.start_date))}
                     onChange={(e) => {
                       const startDate = moment(e[0]).format('YYYY-MM-DD');
                       const endDate = moment(e[1]).format('YYYY-MM-DD');
