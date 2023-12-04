@@ -103,7 +103,7 @@ const StudentTimeTable = () => {
                   <Card className='th-br-8'>
                     <TimeTableNewView
                       currentWeekTimeTable={currentWeekTimeTable}
-                      startDate={moment(value[0]).format('YYYY-MM-DD')}
+                      startDate={moment(value?.[0])?.format('YYYY-MM-DD')}
                     />
                   </Card>
                 ) : (

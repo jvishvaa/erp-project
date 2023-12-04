@@ -8,13 +8,15 @@ import { handleDaytoText, handleTexttoWeekDay } from 'v2/weekdayConversions';
 const TimeTableNewUI = withRouter(
   ({ currentWeekTimeTable, startDate, isTeacherView }) => {
     const today = new Date();
-    const [currentDay, setCurrentDay] = useState(currentWeekTimeTable?.[today.getDay() - 1]?.week_days);
+    const [currentDay, setCurrentDay] = useState(
+      currentWeekTimeTable?.[today.getDay() - 1]?.week_days
+    );
     const [currentDayPeriodData, setCurrentDayPeriodData] = useState(
       currentWeekTimeTable?.filter(
         (item) => item?.week_days == handleTexttoWeekDay(moment(startDate).format('dddd'))
       )?.[0]
     );
-    const days = currentWeekTimeTable?.map((item) => item?.week_days);
+    const days = [...new Set(currentWeekTimeTable?.map((item) => item?.week_days))];
     let periodSlots = currentDayPeriodData?.period_slot ?? [];
     let slotLength = currentDayPeriodData?.period_slot?.length;
     let periodData = [];

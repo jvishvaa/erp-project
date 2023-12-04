@@ -283,7 +283,12 @@ const CreateTimeTable = ({ showTab }) => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           message.success('Time table deleted successfully');
-          fetchDateRangeList({ sec_map: sectionMappingID });
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
+            fetchDateRangeList({ sec_map: sectionMappingID });
+          }
         }
       })
       .catch((error) => message.error('error', error?.message))
@@ -397,7 +402,10 @@ const CreateTimeTable = ({ showTab }) => {
             grade: [],
             section: [],
           });
-          if (sectionMappingID) {
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
             fetchDateRangeList({ sec_map: sectionMappingID });
           }
         } else if (res?.data?.status_code == 409) {
@@ -422,7 +430,12 @@ const CreateTimeTable = ({ showTab }) => {
       .then((res) => {
         if (res.data?.status_code == 201) {
           message.success('Timetable duplicated successfully');
-          fetchDateRangeList({ sec_map: sectionMappingID });
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
+            fetchDateRangeList({ sec_map: sectionMappingID });
+          }
           setInnerExpandedRowKeys([]);
           handleCloseDuplicateModal();
         } else if (res.data?.status_code == 409) {
@@ -703,7 +716,7 @@ const CreateTimeTable = ({ showTab }) => {
         <div
           className='d-flex text-left flex-column'
           onClick={() => {
-            handleShowEditTimeModal(row);
+            // handleShowEditTimeModal(row);
           }}
         >
           <div className='th-fw-500 th-18'>{row?.period_name}</div>
@@ -712,7 +725,7 @@ const CreateTimeTable = ({ showTab }) => {
             <span className='mr-1'>
               {moment(row?.end_time, 'hh:mm A').format('hh:mm A')}
             </span>
-            <EditFilled className='th-pointer' />
+            {/* <EditFilled className='th-pointer' /> */}
           </div>
         </div>
       ),
@@ -840,10 +853,16 @@ const CreateTimeTable = ({ showTab }) => {
       end_date: moment(record?.start_date).add(6, 'days').format('YYYY-MM-DD'),
     });
     if (expanded) {
+      let allSection;
+      if (sectionMappingID == 'All') {
+        allSection = sectionList?.map((item) => item?.id);
+      } else {
+        allSection = [sectionMappingID];
+      }
       fetchRangeSectionList({
         start_date: record?.start_date,
         end_date: record?.end_date,
-        sec_map: sectionMappingID,
+        sec_map: allSection.join(','),
       });
       keys.push(record.id);
     }
@@ -1224,7 +1243,7 @@ const CreateTimeTable = ({ showTab }) => {
   return (
     <div>
       <React.Fragment>
-        <div className='row mt-2 align-items-center'>
+        <div className='row align-items-end'>
           <div className='col-md-3 py-2'>
             <div className='th-fw-600 pb-2'>Select Grade</div>
             <Select
