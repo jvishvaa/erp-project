@@ -265,7 +265,6 @@ const StudentReportCard = () => {
               <Grid item xs={12}>
                 <>
                   <div className='row justify-content-between'>
-                    {console.log(reportCardDataNew, 'reportCardDataNew')}
                     <TabPanel
                       tabValue={tabValue}
                       setTabValue={setTabValue}
@@ -275,26 +274,28 @@ const StudentReportCard = () => {
                           : ['Front', 'Back']
                       }
                     />
-                    <ReactToPrint
-                      trigger={() => (
-                        <Button
-                          variant='contained'
-                          size='small'
-                          color='primary'
-                          style={{ fontSize: 15 }}
-                        >
-                          Download Report
-                        </Button>
-                      )}
-                      content={() => componentRef.current} // Use the ref content here
-                      documentTitle={`Eduvate ${
-                        tabValue === 0
-                          ? 'Front'
-                          : tabValue === 1
-                          ? 'Back'
-                          : 'PhysicalEducationReportCard'
-                      } - ${reportCardDataNew?.user_info?.name}`}
-                    />
+                    {tabValue !== 2 ? (
+                      <ReactToPrint
+                        trigger={() => (
+                          <Button
+                            variant='contained'
+                            size='small'
+                            color='primary'
+                            style={{ fontSize: 15 }}
+                          >
+                            Download Report
+                          </Button>
+                        )}
+                        content={() => componentRef.current} // Use the ref content here
+                        documentTitle={`Eduvate ${
+                          tabValue === 0
+                            ? 'Front'
+                            : tabValue === 1
+                            ? 'Back'
+                            : 'PhysicalEducationReportCard'
+                        } - ${reportCardDataNew?.user_info?.name}`}
+                      />
+                    ) : null}
                   </div>
                   <Box style={{ margin: '20px auto' }}>
                     {renderReportCardNew(componentRef)}
