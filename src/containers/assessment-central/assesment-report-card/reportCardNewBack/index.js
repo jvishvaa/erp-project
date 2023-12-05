@@ -26,28 +26,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ReportCardNewBack = (props) => {
+const ReportCardNewBack = React.forwardRef((props, ref) => {
   const classes = useStyles();
-  const componentRef = useRef();
   return (
     <Box style={{ position: 'relative' }}>
-      <Paper component={'div'} elevation={2} className={classes.root} ref={componentRef}>
+      <Paper component={'div'} elevation={2} className={classes.root} ref={ref}>
         <ObservationReport reportCardDataNew={props.reportCardDataNew} />
       </Paper>
-      <ReactToPrint
-        trigger={() => (
-          <IconButton
-            className={classes.printButton}
-            title='Print back side of the report card'
-          >
-            <PrintIcon />
-          </IconButton>
-        )}
-        content={() => componentRef.current}
-        documentTitle={`Eduvate Back - ${props?.reportCardDataNew?.user_info?.name}`}
-      />
     </Box>
   );
-};
+});
 
 export default ReportCardNewBack;
