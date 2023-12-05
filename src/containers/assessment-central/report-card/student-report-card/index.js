@@ -261,6 +261,7 @@ const StudentReportCard = () => {
             <Grid item xs={12}>
               <Divider />
             </Grid>
+            {console.log(reportCardDataNew, 'reportCardNew')}
             {selectedGrade && reportCardDataNew?.report?.length > 0 && (
               <Grid item xs={12}>
                 <>
