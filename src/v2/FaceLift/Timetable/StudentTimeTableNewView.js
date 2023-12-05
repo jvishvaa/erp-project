@@ -86,11 +86,11 @@ const TimeTableNewUI = withRouter(
                       style={{
                         textAlign: 'center',
                         verticalAlign: 'middle',
-                        paddingLeft: 0,
+                        padding: 0,
                       }}
                     >
                       <div
-                        className='card w-100 d-flex justify-content-center p-2 flex-column'
+                        className=' d-flex justify-content-center flex-column'
                         style={{
                           height: '100px',
                           background: '#1b4ccb',
