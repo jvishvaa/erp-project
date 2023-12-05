@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import Layout from '../../../Layout';
 import {
   Grid,
@@ -31,6 +31,7 @@ import PhysicalEducationReportCard from '../../assesment-report-card/physicalEdu
 import axios from 'axios';
 import { message } from 'antd';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import ReactToPrint from 'react-to-print';
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //   window.location.host.split('.')[0] === 'qa'
@@ -40,6 +41,7 @@ const isOrchids = IsOrchidsChecker();
 
 const StudentReportCard = () => {
   const themeContext = useTheme();
+  const componentRef = useRef();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -64,14 +66,23 @@ const StudentReportCard = () => {
   const [showPEConfig, setShowPEConfig] = useState([]);
   const [peReportCardData, setPEReportCardData] = useState([]);
 
-  const renderReportCardNew = () => {
+  const renderReportCardNew = (componentRef) => {
     switch (tabValue) {
       case 0:
-        return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
+        return (
+          <AssesmentReportNew reportCardDataNew={reportCardDataNew} ref={componentRef} />
+        );
       case 1:
-        return <ReportCardNewBack reportCardDataNew={reportCardDataNew} />;
+        return (
+          <ReportCardNewBack reportCardDataNew={reportCardDataNew} ref={componentRef} />
+        );
       case 2:
-        return <PhysicalEducationReportCard peReportCardData={peReportCardData} />;
+        return (
+          <PhysicalEducationReportCard
+            peReportCardData={peReportCardData}
+            ref={componentRef}
+          />
+        );
     }
   };
   const handleCloseGrievanceModal = () => {
@@ -250,19 +261,46 @@ const StudentReportCard = () => {
             <Grid item xs={12}>
               <Divider />
             </Grid>
+            {console.log(reportCardDataNew, 'reportCardNew')}
             {selectedGrade && reportCardDataNew?.report?.length > 0 && (
               <Grid item xs={12}>
                 <>
-                  <TabPanel
-                    tabValue={tabValue}
-                    setTabValue={setTabValue}
-                    tabValues={
-                      showPEConfig
-                        ? ['Front', 'Back', 'Physical Education']
-                        : ['Front', 'Back']
-                    }
-                  />
-                  <Box style={{ margin: '20px auto' }}>{renderReportCardNew()}</Box>
+                  <div className='row justify-content-between'>
+                    <TabPanel
+                      tabValue={tabValue}
+                      setTabValue={setTabValue}
+                      tabValues={
+                        showPEConfig
+                          ? ['Front', 'Back', 'Physical Education']
+                          : ['Front', 'Back']
+                      }
+                    />
+                    {tabValue !== 2 ? (
+                      <ReactToPrint
+                        trigger={() => (
+                          <Button
+                            variant='contained'
+                            size='small'
+                            color='primary'
+                            style={{ fontSize: 15 }}
+                          >
+                            Download Report
+                          </Button>
+                        )}
+                        content={() => componentRef.current} // Use the ref content here
+                        documentTitle={`Eduvate ${
+                          tabValue === 0
+                            ? 'Front'
+                            : tabValue === 1
+                            ? 'Back'
+                            : 'PhysicalEducationReportCard'
+                        } - ${reportCardDataNew?.user_info?.name}`}
+                      />
+                    ) : null}
+                  </div>
+                  <Box style={{ margin: '20px auto' }}>
+                    {renderReportCardNew(componentRef)}
+                  </Box>
                 </>
               </Grid>
             )}
