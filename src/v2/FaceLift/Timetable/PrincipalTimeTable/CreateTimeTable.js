@@ -214,9 +214,7 @@ const CreateTimeTable = ({ showTab }) => {
         if (res?.data?.status_code == 200) {
           let list = res?.data?.result;
           setPeriodListData(list);
-          alert(`${selectedDate}-----nkjhkjhkjhkjh`);
           if (selectedDate) {
-            alert('nkjhkjhkjhkjh');
             let currentData = list.find(
               (item) =>
                 item?.week_days ==

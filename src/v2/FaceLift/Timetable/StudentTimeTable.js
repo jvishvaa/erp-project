@@ -63,30 +63,6 @@ const StudentTimeTable = () => {
       });
     }
   }, [value]);
-  const locale = {
-    lang: {
-      // Customize the day of week names
-      weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      // Customize the month names
-      months: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-      ],
-      // Optionally, you can customize other datepicker-related texts
-      // Check the Ant Design documentation for more options
-      // https://ant.design/components/date-picker/#Internationalization
-    },
-  };
   return (
     <React.Fragment>
       <Layout>
@@ -117,23 +93,14 @@ const StudentTimeTable = () => {
                       onOpenChange={onOpenChange}
                     />
                   </span>
-                  <span className='pl-2'>
-                    <DatePicker
-                      className='th-week-picker'
-                      picker='week'
-                      onChange={(val, dateString) => {
-                        console.log(val, dateString, 'jjjjjjjjjjj');
-                      }}
-                    />
-                  </span>
                 </div>
               </div>
             </div>
 
-            <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
+            <div className={`mt-3 px-3 ${loading ? 'py-5' : ''}`}>
               <Spin spinning={loading}>
                 {currentWeekTimeTable?.length > 0 ? (
-                  <Card className='th-br-8'>
+                  <Card className='th-br-8 th-timetable-card'>
                     <StudentTimeTableNewView
                       currentWeekTimeTable={currentWeekTimeTable}
                       startDate={moment(value?.[0])?.format('YYYY-MM-DD')}
