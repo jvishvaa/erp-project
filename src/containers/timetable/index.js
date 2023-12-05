@@ -7,7 +7,7 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { Spin, message } from 'antd';
 import StudentTimeTable from 'v2/FaceLift/Timetable/StudentTimeTable';
-import PrincipalTimeTable from 'v2/FaceLift/Timetable/PrincipalTimeTable/PrincipalTimeTable';
+import TimeTable from 'v2/FaceLift/Timetable/TimeTable';
 
 const TimeTableCheck = () => {
   const [periodConfig, setPeriodConfig] = useState(null);
@@ -53,7 +53,7 @@ const TimeTableCheck = () => {
           isStudent ? (
             <StudentTimeTable />
           ) : (
-            <PrincipalTimeTable />
+            <TimeTable />
           )
         ) : isTeacher ? (
           <TeacherTimeTable />

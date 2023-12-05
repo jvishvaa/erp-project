@@ -4,7 +4,7 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { Breadcrumb, Select, message, DatePicker, Card, Spin } from 'antd';
 import { useSelector } from 'react-redux';
-import TimeTableNewView from './TimeTableNewView';
+import TeacherTimeTableNewView from './TeacherTimeTableNewView';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -28,7 +28,7 @@ const TeacherTimeTable = () => {
   const [sectionList, setSectionList] = useState([]);
   const [dates, setDates] = useState(null);
   const [value, setValue] = useState([startOfWeek, endOfWeek]);
-  const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState([]);
+  const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState({});
 
   const gradeOptions = gradeList?.map((each) => {
     return (
@@ -201,11 +201,11 @@ const TeacherTimeTable = () => {
                     }}
                     value={gradeID}
                   >
-                    {/* {gradeList?.length > 0 && (
+                    {gradeList?.length > 0 && (
                       <Option value='All' key='All'>
                         All
                       </Option>
-                    )} */}
+                    )}
                     {gradeOptions}
                   </Select>
                 </div>
@@ -225,11 +225,11 @@ const TeacherTimeTable = () => {
                     }}
                     value={sectionMappingID}
                   >
-                    {/* {sectionList?.length > 0 && (
+                    {sectionList?.length > 0 && (
                       <Option value='All' key='All'>
                         All
                       </Option>
-                    )} */}
+                    )}
                     {sectionOptions}
                   </Select>
                 </div>
@@ -252,9 +252,9 @@ const TeacherTimeTable = () => {
               <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
                 {sectionMappingID ? (
                   <Spin spinning={loading}>
-                    {currentWeekTimeTable?.length > 0 ? (
+                    {Object.keys(currentWeekTimeTable).length > 0 ? (
                       <Card>
-                        <TimeTableNewView
+                        <TeacherTimeTableNewView
                           currentWeekTimeTable={currentWeekTimeTable}
                           startDate={moment(value?.[0]).format('YYYY-MM-DD')}
                           isTeacherView={true}
