@@ -78,8 +78,6 @@ import SignatureUploadv2 from 'v2/FaceLift/MasterManagement/signature-upload/sig
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import EditReportConfig from 'containers/assessment-central/ReportCardConfig/EditReportConfig';
 import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig/PhysicalEducation/CreatePeReportConfig';
-import StudentTimeTable from 'v2/FaceLift/Timetable/StudentTimeTable';
-import TimeTable from 'v2/FaceLift/Timetable/TimeTable';
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -385,12 +383,6 @@ const V2Router = () => {
                         ,
                         <Route path='/master-management/signature-upload'>
                           {({ match }) => <SignatureUploadv2 match={match} />}
-                        </Route>
-                        <Route path='/timetable/teacherview'>
-                          {({ match }) => <TimeTable match={match} />}
-                        </Route>
-                        <Route path='/timetable/studentview'>
-                          {({ match }) => <StudentTimeTable match={match} />}
                         </Route>
                         ,{/* v1 router */}
                         {V1Router?.map((item) => {
