@@ -366,7 +366,7 @@ const Profile = (props) => {
                   }}
                   className='profile_avator'
                 />
-                {userImage ? null : (
+                {/* {userImage ? null : (
                   <Button
                     color='primary'
                     variant='contained'
@@ -381,7 +381,7 @@ const Profile = (props) => {
                       onChange={onImageChange}
                     />
                   </Button>
-                )}
+                )} */}
               </div>
               <form key={update} className='profile_details_wrapper'>
                 {inputFields.map((items, index) => (
@@ -423,7 +423,7 @@ const Profile = (props) => {
             >
               Change password
             </Button>
-            {!editable && (
+            {/* {!editable && (
               <Button
                 color='primary'
                 variant='contained'
@@ -433,7 +433,7 @@ const Profile = (props) => {
               >
                 Edit
               </Button>
-            )}
+            )} */}
           </div>
           {userImage || editable ? (
             <div className='profile_update_button_wrapper'>
