@@ -122,7 +122,12 @@ const TeacherTimeTable = () => {
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
-    return !!tooEarly || !!tooLate;
+
+    if (dates[0] == null) {
+      return current && current.day() !== 1;
+    } else {
+      return !!tooEarly || !!tooLate;
+    }
   };
   const onOpenChange = (open) => {
     if (open) {

@@ -38,14 +38,18 @@ const StudentTimeTable = () => {
         setLoading(false);
       });
   };
-
   const disabledDate = (current) => {
     if (!dates) {
       return false;
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
-    return !!tooEarly || !!tooLate;
+
+    if (dates[0] == null) {
+      return current && current.day() !== 1;
+    } else {
+      return !!tooEarly || !!tooLate;
+    }
   };
   const onOpenChange = (open) => {
     if (open) {
@@ -63,6 +67,30 @@ const StudentTimeTable = () => {
       });
     }
   }, [value]);
+  const locale = {
+    lang: {
+      // Customize the day of week names
+      weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      // Customize the month names
+      months: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ],
+      // Optionally, you can customize other datepicker-related texts
+      // Check the Ant Design documentation for more options
+      // https://ant.design/components/date-picker/#Internationalization
+    },
+  };
   return (
     <React.Fragment>
       <Layout>
@@ -79,8 +107,8 @@ const StudentTimeTable = () => {
         <div className='row px-3'>
           <div className='col-12 th-bg-white'>
             <div className='row'>
-              <div className='col-md-5 py-2 pr-0'>
-                <div className='d-flex align-items-center'>
+              <div className='col-md-12 py-2 pr-0'>
+                <div className='d-flex align-items-start'>
                   <span className='th-fw-600'>Select Date Range: </span>
                   <span className='pl-2'>
                     <RangePicker
