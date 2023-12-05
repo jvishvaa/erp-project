@@ -25,6 +25,7 @@ const TimeTableNewUI = withRouter(
         currentWeekTimeTable?.map((el) => el?.period_slot?.map((item) => item)[i])
       );
     }
+    console.log({ periodData });
     return (
       <>
         <div className='tablewrap'>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import TimeTableNewView from './TimeTableNewView';
+import StudentTimeTableNewView from './StudentTimeTableNewView';
 import moment from 'moment';
 
 import { Breadcrumb, Spin, message, DatePicker, Card } from 'antd';
@@ -63,6 +63,30 @@ const StudentTimeTable = () => {
       });
     }
   }, [value]);
+  const locale = {
+    lang: {
+      // Customize the day of week names
+      weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      // Customize the month names
+      months: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ],
+      // Optionally, you can customize other datepicker-related texts
+      // Check the Ant Design documentation for more options
+      // https://ant.design/components/date-picker/#Internationalization
+    },
+  };
   return (
     <React.Fragment>
       <Layout>
@@ -93,6 +117,15 @@ const StudentTimeTable = () => {
                       onOpenChange={onOpenChange}
                     />
                   </span>
+                  <span className='pl-2'>
+                    <DatePicker
+                      className='th-week-picker'
+                      picker='week'
+                      onChange={(val, dateString) => {
+                        console.log(val, dateString, 'jjjjjjjjjjj');
+                      }}
+                    />
+                  </span>
                 </div>
               </div>
             </div>
@@ -101,7 +134,7 @@ const StudentTimeTable = () => {
               <Spin spinning={loading}>
                 {currentWeekTimeTable?.length > 0 ? (
                   <Card className='th-br-8'>
-                    <TimeTableNewView
+                    <StudentTimeTableNewView
                       currentWeekTimeTable={currentWeekTimeTable}
                       startDate={moment(value?.[0])?.format('YYYY-MM-DD')}
                     />
