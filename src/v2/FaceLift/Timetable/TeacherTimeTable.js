@@ -4,7 +4,7 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { Breadcrumb, Select, message, DatePicker, Card, Spin } from 'antd';
 import { useSelector } from 'react-redux';
-import TimeTableNewView from './TimeTableNewView';
+import TeacherTimeTableNewView from './TeacherTimeTableNewView';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -28,7 +28,7 @@ const TeacherTimeTable = () => {
   const [sectionList, setSectionList] = useState([]);
   const [dates, setDates] = useState(null);
   const [value, setValue] = useState([startOfWeek, endOfWeek]);
-  const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState([]);
+  const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState({});
 
   const gradeOptions = gradeList?.map((each) => {
     return (
@@ -120,8 +120,8 @@ const TeacherTimeTable = () => {
     if (!dates) {
       return false;
     }
-    const tooLate = dates[0] && current.diff(dates[0], 'days') > 7;
-    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 7;
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
     return !!tooEarly || !!tooLate;
   };
   const onOpenChange = (open) => {
@@ -159,7 +159,7 @@ const TeacherTimeTable = () => {
     });
   }, []);
   useEffect(() => {
-    if (value.length > 1 && sectionMappingID) {
+    if (value?.length > 1 && sectionMappingID) {
       fetchTeachersTimeTable({
         start: moment(value[0]).format('YYYY-MM-DD'),
         end: moment(value[1]).format('YYYY-MM-DD'),
@@ -201,11 +201,11 @@ const TeacherTimeTable = () => {
                     }}
                     value={gradeID}
                   >
-                    {/* {gradeList?.length > 0 && (
+                    {gradeList?.length > 0 && (
                       <Option value='All' key='All'>
                         All
                       </Option>
-                    )} */}
+                    )}
                     {gradeOptions}
                   </Select>
                 </div>
@@ -225,11 +225,11 @@ const TeacherTimeTable = () => {
                     }}
                     value={sectionMappingID}
                   >
-                    {/* {sectionList?.length > 0 && (
+                    {sectionList?.length > 0 && (
                       <Option value='All' key='All'>
                         All
                       </Option>
-                    )} */}
+                    )}
                     {sectionOptions}
                   </Select>
                 </div>
@@ -249,14 +249,14 @@ const TeacherTimeTable = () => {
                 </div>
               </div>
 
-              <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
+              <div className={`mt-3 px-3 ${loading ? 'py-5' : ''}`}>
                 {sectionMappingID ? (
                   <Spin spinning={loading}>
-                    {currentWeekTimeTable?.length > 0 ? (
-                      <Card>
-                        <TimeTableNewView
+                    {Object.keys(currentWeekTimeTable).length > 0 ? (
+                      <Card className='th-timetable-card th-br-8'>
+                        <TeacherTimeTableNewView
                           currentWeekTimeTable={currentWeekTimeTable}
-                          startDate={moment(value[0]).format('YYYY-MM-DD')}
+                          startDate={moment(value?.[0]).format('YYYY-MM-DD')}
                           isTeacherView={true}
                         />
                       </Card>

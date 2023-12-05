@@ -302,7 +302,7 @@ const StudentInformation = ({
                     name={'username'}
                     label='Username'
                   >
-                    <Input className='w-100' />
+                    <Input disabled={studentFormValues && true} className='w-100' />
                   </Form.Item>
                 </Col>
               </Row>

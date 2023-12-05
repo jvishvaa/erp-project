@@ -458,7 +458,7 @@ const WeeklyTimeTable = ({ showTab }) => {
       <React.Fragment>
         <div className='row align-items-end'>
           <div className='col-md-3 py-2'>
-            <div className='th-fw-600'>Select Grade</div>
+            <div className='th-fw-600 pb-2'>Select Grade</div>
             <Select
               className='th-width-100 th-br-6'
               onChange={handleGrade}
@@ -481,7 +481,7 @@ const WeeklyTimeTable = ({ showTab }) => {
             </Select>
           </div>
           <div className='col-md-3 py-2'>
-            <div className='th-fw-600'>Select Section</div>
+            <div className='th-fw-600 pb-2'>Select Section</div>
             <Select
               getPopupContainer={(trigger) => trigger.parentNode}
               className='th-width-100 th-br-6'
@@ -700,6 +700,7 @@ const WeeklyTimeTable = ({ showTab }) => {
                             className='th-grey th-bg-white  w-100 text-left'
                             placement='bottomRight'
                             showArrow={true}
+                            allowClear
                             onChange={(e) => {
                               let updatedTimings = [...currentSlotData?.timings];
                               updatedTimings[index]['slot'] = e;

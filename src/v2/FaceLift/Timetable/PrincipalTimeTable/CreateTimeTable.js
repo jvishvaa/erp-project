@@ -59,10 +59,10 @@ const CreateTimeTable = ({ showTab }) => {
       id: 3,
       type: 'Substitute Lecture',
     },
-    {
-      id: 4,
-      type: 'Combined Lecture',
-    },
+    // {
+    //   id: 4,
+    //   type: 'Combined Lecture',
+    // },
     {
       id: 5,
       type: 'Normal Lecture',
@@ -223,12 +223,20 @@ const CreateTimeTable = ({ showTab }) => {
             setCurrentDayPeriodData(currentData?.period_slot);
           } else {
             const today = new Date();
+            let showDate = params?.start_date;
+            if (
+              moment(today).isBetween(
+                moment(params?.start_date)?.format('YYYY-MM-DD'),
+                moment(params?.end_date)?.format('YYYY-MM-DD')
+              )
+            ) {
+              showDate = today;
+            }
             let currentData = list.find(
               (item) =>
-                item?.week_days == handleTexttoWeekDay(moment(today).format('dddd'))
+                item?.week_days == handleTexttoWeekDay(moment(showDate).format('dddd'))
             );
-            setSelectedDate(moment(today)?.format('YYYY-MM-DD'));
-            // setSelectedDate(moment(params?.start_date)?.format('YYYY-MM-DD'));
+            setSelectedDate(moment(showDate)?.format('YYYY-MM-DD'));
             setCurrentDayPeriodData(currentData?.period_slot);
           }
         } else {
@@ -240,6 +248,8 @@ const CreateTimeTable = ({ showTab }) => {
         setPeriodListLoading(false);
       });
   };
+
+  console.log({ selectedDate, currentDayPeriodData });
   const handleGrade = (e, value) => {
     setSectionList([]);
     setSectionMappingID();
@@ -283,7 +293,12 @@ const CreateTimeTable = ({ showTab }) => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           message.success('Time table deleted successfully');
-          fetchDateRangeList({ sec_map: sectionMappingID });
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
+            fetchDateRangeList({ sec_map: sectionMappingID });
+          }
         }
       })
       .catch((error) => message.error('error', error?.message))
@@ -397,7 +412,10 @@ const CreateTimeTable = ({ showTab }) => {
             grade: [],
             section: [],
           });
-          if (sectionMappingID) {
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
             fetchDateRangeList({ sec_map: sectionMappingID });
           }
         } else if (res?.data?.status_code == 409) {
@@ -422,7 +440,12 @@ const CreateTimeTable = ({ showTab }) => {
       .then((res) => {
         if (res.data?.status_code == 201) {
           message.success('Timetable duplicated successfully');
-          fetchDateRangeList({ sec_map: sectionMappingID });
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
+            fetchDateRangeList({ sec_map: sectionMappingID });
+          }
           setInnerExpandedRowKeys([]);
           handleCloseDuplicateModal();
         } else if (res.data?.status_code == 409) {
@@ -511,6 +534,9 @@ const CreateTimeTable = ({ showTab }) => {
           });
           handleClosePeriodDetailsModal();
         }
+        if (res.data?.status_code == 409) {
+          message.error(res.data?.developer_msg);
+        }
       })
       .catch((error) => {
         message.error(error.message);
@@ -569,7 +595,7 @@ const CreateTimeTable = ({ showTab }) => {
         payload
       )
       .then((res) => {
-        if (res.status == 200) {
+        if (res?.data?.status_code == 200) {
           message.success('Periods Details updated successfully');
           fetchDayWisePeriods({
             start_date: currentDatePeriod?.start_date,
@@ -584,6 +610,8 @@ const CreateTimeTable = ({ showTab }) => {
           } else if (type == 'teacher') {
             handleCloseEditTeacherModal();
           }
+        } else if (res?.data?.status_code == 409) {
+          message.error(res.data?.developer_msg);
         }
       })
       .catch((error) => {
@@ -615,9 +643,13 @@ const CreateTimeTable = ({ showTab }) => {
         responseType: 'blob',
       })
       .then((response) => {
-        let file = `TimeTable_${currentDatePeriod?.start_date}-${currentDatePeriod?.end_date}_${selectedSectionData?.grade_sec?.grade}-${selectedSectionData?.grade_sec?.section}`;
-        let fullName = `${file}.${params?.excel ? 'xlsx' : 'pdf'}`;
-        AttachmentDownload(response?.data, fullName, params?.excel ? true : false);
+        if (response.data?.status_code == 409) {
+          message.error(response.data.message);
+        } else {
+          let file = `TimeTable_${currentDatePeriod?.start_date}-${currentDatePeriod?.end_date}_${selectedSectionData?.grade_sec?.grade}-${selectedSectionData?.grade_sec?.section}`;
+          let fullName = `${file}.${params?.excel ? 'xlsx' : 'pdf'}`;
+          AttachmentDownload(response?.data, fullName, params?.excel ? true : false);
+        }
       })
       .catch((e) => {
         message.error(e.message);
@@ -703,7 +735,7 @@ const CreateTimeTable = ({ showTab }) => {
         <div
           className='d-flex text-left flex-column'
           onClick={() => {
-            handleShowEditTimeModal(row);
+            // handleShowEditTimeModal(row);
           }}
         >
           <div className='th-fw-500 th-18'>{row?.period_name}</div>
@@ -712,7 +744,7 @@ const CreateTimeTable = ({ showTab }) => {
             <span className='mr-1'>
               {moment(row?.end_time, 'hh:mm A').format('hh:mm A')}
             </span>
-            <EditFilled className='th-pointer' />
+            {/* <EditFilled className='th-pointer' /> */}
           </div>
         </div>
       ),
@@ -840,10 +872,16 @@ const CreateTimeTable = ({ showTab }) => {
       end_date: moment(record?.start_date).add(6, 'days').format('YYYY-MM-DD'),
     });
     if (expanded) {
+      let allSection;
+      if (sectionMappingID == 'All') {
+        allSection = sectionList?.map((item) => item?.id);
+      } else {
+        allSection = [sectionMappingID];
+      }
       fetchRangeSectionList({
         start_date: record?.start_date,
         end_date: record?.end_date,
-        sec_map: sectionMappingID,
+        sec_map: allSection.join(','),
       });
       keys.push(record.id);
     }
@@ -1017,11 +1055,11 @@ const CreateTimeTable = ({ showTab }) => {
                         'days'
                       ) < 0
                     ) {
-                      setSelectedDate(null);
                       const newStartDate = moment(currentDatePeriod?.start_date)
                         .subtract(7, 'days')
                         .format('YYYY-MM-DD');
 
+                      setSelectedDate(newStartDate);
                       const newEndDate = moment(currentDatePeriod?.end_date)
                         .subtract(7, 'days')
                         .format('YYYY-MM-DD');
@@ -1029,12 +1067,15 @@ const CreateTimeTable = ({ showTab }) => {
                         start_date: newStartDate,
                         end_date: newEndDate,
                       });
-                      fetchDayWisePeriods({
-                        start_date: newStartDate,
-                        end_date: newEndDate,
-                        sec_map: selectedSectionData?.sec_map,
-                        tt_id: selectedSectionData?.id,
-                      });
+
+                      setTimeout(() => {
+                        fetchDayWisePeriods({
+                          start_date: newStartDate,
+                          end_date: newEndDate,
+                          sec_map: selectedSectionData?.sec_map,
+                          tt_id: selectedSectionData?.id,
+                        });
+                      }, 500);
                     } else {
                       message.error(<>You can &#39;t go to back to the range date</>);
                     }
@@ -1049,7 +1090,6 @@ const CreateTimeTable = ({ showTab }) => {
               </span>
             </div>
             <div className=' d-flex align-items-center th-fw-600'>
-              {/* <span>BTM Time Slot 1</span> */}
               <span className='mx-2'>
                 <StepForwardOutlined
                   title='Next Week'
@@ -1061,11 +1101,11 @@ const CreateTimeTable = ({ showTab }) => {
                         'days'
                       ) > 0
                     ) {
-                      setSelectedDate(null);
-
                       const newStartDate = moment(currentDatePeriod?.start_date)
                         .add(7, 'days')
                         .format('YYYY-MM-DD');
+
+                      setSelectedDate(newStartDate);
 
                       const newEndDate = moment(currentDatePeriod?.end_date)
                         .add(7, 'days')
@@ -1074,13 +1114,14 @@ const CreateTimeTable = ({ showTab }) => {
                         start_date: newStartDate,
                         end_date: newEndDate,
                       });
-
-                      fetchDayWisePeriods({
-                        start_date: newStartDate,
-                        end_date: newEndDate,
-                        sec_map: selectedSectionData?.sec_map,
-                        tt_id: selectedSectionData?.id,
-                      });
+                      setTimeout(() => {
+                        fetchDayWisePeriods({
+                          start_date: newStartDate,
+                          end_date: newEndDate,
+                          sec_map: selectedSectionData?.sec_map,
+                          tt_id: selectedSectionData?.id,
+                        });
+                      }, 500);
                     } else {
                       message.error(<>You can&#39;t go forward to range date </>);
                     }
@@ -1153,8 +1194,8 @@ const CreateTimeTable = ({ showTab }) => {
               icon={<FileExcelOutlined />}
               onClick={() => {
                 handleAttachmentDownload({
-                  start_date: currentDatePeriod?.start_date,
-                  end_date: currentDatePeriod?.end_date,
+                  start_date: selectedDate,
+                  tt_id: selectedSectionData?.id,
                   sec_map: selectedSectionData?.sec_map,
                   excel: true,
                 });
@@ -1169,8 +1210,8 @@ const CreateTimeTable = ({ showTab }) => {
               icon={<FilePdfOutlined />}
               onClick={() => {
                 handleAttachmentDownload({
-                  start_date: currentDatePeriod?.start_date,
-                  end_date: currentDatePeriod?.end_date,
+                  start_date: selectedDate,
+                  tt_id: selectedSectionData?.id,
                   sec_map: selectedSectionData?.sec_map,
                 });
               }}
@@ -1224,7 +1265,7 @@ const CreateTimeTable = ({ showTab }) => {
   return (
     <div>
       <React.Fragment>
-        <div className='row mt-2 align-items-center'>
+        <div className='row align-items-end'>
           <div className='col-md-3 py-2'>
             <div className='th-fw-600 pb-2'>Select Grade</div>
             <Select
@@ -1527,7 +1568,9 @@ const CreateTimeTable = ({ showTab }) => {
                       moment(duplicateData?.start_date, 'YYYY-MM-DD'),
                       moment(duplicateData?.end_date, 'YYYY-MM-DD'),
                     ]}
-                    disabledDate={(current) => current.isBefore(moment(duplicateData?.start_date))}
+                    disabledDate={(current) =>
+                      current.isBefore(moment(duplicateData?.start_date))
+                    }
                     onChange={(e) => {
                       const startDate = moment(e[0]).format('YYYY-MM-DD');
                       const endDate = moment(e[1]).format('YYYY-MM-DD');

@@ -8,7 +8,7 @@ const { TabPane } = Tabs;
 const { Option } = Select;
 
 const PrincipalTimeTable = () => {
-  const [showTab, setShowTab] = useState('3');
+  const [showTab, setShowTab] = useState('1');
   const onChange = (key) => {
     setShowTab(key.toString());
   };

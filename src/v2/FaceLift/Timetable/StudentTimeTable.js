@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import TimeTableNewView from './TimeTableNewView';
+import StudentTimeTableNewView from './StudentTimeTableNewView';
 import moment from 'moment';
 
 import { Breadcrumb, Spin, message, DatePicker, Card } from 'antd';
@@ -97,13 +97,13 @@ const StudentTimeTable = () => {
               </div>
             </div>
 
-            <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
+            <div className={`mt-3 px-3 ${loading ? 'py-5' : ''}`}>
               <Spin spinning={loading}>
                 {currentWeekTimeTable?.length > 0 ? (
-                  <Card className='th-br-8'>
-                    <TimeTableNewView
+                  <Card className='th-br-8 th-timetable-card'>
+                    <StudentTimeTableNewView
                       currentWeekTimeTable={currentWeekTimeTable}
-                      startDate={moment(value[0]).format('YYYY-MM-DD')}
+                      startDate={moment(value?.[0])?.format('YYYY-MM-DD')}
                     />
                   </Card>
                 ) : (
