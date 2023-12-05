@@ -165,10 +165,14 @@ const TeacherTimeTable = () => {
   }, []);
   useEffect(() => {
     if (value?.length > 1 && sectionMappingID) {
+      let allSection = [sectionMappingID];
+      if (sectionMappingID === 'All') {
+        allSection = sectionList?.map((item) => item?.id);
+      }
       fetchTeachersTimeTable({
         start: moment(value[0]).format('YYYY-MM-DD'),
         end: moment(value[1]).format('YYYY-MM-DD'),
-        sec_map: sectionMappingID,
+        sec_map: allSection,
       });
     }
   }, [value]);
