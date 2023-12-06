@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 const TeacherTimeTableNewView = withRouter(({ currentWeekTimeTable }) => {
   const today = new Date();
-  let showDate =
-    Object.keys(currentWeekTimeTable)?.filter(
-      (item) => moment(item).format('YYYY-MM-DD') === moment(today).format('YYYY-MM-DD')
-    )?.[0] ?? moment(Object.keys(currentWeekTimeTable)[0])?.format('YYYY-MM-DD');
-  const [currentDay, setCurrentDay] = useState(moment(showDate).format('dddd'));
-  const [currentDayPeriodData, setCurrentDayPeriodData] = useState(
-    currentWeekTimeTable[showDate]
-  );
+
+  const [currentDay, setCurrentDay] = useState();
+  const [currentDayPeriodData, setCurrentDayPeriodData] = useState();
   const days = Object.keys(currentWeekTimeTable)?.map((item) =>
     moment(item).format('dddd')
   );
+
+  useEffect(() => {
+    let showDate =
+      Object.keys(currentWeekTimeTable)?.filter(
+        (item) => moment(item).format('YYYY-MM-DD') === moment(today).format('YYYY-MM-DD')
+      )?.[0] ?? moment(Object.keys(currentWeekTimeTable)[0])?.format('YYYY-MM-DD');
+    setCurrentDay(moment(showDate).format('dddd'));
+    setCurrentDayPeriodData(currentWeekTimeTable[showDate]);
+  }, [currentWeekTimeTable]);
 
   let periodSlots = currentDayPeriodData?.map((item) => item?.slot) ?? [];
 
@@ -104,11 +108,11 @@ const TeacherTimeTableNewView = withRouter(({ currentWeekTimeTable }) => {
                     style={{
                       textAlign: 'center',
                       verticalAlign: 'middle',
-                      paddingLeft: 0,
+                      padding: 0,
                     }}
                   >
                     <div
-                      className='card w-100 d-flex justify-content-center p-2 flex-column'
+                      className='d-flex justify-content-center flex-column'
                       style={{
                         height: '100px',
                         background: '#1b4ccb',

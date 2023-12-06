@@ -177,10 +177,12 @@ const SetTimeTable = ({ showTab }) => {
     }
     setShowTimeSlotModal(true);
   };
-
   const handleAddPeriod = (id, period_number) => {
     let obj = {
-      start_time: selectedSlotData?.start_time,
+      start_time: moment(
+        currentSlotPeriods[currentSlotPeriods.length - 1]?.end_time,
+        'HH:mm:ss'
+      ).format('HH:mm:ss'),
       end_time: selectedSlotData?.end_time,
       period_name: `Period ${period_number + 1}`,
       time_set: id,
@@ -326,7 +328,9 @@ const SetTimeTable = ({ showTab }) => {
         []
       )
     );
-
+    const isEndBeforeStartTime = currentSlotPeriods?.filter((el) =>
+      moment(moment(el.start_time, 'HH:mm:ss')).isAfter(moment(el?.end_time, 'HH:mm:ss'))
+    );
     const hasSameStart = moment(
       moment(currentSlotPeriods[0]?.start_time, 'HH:mm:ss')
     ).isSame(moment(moment(selectedSlotData?.start_time, 'HH:mm:ss')));
@@ -334,21 +338,24 @@ const SetTimeTable = ({ showTab }) => {
       moment(currentSlotPeriods[currentSlotPeriods.length - 1]?.end_time, 'HH:mm:ss')
     ).isSame(moment(moment(selectedSlotData?.end_time, 'HH:mm:ss')));
 
-    console.log({ hasSameStart, hasSameEnd });
     if (isBeforeSlotTime.length > 0) {
-      message.error('Period must start after the time slot start time');
+      message.error('Period must start after the school start time');
       return false;
     }
     if (isAfterSlotTime.length > 0) {
-      message.error('Period must end before the time slot end time');
+      message.error('Period must end before the school end time');
+      return false;
+    }
+    if (isEndBeforeStartTime.length > 0) {
+      message.error('Start time of each period must be before their end time');
       return false;
     }
     if (!hasSameStart) {
-      message.error('Periods must begin from the slot start time');
+      message.error('Periods must begin from the school start time');
       return false;
     }
     if (!hasSameEnd) {
-      message.error('Periods must end at the slot end time');
+      message.error('Periods must end at the school end time');
       return false;
     }
 
@@ -556,6 +563,7 @@ const SetTimeTable = ({ showTab }) => {
         title='Add Periods'
         onCancel={() => {
           setShowPeriodsModal(false);
+          setEditCurrentSlotPeriod(false);
         }}
         footer={
           <div className='row justify-content-end'>

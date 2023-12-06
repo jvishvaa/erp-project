@@ -120,9 +120,14 @@ const TeacherTimeTable = () => {
     if (!dates) {
       return false;
     }
-    const tooLate = dates[0] && current.diff(dates[0], 'days') > 7;
-    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 7;
-    return !!tooEarly || !!tooLate;
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
+
+    if (dates[0] == null) {
+      return current && current.day() !== 1;
+    } else {
+      return !!tooEarly || !!tooLate;
+    }
   };
   const onOpenChange = (open) => {
     if (open) {
@@ -160,10 +165,14 @@ const TeacherTimeTable = () => {
   }, []);
   useEffect(() => {
     if (value?.length > 1 && sectionMappingID) {
+      let allSection = [sectionMappingID];
+      if (sectionMappingID === 'All') {
+        allSection = sectionList?.map((item) => item?.id);
+      }
       fetchTeachersTimeTable({
         start: moment(value[0]).format('YYYY-MM-DD'),
         end: moment(value[1]).format('YYYY-MM-DD'),
-        sec_map: sectionMappingID,
+        sec_map: allSection.join(','),
       });
     }
   }, [value]);
@@ -249,11 +258,11 @@ const TeacherTimeTable = () => {
                 </div>
               </div>
 
-              <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
+              <div className={`mt-3 px-3 ${loading ? 'py-5' : ''}`}>
                 {sectionMappingID ? (
                   <Spin spinning={loading}>
                     {Object.keys(currentWeekTimeTable).length > 0 ? (
-                      <Card>
+                      <Card className='th-timetable-card th-br-8'>
                         <TeacherTimeTableNewView
                           currentWeekTimeTable={currentWeekTimeTable}
                           startDate={moment(value?.[0]).format('YYYY-MM-DD')}

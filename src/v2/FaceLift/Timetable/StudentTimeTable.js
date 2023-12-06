@@ -38,14 +38,18 @@ const StudentTimeTable = () => {
         setLoading(false);
       });
   };
-
   const disabledDate = (current) => {
     if (!dates) {
       return false;
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
-    return !!tooEarly || !!tooLate;
+
+    if (dates[0] == null) {
+      return current && current.day() !== 1;
+    } else {
+      return !!tooEarly || !!tooLate;
+    }
   };
   const onOpenChange = (open) => {
     if (open) {
@@ -103,8 +107,8 @@ const StudentTimeTable = () => {
         <div className='row px-3'>
           <div className='col-12 th-bg-white'>
             <div className='row'>
-              <div className='col-md-5 py-2 pr-0'>
-                <div className='d-flex align-items-center'>
+              <div className='col-md-12 py-2 pr-0'>
+                <div className='d-flex align-items-start'>
                   <span className='th-fw-600'>Select Date Range: </span>
                   <span className='pl-2'>
                     <RangePicker
@@ -117,23 +121,14 @@ const StudentTimeTable = () => {
                       onOpenChange={onOpenChange}
                     />
                   </span>
-                  <span className='pl-2'>
-                    <DatePicker
-                      className='th-week-picker'
-                      picker='week'
-                      onChange={(val, dateString) => {
-                        console.log(val, dateString, 'jjjjjjjjjjj');
-                      }}
-                    />
-                  </span>
                 </div>
               </div>
             </div>
 
-            <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
+            <div className={`mt-3 px-3 ${loading ? 'py-5' : ''}`}>
               <Spin spinning={loading}>
                 {currentWeekTimeTable?.length > 0 ? (
-                  <Card className='th-br-8'>
+                  <Card className='th-br-8 th-timetable-card'>
                     <StudentTimeTableNewView
                       currentWeekTimeTable={currentWeekTimeTable}
                       startDate={moment(value?.[0])?.format('YYYY-MM-DD')}
