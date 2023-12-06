@@ -53,7 +53,7 @@ const MarkStudentAttendance = () => {
   const [presentCount, setPresentCount] = useState(0);
   const [absentCount, setAbsentCount] = useState(0);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const isDateEditable = [1, 2, 8, 9].includes(user_level);
+  const isDateEditable = [1, 2, 8, 9, 10].includes(user_level);
   const [isHoliday, setIsHoliday] = useState(false);
   let columns = [
     {
