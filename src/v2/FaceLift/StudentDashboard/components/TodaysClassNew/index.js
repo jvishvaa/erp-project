@@ -8,7 +8,7 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 import NoClassIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/noclass.png';
 
-const TodaysClass = () => {
+const TodaysClass = ({ newTimeTable }) => {
   const myRef = useRef();
   let periodNumber = 0;
   const [todaysClassData, setTodaysClassData] = useState([]);
@@ -62,10 +62,12 @@ const TodaysClass = () => {
   };
 
   useEffect(() => {
-    fetchTodaysClassData({
-      date: moment().format('YYYY-MM-DD'),
-      session_id: selectedAcademicYear?.id,
-    });
+    if (!newTimeTable) {
+      fetchTodaysClassData({
+        date: moment().format('YYYY-MM-DD'),
+        session_id: selectedAcademicYear?.id,
+      });
+    }
   }, []);
   useEffect(() => {
     if (myRef.current) executeScroll();
@@ -114,7 +116,11 @@ const TodaysClass = () => {
         className='py-3 mt-2 th-timeline'
         style={{ height: 265, overflowY: 'auto', overflowX: 'hidden' }}
       >
-        {loading ? (
+        {newTimeTable ? (
+          <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
+            <span className='th-grey th-30'>Timetable coming soon !</span>
+          </div>
+        ) : loading ? (
           <div className='th-width-100 d-flex align-items-center justify-content-center'>
             <Spin tip='Loading...'></Spin>
           </div>
