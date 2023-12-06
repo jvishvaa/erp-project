@@ -307,7 +307,7 @@ const WeeklyTimeTable = ({ showTab }) => {
     axios
       .get(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/`, {
         params: {
-          sec_map: editSection?.id,
+          sec_map: editSection?.gs_id,
         },
       })
       .then((res) => {
@@ -316,16 +316,15 @@ const WeeklyTimeTable = ({ showTab }) => {
             grade: editSection?.grade__grade_name,
             gradeID: editSection?.grade_id,
             section: editSection?.section__section_name,
-            sectionMappingID: editSection?.id,
+            sectionMappingID: editSection?.gs_id,
           };
           let timings = res.data.result?.results?.map((el) => {
             return {
               weekday: handleDaytoText(el?.week_days),
               slot: el?.time_set,
-              id: el?.id,
+              gs_id: el?.gs_id,
             };
           });
-          let dhhjsa = { ...data, timings: timings };
           setCurrentSlotData({ ...data, timings: timings });
         } else {
           setCurrentSlotData({});
