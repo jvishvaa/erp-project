@@ -196,7 +196,7 @@ const WeeklyTimeTable = ({ showTab }) => {
           <Popconfirm
             placement='bottomRight'
             title={'Are you sure you want to delete this item?'}
-            onConfirm={() => handleDeleteTimeSlot(record.id)}
+            onConfirm={() => handleDeleteTimeSlot(record.gs_id)}
             okText='Yes'
             okButtonProps={{ loading: deleteLoading }}
             cancelText='No'
