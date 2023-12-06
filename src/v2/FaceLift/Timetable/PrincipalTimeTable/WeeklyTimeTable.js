@@ -147,7 +147,7 @@ const WeeklyTimeTable = ({ showTab }) => {
   };
   const handleViewSlotDetails = (data) => {
     setShowAssignSlotModal(true);
-    if (data?.id) {
+    if (data?.gs_id) {
       setEditSection(true);
       fetchSectionData(
         selectedAcademicYear?.id,
