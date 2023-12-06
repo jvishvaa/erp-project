@@ -12,14 +12,7 @@ import {
   Modal,
   Spin,
 } from 'antd';
-import {
-  DeleteOutlined,
-  EditFilled,
-  PlusCircleOutlined,
-  EyeOutlined,
-  UpOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EditFilled, PlusCircleOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { handleDaytoText, handleTexttoWeekDay } from 'v2/weekdayConversions';

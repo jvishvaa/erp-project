@@ -387,13 +387,18 @@ const SetTimeTable = ({ showTab }) => {
     // }
   };
   useEffect(() => {
-    if (showTab == '1') {
+    if (showTab === '1') {
+      setPageDetails({ ...pageDetails, current: 1 });
+    }
+  }, [showTab]);
+  useEffect(() => {
+    if (showTab === '1') {
       fetchAvailableTimeSlots({
         acad_sess: selectedBranch?.id,
         page: pageDetails?.current,
       });
     }
-  }, [showTab, pageDetails?.current]);
+  }, [pageDetails?.current]);
   return (
     <div className='row'>
       <div className='col-12 text-right'>

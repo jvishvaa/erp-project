@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Layout from 'containers/Layout';
 import { Breadcrumb, Tabs, Select } from 'antd';
 import SetTimeTable from './SetTimeTable';
