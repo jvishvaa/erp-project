@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { Input } from 'antd';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -25,7 +24,6 @@ const TimeTableNewUI = withRouter(
         currentWeekTimeTable?.map((el) => el?.period_slot?.map((item) => item)[i])
       );
     }
-    console.log({ periodData });
     return (
       <>
         <div className='tablewrap'>

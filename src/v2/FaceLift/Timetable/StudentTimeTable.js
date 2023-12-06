@@ -67,30 +67,6 @@ const StudentTimeTable = () => {
       });
     }
   }, [value]);
-  const locale = {
-    lang: {
-      // Customize the day of week names
-      weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      // Customize the month names
-      months: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-      ],
-      // Optionally, you can customize other datepicker-related texts
-      // Check the Ant Design documentation for more options
-      // https://ant.design/components/date-picker/#Internationalization
-    },
-  };
   return (
     <React.Fragment>
       <Layout>
@@ -108,7 +84,7 @@ const StudentTimeTable = () => {
           <div className='col-12 th-bg-white'>
             <div className='row'>
               <div className='col-md-12 py-2 pr-0'>
-                <div className='d-flex align-items-start'>
+                <div className='d-flex align-items-center'>
                   <span className='th-fw-600'>Select Date Range: </span>
                   <span className='pl-2'>
                     <RangePicker

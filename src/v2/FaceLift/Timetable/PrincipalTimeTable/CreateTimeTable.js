@@ -15,14 +15,12 @@ import {
   DatePicker,
   TimePicker,
   Collapse,
-  Spin,
 } from 'antd';
 import {
   DeleteOutlined,
   EditFilled,
   PlusCircleOutlined,
   EyeOutlined,
-  UpOutlined,
   DownOutlined,
   FilePdfOutlined,
   FileExcelOutlined,
@@ -32,7 +30,7 @@ import {
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
-import { handleDaytoText, handleTexttoWeekDay } from 'v2/weekdayConversions';
+import { handleTexttoWeekDay } from 'v2/weekdayConversions';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -249,7 +247,6 @@ const CreateTimeTable = ({ showTab }) => {
       });
   };
 
-  console.log({ selectedDate, currentDayPeriodData });
   const handleGrade = (e, value) => {
     setSectionList([]);
     setSectionMappingID();
