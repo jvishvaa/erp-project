@@ -222,12 +222,12 @@ const CreateTimeTable = ({ showTab }) => {
           } else {
             const today = new Date();
             let showDate = params?.start_date;
-            if (
-              moment(today).isBetween(
-                moment(params?.start_date)?.format('YYYY-MM-DD'),
-                moment(params?.end_date)?.format('YYYY-MM-DD')
-              )
-            ) {
+            const checkInRange = moment(today, 'YYYY-MM-DD').isBetween(
+              moment(params?.start_date)?.subtract(1, 'days').format('YYYY-MM-DD'),
+              moment(params?.end_date)?.add(1, 'days').format('YYYY-MM-DD')
+            );
+
+            if (checkInRange) {
               showDate = today;
             }
             let currentData = list.find(
