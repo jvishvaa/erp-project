@@ -266,7 +266,7 @@ const TeacherTimeTable = () => {
                         <TeacherTimeTableNewView
                           currentWeekTimeTable={currentWeekTimeTable}
                           startDate={moment(value?.[0]).format('YYYY-MM-DD')}
-                          isTeacherView={true}
+                          endDate={moment(value?.[1]).format('YYYY-MM-DD')}
                         />
                       </Card>
                     ) : (
