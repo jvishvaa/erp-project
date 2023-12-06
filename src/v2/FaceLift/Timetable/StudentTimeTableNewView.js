@@ -7,21 +7,25 @@ import { handleDaytoText, handleTexttoWeekDay } from 'v2/weekdayConversions';
 
 const TimeTableNewUI = withRouter(
   ({ currentWeekTimeTable, startDate, isTeacherView }) => {
-    const [currentDay, setCurrentDay] = useState(currentWeekTimeTable?.[0]?.week_days);
+    const today = new Date();
+    const [currentDay, setCurrentDay] = useState(
+      currentWeekTimeTable?.[today.getDay() - 1]?.week_days
+    );
     const [currentDayPeriodData, setCurrentDayPeriodData] = useState(
       currentWeekTimeTable?.filter(
         (item) => item?.week_days == handleTexttoWeekDay(moment(startDate).format('dddd'))
       )?.[0]
     );
-    const days = currentWeekTimeTable?.map((item) => item?.week_days);
+    const days = [...new Set(currentWeekTimeTable?.map((item) => item?.week_days))];
     let periodSlots = currentDayPeriodData?.period_slot ?? [];
-    let slotLength = currentDayPeriodData?.period_slot.length;
+    let slotLength = currentDayPeriodData?.period_slot?.length;
     let periodData = [];
     for (let i = 0; i < slotLength; i++) {
       periodData.push(
         currentWeekTimeTable?.map((el) => el?.period_slot?.map((item) => item)[i])
       );
     }
+    console.log({ periodData });
     return (
       <>
         <div className='tablewrap'>
@@ -82,11 +86,11 @@ const TimeTableNewUI = withRouter(
                       style={{
                         textAlign: 'center',
                         verticalAlign: 'middle',
-                        paddingLeft: 0,
+                        padding: 0,
                       }}
                     >
                       <div
-                        className='card w-100 d-flex justify-content-center p-2 flex-column'
+                        className=' d-flex justify-content-center flex-column'
                         style={{
                           height: '100px',
                           background: '#1b4ccb',

@@ -538,7 +538,7 @@ export default {
     reUpload: '/assessment/enable-assessment-re-upload/',
     erpBucket: ERP_BUCKET_2,
     assessmentMarksDownload: '/assessment/marks-download/',
-    assessmentMarksUpload: '/assessment/student-marks-upload/'
+    assessmentMarksUpload: '/assessment/student-marks-upload/',
   },
   reportCardConfig: {
     reportcardcomponent: '/assessment/report-card-component/',
@@ -546,6 +546,15 @@ export default {
     reportcardconfigsummary: '/assessment/report-card-config-summary/',
     submitAPI: '/assessment/report-card-config-api/',
     branchAPI: '/erp_user/grade/',
+    clearcahe: '/assessment/delete-rc-cache/',
+  },
+  peReportCardConfig: {
+    semesterList: `${newBlogURL}/api/semester-list/`,
+    categoryList: `${newBlogURL}/api/get_activity_types/`,
+    criteriaList: `${newBlogURL}/api/fetch-criteria/`,
+    addConfig: `${newBlogURL}/api/add-report-config/`,
+    reportConfig: `${newBlogURL}/api/report-config/`,
+    deleteConfig: `${newBlogURL}/api/delete-config/`,
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
@@ -558,6 +567,7 @@ export default {
     reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
     reportCardData: '/assessment/generate-report/',
     reportCardDataNew: '/assessment/report-card-generation/',
+    physicalEducationReportCard: `${newBlogURL}/api/get-report/`,
     eypReportCard: '/assessment/eyp-report-card-generation/',
     eypReportCardBulk: '/assessment/eyp-bulk-report-card-generation/',
     normalReportCardBulk: '/assessment/fetch-s3-reports/',

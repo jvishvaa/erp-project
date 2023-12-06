@@ -59,6 +59,14 @@ const CreateTimeTable = ({ showTab }) => {
       id: 3,
       type: 'Substitute Lecture',
     },
+    // {
+    //   id: 4,
+    //   type: 'Combined Lecture',
+    // },
+    {
+      id: 5,
+      type: 'Normal Lecture',
+    },
   ];
 
   const [gradeID, setGradeID] = useState();
@@ -136,13 +144,17 @@ const CreateTimeTable = ({ showTab }) => {
       </Option>
     );
   });
-  const teacherOptions = teacherList?.map((each) => {
-    return (
-      <Option key={each?.id} value={each?.id}>
-        {each?.name}
-      </Option>
-    );
-  });
+  const teacherOptions = teacherList
+    ?.filter(
+      (teacher, index, self) => self.findIndex((t) => t.name === teacher.name) === index
+    )
+    ?.map((each) => {
+      return (
+        <Option key={each?.id} value={each?.id}>
+          {each?.name}
+        </Option>
+      );
+    });
 
   const fetchGradeData = (params = {}) => {
     axios
@@ -210,12 +222,21 @@ const CreateTimeTable = ({ showTab }) => {
             );
             setCurrentDayPeriodData(currentData?.period_slot);
           } else {
+            const today = new Date();
+            let showDate = params?.start_date;
+            if (
+              moment(today).isBetween(
+                moment(params?.start_date)?.format('YYYY-MM-DD'),
+                moment(params?.end_date)?.format('YYYY-MM-DD')
+              )
+            ) {
+              showDate = today;
+            }
             let currentData = list.find(
               (item) =>
-                item?.week_days ==
-                handleTexttoWeekDay(moment(params?.start_date).format('dddd'))
+                item?.week_days == handleTexttoWeekDay(moment(showDate).format('dddd'))
             );
-            setSelectedDate(moment(params?.start_date)?.format('YYYY-MM-DD'));
+            setSelectedDate(moment(showDate)?.format('YYYY-MM-DD'));
             setCurrentDayPeriodData(currentData?.period_slot);
           }
         } else {
@@ -227,6 +248,8 @@ const CreateTimeTable = ({ showTab }) => {
         setPeriodListLoading(false);
       });
   };
+
+  console.log({ selectedDate, currentDayPeriodData });
   const handleGrade = (e, value) => {
     setSectionList([]);
     setSectionMappingID();
@@ -270,7 +293,12 @@ const CreateTimeTable = ({ showTab }) => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           message.success('Time table deleted successfully');
-          fetchDateRangeList({ sec_map: sectionMappingID });
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
+            fetchDateRangeList({ sec_map: sectionMappingID });
+          }
         }
       })
       .catch((error) => message.error('error', error?.message))
@@ -310,7 +338,10 @@ const CreateTimeTable = ({ showTab }) => {
     setShowEditTeacherModal(true);
     fetchTeacherList({
       sec_map: selectedSectionData?.sec_map,
-      subject: record?.sub?.map((item) => item.subject_id)?.join(','),
+      subject:
+        record?.lecture_type !== 3
+          ? record?.sub?.map((item) => item.subject_id)?.join(',')
+          : 'null',
     });
   };
   const handleCloseEditTeacherModal = (record) => {
@@ -320,6 +351,18 @@ const CreateTimeTable = ({ showTab }) => {
   const handleShowEditSubjectModal = (record) => {
     setSelectedPeriod(record);
     setShowEditSubjectModal(true);
+
+    if (record?.lecture_type === 3) {
+      fetchTeacherList({
+        sec_map: selectedSectionData?.sec_map,
+        subject: 'null',
+      });
+    } else {
+      fetchTeacherList({
+        sec_map: selectedSectionData?.sec_map,
+        subject: record?.sub?.map((item) => item.subject_id)?.join(','),
+      });
+    }
   };
   const handleCloseEditSubjectModal = (record) => {
     setShowEditSubjectModal(false);
@@ -342,6 +385,15 @@ const CreateTimeTable = ({ showTab }) => {
 
   const handleAssignDateRange = () => {
     setCreateLoading(true);
+    if (
+      currentTimeTable?.start_date == null ||
+      currentTimeTable?.end_date == null ||
+      currentTimeTable?.sectionMappingID == null
+    ) {
+      message.error('Please Select All Filters');
+      setCreateLoading(false);
+      return;
+    }
     let payload = {
       start_date: currentTimeTable?.start_date,
       end_date: currentTimeTable?.end_date,
@@ -360,7 +412,10 @@ const CreateTimeTable = ({ showTab }) => {
             grade: [],
             section: [],
           });
-          if (sectionMappingID) {
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
             fetchDateRangeList({ sec_map: sectionMappingID });
           }
         } else if (res?.data?.status_code == 409) {
@@ -385,7 +440,12 @@ const CreateTimeTable = ({ showTab }) => {
       .then((res) => {
         if (res.data?.status_code == 201) {
           message.success('Timetable duplicated successfully');
-          fetchDateRangeList({ sec_map: sectionMappingID });
+          if (sectionMappingID == 'All') {
+            let allSection = sectionList?.map((item) => item?.id);
+            fetchDateRangeList({ sec_map: allSection.join(',') });
+          } else {
+            fetchDateRangeList({ sec_map: sectionMappingID });
+          }
           setInnerExpandedRowKeys([]);
           handleCloseDuplicateModal();
         } else if (res.data?.status_code == 409) {
@@ -429,6 +489,7 @@ const CreateTimeTable = ({ showTab }) => {
             start_date: currentDatePeriod?.start_date,
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
+            tt_id: selectedSectionData?.id,
           });
           handleCloseEditTimeModal();
         }
@@ -453,6 +514,12 @@ const CreateTimeTable = ({ showTab }) => {
       message.error('Please select teacher');
       return false;
     }
+    if (selectedPeriod?.lecture_type == 2) {
+      if (selectedPeriod?.teacher?.length < 2) {
+        message.error('Please Select Atleast 2 Teachers for Buddy Lecture');
+        return false;
+      }
+    }
     setEditPeriodLoading(true);
     axios
       .post(`${endpoints?.timeTableNewFlow?.sectionPeriodData}/`, selectedPeriod)
@@ -463,8 +530,12 @@ const CreateTimeTable = ({ showTab }) => {
             start_date: currentDatePeriod?.start_date,
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
+            tt_id: selectedSectionData?.id,
           });
           handleClosePeriodDetailsModal();
+        }
+        if (res.data?.status_code == 409) {
+          message.error(res.data?.developer_msg);
         }
       })
       .catch((error) => {
@@ -483,10 +554,39 @@ const CreateTimeTable = ({ showTab }) => {
     };
     if (type == 'lecture') {
       payload['lecture_type'] = selectedPeriod?.lecture_type;
+      if (!payload['lecture_type']) {
+        message.error('Please select lecture type');
+        return;
+      }
     } else if (type == 'subject') {
       payload['sub_map'] = selectedPeriod?.sub_map;
+      payload['teacher'] = selectedPeriod?.teacher;
+      if (payload['sub_map'].length < 1) {
+        message.error('Please select subject');
+        return;
+      }
+      if (payload['teacher'].length < 1) {
+        message.error('Please select teacher');
+        return;
+      }
+      if (selectedPeriod?.lecture_type == 2) {
+        if (selectedPeriod?.teacher?.length < 2) {
+          message.error('Please Select Atleast 2 Teachers for Buddy Lecture');
+          return false;
+        }
+      }
     } else if (type == 'teacher') {
       payload['teacher'] = selectedPeriod?.teacher;
+      if (payload['teacher'].length < 1) {
+        message.error('Please select teacher');
+        return;
+      }
+      if (selectedPeriod?.lecture_type == 2) {
+        if (selectedPeriod?.teacher?.length < 2) {
+          message.error('Please Select Atleast 2 Teachers for Buddy Lecture');
+          return false;
+        }
+      }
     }
     setEditPeriodLoading(true);
     axios
@@ -495,12 +595,13 @@ const CreateTimeTable = ({ showTab }) => {
         payload
       )
       .then((res) => {
-        if (res.status == 200) {
+        if (res?.data?.status_code == 200) {
           message.success('Periods Details updated successfully');
           fetchDayWisePeriods({
             start_date: currentDatePeriod?.start_date,
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
+            tt_id: selectedSectionData?.id,
           });
           if (type == 'lecture') {
             handleCloseEditLectureModal();
@@ -509,6 +610,8 @@ const CreateTimeTable = ({ showTab }) => {
           } else if (type == 'teacher') {
             handleCloseEditTeacherModal();
           }
+        } else if (res?.data?.status_code == 409) {
+          message.error(res.data?.developer_msg);
         }
       })
       .catch((error) => {
@@ -540,9 +643,13 @@ const CreateTimeTable = ({ showTab }) => {
         responseType: 'blob',
       })
       .then((response) => {
-        let file = `TimeTable_${currentDatePeriod?.start_date}-${currentDatePeriod?.end_date}_${selectedSectionData?.grade_sec?.grade}-${selectedSectionData?.grade_sec?.section}`;
-        let fullName = `${file}.${params?.excel ? 'xlsx' : 'pdf'}`;
-        AttachmentDownload(response?.data, fullName, params?.excel ? true : false);
+        if (response.data?.status_code == 409) {
+          message.error(response.data.message);
+        } else {
+          let file = `TimeTable_${currentDatePeriod?.start_date}-${currentDatePeriod?.end_date}_${selectedSectionData?.grade_sec?.grade}-${selectedSectionData?.grade_sec?.section}`;
+          let fullName = `${file}.${params?.excel ? 'xlsx' : 'pdf'}`;
+          AttachmentDownload(response?.data, fullName, params?.excel ? true : false);
+        }
       })
       .catch((e) => {
         message.error(e.message);
@@ -628,7 +735,7 @@ const CreateTimeTable = ({ showTab }) => {
         <div
           className='d-flex text-left flex-column'
           onClick={() => {
-            handleShowEditTimeModal(row);
+            // handleShowEditTimeModal(row);
           }}
         >
           <div className='th-fw-500 th-18'>{row?.period_name}</div>
@@ -637,7 +744,7 @@ const CreateTimeTable = ({ showTab }) => {
             <span className='mr-1'>
               {moment(row?.end_time, 'hh:mm A').format('hh:mm A')}
             </span>
-            <EditFilled className='th-pointer' />
+            {/* <EditFilled className='th-pointer' /> */}
           </div>
         </div>
       ),
@@ -689,6 +796,7 @@ const CreateTimeTable = ({ showTab }) => {
               handleShowEditSubjectModal({
                 ...row?.periods[0],
                 sub_map: row?.periods[0]?.sub?.map((item) => item.id),
+                teacher: row?.periods[0]?.sub_teacher?.map((item) => item.id),
               });
               setSelectedPeriodSlot(row);
             } else {
@@ -764,9 +872,16 @@ const CreateTimeTable = ({ showTab }) => {
       end_date: moment(record?.start_date).add(6, 'days').format('YYYY-MM-DD'),
     });
     if (expanded) {
+      let allSection;
+      if (sectionMappingID == 'All') {
+        allSection = sectionList?.map((item) => item?.id);
+      } else {
+        allSection = [sectionMappingID];
+      }
       fetchRangeSectionList({
         start_date: record?.start_date,
         end_date: record?.end_date,
+        sec_map: allSection.join(','),
       });
       keys.push(record.id);
     }
@@ -786,6 +901,7 @@ const CreateTimeTable = ({ showTab }) => {
         start_date: currentDatePeriod?.start_date,
         end_date: currentDatePeriod?.end_date,
         sec_map: record?.sec_map,
+        tt_id: record?.id,
       });
       fetchSubjectList({
         section_mapping: record?.sec_map,
@@ -796,6 +912,34 @@ const CreateTimeTable = ({ showTab }) => {
     }
 
     setInnerExpandedRowKeys(keys);
+  };
+
+  const handleToggle = (rec) => {
+    setLoading(true);
+
+    axios
+      .patch(`${endpoints?.timeTableNewFlow?.activeToggle}/${rec?.id}/`, {
+        active: rec?.is_active ? false : true,
+      })
+      .then((res) => {
+        if (res.data?.status_code == 200) {
+          setLoading(false);
+
+          message.success('Status Updated successfully');
+          fetchRangeSectionList({
+            start_date: rec?.start_date,
+            end_date: rec?.end_date,
+            sec_map: sectionMappingID,
+          });
+        } else {
+          message.error('Failed to Update Status');
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false);
+      });
   };
   const expandedRowRender = (record) => {
     const sectionListColumns = [
@@ -814,7 +958,15 @@ const CreateTimeTable = ({ showTab }) => {
         dataIndex: 'status',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-black-2'>{data}</span>,
+        render: (data, record) => (
+          <span className='th-black-2'>
+            {record?.status == 1
+              ? 'Partially Allocated'
+              : record?.status == 2
+              ? 'Allocated'
+              : ''}
+          </span>
+        ),
       },
       {
         dataIndex: 'created_at',
@@ -828,9 +980,12 @@ const CreateTimeTable = ({ showTab }) => {
         dataIndex: 'is_active',
         align: 'center',
         width: '15%',
-        render: (data) => (
+        render: (data, record) => (
           <span>
-            <Switch checked={data} />
+            <Switch
+              checked={record?.is_active ? true : false}
+              onChange={() => handleToggle(record)}
+            />
           </span>
         ),
       },
@@ -894,23 +1049,36 @@ const CreateTimeTable = ({ showTab }) => {
                   title='Previous Week'
                   className='th-24 th-pointer'
                   onClick={() => {
-                    setSelectedDate(null);
-                    const newStartDate = moment(currentDatePeriod?.start_date)
-                      .subtract(7, 'days')
-                      .format('YYYY-MM-DD');
+                    if (
+                      moment(dateRangeSectionList[0]?.start_date).diff(
+                        moment(currentDatePeriod?.start_date),
+                        'days'
+                      ) < 0
+                    ) {
+                      const newStartDate = moment(currentDatePeriod?.start_date)
+                        .subtract(7, 'days')
+                        .format('YYYY-MM-DD');
 
-                    const newEndDate = moment(currentDatePeriod?.end_date)
-                      .subtract(7, 'days')
-                      .format('YYYY-MM-DD');
-                    setCurrentDatePeriod({
-                      start_date: newStartDate,
-                      end_date: newEndDate,
-                    });
-                    fetchDayWisePeriods({
-                      start_date: newStartDate,
-                      end_date: newEndDate,
-                      sec_map: selectedSectionData?.sec_map,
-                    });
+                      setSelectedDate(newStartDate);
+                      const newEndDate = moment(currentDatePeriod?.end_date)
+                        .subtract(7, 'days')
+                        .format('YYYY-MM-DD');
+                      setCurrentDatePeriod({
+                        start_date: newStartDate,
+                        end_date: newEndDate,
+                      });
+
+                      setTimeout(() => {
+                        fetchDayWisePeriods({
+                          start_date: newStartDate,
+                          end_date: newEndDate,
+                          sec_map: selectedSectionData?.sec_map,
+                          tt_id: selectedSectionData?.id,
+                        });
+                      }, 500);
+                    } else {
+                      message.error(<>You can &#39;t go to back to the range date</>);
+                    }
                   }}
                 />
               </span>
@@ -922,37 +1090,46 @@ const CreateTimeTable = ({ showTab }) => {
               </span>
             </div>
             <div className=' d-flex align-items-center th-fw-600'>
-              <span>BTM Time Slot 1</span>
               <span className='mx-2'>
                 <StepForwardOutlined
                   title='Next Week'
                   className='th-24 th-pointer'
                   onClick={() => {
-                    setSelectedDate(null);
+                    if (
+                      moment(dateRangeSectionList[0]?.end_date).diff(
+                        moment(currentDatePeriod?.end_date),
+                        'days'
+                      ) > 0
+                    ) {
+                      const newStartDate = moment(currentDatePeriod?.start_date)
+                        .add(7, 'days')
+                        .format('YYYY-MM-DD');
 
-                    const newStartDate = moment(currentDatePeriod?.start_date)
-                      .add(7, 'days')
-                      .format('YYYY-MM-DD');
+                      setSelectedDate(newStartDate);
 
-                    const newEndDate = moment(currentDatePeriod?.end_date)
-                      .add(7, 'days')
-                      .format('YYYY-MM-DD');
-                    setCurrentDatePeriod({
-                      start_date: newStartDate,
-                      end_date: newEndDate,
-                    });
-
-                    fetchDayWisePeriods({
-                      start_date: newStartDate,
-                      end_date: newEndDate,
-                      sec_map: selectedSectionData?.sec_map,
-                    });
+                      const newEndDate = moment(currentDatePeriod?.end_date)
+                        .add(7, 'days')
+                        .format('YYYY-MM-DD');
+                      setCurrentDatePeriod({
+                        start_date: newStartDate,
+                        end_date: newEndDate,
+                      });
+                      setTimeout(() => {
+                        fetchDayWisePeriods({
+                          start_date: newStartDate,
+                          end_date: newEndDate,
+                          sec_map: selectedSectionData?.sec_map,
+                          tt_id: selectedSectionData?.id,
+                        });
+                      }, 500);
+                    } else {
+                      message.error(<>You can&#39;t go forward to range date </>);
+                    }
                   }}
                 />
               </span>
             </div>
           </div>
-
           <div className='d-flex justify-content-between mt-2'>
             {periodListData?.map((item, index) => {
               let currentWeekday = moment(currentDatePeriod?.start_date)
@@ -967,7 +1144,8 @@ const CreateTimeTable = ({ showTab }) => {
                     currentDate === selectedDate
                       ? 'th-button-active th-fw-600'
                       : 'th-button th-fw-500'
-                  }`}
+                  } `}
+                  style={{ width: '110px' }}
                   onClick={() => {
                     setSelectedDate(
                       moment(currentDatePeriod?.start_date)
@@ -1016,8 +1194,8 @@ const CreateTimeTable = ({ showTab }) => {
               icon={<FileExcelOutlined />}
               onClick={() => {
                 handleAttachmentDownload({
-                  start_date: currentDatePeriod?.start_date,
-                  end_date: currentDatePeriod?.end_date,
+                  start_date: selectedDate,
+                  tt_id: selectedSectionData?.id,
                   sec_map: selectedSectionData?.sec_map,
                   excel: true,
                 });
@@ -1032,8 +1210,8 @@ const CreateTimeTable = ({ showTab }) => {
               icon={<FilePdfOutlined />}
               onClick={() => {
                 handleAttachmentDownload({
-                  start_date: currentDatePeriod?.start_date,
-                  end_date: currentDatePeriod?.end_date,
+                  start_date: selectedDate,
+                  tt_id: selectedSectionData?.id,
                   sec_map: selectedSectionData?.sec_map,
                 });
               }}
@@ -1087,7 +1265,7 @@ const CreateTimeTable = ({ showTab }) => {
   return (
     <div>
       <React.Fragment>
-        <div className='row mt-2 align-items-center'>
+        <div className='row align-items-end'>
           <div className='col-md-3 py-2'>
             <div className='th-fw-600 pb-2'>Select Grade</div>
             <Select
@@ -1149,24 +1327,30 @@ const CreateTimeTable = ({ showTab }) => {
         </div>
 
         <div className='col-12 py-3'>
-          {availableDateRangesData.length > 0 ? (
-            <Table
-              className='th-table'
-              columns={columns}
-              rowKey={(record) => record?.id}
-              dataSource={availableDateRangesData}
-              pagination={false}
-              loading={loading}
-              expandable={{
-                expandedRowRender: expandedRowRender,
-                expandedRowKeys: expandedRowKeys,
-                onExpand: onTableRowExpand,
-              }}
-              rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-              }
-              scroll={{ x: null }}
-            />
+          {sectionMappingID ? (
+            availableDateRangesData.length > 0 ? (
+              <Table
+                className='th-table'
+                columns={columns}
+                rowKey={(record) => record?.id}
+                dataSource={availableDateRangesData}
+                pagination={false}
+                loading={loading}
+                expandable={{
+                  expandedRowRender: expandedRowRender,
+                  expandedRowKeys: expandedRowKeys,
+                  onExpand: onTableRowExpand,
+                }}
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                scroll={{ x: null }}
+              />
+            ) : (
+              <div className='text-center py-5'>
+                <span className='th-25 th-fw-500'>No Timetable available!</span>
+              </div>
+            )
           ) : (
             <div className='text-center py-5'>
               <span className='th-25 th-fw-500'>
@@ -1183,6 +1367,14 @@ const CreateTimeTable = ({ showTab }) => {
           title='Create New Time Table'
           onCancel={() => {
             setShowCreateModal(false);
+            setCurrentTimeTable({
+              ...currentTimeTable,
+              start_date: moment().format('YYYY-MM-DD'),
+              end_date: moment().format('YYYY-MM-DD'),
+              grade: [],
+              sectionMappingID: [],
+            });
+            setTimeTableOverlapError(null);
           }}
           footer={
             <div className='row justify-content-end'>
@@ -1190,6 +1382,15 @@ const CreateTimeTable = ({ showTab }) => {
                 type='default'
                 onClick={() => {
                   setShowCreateModal(false);
+
+                  setCurrentTimeTable({
+                    ...currentTimeTable,
+                    start_date: moment().format('YYYY-MM-DD'),
+                    end_date: moment().format('YYYY-MM-DD'),
+                    grade: [],
+                    sectionMappingID: [],
+                  });
+                  setTimeTableOverlapError(null);
                 }}
               >
                 Close
@@ -1214,6 +1415,10 @@ const CreateTimeTable = ({ showTab }) => {
                   <RangePicker
                     className='w-100'
                     popupStyle={{ zIndex: 2100 }}
+                    disabledDate={(current) =>
+                      current.isBefore(moment().subtract(1, 'day'))
+                    }
+                    allowClear={false}
                     value={[
                       moment(currentTimeTable?.start_date, 'YYYY-MM-DD'),
                       moment(currentTimeTable?.end_date, 'YYYY-MM-DD'),
@@ -1363,6 +1568,9 @@ const CreateTimeTable = ({ showTab }) => {
                       moment(duplicateData?.start_date, 'YYYY-MM-DD'),
                       moment(duplicateData?.end_date, 'YYYY-MM-DD'),
                     ]}
+                    disabledDate={(current) =>
+                      current.isBefore(moment(duplicateData?.start_date))
+                    }
                     onChange={(e) => {
                       const startDate = moment(e[0]).format('YYYY-MM-DD');
                       const endDate = moment(e[1]).format('YYYY-MM-DD');
@@ -1578,8 +1786,18 @@ const CreateTimeTable = ({ showTab }) => {
                 <div className='col-8'>
                   <Select
                     className='th-width-100 th-br-6'
-                    onChange={(e) => {
-                      setSelectedPeriod({ ...selectedPeriod, sub_map: e });
+                    onChange={(e, each) => {
+                      setSelectedPeriod({
+                        ...selectedPeriod,
+                        sub_map: e,
+                        teacher: [],
+                      });
+                      if (selectedPeriod?.lecture_type !== 3) {
+                        fetchTeacherList({
+                          sec_map: selectedSectionData?.sec_map,
+                          subject: each?.map((item) => item?.subjectId)?.join(','),
+                        });
+                      }
                     }}
                     placeholder='Select Subjects'
                     allowClear
@@ -1598,6 +1816,34 @@ const CreateTimeTable = ({ showTab }) => {
                     value={selectedPeriod?.sub_map}
                   >
                     {subjectOptions}
+                  </Select>
+                </div>
+              </div>
+              <div className='row justify-content-between align-items-center mt-2'>
+                <div className='th-fw-500 col-4 pl-0'>Select Teacher</div>
+                <div className='col-8'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
+                    maxTagCount={2}
+                    onChange={(e) => {
+                      setSelectedPeriod({ ...selectedPeriod, teacher: e });
+                    }}
+                    placeholder='Select Teachers'
+                    allowClear
+                    showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    value={selectedPeriod?.teacher}
+                  >
+                    {teacherOptions}
                   </Select>
                 </div>
               </div>
@@ -1713,7 +1959,11 @@ const CreateTimeTable = ({ showTab }) => {
                   <Select
                     className='th-width-100 th-br-6'
                     onChange={(e) => {
-                      setSelectedPeriod({ ...selectedPeriod, lecture_type: e });
+                      setSelectedPeriod({
+                        ...selectedPeriod,
+                        lecture_type: e,
+                        sub_map: [],
+                      });
                     }}
                     placeholder='Select Lecture Type'
                     allowClear
@@ -1750,7 +2000,10 @@ const CreateTimeTable = ({ showTab }) => {
                       });
                       fetchTeacherList({
                         sec_map: selectedSectionData?.sec_map,
-                        subject: each?.map((item) => item?.subjectId)?.join(','),
+                        subject:
+                          selectedPeriod?.lecture_type !== 3
+                            ? each?.map((item) => item?.subjectId)?.join(',')
+                            : 'null',
                       });
                     }}
                     placeholder='Select Subjects'

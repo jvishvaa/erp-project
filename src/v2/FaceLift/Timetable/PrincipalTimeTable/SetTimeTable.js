@@ -35,6 +35,7 @@ const SetTimeTable = ({ showTab }) => {
   const [showTimeSlotModal, setShowTimeSlotModal] = useState(false);
   const [selectedSlotData, setSelectedSlotData] = useState('');
   const [editSlotData, setEditSlotData] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [currentSlotData, setCurrentSlotData] = useState({
     name: '',
     start_time: moment().format('HH:mm:ss'),
@@ -46,7 +47,7 @@ const SetTimeTable = ({ showTab }) => {
     current: 1,
   });
 
-  const [availableTimeSlotDats, setAvailableTimeSlotData] = useState([]);
+  const [availableTimeSlotData, setAvailableTimeSlotData] = useState([]);
   const columns = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>Sl no.</span>,
@@ -56,7 +57,7 @@ const SetTimeTable = ({ showTab }) => {
       ),
     },
     {
-      title: <span className='th-white th-fw-700'>TimeTable Slot Name</span>,
+      title: <span className='th-white th-fw-700'>Time Slot Name</span>,
       dataIndex: 'name',
       align: 'center',
     },
@@ -107,7 +108,7 @@ const SetTimeTable = ({ showTab }) => {
           >
             View
           </Tag>
-          <Tag
+          {/* <Tag
             icon={<EditFilled />}
             color='processing'
             className='th-pointer th-br-4'
@@ -116,7 +117,7 @@ const SetTimeTable = ({ showTab }) => {
             }}
           >
             Edit
-          </Tag>
+          </Tag> */}
           <Popconfirm
             placement='bottomRight'
             title={'Are you sure you want to delete this time slot?'}
@@ -143,6 +144,8 @@ const SetTimeTable = ({ showTab }) => {
             acad_sess: selectedBranch?.id,
             page: pageDetails?.current,
           });
+        } else if (response.data?.status_code == 409) {
+          message.error(response.data?.message);
         }
       })
       .catch((error) => {
@@ -174,10 +177,12 @@ const SetTimeTable = ({ showTab }) => {
     }
     setShowTimeSlotModal(true);
   };
-
   const handleAddPeriod = (id, period_number) => {
     let obj = {
-      start_time: selectedSlotData?.start_time,
+      start_time: moment(
+        currentSlotPeriods[currentSlotPeriods.length - 1]?.end_time,
+        'HH:mm:ss'
+      ).format('HH:mm:ss'),
       end_time: selectedSlotData?.end_time,
       period_name: `Period ${period_number + 1}`,
       time_set: id,
@@ -256,17 +261,18 @@ const SetTimeTable = ({ showTab }) => {
       return;
     }
     setCreateLoading(true);
-    let formData = new FormData();
-    formData.append('name', currentSlotData?.name);
-    formData.append('start_time', currentSlotData?.start_time);
-    formData.append('acad_sess', selectedBranch?.id);
-    formData.append('end_time', currentSlotData?.end_time);
+    let payload = {
+      name: currentSlotData?.name,
+      start_time: currentSlotData?.start_time,
+      acad_sess: selectedBranch?.id,
+      end_time: currentSlotData?.end_time,
+    };
 
     if (editSlotData) {
       axios
         .put(
           `${endpoints.timeTableNewFlow.availableTimeSlots}/${currentSlotData?.id}/`,
-          formData
+          payload
         )
         .then((res) => {
           if (res?.status == 200) {
@@ -285,11 +291,16 @@ const SetTimeTable = ({ showTab }) => {
         });
     } else {
       axios
-        .post(`${endpoints.timeTableNewFlow.availableTimeSlots}/`, formData)
+        .post(`${endpoints.timeTableNewFlow.availableTimeSlots}/`, payload)
         .then((res) => {
           if (res?.status == 201) {
             message.success('Time Slot created successfully');
             setShowTimeSlotModal(false);
+            setCurrentSlotData({
+              name: '',
+              start_time: moment().format('HH:mm:ss'),
+              end_time: moment().format('HH:mm:ss'),
+            });
             setCurrentSlotPeriods([]);
             fetchAvailableTimeSlots({
               acad_sess: selectedBranch?.id,
@@ -305,26 +316,49 @@ const SetTimeTable = ({ showTab }) => {
   };
 
   const handleCreateNewPeriod = () => {
-    const isBeforeSlotTime = currentSlotPeriods.filter((el) =>
+    const isBeforeSlotTime = currentSlotPeriods?.filter((el) =>
       moment(moment(el.start_time, 'HH:mm:ss')).isSameOrBefore(
-        moment(moment(selectedSlotData.start_time, 'HH:mm:ss')).subtract(1, 'minutes'),
+        moment(moment(selectedSlotData?.start_time, 'HH:mm:ss')).subtract(1, 'minutes'),
         []
       )
     );
-    const isAfterSlotTime = currentSlotPeriods.filter((el) =>
+    const isAfterSlotTime = currentSlotPeriods?.filter((el) =>
       moment(moment(el.end_time, 'HH:mm:ss')).isSameOrAfter(
-        moment(selectedSlotData.end_time, 'HH:mm:ss').add(1, 'minutes'),
+        moment(selectedSlotData?.end_time, 'HH:mm:ss').add(1, 'minutes'),
         []
       )
     );
+    const isEndBeforeStartTime = currentSlotPeriods?.filter((el) =>
+      moment(moment(el.start_time, 'HH:mm:ss')).isAfter(moment(el?.end_time, 'HH:mm:ss'))
+    );
+    const hasSameStart = moment(
+      moment(currentSlotPeriods[0]?.start_time, 'HH:mm:ss')
+    ).isSame(moment(moment(selectedSlotData?.start_time, 'HH:mm:ss')));
+    const hasSameEnd = moment(
+      moment(currentSlotPeriods[currentSlotPeriods.length - 1]?.end_time, 'HH:mm:ss')
+    ).isSame(moment(moment(selectedSlotData?.end_time, 'HH:mm:ss')));
+
     if (isBeforeSlotTime.length > 0) {
-      message.error('Period must start after the time slot start time');
+      message.error('Period must start after the school start time');
       return false;
     }
     if (isAfterSlotTime.length > 0) {
-      message.error('Period must end before the time slot end time');
+      message.error('Period must end before the school end time');
       return false;
     }
+    if (isEndBeforeStartTime.length > 0) {
+      message.error('Start time of each period must be before their end time');
+      return false;
+    }
+    if (!hasSameStart) {
+      message.error('Periods must begin from the school start time');
+      return false;
+    }
+    if (!hasSameEnd) {
+      message.error('Periods must end at the school end time');
+      return false;
+    }
+
     setCreatePeriodLoading(true);
     axios
       .post(
@@ -332,7 +366,7 @@ const SetTimeTable = ({ showTab }) => {
         currentSlotPeriods
       )
       .then((res) => {
-        if (res?.status == 200) {
+        if (res?.data?.status_code == 200 || res?.data?.status_code == 201) {
           message.success(
             `Periods ${editCurrentSlotPeriod ? 'updated' : 'created'} successfully`
           );
@@ -369,50 +403,54 @@ const SetTimeTable = ({ showTab }) => {
           className='th-br-4'
           onClick={() => handleAddTimeSlot()}
         >
-          Create Time Table Slot
+          Create Time Slot
         </Button>
       </div>
       <div className='col-12 py-3'>
-        {availableTimeSlotDats.length > 0 ? (
-          <Table
-            className='th-table'
-            columns={columns}
-            loading={loading}
-            rowKey={(record) => record?.id}
-            dataSource={availableTimeSlotDats}
-            pagination={{
-              position: ['bottomCenter'],
-              total: pageDetails.total,
-              current: pageDetails.current,
-              pageSize: 15,
-              showSizeChanger: false,
-              onChange: (page) => {
-                setPageDetails({ ...pageDetails, current: page });
-              },
-              limit: 15,
-            }}
-            rowClassName={(record, index) =>
-              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-            }
-            scroll={{
-              x: availableTimeSlotDats?.length > 0 ? 'max-content' : null,
-              y: '50vh',
-            }}
-          />
-        ) : (
-          <div className='text-center py-5'>
-            <span className='th-25 th-fw-500'>
-              Please select the filters to show data!
-            </span>
-          </div>
-        )}
+        <Spin spinning={loading}>
+          {availableTimeSlotData?.length > 0 ? (
+            <Table
+              className='th-table'
+              columns={columns}
+              loading={loading}
+              rowKey={(record) => record?.id}
+              dataSource={availableTimeSlotData}
+              pagination={{
+                position: ['bottomCenter'],
+                total: pageDetails.total,
+                current: pageDetails.current,
+                pageSize: 15,
+                showSizeChanger: false,
+                onChange: (page) => {
+                  setPageDetails({ ...pageDetails, current: page });
+                },
+                limit: 15,
+              }}
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+              }
+              scroll={{
+                x: availableTimeSlotData?.length > 0 ? 'max-content' : null,
+                y: '50vh',
+              }}
+            />
+          ) : (
+            <div className='text-center py-5'>
+              {!loading && (
+                <span className='th-25 th-fw-500'>
+                  There is no existing slots available!
+                </span>
+              )}
+            </div>
+          )}
+        </Spin>
       </div>
 
       <Modal
         visible={showTimeSlotModal}
         centered
         className='th-upload-modal'
-        title={`${editSlotData ? 'Update' : 'Create'} Time Table Slot`}
+        title={`${editSlotData ? 'Update' : 'Create'} Time Slot`}
         onCancel={() => {
           setShowTimeSlotModal(false);
           setCurrentSlotData({
@@ -420,6 +458,8 @@ const SetTimeTable = ({ showTab }) => {
             start_time: moment().format('HH:mm:ss'),
             end_time: moment().format('HH:mm:ss'),
           });
+          setErrorMessage('');
+          setEditSlotData(false);
         }}
         footer={
           <div className='row justify-content-end'>
@@ -432,6 +472,7 @@ const SetTimeTable = ({ showTab }) => {
                   start_time: moment().format('HH:mm:ss'),
                   end_time: moment().format('HH:mm:ss'),
                 });
+                setErrorMessage('');
               }}
             >
               Close
@@ -442,6 +483,7 @@ const SetTimeTable = ({ showTab }) => {
               onClick={() => {
                 handleCreateNewSlot();
               }}
+              disabled={errorMessage}
             >
               {editSlotData ? 'Update' : 'Create'}
             </Button>
@@ -450,15 +492,22 @@ const SetTimeTable = ({ showTab }) => {
       >
         <div className='row p-3'>
           <div className='col-12 pb-3'>
-            <div className='th-primary mb-1'>Time Table Slot Name</div>
+            <div className='th-primary mb-1'>Time Slot Name</div>
             <Input
-              placeholder='Enter Time Table Slot Name'
+              placeholder='Enter Time Slot Name'
               className='pt-1 th-br-4'
               value={currentSlotData?.name}
               onChange={(e) => {
                 setCurrentSlotData({ ...currentSlotData, name: e.target.value });
+                let inputValue = e.target.value;
+                if (inputValue.length > 100) {
+                  setErrorMessage('Name should not exceed 100 characters');
+                } else {
+                  setErrorMessage(''); // Clear error message if within the limit
+                }
               }}
             />
+            {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
           </div>
           <div className='col-12'>
             <div className='th-primary mb-1'>School Timing</div>
@@ -469,7 +518,9 @@ const SetTimeTable = ({ showTab }) => {
                   popupStyle={{ zIndex: 2100 }}
                   use12Hours
                   inputReadOnly
+                  disabled={editSlotData}
                   showNow={false}
+                  allowClear={false}
                   value={moment(currentSlotData?.start_time, 'HH:mm:ss')}
                   format='hh:mm A'
                   className='th-date-picker th-br-4 ml-md-2'
@@ -488,6 +539,8 @@ const SetTimeTable = ({ showTab }) => {
                   use12Hours
                   inputReadOnly
                   showNow={false}
+                  disabled={editSlotData}
+                  allowClear={false}
                   format='hh:mm A'
                   value={moment(currentSlotData?.end_time, 'HH:mm:ss')}
                   onChange={(e) => {
@@ -510,6 +563,7 @@ const SetTimeTable = ({ showTab }) => {
         title='Add Periods'
         onCancel={() => {
           setShowPeriodsModal(false);
+          setEditCurrentSlotPeriod(false);
         }}
         footer={
           <div className='row justify-content-end'>
@@ -517,19 +571,22 @@ const SetTimeTable = ({ showTab }) => {
               type='default'
               onClick={() => {
                 setShowPeriodsModal(false);
+                setEditCurrentSlotPeriod(false);
               }}
             >
               Close
             </Button>
-            <Button
-              type='primary'
-              loading={createPeriodLoading}
-              onClick={() => {
-                handleCreateNewPeriod();
-              }}
-            >
-              Set Period
-            </Button>
+            {!editCurrentSlotPeriod && (
+              <Button
+                type='primary'
+                loading={createPeriodLoading}
+                onClick={() => {
+                  handleCreateNewPeriod();
+                }}
+              >
+                Set Period
+              </Button>
+            )}
           </div>
         }
         width={window.innerWidth < 600 ? 550 : '60vw'}
@@ -573,15 +630,16 @@ const SetTimeTable = ({ showTab }) => {
                             popupStyle={{ zIndex: 2100 }}
                             use12Hours
                             inputReadOnly
+                            disabled={editCurrentSlotPeriod}
                             showNow={false}
+                            allowClear={false}
                             value={moment(item?.start_time, 'hh:mm:ss')}
                             format='hh:mm A'
                             className='th-date-picker th-br-4 ml-2 px-0 px-md-2'
                             onChange={(e) => {
                               let updatedSlotperiods = [...currentSlotPeriods];
                               updatedSlotperiods[index]['start_time'] =
-                                moment(e).format('hh:mm:ss');
-
+                                moment(e).format('HH:mm:ss');
                               setCurrentSlotPeriods(updatedSlotperiods);
                             }}
                           />
@@ -592,14 +650,16 @@ const SetTimeTable = ({ showTab }) => {
                             key={`end_time_${index}`}
                             popupStyle={{ zIndex: 2100 }}
                             use12Hours
+                            disabled={editCurrentSlotPeriod}
                             inputReadOnly
+                            allowClear={false}
                             showNow={false}
                             value={moment(item?.end_time, 'hh:mm:ss')}
                             format='hh:mm A'
                             onChange={(e) => {
                               let updatedSlotperiods = [...currentSlotPeriods];
                               updatedSlotperiods[index]['end_time'] =
-                                moment(e).format('hh:mm:ss');
+                                moment(e).format('HH:mm:ss');
 
                               setCurrentSlotPeriods(updatedSlotperiods);
                             }}
@@ -608,32 +668,36 @@ const SetTimeTable = ({ showTab }) => {
                         </div>
                       </div>
                     </div>
-                    {index > 0 && index == currentSlotPeriods?.length - 1 && (
-                      <div className='col-1 text-center px-0'>
-                        <DeleteOutlined
-                          className='th-pointer th-red'
-                          onClick={() => handleDeletePeriod(index)}
-                        />
-                      </div>
-                    )}
+                    {index > 0 &&
+                      index == currentSlotPeriods?.length - 1 &&
+                      !editCurrentSlotPeriod && (
+                        <div className='col-1 text-center px-0'>
+                          <DeleteOutlined
+                            className='th-pointer th-red'
+                            onClick={() => handleDeletePeriod(index)}
+                          />
+                        </div>
+                      )}
                   </div>
                 );
               })}
             </div>
-            <div className='row mt-2'>
-              <div className='col-12 text-center'>
-                <Button
-                  type='primary'
-                  className='th-br-4'
-                  icon={<PlusCircleOutlined />}
-                  onClick={() =>
-                    handleAddPeriod(selectedSlotData?.id, currentSlotPeriods.length)
-                  }
-                >
-                  Add Period
-                </Button>
+            {!editCurrentSlotPeriod && (
+              <div className='row mt-2'>
+                <div className='col-12 text-center'>
+                  <Button
+                    type='primary'
+                    className='th-br-4'
+                    icon={<PlusCircleOutlined />}
+                    onClick={() =>
+                      handleAddPeriod(selectedSlotData?.id, currentSlotPeriods.length)
+                    }
+                  >
+                    Add Period
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </Spin>
       </Modal>

@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
-import TimeTableNewView from './TimeTableNewView';
+import StudentTimeTableNewView from './StudentTimeTableNewView';
 import moment from 'moment';
 
 import { Breadcrumb, Spin, message, DatePicker, Card } from 'antd';
 const { RangePicker } = DatePicker;
 
 const StudentTimeTable = () => {
+  const today = moment();
+
+  const startOfWeek = today.clone().startOf('isoWeek');
+  const endOfWeek = today.clone().endOf('isoWeek');
+
   const [loading, setLoading] = useState(false);
   const [dates, setDates] = useState(null);
-  const [value, setValue] = useState([
-    moment('2023-12-04'),
-    moment('2023-12-04').add(6, 'days'),
-  ]);
+  const [value, setValue] = useState([startOfWeek, endOfWeek]);
+
   const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState([]);
 
   const fetchCurrentWeekTimeTable = (params = {}) => {
@@ -35,14 +38,18 @@ const StudentTimeTable = () => {
         setLoading(false);
       });
   };
-
   const disabledDate = (current) => {
     if (!dates) {
       return false;
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
-    return !!tooEarly || !!tooLate;
+
+    if (dates[0] == null) {
+      return current && current.day() !== 1;
+    } else {
+      return !!tooEarly || !!tooLate;
+    }
   };
   const onOpenChange = (open) => {
     if (open) {
@@ -53,13 +60,37 @@ const StudentTimeTable = () => {
   };
 
   useEffect(() => {
-    if (value.length > 1) {
+    if (value?.length > 1) {
       fetchCurrentWeekTimeTable({
         start: moment(value[0]).format('YYYY-MM-DD'),
         end: moment(value[1]).format('YYYY-MM-DD'),
       });
     }
   }, [value]);
+  const locale = {
+    lang: {
+      // Customize the day of week names
+      weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      // Customize the month names
+      months: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ],
+      // Optionally, you can customize other datepicker-related texts
+      // Check the Ant Design documentation for more options
+      // https://ant.design/components/date-picker/#Internationalization
+    },
+  };
   return (
     <React.Fragment>
       <Layout>
@@ -76,8 +107,8 @@ const StudentTimeTable = () => {
         <div className='row px-3'>
           <div className='col-12 th-bg-white'>
             <div className='row'>
-              <div className='col-md-5 py-2 pr-0'>
-                <div className='d-flex align-items-center'>
+              <div className='col-md-12 py-2 pr-0'>
+                <div className='d-flex align-items-start'>
                   <span className='th-fw-600'>Select Date Range: </span>
                   <span className='pl-2'>
                     <RangePicker
@@ -94,16 +125,24 @@ const StudentTimeTable = () => {
               </div>
             </div>
 
-            <div className={`mt-3 px-2 ${loading ? 'py-5' : ''}`}>
+            <div className={`mt-3 px-3 ${loading ? 'py-5' : ''}`}>
               <Spin spinning={loading}>
-                <Card className='th-br-8'>
-                  {currentWeekTimeTable?.length > 0 && (
-                    <TimeTableNewView
+                {currentWeekTimeTable?.length > 0 ? (
+                  <Card className='th-br-8 th-timetable-card'>
+                    <StudentTimeTableNewView
                       currentWeekTimeTable={currentWeekTimeTable}
-                      startDate={moment(value[0]).format('YYYY-MM-DD')}
+                      startDate={moment(value?.[0])?.format('YYYY-MM-DD')}
                     />
-                  )}
-                </Card>
+                  </Card>
+                ) : (
+                  <div className='text-center py-5'>
+                    <span className='th-25 th-fw-700'>Timetable Not Created</span>
+                    <p className='th-fw-400'>
+                      Please note that the timetable for this period has not been
+                      generated yet. Kindly stay tuned for updates.
+                    </p>
+                  </div>
+                )}
               </Spin>
             </div>
           </div>

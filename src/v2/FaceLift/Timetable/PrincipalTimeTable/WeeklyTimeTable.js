@@ -222,8 +222,8 @@ const WeeklyTimeTable = ({ showTab }) => {
     setCurentTimingsData([]);
 
     if (expanded) {
-      fetchCurrentTimeSlots({ sec_map: record?.id });
-      keys.push(record.id);
+      fetchCurrentTimeSlots({ sec_map: record?.gs_id });
+      keys.push(record?.gs_id);
     }
 
     setExpandedRowKeys(keys);
@@ -329,9 +329,10 @@ const WeeklyTimeTable = ({ showTab }) => {
             return {
               weekday: handleDaytoText(el?.week_days),
               slot: el?.time_set,
+              id: el?.id,
             };
           });
-
+          let dhhjsa = { ...data, timings: timings };
           setCurrentSlotData({ ...data, timings: timings });
         } else {
           setCurrentSlotData({});
@@ -355,9 +356,13 @@ const WeeklyTimeTable = ({ showTab }) => {
                 ? sectionList?.map((item) => item?.id).join(',')
                 : sectionMappingID,
           });
+        } else {
+          message.error(res?.data?.message);
         }
       })
-      .catch((error) => message.error('error', error?.message))
+      .catch((error) => {
+        message.error('error', error?.message);
+      })
       .finally(() => {
         setDeleteLoading(false);
       });
@@ -370,16 +375,18 @@ const WeeklyTimeTable = ({ showTab }) => {
       return {
         sec_map: [currentSlotData?.sectionMappingID],
         week_days: Number(handleTexttoWeekDay(item?.weekday)),
-        time_set: item?.slot,
+        time_set: item?.slot ? item?.slot : null,
+        id: editSection ? item?.id : null,
       };
     });
     if (editSection) {
       axios
         .patch(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/`, payload)
         .then((res) => {
-          if (res?.data?.status_code == 201) {
+          if (res?.data?.status_code == 200) {
             message.success('Weekly Time Slot updated successfully');
             setShowAssignSlotModal(false);
+            setEditSection(false);
             setCurrentSlotData([]);
             if (sectionMappingID) {
               fetchWeeklyTimeSlotData({
@@ -398,6 +405,12 @@ const WeeklyTimeTable = ({ showTab }) => {
           setCreateLoading(false);
         });
     } else {
+      let checkSlot = currentSlotData?.timings.filter((e) => e?.slot != '');
+      if (checkSlot?.length == 0) {
+        message.error('Please Select Timings First');
+        setCreateLoading(false);
+        return;
+      }
       axios
         .post(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/`, payload)
         .then((res) => {
@@ -414,7 +427,11 @@ const WeeklyTimeTable = ({ showTab }) => {
               });
             }
           } else if (res?.data?.status_code == 409) {
-            message.warning(res?.data?.message);
+            if (res?.data?.developer_msg.includes('WTT already exists')) {
+              message.error('Timetable Already Exist');
+            } else {
+              message.warning(res?.data?.message);
+            }
           }
         })
         .catch((error) => message.error('error', error?.message))
@@ -441,7 +458,7 @@ const WeeklyTimeTable = ({ showTab }) => {
       <React.Fragment>
         <div className='row align-items-end'>
           <div className='col-md-3 py-2'>
-            <div className='th-fw-600'>Select Grade</div>
+            <div className='th-fw-600 pb-2'>Select Grade</div>
             <Select
               className='th-width-100 th-br-6'
               onChange={handleGrade}
@@ -464,7 +481,7 @@ const WeeklyTimeTable = ({ showTab }) => {
             </Select>
           </div>
           <div className='col-md-3 py-2'>
-            <div className='th-fw-600'>Select Section</div>
+            <div className='th-fw-600 pb-2'>Select Section</div>
             <Select
               getPopupContainer={(trigger) => trigger.parentNode}
               className='th-width-100 th-br-6'
@@ -532,30 +549,36 @@ const WeeklyTimeTable = ({ showTab }) => {
                 })
               }
             >
-              Create Time Table
+              Create Weekly Time Slot
             </Button>
           </div>
         </div>
 
         <div className='col-12 py-3'>
           {sectionMappingID ? (
-            <Table
-              className='th-table'
-              columns={columns}
-              rowKey={(record) => record?.id}
-              dataSource={weeklyTimeSlotData}
-              pagination={false}
-              loading={loading}
-              expandable={{
-                expandedRowRender: expandedRowRender,
-                expandedRowKeys: expandedRowKeys,
-                onExpand: onTableRowExpand,
-              }}
-              rowClassName={(record, index) =>
-                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-              }
-              scroll={{ x: weeklyTimeSlotData?.length > 0 ? 'scroll' : null }}
-            />
+            weeklyTimeSlotData.length > 0 ? (
+              <Table
+                className='th-table'
+                columns={columns}
+                rowKey={(record) => record?.gs_id}
+                dataSource={weeklyTimeSlotData}
+                pagination={false}
+                loading={loading}
+                expandable={{
+                  expandedRowRender: expandedRowRender,
+                  expandedRowKeys: expandedRowKeys,
+                  onExpand: onTableRowExpand,
+                }}
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                scroll={{ x: weeklyTimeSlotData?.length > 0 ? 'scroll' : null }}
+              />
+            ) : (
+              <div className='text-center py-5'>
+                <span className='th-25 th-fw-500'>No weekly time slot available!</span>
+              </div>
+            )
           ) : (
             <div className='text-center py-5'>
               <span className='th-25 th-fw-500'>
@@ -568,10 +591,11 @@ const WeeklyTimeTable = ({ showTab }) => {
           visible={showAssignSlotModal}
           centered
           className='th-upload-modal'
-          title={`${editSection ? 'Update' : 'Create'} Time Table Slot`}
+          title={`${editSection ? 'Update' : 'Create'} Weekly Time Slot`}
           onCancel={() => {
             setShowAssignSlotModal(false);
             setCurrentSlotData({});
+            setEditSection(false);
           }}
           footer={
             <div className='row justify-content-end'>
@@ -609,6 +633,7 @@ const WeeklyTimeTable = ({ showTab }) => {
                       ...currentSlotData,
                       gradeID: e,
                       sectionID: null,
+                      sectionMappingID: null,
                     });
                     fetchSectionData(
                       selectedAcademicYear?.id,
@@ -675,6 +700,7 @@ const WeeklyTimeTable = ({ showTab }) => {
                             className='th-grey th-bg-white  w-100 text-left'
                             placement='bottomRight'
                             showArrow={true}
+                            allowClear
                             onChange={(e) => {
                               let updatedTimings = [...currentSlotData?.timings];
                               updatedTimings[index]['slot'] = e;
