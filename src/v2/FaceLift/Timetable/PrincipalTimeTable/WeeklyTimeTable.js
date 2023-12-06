@@ -322,7 +322,7 @@ const WeeklyTimeTable = ({ showTab }) => {
             return {
               weekday: handleDaytoText(el?.week_days),
               slot: el?.time_set,
-              gs_id: el?.gs_id,
+              id: el?.id,
             };
           });
           setCurrentSlotData({ ...data, timings: timings });
@@ -362,7 +362,7 @@ const WeeklyTimeTable = ({ showTab }) => {
   const handleCreateWeeklySlot = () => {
     setCreateLoading(true);
     let payload = [];
-
+    console.log({ currentSlotData });
     payload = currentSlotData?.timings?.map((item, i) => {
       return {
         sec_map: [currentSlotData?.sectionMappingID],
