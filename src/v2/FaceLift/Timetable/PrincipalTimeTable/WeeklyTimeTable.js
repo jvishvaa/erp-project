@@ -222,8 +222,8 @@ const WeeklyTimeTable = ({ showTab }) => {
     setCurentTimingsData([]);
 
     if (expanded) {
-      fetchCurrentTimeSlots({ sec_map: record?.id });
-      keys.push(record.id);
+      fetchCurrentTimeSlots({ sec_map: record?.gs_id });
+      keys.push(record?.gs_id);
     }
 
     setExpandedRowKeys(keys);
@@ -560,7 +560,7 @@ const WeeklyTimeTable = ({ showTab }) => {
               <Table
                 className='th-table'
                 columns={columns}
-                rowKey={(record) => record?.id}
+                rowKey={(record) => record?.gs_id}
                 dataSource={weeklyTimeSlotData}
                 pagination={false}
                 loading={loading}
