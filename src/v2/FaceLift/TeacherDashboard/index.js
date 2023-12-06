@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 
 const TeacherDashoboardNew = () => {
   const [configOn, setConfigOn] = useState(true);
+  const [newTimeTable, setNewTimeTable] = useState(false);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -27,16 +28,34 @@ const TeacherDashoboardNew = () => {
         console.error('error', error?.message);
       });
   };
+  const CheckTimetableConfig = () => {
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=tt-enabled-v2`)
+      .then((response) => {
+        if (response?.data?.result?.includes(String(selectedBranch?.branch?.id))) {
+          setNewTimeTable(true);
+        } else {
+          setNewTimeTable(false);
+        }
+      })
+      .catch((error) => console.error('error', error?.message))
+      .finally(() => {});
+  };
 
   useEffect(() => {
     if (selectedBranch) {
       fetchConfigStatus({ config_key: 'teacher_dashboard_cfg' });
+      CheckTimetableConfig();
     }
   }, [selectedBranch]);
   return (
     <Layout>
       <div className=''>
-        {configOn ? <TeacherDashboardConfigOn /> : <TeacherDashboardConfigOff />}
+        {configOn ? (
+          <TeacherDashboardConfigOn newTimeTable={newTimeTable} />
+        ) : (
+          <TeacherDashboardConfigOff />
+        )}
       </div>
     </Layout>
   );
