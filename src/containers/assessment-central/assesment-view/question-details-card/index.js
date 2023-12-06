@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 
 const configFEHardcodedTypeSubTypeAutoAssessment = [
   { id: 1, label: 'MCQ SINGLE CHOICE', subTypeId: [32] },
-  { id: 2, label: 'MCQ_MULTIPLE_CHOICE', subTypeId: [] },
+  { id: 2, label: 'MCQ_MULTIPLE_CHOICE', subTypeId: [34] },
   { id: 3, label: 'Match the Following', subTypeId: [] },
   { id: 4, label: 'Video Question', subTypeId: [] },
   { id: 5, label: 'PPT Question', subTypeId: [] },
