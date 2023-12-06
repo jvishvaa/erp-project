@@ -172,7 +172,7 @@ const TeacherTimeTable = () => {
       fetchTeachersTimeTable({
         start: moment(value[0]).format('YYYY-MM-DD'),
         end: moment(value[1]).format('YYYY-MM-DD'),
-        sec_map: allSection,
+        sec_map: allSection.join(','),
       });
     }
   }, [value]);

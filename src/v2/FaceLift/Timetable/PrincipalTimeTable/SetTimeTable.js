@@ -563,6 +563,7 @@ const SetTimeTable = ({ showTab }) => {
         title='Add Periods'
         onCancel={() => {
           setShowPeriodsModal(false);
+          setEditCurrentSlotPeriod(false);
         }}
         footer={
           <div className='row justify-content-end'>
