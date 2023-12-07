@@ -331,6 +331,9 @@ const SetTimeTable = ({ showTab }) => {
     const isEndBeforeStartTime = currentSlotPeriods?.filter((el) =>
       moment(moment(el.start_time, 'HH:mm:ss')).isAfter(moment(el?.end_time, 'HH:mm:ss'))
     );
+    const hasSameEndStartTime = currentSlotPeriods?.filter((el) =>
+      moment(moment(el.start_time, 'HH:mm')).isSame(moment(el?.end_time, 'HH:mm:'))
+    );
     const hasSameStart = moment(
       moment(currentSlotPeriods[0]?.start_time, 'HH:mm:ss')
     ).isSame(moment(moment(selectedSlotData?.start_time, 'HH:mm:ss')));
@@ -356,6 +359,10 @@ const SetTimeTable = ({ showTab }) => {
     }
     if (!hasSameEnd) {
       message.error('Periods must end at the school end time');
+      return false;
+    }
+    if (hasSameEndStartTime.length > 0) {
+      message.error('Periods cannot have same start and end time');
       return false;
     }
 
