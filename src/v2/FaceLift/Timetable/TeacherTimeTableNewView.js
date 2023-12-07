@@ -18,22 +18,22 @@ const TeacherTimeTableNewView = withRouter(
         Object.keys(currentWeekTimeTable)?.filter(
           (item) =>
             moment(item).format('YYYY-MM-DD') === moment(today).format('YYYY-MM-DD')
-        )?.[0] ?? moment(Object.keys(currentWeekTimeTable)[0])?.format('YYYY-MM-DD');
+        )?.[0] ?? moment(Object.keys(currentWeekTimeTable)?.[0])?.format('YYYY-MM-DD');
       setCurrentDay(moment(showDate).format('dddd'));
-      setCurrentDayPeriodData(currentWeekTimeTable[showDate]);
+      setCurrentDayPeriodData(currentWeekTimeTable?.[showDate]);
     }, [currentWeekTimeTable]);
 
     let periodSlots = currentDayPeriodData?.map((item) => item?.slot) ?? [];
 
     const allLectures = Object.keys(currentWeekTimeTable)
-      .map((item) => currentWeekTimeTable[item])
+      .map((item) => currentWeekTimeTable?.[item])
       .flat();
 
     let periodData = {};
 
     allLectures.forEach((lecture) => {
       const { slot, date, sub } = lecture;
-      const slotName = slot.name;
+      const slotName = slot?.name;
 
       if (!periodData[slotName]) {
         periodData[slotName] = [];
@@ -55,7 +55,7 @@ const TeacherTimeTableNewView = withRouter(
       const period = periodData[periodName];
 
       for (let date = startDate; date <= endDate; date = getNextDate(date)) {
-        if (!period.some((lecture) => lecture.date === date)) {
+        if (!period.some((lecture) => lecture?.date === date)) {
           period.push({
             date,
             period: periodName,
@@ -129,7 +129,7 @@ const TeacherTimeTableNewView = withRouter(
             <tbody>
               {periodSlots?.length > 0 ? (
                 periodSlots?.map((item, index) => {
-                  const periodDetails = periodData[item?.name].slice(0, 7);
+                  const periodDetails = periodData[item?.name]?.slice(0, 7);
                   return (
                     <tr className='tableR' style={{ borderTop: 0 }}>
                       <>
@@ -179,7 +179,6 @@ const TeacherTimeTableNewView = withRouter(
                                 }}
                               >
                                 {eachPeriod?.subject ? (
-                                  // && moment(eachPeriod?.date).format('dddd') === days[index]
                                   <>
                                     <div
                                       className='mb-2 text-truncate'
