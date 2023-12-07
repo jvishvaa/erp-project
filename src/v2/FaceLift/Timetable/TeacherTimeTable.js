@@ -52,6 +52,14 @@ const TeacherTimeTable = () => {
       .then((result) => {
         if (result?.data?.status_code == 200) {
           setGradeList(result?.data?.data);
+          let allGrades = result?.data?.data?.map((item) => item?.grade_id);
+          setGradeID('All');
+          fetchSectionData({
+            session_year: selectedAcademicYear?.id,
+            branch_id: selectedBranch?.branch?.id,
+            grade_id: allGrades.join(','),
+            initial: true,
+          });
         } else {
           setGradeList([]);
         }
@@ -59,11 +67,25 @@ const TeacherTimeTable = () => {
       .catch((error) => message.error('error', error?.message));
   };
   const fetchSectionData = (params = {}) => {
+    let payload = {
+      session_year: params?.session_year,
+      branch_id: params?.branch_id,
+      grade_id: params?.grade_id,
+    };
     axios
-      .get(`${endpoints.academics.sections}`, { params: { ...params } })
+      .get(`${endpoints.academics.sections}`, { params: { ...payload } })
       .then((result) => {
         if (result?.data?.status_code == 200) {
           setSectionList(result?.data?.data);
+          if (params?.initial) {
+            let allSection = result?.data?.data?.map((item) => item?.id);
+            setSectionMappingID('All');
+            fetchTeachersTimeTable({
+              start: moment(value[0]).format('YYYY-MM-DD'),
+              end: moment(value[1]).format('YYYY-MM-DD'),
+              sec_map: allSection.join(','),
+            });
+          }
         } else {
           setSectionList([]);
         }
