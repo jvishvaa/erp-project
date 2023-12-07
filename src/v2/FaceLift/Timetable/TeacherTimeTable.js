@@ -41,7 +41,7 @@ const TeacherTimeTable = () => {
   const sectionOptions = sectionList?.map((each) => {
     return (
       <Option key={each?.id} value={each?.id}>
-        {each?.sec_name}
+        {`${each?.grade__grade_name} ${each?.sec_name}`}
       </Option>
     );
   });
