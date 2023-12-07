@@ -283,7 +283,9 @@ const TeacherTimeTable = () => {
               <div className={`mt-3 px-3 ${loading ? 'py-5' : ''}`}>
                 {sectionMappingID ? (
                   <Spin spinning={loading}>
-                    {Object.keys(currentWeekTimeTable).length > 0 ? (
+                    {!Object.values(currentWeekTimeTable)?.every(
+                      (array) => Array.isArray(array) && array.length === 0
+                    ) ? (
                       <Card className='th-timetable-card th-br-8'>
                         <TeacherTimeTableNewView
                           currentWeekTimeTable={currentWeekTimeTable}
@@ -292,13 +294,15 @@ const TeacherTimeTable = () => {
                         />
                       </Card>
                     ) : (
-                      <div className='text-center py-5'>
-                        <span className='th-25 th-fw-700'>Timetable Not Created</span>
-                        <p className='th-fw-400'>
-                          Please note that the timetable for this period has not been
-                          generated yet. Kindly stay tuned for updates.
-                        </p>
-                      </div>
+                      !loading && (
+                        <div className='text-center py-5'>
+                          <span className='th-25 th-fw-700'>Timetable Not Created</span>
+                          <p className='th-fw-400'>
+                            Please note that the timetable for this period has not been
+                            generated yet. Kindly stay tuned for updates.
+                          </p>
+                        </div>
+                      )
                     )}
                   </Spin>
                 ) : (

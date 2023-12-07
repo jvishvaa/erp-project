@@ -360,7 +360,6 @@ const WeeklyTimeTable = ({ showTab }) => {
       });
   };
   const handleCreateWeeklySlot = () => {
-    setCreateLoading(true);
     let payload = [];
     console.log({ currentSlotData });
     payload = currentSlotData?.timings?.map((item, i) => {
@@ -371,7 +370,14 @@ const WeeklyTimeTable = ({ showTab }) => {
         id: editSection ? item?.id : null,
       };
     });
+
     if (editSection) {
+      const hasOneSlot = payload?.some((item, i) => item?.time_set !== null);
+      if (!hasOneSlot) {
+        message.error('Please assign time slot to atleast one day');
+        setCreateLoading(false);
+        return;
+      }
       axios
         .patch(`${endpoints.timeTableNewFlow.weeklyTimeSlots}/`, payload)
         .then((res) => {

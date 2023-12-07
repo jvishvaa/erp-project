@@ -28,7 +28,7 @@ const PrincipalTimeTable = () => {
           <div className='col-12'>
             <div className='th-tabs th-bg-white'>
               <Tabs type='card' onChange={onChange} activeKey={showTab}>
-                <TabPane tab={<div>SET TIMESLOT</div>} key='1'>
+                <TabPane tab={<div>SET TIME SLOT</div>} key='1'>
                   <SetTimeTable showTab={showTab} />
                 </TabPane>
                 <TabPane tab={<div>WEEKLY TIMETABLE</div>} key='2'>
