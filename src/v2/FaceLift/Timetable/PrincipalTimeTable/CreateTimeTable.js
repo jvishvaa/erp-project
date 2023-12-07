@@ -643,7 +643,13 @@ const CreateTimeTable = ({ showTab }) => {
         if (response.data?.status_code == 409) {
           message.error(response.data.message);
         } else {
-          let file = `TimeTable_${currentDatePeriod?.start_date}-${currentDatePeriod?.end_date}_${selectedSectionData?.grade_sec?.grade}-${selectedSectionData?.grade_sec?.section}`;
+          let file = `TimeTable_${moment(selectedDate)
+            .startOf('isoWeek')
+            .format('YYYY-MM-DD')}-${moment(selectedDate)
+            .endOf('isoWeek')
+            .format('YYYY-MM-DD')}_${selectedSectionData?.grade_sec?.grade}-${
+            selectedSectionData?.grade_sec?.section
+          }`;
           let fullName = `${file}.${params?.excel ? 'xlsx' : 'pdf'}`;
           AttachmentDownload(response?.data, fullName, params?.excel ? true : false);
         }
@@ -855,7 +861,6 @@ const CreateTimeTable = ({ showTab }) => {
       ),
     },
   ];
-
   const onTableRowExpand = (expanded, record) => {
     const keys = [];
     setDateRangeSectionList([]);
@@ -864,10 +869,43 @@ const CreateTimeTable = ({ showTab }) => {
     setSelectedDate(null);
     setSelectedSectionData(null);
     setCurrentDayPeriodData([]);
-    setCurrentDatePeriod({
-      start_date: record?.start_date,
-      end_date: moment(record?.start_date).add(6, 'days').format('YYYY-MM-DD'),
-    });
+    const todayDate = moment();
+    const checkInRange = moment(todayDate, 'YYYY-MM-DD').isBetween(
+      moment(record?.start_date)?.subtract(1, 'days').format('YYYY-MM-DD'),
+      moment(record?.end_date)?.format('YYYY-MM-DD')
+    );
+    const checkInInitaialRange = moment(todayDate, 'YYYY-MM-DD').isBetween(
+      moment(record?.start_date)?.subtract(1, 'days').format('YYYY-MM-DD'),
+      moment(record?.start_date)?.add(6, 'days').format('YYYY-MM-DD')
+    );
+    if (checkInRange) {
+      if (!checkInInitaialRange) {
+        let startDate = moment(todayDate).startOf('isoWeek')?.format('d');
+        let lastDate = moment(todayDate)?.endOf('isoWeek')?.format('d');
+        const daysDifference = (todayDate.format('d') - startDate + 7) % 7;
+        const nextdaysDifference = (todayDate.format('d') - lastDate + 7) % 7;
+
+        const previousDate = todayDate.clone().subtract(daysDifference, 'days');
+
+        const nextDate = todayDate.clone().add(nextdaysDifference - 1, 'days');
+
+        setCurrentDatePeriod({
+          start_date: previousDate.format('YYYY-MM-DD'),
+          end_date: nextDate.format('YYYY-MM-DD'),
+        });
+      } else {
+        setCurrentDatePeriod({
+          start_date: record?.start_date,
+          end_date: moment(record?.start_date).add(6, 'days').format('YYYY-MM-DD'),
+        });
+      }
+    } else {
+      setCurrentDatePeriod({
+        start_date: record?.start_date,
+        end_date: moment(record?.start_date).add(6, 'days').format('YYYY-MM-DD'),
+      });
+    }
+
     if (expanded) {
       let allSection;
       if (sectionMappingID == 'All') {
@@ -1052,14 +1090,46 @@ const CreateTimeTable = ({ showTab }) => {
                         'days'
                       ) < 0
                     ) {
-                      const newStartDate = moment(currentDatePeriod?.start_date)
-                        .subtract(7, 'days')
-                        .format('YYYY-MM-DD');
+                      const newStartDate =
+                        moment(dateRangeSectionList[0]?.start_date).diff(
+                          moment(currentDatePeriod?.start_date).subtract(7, 'days'),
+                          'days'
+                        ) > 0
+                          ? moment(dateRangeSectionList[0]?.start_date).format(
+                              'YYYY-MM-DD'
+                            )
+                          : moment(currentDatePeriod?.start_date)
+                              .subtract(7, 'days')
+                              .format('YYYY-MM-DD');
 
                       setSelectedDate(newStartDate);
-                      const newEndDate = moment(currentDatePeriod?.end_date)
-                        .subtract(7, 'days')
-                        .format('YYYY-MM-DD');
+
+                      const newEndDate =
+                        moment(dateRangeSectionList[0]?.start_date).diff(
+                          moment(currentDatePeriod?.start_date).subtract(7, 'days'),
+                          'days'
+                        ) > 0
+                          ? moment(dateRangeSectionList[0]?.start_date)
+                              .add(6, 'days')
+                              .format('YYYY-MM-DD')
+                          : moment(dateRangeSectionList[0]?.end_date).diff(
+                              moment(currentDatePeriod?.end_date),
+                              'days'
+                            ) === 0
+                          ? moment(currentDatePeriod?.end_date)
+                              .subtract(
+                                6 -
+                                  moment(dateRangeSectionList[0]?.end_date).diff(
+                                    moment(currentDatePeriod?.end_date),
+                                    'days'
+                                  ),
+                                'days'
+                              )
+                              .format('YYYY-MM-DD')
+                          : moment(currentDatePeriod?.end_date)
+                              .subtract(7, 'days')
+                              .format('YYYY-MM-DD');
+
                       setCurrentDatePeriod({
                         start_date: newStartDate,
                         end_date: newEndDate,
@@ -1081,9 +1151,7 @@ const CreateTimeTable = ({ showTab }) => {
               </span>
               <span>
                 {moment(currentDatePeriod?.start_date).format('Do MMM')}-
-                {moment(currentDatePeriod?.start_date)
-                  .add(6, 'days')
-                  .format('Do MMM, YYYY')}
+                {moment(currentDatePeriod?.end_date).format('Do MMM, YYYY')}
               </span>
             </div>
             <div className=' d-flex align-items-center th-fw-600'>
@@ -1100,13 +1168,27 @@ const CreateTimeTable = ({ showTab }) => {
                     ) {
                       const newStartDate = moment(currentDatePeriod?.start_date)
                         .add(7, 'days')
+                        .startOf('isoWeek')
                         .format('YYYY-MM-DD');
 
                       setSelectedDate(newStartDate);
+                      const newEndDate =
+                        moment(currentDatePeriod?.end_date)
+                          .add(7, 'days')
+                          .diff(moment(dateRangeSectionList[0]?.end_date), 'days') > 0
+                          ? moment(dateRangeSectionList[0]?.end_date).format('YYYY-MM-DD')
+                          : moment(dateRangeSectionList[0]?.start_date).diff(
+                              moment(currentDatePeriod?.start_date),
+                              'days'
+                            ) === 0
+                          ? moment(dateRangeSectionList[0]?.start_date)
+                              .endOf('isoWeek')
+                              .add(7, 'days')
+                              .format('YYYY-MM-DD')
+                          : moment(currentDatePeriod?.end_date)
+                              .add(7, 'days')
+                              .format('YYYY-MM-DD');
 
-                      const newEndDate = moment(currentDatePeriod?.end_date)
-                        .add(7, 'days')
-                        .format('YYYY-MM-DD');
                       setCurrentDatePeriod({
                         start_date: newStartDate,
                         end_date: newEndDate,
@@ -1161,6 +1243,7 @@ const CreateTimeTable = ({ showTab }) => {
                       .format('Do MMM')}
                   </div>
                   <div>
+                    {' '}
                     {moment(currentDatePeriod?.start_date)
                       .add(item?.week_days, 'days')
                       .format('dddd')}
