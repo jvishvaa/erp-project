@@ -127,88 +127,101 @@ const TeacherTimeTableNewView = withRouter(
               </tr>
             </thead>
             <tbody>
-              {periodSlots?.map((item, index) => {
-                const periodDetails = periodData[item?.name].slice(0, 7);
-                return (
-                  <tr className='tableR' style={{ borderTop: 0 }}>
-                    <>
-                      <td
-                        className='fixedcol tableD'
-                        style={{
-                          textAlign: 'center',
-                          verticalAlign: 'middle',
-                          padding: 0,
-                        }}
-                      >
-                        <div
-                          className='d-flex justify-content-center flex-column'
+              {periodSlots?.length > 0 ? (
+                periodSlots?.map((item, index) => {
+                  const periodDetails = periodData[item?.name].slice(0, 7);
+                  return (
+                    <tr className='tableR' style={{ borderTop: 0 }}>
+                      <>
+                        <td
+                          className='fixedcol tableD'
                           style={{
-                            height: '100px',
-                            background: '#1b4ccb',
-                            borderRadius: 5,
-                            color: 'white',
+                            textAlign: 'center',
+                            verticalAlign: 'middle',
+                            padding: 0,
                           }}
                         >
-                          <div className='mb-2 text-truncate' title={item?.name}>
-                            <span className='th-fw-600'>{item?.name}</span>
-                          </div>
-                          <div>
-                            <span className='th-fw-500 th-12'>{`${moment(
-                              item?.start,
-                              'hh:mm:ss'
-                            ).format('hh:mm A')} - ${moment(item?.end, 'hh:mm:ss').format(
-                              'hh:mm A'
-                            )} `}</span>
-                          </div>
-                        </div>
-                      </td>
-                      {periodDetails?.map((eachPeriod, index) => {
-                        return (
-                          <td
-                            className='tableD'
+                          <div
+                            className='d-flex justify-content-center flex-column'
                             style={{
-                              verticalAlign: 'middle',
+                              height: '100px',
+                              background: '#1b4ccb',
+                              borderRadius: 5,
+                              color: 'white',
                             }}
                           >
-                            <div
-                              className='card w-100 d-flex justify-content-center p-2 flex-column'
+                            <div className='mb-2 text-truncate' title={item?.name}>
+                              <span className='th-fw-600'>{item?.name}</span>
+                            </div>
+                            <div>
+                              <span className='th-fw-500 th-12'>{`${moment(
+                                item?.start,
+                                'hh:mm:ss'
+                              ).format('hh:mm A')} - ${moment(
+                                item?.end,
+                                'hh:mm:ss'
+                              ).format('hh:mm A')} `}</span>
+                            </div>
+                          </div>
+                        </td>
+                        {periodDetails?.map((eachPeriod, index) => {
+                          return (
+                            <td
+                              className='tableD'
                               style={{
-                                height: '100px',
+                                verticalAlign: 'middle',
                               }}
                             >
-                              {eachPeriod?.subject ? (
-                                // && moment(eachPeriod?.date).format('dddd') === days[index]
-                                <>
-                                  <div
-                                    className='mb-2 text-truncate'
-                                    title={eachPeriod?.subject}
-                                  >
-                                    <span className='th-fw-600'>
-                                      {eachPeriod?.subject}
-                                    </span>
+                              <div
+                                className='card w-100 d-flex justify-content-center p-2 flex-column'
+                                style={{
+                                  height: '100px',
+                                }}
+                              >
+                                {eachPeriod?.subject ? (
+                                  // && moment(eachPeriod?.date).format('dddd') === days[index]
+                                  <>
+                                    <div
+                                      className='mb-2 text-truncate'
+                                      title={eachPeriod?.subject}
+                                    >
+                                      <span className='th-fw-600'>
+                                        {eachPeriod?.subject}
+                                      </span>
+                                    </div>
+                                    <div
+                                      className='text-truncate'
+                                      title={eachPeriod?.grade_section}
+                                    >
+                                      <span className='th-12 th-fw-500'>
+                                        {eachPeriod?.grade_section}
+                                      </span>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div className='mb-2 text-truncate th-12 th-grey-1'>
+                                    No Classes Assigned
                                   </div>
-                                  <div
-                                    className='text-truncate'
-                                    title={eachPeriod?.grade_section}
-                                  >
-                                    <span className='th-12 th-fw-500'>
-                                      {eachPeriod?.grade_section}
-                                    </span>
-                                  </div>
-                                </>
-                              ) : (
-                                <div className='mb-2 text-truncate th-12 th-grey-1'>
-                                  No Classes Assigned
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                        );
-                      })}
-                    </>
-                  </tr>
-                );
-              })}
+                                )}
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colspan='8'>
+                    <div className='d-flex justify-content-center'>
+                      <span className='th-grey th-30 th-fw-500'>
+                        No classes assigned for today !
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
