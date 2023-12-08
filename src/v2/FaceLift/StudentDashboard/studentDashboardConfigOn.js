@@ -17,7 +17,7 @@ import StudentAttendanceNew from './components/StudentAttendanceNew';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import Endpoint from 'config/endpoints';
 
-const StudentDashboardConfigOn = () => {
+const StudentDashboardConfigOn = ({ newTimeTable }) => {
   const isOrchids = IsOrchidsChecker();
   const [showDoodle, setShowDoodle] = useState(false);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
@@ -115,7 +115,7 @@ const StudentDashboardConfigOn = () => {
         <div className='col-lg-8 th-custom-col-padding'>
           <div className='row'>
             <div className='col-12 px-0'>
-              <TodaysClass />
+              <TodaysClass newTimeTable={newTimeTable} />
             </div>
 
             <div className='col-md-6 px-0 '>

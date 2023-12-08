@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import NoClassIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/noclass.png';
 
-const TodaysClass = () => {
+const TodaysClass = ({ newTimeTable }) => {
   const myRef = useRef();
   const history = useHistory();
   const [todaysClassData, setTodaysClassData] = useState([]);
@@ -64,9 +64,11 @@ const TodaysClass = () => {
   };
 
   useEffect(() => {
-    fetchTodaysClassData({
-      acadsession_id: selectedBranch?.id,
-    });
+    if (!newTimeTable) {
+      fetchTodaysClassData({
+        acadsession_id: selectedBranch?.id,
+      });
+    }
   }, []);
   useEffect(() => {
     if (myRef.current) executeScroll();
@@ -91,8 +93,11 @@ const TodaysClass = () => {
           </div>
         </div>
       </div>
-
-      {loading ? (
+      {newTimeTable ? (
+        <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
+          <span className='th-grey th-30'>Timetable coming soon !</span>
+        </div>
+      ) : loading ? (
         <div className='th-width-100 d-flex align-items-center justify-content-center h-75'>
           <Spin tip='Loading...'></Spin>
         </div>

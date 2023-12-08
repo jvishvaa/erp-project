@@ -13,7 +13,7 @@ import CurriculumTracker from './components/CurriculumCompletionNew';
 import TeacherDiaryStats from './components/TeacherDiaryStats';
 import Activity from './components/Activity';
 
-const TeacherdashboardNew = () => {
+const TeacherdashboardNew = ({ newTimeTable }) => {
   const [showDoodle, setShowDoodle] = useState(false);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
@@ -46,7 +46,7 @@ const TeacherdashboardNew = () => {
         <div className='col-lg-8 th-custom-col-padding'>
           <div className='row'>
             <div className='col-12 px-0'>
-              <TodaysClass />
+              <TodaysClass newTimeTable={newTimeTable} />
             </div>
 
             <div className='col-lg-6 px-0 '>

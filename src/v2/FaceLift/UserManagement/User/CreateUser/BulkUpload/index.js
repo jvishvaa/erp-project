@@ -162,7 +162,6 @@ const BulkUpload = () => {
     }
   }, [selectedYear]);
 
-
   const fetchUserRoles = async () => {
     axiosInstance
       .get(`${endpoints.communication.roles}`)

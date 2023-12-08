@@ -1,4 +1,4 @@
-import React, { useContext, useEffect , useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { IconButton, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -57,7 +57,7 @@ const ViewMoreCard = ({
   periodDataForView,
   setSelectedIndex,
   setPublishFlag,
-  tabValue
+  tabValue,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const classes = useStyles();
@@ -72,6 +72,16 @@ const ViewMoreCard = ({
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  // useEffect(() => {
+  //   console.log(
+  //     {
+  //       viewMoreData,
+  //       periodDataForView,
+  //     },
+  //     'alllog'
+  //   );
+  // });
+
   const fetchquesPaperStatus = () => {
     // setLoading(true);
     axios
@@ -93,12 +103,12 @@ const ViewMoreCard = ({
   };
 
   useEffect(() => {
-    fetchquesPaperStatus()
-  },[selectedBranch])
+    fetchquesPaperStatus();
+  }, [selectedBranch]);
 
   useEffect(() => {
-    showDrawer()
-  },[])
+    showDrawer();
+  }, []);
 
   const showDrawer = () => {
     setOpen(true);
@@ -111,30 +121,23 @@ const ViewMoreCard = ({
   };
 
   const handleOpenEdit = () => {
-    
-      if(showNewAsses){
-        history.push({ 
-          pathname : `/create-questionpaper/`,
-          state:{
-            isEdit : true,
-            paperId : periodDataForView?.id
-          }
-      }
-        )
-      }else{
-
-    history.push({ 
-      pathname : `/create-question-paper/${periodDataForView?.id}`,
-      state:{
-        isEdit : true
-      }
-  }
-    )
-}
-    
+    if (showNewAsses) {
+      history.push({
+        pathname: `/create-questionpaper/`,
+        state: {
+          isEdit: true,
+          paperId: periodDataForView?.id,
+        },
+      });
+    } else {
+      history.push({
+        pathname: `/create-question-paper/${periodDataForView?.id}`,
+        state: {
+          isEdit: true,
+        },
+      });
+    }
   };
- 
-
 
   const handlePublish = (isPublish = true) => {
     setPublishFlag(false);
@@ -165,29 +168,37 @@ const ViewMoreCard = ({
 
   return (
     // <Paper className={classes.rootViewMore}>
-    <Drawer title = {periodDataForView?.paper_name} zIndex={1300} width={'500px'} placement="right" onClose={onClose} open={open} visible={open}>
+    <Drawer
+      title={periodDataForView?.paper_name}
+      zIndex={1300}
+      width={'500px'}
+      placement='right'
+      onClose={onClose}
+      open={open}
+      visible={open}
+    >
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           {/* <div className='headerTitle'>{periodDataForView?.paper_name}</div> */}
           <div className='row'>
             <div className='col-md-6 d-flex justify-content-center headerContent'>
-            {periodDataForView?.is_draft ? 'Draft' : null}
-            {periodDataForView?.is_review ? 'Review' : null}
-            {periodDataForView?.is_verified ? 'Published' : null}
+              {periodDataForView?.is_draft ? 'Draft' : null}
+              {periodDataForView?.is_review ? 'Review' : null}
+              {periodDataForView?.is_verified ? 'Published' : null}
             </div>
             <div className='d-flex col-md-6 justify-content-end'>
-            {!periodDataForView?.is_central && (
-            <Button
-              size='small'
-              className={classes.margin}
-              onClick={() => handleOpenEdit()}
-              variant='contained'
-              color='primary'
-            >
-              Edit
-            </Button>
-          )}
-          </div>
+              {!periodDataForView?.is_central && (
+                <Button
+                  size='small'
+                  className={classes.margin}
+                  onClick={() => handleOpenEdit()}
+                  variant='contained'
+                  color='primary'
+                >
+                  Edit
+                </Button>
+              )}
+            </div>
           </div>
           {/* <div style={{ display: 'flex' }}>
             <h6>Created on - </h6>
@@ -227,53 +238,58 @@ const ViewMoreCard = ({
                     mb={3}
                   >
                     <Typography className={classes.heading}>
-                      {`SECTION ${section?.name}`}
+                      {periodDataForView.is_central && periodDataForView.hasOwnProperty('template_id')
+                        ? section?.name
+                        : `SECTION ${section?.name}`}
                     </Typography>
                   </AccordionSummary>
                   <div className='section-content'>
-                    {section.questions?.map((q,i) => (
+                    {section.questions?.map((q, i) => (
                       <div
                         className='question-detail-card-wrapper'
                         style={{ width: '100%' }}
                       >
                         <QuestionDetailCard question={q} index={i} />
-                        <hr/>
+                        <hr />
                       </div>
                     ))}
                   </div>
                 </Accordion>
               ))}
             </div>
-            {tabValue !== 4 && <div style={{ display: 'flex', margin: '5px 15px 15px 5px' }}>
-              {((periodDataForView?.is_verified || periodDataForView?.is_review) && (!periodDataForView?.is_central)) && (
-                <Button
-                  style={{ margin: '0.5rem', color: 'white', width: '100%' }}
-                  onClick={() => handlePublish(false)}
-                  color='secondary'
-                  variant='contained'
-                  size='small'
-                >
-                  REJECT
-                </Button>
-              )}
-              {periodDataForView?.is_review && (
-                <Button
-                  style={{ margin: '0.5rem', color: 'white', width: '100%' }}
-                  onClick={() => handlePublish(true)}
-                  color='primary'
-                  variant='contained'
-                  size='small'
-                >
-                  PUBLISH
-                </Button>
-              )}
-            </div>}
+            {tabValue !== 4 && (
+              <div style={{ display: 'flex', margin: '5px 15px 15px 5px' }}>
+                {(periodDataForView?.is_verified || periodDataForView?.is_review) &&
+                  !periodDataForView?.is_central && (
+                    <Button
+                      style={{ margin: '0.5rem', color: 'white', width: '100%' }}
+                      onClick={() => handlePublish(false)}
+                      color='secondary'
+                      variant='contained'
+                      size='small'
+                    >
+                      REJECT
+                    </Button>
+                  )}
+                {periodDataForView?.is_review && (
+                  <Button
+                    style={{ margin: '0.5rem', color: 'white', width: '100%' }}
+                    onClick={() => handlePublish(true)}
+                    color='primary'
+                    variant='contained'
+                    size='small'
+                  >
+                    PUBLISH
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
 
           <div className='downloadAllText' />
         </div>
       </div>
-    {/* </Paper > */}
+      {/* </Paper > */}
     </Drawer>
   );
 };

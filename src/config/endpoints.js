@@ -496,9 +496,11 @@ export default {
     fileUpload: '/assessment/file-upload/',
     fileRemove: '/assessment/file-delete/',
     listQuestionPaper: '/assessment/list-question-paper/',
+    listQuestionPaperV2: '/assessment/list-question-paper-v2/',
     listAssessment: '/assessment/test/',
     testList: '/assessment/test-list/',
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
+    autoQuestionPaper: `${baseURLCentral}/v2/assessment/auto-question-paper/`,
     questionPaperViewMoreCentral: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     createQuestionPaper: `/assessment/question-paper/`,
@@ -536,7 +538,7 @@ export default {
     reUpload: '/assessment/enable-assessment-re-upload/',
     erpBucket: ERP_BUCKET_2,
     assessmentMarksDownload: '/assessment/marks-download/',
-    assessmentMarksUpload: '/assessment/student-marks-upload/'
+    assessmentMarksUpload: '/assessment/student-marks-upload/',
   },
   reportCardConfig: {
     reportcardcomponent: '/assessment/report-card-component/',
