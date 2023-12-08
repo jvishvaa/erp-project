@@ -1269,7 +1269,7 @@ const CreateTimeTable = ({ showTab }) => {
             />
           </div>
           <div className='d-flex mt-2'>
-            <Button
+            {/* <Button
               type='primary'
               className='th-br-4'
               loading={excelLoading}
@@ -1284,7 +1284,7 @@ const CreateTimeTable = ({ showTab }) => {
               }}
             >
               Export (CSV)
-            </Button>
+            </Button> */}
             <Button
               type='primary'
               className=' th-br-4 ml-2'
