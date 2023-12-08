@@ -551,6 +551,8 @@ const CreateTimeTable = ({ showTab }) => {
     };
     if (type == 'lecture') {
       payload['lecture_type'] = selectedPeriod?.lecture_type;
+      payload['sub_map'] = [];
+      payload['teacher'] = [];
       if (!payload['lecture_type']) {
         message.error('Please select lecture type');
         return;
@@ -1761,7 +1763,7 @@ const CreateTimeTable = ({ showTab }) => {
           visible={showEditLectureModal}
           centered
           className='th-upload-modal'
-          title='Create Lecture'
+          title='Assign Lecture Type'
           onCancel={() => {
             handleCloseEditLectureModal();
           }}
