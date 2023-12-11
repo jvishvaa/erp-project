@@ -434,15 +434,9 @@ const StudentMarkNew = () => {
 
   const handleMarksEnter = (event, i) => {
     console.log(i);
-    if (event.target.value != '') {
-      let vals = [...values.val];
-      vals[i] = event.target.value;
-      setValues({ val: vals });
-    } else if (event.target.value == '') {
-      let vals = [...values.val];
-      vals.splice(i, 1);
-      setValues({ val: vals });
-    }
+    let vals = [...values.val];
+    vals[i] = event.target.value;
+    setValues({ val: vals });
   };
 
   const handleBack = () => {
@@ -500,7 +494,7 @@ const StudentMarkNew = () => {
         let count = 0;
         const finalValue = [];
         valueArray.forEach((item) => {
-          if (item?.question_mark !== undefined || item?.question_mark !== null) {
+          if (item?.question_mark || item?.question_mark == 0) {
             if (countobj[item.section] == undefined) {
               countobj[item.section] = 1;
             } else {
