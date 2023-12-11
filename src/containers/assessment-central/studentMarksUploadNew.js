@@ -290,13 +290,15 @@ const StudentMarkNew = () => {
           setNextFlag(false);
         }
         marksArr = result?.data?.result?.user_response;
-        if(marksArr?.length && quesList?.length){
-          for(let i=0;i<quesList?.length;i++){
-            let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
-            if(quemark.length){
-              sum.push(quemark[0].question_mark)
-            }else{
-              sum.push('')
+        if (marksArr?.length && quesList?.length) {
+          for (let i = 0; i < quesList?.length; i++) {
+            let quemark = marksArr.filter(
+              (item) => item?.question === quesList[i].question
+            );
+            if (quemark.length) {
+              sum.push(quemark[0].question_mark);
+            } else {
+              sum.push('');
             }
           }
           setValues({ val: sum });
@@ -339,13 +341,15 @@ const StudentMarkNew = () => {
                     setNextFlag(false);
                   }
                   marksArr = result?.data?.result?.user_response;
-                  if(marksArr?.length && quesList?.length){
-                    for(let i=0;i<quesList?.length;i++){
-                      let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
-                      if(quemark.length){
-                        sum.push(quemark[0].question_mark)
-                      }else{
-                        sum.push('')
+                  if (marksArr?.length && quesList?.length) {
+                    for (let i = 0; i < quesList?.length; i++) {
+                      let quemark = marksArr.filter(
+                        (item) => item?.question === quesList[i].question
+                      );
+                      if (quemark.length) {
+                        sum.push(quemark[0].question_mark);
+                      } else {
+                        sum.push('');
                       }
                     }
                     setValues({ val: sum });
@@ -399,13 +403,15 @@ const StudentMarkNew = () => {
                     setNextFlag(false);
                   }
                   marksArr = result?.data?.result?.user_response;
-                  if(marksArr?.length && quesList?.length){
-                    for(let i=0;i<quesList?.length;i++){
-                      let quemark = marksArr.filter((item) => item?.question === quesList[i].question)
-                      if(quemark.length){
-                        sum.push(quemark[0].question_mark)
-                      }else{
-                        sum.push('')
+                  if (marksArr?.length && quesList?.length) {
+                    for (let i = 0; i < quesList?.length; i++) {
+                      let quemark = marksArr.filter(
+                        (item) => item?.question === quesList[i].question
+                      );
+                      if (quemark.length) {
+                        sum.push(quemark[0].question_mark);
+                      } else {
+                        sum.push('');
                       }
                     }
                     setValues({ val: sum });
@@ -488,7 +494,7 @@ const StudentMarkNew = () => {
         let count = 0;
         const finalValue = [];
         valueArray.forEach((item) => {
-          if (item?.question_mark) {
+          if (item?.question_mark !== undefined || item?.question_mark !== null) {
             if (countobj[item.section] == undefined) {
               countobj[item.section] = 1;
             } else {
