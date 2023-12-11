@@ -439,7 +439,7 @@ const OfflineStudentAssessment = () => {
       state: {
         test_id: history?.location?.state?.test?.id,
         user: data?.user_id,
-        student: student,
+        student: studentList,
         studentData: data,
         selectedSection: selectedSection,
         branch: createFilterData?.branch,
