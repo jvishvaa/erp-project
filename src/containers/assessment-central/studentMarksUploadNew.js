@@ -434,9 +434,15 @@ const StudentMarkNew = () => {
 
   const handleMarksEnter = (event, i) => {
     console.log(i);
-    let vals = [...values.val];
-    vals[i] = event.target.value;
-    setValues({ val: vals });
+    if (event.target.value != '') {
+      let vals = [...values.val];
+      vals[i] = event.target.value;
+      setValues({ val: vals });
+    } else if (event.target.value == '') {
+      let vals = [...values.val];
+      vals.splice(i, 1);
+      setValues({ val: vals });
+    }
   };
 
   const handleBack = () => {
