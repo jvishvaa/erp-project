@@ -965,6 +965,24 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       });
   };
 
+  const completedSection = resourcesData?.section_wise_completion?.filter(
+    (item) => item?.is_completed === true
+  );
+
+  let firstCompletedBy;
+  let firstSections;
+  let remainingSections;
+  let remainingCompletedBy;
+
+  if (completedSection) {
+    firstCompletedBy = completedSection[0]?.completed_by;
+    firstSections = completedSection[0]?.section__section_name;
+    remainingSections = completedSection
+      ?.slice(1)
+      ?.map((item) => item?.section__section_name?.slice(-1).toUpperCase());
+    remainingCompletedBy = completedSection?.slice(1)?.map((item) => item?.completed_by);
+  }
+
   return (
     <div className='row '>
       <div className='row align-items-center mb-2'>
@@ -1748,13 +1766,109 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                             {!isStudent && (
                               <>
                                 {' '}
-                                for Section{' '}
-                                {resourcesData?.section_wise_completion
-                                  .filter((item) => item?.is_completed === true)
-                                  .map((item) =>
-                                    item?.section__section_name.slice(-1).toUpperCase()
-                                  )
-                                  .join(', ')}
+                                for <span style={{ fontWeight: 'bold' }}>Section </span>
+                                {
+                                  <span
+                                    className='text-truncate'
+                                    style={{ fontWeight: 'bolder' }}
+                                  >
+                                    {firstSections.slice(-1).toUpperCase()}
+                                    <span style={{ fontWeight: 'normal' }}> by </span>
+                                    {firstCompletedBy}
+                                  </span>
+                                }
+                                {remainingSections &&
+                                  remainingCompletedBy &&
+                                  completedSection.length > 1 && (
+                                    <Tooltip
+                                      placement='bottomLeft'
+                                      title={
+                                        remainingSections !== undefined ? (
+                                          <div
+                                            style={{
+                                              maxHeight: '300px',
+                                              overflowY: 'auto',
+                                              overflowX: 'hidden',
+                                              display: 'block',
+                                              justifyContent: 'center',
+                                              alignItems: 'center',
+                                              width: '100%',
+                                              color: 'white',
+                                              background: 'black',
+                                            }}
+                                          >
+                                            <table
+                                              style={{
+                                                border: '1px solid white',
+                                                width: '100%',
+                                              }}
+                                            >
+                                              <thead>
+                                                <tr>
+                                                  <th
+                                                    style={{
+                                                      border: '1px solid white',
+                                                      textAlign: 'center',
+                                                      padding: '3px',
+                                                    }}
+                                                  >
+                                                    Section
+                                                  </th>
+                                                  <th
+                                                    style={{
+                                                      border: '1px solid white',
+                                                      textAlign: 'center',
+                                                      padding: '3px',
+                                                    }}
+                                                  >
+                                                    Completed by
+                                                  </th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {remainingSections.map(
+                                                  (section, index) => (
+                                                    <tr key={`section-${index}`}>
+                                                      <td
+                                                        style={{
+                                                          border: '1px solid white',
+                                                          textAlign: 'center',
+                                                        }}
+                                                      >
+                                                        {section}
+                                                      </td>
+                                                      <td
+                                                        style={{
+                                                          border: '1px solid white',
+                                                          padding: '2px 8px',
+                                                        }}
+                                                      >
+                                                        {remainingCompletedBy[index]}
+                                                      </td>
+                                                    </tr>
+                                                  )
+                                                )}
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        ) : (
+                                          ''
+                                        )
+                                      }
+                                      className='th-pointer'
+                                      zIndex={2700}
+                                      color='transparent'
+                                      overlayStyle={{
+                                        backgroundColor: 'white',
+                                        minWidth: '300px',
+                                      }}
+                                    >
+                                      <span style={{ color: 'gray' }}>
+                                        {',  '}
+                                        more......
+                                      </span>
+                                    </Tooltip>
+                                  )}
                               </>
                             )}
                           </span>
