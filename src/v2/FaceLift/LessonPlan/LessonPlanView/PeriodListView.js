@@ -1766,10 +1766,14 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                             {!isStudent && (
                               <>
                                 {' '}
-                                for Section{' '}
+                                for <span style={{ fontWeight: 'bold' }}>Section </span>
                                 {
-                                  <span className='text-truncate'>
-                                    {firstSections.slice(-1).toUpperCase()} by{' '}
+                                  <span
+                                    className='text-truncate'
+                                    style={{ fontWeight: 'bolder' }}
+                                  >
+                                    {firstSections.slice(-1).toUpperCase()}
+                                    <span style={{ fontWeight: 'normal' }}> by </span>
                                     {firstCompletedBy}
                                   </span>
                                 }
