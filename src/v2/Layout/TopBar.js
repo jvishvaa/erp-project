@@ -640,6 +640,10 @@ const Appbar = ({ children, history, ...props }) => {
                     userData?.user_level == 11 ||
                     userData?.user_level == 25 ||
                     userData?.user_level == 13 ||
+                    userData?.user_level == 8 ||
+                    userData?.user_level == 14 ||
+                    userData?.user_level == 26 ||
+                    userData?.user_level == 27 ||
                     userData?.is_superuser == true ? (
                       <>
                         {apps?.finance == true ? (
