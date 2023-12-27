@@ -140,6 +140,7 @@ const StudentReportCard = () => {
         setLoading(false);
       });
   };
+
   const fetchEypReportCard = (grade_id) => {
     let obj = {};
     obj.acad_session_id = selectedBranch?.id;
@@ -284,7 +285,7 @@ const StudentReportCard = () => {
                             color='primary'
                             style={{ fontSize: 15 }}
                           >
-                            Download Report
+                            Download Report Card
                           </Button>
                         )}
                         content={() => componentRef.current} // Use the ref content here
@@ -296,6 +297,30 @@ const StudentReportCard = () => {
                             : 'PhysicalEducationReportCard'
                         } - ${reportCardDataNew?.user_info?.name}`}
                       />
+                    ) : tabValue === 2 ? (
+                      peReportCardData?.data?.map((item) => item?.criteria_title).flat()
+                        ?.length > 0 ? (
+                        <ReactToPrint
+                          trigger={() => (
+                            <Button
+                              variant='contained'
+                              size='small'
+                              color='primary'
+                              style={{ fontSize: 15 }}
+                            >
+                              Download Report Card
+                            </Button>
+                          )}
+                          content={() => componentRef.current} // Use the ref content here
+                          documentTitle={`Eduvate ${
+                            tabValue === 0
+                              ? 'Front'
+                              : tabValue === 1
+                              ? 'Back'
+                              : 'PhysicalEducationReportCard'
+                          } - ${reportCardDataNew?.user_info?.name}`}
+                        />
+                      ) : null
                     ) : null}
                   </div>
                   <Box style={{ margin: '20px auto' }}>
