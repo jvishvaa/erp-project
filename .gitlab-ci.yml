@@ -220,7 +220,7 @@ deploy_preprod_gcp:
     before_script:
       - sleep 10
       - ip a
-      - sudo chmod 777 -R /home/gitlab-runner/builds/
+      #- sudo chmod 777 -R /home/gitlab-runner/builds/
       - whoami
       - pwd
     variables:
