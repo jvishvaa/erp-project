@@ -29,8 +29,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PhysicalEducationReportCard = ({ peReportCardData }) => {
+const PhysicalEducationReportCard = React.forwardRef((props, ref) => {
   const classes = useStyles();
+  const { peReportCardData } = props;
   return peReportCardData?.data?.length > 0 ? (
     peReportCardData?.data?.map((item) => item?.criteria_title).flat()?.length > 0 ? (
       peReportCardData?.data?.map((eachActivity) => {
@@ -41,6 +42,7 @@ const PhysicalEducationReportCard = ({ peReportCardData }) => {
                 activityReportData={eachActivity}
                 branchLogo={peReportCardData?.user_data[0]?.branch_logo}
                 username={peReportCardData?.user_data[0]?.name}
+                ref={ref}
               />
             )}
           </>
@@ -68,6 +70,6 @@ const PhysicalEducationReportCard = ({ peReportCardData }) => {
       </div>
     </Paper>
   );
-};
+});
 
 export default PhysicalEducationReportCard;
