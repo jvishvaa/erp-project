@@ -119,10 +119,7 @@ export default function AssesmentReportBackNew({ reportCardDataNew }) {
                 {pricipalSignData?.length ? (
                   <span className='pl-2'>
                     <img
-                      src={
-                        `https://letseduvate.s3.amazonaws.com/prod/media/` +
-                        pricipalSignData[0]?.principle_sign
-                      }
+                      src={`${endpoints.FINANCE_BUCKET}/${pricipalSignData[0]?.principle_sign}`}
                       width={'120px'}
                     />
                   </span>

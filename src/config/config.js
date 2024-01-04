@@ -99,6 +99,7 @@ const stage = {
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
     CENTRAL_BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
     IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    FINANCE_BUCKET: 'https://storage.googleapis.com/letseduvate/prod/media',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -128,6 +129,7 @@ const prod = {
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
     CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
     IBOOK_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    FINANCE_BUCKET: 'https://storage.googleapis.com/letseduvate/prod/media',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
