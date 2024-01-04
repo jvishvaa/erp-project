@@ -20,6 +20,7 @@ const {
     ERP_BUCKET_2,
     UDAAN_BUCKET: s3UDAAN_BUCKET,
     CENTRAL_BUCKET: CENTRAL_BUCKET,
+    FINANCE_BUCKET: FINANCE_BUCKET,
   },
 } = ENVCONFIG;
 
@@ -1055,4 +1056,5 @@ export default {
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
   baseURLCentral,
   s3UDAAN_BUCKET: s3UDAAN_BUCKET,
+  FINANCE_BUCKET,
 };
