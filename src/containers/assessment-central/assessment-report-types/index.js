@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import {
   SvgIcon,
   Table,
@@ -46,10 +46,12 @@ import StudentWiseReport from './assessment-report-filters/student-wise-report';
 import LeftArrow from 'components/icon/LeftArrow';
 import { useHistory } from 'react-router';
 import PhysicalEducationReportCard from '../assesment-report-card/physicalEducationReportCard/physicalEducationReportCard';
+import ReactToPrint from 'react-to-print';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
   const limit = 10;
   const themeContext = useTheme();
+  const componentRef = useRef();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const widerWidth = isMobile ? '98%' : '95%';
   const classes = useStyles();
@@ -349,14 +351,23 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   };
 
-  const renderReportCardNew = () => {
+  const renderReportCardNew = (componentRef) => {
     switch (tabValue) {
       case 0:
-        return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
+        return (
+          <AssesmentReportNew reportCardDataNew={reportCardDataNew} ref={componentRef} />
+        );
       case 1:
-        return <ReportCardNewBack reportCardDataNew={reportCardDataNew} />;
+        return (
+          <ReportCardNewBack reportCardDataNew={reportCardDataNew} ref={componentRef} />
+        );
       case 2:
-        return <PhysicalEducationReportCard peReportCardData={peReportCardData} />;
+        return (
+          <PhysicalEducationReportCard
+            peReportCardData={peReportCardData}
+            ref={componentRef}
+          />
+        );
     }
   };
 
@@ -441,18 +452,66 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
               Back
             </div>
             <Box style={{ margin: '20px auto', width: '95%' }}>
-              <TabPanel
-                tabValue={tabValue}
-                setTabValue={setTabValue}
-                tabValues={
-                  showPEConfig?.includes(String(filterData?.grade?.grade_id))
-                    ? ['Front', 'Back', 'Physical Education']
-                    : ['Front', 'Back']
-                }
-              />
+              <div className='row justify-content-between'>
+                <TabPanel
+                  tabValue={tabValue}
+                  setTabValue={setTabValue}
+                  tabValues={
+                    showPEConfig?.includes(String(filterData?.grade?.grade_id))
+                      ? ['Front', 'Back', 'Physical Education']
+                      : ['Front', 'Back']
+                  }
+                />
+                {tabValue !== 2 ? (
+                  <ReactToPrint
+                    trigger={() => (
+                      <Button
+                        variant='contained'
+                        size='small'
+                        color='primary'
+                        style={{ fontSize: 15 }}
+                      >
+                        Download Report Card
+                      </Button>
+                    )}
+                    content={() => componentRef.current} // Use the ref content here
+                    documentTitle={`Eduvate ${
+                      tabValue === 0
+                        ? 'Front'
+                        : tabValue === 1
+                        ? 'Back'
+                        : 'PhysicalEducationReportCard'
+                    } - ${reportCardDataNew?.user_info?.name}`}
+                  />
+                ) : tabValue === 2 ? (
+                  peReportCardData?.data?.map((item) => item?.criteria_title).flat()
+                    ?.length > 0 ? (
+                    <ReactToPrint
+                      trigger={() => (
+                        <Button
+                          variant='contained'
+                          size='small'
+                          color='primary'
+                          style={{ fontSize: 15 }}
+                        >
+                          Download Report Card
+                        </Button>
+                      )}
+                      content={() => componentRef.current} // Use the ref content here
+                      documentTitle={`Eduvate ${
+                        tabValue === 0
+                          ? 'Front'
+                          : tabValue === 1
+                          ? 'Back'
+                          : 'PhysicalEducationReportCard'
+                      } - ${reportCardDataNew?.user_info?.name}`}
+                    />
+                  ) : null
+                ) : null}
+              </div>
             </Box>
             <Box style={{ margin: '20px auto', width: '95%' }}>
-              {renderReportCardNew()}
+              {renderReportCardNew(componentRef)}
             </Box>
           </>
         )}

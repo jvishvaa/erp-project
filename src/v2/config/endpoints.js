@@ -18,6 +18,7 @@ const {
     ERP_BUCKET_2,
     CENTRAL_BUCKET: CENTRAL_BUCKET,
     IBOOK_BUCKET: IBOOK_BUCKET,
+    FINANCE_BUCKET: FINANCE_BUCKET,
   },
 } = ENVCONFIG;
 
@@ -324,4 +325,5 @@ export default {
     duplicateTimeTable: '/acad-tt/duplicate',
     activeToggle: '/acad-tt/tt-active',
   },
+  FINANCE_BUCKET,
 };
