@@ -326,4 +326,9 @@ export default {
     activeToggle: '/acad-tt/tt-active',
   },
   FINANCE_BUCKET,
+  popupSetting: {
+    checkDueAmount: `${baseFinanceURL}/apiV1/student-acad-fee-tilldate/`,
+    popupSetting: `${baseFinanceURL}/apiV1/popup-details/`,
+    studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
+  },
 };
