@@ -14,7 +14,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
 
   const [paymentLinkData, setPaymentLinkData] = useState(null);
   const [duePopup, setDuePopup] = useState(false);
-
+  const [financeSession, setFinanceSession] = useState(null);
   useEffect(() => {
     if (
       popupData?.length > 0 &&
@@ -22,7 +22,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
       localStorage.getItem('duePopup') === null
     ) {
       setDuePopup(true);
-
+      fetchFinanceSession();
       fetchUserDetails({
         branch: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
         session_year: JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
@@ -30,7 +30,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
         erp_id: userDetails?.erp,
       });
     }
-  }, [popupData]);
+  }, [popupData, popupSetting]);
 
   const fetchUserDetails = (params = {}) => {
     axiosInstance
@@ -41,6 +41,20 @@ const DuePopup = ({ popupData, popupSetting }) => {
       .catch(() => {});
   };
 
+  const fetchFinanceSession = (params = {}) => {
+    axiosInstance
+      .get(`${endpoints.adminDashboard.financeYearList}`, { params: { ...params } })
+      .then((res) => {
+        let sessionList = res.data;
+
+        let financeSessionId = sessionList?.filter((each) => {
+          return each.academic_session_id == branchDetails?.session_year?.id;
+        })[0]?.id;
+        console.log({ financeSessionId });
+        setFinanceSession(financeSessionId);
+      })
+      .catch(() => {});
+  };
   const handlePaymentLink = (userData) => {
     if (popupData?.length > 0) {
       let academicList = popupData
@@ -57,7 +71,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
       obj.erp_id = userDetails?.erp;
       obj.grade_id = userData?.mapping_bgs?.grade?.id;
       obj.section_id = userData?.mapping_bgs?.section?.id;
-      obj.finance_session_year = branchDetails?.session_year?.id;
+      obj.finance_session_year = 34;
       obj.amount_total = _.sumBy(popupData, 'balance');
       obj.amount_paid = _.sumBy(popupData, 'balance');
       obj.amount_discount = 0;
