@@ -493,6 +493,10 @@ import moment from 'moment';
 import axios from 'axios';
 import ChangePassword from './v2/FaceLift/ChangePassword';
 import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig/PhysicalEducation/CreatePeReportConfig';
+import { Modal } from 'antd';
+import DuePopup from 'v2/FaceLift/myComponents/DuePopup';
+import endpointsV2 from 'v2/config/endpoints';
+import _ from 'lodash';
 
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
@@ -502,13 +506,22 @@ function App({ alert, isMsAPI, erpConfig }) {
     isMsAPI();
     erpConfig();
     fetchConfigData();
+    if (localStorage.getItem('duePopup') === null) {
+      getStudentDueData({
+        branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
+        session_year: JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
+          ?.session_year,
+        erp_id: userDetails?.erp,
+      });
+    }
   }, []);
 
   const [theme, setTheme] = useState(() => themeGenerator());
   const [expTime, setExpTime] = useState(null);
+  const [popupData, setPopupData] = useState([]);
+  const [popupSetting, setPopupSetting] = useState([]);
   const isV2 = IsV2Checker();
 
-  console.log({ userDetails });
   const history = useHistory();
 
   // IDLE TIMEOUT - LOGOUT AFTER 5 HOURS IF USER IS IN STATIC MODE
@@ -602,8 +615,6 @@ function App({ alert, isMsAPI, erpConfig }) {
             token: response?.data?.data,
             force_update: response?.data?.force_update,
           };
-
-          console.log({ ud });
           localStorage.setItem('userDetails', JSON.stringify(ud));
         }
       })
@@ -624,6 +635,41 @@ function App({ alert, isMsAPI, erpConfig }) {
         }
       });
   };
+  const getStudentDueData = (params = {}) => {
+    axiosInstance
+      .get(`${endpointsV2.popupSetting.checkDueAmount}`, {
+        params: { ...params },
+      })
+      .then((response) => {
+        setPopupData(response.data);
+        if (response.data?.length > 0) {
+          handlePopupSetting({
+            branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
+            // finance_session_year_id: JSON.parse(sessionStorage.getItem('selected_branch'))
+            //   ?.session_year?.id,
+            finance_session_year_id: 34,
+            erp_id: userDetails?.erp,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching config data:', error);
+      });
+  };
+  const handlePopupSetting = (params = {}) => {
+    axiosInstance
+      .get(`${endpointsV2.popupSetting.popupSetting}`, {
+        params: { ...params },
+      })
+      .then((response) => {
+        setPopupSetting(response.data);
+        if (response.data?.length > 0) {
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching config data:', error);
+      });
+  };
 
   return (
     // <ErrorBoundary404 HomeButton={false}>
@@ -632,6 +678,7 @@ function App({ alert, isMsAPI, erpConfig }) {
         <title>Eduvate</title>
         <link rel='icon' href={logo} />
       </Helmet>
+      <DuePopup popupData={popupData} popupSetting={popupSetting} />
 
       {idleTimeOut && <IdleTieOutComp idleTimeOut={idleTimeOut} />}
       {!isV2 ? (
@@ -1072,7 +1119,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/master-management/subject/grade/mapping'>
                               {({ match }) => <Subjectgrade match={match} />}
                             </Route>
-                            {console.log('aaya12')}
                             <Route exact path='/master-management/category-mapping'>
                               {({ match }) => <CategoryMapping match={match} />}
                             </Route>
