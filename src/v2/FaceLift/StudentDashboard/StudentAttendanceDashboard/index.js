@@ -58,6 +58,9 @@ const StudentAttendanceDashboard = () => {
   const role_details =
     JSON.parse(localStorage.getItem('userDetails'))?.role_details || {};
   const erp = JSON.parse(localStorage.getItem('userDetails'))?.erp || null;
+  const gradeId =
+    JSON.parse(localStorage.getItem('userDetails'))?.role_details?.grades[0]?.grade_id ||
+    null;
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -139,7 +142,7 @@ const StudentAttendanceDashboard = () => {
       .catch((error) => console.log(error));
   };
 
-  const fetchStudentHoliday = (params = {}) => {
+  const fetchStudentHoliday = (params = { grade_id: gradeId }) => {
     axios
       .get(`${endpoints.studentDashboard.studentUpcomingHolidays}`, {
         params: { ...params },
