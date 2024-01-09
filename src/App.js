@@ -645,9 +645,8 @@ function App({ alert, isMsAPI, erpConfig }) {
         if (response.data?.length > 0) {
           handlePopupSetting({
             branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
-            // finance_session_year_id: JSON.parse(sessionStorage.getItem('selected_branch'))
-            //   ?.session_year?.id,
-            finance_session_year_id: 34,
+            finance_session_year: JSON.parse(sessionStorage.getItem('selected_branch'))
+              ?.session_year?.session_year,
             erp_id: userDetails?.erp,
           });
         }
