@@ -18,6 +18,7 @@ const {
     ERP_BUCKET_2,
     CENTRAL_BUCKET: CENTRAL_BUCKET,
     IBOOK_BUCKET: IBOOK_BUCKET,
+    FINANCE_BUCKET: FINANCE_BUCKET,
   },
 } = ENVCONFIG;
 
@@ -323,5 +324,11 @@ export default {
     teacherTimeTableView: '/acad-tt/tea-view',
     duplicateTimeTable: '/acad-tt/duplicate',
     activeToggle: '/acad-tt/tt-active',
+  },
+  FINANCE_BUCKET,
+  popupSetting: {
+    checkDueAmount: `${baseFinanceURL}/apiV1/student-acad-fee-tilldate/`,
+    popupSetting: `${baseFinanceURL}/apiV1/popup-details/`,
+    studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
   },
 };

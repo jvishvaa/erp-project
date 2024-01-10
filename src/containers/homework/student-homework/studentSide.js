@@ -1154,7 +1154,7 @@ const StudentHomeworkNew = withRouter(
                                           className='th-11 th-fw-400 d-flex align-items-center'
                                           style={{ color: '#626161' }}
                                         >
-                                          {moment(item?.submitted_at).format(
+                                          {moment(item?.evaluated_at).format(
                                             'DD-MM-YYYY'
                                           )}
                                         </div>

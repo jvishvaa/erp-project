@@ -187,7 +187,7 @@ const StudentWiseReport = ({
       .catch((error) => {
         setAlert(
           'error',
-          error.response.data.message || 'Error while fetching Report card'
+          error?.response?.data?.message || 'Error while fetching Report card'
         );
         setIsLoading(false);
         setisstudentList(false);
