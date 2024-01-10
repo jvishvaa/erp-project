@@ -465,3 +465,16 @@ svg {
 .th-timetable-card .ant-card-body {
   padding: 24px 8px !important;
 }
+.th-device-card .ant-card-head {
+  background-color: #eee !important;
+  border-top-right-radius: 12px !important;
+  border-top-left-radius: 12px !important;
+}
+.th-device-card .ant-card-actions {
+  border-bottom-right-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+}
+.th-policies-modal .ant-tabs-content-holder {
+  height: 500px !important;
+  overflow-y: auto !important;
+}
