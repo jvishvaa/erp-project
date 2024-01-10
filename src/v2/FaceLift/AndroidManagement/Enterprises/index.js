@@ -294,7 +294,10 @@ const EnterPrises = () => {
       <div className='row align-items-center'>
         <div className='col-8'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-grey th-16' href='/dashboard'>
+            <Breadcrumb.Item
+              className='th-grey th-16 th-pointer'
+              onClick={() => history.push('/dashboard')}
+            >
               Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1 th-16'>Enterprises</Breadcrumb.Item>

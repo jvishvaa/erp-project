@@ -26,12 +26,13 @@ import {
   EyeFilled,
   PlusCircleOutlined,
 } from '@ant-design/icons';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import PolicyDetailsModal from './PolicyDetailsModal';
 
 const Policies = () => {
   const { enterPriseName, enterPriseId } = useParams();
   const policyFormRef = useRef();
+  const history = useHistory();
   const [policyLoading, setPolicyLoading] = useState(false);
   const [createPolicyLoading, setCreatePolicyLoading] = useState(false);
   const [deletePolicyLoading, setDeletePolicyLoading] = useState(false);
@@ -232,10 +233,18 @@ const Policies = () => {
       <div className='row align-items-center'>
         <div className='col-8'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-grey th-16'>
-              Android Management
+            <Breadcrumb.Item
+              className='th-grey th-16 th-pointer'
+              onClick={() => history.push('/dashboard')}
+            >
+              Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item className='th-grey th-16'>{enterPriseName}</Breadcrumb.Item>
+            <Breadcrumb.Item
+              className='th-grey th-16 th-pointer'
+              onClick={() => history.push('/enterprise-management/enterprises')}
+            >
+              {enterPriseName}
+            </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1 th-16'>Policies</Breadcrumb.Item>
           </Breadcrumb>
         </div>
