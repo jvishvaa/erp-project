@@ -94,7 +94,7 @@ const SuperAdmindashboardNew = () => {
                 className='th-br-8 mx-2'
                 onClick={() => history.push('/enterprise-management/enterprises')}
               >
-                Enterprise mangement <SendOutlined className='ml-1' />
+                Enterprise Management <SendOutlined className='ml-1' />
               </Button>
               <Select
                 className='th-primary th-bg-white th-br-4 w-50 text-left mt-1'
