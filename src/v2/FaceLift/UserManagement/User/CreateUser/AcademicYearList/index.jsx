@@ -220,6 +220,8 @@ const AcademicYearList = ({
   const fetchSubjects = (sections, editBranch, editGrade, module, session_year) => {
     if (sections?.length > 0) {
       setSelectedSections(sections);
+      let newEditGrade = [...new Set(editGrade)];
+      let newsec = [...new Set(sections)];
       axiosInstance
         .get(
           `${endpoints.academics.subjects}?session_year=${
@@ -227,8 +229,8 @@ const AcademicYearList = ({
           }&branch=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade=${
-            editGrade ? editGrade?.toString() : selectedGrade?.toString()
-          }&section=${sections?.toString()}&module_id=${module ?? moduleId}`
+            editGrade ? newEditGrade?.toString() : selectedGrade?.toString()
+          }&section=${newsec?.toString()}&module_id=${module ?? moduleId}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
