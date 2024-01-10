@@ -88,7 +88,7 @@ const EnterPrises = () => {
               className='th-pointer th-br-4'
               onClick={() => {
                 setShowEnrollMentModal(true);
-                handleEnrollment(enterpriseId, 'Letseduvate');
+                handleEnrollment(enterpriseId, 'policy8');
               }}
             >
               Enroll Device
