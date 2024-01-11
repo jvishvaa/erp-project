@@ -232,6 +232,7 @@ class CreateUser extends Component {
       grade: grade.map((grade) => grade.id).join(),
       section: section.map((section) => section.id).join(),
       subjects: subjects.map((sub) => sub.id).join(),
+      subject_section_mapping: subjects.map((sub) => sub.item_id).join(),
       first_name,
       middle_name,
       last_name,

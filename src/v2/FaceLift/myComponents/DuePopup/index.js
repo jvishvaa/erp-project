@@ -22,7 +22,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
       localStorage.getItem('duePopup') === null
     ) {
       setDuePopup(true);
-      fetchFinanceSession();
+
       fetchUserDetails({
         branch: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
         session_year: JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
@@ -36,14 +36,14 @@ const DuePopup = ({ popupData, popupSetting }) => {
     axiosInstance
       .get(`${endpoints.profile.getUserStatus}`, { params: { ...params } })
       .then((res) => {
-        handlePaymentLink(res.data.result.results[0]);
+        fetchFinanceSession(res.data.result.results[0]);
       })
       .catch(() => {});
   };
 
-  const fetchFinanceSession = (params = {}) => {
+  const fetchFinanceSession = (userDetails) => {
     axiosInstance
-      .get(`${endpoints.adminDashboard.financeYearList}`, { params: { ...params } })
+      .get(`${endpoints.adminDashboard.financeYearList}`)
       .then((res) => {
         let sessionList = res.data;
 
@@ -52,10 +52,11 @@ const DuePopup = ({ popupData, popupSetting }) => {
         })[0]?.id;
         console.log({ financeSessionId });
         setFinanceSession(financeSessionId);
+        handlePaymentLink(userDetails, financeSessionId);
       })
       .catch(() => {});
   };
-  const handlePaymentLink = (userData) => {
+  const handlePaymentLink = (userData, financeSessionId) => {
     if (popupData?.length > 0) {
       let academicList = popupData
         ?.filter((each) => each?.fee_type === 'academic')
@@ -71,7 +72,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
       obj.erp_id = userDetails?.erp;
       obj.grade_id = userData?.mapping_bgs?.grade?.id;
       obj.section_id = userData?.mapping_bgs?.section?.id;
-      obj.finance_session_year = 34;
+      obj.finance_session_year = financeSessionId;
       obj.amount_total = _.sumBy(popupData, 'balance');
       obj.amount_paid = _.sumBy(popupData, 'balance');
       obj.amount_discount = 0;

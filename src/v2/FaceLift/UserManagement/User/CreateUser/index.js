@@ -660,6 +660,8 @@ const CreateUser = () => {
   const fetchSubjects = (sections, editBranch, editGrade, editYear) => {
     if (sections?.length > 0) {
       setSelectedSections(sections);
+      let newEditGrade = [...new Set(editGrade)];
+      let newsec = [...new Set(sections)];
       axiosInstance
         // .get(
         //   `${endpoints.academics.subjects}?session_year=${
@@ -676,8 +678,8 @@ const CreateUser = () => {
           }&branch=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade=${
-            editGrade ? editGrade?.toString() : selectedGrade?.toString()
-          }&section=${sections?.toString()}`
+            editGrade ? newEditGrade?.toString() : selectedGrade?.toString()
+          }&section=${newsec?.toString()}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
