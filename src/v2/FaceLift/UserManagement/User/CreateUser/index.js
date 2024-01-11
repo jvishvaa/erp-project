@@ -690,7 +690,7 @@ const CreateUser = () => {
                   subject_name: obj.subject__subject_name,
                 }))
               : [];
-            if (transformedData?.length > 1) {
+            if (transformedData?.length > 0) {
               //   transformedData.unshift({
               //     item_id: 'all',
               //     id: 'all',
