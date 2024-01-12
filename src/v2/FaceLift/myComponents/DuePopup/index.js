@@ -162,8 +162,10 @@ const DuePopup = ({ popupData, popupSetting }) => {
       .catch((err) => {});
   };
   const handleClose = () => {
-    setDuePopup(false);
-    localStorage.setItem('duePopup', 'closed');
+    if (!popupSetting[0]?.is_compulsory) {
+      setDuePopup(false);
+      localStorage.setItem('duePopup', 'closed');
+    }
   };
 
   return (
@@ -172,6 +174,11 @@ const DuePopup = ({ popupData, popupSetting }) => {
       onCancel={() => handleClose()}
       onOk={() => handleGeneratePaymentLink()}
       okText={`Pay Rs. ${_.sumBy(popupData, 'balance')}`}
+      width={'75%'}
+      cancelButtonProps={{
+        style: { display: popupSetting[0]?.is_compulsory ? 'none' : 'inline' },
+      }}
+      closable={!popupSetting[0]?.is_compulsory}
     >
       <div>
         <div
@@ -184,7 +191,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             width: '100%', // Set the width of the container
-            height: '150px', // Set the height of the container
+            height: '200px', // Set the height of the container
             position: 'relative',
             marginBottom: '20px',
             borderRadius: '8px 8px 0px 0px',
@@ -208,8 +215,8 @@ const DuePopup = ({ popupData, popupSetting }) => {
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
-                width: '100px',
-                height: '100px',
+                width: '120px',
+                height: '120px',
                 borderColor: 'white',
                 borderStyle: 'solid',
               }}
@@ -218,18 +225,18 @@ const DuePopup = ({ popupData, popupSetting }) => {
         </div>
         <div className='d-flex flex-column justify-content-around align-items-center p-4 pt-5 h-100 gap-8'>
           <div>
-            <h3 className='mb-0 pb-1 text-center' style={{ color: '#244555' }}>
+            <h3 className='mb-0 pb-1 pt-3 text-center' style={{ color: '#244555' }}>
               {popupSetting[0]?.heading}
             </h3>
           </div>
 
           <p
-            className='pt-2 th-16 text-center'
+            className='pt-2 th-18 text-center'
             style={{ color: '#244555', wordBreak: 'break-word' }}
           >
             <b> {popupSetting[0]?.sub_heading}</b>
           </p>
-          <p className='th-14 text-center'> {popupSetting[0]?.description}</p>
+          <p className='th-16 text-center'> {popupSetting[0]?.description}</p>
         </div>
       </div>
     </Modal>
