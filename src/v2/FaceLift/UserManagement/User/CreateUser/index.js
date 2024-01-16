@@ -898,12 +898,12 @@ const CreateUser = () => {
         multipleAcademicYear?.flatMap((each) => each?.subjectsId) ?? [];
 
       let newBranches = multipleAcademicYear?.flatMap((each) => each?.branch) ?? [];
+
+      const uniqueSubjectsIds = [...new Set([...selectedSubjectsId, ...newSubjectsIds])];
+      const uniqueSubjects = [...new Set([...selectedSubjects, ...newSubjects])];
       formData.append('branch', [...selectedBranch, ...newBranches]?.toString());
-      formData.append('subjects', [...selectedSubjectsId, ...newSubjectsIds]?.toString());
-      formData.append(
-        'subject_section_mapping',
-        [...selectedSubjects, ...newSubjects]?.toString()
-      );
+      formData.append('subjects', uniqueSubjectsIds?.toString());
+      formData.append('subject_section_mapping', uniqueSubjects?.toString());
       formData.append(
         'section_mapping',
         [...sectionMappingId, ...section_mapping]?.toString()
