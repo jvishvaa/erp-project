@@ -464,8 +464,8 @@ const SchoolInformation = ({
                       schoolForm.current.setFieldsValue({
                         subjects: values,
                       });
-                      setSelectedSubjects(subjects?.map((e) => e?.id));
-                      setSelectedSubjectsId(subjects?.map((e) => e?.value));
+                      setSelectedSubjects(subjects?.map((e) => e?.item_id));
+                      setSelectedSubjectsId(subjects?.map((e) => e?.id));
                     } else {
                       setSelectedSubjects(
                         value?.map((e) => e?.value).filter((elem) => elem)

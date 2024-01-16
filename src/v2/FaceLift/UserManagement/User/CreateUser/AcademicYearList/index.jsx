@@ -555,13 +555,15 @@ const AcademicYearList = ({
                 listHeight={150}
                 maxLength={maxSubjectSelection ?? subjects?.length}
                 onChange={(e, value) => {
+                  console.log(e, value, subjects, 'drop');
                   if (e.includes('all')) {
-                    let values = subjects?.map((e) => e?.subject);
-                    let valuesId = subjects?.map((e) => e?.item_id);
+                    let values = subjects?.map((e) => e?.item_id);
+                    let valuesId = subjects?.map((e) => e?.id);
                     acadForm.current.setFieldsValue({
                       subjects: values,
                     });
-                    setSelectedSubjects(subjects?.map((e) => e?.subject));
+                    setSelectedSubjects(subjects?.map((e) => e?.item_id
+                    ));
                     onChange(values, 'subjects');
                     onChange(valuesId, 'subjectsId');
                   } else {
