@@ -170,7 +170,7 @@ const CreateUser = () => {
             editGrade: multipleYears[i]?.grade?.flatMap((e) => e.grade_id),
             section: multipleYears[i]?.section?.flatMap((e) => e.section_mapping_id),
             editSection: multipleYears[i]?.section?.flatMap((e) => e.section_id),
-            subjects: multipleYears[i]?.subjects?.flatMap((e) => e.subject_id),
+            subjects: multipleYears[i]?.subjects?.flatMap((e) => e.subject_mapping_id),
             subjectsId: multipleYears[i]?.subjects?.flatMap((e) => e.id),
             isEdit: true,
           };
@@ -447,8 +447,8 @@ const CreateUser = () => {
           username: user?.user?.username,
         };
         setGuardian(studentInformation?.single_parent);
-        setSelectedSubjects(subjectObj?.map((e) => e?.id));
-        setSelectedSubjectsId(subjectObj?.map((e) => e?.item_id));
+        setSelectedSubjects(subjectObj?.map((e) => e?.item_id));
+        setSelectedSubjectsId(subjectObj?.map((e) => e?.id));
         setSingleParent(transformedUser?.single_parent ? true : false);
         fetchDesignation({ user_level: schoolDetails?.user_level });
         fetchBranches({
@@ -896,12 +896,13 @@ const CreateUser = () => {
       let newSubjects = multipleAcademicYear?.flatMap((each) => each?.subjects) ?? [];
       let newSubjectsIds =
         multipleAcademicYear?.flatMap((each) => each?.subjectsId) ?? [];
+
       let newBranches = multipleAcademicYear?.flatMap((each) => each?.branch) ?? [];
       formData.append('branch', [...selectedBranch, ...newBranches]?.toString());
-      formData.append('subjects', [...selectedSubjects, ...newSubjects]?.toString());
+      formData.append('subjects', [...selectedSubjectsId, ...newSubjectsIds]?.toString());
       formData.append(
         'subject_section_mapping',
-        [...selectedSubjectsId, ...newSubjectsIds]?.toString()
+        [...selectedSubjects, ...newSubjects]?.toString()
       );
       formData.append(
         'section_mapping',
@@ -925,8 +926,8 @@ const CreateUser = () => {
       formData.append('academic_year_value', selectedYear?.session_year);
       formData.append('branch_code', branchCode?.toString());
       formData.append('branch', selectedBranch?.toString());
-      formData.append('subjects', selectedSubjects?.toString());
-      formData.append('subject_section_mapping', selectedSubjectsId?.toString());
+      formData.append('subjects', selectedSubjectsId?.toString());
+      formData.append('subject_section_mapping', selectedSubjects?.toString());
       formData.append('grade', selectedGrade?.toString());
       formData.append('section', selectedSections?.toString());
       axiosInstance

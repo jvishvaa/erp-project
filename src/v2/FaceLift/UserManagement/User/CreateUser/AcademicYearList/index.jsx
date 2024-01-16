@@ -43,6 +43,7 @@ const AcademicYearList = ({
   const [branchCode, setBranchCode] = useState([]);
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(null);
+
   useEffect(() => {
     let NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
     let module = '';
@@ -272,7 +273,7 @@ const AcademicYearList = ({
     </Select.Option>
   ));
   const subjectOption = subjects?.map((each) => (
-    <Select.Option key={each?.item_id} value={each?.id}>
+    <Select.Option key={each?.item_id} value={each?.item_id} id={each?.id}>
       {each?.subject_name}
     </Select.Option>
   ));
@@ -555,18 +556,18 @@ const AcademicYearList = ({
                 maxLength={maxSubjectSelection ?? subjects?.length}
                 onChange={(e, value) => {
                   if (e.includes('all')) {
-                    let values = subjects?.map((e) => e?.id);
+                    let values = subjects?.map((e) => e?.subject);
                     let valuesId = subjects?.map((e) => e?.item_id);
                     acadForm.current.setFieldsValue({
                       subjects: values,
                     });
-                    setSelectedSubjects(subjects?.map((e) => e?.id));
+                    setSelectedSubjects(subjects?.map((e) => e?.subject));
                     onChange(values, 'subjects');
                     onChange(valuesId, 'subjectsId');
                   } else {
-                    setSelectedSubjects(value?.map((e) => e.id));
+                    setSelectedSubjects(value?.map((e) => value?.value));
                     onChange(e, 'subjects');
-                    let subjectids = value?.map((e) => e?.key);
+                    let subjectids = value?.map((e) => e?.id);
                     onChange(subjectids, 'subjectsId');
                   }
                 }}
