@@ -191,7 +191,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             width: '100%', // Set the width of the container
-            height: '200px', // Set the height of the container
+            height: '260px', // Set the height of the container
             position: 'relative',
             marginBottom: '20px',
             borderRadius: '8px 8px 0px 0px',
@@ -201,7 +201,7 @@ const DuePopup = ({ popupData, popupSetting }) => {
             className=''
             style={{
               position: 'absolute',
-              bottom: '-50px',
+              bottom: '-60px',
               width: '100%',
               textAlign: 'center',
             }}
