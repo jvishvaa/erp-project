@@ -160,7 +160,7 @@ const Appbar = ({ children, history, ...props }) => {
   }, [isLogout]);
 
   const handlecvbox = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.cvbox}/sso/?token=${token}`, '_blank');
+    window.open(`${ENVCONFIG?.apiGateway?.cvbox}/sso/?token=${getCVHmac}`, '_blank');
   };
 
   const handleFinance = () => {
