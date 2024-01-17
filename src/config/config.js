@@ -116,6 +116,7 @@ const stage = {
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     msReportsUrl: 'https://api-reports-stage.stage-gke.letseduvate.com',
     crm: 'https://marketing.stage-gke.letseduvate.com',
+    cvbox: 'https://cvbox.stage-gke.letseduvate.com',
   },
 };
 
@@ -150,6 +151,7 @@ const prod = {
     newBlogURL: 'https://activities.letseduvate.com',
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     crm: 'https://marketing.letseduvate.com',
+    cvbox: 'https://careerbox.letseduvate.com',
   },
 };
 
