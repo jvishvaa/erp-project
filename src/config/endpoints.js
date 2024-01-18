@@ -13,6 +13,7 @@ const {
     erpBlogURL,
     msOriginUrl,
     crm,
+    cvbox,
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -39,6 +40,7 @@ export default {
     crmHcmToken: `${crm}/qbox/hmac_token/`,
     generateLoginToken: `/erp_user/login_token/`,
     generateAccessToken: `${baseURL}/erp_user/access-token/`,
+    CVhmac: `${cvbox}/qbox/apiV2/authenticate/sso-login/`,
   },
   checkAcademicView: {
     isAcademicView: '/period/period-erp-system-config/',
