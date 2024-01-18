@@ -472,8 +472,25 @@ const BulkUpload = () => {
 
   const subjectColumns = [
     {
-      title: <span className='th-white th-fw-700 '>Mapping ID</span>,
+      title: <span className='th-white th-fw-700 '>Subject ID</span>,
       dataIndex: 'subject__id',
+      width: '40%',
+      className: 'text-center',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Subject</span>,
+      dataIndex: 'subject__subject_name',
+      width: '60%',
+      className: 'text-center',
+      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    },
+  ];
+
+  const subjectMappingColumns = [
+    {
+      title: <span className='th-white th-fw-700 '>Mapping ID</span>,
+      dataIndex: 'subject_mapping_id',
       width: '40%',
       className: 'text-center',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
@@ -807,6 +824,25 @@ const BulkUpload = () => {
                         }}
                       />
                     </div>
+
+                    <div className='col-md-4 mt-3'>
+                      <Table
+                        className='th-table'
+                        rowClassName={(record, index) =>
+                          index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                        }
+                        columns={subjectMappingColumns}
+                        rowKey={(record) => record?.id}
+                        dataSource={subjectList}
+                        style={{ minHeight: '270px' }}
+                        pagination={false}
+                        scroll={{
+                          x: window.innerWidth < 600 ? 'max-content' : null,
+                          y: 200,
+                        }}
+                      />
+                    </div>
+
                     <div className='col-md-4'>
                       <Table
                         className='th-table mt-3'
