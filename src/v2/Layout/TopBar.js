@@ -45,7 +45,7 @@ import NotificationsIcon from 'assets/dashboardIcons/topbarIcons/notifications.s
 import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
 import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
 import LiveHelpIcon from '@material-ui/icons/LiveHelpOutlined';
-import { Button, Select, Switch, Tooltip } from 'antd';
+import { Button, Select, Switch, Tooltip, message } from 'antd';
 import CrmIcon from 'assets/images/crm.png';
 import './styles.scss';
 import { IsV2Checker } from 'v2/isV2Checker';
@@ -160,7 +160,11 @@ const Appbar = ({ children, history, ...props }) => {
   }, [isLogout]);
 
   const handlecvbox = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.cvbox}/sso/?token=${getCVHmac}`, '_blank');
+    if (getCVHmac == 1) {
+      message.error('User Not Registered in Careerbox');
+    } else {
+      window.open(`${ENVCONFIG?.apiGateway?.cvbox}/sso/?token=${getCVHmac}`, '_blank');
+    }
   };
 
   const handleFinance = () => {
@@ -197,7 +201,7 @@ const Appbar = ({ children, history, ...props }) => {
     if (getHmac == null && erpID?.erp && isOrchids) {
       fetchTokenCrm();
     }
-    if (getCVHmac == null && erpID?.erp && isOrchids) {
+    if (getCVHmac == null && getCVHmac != 1 && erpID?.erp && isOrchids) {
       fetchTokenCV();
     }
   }, [erpID]);
@@ -232,11 +236,15 @@ const Appbar = ({ children, history, ...props }) => {
       })
       .then((response) => {
         console.log(response.data, 'cvhmac');
-        setHmac(response.data.data.token);
-        localStorage.setItem('CVhmac', response.data.data.token);
+        if (response?.data?.data?.token) {
+          setHmac(response.data.data.token);
+          localStorage.setItem('CVhmac', response.data.data.token);
+        }
       })
       .catch((error) => {
         console.error('error', error?.message);
+        setHmac(1);
+        localStorage.setItem('CVhmac', 1);
       });
   };
 
