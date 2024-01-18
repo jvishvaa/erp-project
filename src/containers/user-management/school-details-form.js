@@ -22,6 +22,7 @@ import endpoints from 'config/endpoints';
 import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const BackButton = withStyles({
   root: {
@@ -68,16 +69,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     getRoleApi();
   }, []);
 
-  const isOrchids =
-    window.location.host.split('.')[0] === 'orchids' ||
-    window.location.host.split('.')[0] === 'qa' ||
-    window.location.host.split('.')[0] === 'mcollege' ||
-    window.location.host.split('.')[0] === 'dps' ||
-    window.location.host.split('.')[0] === 'orchids-stage' ||
-    window.location.host.split('.')[0] === 'orchids-prod'
-      ? true
-      : false;
-
+  const isOrchids = IsOrchidsChecker();
   let levelObj = {};
 
   const getRoleApi = async () => {
@@ -396,7 +388,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   };
 
   const classes = useStyles();
-
   return (
     <Grid container spacing={4} className='school-details-form-container'>
       {isOrchids == true ? (

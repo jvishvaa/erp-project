@@ -21,6 +21,7 @@ import Layout from '../Layout';
 import BulkUpload from '../../components/bulk-upload';
 import { Typography } from '@material-ui/core';
 import Loader from 'components/loader/loader';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 class CreateUser extends Component {
   constructor(props) {
     super(props);
@@ -29,13 +30,7 @@ class CreateUser extends Component {
       activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
-      isOrchids:
-        window.location.host.split('.')[0] === 'orchids' ||
-        window.location.host.split('.')[0] === 'qa' ||
-        window.location.host.split('.')[0] === 'mcollege' ||
-        window.location.host.split('.')[0] === 'dps'
-          ? true
-          : false,
+      isOrchids: IsOrchidsChecker(),
       loading: false,
       user: {
         first_name: '',
@@ -251,7 +246,7 @@ class CreateUser extends Component {
       // user_level: userLevel?.id,
       // designation: designation?.id
     };
-
+    
     if (this.state.isOrchids == true) {
       requestObj['user_level'] = userLevel?.id;
       if (userLevel?.id != 13) {
@@ -298,7 +293,6 @@ class CreateUser extends Component {
     return (
       <Layout>
         {this.state.loading == true ? <Loader /> : ''}
-        {console.log(this.state.isOrchids)}
         <CommonBreadcrumbs
           componentName='User Management'
           childComponentName='Create User'
