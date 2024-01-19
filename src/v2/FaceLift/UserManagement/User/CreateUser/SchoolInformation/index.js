@@ -96,7 +96,12 @@ const SchoolInformation = ({
     </Select.Option>
   ));
   const subjectOption = subjects?.map((each) => (
-    <Select.Option key={each?.item_id} value={each?.item_id} id={each?.id}>
+    <Select.Option
+      key={each?.item_id}
+      value={each?.item_id}
+      id={each?.item_id}
+      subject={each?.id}
+    >
       {each?.subject_name}
     </Select.Option>
   ));
@@ -459,14 +464,14 @@ const SchoolInformation = ({
                       schoolForm.current.setFieldsValue({
                         subjects: values,
                       });
-                      setSelectedSubjects(subjects?.map((e) => e?.id));
-                      setSelectedSubjectsId(subjects?.map((e) => e?.value));
+                      setSelectedSubjects(subjects?.map((e) => e?.item_id));
+                      setSelectedSubjectsId(subjects?.map((e) => e?.id));
                     } else {
                       setSelectedSubjects(
-                        value?.map((e) => e?.id).filter((elem) => elem)
+                        value?.map((e) => e?.value).filter((elem) => elem)
                       );
                       setSelectedSubjectsId(
-                        value?.map((e) => e?.value).filter((elem) => elem)
+                        value?.map((e) => e?.subject).filter((elem) => elem)
                       );
                     }
                   }}

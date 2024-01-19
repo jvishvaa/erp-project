@@ -101,6 +101,7 @@ const stage = {
     baseFinanceURL: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com/qbox`,
     finance: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com`,
     crm: 'https://marketing.stage-gke.letseduvate.com',
+    cvbox: 'https://cvbox.stage-gke.letseduvate.com',
   },
 };
 
@@ -129,6 +130,7 @@ const prod = {
     baseFinanceURL: chechUrl
       ? 'https://orchids.finance.letseduvate.com/qbox'
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
+    cvbox: 'https://careerbox.letseduvate.com',
   },
 };
 

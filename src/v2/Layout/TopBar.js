@@ -45,7 +45,7 @@ import NotificationsIcon from 'assets/dashboardIcons/topbarIcons/notifications.s
 import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
 import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
 import LiveHelpIcon from '@material-ui/icons/LiveHelpOutlined';
-import { Button, Select, Switch, Tooltip } from 'antd';
+import { Button, Select, Switch, Tooltip, message } from 'antd';
 import CrmIcon from 'assets/images/crm.png';
 import './styles.scss';
 import { IsV2Checker } from 'v2/isV2Checker';
@@ -53,6 +53,8 @@ import { isMsAPI } from 'utility-functions';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { domain_name } from 'v2/commonDomain';
+import CVbox from 'assets/images/cvbox.png';
+import { AccessKey } from 'v2/cvboxAccesskey';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
 
@@ -102,6 +104,8 @@ const Appbar = ({ children, history, ...props }) => {
   const [profile, setProfile] = useState(selectedProfileDetails.name);
   const [hmac, setHmac] = useState(null);
   const getHmac = localStorage.getItem('hmac') || null;
+  const getCVHmac = localStorage.getItem('CVhmac') || null;
+
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
     if (navigationData) {
@@ -155,6 +159,14 @@ const Appbar = ({ children, history, ...props }) => {
     }
   }, [isLogout]);
 
+  const handlecvbox = () => {
+    if (getCVHmac == 1) {
+      message.error('User Not Registered in Careerbox');
+    } else {
+      window.open(`${ENVCONFIG?.apiGateway?.cvbox}/sso/?token=${getCVHmac}`, '_blank');
+    }
+  };
+
   const handleFinance = () => {
     window.location.href.includes('dheerajinternational')
       ? window.open(
@@ -189,6 +201,9 @@ const Appbar = ({ children, history, ...props }) => {
     if (getHmac == null && erpID?.erp && isOrchids) {
       fetchTokenCrm();
     }
+    if (getCVHmac == null && getCVHmac != 1 && erpID?.erp && isOrchids) {
+      fetchTokenCV();
+    }
   }, [erpID]);
 
   const fetchTokenCrm = () => {
@@ -205,6 +220,31 @@ const Appbar = ({ children, history, ...props }) => {
       })
       .catch((error) => {
         console.error('error', error?.message);
+      });
+  };
+
+  const fetchTokenCV = () => {
+    let onlyId = erpID?.erp;
+    let body = {
+      erp_id: onlyId?.substr(0, onlyId.length - 4),
+    };
+    axios
+      .post(`${endpoints.auth.CVhmac}`, body, {
+        headers: {
+          'Access-Api-Key': AccessKey,
+        },
+      })
+      .then((response) => {
+        console.log(response.data, 'cvhmac');
+        if (response?.data?.data?.token) {
+          setHmac(response.data.data.token);
+          localStorage.setItem('CVhmac', response.data.data.token);
+        }
+      })
+      .catch((error) => {
+        console.error('error', error?.message);
+        setHmac(1);
+        localStorage.setItem('CVhmac', 1);
       });
   };
 
@@ -826,6 +866,25 @@ const Appbar = ({ children, history, ...props }) => {
                   </Select>
                 </FormControl>
               </div>
+            )}
+
+            {userData?.user_level == 1 ||
+            userData?.user_level == 10 ||
+            userData?.user_level == 8 ||
+            userData?.is_superuser == true ? (
+              <>
+                {isMobile ? null : (
+                  <IconButton
+                    className={classes.grow}
+                    style={{ margin: '0' }}
+                    onClick={handlecvbox}
+                  >
+                    <img src={CVbox} width='24px' />
+                  </IconButton>
+                )}
+              </>
+            ) : (
+              <></>
             )}
 
             {userData?.user_level == 1 ||

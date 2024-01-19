@@ -297,6 +297,11 @@ class EditUser extends Component {
         .map(({ id = '' }) => id)
         .filter((id, index, self) => self.indexOf(id) === index)
         .join(),
+      subject_section_mapping: subjects
+        .reduce((acc, subArr) => [...acc, ...subArr], [])
+        .map(({ item_id = '' }) => item_id)
+        .filter((item_id, index, self) => self.indexOf(item_id) === index)
+        .join(),
       first_name,
       middle_name,
       last_name,

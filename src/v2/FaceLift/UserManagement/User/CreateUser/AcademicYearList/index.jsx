@@ -43,6 +43,7 @@ const AcademicYearList = ({
   const [branchCode, setBranchCode] = useState([]);
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(null);
+
   useEffect(() => {
     let NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
     let module = '';
@@ -220,6 +221,8 @@ const AcademicYearList = ({
   const fetchSubjects = (sections, editBranch, editGrade, module, session_year) => {
     if (sections?.length > 0) {
       setSelectedSections(sections);
+      let newEditGrade = [...new Set(editGrade)];
+      let newsec = [...new Set(sections)];
       axiosInstance
         .get(
           `${endpoints.academics.subjects}?session_year=${
@@ -227,8 +230,8 @@ const AcademicYearList = ({
           }&branch=${
             editBranch ? editBranch?.toString() : selectedBranch?.toString()
           }&grade=${
-            editGrade ? editGrade?.toString() : selectedGrade?.toString()
-          }&section=${sections?.toString()}&module_id=${module ?? moduleId}`
+            editGrade ? newEditGrade?.toString() : selectedGrade?.toString()
+          }&section=${newsec?.toString()}&module_id=${module ?? moduleId}`
         )
         .then((response) => {
           if (response.data.status_code === 200) {
@@ -270,7 +273,7 @@ const AcademicYearList = ({
     </Select.Option>
   ));
   const subjectOption = subjects?.map((each) => (
-    <Select.Option key={each?.item_id} value={each?.id}>
+    <Select.Option key={each?.item_id} value={each?.item_id} id={each?.id}>
       {each?.subject_name}
     </Select.Option>
   ));
@@ -552,19 +555,21 @@ const AcademicYearList = ({
                 listHeight={150}
                 maxLength={maxSubjectSelection ?? subjects?.length}
                 onChange={(e, value) => {
+                  console.log(e, value, subjects, 'drop');
                   if (e.includes('all')) {
-                    let values = subjects?.map((e) => e?.id);
-                    let valuesId = subjects?.map((e) => e?.item_id);
+                    let values = subjects?.map((e) => e?.item_id);
+                    let valuesId = subjects?.map((e) => e?.id);
                     acadForm.current.setFieldsValue({
                       subjects: values,
                     });
-                    setSelectedSubjects(subjects?.map((e) => e?.id));
+                    setSelectedSubjects(subjects?.map((e) => e?.item_id
+                    ));
                     onChange(values, 'subjects');
                     onChange(valuesId, 'subjectsId');
                   } else {
-                    setSelectedSubjects(value?.map((e) => e.id));
+                    setSelectedSubjects(value?.map((e) => value?.value));
                     onChange(e, 'subjects');
-                    let subjectids = value?.map((e) => e?.key);
+                    let subjectids = value?.map((e) => e?.id);
                     onChange(subjectids, 'subjectsId');
                   }
                 }}
