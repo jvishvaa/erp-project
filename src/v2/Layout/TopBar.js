@@ -105,6 +105,8 @@ const Appbar = ({ children, history, ...props }) => {
   const [hmac, setHmac] = useState(null);
   const getHmac = localStorage.getItem('hmac') || null;
   const getCVHmac = localStorage.getItem('CVhmac') || null;
+  const cvUsersData = localStorage.getItem('cvusers') || null;
+  const [cvboxUserLevel, setCvboxUserLevel] = useState(cvUsersData);
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -131,7 +133,24 @@ const Appbar = ({ children, history, ...props }) => {
       );
       setProfileToShown(unselectedprofiles);
     }
+    if (!cvboxUserLevel) {
+      fetchUserAccessCvbox();
+    }
   }, []);
+
+  const fetchUserAccessCvbox = () => {
+    axiosInstance
+      .get(`${endpoints.academics.cvboxConfig}`)
+      .then((res) => {
+        console.log(res, 'usercv');
+        setCvboxUserLevel(res.data.result);
+        localStorage.setItem('cvusers', res.data.result);
+        // setQuizAccess(res.data.result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -837,7 +856,6 @@ const Appbar = ({ children, history, ...props }) => {
                 </FormControl>
               </div>
             )}
-
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl
@@ -867,11 +885,7 @@ const Appbar = ({ children, history, ...props }) => {
                 </FormControl>
               </div>
             )}
-
-            {userData?.user_level == 1 ||
-            userData?.user_level == 10 ||
-            userData?.user_level == 8 ||
-            userData?.is_superuser == true ? (
+            {cvboxUserLevel?.includes(userData?.user_level.toString()) ? (
               <>
                 {isMobile ? null : (
                   <IconButton
@@ -886,7 +900,6 @@ const Appbar = ({ children, history, ...props }) => {
             ) : (
               <></>
             )}
-
             {userData?.user_level == 1 ||
             userData?.user_level == 11 ||
             userData?.user_level == 25 ||
@@ -946,7 +959,6 @@ const Appbar = ({ children, history, ...props }) => {
             ) : (
               ''
             )}
-
             {isMobile ? null : (
               <>
                 {' '}
