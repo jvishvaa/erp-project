@@ -885,7 +885,8 @@ const Appbar = ({ children, history, ...props }) => {
                 </FormControl>
               </div>
             )}
-            {cvboxUserLevel?.includes(userData?.user_level.toString()) ? (
+            {cvboxUserLevel?.includes(userData?.user_level?.toString()) ||
+            userData?.is_superuser == true ? (
               <>
                 {isMobile ? null : (
                   <IconButton
