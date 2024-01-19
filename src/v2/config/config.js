@@ -2,6 +2,8 @@ const webUrl = window.location.host;
 const hostUrl = webUrl.split('.');
 const chechUrl = hostUrl[0] === 'orchids' || hostUrl[0] === 'orchids-prod' ? true : false;
 
+const isPreprod = window.location.host == 'orchids.prod.letseduvate.com' ? true : false;
+
 const local = {
   s3: {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
@@ -117,11 +119,17 @@ const prod = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
-    baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
+    baseURLCentral: isPreprod
+      ? 'https://mgmt.prod.letseduvate.com/qbox'
+      : 'https://mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.letseduvate.com',
-    msReportsUrl: 'https://reports.letseduvate.com',
-    msReportsUrlNew: 'https://reports.letseduvate.com',
+    msReportsUrl: isPreprod
+      ? 'https://reports.prod.letseduvate.com'
+      : 'https://reports.letseduvate.com',
+    msReportsUrlNew: isPreprod
+      ? 'https://reports.prod.letseduvate.com'
+      : 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: chechUrl
       ? 'https://orchids.finance.letseduvate.com'
