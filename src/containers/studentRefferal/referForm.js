@@ -599,39 +599,39 @@ const StudentRefer = () => {
   //   }, []);
   // };
 
-  const flattenData = (data, currentPage) => {
-    let startIndex = (currentPage - 1) * refferListPageData.pageSize;
-    let count = startIndex;
+  // const flattenData = (data, currentPage) => {
+  //   let startIndex = (currentPage - 1) * refferListPageData.pageSize;
+  //   let count = startIndex;
 
-    return data.reduce((flattened, student, index) => {
-      count++;
+  //   return data.reduce((flattened, student, index) => {
+  //     count++;
 
-      if (student?.siblings && student?.siblings?.length > 0) {
-        student?.siblings.forEach((sibling, siblingIndex) => {
-          const siblingRecord = {
-            ...sibling,
-            isSibling: true,
-          };
+  //     if (student?.siblings && student?.siblings.length > 0) {
+  //       student?.siblings.forEach((sibling, siblingIndex) => {
+  //         const siblingRecord = {
+  //           ...sibling,
+  //           isSibling: true,
+  //         };
 
-          if (siblingIndex === 0) {
-            siblingRecord.phone_number = student.phone_number;
-            siblingRecord.city = student.city;
-            siblingRecord.parent_name = student.parent_name;
-            siblingRecord.parentId = count;
-          }
+  //         if (siblingIndex === 0) {
+  //           siblingRecord.phone_number = student.phone_number;
+  //           siblingRecord.city = student.city;
+  //           siblingRecord.parent_name = student.parent_name;
+  //           siblingRecord.parentId = count;
+  //         }
 
-          flattened.push(siblingRecord);
-        });
-        flattened.push({ isSiblingEndMarker: true });
-      }
+  //         flattened.push(siblingRecord);
+  //       });
+  //       flattened.push({ isSiblingEndMarker: true });
+  //     }
 
-      return flattened;
-    }, []);
-  };
+  //     return flattened;
+  //   }, []);
+  // };
 
-  const flattenedRefferList = flattenData(refferList, refferListPageData.currentPage);
+  // const flattenedRefferList = flattenData(refferList, refferListPageData.currentPage);
 
-  console.log(flattenedRefferList, 'flattenedRefferList');
+  // console.log(flattenedRefferList, 'flattenedRefferList');
 
   const getRowClassName = (record, index) => {
     return index % 2 === 0 ? 'even-row' : 'odd-row';
