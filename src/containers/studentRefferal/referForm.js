@@ -7,8 +7,8 @@ import {
   withStyles,
   useTheme,
   Box,
-  Input,
   Typography,
+  IconButton,
 } from '@material-ui/core';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
@@ -27,7 +27,20 @@ import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router';
 import Loader from 'components/loader/loader';
-import { Table, Tabs, Pagination, Empty, Checkbox, Spin, Modal } from 'antd';
+import {
+  Table,
+  Tabs,
+  Pagination,
+  Empty,
+  Checkbox,
+  Spin,
+  Modal,
+  Input,
+  Col,
+  Form,
+  Tooltip,
+} from 'antd';
+import { Add, RemoveCircleOutline } from '@material-ui/icons';
 
 import './referstudent.scss';
 import axios from 'axios';
@@ -169,14 +182,16 @@ const StudentRefer = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [branchList, setBranchList] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState([]);
   const history = useHistory();
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [checkFilter, setCheckFilter] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [city, setCity] = useState('');
   const [student, setStudent] = useState('');
+  const [siblings, setsiblings] = useState(['']);
   const [parent, setParent] = useState('');
   const [phone, setPhone] = useState('');
   const [mail, setMail] = useState('');
@@ -186,11 +201,13 @@ const StudentRefer = () => {
   const [phoneError, setPhoneError] = useState('');
   const [cityError, setCityError] = useState('');
   const [checkBoxError, setCheckBoxError] = useState('');
+  const [siblingsError, setsiblingsError] = useState('');
 
   const [mailError, setMailError] = useState('');
   const [valid, setValid] = useState(true);
   const [activeKey, setActiveKey] = useState('1');
   const [isChecked, setChecked] = useState(false);
+  const [hassiblings, setHassiblings] = useState(false);
   const [refferListPageData, setRefferListPageData] = useState({
     currentPage: 1,
     pageSize: 5,
@@ -210,21 +227,33 @@ const StudentRefer = () => {
   const columns = [
     {
       title: 'Sl.no',
-      dataIndex: 'id', // Use 'sno' as the dataIndex for the row number
+      // dataIndex: 'parentId',
+      dataIndex: 'id',
       key: 'id',
-      // render: (text, record, index) => index + 1, // Render the row number
+      // key: 'parentId',
       render: (text, record, index) =>
         (refferListPageData.currentPage - 1) * refferListPageData.pageSize + index + 1,
-    },
-    {
-      title: 'Student Name',
-      dataIndex: 'student_name',
-      key: 'student_name',
     },
     {
       title: 'Parent Name',
       dataIndex: 'parent_name',
       key: 'parent_name',
+      render: (text, record) => (
+        <>
+          {record?.parent_name?.length > 26 ? (
+            <Tooltip
+              autoAdjustOverflow={false}
+              placement='bottomLeft'
+              title={record?.parent_name}
+              overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
+            >
+              <span>{`${record?.parent_name.substring(0, 26)}...`}</span>
+            </Tooltip>
+          ) : (
+            <span>{record?.parent_name}</span>
+          )}
+        </>
+      ),
     },
     {
       title: 'City',
@@ -237,17 +266,78 @@ const StudentRefer = () => {
       key: 'phone_number',
     },
     {
+      title: 'Student Name',
+      key: 'student_name',
+      render: (text, record) => (
+        <>
+          {record?.siblings.map((each, index) =>
+            each?.student_name?.length > 26 ? (
+              <Tooltip
+                autoAdjustOverflow={false}
+                placement='bottomLeft'
+                title={each?.student_name}
+                overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
+                key={index}
+              >
+                <span key={index}>
+                  {`${each?.student_name.substring(0, 26)}...`}
+                  {/* {each?.student_name} */}
+                  <br />
+                  <br />
+                </span>
+              </Tooltip>
+            ) : (
+              <span key={index}>
+                {each?.student_name}
+                <br />
+                <br />
+              </span>
+            )
+          )}
+        </>
+      ),
+    },
+
+    {
       title: 'Referral code',
       dataIndex: 'referral_code',
       key: 'referral_code',
+      render: (text, record) => {
+        return (
+          <>
+            {record?.siblings.map((each, index) => (
+              <span key={index} style={{ textAlign: 'center' }}>
+                {each?.referral_code}
+                <br />
+                <br />
+              </span>
+            ))}
+          </>
+        );
+      },
     },
     {
       title: 'Status',
       dataIndex: 'concession_status_display',
       key: 'concession_status_display',
-      render: (text) => {
-        const color = statusColorMap[text] || 'black'; // Default to black if status is not found in the map
-        return <span style={{ color }}>{text}</span>;
+      render: (text, record) => {
+        return (
+          <>
+            {record?.siblings.map((each, index) => (
+              <span
+                key={index}
+                style={{
+                  color: statusColorMap[each?.concession_status_display] || 'black',
+                  textAlign: 'center',
+                }}
+              >
+                {each?.concession_status_display}
+                <br />
+                <br />
+              </span>
+            ))}
+          </>
+        );
       },
     },
   ];
@@ -287,9 +377,25 @@ const StudentRefer = () => {
     }
   };
 
+  // const validateStudentName = (value) => {
+  //   if (!nameRegex.test(value) && value !== '') {
+  //     setStudentError('Invalid Student Name ie. Only Alphabets');
+  //     setValid(false);
+  //     return false;
+  //   } else {
+  //     setStudentError('');
+  //     setValid(true);
+  //     return true;
+  //   }
+  // };
+
   const validateStudentName = (value) => {
-    if (!nameRegex.test(value) && value !== '') {
-      setStudentError('Invalid Student Name ie. Only Alphabets');
+    if (value.length > 100) {
+      setStudentError('Student Name cannot exceed 100 characters');
+      setValid(false);
+      return false;
+    } else if (!nameRegex.test(value) && value !== '') {
+      setStudentError('Invalid Student Name i.e., Only Alphabets');
       setValid(false);
       return false;
     } else {
@@ -316,7 +422,7 @@ const StudentRefer = () => {
     validateParentName(e.target.value);
   };
   const handleCity = (e) => {
-    setSelectedBranch(e.target.value);
+    setCity(e.target.value);
     validateCity(e.target.value);
   };
   const handlePhone = (e) => {
@@ -353,6 +459,46 @@ const StudentRefer = () => {
     }
   };
 
+  const handlesiblingsError = () => {
+    const errors = [];
+    const seenSiblings = new Set();
+
+    siblings.forEach((sibling, index) => {
+      const trimmedSibling = sibling.trim().toLowerCase();
+
+      if (trimmedSibling === '') {
+        errors.push(index);
+      } else if (seenSiblings.has(trimmedSibling)) {
+        // Check for duplicate values
+        errors.push('duplicateFound');
+      } else {
+        seenSiblings.add(trimmedSibling);
+      }
+    });
+
+    if (siblings.length >= 5) {
+      errors.push('maxLimitExceeded');
+    }
+
+    return errors;
+  };
+
+  const handleSiblingsCount = () => {
+    return siblings.some((sibling) => {
+      const trimmedSibling = sibling.trim().toLowerCase();
+      return trimmedSibling.length > 100;
+    });
+  };
+
+  const handleStudentSiblingsMatch = () => {
+    return siblings.some((sibling) => {
+      const trimmedSibling = sibling.trim().toLowerCase();
+      return trimmedSibling !== '' && student.trim().toLowerCase() === trimmedSibling;
+    });
+  };
+
+  console.log(handleStudentSiblingsMatch(), 'StudentSibling');
+
   // useEffect(() => {
   //   if (moduleId && selectedAcademicYear) {
   //     axiosInstance
@@ -371,23 +517,6 @@ const StudentRefer = () => {
   //       });
   //   }
   // }, [moduleId, selectedAcademicYear]);
-
-  const handleClearAll = () => {
-    fileRef.current.value = null;
-    // setSelectedAcadmeicYear();
-    setSelectedBranch();
-  };
-
-  const handleClearAllList = () => {};
-
-  const branchCheck = () => {
-    if (selectedBranch.length === 0) {
-      setAlert('warning', 'Please select branch');
-      console.log(selectedBranch.length);
-    } else {
-      // setAlert('warning', 'mil gya');
-    }
-  };
 
   const handleRedirect = (res) => {
     console.log(res.status, 'status');
@@ -415,14 +544,91 @@ const StudentRefer = () => {
     getData(refferListPageData.currentPage);
   }, [refferListPageData.currentPage]);
 
+  const SiblingString = siblings.join(',');
+
+  // const flattenData = (data, currentPage) => {
+  //   let startIndex = (currentPage - 1) * refferListPageData.pageSize;
+
+  //   return data.reduce((flattened, student, index) => {
+  //     const parentId = startIndex + index + 1;
+
+  //     flattened.push({
+  //       ...student,
+  //       isSibling: false,
+  //       parentId: parentId,
+  //     });
+
+  //     if (student.siblings && student.siblings.length > 1) {
+  //       student.siblings.forEach((sibling) => {
+  //         flattened.push({
+  //           ...sibling,
+  //           isSibling: true,
+  //         });
+  //       });
+  //     }
+
+  //     return flattened;
+  //   }, []);
+  // };
+
+  const flattenData = (data, currentPage) => {
+    let startIndex = (currentPage - 1) * refferListPageData.pageSize;
+    let count = startIndex;
+
+    return data.reduce((flattened, student, index) => {
+      count++;
+
+      if (student.siblings && student.siblings.length > 0) {
+        student.siblings.forEach((sibling, siblingIndex) => {
+          const siblingRecord = {
+            ...sibling,
+            isSibling: true,
+          };
+
+          if (siblingIndex === 0) {
+            siblingRecord.phone_number = student.phone_number;
+            siblingRecord.city = student.city;
+            siblingRecord.parent_name = student.parent_name;
+            siblingRecord.parentId = count;
+          }
+
+          flattened.push(siblingRecord);
+        });
+        flattened.push({ isSiblingEndMarker: true });
+      }
+
+      return flattened;
+    }, []);
+  };
+
+  const flattenedRefferList = flattenData(refferList, refferListPageData.currentPage);
+
+  console.log(flattenedRefferList, 'flattenedRefferList');
+
+  const getRowClassName = (record, index) => {
+    return index % 2 === 0 ? 'even-row' : 'odd-row';
+  };
+
   const handleSubmit = () => {
     setLoading(true);
-    if (cityError) {
-      setAlert('error', cityError);
+    if (city === '') {
+      setAlert('error', 'City name cannot be empty');
+      setLoading(false);
+      return;
+    } else if (!nameRegex.test(city) && city !== '') {
+      setAlert('error', 'Invalid City Name ie. Only Alphabets');
       setLoading(false);
       return;
     } else if (studentError) {
       setAlert('error', studentError);
+      setLoading(false);
+      return;
+    } else if (student.length > 100) {
+      setAlert('error', 'Student Name cannot exceed 100 characters');
+      setLoading(false);
+      return;
+    } else if (parent.length > 100) {
+      setAlert('error', 'Parent Name cannot exceed 100 characters');
       setLoading(false);
       return;
     } else if (parentError) {
@@ -442,20 +648,56 @@ const StudentRefer = () => {
       setAlert('error', 'Please agree to the terms and conditions before  proceeding');
       setLoading(false);
       return;
+    } else if (
+      handlesiblingsError().length > 0 &&
+      !handlesiblingsError().includes('duplicateFound') &&
+      hassiblings
+    ) {
+      setAlert('error', 'Siblings field cannot be empty');
+      setLoading(false);
+      return;
+    } else if (handleStudentSiblingsMatch()) {
+      setAlert('error', 'Student name and Siblings name should not be the same');
+      setLoading(false);
+      return;
+    } else if (handleSiblingsCount()) {
+      setAlert('error', 'Siblings name cannot exceed 100 characters');
+      setLoading(false);
+      return;
+    } else if (handlesiblingsError().includes('duplicateFound')) {
+      setAlert('error', 'Duplicate sibling names are not allowed');
+      setLoading(false);
+      return;
     } else {
       console.log('Checking');
-      branchCheck();
-      const data = {
-        parent_name: parent,
-        student_name: student,
-        city: selectedBranch,
-        email_id: mail,
-        phone_number: phone,
-        referral_code: userDetails?.erp,
-      };
-      if (student && parent && mail && phone && valid) {
+      // branchCheck();
+
+      let payload;
+
+      if (SiblingString.length > 0) {
+        payload = {
+          parent_name: parent,
+          student_name: student,
+          siblings_name: SiblingString,
+          city: city,
+          email_id: mail,
+          phone_number: phone,
+          referral_code: userDetails?.erp,
+        };
+      } else {
+        payload = {
+          parent_name: parent,
+          student_name: student,
+          city: city,
+          email_id: mail,
+          phone_number: phone,
+          referral_code: userDetails?.erp,
+        };
+      }
+
+      if (student && parent && mail && phone && city && valid) {
         axiosInstance
-          .post(`${endpoints.referral.studentReferV2}`, data, {
+          .post(`${endpoints.referral.studentReferV2}`, payload, {
             headers: {
               Authorization: `Bearer ${userDetails?.token}`,
             },
@@ -463,7 +705,9 @@ const StudentRefer = () => {
           .then((results) => {
             // setAlert('success', results?.message);
             // history.push('/dashboard');
+            console.log(results, 'success');
             console.log(results?.data.message, 'results');
+            console.log(results, 'resultsdata');
             handleRedirect(results);
             setLoading(false);
           })
@@ -490,8 +734,9 @@ const StudentRefer = () => {
         },
       })
       .then((res) => {
-        console.log(res, 'res');
         const data = res?.data?.result?.results;
+        console.log(data, 'resData');
+
         if (res.status === 200) {
           setRefferListPageData({
             ...refferListPageData,
@@ -508,9 +753,34 @@ const StudentRefer = () => {
       });
   };
 
+  const addSiblings = () => {
+    if (siblings.length < 5) {
+      setsiblings([...siblings, '']);
+    } else {
+      setAlert('error', 'Only upto 5 Siblings can be added');
+    }
+  };
+
+  const removeSibling = (index) => {
+    const newSiblings = [...siblings];
+    newSiblings.splice(index, 1);
+    setsiblings(newSiblings);
+  };
+
+  const handleSiblings = (e, index) => {
+    const newSiblingNames = [...siblings];
+    newSiblingNames[index] = e.target.value;
+    setsiblings(newSiblingNames);
+  };
+
   const onchangeCheckbox = (e) => {
     setChecked(e.target.checked);
     setCheckBoxError('');
+  };
+
+  const onCheckSiblings = (e) => {
+    setHassiblings(e.target.checked);
+    setsiblings(['']);
   };
 
   const showModal = () => {
@@ -526,232 +796,472 @@ const StudentRefer = () => {
     setIsModalOpen(false);
   };
 
+  console.log(student, 'hassiblings');
+
   return (
     <Layout className='student-refer-whole-container'>
-      <div className={classes.parentDiv}>
-        <CommonBreadcrumbs
-          componentName='Student Refer'
-          childComponentName='Orchids Ambassador Program'
-          isAcademicYearVisible={true}
-        />
-        <Tabs activeKey={activeKey} onChange={handleTabChange} className='p-1 pt-0'>
-          <TabPane tab='Refer Now' key='1'>
-            <Paper>
-              <div className='student-refer-container'>
-                {loading ? (
-                  <Loader />
-                ) : (
-                  <div className='image-class'>
-                    <div className='leftimage'>
-                      <div className='main-img'>
-                        <img src={IMGPIC} className='image-left' />
-                      </div>
-                      <div className='orchidslogo'>
-                        <img src={Orchids} className='logo-orchids' />
-                      </div>
-                    </div>
-
-                    <div className='form-div'>
-                      <div className='header-refer-container'>
-                        <p className='referHeader'>Refer Now</p>
-                        <p className='small-header'>
-                          Take advantage of the ORCHIDS AMBASSADOR PROGRAM
-                        </p>
-                      </div>
-                      <div className='form-area'>
-                        <TextField
-                          id='outlined-basic'
-                          label='City'
-                          variant='outlined'
-                          size='small'
-                          className='input-boxes'
-                          onChange={(e) => handleCity(e)}
-                          helperText={cityError}
-                          error={cityError.length !== 0}
-                          required={true}
-                        />
-
-                        <TextField
-                          id='outlined-basic'
-                          label='Student Name'
-                          variant='outlined'
-                          size='small'
-                          className='input-boxes'
-                          onChange={(e) => handleStudentName(e)}
-                          helperText={studentError}
-                          error={studentError.length !== 0}
-                          required={true}
-                        />
-                        <TextField
-                          id='outlined-basic'
-                          label='Parents Name'
-                          variant='outlined'
-                          size='small'
-                          helperText={parentError}
-                          error={parentError.length !== 0}
-                          className='input-boxes'
-                          onChange={(e) => handleParentName(e)}
-                          required={true}
-                        />
-                        <TextField
-                          id='outlined-basic'
-                          label='Phone Number'
-                          inputProps={{
-                            maxLength: 10,
-                          }}
-                          variant='outlined'
-                          className='input-boxes'
-                          helperText={phoneError}
-                          error={phoneError.length !== 0}
-                          size='small'
-                          onChange={(e) => handlePhone(e)}
-                          type='number'
-                          required={true}
-                        />
-                        <TextField
-                          id='outlined-basic'
-                          label='E-mail'
-                          variant='outlined'
-                          size='small'
-                          helperText={mailError}
-                          error={mailError.length !== 0}
-                          className='input-boxes'
-                          onChange={(e) => handleMail(e)}
-                          required={true}
-                        />
-                        <div className='d-flex align-items-center justify-content-center mb-2 th-width-60 ml-3'>
-                          <div className='mb-3'>
-                            <Checkbox onChange={onchangeCheckbox} checked={isChecked} />
+      <div className='row py-3 px-2'>
+        <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+          <CommonBreadcrumbs
+            componentName='Student Refer'
+            childComponentName='Orchids Ambassador Program'
+            isAcademicYearVisible={false}
+          />
+        </div>
+        <div className='row'>
+          <div className='col-12'>
+            <div className='th-tabs th-bg-white'>
+              <Tabs
+                activeKey={activeKey}
+                onChange={handleTabChange}
+                className=' pt-0'
+                type='card'
+              >
+                <TabPane tab='Refer Now' key='1'>
+                  <Paper>
+                    <div className='student-refer-container'>
+                      {loading ? (
+                        <Loader />
+                      ) : (
+                        <div className='image-class'>
+                          <div className='leftimage'>
+                            <div className='main-img'>
+                              <img src={IMGPIC} className='image-left' />
+                            </div>
+                            <div className='orchidslogo'>
+                              <img src={Orchids} className='logo-orchids' />
+                            </div>
                           </div>
 
-                          <div className='ml-2'>
-                            I have read and agree to the{' '}
-                            <u className='th-primary th-pointer ' onClick={showModal}>
-                              Terms & Conditions
-                            </u>{' '}
-                            of Referral Program.
-                          </div>
-                          <Modal
-                            title='Referral Policy Terms & Conditions:'
-                            visible={isModalOpen}
-                            onOk={handleOk}
-                            onCancel={handleCancel}
-                            footer={[
-                              <Button key='ok' type='primary' onClick={handleOk}>
-                                OK
-                              </Button>,
-                            ]}
-                            width={'50%'}
-                          >
-                            <div className='pl-4 pt-2 pb-0 pr-4 text-justify'>
-                              <p>
-                                <b>Referral Concession Eligibility: </b>
-                                The referral concession pertains exclusively to the
-                                tuition fee of the referred student, which amounts to 4%
-                                of the tuition fee paid by the referred student for the
-                                first year of referral. <br />
-                                <br />
-                                <b>Calculation of Discounts:</b> In a scenario where X
-                                refers both students A and B, X's discount will be
-                                calculated as the sum of two components: 4% of the tuition
-                                fee paid by student A in the first year and 4% of the
-                                tuition fee paid by student B in the first year.
-                                <br />
-                                <br />
-                                <b>Duration of Referral Amount Validity:</b> The referral
-                                amount is applicable for a span of two academic sessions,
-                                including the referral year. <br />
-                                <br />
-                                <b>Referral Priority:</b> The discount will be applied to
-                                the parent who submits the initial referral. In the event
-                                that the referred student is already a part of the system,
-                                or if the student already exists in our system, further
-                                referrals for the same student will not be accepted.{' '}
-                                <br />
-                                <br />
-                                <b>Exemption for Siblings: </b>
-                                Siblings are exempt from participation in this referral
-                                program and cannot be referred. <br />
-                                <br />
-                                <b>Exclusions from Applicability:</b> The referral
-                                discount does not apply to Admission fees, Transportation
-                                fees, Building and utilities fees, or Non-academic fees
+                          <div className='form-div'>
+                            <div className='header-refer-container'>
+                              <p className='referHeader'>Refer Now</p>
+                              <p className='small-header'>
+                                Take advantage of the ORCHIDS AMBASSADOR PROGRAM
                               </p>
                             </div>
-                          </Modal>
-                        </div>
-                        <div style={{ color: 'red', marginBottom: '2px' }}>
-                          {checkBoxError}
-                        </div>
+                            <div className='form-area'>
+                              <div style={{ width: '60%' }}>
+                                <Col md={12}>
+                                  <Form.Item
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Please enter a valid city name',
+                                      },
+                                    ]}
+                                    name={'City'}
+                                    label='City'
+                                  >
+                                    <Input
+                                      allowClear={true}
+                                      placeholder='City Name'
+                                      style={{ width: '200%' }}
+                                      size='large'
+                                      onChange={(e) => handleCity(e)}
+                                      required={true}
+                                      pattern='[A-Za-z]+'
+                                      title='Please enter only alphabets'
+                                      onKeyPress={(e) => {
+                                        const pattern = /^[A-Za-z]+$/;
+                                        const inputChar = String.fromCharCode(e.charCode);
+                                        if (!pattern.test(inputChar)) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                    />
+                                  </Form.Item>
+                                </Col>
+                              </div>
+                              <div style={{ width: '60%' }}>
+                                <Col md={12}>
+                                  <Form.Item
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Please enter a valid Student name',
+                                      },
+                                    ]}
+                                    name={'Student'}
+                                    label='Student'
+                                  >
+                                    <Input
+                                      allowClear={true}
+                                      placeholder='Student Name'
+                                      style={{ width: '200%' }}
+                                      size='large'
+                                      onChange={(e) => handleStudentName(e)}
+                                      required={true}
+                                      pattern='^[A-Za-z ]*$'
+                                      title='Please enter only alphabets'
+                                      onKeyPress={(e) => {
+                                        const pattern = /^[A-Za-z ]+$/;
+                                        const inputChar = String.fromCharCode(e.charCode);
 
-                        <div className='submit-btn-area'>
-                          <StyledButton onClick={handleSubmit}>Submit</StyledButton>
+                                        // Allow only alphabetic characters and space
+                                        if (!pattern.test(inputChar)) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                    />
+                                  </Form.Item>
+                                </Col>
+                              </div>
+                              <div className='d-flex align-items-center mb-2 th-width-60 ml-3'>
+                                <div>
+                                  <Checkbox
+                                    onChange={onCheckSiblings}
+                                    checked={hassiblings}
+                                  />
+                                </div>
+
+                                <div className='ml-2'>
+                                  If Siblings, Please select the box.
+                                </div>
+                              </div>
+                              {hassiblings ? (
+                                <div className='form-area th-width-60'>
+                                  {siblings.map((sibiling, index) => (
+                                    <div
+                                      key={index}
+                                      className='d-flex flex-row th-width-100 ml-5'
+                                    >
+                                      <Form.Item
+                                        rules={[
+                                          {
+                                            required: true,
+                                            message: 'Please enter a valid Sibling name',
+                                          },
+                                        ]}
+                                        name={'Sibling'}
+                                        // label='Sibling'
+                                        className='th-width-80'
+                                      >
+                                        {/* <Input
+                                          allowClear={true}
+                                          placeholder='Sibling Name'
+                                          size='large'
+                                          value={sibiling}
+                                          onChange={(e) => handleSiblings(e, index)}
+                                          required={true}
+                                          pattern='[A-Za-z ]+'
+                                          error={handlesiblingsError().includes(index)}
+                                          title='Please enter only alphabets'
+                                          onKeyPress={(e) => {
+                                            const pattern = /^[A-Za-z]+$/;
+                                            const inputChar = String.fromCharCode(
+                                              e.charCode
+                                            );
+                                            if (!pattern.test(inputChar)) {
+                                              e.preventDefault();
+                                            }
+                                          }}
+                                        /> */}
+
+                                        <Input
+                                          allowClear={true}
+                                          placeholder='Sibling Name'
+                                          size='large'
+                                          value={sibiling}
+                                          onChange={(e) => handleSiblings(e, index)}
+                                          required={true}
+                                          pattern='^[A-Za-z ]*$'
+                                          error={handlesiblingsError().includes(index)}
+                                          title='Please enter only alphabets'
+                                          onKeyPress={(e) => {
+                                            const pattern = /^[A-Za-z ]+$/;
+                                            const inputChar = String.fromCharCode(
+                                              e.charCode
+                                            );
+                                            if (!pattern.test(inputChar)) {
+                                              e.preventDefault();
+                                            }
+                                          }}
+                                        />
+                                      </Form.Item>
+                                      {index > 0 && (
+                                        <IconButton
+                                          onClick={() => removeSibling(index)}
+                                          className='th-width-10 ml-2'
+                                        >
+                                          <RemoveCircleOutline
+                                            color='red'
+                                            style={{ color: 'red' }}
+                                          />
+                                        </IconButton>
+                                      )}
+                                    </div>
+                                  ))}
+                                  <StyledButton
+                                    onClick={addSiblings}
+                                    startIcon={<Add />}
+                                    variant='outlined'
+                                    color='primary'
+                                    className='addMoreButton'
+                                    style={{ color: 'white' }}
+                                  >
+                                    Add More
+                                  </StyledButton>
+                                </div>
+                              ) : (
+                                ''
+                              )}
+                              <div style={{ width: '60%' }}>
+                                <Col md={12}>
+                                  <Form.Item
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Please enter a valid Parents name',
+                                      },
+                                    ]}
+                                    name={'Parents Name'}
+                                    label='Parents Name'
+                                  >
+                                    <Input
+                                      allowClear={true}
+                                      placeholder='Parents Name'
+                                      style={{ width: '200%' }}
+                                      size='large'
+                                      onChange={(e) => handleParentName(e)}
+                                      required={true}
+                                      pattern='^[A-Za-z ]*$'
+                                      title='Please enter only alphabets'
+                                      onKeyPress={(e) => {
+                                        const pattern = /^[A-Za-z ]+$/;
+                                        const inputChar = String.fromCharCode(e.charCode);
+                                        if (!pattern.test(inputChar)) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                    />
+                                  </Form.Item>
+                                </Col>
+                              </div>
+                              <div style={{ width: '60%' }}>
+                                <Col md={12}>
+                                  <Form.Item
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Please enter a valid Phone Number',
+                                        pattern: /^[0-9]{10}$/,
+                                        message:
+                                          'Please enter a valid 10-digit Phone Number',
+                                      },
+                                    ]}
+                                    name={'Phone Number'}
+                                    label='Phone Number'
+                                  >
+                                    <Input
+                                      allowClear={true}
+                                      placeholder='Phone Number'
+                                      style={{ width: '200%' }}
+                                      size='large'
+                                      onChange={(e) => handlePhone(e)}
+                                      required={true}
+                                      title='Please enter a valid 10-digit Phone Number'
+                                      type='tel'
+                                      maxLength={10}
+                                      onKeyPress={(e) => {
+                                        const pattern = /^[0-9]$/;
+                                        const inputChar = String.fromCharCode(e.charCode);
+                                        if (!pattern.test(inputChar)) {
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                    />
+                                  </Form.Item>
+                                </Col>
+                              </div>
+                              <div style={{ width: '60%' }}>
+                                <Col md={12}>
+                                  <Form.Item
+                                    rules={[
+                                      {
+                                        required: true,
+                                        pattern: regexEmail,
+                                        message: 'Please enter a valid E-mail ID',
+                                      },
+                                    ]}
+                                    name={'E-mail'}
+                                    label='E-mail'
+                                  >
+                                    <Input
+                                      allowClear={true}
+                                      placeholder='E-mail'
+                                      style={{ width: '200%' }}
+                                      size='large'
+                                      onChange={(e) => handleMail(e)}
+                                      required={true}
+                                    />
+                                  </Form.Item>
+                                </Col>
+                                <div
+                                  style={{
+                                    color: 'red',
+                                    marginBottom: '8px',
+                                    marginLeft: '2px',
+                                  }}
+                                >
+                                  {mailError}
+                                </div>
+                              </div>
+                              <div className='d-flex align-items-center justify-content-center mb-2 th-width-60 ml-3'>
+                                <div className='mb-3'>
+                                  <Checkbox
+                                    onChange={onchangeCheckbox}
+                                    checked={isChecked}
+                                  />
+                                </div>
+
+                                <div className='ml-2'>
+                                  I have read and agree to the{' '}
+                                  <u
+                                    className='th-primary th-pointer '
+                                    onClick={showModal}
+                                  >
+                                    Terms & Conditions
+                                  </u>{' '}
+                                  of Referral Program.
+                                </div>
+                                <Modal
+                                  title='Referral Policy Terms & Conditions:'
+                                  visible={isModalOpen}
+                                  onOk={handleOk}
+                                  onCancel={handleCancel}
+                                  footer={[
+                                    <StyledButton
+                                      key='ok'
+                                      type='primary'
+                                      onClick={handleOk}
+                                    >
+                                      OK
+                                    </StyledButton>,
+                                  ]}
+                                  width={'50%'}
+                                >
+                                  <div className='pl-4 pt-2 pb-0 pr-4 text-justify'>
+                                    <p>
+                                      <b>Referral Concession Eligibility: </b>
+                                      The referral concession pertains exclusively to the
+                                      tuition fee of the referred student, which amounts
+                                      to 4% of the tuition fee paid by the referred
+                                      student for the first year of referral. <br />
+                                      <br />
+                                      <b>Calculation of Discounts:</b> In a scenario where
+                                      X refers both students A and B, X's discount will be
+                                      calculated as the sum of two components: 4% of the
+                                      tuition fee paid by student A in the first year and
+                                      4% of the tuition fee paid by student B in the first
+                                      year.
+                                      <br />
+                                      <br />
+                                      <b>Duration of Referral Amount Validity:</b> The
+                                      referral amount is applicable for a span of two
+                                      academic sessions, including the referral year.{' '}
+                                      <br />
+                                      <br />
+                                      <b>Referral Priority:</b> The discount will be
+                                      applied to the parent who submits the initial
+                                      referral. In the event that the referred student is
+                                      already a part of the system, or if the student
+                                      already exists in our system, further referrals for
+                                      the same student will not be accepted. <br />
+                                      <br />
+                                      <b>Exemption for Siblings: </b>
+                                      Siblings are exempt from participation in this
+                                      referral program and cannot be referred. <br />
+                                      <br />
+                                      <b>Exclusions from Applicability:</b> The referral
+                                      discount does not apply to Admission fees,
+                                      Transportation fees, Building and utilities fees, or
+                                      Non-academic fees
+                                    </p>
+                                  </div>
+                                </Modal>
+                              </div>
+                              <div style={{ color: 'red', marginBottom: '2px' }}>
+                                {checkBoxError}
+                              </div>
+                              <div className='submit-btn-area'>
+                                <StyledButton onClick={handleSubmit}>Submit</StyledButton>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
-                  </div>
-                )}
-              </div>
-            </Paper>
-          </TabPane>
-          <TabPane tab='My Referrals' key='2'>
-            {loading ? (
-              <div className='d-flex justify-content-center align-items-center h-50 pt-5'>
-                <Spin tip='Loading...' size='large' />
-              </div>
-            ) : refferList.length > 0 ? (
-              <Table
-                dataSource={refferList}
-                columns={columns}
-                className='custom-table'
-                pagination={false}
-              />
-            ) : (
-              <div className='d-flex justify-content-center mt-5 th-grey'>
-                <Empty
-                  description={
-                    <span>
-                      No Data.
-                      {/* <br />" Stay tuned for the updates! " */}
-                    </span>
-                  }
-                />
-              </div>
-            )}
+                  </Paper>
+                </TabPane>
+                <TabPane tab='My Referrals' key='2'>
+                  {loading ? (
+                    <div className='d-flex justify-content-center align-items-center h-50 pt-5'>
+                      <Spin tip='Loading...' size='large' />
+                    </div>
+                  ) : refferList.length > 0 ? (
+                    <Table
+                      // dataSource={flattenedRefferList}
+                      dataSource={refferList}
+                      columns={columns}
+                      className='custom-table'
+                      pagination={false}
+                      bordered
+                      // rowClassName={getRowClassName}
+                      rowClassName={(record, index) =>
+                        index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                      }
+                    />
+                  ) : (
+                    <div className='d-flex justify-content-center mt-5 th-grey'>
+                      <Empty
+                        description={
+                          <span>
+                            No Data.
+                            {/* <br />" Stay tuned for the updates! " */}
+                          </span>
+                        }
+                      />
+                    </div>
+                  )}
+                  <br />
 
-            {!loading && refferList.length > 0 && (
-              <div className='text-center mt-2'>
-                <Pagination
-                  current={refferListPageData.currentPage}
-                  total={refferListPageData.totalCount}
-                  pageSize={refferListPageData.pageSize}
-                  onChange={(value) =>
-                    setRefferListPageData({
-                      ...refferListPageData,
-                      currentPage: value,
-                    })
-                  }
-                  showSizeChanger={false} // Optional: hide the page size changer
-                  showQuickJumper={false}
-                  showTotal={(total, range) =>
-                    `${range[0]}-${range[1]} of ${total} items`
-                  }
-                />
-              </div>
-            )}
-            {!loading && (
-              <div
-                style={{
-                  color: '#3956A1',
-                }}
-                className='d-flex align-items-center justify-content-center mt-4'
-              >
-                Note: Referral concession will be applied once your referral successfully
-                pays their tuition fees
-              </div>
-            )}
-          </TabPane>
-        </Tabs>
+                  {!loading && refferList.length > 0 && (
+                    <div className='text-center mt-6'>
+                      <Pagination
+                        current={refferListPageData.currentPage}
+                        total={refferListPageData.totalCount}
+                        pageSize={refferListPageData.pageSize}
+                        onChange={(value) =>
+                          setRefferListPageData({
+                            ...refferListPageData,
+                            currentPage: value,
+                          })
+                        }
+                        showSizeChanger={false} // Optional: hide the page size changer
+                        showQuickJumper={false}
+                        showTotal={(total, range) =>
+                          `${range[0]}-${range[1]} of ${total} items`
+                        }
+                      />
+                    </div>
+                  )}
+                  {!loading && (
+                    <div
+                      style={{
+                        color: '#3956A1',
+                      }}
+                      className='d-flex align-items-center justify-content-center mt-4'
+                    >
+                      Note: Referral concession will be applied once your referral
+                      successfully pays their tuition fees
+                    </div>
+                  )}
+                </TabPane>
+              </Tabs>
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   );
