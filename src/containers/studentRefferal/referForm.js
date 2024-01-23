@@ -122,6 +122,10 @@ const StyledButton = withStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.primary.main,
     },
+    '&:disabled': {
+      backgroundColor: theme.palette.grey[500], // Use an appropriate shade of gray
+      color: 'white', // Adjust text color for better visibility
+    },
   },
 }))(Button);
 
@@ -282,15 +286,27 @@ const StudentRefer = () => {
                 <span key={index}>
                   {`${each?.student_name.substring(0, 26)}...`}
                   {/* {each?.student_name} */}
-                  <br />
-                  <br />
+                  {record?.siblings?.length > 1 ? (
+                    <>
+                      <br />
+                      <br />
+                    </>
+                  ) : (
+                    ''
+                  )}
                 </span>
               </Tooltip>
             ) : (
               <span key={index}>
                 {each?.student_name}
-                <br />
-                <br />
+                {record?.siblings?.length > 1 ? (
+                  <>
+                    <br />
+                    <br />
+                  </>
+                ) : (
+                  ''
+                )}
               </span>
             )
           )}
@@ -308,8 +324,14 @@ const StudentRefer = () => {
             {record?.siblings.map((each, index) => (
               <span key={index} style={{ textAlign: 'center' }}>
                 {each?.referral_code}
-                <br />
-                <br />
+                {record?.siblings?.length > 1 ? (
+                  <>
+                    <br />
+                    <br />
+                  </>
+                ) : (
+                  ''
+                )}
               </span>
             ))}
           </>
@@ -332,8 +354,14 @@ const StudentRefer = () => {
                 }}
               >
                 {each?.concession_status_display}
-                <br />
-                <br />
+                {record?.siblings?.length > 1 ? (
+                  <>
+                    <br />
+                    <br />
+                  </>
+                ) : (
+                  ''
+                )}
               </span>
             ))}
           </>
@@ -343,12 +371,12 @@ const StudentRefer = () => {
   ];
 
   useEffect(() => {
-    if (NavData && NavData.length) {
+    if (NavData && NavData?.length) {
       NavData.forEach((item) => {
         if (
           item.parent_modules === 'Online Class' &&
           item.child_module &&
-          item.child_module.length > 0
+          item.child_module?.length > 0
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Attend Online Class') {
@@ -390,7 +418,7 @@ const StudentRefer = () => {
   // };
 
   const validateStudentName = (value) => {
-    if (value.length > 100) {
+    if (value?.length > 100) {
       setStudentError('Student Name cannot exceed 100 characters');
       setValid(false);
       return false;
@@ -476,7 +504,7 @@ const StudentRefer = () => {
       }
     });
 
-    if (siblings.length >= 5) {
+    if (siblings?.length > 5) {
       errors.push('maxLimitExceeded');
     }
 
@@ -486,7 +514,7 @@ const StudentRefer = () => {
   const handleSiblingsCount = () => {
     return siblings.some((sibling) => {
       const trimmedSibling = sibling.trim().toLowerCase();
-      return trimmedSibling.length > 100;
+      return trimmedSibling?.length > 100;
     });
   };
 
@@ -578,8 +606,8 @@ const StudentRefer = () => {
     return data.reduce((flattened, student, index) => {
       count++;
 
-      if (student.siblings && student.siblings.length > 0) {
-        student.siblings.forEach((sibling, siblingIndex) => {
+      if (student?.siblings && student?.siblings?.length > 0) {
+        student?.siblings.forEach((sibling, siblingIndex) => {
           const siblingRecord = {
             ...sibling,
             isSibling: true,
@@ -623,11 +651,11 @@ const StudentRefer = () => {
       setAlert('error', studentError);
       setLoading(false);
       return;
-    } else if (student.length > 100) {
+    } else if (student?.length > 100) {
       setAlert('error', 'Student Name cannot exceed 100 characters');
       setLoading(false);
       return;
-    } else if (parent.length > 100) {
+    } else if (parent?.length > 100) {
       setAlert('error', 'Parent Name cannot exceed 100 characters');
       setLoading(false);
       return;
@@ -674,7 +702,7 @@ const StudentRefer = () => {
 
       let payload;
 
-      if (SiblingString.length > 0) {
+      if (SiblingString?.length > 0) {
         payload = {
           parent_name: parent,
           student_name: student,
@@ -713,6 +741,8 @@ const StudentRefer = () => {
           })
           .catch((error) => {
             setLoading(false);
+            setChecked(false);
+            setHassiblings(false);
             // console.log(error.response.data.message, 'error');
             setAlert('error', error.response.data.message);
           });
@@ -754,7 +784,7 @@ const StudentRefer = () => {
   };
 
   const addSiblings = () => {
-    if (siblings.length < 5) {
+    if (siblings?.length < 5) {
       setsiblings([...siblings, '']);
     } else {
       setAlert('error', 'Only upto 5 Siblings can be added');
@@ -762,8 +792,7 @@ const StudentRefer = () => {
   };
 
   const removeSibling = (index) => {
-    const newSiblings = [...siblings];
-    newSiblings.splice(index, 1);
+    const newSiblings = siblings.filter((_, i) => i !== index);
     setsiblings(newSiblings);
   };
 
@@ -916,14 +945,15 @@ const StudentRefer = () => {
                                 </div>
 
                                 <div className='ml-2'>
-                                  If Siblings, Please select the box.
+                                  If siblings, Please select the box.
                                 </div>
                               </div>
                               {hassiblings ? (
                                 <div className='form-area th-width-60'>
                                   {siblings.map((sibiling, index) => (
                                     <div
-                                      key={index}
+                                      // key={index}
+                                      key={`sibling-${index}`}
                                       className='d-flex flex-row th-width-100 ml-5'
                                     >
                                       <Form.Item
@@ -933,31 +963,11 @@ const StudentRefer = () => {
                                             message: 'Please enter a valid Sibling name',
                                           },
                                         ]}
-                                        name={'Sibling'}
+                                        // name={'Sibling'}
+                                        name={`sibling-${index}`}
                                         // label='Sibling'
                                         className='th-width-80'
                                       >
-                                        {/* <Input
-                                          allowClear={true}
-                                          placeholder='Sibling Name'
-                                          size='large'
-                                          value={sibiling}
-                                          onChange={(e) => handleSiblings(e, index)}
-                                          required={true}
-                                          pattern='[A-Za-z ]+'
-                                          error={handlesiblingsError().includes(index)}
-                                          title='Please enter only alphabets'
-                                          onKeyPress={(e) => {
-                                            const pattern = /^[A-Za-z]+$/;
-                                            const inputChar = String.fromCharCode(
-                                              e.charCode
-                                            );
-                                            if (!pattern.test(inputChar)) {
-                                              e.preventDefault();
-                                            }
-                                          }}
-                                        /> */}
-
                                         <Input
                                           allowClear={true}
                                           placeholder='Sibling Name'
@@ -998,7 +1008,12 @@ const StudentRefer = () => {
                                     variant='outlined'
                                     color='primary'
                                     className='addMoreButton'
-                                    style={{ color: 'white' }}
+                                    style={{
+                                      color: 'white',
+                                      backgroundColor:
+                                        siblings?.length >= 5 ? 'gray' : '#2154CB',
+                                    }}
+                                    disabled={siblings?.length >= 5}
                                   >
                                     Add More
                                   </StyledButton>
@@ -1199,7 +1214,7 @@ const StudentRefer = () => {
                     <div className='d-flex justify-content-center align-items-center h-50 pt-5'>
                       <Spin tip='Loading...' size='large' />
                     </div>
-                  ) : refferList.length > 0 ? (
+                  ) : refferList?.length > 0 ? (
                     <Table
                       // dataSource={flattenedRefferList}
                       dataSource={refferList}
@@ -1226,7 +1241,7 @@ const StudentRefer = () => {
                   )}
                   <br />
 
-                  {!loading && refferList.length > 0 && (
+                  {!loading && refferList?.length > 0 && (
                     <div className='text-center mt-6'>
                       <Pagination
                         current={refferListPageData.currentPage}
