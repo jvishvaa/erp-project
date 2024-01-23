@@ -171,7 +171,7 @@ const ReferSuccess = () => {
           isAcademicYearVisible={true}
         />
         <div style={{ marginLeft: '1%' }}>
-          <Button onClick={referOther}>Back</Button>
+          <StyledButton onClick={referOther}>Back</StyledButton>
         </div>
         <Paper>
           <div className='success-refer-container'>
