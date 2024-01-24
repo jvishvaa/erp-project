@@ -2,6 +2,9 @@ const webUrl = window.location.host;
 const hostUrl = webUrl.split('.');
 
 const chechUrl = hostUrl[0] === 'orchids' || hostUrl[0] === 'orchids-prod' ? true : false;
+
+const isPreprod = window.location.host == 'orchids.prod.letseduvate.com' ? true : false;
+
 const local = {
   s3: {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
@@ -137,13 +140,17 @@ const prod = {
     baseUdaan: 'https://udaansurelearning.com/qbox',
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
-    baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
+    baseURLCentral: isPreprod
+      ? 'https://mgmt.prod.letseduvate.com/qbox'
+      : 'https://mgmt.letseduvate.com/qbox',
     baseFinanceURL: chechUrl
       ? 'https://orchids.finance.letseduvate.com/qbox'
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.letseduvate.com',
-    msReportsUrl: 'https://reports.letseduvate.com',
+    msReportsUrl: isPreprod
+      ? 'https://reports.prod.letseduvate.com'
+      : 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: chechUrl
       ? 'https://orchids.finance.letseduvate.com'
