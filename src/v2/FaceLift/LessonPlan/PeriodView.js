@@ -155,7 +155,7 @@ const PeriodView = () => {
         });
       } else {
         fetchSubjectData({
-          acad_session: selectedBranch?.id
+          acad_session: selectedBranch?.id,
         });
       }
     }
