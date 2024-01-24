@@ -734,8 +734,6 @@ const StudentRefer = () => {
             // setAlert('success', results?.message);
             // history.push('/dashboard');
             console.log(results, 'success');
-            console.log(results?.data.message, 'results');
-            console.log(results, 'resultsdata');
             handleRedirect(results);
             setLoading(false);
           })
@@ -743,7 +741,6 @@ const StudentRefer = () => {
             setLoading(false);
             setChecked(false);
             setHassiblings(false);
-            // console.log(error.response.data.message, 'error');
             setAlert('error', error.response.data.message);
           });
       } else {
@@ -792,7 +789,9 @@ const StudentRefer = () => {
   };
 
   const removeSibling = (index) => {
-    const newSiblings = siblings.filter((_, i) => i !== index);
+    let newSiblings = siblings.slice();
+
+    newSiblings.splice(index, 1);
     setsiblings(newSiblings);
   };
 
@@ -952,26 +951,17 @@ const StudentRefer = () => {
                                 <div className='form-area th-width-60'>
                                   {siblings.map((sibiling, index) => (
                                     <div
-                                      // key={index}
-                                      key={`sibling-${index}`}
-                                      className='d-flex flex-row th-width-100 ml-5'
+                                      key={index}
+                                      className='d-flex flex-row th-width-100 ml-5 mt-1'
                                     >
-                                      <Form.Item
-                                        rules={[
-                                          {
-                                            required: true,
-                                            message: 'Please enter a valid Sibling name',
-                                          },
-                                        ]}
-                                        // name={'Sibling'}
-                                        name={`sibling-${index}`}
-                                        // label='Sibling'
-                                        className='th-width-80'
-                                      >
+                                      <div className='th-width-80'>
                                         <Input
                                           allowClear={true}
                                           placeholder='Sibling Name'
                                           size='large'
+                                          style={{
+                                            marginBottom: index === 0 ? '10px' : '',
+                                          }}
                                           value={sibiling}
                                           onChange={(e) => handleSiblings(e, index)}
                                           required={true}
@@ -988,7 +978,7 @@ const StudentRefer = () => {
                                             }
                                           }}
                                         />
-                                      </Form.Item>
+                                      </div>
                                       {index > 0 && (
                                         <IconButton
                                           onClick={() => removeSibling(index)}
@@ -1010,6 +1000,7 @@ const StudentRefer = () => {
                                     className='addMoreButton'
                                     style={{
                                       color: 'white',
+                                      marginTop: '10px',
                                       backgroundColor:
                                         siblings?.length >= 5 ? 'gray' : '#2154CB',
                                     }}

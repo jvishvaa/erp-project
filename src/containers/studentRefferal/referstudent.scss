@@ -107,3 +107,23 @@
 .ant-table th {
   border: 1px solid #e8e8e8;
 }
+
+.custom-table-success .ant-table-thead th {
+  color: white;
+  text-align: center;
+}
+
+.custom-table-success td {
+  text-align: left;
+  vertical-align: middle;
+}
+
+.custom-table-success .ant-table td,
+.ant-table th {
+  border: 1px solid #e8e8e8;
+}
+
+.custom-table-success .ant-table {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px; /* Optional: Add border-radius for rounded corners */
+}
