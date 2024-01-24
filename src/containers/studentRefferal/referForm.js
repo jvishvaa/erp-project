@@ -499,11 +499,9 @@ const StudentRefer = () => {
       } else if (seenSiblings.has(trimmedSibling)) {
         // Check for duplicate values
         errors.push('duplicateFound');
-        console.log('error found');
       } else {
         seenSiblings.add(trimmedSibling);
       }
-      console.log(trimmedSibling, seenSiblings, 'trimmedsibling');
     });
 
     if (siblings?.length > 5) {
@@ -550,7 +548,6 @@ const StudentRefer = () => {
 
   const handleRedirect = (res) => {
     console.log(res.status, 'status');
-    console.log(res, 'redirect');
     setAlert('success', res?.data.message);
     history.push({
       pathname: '/successrefer',
@@ -737,8 +734,6 @@ const StudentRefer = () => {
             // setAlert('success', results?.message);
             // history.push('/dashboard');
             console.log(results, 'success');
-            console.log(results?.data.message, 'results');
-            console.log(results, 'resultsdata');
             handleRedirect(results);
             setLoading(false);
           })
@@ -746,7 +741,6 @@ const StudentRefer = () => {
             setLoading(false);
             setChecked(false);
             setHassiblings(false);
-            // console.log(error.response.data.message, 'error');
             setAlert('error', error.response.data.message);
           });
       } else {
@@ -798,7 +792,6 @@ const StudentRefer = () => {
     let newSiblings = siblings.slice();
 
     newSiblings.splice(index, 1);
-    console.log(newSiblings, 'siblingsremoved');
     setsiblings(newSiblings);
   };
 
