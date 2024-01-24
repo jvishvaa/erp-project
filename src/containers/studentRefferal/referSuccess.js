@@ -26,6 +26,7 @@ import Orchids from 'assets/images/orchids.png';
 import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router';
+import { Table, Tooltip } from 'antd';
 
 import './referstudent.scss';
 import axios from 'axios';
@@ -149,6 +150,47 @@ const StyledClearButton = withStyles((theme) => ({
   },
 }))(Button);
 
+const columns = [
+  {
+    title: 'Sl.no',
+    dataIndex: 'id',
+    key: 'id',
+    render: (text, record, index) => ({
+      children: index + 1,
+      props: {
+        style: { textAlign: 'center' },
+      },
+    }),
+  },
+  {
+    title: 'Student Name',
+    dataIndex: 'student_name',
+    key: 'student_name',
+    render: (text, record, index) => (
+      <>
+        {record?.length > 26 ? (
+          <Tooltip
+            autoAdjustOverflow={false}
+            placement='bottomLeft'
+            title={record?.student_name}
+            overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
+            key={index}
+          >
+            <span key={index}>{`${record?.student_name.substring(0, 26)}...`}</span>
+          </Tooltip>
+        ) : (
+          <span key={index}>{record?.student_name}</span>
+        )}
+      </>
+    ),
+  },
+  {
+    title: 'Referral code',
+    dataIndex: 'referral_code',
+    key: 'referral_code',
+  },
+];
+
 const ReferSuccess = () => {
   const classes = useStyles({});
   const fileRef = useRef();
@@ -206,7 +248,7 @@ const ReferSuccess = () => {
                 {history?.location?.state?.data?.city}
               </p>
             </div>
-            <div
+            {/* <div
               className='city-res'
               style={{ display: 'flex', flexDirection: 'column' }}
             >
@@ -221,6 +263,8 @@ const ReferSuccess = () => {
               >
                 Student Name
               </p>
+
+              {console.log(history?.location?.state?.data, 'history')}
               <p
                 style={{
                   textAlign: 'center',
@@ -231,7 +275,7 @@ const ReferSuccess = () => {
               >
                 {history?.location?.state?.data?.student_name}
               </p>
-            </div>
+            </div> */}
             <div
               className='city-res'
               style={{ display: 'flex', flexDirection: 'column' }}
@@ -307,10 +351,22 @@ const ReferSuccess = () => {
                   marginTop: '10px',
                 }}
               >
-                {history?.location?.state?.data?.email_id}
+                {history?.location?.state?.data?.email}
               </p>
             </div>
             <div
+              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+              <Table
+                dataSource={history?.location?.state?.data?.siblings}
+                columns={columns}
+                className='custom-table-success'
+                style={{ width: '50%' }}
+                pagination={false}
+                bordered
+              />
+            </div>
+            {/* <div
               className='city-res'
               style={{ display: 'flex', flexDirection: 'column' }}
             >
@@ -337,7 +393,7 @@ const ReferSuccess = () => {
               >
                 {history?.location?.state?.data?.referral_code}
               </p>
-            </div>
+            </div> */}
             <div id='thank-res'>
               <p style={{ textAlign: 'center', marginTop: '10px', fontSize: '20px' }}>
                 Thank You for Referring us.{' '}
