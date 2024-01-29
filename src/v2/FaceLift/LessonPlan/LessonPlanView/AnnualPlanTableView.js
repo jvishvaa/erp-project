@@ -1353,12 +1353,12 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                               )[1];
                               let textIndex = fullName
                                 ?.split('_')
-                                .indexOf(fullName.split('_').find((item) => isNaN(item)));
+                                ?.indexOf(fullName?.split('_')?.find((item) => isNaN(item)));
                               let displayName = fullName
-                                .split('_')
-                                .slice(textIndex)
-                                .join('_');
-                              let fileName = displayName ? displayName.split('.') : null;
+                                ?.split('_')
+                                ?.slice(textIndex)
+                                ?.join('_');
+                              let fileName = displayName ? displayName?.split('.') : null;
                               let file = fileName ? fileName[fileName?.length - 2] : '';
                               let extension = fileName
                                 ? fileName[fileName?.length - 1]
