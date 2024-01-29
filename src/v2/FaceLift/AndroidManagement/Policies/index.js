@@ -48,10 +48,9 @@ const Policies = () => {
     axios
       .get(`/device/get-policies/`, { params: { ...params } })
       .then((res) => {
-        console.log('policies', res);
         if (res?.status === 200) {
           setAssignedPoliciesList(res?.data?.data?.policies);
-          message.success(res?.data?.message);
+          // message.success(res?.data?.message);
         }
       })
       .catch((error) => {
