@@ -78,9 +78,9 @@ import SignatureUploadv2 from 'v2/FaceLift/MasterManagement/signature-upload/sig
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import EditReportConfig from 'containers/assessment-central/ReportCardConfig/EditReportConfig';
 import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig/PhysicalEducation/CreatePeReportConfig';
-// import EnterPrises from 'v2/FaceLift/AndroidManagement/Enterprises';
-// import Devices from 'v2/FaceLift/AndroidManagement/Devices';
-// import Policies from 'v2/FaceLift/AndroidManagement/Policies';
+import EnterPrises from 'v2/FaceLift/AndroidManagement/Enterprises';
+import Devices from 'v2/FaceLift/AndroidManagement/Devices';
+import Policies from 'v2/FaceLift/AndroidManagement/Policies';
 
 const V2Router = () => {
   useEffect(() => {
@@ -389,7 +389,7 @@ const V2Router = () => {
                           {({ match }) => <SignatureUploadv2 match={match} />}
                         </Route>
                         ,
-                        {/*<Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
+                        <Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
                           {({ match }) => <Devices match={match} />}
                         </Route>
                         <Route path='/enterprise-management/:enterPriseName/:enterPriseId/policies'>
@@ -398,7 +398,7 @@ const V2Router = () => {
                         <Route path='/enterprise-management/enterprises'>
                           {({ match }) => <EnterPrises match={match} />}
                         </Route>
-                        v1 router */}
+                        {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}
