@@ -27,6 +27,7 @@ import {
 } from '@ant-design/icons';
 import { useHistory, useParams } from 'react-router-dom';
 import moment from 'moment';
+const { Option } = Select;
 
 const EnterPrises = () => {
   const enterpriseFormRef = useRef(null);
@@ -41,6 +42,10 @@ const EnterPrises = () => {
   const [enrollmentLoading, setEnrollmentLoading] = useState(false);
   const [showEnrollMentModal, setShowEnrollMentModal] = useState(false);
   const [enrollMentQR, setEnrollMentQR] = useState();
+  const [policyList, setPolicyList] = useState();
+  const [policySelected, setPolicySelected] = useState();
+  const [enterPriseSelected, setEnterPriseSelected] = useState();
+  const [policyLoading, setPolicyLoading] = useState(false);
   const [pageDetails, setPageDetails] = useState({ current: 1, total: 0 });
 
   const columns = [
@@ -88,7 +93,13 @@ const EnterPrises = () => {
               className='th-pointer th-br-4'
               onClick={() => {
                 setShowEnrollMentModal(true);
-                handleEnrollment(enterpriseId, 'Letseduvate');
+                if (enterPriseSelected !== enterpriseId) {
+                  setEnterPriseSelected(enterpriseId);
+                  setPolicySelected();
+                  fetchPolicyList({
+                    enterpriseId: enterpriseId,
+                  });
+                }
               }}
             >
               Enroll Device
@@ -144,7 +155,6 @@ const EnterPrises = () => {
         if (res?.status === 200) {
           setEnterpriseList(res?.data?.data?.enterprises);
           setPageDetails({ ...pageDetails, total: res?.data?.total });
-          message.success(res?.data?.message);
         }
       })
       .catch((error) => {
@@ -152,6 +162,22 @@ const EnterPrises = () => {
       })
       .finally(() => {
         setLoading(false);
+      });
+  };
+  const fetchPolicyList = (params = {}) => {
+    setPolicyLoading(true);
+    axios
+      .get(`/device/get-policies/`, { params: { ...params } })
+      .then((res) => {
+        if (res?.status === 200) {
+          setPolicyList(res?.data?.data?.policies);
+        }
+      })
+      .catch((error) => {
+        message.error(error?.message);
+      })
+      .finally(() => {
+        setPolicyLoading(false);
       });
   };
 
@@ -255,7 +281,7 @@ const EnterPrises = () => {
       duration: '3600s',
       qrCode: '',
       oneTimeOnly: false,
-      policyName: `enterprises/${enterpriseId}/policies/${policyId}`,
+      policyName: policyId,
       additionalData: enterpriseId,
       user: {},
       allowPersonalUsage: 'ALLOW_PERSONAL_USAGE_UNSPECIFIED',
@@ -275,7 +301,13 @@ const EnterPrises = () => {
         setEnrollmentLoading(false);
       });
   };
-
+  const policyOptions = policyList?.map((el) => {
+    return (
+      <Option value={el?.name} id={el?.name}>
+        {el?.name?.split('/')[el?.name?.split('/')?.length - 1]}
+      </Option>
+    );
+  });
   useEffect(() => {
     fetchEnterpriseList({ pageName: pageDetails?.current });
   }, [pageDetails?.current]);
@@ -394,9 +426,29 @@ const EnterPrises = () => {
         width={'60vw'}
         footer={null}
       >
-        <Spin spinning={enrollmentLoading}>
-          <div className='row py-3' style={{ minHeight: 500 }}>
-            {enrollMentQR && (
+        <Spin spinning={policyLoading || enrollmentLoading}>
+          <div
+            className='row py-3'
+            style={{ minHeight: 400, height: 500, overflowY: 'auto' }}
+          >
+            <div className='col-1'></div>
+            <div className='col-6 my-3'>
+              <div className='th-black-1 th-16 th-fw-500 mb-2'>
+                * Please select the desired policy
+              </div>
+              <Select
+                placeHolder='Select Policy to enroll device'
+                className='w-100'
+                value={policySelected}
+                onChange={(e) => {
+                  setPolicySelected(e);
+                  handleEnrollment(enterPriseSelected, e);
+                }}
+              >
+                {policyOptions}
+              </Select>
+            </div>
+            {policySelected && enrollMentQR && (
               <>
                 {' '}
                 <div className='col-12 text-center'>

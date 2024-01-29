@@ -89,13 +89,13 @@ const SuperAdmindashboardNew = () => {
           </div>
           <div className='col-md-4 th-16 py-3'>
             <div className='d-flex'>
-              {/* <Button
+              <Button
                 type='primary'
                 className='th-br-8 mx-2'
                 onClick={() => history.push('/enterprise-management/enterprises')}
               >
                 Enterprise Management <SendOutlined className='ml-1' />
-              </Button> */}
+              </Button>
               <Select
                 className='th-primary th-bg-white th-br-4 w-100 text-left mt-1'
                 placement='bottomRight'
