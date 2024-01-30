@@ -1412,40 +1412,23 @@ const TeacherRefer = () => {
                                 >
                                   <div className='pl-4 pt-2 pb-0 pr-4 text-justify'>
                                     <p>
-                                      <b>Referral Concession Eligibility: </b>
-                                      The referral concession pertains exclusively to the
-                                      tuition fee of the referred student, which amounts
-                                      to 4% of the tuition fee paid by the referred
-                                      student for the first year of referral. <br />
+                                      <b>Incentives for Teachers: </b>
+                                      Teachers will be eligible for incentives based on
+                                      their tenure: a) 2 to 4 years - ₹3,000 b) 5 years -
+                                      ₹75,000 c) 7 years - ₹7,000 d) 10 years and beyond -
+                                      ₹10,000 <br />
                                       <br />
-                                      <b>Calculation of Discounts:</b> In a scenario where
-                                      X refers both students A and B, X's discount will be
-                                      calculated as the sum of two components: 4% of the
-                                      tuition fee paid by student A in the first year and
-                                      4% of the tuition fee paid by student B in the first
-                                      year.
+                                      <b>Referral Incentive:</b> Upon a teacher joining
+                                      and successfully completing 30 days, the referring
+                                      staff member will receive an incentive for the
+                                      referred candidate.
                                       <br />
                                       <br />
-                                      <b>Duration of Referral Amount Validity:</b> The
-                                      referral amount is applicable for a span of two
-                                      academic sessions, including the referral year.{' '}
+                                      <b>Notification for Referral Status:</b> The staff
+                                      member referring a candidate will receive an email
+                                      notification upon the candidate's selection or
+                                      rejection in the hiring process.
                                       <br />
-                                      <br />
-                                      <b>Referral Priority:</b> The discount will be
-                                      applied to the parent who submits the initial
-                                      referral. In the event that the referred student is
-                                      already a part of the system, or if the student
-                                      already exists in our system, further referrals for
-                                      the same student will not be accepted. <br />
-                                      <br />
-                                      <b>Exemption for Siblings: </b>
-                                      Siblings are exempt from participation in this
-                                      referral program and cannot be referred. <br />
-                                      <br />
-                                      <b>Exclusions from Applicability:</b> The referral
-                                      discount does not apply to Admission fees,
-                                      Transportation fees, Building and utilities fees, or
-                                      Non-academic fees
                                     </p>
                                   </div>
                                 </Modal>
@@ -1486,7 +1469,7 @@ const TeacherRefer = () => {
                 }
                 key='2'
               >
-                <div style={{ padding: '10px' }} id="display_table">
+                <div style={{ padding: '10px' }} id='display_table'>
                   {loading ? (
                     <Loader />
                   ) : refferList.length > 0 ? (
