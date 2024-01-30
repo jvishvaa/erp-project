@@ -924,15 +924,12 @@ export default {
   },
 
   teacherReferral: {
-    // positionType: `${cvBox}/apiV2/recruiter/position-type/`,
-    // positionType: `${cvBox}/apiV2/recruiter/referral-position-type/`,
-    // designationType: `${cvBox}/apiV2/recruiter/referral-designation-type/`,
     referred_applicants: `${cvbox}/qbox/apiV2/referral/referral-form/`,
     referral_position_list : `${cvbox}/qbox/apiV2/recruiter/referral-position-list/`,
     candidate_refferal : `${cvbox}/qbox/apiV2/referral/referral-form/`,
     city_list : `${cvbox}/qbox/recruiter/CityListAPIView/`,
     branch_list : `${cvbox}/qbox/authenticate/branchcity/`,
-    subject_list : `${baseURL}/erp_user/v1/subjects-list/`
+    subject_list : `${cvbox}/qbox/apiV2/referral/subject-list/`
     },
 
   period: {

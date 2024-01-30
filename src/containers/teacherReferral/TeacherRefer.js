@@ -177,60 +177,7 @@ const TeacherRefer = () => {
       },
     },
   ];
-  const subjectsOfInterest = [
-    'Horticulture Course',
-    'Library',
-    'Biology',
-    'Art and Craft',
-    'Bengali 2nd Lang',
-    'Bengali 3rd Lang',
-    'Tamil 3rd Lang',
-    'Tamil 2nd Lang',
-    'Tamil',
-    'Sanskrit',
-    'Telugu 3rd Lang',
-    'Telugu 2nd Lang',
-    'Bengali',
-    'Telugu',
-    'Environmental Studies',
-    'Reading',
-    'Storytelling',
-    'Rhymes',
-    'Social Sciences',
-    'EVS',
-    'Marathi',
-    'French',
-    'Public Speaking',
-    'Geography',
-    'Physics',
-    'Art Education',
-    'Visual Arts',
-    'Theatre',
-    'Dance',
-    'Music',
-    'Robotics',
-    'Computer Science',
-    'Physical Education',
-    'Numeracy',
-    'Literacy',
-    'Maths',
-    'Kannada',
-    'Trilingual Marathi',
-    'Trilingual Hindi',
-    'Kannada 3rd Lang',
-    'Kannada 2nd Lang',
-    'Marathi 3rd Lang',
-    'Hindi 3rd Lang',
-    'Hindi 2nd Lang',
-    'French 4th Lang',
-    'French 3rd Lang',
-    'French 2nd lang',
-    'SST',
-    'IDP',
-    'Natural Science',
-    'English',
-    'Hindi',
-  ];
+  
   const Board = [
     { id: 1, name: 'CBSE' },
     { id: 2, name: 'ICSE' },
@@ -400,15 +347,11 @@ const TeacherRefer = () => {
     axios
       .get(`${endpoints.teacherReferral.subject_list}`, {
         headers: {
-          authorization: `Bearer ${userDetails.token}`,
+          'Access-Api-Key': `${AccessKey}`,
         },
       })
       .then((res) => {
-        const filteredSubjects = res?.data?.result.filter((obj) =>
-          subjectsOfInterest.includes(obj.subject_name)
-        );
-
-        setSubject(filteredSubjects);
+        setSubject(res?.data);
       })
       .catch((error) => {
         message.error(error.message)
@@ -653,7 +596,7 @@ const TeacherRefer = () => {
   ));
 
   const SubjectListOptions = subject.map((each) => (
-    <Select.Option key={each?.id} value={`${each.id}, ${each?.subject_name}`}>
+    <Select.Option key={each?.id} value={`${each?.id}, ${each?.subject_name}`}>
       {each?.subject_name}
     </Select.Option>
   ));
