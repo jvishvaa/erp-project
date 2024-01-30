@@ -6,15 +6,18 @@ import HomeWorkReport from './components/HomeworkReportNew';
 import AttendanceReportNew from './components/AttendanceReportNew';
 import { getRole } from 'v2/generalAnnouncementFunctions';
 import Doodle from 'v2/FaceLift/Doodle/Doodle';
-import { message } from 'antd';
+import { Button, message } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import CurriculumTracker from './components/CurriculumCompletionNew';
 import TeacherDiaryStats from './components/TeacherDiaryStats';
 import Activity from './components/Activity';
+import { UsergroupAddOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 
 const TeacherdashboardNew = ({ newTimeTable }) => {
   const [showDoodle, setShowDoodle] = useState(false);
+  const history = useHistory();
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
   const fetchDoodle = () => {
@@ -28,9 +31,17 @@ const TeacherdashboardNew = ({ newTimeTable }) => {
       .catch((error) => message.error('error', error?.message));
   };
 
+  const studentrefer = () => {
+    history.push('/teacher-refer');
+  };
+
   useEffect(() => {
     fetchDoodle();
   }, []);
+
+  const teacherrefer = () => {
+    history.push('/teacher-refer');
+  };
   return (
     <div className=''>
       <div className='row th-16 py-3 justify-content-between'>
@@ -40,6 +51,24 @@ const TeacherdashboardNew = ({ newTimeTable }) => {
           <span className='text-capitalize pr-2'>{first_name}</span>
           <span className='th-14'>({getRole(user_level)})</span>
         </div>
+        <>
+          {user_level === 11 ? (
+            <div className='col-md-6 text-right'>
+              {/* <Button
+                className='th-br-4 mr-2'
+                onClick={() => history.push('/activity-management-dashboard')}
+              >
+                Sports Dashboard
+              </Button> */}
+              <Button className='th-br-4' onClick={teacherrefer}>
+                <UsergroupAddOutlined />
+                Teacher's Referral Programme
+              </Button>
+            </div>
+          ) : (
+            ''
+          )}
+        </>
       </div>
       {/* {showDoodle && <Doodle />} */}
       <div className='row pt-1 pb-3'>

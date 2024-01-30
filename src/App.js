@@ -494,6 +494,8 @@ import axios from 'axios';
 import ChangePassword from './v2/FaceLift/ChangePassword';
 import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig/PhysicalEducation/CreatePeReportConfig';
 import { Modal } from 'antd';
+import TeacherReferForm from "./containers/teacherReferral/TeacherRefer.js";
+import TeacherReferSuccess from './containers/teacherReferral/TeacherReferSuccess.js';
 import DuePopup from 'v2/FaceLift/myComponents/DuePopup';
 import endpointsV2 from 'v2/config/endpoints';
 import _ from 'lodash';
@@ -2236,6 +2238,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route path='/successrefer'>
                               {({ match }) => <ReferSuccess match={match} />}
+                            </Route>
+                            <Route path='/teacher-refer'>
+                              {(match) => <TeacherReferForm match={match} />}
+                            </Route>
+                            <Route path='/teacher-refer-success'>
+                              {(match) => <TeacherReferSuccess match={match} />}
                             </Route>
                             <Route path='/holidaymarking'>
                               {({ match }) => <HolidayMark match={match} />}
