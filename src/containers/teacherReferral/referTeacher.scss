@@ -89,18 +89,10 @@
     color: red;
   }
   
-  // .custom-table .ant-table-tbody > tr:nth-child(even) {
-  //   background-color: #d9d6d6;
-  // }
-  
-  // /* Set your desired background color for odd rows */
-  // .custom-table .ant-table-tbody > tr:nth-child(odd) {
-  //   background-color: #ffffff;
-  // }
   
   .custom-table .ant-table {
     border: 1px solid #e8e8e8;
-    border-radius: 8px; /* Optional: Add border-radius for rounded corners */
+    border-radius: 8px; 
   }
   
   .custom-table .ant-table td,
@@ -125,13 +117,12 @@
   
   .custom-table-success .ant-table {
     border: 1px solid #e8e8e8;
-    border-radius: 8px; /* Optional: Add border-radius for rounded corners */
+    border-radius: 8px; 
   }
 
 
 
   .custom-table .ant-table td, .ant-table th {
-    //   border: 1px solid #e8e8e8; 
       text-align: center;
   }
   .custom-table-success .ant-table td, .ant-table th {
@@ -140,6 +131,12 @@
 .custom-table .ant-table td, .ant-table th {
     border: none;
 }
-        
 
-  
+.main-img{
+  object-fit: contain;
+  margin-left: 30px;
+}
+
+.image-left{
+  width: 100%;
+}

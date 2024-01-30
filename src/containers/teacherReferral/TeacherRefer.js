@@ -1,31 +1,12 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import {
   Button,
-  Grid,
-  makeStyles,
   Paper,
-  withStyles,
-  useTheme,
-  Box,
-  Typography,
 } from '@material-ui/core';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import { Autocomplete } from '@material-ui/lab';
-import { connect, useSelector } from 'react-redux';
-import { Divider, TextField } from '@material-ui/core';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
-import axiosInstance from '../../config/axios';
-// import axios from 'v2/config/axios';
 import endpoints from 'config/endpoints';
-// import endpoints from 'v2/config/endpoints';
-import FileSaver from 'file-saver';
-import IMGPIC2 from 'assets/images/img1.png';
-import Orchids from 'assets/images/orchids.png';
-import { CSVLink } from 'react-csv';
-import TablePagination from '@material-ui/core/TablePagination';
+import IMGPIC2 from 'assets/images/teacherReferal.png';
 import { useHistory } from 'react-router';
 import Loader from 'components/loader/loader';
 import {
@@ -34,7 +15,6 @@ import {
   Pagination,
   Empty,
   Checkbox,
-  Spin,
   Modal,
   Form,
   Select,
@@ -46,159 +26,26 @@ import {
   Col,
   Space,
   DatePicker,
-  Tooltip,
 } from 'antd';
 import {
-  DownOutlined,
   FileExcelTwoTone,
-  InfoCircleOutlined,
-  InfoCircleTwoTone,
   ReloadOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
 import moment from 'moment';
 import './referTeacher.scss';
 import axios from 'axios';
-import { designations } from 'containers/Finance/src/_reducers/designation.reducer';
 import countryList from 'containers/user-management/list';
 import { AccessKey } from '../../v2/cvboxAccesskey';
 
-const useStyles = makeStyles((theme) => ({
-  root: theme.commonTableRoot,
-  paperStyled: {
-    minHeight: '60vh',
-    height: '100%',
-    padding: '50px',
-    marginTop: '15px',
-  },
-  guidelinesText: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    color: theme.palette.secondary.main,
-  },
-  errorText: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    color: '#fe6b6b',
-    marginBottom: '30px',
-    display: 'inline-block',
-  },
-  table: {
-    minWidth: 650,
-  },
-  downloadExcel: {
-    float: 'right',
-    fontSize: '16px',
-    // textDecoration: 'none',
-    // backgroundColor: '#fe6b6b',
-    // color: '#ffffff',
-  },
-  columnHeader: {
-    color: `${theme.palette.secondary.main} !important`,
-    fontWeight: 600,
-    fontSize: '1rem',
-    backgroundColor: `#ffffff !important`,
-  },
-  tableCell: {
-    color: theme.palette.secondary.main,
-  },
-  tablePaginationSpacer: {
-    flex: 0,
-  },
-  tablePaginationToolbar: {
-    justifyContent: 'center',
-  },
-  cardsContainer: {
-    width: '95%',
-    margin: '0 auto',
-  },
-  tablePaginationCaption: {
-    fontWeight: '600 !important',
-  },
-  tablePaginationSpacer: {
-    flex: 0,
-  },
-  tablePaginationToolbar: {
-    justifyContent: 'center',
-  },
-  guidelineval: {
-    color: theme.palette.primary.main,
-    fontWeight: '600',
-  },
-  guideline: {
-    color: theme.palette.secondary.main,
-    fontSize: '16px',
-    padding: '10px',
-  },
-}));
 
-const StyledButton = withStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.primary.main,
-    color: '#FFFFFF',
-    padding: '8px 15px',
-    '&:hover': {
-      backgroundColor: theme.palette.primary.main,
-    },
-  },
-}))(Button);
-
-const StyledButtonUnblock = withStyles({
-  root: {
-    backgroundColor: '#208B22',
-    color: '#FFFFFF',
-    padding: '2px 8px',
-    fontSize: '10px',
-    '&:hover': {
-      backgroundColor: '#228B22 !important',
-    },
-  },
-})(Button);
-
-const StyledButtonBlock = withStyles({
-  root: {
-    backgroundColor: '#FF2E2E',
-    color: '#FFFFFF',
-    padding: '2px 8px',
-    fontSize: '10px',
-    '&:hover': {
-      backgroundColor: '#FF2E2E !important',
-    },
-  },
-})(Button);
-
-const StyledClearButton = withStyles((theme) => ({
-  root: {
-    backgroundColor: '#E2E2E2',
-    color: '#8C8C8C',
-    padding: '8px 15px',
-    marginLeft: '30px',
-    '&:hover': {
-      backgroundColor: '#E2E2E2 !important',
-    },
-  },
-}))(Button);
-
-const statusColorMap = {
-  accept: '#0BB358',
-  pending: '#FF3333',
-  shortlisted: '#D4D429',
-  inactive: '#0303FF',
-  not_shortlisted: 'black',
-};
 
 const TeacherRefer = () => {
-  const classes = useStyles({});
-  const fileRef = useRef();
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const { TabPane } = Tabs;
-  const { Option } = Select;
 
   const [moduleId, setModuleId] = useState('');
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
   const [branchList, setBranchList] = useState([]);
   const history = useHistory();
 
@@ -214,8 +61,6 @@ const TeacherRefer = () => {
   const [phoneError, setPhoneError] = useState('');
   const [cityError, setCityError] = useState(false);
   const [checkBoxError, setCheckBoxError] = useState('');
-  const [Designation, setDesignation] = useState(null);
-  const [Position, setPosition] = useState(null);
   const [Role, setRole] = useState([]);
   const [count, setCount] = useState(0);
   const [cityList, setCityList] = useState([]);
@@ -242,7 +87,6 @@ const TeacherRefer = () => {
   const [subjectTaught, SetsubjectTaught] = useState(null);
   const [branch, Setbranch] = useState(null);
 
-  const [positionapplyId, setPositionApplyId] = useState('');
 
   const [countryCode, setCountryCode] = useState('');
 
@@ -255,9 +99,9 @@ const TeacherRefer = () => {
   const columns = [
     {
       title: 'Sl.no',
-      dataIndex: 'applicant', // Use 'sno' as the dataIndex for the row number
+      dataIndex: 'applicant', 
       key: 'applicant',
-      render: (text, record, index) => index + 1, // Render the row number
+      render: (text, record, index) => index + 1, 
       render: (text, record, index) =>
         (refferListPageData.currentPage - 1) * refferListPageData.pageSize + index + 1,
     },
@@ -281,21 +125,6 @@ const TeacherRefer = () => {
       dataIndex: 'role',
       key: 'role',
     },
-    // {
-    // title: 'Experience',
-    // dataIndex: 'teaching_experience',
-    // key: 'teaching_experience',
-    // render: (text, record) => {
-    // console.log(text, record);
-    // return <span>{text} Years</span>;
-    // },
-    // },
-    // {
-    // title: 'Board',
-    // dataIndex: 'experience_in_school',
-    // key: 'experience_in_school',
-    // },
-
     {
       title: 'Subject',
       dataIndex: 'subject',
@@ -332,11 +161,9 @@ const TeacherRefer = () => {
           content = 'Shortlisted';
           color = 'orange';
         } else if (isMapped && currentProgress !== null) {
-          // Show the value of current_progress when is_mapped is true
           content = currentProgress;
           color = 'orange';
         } else {
-          // Default case when is_mapped is false
           content = 'Pending';
           color = 'red';
         }
@@ -462,7 +289,6 @@ const TeacherRefer = () => {
   const handleCity = (e) => {
     if (e) {
       const [selectedCityId, selectedCityValue] = e.split(',');
-      // You can use selectedId as needed
       getBranches(selectedCityId);
       setCity(selectedCityId);
     } else {
@@ -524,8 +350,6 @@ const TeacherRefer = () => {
   };
 
   const handleRedirect = (res) => {
-    console.log(res, 'referred_data');
-    // console.log(res, 'status');
     setAlert('success', res?.data.message);
     history.push({
       pathname: '/teacher-refer-success',
@@ -573,7 +397,6 @@ const TeacherRefer = () => {
   };
 
   const getSubjects = () => {
-    // console.log(userDetails.token)
     axios
       .get(`${endpoints.teacherReferral.subject_list}`, {
         headers: {
@@ -588,12 +411,11 @@ const TeacherRefer = () => {
         setSubject(filteredSubjects);
       })
       .catch((error) => {
-        console.log(error);
+        message.error(error.message)
       });
   };
 
   const getRoleApi = () => {
-    // console.log("fetching..............")
     axios
       .get(endpoints.userManagement.userLevelList, {
         headers: {
@@ -611,7 +433,6 @@ const TeacherRefer = () => {
       })
       .catch((error) => {
         message.error(error.message);
-        console.log(error, 'error');
       });
   };
 
@@ -624,12 +445,11 @@ const TeacherRefer = () => {
       })
       .then((result) => {
         if (result?.status) {
-          // console.log(result.data);
           setBranchList(result?.data);
         }
       })
       .catch((error) => {
-        console.log(error);
+        message.error(error.message);
       });
   };
 
@@ -642,12 +462,11 @@ const TeacherRefer = () => {
       })
       .then((result) => {
         if (result.status) {
-          // console.log(result.data);
           setCityList(result?.data);
         }
       })
       .catch((error) => {
-        console.log(error);
+        message.error(error.message);
       });
   };
 
@@ -662,7 +481,6 @@ const TeacherRefer = () => {
   }, [refferListPageData.currentPage, count]);
 
   const handleSubmit = () => {
-    // setLoading(true);
     if (cityError) {
       message.error(cityError);
       setLoading(false);
@@ -719,7 +537,6 @@ const TeacherRefer = () => {
     } else {
       const contact_no = `${countryCode}${phone}`;
       const formData = new FormData();
-      // formData.append('position_apply', positionapplyId);
       formData.append('candidate_name', username);
       formData.append('email', mail);
       formData.append('candidate_phone_number', contact_no);
@@ -727,11 +544,8 @@ const TeacherRefer = () => {
       formData.append('teaching_experience', experience);
       formData.append('experience_in_school', board);
       formData.append('branch_name', branch);
-      // formData.append('designation', '');
       formData.append('subject', subjectTaught);
       formData.append('referring_city_branch', city);
-      // formData.append('recruiter', '');
-      // formData.append('position_apply', '');
       formData.append('erp_id', userDetails?.erp);
       formData.append('resume', selectedFile);
       formData.append(
@@ -745,7 +559,6 @@ const TeacherRefer = () => {
         objectFromFormData[key] = value;
       });
 
-      console.log(objectFromFormData);
 
       if (username && mail && phone && city && dateOfBirth) {
         setLoading(true);
@@ -757,12 +570,10 @@ const TeacherRefer = () => {
           })
           .then((results) => {
             setAlert('success', results?.message);
-            console.log(results, 'results');
             handleRedirect(results);
             setLoading(false);
           })
           .catch((error) => {
-            console.log(error);
             setLoading(false);
             message.error(error?.message || 'Network Error!');
           });
@@ -790,7 +601,6 @@ const TeacherRefer = () => {
         }
       );
       if (result.status === 200) {
-        // console.log(result.data);
         setRefferListPageData({
           ...refferListPageData,
           totalCount: result.data.count,
@@ -802,20 +612,18 @@ const TeacherRefer = () => {
         message.error(result?.data?.message);
       }
     } catch (error) {
-      console.log(error, 'fetchRefferList Error');
+    message.error(error.message);
       setLoading(false);
     }
   };
 
   const handledateofbirth = (e) => {
     const formattedDate = moment(e).format('YYYY-MM-DD');
-    console.log(formattedDate);
     SetdateOfBirth(formattedDate);
   };
 
   const countryCodeOptions = countryList?.map((each) => (
     <Select.Option key={each?.country} value={each?.callingCode}>
-      {/* {each?.country} ( */}
       {each?.callingCode}
     </Select.Option>
   ));
@@ -856,7 +664,6 @@ const TeacherRefer = () => {
   };
 
   const showModal = () => {
-    console.log('showModal called');
     setIsModalOpen(true);
   };
 
@@ -874,7 +681,6 @@ const TeacherRefer = () => {
     showUploadList: false,
     disabled: false,
     accept: allowedFiles.join(),
-    // '.xls,.xlsx',
     multiple: false,
     onRemove: () => {
       setSelectedFile(null);
@@ -883,7 +689,6 @@ const TeacherRefer = () => {
       const file = e.dataTransfer.files;
       setSelectedFile(null);
       const type = '.' + file[0]?.name.split('.')[file[0]?.name.split('.').length - 1];
-      console.log(type, allowedFiles, 'inside file upload');
       if (allowedFiles.includes(type)) {
         setSelectedFile(...file);
         setFileTypeError(false);
@@ -952,7 +757,6 @@ const TeacherRefer = () => {
                         </div>
                         <div className='form-div' style={{ marginTop: '50px' }}>
                           <div className='header-refer-container'>
-                            {/* <p className='referHeader'></p> */}
                             <p className='small-header'>
                               Take advantage of the Teachers Referral Programme
                             </p>
@@ -981,7 +785,7 @@ const TeacherRefer = () => {
                                       pattern='[A-Za-z]+'
                                       title='Please enter only alphabets'
                                       onKeyPress={(e) => {
-                                        const pattern = /^[A-Za-z\s]+$/; // Including \s to allow spaces
+                                        const pattern = /^[A-Za-z\s]+$/; 
                                         const inputChar = String.fromCharCode(e.charCode);
                                         if (!pattern.test(inputChar)) {
                                           e.preventDefault();
@@ -1374,8 +1178,6 @@ const TeacherRefer = () => {
                                 <small style={{ textAlign: 'left' }}>
                                   <b>Note :</b> Only ['.pdf', '.PDF', '.docx', '.doc']
                                   files are allowed
-                                  {/* <br/> */}
-                                  {/* <b style={{color:"red"}}>Note :</b> <span style={{color:"red"}}>File </span> */}
                                 </small>
                               </div>
                               <br />
@@ -1485,7 +1287,6 @@ const TeacherRefer = () => {
                         description={
                           <span>
                             No Data.
-                            {/* <br />" Stay tuned for the updates! " */}
                           </span>
                         }
                       />
@@ -1504,7 +1305,7 @@ const TeacherRefer = () => {
                             currentPage: value,
                           })
                         }
-                        showSizeChanger={false} // Optional: hide the page size changer
+                        showSizeChanger={false} 
                         showQuickJumper={false}
                         showTotal={(total, range) =>
                           `${range[0]}-${range[1]} of ${total} items`
