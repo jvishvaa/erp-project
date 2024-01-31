@@ -91,7 +91,7 @@ const TeacherRefer = () => {
       title: 'Sl.no',
       dataIndex: 'applicant',
       key: 'applicant',
-      render: (text, record, index) => index + 1,
+      // render: (text, record, index) => index + 1,
       render: (text, record, index) =>
         (refferListPageData.currentPage - 1) * refferListPageData.pageSize + index + 1,
     },
