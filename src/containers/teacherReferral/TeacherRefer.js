@@ -45,7 +45,7 @@ const TeacherRefer = () => {
 
   const [username, setUsername] = useState('');
   const [city, setCity] = useState(null);
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState(null);
   const [mail, setMail] = useState('');
   const [refferList, setRefferList] = useState([]);
   const [usernameError, setUsernameError] = useState(false);
@@ -69,7 +69,7 @@ const TeacherRefer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
   const [fileTypeError, setFileTypeError] = useState(null);
-  const [dateOfBirth, SetdateOfBirth] = useState('');
+  const [dateOfBirth, SetdateOfBirth] = useState(null);
 
   const [subject, setSubject] = useState([]);
   const [userRole, setUserRole] = useState(null);
@@ -79,6 +79,8 @@ const TeacherRefer = () => {
   const [branch, Setbranch] = useState(null);
 
   const [countryCode, setCountryCode] = useState('');
+
+  const [buttonDisable, setButtonDisable] = useState(true)
 
   const formRef = useRef();
 
@@ -184,8 +186,22 @@ const TeacherRefer = () => {
   ];
 
   const handleUserName = (e) => {
-    validateUserName(e?.target?.value);
-    setUsername(e?.target?.value);
+    e.target.value.trim()
+    if(e){
+      const trimmedValue = e.target.value.trim();
+    
+      // Check if the trimmed value is not blank and does not exceed 100 characters
+      if (trimmedValue !== "" ) {
+        validateUserName(trimmedValue);
+        setUsername(trimmedValue);
+      } else {
+        // If the value is blank or exceeds 100 characters, set the username to null
+        setUsername(null);
+      }
+    } else {
+      // If e is undefined, set the username to null
+      setUsername(null);
+    }
   };
 
   const validateUserName = (value) => {
@@ -212,17 +228,30 @@ const TeacherRefer = () => {
       });
       Setbranch(null);
       setBranchList([]);
+      setCity(null);
     }
   };
 
   const handlePhone = (e) => {
-    phonevalidate(e?.target?.value);
+    if(e){
+      phonevalidate(e?.target?.value);
     setPhone(e?.target?.value);
+    }
+    else{
+
+      setPhone(null)
+    }
+    
   };
 
   const handleMail = (e) => {
-    setMail(e?.target?.value);
+    if(e){
+      setMail(e?.target?.value);
     emailValidate(e?.target?.value);
+    }
+    else{
+      setMail(null);
+    }
   };
 
   const handleCountryCode = (e) => {
@@ -285,15 +314,37 @@ const TeacherRefer = () => {
   };
 
   const handleUserRole = (e) => {
-    setUserRole(e);
+    if(e){
+      setUserRole(e);
+    }
+    else{
+      setUserRole(null)
+    }
   };
 
   const handleExperience = (e) => {
-    Setexperience(e.target.value);
+    if(e){
+      const trimmedValue = e.target.value.trim();
+      if(trimmedValue !==""){
+
+        Setexperience(e.target.value);
+      }
+      else{
+        Setexperience(null)
+      }
+    }
+    else{
+      Setexperience(null)
+    }
   };
 
   const handleBoard = (e) => {
-    setBoard(e.toLowerCase());
+    if(e){
+      setBoard(e.toLowerCase());
+    }
+    else{
+      setBoard(null)
+    }
   };
 
   const handleSubjectTaught = (e) => {
@@ -301,12 +352,18 @@ const TeacherRefer = () => {
       const [selectedSubjectId, selectedSubjectTaught] = e.split(',');
       SetsubjectTaught(selectedSubjectId);
     }
+    else{
+      SetsubjectTaught(null)
+    }
   };
 
   const handleBranch = (e) => {
     if (e) {
       const [selectedBranchId, SelectedBranchName] = e.split(',');
       Setbranch(selectedBranchId);
+    }
+    else{
+      Setbranch(null)
     }
   };
 
@@ -386,16 +443,18 @@ const TeacherRefer = () => {
     getSubjects();
   }, []);
 
+
   useEffect(() => {
     getData(refferListPageData.currentPage);
   }, [refferListPageData.currentPage, count]);
 
   const handleSubmit = () => {
-    if (username == '') {
+    if (username == null) {
       message.error('Please Enter Candidate Name');
       setLoading(false);
       return;
-    } else if (userRole === null) {
+    }
+     else if (userRole === null) {
       message.error('Please select the Candidate Role');
       setLoading(false);
       return;
@@ -411,7 +470,11 @@ const TeacherRefer = () => {
       message.error('Please select the Subject');
       setLoading(false);
       return;
-    } else if (phone == '') {
+    } else if(phone.length <10){
+      message.error("Please enter a valid 10-digit phone number")
+      setLoading(false)
+      return
+    } else if (phone == null) {
       message.error('Please Enter the Phone Number');
       setLoading(false);
       return;
@@ -419,7 +482,7 @@ const TeacherRefer = () => {
       message.error('Please Enter the Email Address');
       setLoading(false);
       return;
-    } else if (dateOfBirth === '') {
+    } else if (dateOfBirth === '' || dateOfBirth === null) {
       message.error('Please select the Date of Birth');
       setLoading(false);
       return;
@@ -523,8 +586,13 @@ const TeacherRefer = () => {
   };
 
   const handledateofbirth = (e) => {
-    const formattedDate = moment(e).format('YYYY-MM-DD');
-    SetdateOfBirth(formattedDate);
+    if(e){
+      const formattedDate = moment(e).format('YYYY-MM-DD');
+     SetdateOfBirth(formattedDate);
+    }
+    else{
+      SetdateOfBirth(null)
+    }
   };
 
   const countryCodeOptions = countryList?.map((each) => (
@@ -564,8 +632,28 @@ const TeacherRefer = () => {
   ));
 
   const onchangeCheckbox = (e) => {
-    setChecked(e.target.checked);
-    setCheckBoxError('');
+      if(e.target.checked===true) {
+
+        
+
+        if(username && userRole && experience && board && subjectTaught && phone && dateOfBirth && mail && city && branch && selectedFile){
+          setButtonDisable(false)
+          setChecked(true);
+          setCheckBoxError('');
+        }
+        else{
+          setChecked(false)
+          setButtonDisable(true)
+          message.error("Please Fill All The Fields")
+
+        }
+
+      }
+
+     
+      else{
+      }
+    
   };
 
   const showModal = () => {
@@ -697,6 +785,7 @@ const TeacherRefer = () => {
                                         }
                                       }}
                                       autoComplete='off'
+                                      maxLength={100}
                                     />
                                   </Form.Item>
                                 </Col>
@@ -1157,8 +1246,8 @@ const TeacherRefer = () => {
                                   type='primary'
                                   shape='round'
                                   size='large'
-                                  disabled={!isChecked}
                                   onClick={handleSubmit}
+                                  disabled={buttonDisable}
                                 >
                                   Submit
                                 </Button>
