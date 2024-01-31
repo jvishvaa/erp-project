@@ -183,39 +183,9 @@ const TeacherRefer = () => {
     { id: 5, name: 'IB' },
   ];
 
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Online Class' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Attend Online Class') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
-
   const handleUserName = (e) => {
     validateUserName(e?.target?.value);
     setUsername(e?.target?.value);
-  };
-
-  const validateCity = (value) => {
-    if (!nameRegex.test(value) && value !== '') {
-      setCityError('Invalid City Name ie. Only Alphabets');
-      setValid(false);
-      return false;
-    } else {
-      setCityError('');
-      setValid(true);
-      return true;
-    }
   };
 
   const validateUserName = (value) => {
