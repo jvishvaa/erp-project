@@ -1,8 +1,5 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import {
-  Button,
-  Paper,
-} from '@material-ui/core';
+import { Paper } from '@material-ui/core';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import endpoints from 'config/endpoints';
@@ -20,25 +17,19 @@ import {
   Select,
   Upload,
   message,
-  Button as ButtonAntd,
+  Button,
   Breadcrumb,
   Input,
   Col,
   Space,
   DatePicker,
 } from 'antd';
-import {
-  FileExcelTwoTone,
-  ReloadOutlined,
-  UploadOutlined,
-} from '@ant-design/icons';
+import { FileExcelTwoTone, ReloadOutlined, UploadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import './referTeacher.scss';
 import axios from 'axios';
 import countryList from 'containers/user-management/list';
 import { AccessKey } from '../../v2/cvboxAccesskey';
-
-
 
 const TeacherRefer = () => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -87,7 +78,6 @@ const TeacherRefer = () => {
   const [subjectTaught, SetsubjectTaught] = useState(null);
   const [branch, Setbranch] = useState(null);
 
-
   const [countryCode, setCountryCode] = useState('');
 
   const formRef = useRef();
@@ -99,9 +89,9 @@ const TeacherRefer = () => {
   const columns = [
     {
       title: 'Sl.no',
-      dataIndex: 'applicant', 
+      dataIndex: 'applicant',
       key: 'applicant',
-      render: (text, record, index) => index + 1, 
+      render: (text, record, index) => index + 1,
       render: (text, record, index) =>
         (refferListPageData.currentPage - 1) * refferListPageData.pageSize + index + 1,
     },
@@ -172,12 +162,20 @@ const TeacherRefer = () => {
           content = 'Joined';
           color = 'green';
         }
+        else if(currentProgress === "not_shortlisted"){
+          content = 'Rejected';
+          color = "black"
+        }
+        else if(currentProgress == "pending"){
+          content = "Pending"
+          color = "red"
+        }
 
         return <span style={{ color }}>{content}</span>;
       },
     },
   ];
-  
+
   const Board = [
     { id: 1, name: 'CBSE' },
     { id: 2, name: 'ICSE' },
@@ -354,7 +352,7 @@ const TeacherRefer = () => {
         setSubject(res?.data);
       })
       .catch((error) => {
-        message.error(error.message)
+        message.error(error.message);
       });
   };
 
@@ -424,31 +422,15 @@ const TeacherRefer = () => {
   }, [refferListPageData.currentPage, count]);
 
   const handleSubmit = () => {
-    if (cityError) {
-      message.error(cityError);
-      setLoading(false);
-      return;
-    } else if (usernameError) {
-      message.error(usernameError);
-      setLoading(false);
-      return;
-    } else if (phoneError) {
-      message.error(phoneError);
-      setLoading(false);
-      return;
-    } else if (mailError) {
-      message.error(mailError);
-      setLoading(false);
-      return;
-    } else if (dateOfBirth === '') {
-      message.error('Please select the Date of Birth');
+    if (username == '') {
+      message.error('Please Enter Candidate Name');
       setLoading(false);
       return;
     } else if (userRole === null) {
-      message.error('Please select the User Role');
+      message.error('Please select the Candidate Role');
       setLoading(false);
       return;
-    } else if (experience === '') {
+    } else if (experience == null) {
       message.error('Please Enter the Year of Experience');
       setLoading(false);
       return;
@@ -460,7 +442,19 @@ const TeacherRefer = () => {
       message.error('Please select the Subject');
       setLoading(false);
       return;
-    } else if (city === '') {
+    } else if (phone == '') {
+      message.error('Please Enter the Phone Number');
+      setLoading(false);
+      return;
+    } else if (mail == '') {
+      message.error('Please Enter the Email Address');
+      setLoading(false);
+      return;
+    } else if (dateOfBirth === '') {
+      message.error('Please select the Date of Birth');
+      setLoading(false);
+      return;
+    } else if (city === null) {
       message.error('Please select the City');
       setLoading(false);
       return;
@@ -501,7 +495,6 @@ const TeacherRefer = () => {
       formData.forEach((value, key) => {
         objectFromFormData[key] = value;
       });
-
 
       if (username && mail && phone && city && dateOfBirth) {
         setLoading(true);
@@ -555,7 +548,7 @@ const TeacherRefer = () => {
         message.error(result?.data?.message);
       }
     } catch (error) {
-    message.error(error.message);
+      message.error(error.message);
       setLoading(false);
     }
   };
@@ -728,7 +721,7 @@ const TeacherRefer = () => {
                                       pattern='[A-Za-z]+'
                                       title='Please enter only alphabets'
                                       onKeyPress={(e) => {
-                                        const pattern = /^[A-Za-z\s]+$/; 
+                                        const pattern = /^[A-Za-z\s]+$/;
                                         const inputChar = String.fromCharCode(e.charCode);
                                         if (!pattern.test(inputChar)) {
                                           e.preventDefault();
@@ -1085,20 +1078,22 @@ const TeacherRefer = () => {
                               </Form>
                               <br />
                               <div style={{ width: '60%' }}>
-                                <div>
-                                  <span className='th-grey th-14 '>
-                                    Upload the resume ( size must be less than 10 MB )*
+                                <div style={{marginBottom : "5px"}}>
+                                  <span className='th-grey th-14 ' >
+                                    Upload the resume ( size less than 10 MB )*
                                   </span>
                                 </div>
 
-                                <Upload {...draggerProps}>
-                                  <ButtonAntd
-                                    icon={<UploadOutlined />}
-                                    style={{ width: '370%' }}
-                                  >
-                                    Select File
-                                  </ButtonAntd>
-                                </Upload>
+                                
+                                  <Upload {...draggerProps}>
+                                    <Button
+                                      icon={<UploadOutlined />}
+                                      style={{ width: '289%' }}
+                                    >
+                                      Select File
+                                    </Button>
+                                  </Upload>
+                                
                                 <div
                                   style={{
                                     marginTop: '2px',
@@ -1119,8 +1114,8 @@ const TeacherRefer = () => {
                               </div>
                               <div style={{ width: '58%', marginTop: '10px' }}>
                                 <small style={{ textAlign: 'left' }}>
-                                  <b>Note :</b> Only ['.pdf', '.PDF', '.docx', '.doc']
-                                  files are allowed
+                                  <b>Note :</b> Only ['.pdf', '.docx', '.doc']
+                                  files are allowed.
                                 </small>
                               </div>
                               <br />
@@ -1159,10 +1154,17 @@ const TeacherRefer = () => {
                                     <p>
                                       <b>Incentives for Teachers: </b>
                                       Teachers will be eligible for incentives based on
-                                      their tenure: a) 2 to 4 years - ₹3,000 b) 5 years -
-                                      ₹75,000 c) 7 years - ₹7,000 d) 10 years and beyond -
-                                      ₹10,000 <br />
+                                      their tenure: 
+                                      <br/>
+                                      a) 2 to 4 years - ₹3,000 
+                                      <br/>
+                                      b) 5 years - ₹5,000 
+                                      <br/>
+                                      c) 7 years - ₹7,000 
                                       <br />
+                                      d) 10 years and beyond - ₹10,000 
+                                      <br />
+                                      <br/>
                                       <b>Referral Incentive:</b> Upon a teacher joining
                                       and successfully completing 30 days, the referring
                                       staff member will receive an incentive for the
@@ -1182,7 +1184,7 @@ const TeacherRefer = () => {
                                 {checkBoxError}
                               </div>
                               <div className='submit-btn-wrapper'>
-                                <ButtonAntd
+                                <Button
                                   type='primary'
                                   shape='round'
                                   size='large'
@@ -1190,7 +1192,7 @@ const TeacherRefer = () => {
                                   onClick={handleSubmit}
                                 >
                                   Submit
-                                </ButtonAntd>
+                                </Button>
                               </div>
                             </div>
                           </div>
@@ -1226,13 +1228,7 @@ const TeacherRefer = () => {
                     />
                   ) : (
                     <div className='d-flex justify-content-center mt-5 th-grey'>
-                      <Empty
-                        description={
-                          <span>
-                            No Data.
-                          </span>
-                        }
-                      />
+                      <Empty description={<span>No Data.</span>} />
                     </div>
                   )}
 
@@ -1248,7 +1244,7 @@ const TeacherRefer = () => {
                             currentPage: value,
                           })
                         }
-                        showSizeChanger={false} 
+                        showSizeChanger={false}
                         showQuickJumper={false}
                         showTotal={(total, range) =>
                           `${range[0]}-${range[1]} of ${total} items`
