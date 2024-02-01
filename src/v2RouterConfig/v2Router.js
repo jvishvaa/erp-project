@@ -389,7 +389,7 @@ const V2Router = () => {
                           {({ match }) => <SignatureUploadv2 match={match} />}
                         </Route>
                         ,
-                        {/*<Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
+                        {/* <Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
                           {({ match }) => <Devices match={match} />}
                         </Route>
                         <Route path='/enterprise-management/:enterPriseName/:enterPriseId/policies'>
@@ -397,8 +397,8 @@ const V2Router = () => {
                         </Route>
                         <Route path='/enterprise-management/enterprises'>
                           {({ match }) => <EnterPrises match={match} />}
-                        </Route>
-                        v1 router */}
+                        </Route> */}
+                        {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}

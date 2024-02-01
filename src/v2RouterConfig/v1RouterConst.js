@@ -353,6 +353,8 @@ import WeeklyQuizPerformance from 'containers/assessment-central/assessment-repo
 import HolidayMark from 'containers/attendance/holidaymark';
 import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
+import TeacherReferForm from "containers/teacherReferral/TeacherRefer.js"
+import TeacherReferSuccess from "containers/teacherReferral/TeacherReferSuccess.js"
 import StudentCountReport from 'containers/student-strength/studentCountReport/index.jsx';
 import TeacherAttendance from 'containers/teacherattendance/teacher';
 import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
@@ -470,6 +472,7 @@ import TeacherCalendar from 'containers/attendance/teacherCalendar';
 import EventsMarkOld from 'containers/attendance/eventsmarkOld';
 import HolidayMarkOld from 'containers/attendance/holidayMarkOld';
 import StudentHwConfig from 'containers/homework/student-homework/StudentHwConfig';
+
 
 import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
@@ -1649,6 +1652,12 @@ const V1Router = [
   <Route path='/walletbulkupload'>{({ match }) => <WalletBulk match={match} />}</Route>,
   <Route path='/studentrefer'>{({ match }) => <StudentRefer match={match} />}</Route>,
   <Route path='/successrefer'>{({ match }) => <ReferSuccess match={match} />}</Route>,
+  <Route path='/teacher-refer'>
+    {({ match }) => <TeacherReferForm match={match} />}
+  </Route>,
+  <Route path='/teacher-refer-success'>
+    {({ match }) => <TeacherReferSuccess match={match} />}
+  </Route>,
   <Route path='/holidaymarking'>{({ match }) => <HolidayMark match={match} />}</Route>,
   <Route path='/eventmarking'>{({ match }) => <EventsMark match={match} />}</Route>,
   <Route path='/holidaymarkingOld'>

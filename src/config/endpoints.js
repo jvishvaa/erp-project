@@ -923,6 +923,15 @@ export default {
     studentConditionReferal: '/erp_user/student-referral-condition/',
   },
 
+  teacherReferral: {
+    referred_applicants: `${cvbox}/qbox/apiV2/referral/referral-form/`,
+    referral_position_list : `${cvbox}/qbox/apiV2/recruiter/referral-position-list/`,
+    candidate_refferal : `${cvbox}/qbox/apiV2/referral/referral-form/`,
+    city_list : `${cvbox}/qbox/recruiter/CityListAPIView/`,
+    branch_list : `${cvbox}/qbox/authenticate/branchcity/`,
+    subject_list : `${cvbox}/qbox/apiV2/referral/subject-list/`
+    },
+
   period: {
     getDate: '/period/calendar/',
     periodType: '/period/period_type/',

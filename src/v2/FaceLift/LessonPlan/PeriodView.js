@@ -154,7 +154,9 @@ const PeriodView = () => {
           board_id: boardId,
         });
       } else {
-        fetchSubjectData();
+        fetchSubjectData({
+          acad_session: selectedBranch?.id,
+        });
       }
     }
   }, [boardId]);

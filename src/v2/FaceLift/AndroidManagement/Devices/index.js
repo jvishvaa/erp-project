@@ -113,11 +113,10 @@ const Devices = () => {
     axios
       .get(`/device/get-devices/`, { params: { ...params } })
       .then((res) => {
-        console.log('device', res);
         if (res?.status === 200) {
           setDeviceList(res?.data?.data?.devices);
           setPageDetails({ ...pageDetails, total: res?.data?.total });
-          message.success(res?.data?.message);
+          // message.success(res?.data?.message);
         }
       })
       .catch((error) => {
@@ -137,7 +136,6 @@ const Devices = () => {
   };
 
   const handleCreateDevice = () => {
-    alert('dfjskdjf');
     const formValues = deviceFormRef.current.getFieldsValue();
     let payload = new FormData();
     payload.append('name', formValues?.name);
