@@ -494,7 +494,7 @@ import axios from 'axios';
 import ChangePassword from './v2/FaceLift/ChangePassword';
 import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig/PhysicalEducation/CreatePeReportConfig';
 import { Modal } from 'antd';
-import TeacherReferForm from "./containers/teacherReferral/TeacherRefer.js";
+import TeacherReferForm from './containers/teacherReferral/TeacherRefer.js';
 import TeacherReferSuccess from './containers/teacherReferral/TeacherReferSuccess.js';
 import DuePopup from 'v2/FaceLift/myComponents/DuePopup';
 import endpointsV2 from 'v2/config/endpoints';
@@ -508,20 +508,15 @@ function App({ alert, isMsAPI, erpConfig }) {
     isMsAPI();
     erpConfig();
     fetchConfigData();
-    if (localStorage.getItem('duePopup') === null) {
-      getStudentDueData({
-        branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
-        session_year: JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
-          ?.session_year,
-        erp_id: userDetails?.erp,
-      });
-    }
+
+    fetchFinanceSession();
   }, []);
 
   const [theme, setTheme] = useState(() => themeGenerator());
   const [expTime, setExpTime] = useState(null);
   const [popupData, setPopupData] = useState([]);
   const [popupSetting, setPopupSetting] = useState([]);
+  const [financeSessionList, setFinanceSessionList] = useState([]);
   const isV2 = IsV2Checker();
 
   const history = useHistory();
@@ -637,6 +632,44 @@ function App({ alert, isMsAPI, erpConfig }) {
         }
       });
   };
+
+  const fetchFinanceSession = () => {
+    if (localStorage.getItem('financeSessions') === null) {
+      axiosInstance
+        .get(`${endpointsV2.adminDashboard.financeYearList}`)
+        .then((res) => {
+          let sessionList = res.data;
+          localStorage.setItem('financeSessions', JSON.stringify(res.data));
+          setFinanceSessionList(sessionList);
+          let branchId = sessionList?.filter((each) => each.is_current_session)[0]
+            ?.branches[0]?.branch_id;
+          if (localStorage.getItem('duePopup') === null) {
+            getStudentDueData({
+              branch_id: branchId,
+              session_year: JSON.parse(sessionStorage.getItem('selected_branch'))
+                ?.session_year?.session_year,
+              erp_id: userDetails?.erp,
+            });
+          }
+        })
+        .catch(() => {});
+    } else {
+      let sessionList = JSON.parse(localStorage.getItem('financeSessions'));
+
+      setFinanceSessionList(sessionList);
+      let branchId = sessionList?.filter((each) => each.is_current_session)[0]
+        ?.branches[0]?.branch_id;
+      if (localStorage.getItem('duePopup') === null) {
+        getStudentDueData({
+          branch_id: branchId,
+          session_year: JSON.parse(sessionStorage.getItem('selected_branch'))
+            ?.session_year?.session_year,
+          erp_id: userDetails?.erp,
+        });
+      }
+    }
+  };
+
   const getStudentDueData = (params = {}) => {
     axiosInstance
       .get(`${endpointsV2.popupSetting.checkDueAmount}`, {
@@ -646,7 +679,7 @@ function App({ alert, isMsAPI, erpConfig }) {
         setPopupData(response.data);
         if (response.data?.length > 0) {
           handlePopupSetting({
-            branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
+            branch_id: params?.branch_id,
             finance_session_year: JSON.parse(sessionStorage.getItem('selected_branch'))
               ?.session_year?.session_year,
             erp_id: userDetails?.erp,
@@ -679,7 +712,11 @@ function App({ alert, isMsAPI, erpConfig }) {
         <title>Eduvate</title>
         <link rel='icon' href={logo} />
       </Helmet>
-      <DuePopup popupData={popupData} popupSetting={popupSetting} />
+      <DuePopup
+        popupData={popupData}
+        popupSetting={popupSetting}
+        financeSessionList={financeSessionList}
+      />
 
       {idleTimeOut && <IdleTieOutComp idleTimeOut={idleTimeOut} />}
       {!isV2 ? (
