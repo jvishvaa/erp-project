@@ -4,7 +4,7 @@ import _ from 'lodash';
 import axiosInstance from 'config/axios';
 import endpoints from 'v2/config/endpoints';
 
-const DuePopup = ({ popupData, popupSetting }) => {
+const DuePopup = ({ popupData, popupSetting, financeSessionList }) => {
   const userDetails = localStorage?.getItem('userDetails')
     ? JSON.parse(localStorage?.getItem('userDetails'))
     : {};
@@ -42,19 +42,14 @@ const DuePopup = ({ popupData, popupSetting }) => {
   };
 
   const fetchFinanceSession = (userDetails) => {
-    axiosInstance
-      .get(`${endpoints.adminDashboard.financeYearList}`)
-      .then((res) => {
-        let sessionList = res.data;
+    let sessionList = financeSessionList;
 
-        let financeSessionId = sessionList?.filter((each) => {
-          return each.academic_session_id == branchDetails?.session_year?.id;
-        })[0]?.id;
-        console.log({ financeSessionId });
-        setFinanceSession(financeSessionId);
-        handlePaymentLink(userDetails, financeSessionId);
-      })
-      .catch(() => {});
+    let financeSessionId = sessionList?.filter((each) => {
+      return each.academic_session_id == branchDetails?.session_year?.id;
+    })[0]?.id;
+
+    setFinanceSession(financeSessionId);
+    handlePaymentLink(userDetails, financeSessionId);
   };
   const handlePaymentLink = (userData, financeSessionId) => {
     if (popupData?.length > 0) {
@@ -68,7 +63,9 @@ const DuePopup = ({ popupData, popupSetting }) => {
         .flat(Infinity);
       // setDuePopup(true);
       let obj = {};
-      obj.branch_id = branchDetails?.branch?.id;
+      obj.branch_id = financeSessionList?.filter(
+        (each) => each.is_current_session
+      )[0]?.branches[0]?.branch_id;
       obj.erp_id = userDetails?.erp;
       obj.grade_id = userData?.mapping_bgs?.grade?.id;
       obj.section_id = userData?.mapping_bgs?.section?.id;
