@@ -221,25 +221,25 @@ const StudentInformation = ({
             </Col>
             <Col md={6} className='py-2'>
               <Form.Item
-                name={'date_of_birth'}
+                name={studentFormValues?.date_of_birth?._isValid ? 'date_of_birth' : ""}
                 rules={[{ required: true, message: 'Date of Birth is required!' }]}
                 label='Date of Birth'
               >
                 <DatePicker
                   className='w-100'
                   inputReadOnly={true}
-                  onChange={(e) => {
+                  onChange={(e) =>
                     studentForm.current.setFieldsValue({
                       age: moment().diff(moment(e), 'years'),
-                    });
-                  }}
+                    })
+                  }
                 />
               </Form.Item>
             </Col>
             <Col md={2} className='py-2'>
               <Form.Item
                 rules={[{ required: true, message: 'Age is required!' }]}
-                name={'age'}
+                name={"age"}
                 label='Age'
               >
                 <InputNumber className='w-100' disabled />
