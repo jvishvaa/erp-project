@@ -25,13 +25,13 @@ const GradewiseDiaryReport = () => {
   const [sectionwiseDiaryData, setSectionwiseDiaryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingInner, setLoadingInner] = useState(false);
+  const [configOn, setConfigOn] = useState(null);
 
   const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
     }
   };
-
   const handleDiaryType = (e) => {
     setDiaryType(Number(e));
   };
@@ -45,6 +45,7 @@ const GradewiseDiaryReport = () => {
         diary_type: diaryType,
         date: date,
         grade_id: record.grade_id,
+        configOn : configOn
       });
     }
 
@@ -56,7 +57,10 @@ const GradewiseDiaryReport = () => {
     setExpandedRowKeys([]);
     setLoading(true);
     axios
-      .get(`${endpoints.diaryReport.gradewiseReport}`, {
+      .get(`${endpoints.diaryReport.gradewiseReport.replace(
+        '<version>',
+        configOn ? 'v3' : 'v2'  
+      )}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
@@ -78,7 +82,10 @@ const GradewiseDiaryReport = () => {
   const fetchSectionwiseReport = (params = {}) => {
     setLoadingInner(true);
     axios
-      .get(`${endpoints.diaryReport.sectionwiseReport}`, {
+      .get(`${endpoints.diaryReport.sectionwiseReport.replace(
+        '<version>',
+        configOn ? 'v3' : 'v2'  
+      )}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
@@ -101,7 +108,6 @@ const GradewiseDiaryReport = () => {
       {
         dataIndex: 'sections_count',
         align: 'center',
-        width: '25%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
@@ -113,19 +119,21 @@ const GradewiseDiaryReport = () => {
       {
         dataIndex: 'diary_count',
         align: 'center',
-        width: '25%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
         dataIndex: 'pending_diaries',
         align: 'center',
-        width: '20%',
         render: (data) => <span className='th-black-2'>{data}</span>,
+      },
+      {
+        dataIndex: 'sub_diary_count',
+        align: 'center',
+        render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
       },
       {
         title: 'icon',
         align: 'center',
-        width: '5%',
         render: () => <RightOutlined className='th-grey th-pointer' />,
       },
     ];
@@ -188,11 +196,18 @@ const GradewiseDiaryReport = () => {
   };
 
   useEffect(() => {
+    if(history?.location?.state?.newTimeTable){
+      setConfigOn(true)
+    }
+    else{
+      setConfigOn(false)
+    }
     if (date) {
       fetchGradewiseReport({
         acad_session_id: selectedBranch?.id,
         diary_type: diaryType,
         date: date,
+        configOn : configOn
       });
     }
   }, [date, diaryType]);
@@ -235,28 +250,31 @@ const GradewiseDiaryReport = () => {
       title: <span className='th-white pl-md-5 th-fw-700 '>GRADE</span>,
       dataIndex: 'grade_name',
       align: 'left',
-      width: '25%',
+      width : "25%",
       render: (data) => <span className='pl-md-5 th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL SECTIONS</span>,
       dataIndex: 'section_count',
       align: 'center',
-      width: '25%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL ASSIGNED</span>,
       dataIndex: 'diary_count',
       align: 'center',
-      width: '25%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PENDING</span>,
       dataIndex: 'pending_diaries',
       align: 'center',
-      width: '20%',
+      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Subsidary Diary</span>,
+      dataIndex: 'sub_diary_count',
+      align: 'center',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
   ];
@@ -346,7 +364,7 @@ const GradewiseDiaryReport = () => {
               expandable={{ expandedRowRender }}
               dataSource={gradewiseDiaryData}
               pagination={false}
-              expandIconColumnIndex={4}
+              expandIconColumnIndex={5}
               expandedRowKeys={expandedRowKeys}
               onExpand={onTableRowExpand}
               expandIcon={({ expanded, onExpand, record }) =>

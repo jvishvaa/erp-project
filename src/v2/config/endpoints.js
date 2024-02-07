@@ -99,7 +99,9 @@ export default {
     homeworkReport: `${msReportsUrl}/api/reports/v1/homework-stats/`,
     curriculumnWidget: `${msReportsUrl}/api/acad_performance/grade-subject-wise-curriculum-completion-widget/`,
     diaryStats: `${msReportsUrl}/api/reports/teacher_dsh_todays_diary/`,
+    diaryStatsV2: `${msReportsUrl}/api/reports/teacher-dsh-todays-diary-v2/`,
     todaysClass: `${msReportsUrl}/api/reports/teacher_retrieve_daily_periods/`,
+    todaysClassV2: `${msReportsUrl}/api/reports/teacher-retrieve-daily-periods-v2/`,
     studentsAttendance: `${msReportsUrl}/api/reports/teacher_dsh_st_attendance/`,
     activities: `${newBlogURL}/api/get_activities_dashboard/`,
     curriculumReport: `${msReportsUrl}/api/reports/td-curriculum-report/`,
@@ -126,6 +128,7 @@ export default {
     homeworkReport: `${msReportsUrl}/api/reports/dashboard_student_hw_performance/`,
     diaryStats: `${msReportsUrl}/api/reports/diary_homework_count/`,
     todaysTimeTable: `${msReportsUrl}/api/reports/retrieve_daily_periods/`,
+    todaysTimeTableV2: `${msReportsUrl}/api/reports/retrieve-daily-periods-v2/`,
     classwisehomeworkReport: `${msReportsUrl}/api/reports/teacher_dsh_homeworks/`,
   },
   assessmentDashboard: {
@@ -184,8 +187,8 @@ export default {
 
   diaryReport: {
     dashboardDiaryreport: `${msReportsUrl}/api/reports/v2/dashboard/diary/`,
-    gradewiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/view/`,
-    sectionwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/view/`,
+    gradewiseReport: `${msReportsUrl}/api/reports/<version>/diary/grade/view/`,
+    sectionwiseReport: `${msReportsUrl}/api/reports/<version>/diary/grade/section/view/`,
     subjectwiseReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/view/`,
     subjectTeacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/view/`,
     teacherReport: `${msReportsUrl}/api/reports/v2/diary/grade/section/subject/teacher/data/view/`,
