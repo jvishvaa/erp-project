@@ -88,7 +88,7 @@ const DiaryStats = ({ newTimeTable }) => {
                 state: {
                   date: moment().format('YYYY-MM-DD'),
                   diaryType: 2,
-                  newTimeTable: newTimeTable,
+                  newTimeTable,
                 },
               })
             }

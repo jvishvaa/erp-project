@@ -4,6 +4,7 @@ import { Button, Form, Input, Pagination, Result, Select, Table, message } from 
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
+import { Profanity } from 'components/file-validation/Profanity';
 
 const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => {
   const { Option } = Select;
@@ -339,6 +340,10 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
 
     if (groupName === '') {
       message.error('Please enter group name');
+      return;
+    }
+    if(Profanity(groupName)){
+      message.error('Group name is Banned');
       return;
     }
 

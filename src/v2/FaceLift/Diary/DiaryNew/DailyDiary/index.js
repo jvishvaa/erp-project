@@ -1110,11 +1110,35 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       message.error('Please fill Homework Title');
       return;
     }
+    if (Profanity(homeworkTitle)) {
+      message.error('Title Contains Banned Words , Please Check');
+      return;
+    }
+    if (Profanity(homeworkInstructions)) {
+      message.error('Instructions Contains Banned Words , Please Check');
+      return;
+    }
     let NewQuestionList = questionList?.map((item, index) => {
       if (item?.is_attachment_enable == false) {
         questionList[index]['max_attachment'] = 0;
       }
     });
+    if(questionList){
+      let flag = false
+      questionList.forEach((item) => {
+        if (Profanity(item.question)) {
+          flag = true;
+        }
+        else{
+          flag = false;
+        }
+      });
+      if(flag){
+        message.error('Question Contains Banned Words, Please Check');  
+        flag = true;
+        return;
+      }
+    }
     if (!questionList[0]?.question) {
       message.error('Please add questions');
       return;

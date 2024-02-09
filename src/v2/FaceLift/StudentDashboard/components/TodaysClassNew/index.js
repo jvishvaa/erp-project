@@ -252,13 +252,13 @@ const TodaysClass = ({ newTimeTable }) => {
                                 ) : (
                                   <Tooltip
                                     title={item?.sub_map
-                                      .map((each) => each?.subject_name)
-                                      .join(', ')}
+                                      ?.map((each) => each?.subject_name)
+                                      ?.join(', ')}
                                   >
                                     <div className='th-black-1 th-fw-600 text-truncate'>
                                       {item?.sub_map
-                                        .map((each) => each?.subject_name)
-                                        .join(', ')}
+                                        ?.map((each) => each?.subject_name)
+                                        ?.join(', ')}
                                     </div>
                                   </Tooltip>
                                 )}
@@ -294,10 +294,10 @@ const TodaysClass = ({ newTimeTable }) => {
                               <div className='col-5 col-md-3 px-1 px-md-2 py-1 text-truncate'>
                                 <span className='th-black-1 th-fw-600'>
                                   {item.lecture_type &&
-                                  LectureTypeChoices.some(
+                                  LectureTypeChoices?.some(
                                     (type) => type.id === item.lecture_type
                                   )
-                                    ? LectureTypeChoices.find(
+                                    ? LectureTypeChoices?.find(
                                         (type) => type.id === item.lecture_type
                                       ).type
                                     : 'Unknown Lecture Type'}
@@ -327,18 +327,16 @@ const TodaysClass = ({ newTimeTable }) => {
                                   {item?.teacher?.length === 1 ? (
                                     <Tooltip
                                       title={item?.teacher[0]?.name}
-                                      placement='bottomRight'
                                     >
                                       {item?.teacher[0]?.name}
                                     </Tooltip>
                                   ) : (
                                     <Tooltip
                                       title={item?.teacher
-                                        .map((each) => each?.name)
-                                        .join(' , ')}
-                                      placement='bottomRight'
+                                        ?.map((each) => each?.name)
+                                        ?.join(' , ')}
                                     >
-                                      {item?.teacher.map((each) => each?.name).join(', ')}
+                                      {item?.teacher?.map((each) => each?.name)?.join(', ')}
                                     </Tooltip>
                                   )}
                                 </div>
