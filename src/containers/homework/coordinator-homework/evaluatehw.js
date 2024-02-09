@@ -208,16 +208,10 @@ const ViewHomeworkNew = withRouter(
     const evaluateAnswer = async () => {
       let currentQuestion;
       if (isQuestionwise) {
-        // if (Profanity(remark)) {
-        //   message.error('Question Contains Banned Words, Please Check');
-        //   return;
-        // }
-        console.log(questionsState, 'qstate');
+       
         let chckremark = questionsState?.filter((item) => item?.remark == '');
         console.log(chckremark, 'cj');
-        // if (chckremark?.length > 0) {
-        //   setAlert('error', 'Please Add Remark for All Questions');
-        // } else {
+        
         try {
           await evaluateHomeworkQuestionWise(homeworkId, questionsState);
           if (Profanity(remark)) {
