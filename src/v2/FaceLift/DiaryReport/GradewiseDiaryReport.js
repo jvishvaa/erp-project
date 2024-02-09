@@ -275,7 +275,7 @@ const GradewiseDiaryReport = () => {
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>Subsidary Diary</span>,
+      title: <span className='th-white th-fw-700'>SUBSITUTE DIARY</span>,
       dataIndex: 'distinct_sub_diary_count',
       align: 'center',
       width: '20%',
