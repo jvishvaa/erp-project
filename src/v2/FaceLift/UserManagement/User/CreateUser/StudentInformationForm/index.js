@@ -16,6 +16,8 @@ import {
 import { UserOutlined } from '@ant-design/icons';
 import { useRef } from 'react';
 import moment from 'moment/moment';
+import { Profanity } from 'components/file-validation/Profanity';
+
 const StudentInformation = ({
   handleNext,
   handleBack,
@@ -148,6 +150,11 @@ const StudentInformation = ({
                           `First Name should not exceed 30 characters!`
                         );
                       }
+                      if (value && Profanity(value)) {
+                        return Promise.reject(
+                          `First name Contains Banned Words , Please Check`
+                        );
+                      }
                       return Promise.resolve();
                     },
                   },
@@ -173,6 +180,11 @@ const StudentInformation = ({
                           `Middle Name should not exceed 30 characters!`
                         );
                       }
+                      if (value && Profanity(value)) {
+                        return Promise.reject(
+                          `Middle name Contains Banned Words , Please Check`
+                        );
+                      }
                       return Promise.resolve();
                     },
                   },
@@ -194,6 +206,11 @@ const StudentInformation = ({
                       if (value && !/^.{0,30}$/.test(value)) {
                         return Promise.reject(
                           `Last Name should not exceed 30 characters!`
+                        );
+                      }
+                      if (value && Profanity(value)) {
+                        return Promise.reject(
+                          `Last name Contains Banned Words , Please Check`
                         );
                       }
                       return Promise.resolve();
@@ -256,6 +273,11 @@ const StudentInformation = ({
                           if (value && value?.trim()?.length === 0) {
                             return Promise.reject(`Enter atleast one character!`);
                           }
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `Place of Birth Contains Banned Words , Please Check`
+                            );
+                          }
                           return Promise.resolve();
                         },
                       },
@@ -279,6 +301,11 @@ const StudentInformation = ({
                             if (value && value?.trim()?.length === 0) {
                               return Promise.reject(`Enter atleast one character!`);
                             }
+                            if (value && Profanity(value)) {
+                              return Promise.reject(
+                                `School Name Contains Banned Words , Please Check`
+                              );
+                            }
                             return Promise.resolve();
                           },
                         },
@@ -297,6 +324,16 @@ const StudentInformation = ({
                         required: false,
                         pattern: /^\d+_[A-Za-z]{3}$/,
                         message: 'Enter username in the format 2021000001_XYZ',
+                      },
+                      {
+                        validator: (_, value) => {
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `Username Contains Banned Words , Please Check`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
                     name={'username'}
@@ -319,6 +356,11 @@ const StudentInformation = ({
                             if (value && value?.trim()?.length === 0) {
                               return Promise.reject(`Enter atleast one character!`);
                             }
+                            if (value && Profanity(value)) {
+                              return Promise.reject(
+                                `Special Needs Contains Banned Words , Please Check`
+                              );
+                            }
                             return Promise.resolve();
                           },
                         },
@@ -336,6 +378,11 @@ const StudentInformation = ({
                           validator: (_, value) => {
                             if (value && value?.trim()?.length === 0) {
                               return Promise.reject(`Enter atleast one character!`);
+                            }
+                            if (value && Profanity(value)) {
+                              return Promise.reject(
+                                `Medical Info Contains Banned Words , Please Check`
+                              );
                             }
                             return Promise.resolve();
                           },
