@@ -23,6 +23,8 @@ import {
 } from '@ant-design/icons';
 import TextArea from 'antd/lib/input/TextArea';
 import countryList from 'containers/user-management/list';
+import { Profanity } from 'components/file-validation/Profanity';
+
 const FamilyInformation = ({
   singleParent,
   handleNext,
@@ -335,6 +337,11 @@ const FamilyInformation = ({
                               `First Name should not exceed 30 characters!`
                             );
                           }
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `First Name Contains Banned Words , Please Check`
+                            );
+                          }
                           return Promise.resolve();
                         },
                       },
@@ -363,6 +370,11 @@ const FamilyInformation = ({
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `Last Name should not exceed 30 characters!`
+                            );
+                          }
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `Last Name Contains Banned Words , Please Check`
                             );
                           }
                           return Promise.resolve();
@@ -544,6 +556,11 @@ const FamilyInformation = ({
                               if (value && value?.trim()?.length === 0) {
                                 return Promise.reject(`Enter atleast one character`);
                               }
+                              if (value && Profanity(value)) {
+                                return Promise.reject(
+                                  `Occupation Contains Banned Words , Please Check`
+                                );
+                              }
 
                               return Promise.resolve();
                             },
@@ -672,6 +689,12 @@ const FamilyInformation = ({
                               `First Name should not exceed 30 characters!`
                             );
                           }
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `First Name Contains Banned Words , Please Check`
+                            );
+                          }
+
                           return Promise.resolve();
                         },
                       },
@@ -701,6 +724,11 @@ const FamilyInformation = ({
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `Last Name should not exceed 30 characters!`
+                            );
+                          }
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `Last Name Contains Banned Words , Please Check`
                             );
                           }
                           return Promise.resolve();
@@ -885,6 +913,11 @@ const FamilyInformation = ({
                               if (value && value?.trim()?.length === 0) {
                                 return Promise.reject(`Enter atleast one character`);
                               }
+                              if (value && Profanity(value)) {
+                                return Promise.reject(
+                                  `Occupation Contains Banned Words , Please Check`
+                                );
+                              }
 
                               return Promise.resolve();
                             },
@@ -1003,6 +1036,11 @@ const FamilyInformation = ({
                               `First Name should not exceed 30 characters!`
                             );
                           }
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `First Name Contains Banned Words , Please Check`
+                            );
+                          }
                           return Promise.resolve();
                         },
                       },
@@ -1031,6 +1069,12 @@ const FamilyInformation = ({
                           if (value && !/^.{0,30}$/.test(value)) {
                             return Promise.reject(
                               `Last Name should not exceed 30 characters!`
+                            );
+                          }
+
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `Last Name Contains Banned Words , Please Check`
                             );
                           }
                           return Promise.resolve();
@@ -1214,6 +1258,12 @@ const FamilyInformation = ({
                                 return Promise.reject(`Enter atleast one character`);
                               }
 
+                              if (value && Profanity(value)) {
+                                return Promise.reject(
+                                  `Occupation Contains Banned Words , Please Check`
+                                );
+                              }
+
                               return Promise.resolve();
                             },
                           },
@@ -1269,6 +1319,16 @@ const FamilyInformation = ({
                   {
                     required: true,
                     message: 'Address is required!',
+                  },
+                  {
+                    validator: (_, value) => {
+                      if (value && Profanity(value)) {
+                        return Promise.reject(
+                          `Address Contains Banned Words , Please Check`
+                        );
+                      }
+                      return Promise.resolve();
+                    },
                   },
                 ]}
                 name={'address'}
