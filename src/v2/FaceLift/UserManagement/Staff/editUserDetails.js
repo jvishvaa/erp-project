@@ -14,6 +14,7 @@ import './step.scss';
 import countryList from '../../../../containers/user-management/list';
 import moment from 'moment';
 import { _ } from 'lodash';
+import { Profanity } from 'components/file-validation/Profanity';
 
 const EditUserDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails }) => {
   const [image, setImage] = useState('');
@@ -192,6 +193,16 @@ const EditUserDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails 
                   message: 'First Name should contain only character',
                 },
                 { required: true, message: 'Please Enter First Name' },
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `First Name Contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
               ]}
               validationTrigger='onChange'
             >
@@ -209,7 +220,17 @@ const EditUserDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails 
               rules={[
                 {
                   pattern: /^[a-zA-Z ]*$/,
-                  message: 'First Name should contain only character',
+                  message: 'Middle Name should contain only character',
+                },
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `Middle Name Contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
                 },
               ]}
               validationTrigger='onChange'
@@ -231,6 +252,16 @@ const EditUserDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails 
                   message: 'Last Name should contain only character',
                 },
                 { required: true, message: 'Please Enter Last Name' },
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `Last Name Contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
               ]}
             >
               <Input
@@ -376,7 +407,19 @@ const EditUserDetails = ({ userDetails, handleUpdateUserDetails, setUserDetails 
             <Form.Item
               name='address'
               label='Address'
-              rules={[{ required: true, message: 'Please Enter Address' }]}
+              rules={[
+                { required: true, message: 'Please Enter Address' },
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `Address Contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
             >
               <Input.TextArea
                 rows={3}
