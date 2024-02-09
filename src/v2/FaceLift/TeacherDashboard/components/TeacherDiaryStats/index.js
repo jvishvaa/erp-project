@@ -8,7 +8,7 @@ import { message, Spin, Progress } from 'antd';
 import diaryBG from 'v2/Assets/dashboardIcons/studentDashboardIcons/diary.png';
 import './index.css';
 import moment from 'moment';
-const DiaryStats = () => {
+const DiaryStats = ({ newTimeTable }) => {
   const history = useHistory();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -21,30 +21,50 @@ const DiaryStats = () => {
 
   const fetchDiaryStats = (params = {}) => {
     setLoading(true);
-    axios
-      .get(`${endpoints.teacherDashboard.diaryStats}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        if (response.data?.status_code === 200) {
-          setDiaryStats(response?.data?.result);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
-      });
+    if (newTimeTable) {
+      axios
+        .get(`${endpoints.teacherDashboard.diaryStatsV2}`, {
+          params: { ...params },
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if (response.data?.status_code === 200) {
+            setDiaryStats(response?.data?.result);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoading(false);
+        });
+    } else {
+      axios
+        .get(`${endpoints.teacherDashboard.diaryStats}`, {
+          params: { ...params },
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if (response.data?.status_code === 200) {
+            setDiaryStats(response?.data?.result);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoading(false);
+        });
+    }
   };
   useEffect(() => {
     if (selectedAcademicYear)
       fetchDiaryStats({
         acadsession_id: selectedBranch?.id,
       });
-  }, []);
+  }, [newTimeTable]);
 
   return (
     <div className='th-bg-white th-br-5 px-0 shadow-sm'>
@@ -68,6 +88,7 @@ const DiaryStats = () => {
                 state: {
                   date: moment().format('YYYY-MM-DD'),
                   diaryType: 2,
+                  newTimeTable,
                 },
               })
             }

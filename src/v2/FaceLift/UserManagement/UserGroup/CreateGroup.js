@@ -344,6 +344,10 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
       message.error('Please enter group name');
       return;
     }
+    if(Profanity(groupName)){
+      message.error('Group name is Banned');
+      return;
+    }
 
     setLoading(true);
     if (!isEdit) {

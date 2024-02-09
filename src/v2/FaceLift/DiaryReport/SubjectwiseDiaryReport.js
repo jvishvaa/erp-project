@@ -22,6 +22,7 @@ import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
+import { Profanity } from 'components/file-validation/Profanity';
 
 const { TextArea } = Input;
 
@@ -49,6 +50,7 @@ const SubjectwiseDiaryReport = () => {
   const [requestSent, setRequestSent] = useState(false);
   const [reasonId, setReasonId] = useState(null);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [configOn, setConfigOn] = useState(false);
 
   const handleSubmit = () => {
     let payload = {
@@ -63,6 +65,10 @@ const SubjectwiseDiaryReport = () => {
     // }
     // if (!isClassCancelled) {
     if (!description) {
+      return;
+    }
+    if (Profanity(description)) {
+      message.error('Reason Contains Banned Words , Please Check');
       return;
     }
     // }
@@ -151,7 +157,10 @@ const SubjectwiseDiaryReport = () => {
     setLoading(true);
     setExpandedRowKeys([]);
     axios
-      .get(`${endpoints.diaryReport.subjectwiseReport}`, {
+      .get(`${endpoints.diaryReport.subjectwiseReport.replace(
+        '<version>',
+       configOn ? 'v3' : "v2" 
+      )}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
@@ -173,7 +182,10 @@ const SubjectwiseDiaryReport = () => {
   const fetchTeacherwiseReport = (params = {}) => {
     setLoadingInner(true);
     axios
-      .get(`${endpoints.diaryReport.subjectTeacherReport}`, {
+      .get(`${endpoints.diaryReport.subjectTeacherReport.replace(
+        '<version>',
+        configOn ? 'v3' : "v2", 
+      )}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
@@ -195,14 +207,14 @@ const SubjectwiseDiaryReport = () => {
       {
         dataIndex: 'subject__subject_name',
         align: 'center',
-        width: tableWidthCalculator(20) + '%',
+        // width: tableWidthCalculator(20) + '%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
         title: <span className='th-white th-fw-700 '>TEACHER'S NAME</span>,
         // dataIndex: 'name',
         align: 'center',
-        width: '20%',
+        // width: '20%',
         render: (data, text) => (
           <span className='th-black-2'>
             {data?.name} {data?.is_substitute_diary ? `(Substitute)` : null}
@@ -213,7 +225,7 @@ const SubjectwiseDiaryReport = () => {
         title: <span className='th-white th-fw-700 '>CREATED AT</span>,
         dataIndex: 'created_at',
         align: 'center',
-        width: '30%',
+        // width: '30%',
         render: (data) => (
           <span className='th-black-2'>
             {data !== 0 ? moment(data).format('hh:mm a') : null}
@@ -224,7 +236,7 @@ const SubjectwiseDiaryReport = () => {
         title: <span className='th-white th-fw-700 '>REASON</span>,
         dataIndex: 'reason',
         align: 'center',
-        width: '30%',
+        // width: '30%',
 
         render: (text, row) =>
           !_.isEmpty(row?.reason_details) ? (
@@ -281,14 +293,20 @@ const SubjectwiseDiaryReport = () => {
       },
 
       {
-        title: '',
+        title: <span className='th-white th-fw-700 '>SUBSITUTE DIARY</span>,  
         align: 'center',
-        width: '5%',
+        // width: '5%',
+        render: (data, text) => (
+          <span className='th-black-2'>
+            {data?.is_substitute_diary ? 1 : 0}
+          </span>
+        ),
       },
     ];
 
     return (
-      <Table
+      <div style={{boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px"}}>
+        <Table
         columns={innerColumn}
         dataSource={teacherwiseReport}
         pagination={false}
@@ -299,9 +317,17 @@ const SubjectwiseDiaryReport = () => {
         className='th-inner-table-head-bg'
         rowClassName={(record, index) => 'th-pointer th-row'}
       />
+      </div>
     );
   };
-
+  useEffect(() => {
+    if (history?.location?.state) {
+      setSelectedSection(history?.location?.state?.data);
+      setDate(history?.location?.state?.date);
+      setDiaryType(history?.location?.state?.diaryType);
+      setConfigOn( history?.location?.state?.newTimeTable )
+    }
+  }, [window.location.pathname]);
   useEffect(() => {
     if (date)
       fetchSubjectwiseReport({
@@ -310,22 +336,15 @@ const SubjectwiseDiaryReport = () => {
         section_mapping: selectedSection?.section_mapping,
         date,
       });
-  }, [date]);
+  }, [date, configOn]);
 
-  useEffect(() => {
-    if (history.location.state) {
-      setSelectedSection(history.location.state.data);
-      setDate(history.location.state.date);
-      setDiaryType(history.location.state.diaryType);
-    }
-  }, [window.location.pathname]);
 
   const columns = [
     {
       title: <span className='th-white pl-4 th-fw-700 '>SUBJECTS</span>,
       dataIndex: 'subject_name',
       align: 'left',
-      width: '20%',
+      // width: '20%',
       render: (data) => <span className='pl-4 th-black-1'>{data}</span>,
     },
     {
@@ -340,7 +359,7 @@ const SubjectwiseDiaryReport = () => {
         </span>
       ),
       align: 'center',
-      width: '20%',
+      // width: '20%',
       render: (text, row) =>
         user_level == 11 ? null : (
           <span className='th-fw-400 th-black-1'>{row?.teacher_count}</span>
@@ -350,14 +369,21 @@ const SubjectwiseDiaryReport = () => {
       title: <span className='th-white th-fw-700'>TOTAL ASSIGNED</span>,
       dataIndex: 'diary_count',
       align: 'center',
-      width: '30%',
+      // width: '30%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL PENDING</span>,
       dataIndex: 'pending_diaries',
       align: 'center',
-      width: '30%',
+      // width: '30%',
+      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>SUBSITUTE DIARY</span>,
+      dataIndex: 'sub_diary_count',
+      align: 'center',
+      // width: '30%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
   ];
@@ -378,6 +404,7 @@ const SubjectwiseDiaryReport = () => {
                   state: {
                     date,
                     diaryType,
+                    newTimeTable : history?.location?.state?.newTimeTable
                   },
                 })
               }
