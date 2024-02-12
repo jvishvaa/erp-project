@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
-import { Breadcrumb, Tabs, Button, DatePicker, message, Spin, Divider, Empty } from 'antd';
+import {
+  Breadcrumb,
+  Tabs,
+  Button,
+  DatePicker,
+  message,
+  Spin,
+  Divider,
+  Empty,
+} from 'antd';
 import moment from 'moment';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -20,7 +29,7 @@ const dateFormat = 'YYYY-MM-DD';
 //     ? true
 //     : false;
 const isOrchids = IsOrchidsChecker();
-const Diary = () => {
+const Diary = ({ newTimetableFLow }) => {
   const history = useHistory();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -146,8 +155,9 @@ const Diary = () => {
                   format={'DD/MM/YYYY'}
                 />
               </div>
-              {!isStudentDiary && (
-                <div className='col-sm-3 col-lg-2 col-6'>
+
+              <div className='col-sm-3 col-lg-2 col-6'>
+                {!isStudentDiary && !newTimetableFLow && (
                   <Button
                     type='primary'
                     className='th-br-6 th-bg-primary th-pointer th-white'
@@ -164,8 +174,8 @@ const Diary = () => {
                     <PlusOutlined className='' />
                     Create Diary
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
               <div className='col-md-6 col-lg-8 col-12 text-right'>
                 <div className='row justify-content-end align-items-center'>
                   {!isStudentDiary && (
@@ -342,13 +352,27 @@ const Diary = () => {
                       </div>
                     ) : (
                       <div className='row justify-content-center pt-5'>
-                       <Empty 
-                       description={
-                        <> { user_level == 13 ? (<><div style={{fontSize: "15px"}}>No Diaries are assigned for today.</div>
-                          <div style={{fontSize: "15px"}}>"Relax and engage in activities you enjoy!"</div></>) 
-                          : (<div style={{fontSize: "15px"}}>No Diaries are created for today</div>) }
-                        </>}
-                      />
+                        <Empty
+                          description={
+                            <>
+                              {' '}
+                              {user_level == 13 ? (
+                                <>
+                                  <div style={{ fontSize: '15px' }}>
+                                    No Diaries are assigned for today.
+                                  </div>
+                                  <div style={{ fontSize: '15px' }}>
+                                    "Relax and engage in activities you enjoy!"
+                                  </div>
+                                </>
+                              ) : (
+                                <div style={{ fontSize: '15px' }}>
+                                  No Diaries are created for today
+                                </div>
+                              )}
+                            </>
+                          }
+                        />
                       </div>
                     )}
                   </div>
@@ -372,13 +396,27 @@ const Diary = () => {
                       ))
                     ) : (
                       <div className='row justify-content-center pt-5'>
-                       <Empty 
-                        description={
-                        <> { user_level == 13 ? (<><div style={{fontSize: "15px"}}>No Diaries are assigned for today.</div>
-                          <div style={{fontSize: "15px"}}>"Relax and engage in activities you enjoy!"</div></> ) 
-                          : (<div style={{fontSize: "15px"}}>No Diaries are created for today</div>) }
-                        </>}
-                      />
+                        <Empty
+                          description={
+                            <>
+                              {' '}
+                              {user_level == 13 ? (
+                                <>
+                                  <div style={{ fontSize: '15px' }}>
+                                    No Diaries are assigned for today.
+                                  </div>
+                                  <div style={{ fontSize: '15px' }}>
+                                    "Relax and engage in activities you enjoy!"
+                                  </div>
+                                </>
+                              ) : (
+                                <div style={{ fontSize: '15px' }}>
+                                  No Diaries are created for today
+                                </div>
+                              )}
+                            </>
+                          }
+                        />
                       </div>
                     )}
                   </div>

@@ -109,6 +109,7 @@ const CreateTimeTable = ({ showTab }) => {
   const [duplicateData, setDuplicateData] = useState(null);
   const [duplicateLoading, setDuplicateLoading] = useState(false);
   const [showDuplicateModal, setShowDuplicateModal] = useState(null);
+  const [classTeacherList, setClassTeacherList] = useState([]);
 
   const [excelLoading, setExcelLoading] = useState(false);
   const [PDFLoading, setPDFLoading] = useState(false);
@@ -132,6 +133,13 @@ const CreateTimeTable = ({ showTab }) => {
     return (
       <Option key={each?.id} sectionId={each.section_id} value={each?.id}>
         {`${each?.grade__grade_name} ${each?.sec_name}`}
+      </Option>
+    );
+  });
+  const classTeacherOptions = classTeacherList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id}>
+        {each?.name}
       </Option>
     );
   });
@@ -170,7 +178,7 @@ const CreateTimeTable = ({ showTab }) => {
     const params = {
       session_year: year,
       branch_id: branch,
-      grade_id: outerFilter ? grade : grade.join(','),
+      grade_id: grade,
     };
     axios
       .get(`${endpoints.academics.sections}`, { params: { ...params } })
@@ -183,6 +191,43 @@ const CreateTimeTable = ({ showTab }) => {
           }
         } else {
           setSectionList([]);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+  const fetchSubjectList = (params = {}) => {
+    axios
+      .get(`${endpoints?.timeTableNewFlow?.subjectsList}`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setSubjectList(result?.data?.result);
+        } else {
+          setSubjectList([]);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+
+  const fetchTeacherList = (params = {}) => {
+    axios
+      .get(`${endpoints?.timeTableNewFlow?.teacherList}/`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setTeacherList(result?.data?.result);
+        } else {
+          setTeacherList([]);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+  const fetchClassTeacherList = (params = {}) => {
+    axios
+      .get(`${endpoints?.timeTableNewFlow?.teacherList}/`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setClassTeacherList(result?.data?.result);
+        } else {
+          setClassTeacherList([]);
         }
       })
       .catch((error) => message.error('error', error?.message));
@@ -385,7 +430,8 @@ const CreateTimeTable = ({ showTab }) => {
     if (
       currentTimeTable?.start_date == null ||
       currentTimeTable?.end_date == null ||
-      currentTimeTable?.sectionMappingID == null
+      currentTimeTable?.sectionMappingID == '' ||
+      currentTimeTable?.classTeachers == ''
     ) {
       message.error('Please Select All Filters');
       setCreateLoading(false);
@@ -394,7 +440,8 @@ const CreateTimeTable = ({ showTab }) => {
     let payload = {
       start_date: currentTimeTable?.start_date,
       end_date: currentTimeTable?.end_date,
-      sec_map: currentTimeTable?.sectionMappingID,
+      sec_map: [currentTimeTable?.sectionMappingID],
+      class_teacher: [currentTimeTable?.classTeachers],
     };
     axios
       .post(`${endpoints.timeTableNewFlow.dateRangeSectionList}/`, payload)
@@ -406,17 +453,22 @@ const CreateTimeTable = ({ showTab }) => {
           setCurrentTimeTable({
             start_date: moment().format('YYYY-MM-DD'),
             end_date: moment().format('YYYY-MM-DD'),
-            grade: [],
-            section: [],
+            grade: '',
+            section: '',
+            classTeachers: '',
           });
-          if (sectionMappingID == 'All') {
-            let allSection = sectionList?.map((item) => item?.id);
-            fetchDateRangeList({ sec_map: allSection.join(',') });
-          } else {
-            fetchDateRangeList({ sec_map: sectionMappingID });
+          if (sectionMappingID) {
+            if (sectionMappingID == 'All') {
+              let allSection = sectionList?.map((item) => item?.id);
+              fetchDateRangeList({ sec_map: allSection.join(',') });
+            } else {
+              fetchDateRangeList({ sec_map: sectionMappingID });
+            }
           }
         } else if (res?.data?.status_code == 409) {
-          setTimeTableOverlapError(res?.data);
+          if (res?.data?.sections.length > 0) {
+            setTimeTableOverlapError(res?.data);
+          }
         }
       })
       .catch((error) => message.error('error', error?.message))
@@ -637,7 +689,7 @@ const CreateTimeTable = ({ showTab }) => {
       setPDFLoading(true);
     }
     axios
-      .get('/acad-tt/excel/', {
+      .get(`${endpoints?.timeTableNewFlow?.downloadExcel}`, {
         params: { ...params },
         responseType: 'blob',
       })
@@ -1306,31 +1358,6 @@ const CreateTimeTable = ({ showTab }) => {
     );
   };
 
-  const fetchSubjectList = (params = {}) => {
-    axios
-      .get(`/erp_user/v2/mapped-subjects-list/`, { params: { ...params } })
-      .then((result) => {
-        if (result?.data?.status_code == 200) {
-          setSubjectList(result?.data?.result);
-        } else {
-          setSubjectList([]);
-        }
-      })
-      .catch((error) => message.error('error', error?.message));
-  };
-
-  const fetchTeacherList = (params = {}) => {
-    axios
-      .get(`${endpoints?.timeTableNewFlow?.teacherList}/`, { params: { ...params } })
-      .then((result) => {
-        if (result?.data?.status_code == 200) {
-          setTeacherList(result?.data?.result);
-        } else {
-          setTeacherList([]);
-        }
-      })
-      .catch((error) => message.error('error', error?.message));
-  };
   useEffect(() => {
     if (showTab == '3') {
       setGradeID();
@@ -1453,8 +1480,9 @@ const CreateTimeTable = ({ showTab }) => {
               ...currentTimeTable,
               start_date: moment().format('YYYY-MM-DD'),
               end_date: moment().format('YYYY-MM-DD'),
-              grade: [],
-              sectionMappingID: [],
+              grade: '',
+              sectionMappingID: '',
+              classTeachers: '',
             });
             setTimeTableOverlapError(null);
           }}
@@ -1469,8 +1497,9 @@ const CreateTimeTable = ({ showTab }) => {
                     ...currentTimeTable,
                     start_date: moment().format('YYYY-MM-DD'),
                     end_date: moment().format('YYYY-MM-DD'),
-                    grade: [],
-                    sectionMappingID: [],
+                    grade: '',
+                    sectionMappingID: '',
+                    classTeachers: '',
                   });
                   setTimeTableOverlapError(null);
                 }}
@@ -1524,13 +1553,13 @@ const CreateTimeTable = ({ showTab }) => {
                 <div className='col-7'>
                   <Select
                     className='th-width-100 th-br-6'
-                    mode='multiple'
+                    // mode='multiple'
                     suffixIcon={<DownOutlined />}
                     showArrow={true}
                     onChange={(e) => {
                       setCurrentTimeTable({
                         ...currentTimeTable,
-                        section: null,
+                        section: '',
                         grade: e,
                       });
                       setCreationSectionList([]);
@@ -1565,16 +1594,17 @@ const CreateTimeTable = ({ showTab }) => {
                 <div className='col-7'>
                   <Select
                     className='th-width-100 th-br-6'
-                    mode='multiple'
+                    // mode='multiple'
                     suffixIcon={<DownOutlined />}
                     showArrow={true}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setCurrentTimeTable({
                         ...currentTimeTable,
                         // sectionID: each?.value,
                         sectionMappingID: e,
-                      })
-                    }
+                      });
+                      fetchClassTeacherList({ sec_map: e, subject: 'null' });
+                    }}
                     placeholder='Section *'
                     allowClear
                     showSearch
@@ -1593,6 +1623,39 @@ const CreateTimeTable = ({ showTab }) => {
                 </div>
               </div>
             </div>
+            <div className='col-12 py-2'>
+              <div className='row justify-content-between align-items-center'>
+                <div className='th-black th-500 col-5'>Select Teachers</div>
+                <div className='col-7'>
+                  <Select
+                    className='th-width-100 th-br-6'
+                    // mode='multiple'
+                    suffixIcon={<DownOutlined />}
+                    showArrow={true}
+                    onChange={(e) =>
+                      setCurrentTimeTable({
+                        ...currentTimeTable,
+                        classTeachers: e,
+                      })
+                    }
+                    placeholder='Class Teacher *'
+                    allowClear
+                    showSearch
+                    maxTagCount={2}
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    value={currentTimeTable?.classTeachers}
+                  >
+                    {classTeacherOptions}
+                  </Select>
+                </div>
+              </div>
+            </div>
             {timeTableOverlapError && (
               <div className='col-12 py-2'>
                 <div className='th-red th-14 th-fw-500'>
@@ -1600,7 +1663,7 @@ const CreateTimeTable = ({ showTab }) => {
                 </div>
                 <div className='th-red th-fw-500'>
                   {timeTableOverlapError?.sections
-                    .map((el) => el?.grade + ' ' + el?.section)
+                    ?.map((el) => el?.grade + ' ' + el?.section)
                     .join(',')}
                 </div>
               </div>

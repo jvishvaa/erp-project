@@ -4,13 +4,27 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import StudentTimeTableNewView from './StudentTimeTableNewView';
 import moment from 'moment';
-
-import { Breadcrumb, Spin, message, DatePicker, Card } from 'antd';
+import {
+  Breadcrumb,
+  Spin,
+  message,
+  DatePicker,
+  Card,
+  List,
+  Button,
+  Modal,
+  Divider,
+  Table,
+} from 'antd';
+import { useSelector } from 'react-redux';
+import { EyeFilled } from '@ant-design/icons';
 const { RangePicker } = DatePicker;
 
 const StudentTimeTable = () => {
   const today = moment();
-
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const startOfWeek = today.clone().startOf('isoWeek');
   const endOfWeek = today.clone().endOf('isoWeek');
 
@@ -19,7 +33,17 @@ const StudentTimeTable = () => {
   const [value, setValue] = useState([startOfWeek, endOfWeek]);
 
   const [currentWeekTimeTable, setCurrentWeekTimeTable] = useState([]);
+  const [showTeacherModal, setShowTeacherModal] = useState(false);
+  const [teacherList, setTeacherList] = useState({});
+  const [classTeacher, setClassTeacher] = useState();
+  const [teacherLoading, setTeacherLoading] = useState(true);
 
+  const handleShowTeacherModal = () => {
+    setShowTeacherModal(true);
+  };
+  const handleCloseTeacherModal = () => {
+    setShowTeacherModal(false);
+  };
   const fetchCurrentWeekTimeTable = (params = {}) => {
     setLoading(true);
     axios
@@ -36,6 +60,28 @@ const StudentTimeTable = () => {
       .catch((error) => message.error('error', error?.message))
       .finally(() => {
         setLoading(false);
+      });
+  };
+  const fetchAllTeachers = (params = {}) => {
+    setTeacherLoading(true);
+    axios
+      .get(`${endpoints.timeTableNewFlow.studentTeacherList}`, { params: params })
+      .then((res) => {
+        let transformedTeacherData = Object.keys(res?.data?.teacher_list)?.map(
+          (subject) => ({
+            key: subject,
+            subject: subject,
+            teachers: res?.data?.teacher_list[subject].join(' , '),
+          })
+        );
+        setTeacherList(transformedTeacherData);
+        setClassTeacher(res?.data?.class_teacher[0]);
+      })
+      .catch((err) => {
+        message.error('error', err?.message);
+      })
+      .finally(() => {
+        setTeacherLoading(false);
       });
   };
   const disabledDate = (current) => {
@@ -61,12 +107,34 @@ const StudentTimeTable = () => {
 
   useEffect(() => {
     if (value?.length > 1) {
+      fetchAllTeachers({
+        session_id: selectedBranch?.session_year?.id,
+        start: moment(value[0]).format('YYYY-MM-DD'),
+        end: moment(value[1]).format('YYYY-MM-DD'),
+      });
       fetchCurrentWeekTimeTable({
         start: moment(value[0]).format('YYYY-MM-DD'),
         end: moment(value[1]).format('YYYY-MM-DD'),
       });
     }
   }, [value]);
+
+  const columns = [
+    {
+      title: <span className='th-white th-fw-700'>Subject</span>,
+      dataIndex: 'subject',
+      width: '20%',
+      key: 'subject',
+      align: 'center',
+      render: (data) => <span className='th-black th-fw-700'>{data}</span>,
+    },
+    {
+      title: <span className='th-white th-fw-700'>Teachers</span>,
+      dataIndex: 'teachers',
+      align: 'center',
+      key: 'teachers',
+    },
+  ];
   return (
     <React.Fragment>
       <Layout>
@@ -83,28 +151,46 @@ const StudentTimeTable = () => {
         <div className='row px-3'>
           <div className='col-12 th-bg-white'>
             <div className='row'>
-              <div className='col-md-12 py-2 pr-0'>
-                <div className='d-flex align-items-center'>
-                  <span className='th-fw-600'>Select Date Range: </span>
-                  <span className='pl-2'>
-                    <RangePicker
-                      className='w-100'
-                      popupStyle={{ zIndex: 2100 }}
-                      value={dates || value}
-                      disabledDate={disabledDate}
-                      onCalendarChange={(val) => setDates(val)}
-                      onChange={(val) => setValue(val)}
-                      onOpenChange={onOpenChange}
-                    />
-                  </span>
+              <div className='col-md-12 pt-3 pr-0'>
+                <div className='d-flex align-items-center justify-content-between'>
+                  <div className='d-flex align-items-center'>
+                    <span className='th-fw-600'>Select Date Range: </span>
+                    <span className='pl-2'>
+                      <RangePicker
+                        className='w-100'
+                        popupStyle={{ zIndex: 2100 }}
+                        value={dates || value}
+                        disabledDate={disabledDate}
+                        onCalendarChange={(val) => setDates(val)}
+                        onChange={(val) => setValue(val)}
+                        onOpenChange={onOpenChange}
+                      />
+                    </span>
+                  </div>
+                  <Button
+                    type='primary'
+                    className='th-br-8'
+                    icon={<EyeFilled />}
+                    onClick={handleShowTeacherModal}
+                  >
+                    Show Teachers
+                  </Button>
                 </div>
               </div>
             </div>
 
-            <div className={`mt-3 px-3 ${loading ? 'py-5' : ''}`}>
+            <div className={`${loading ? 'py-5' : ''}`}>
               <Spin spinning={loading}>
+                {!teacherLoading && !loading && (
+                  <div className='col-12 mt-3 th-16'>
+                    Class Teacher :{' '}
+                    <span className='th-primary th-fw-600'>
+                      {classTeacher?.class_teacher__name}
+                    </span>
+                  </div>
+                )}
                 {currentWeekTimeTable?.length > 0 ? (
-                  <Card className='th-br-8 th-timetable-card'>
+                  <Card className='th-br-8 th-timetable-card' bordered={false}>
                     <StudentTimeTableNewView
                       currentWeekTimeTable={currentWeekTimeTable}
                       startDate={moment(value?.[0])?.format('YYYY-MM-DD')}
@@ -123,6 +209,37 @@ const StudentTimeTable = () => {
             </div>
           </div>
         </div>
+        <Modal
+          visible={showTeacherModal}
+          className='th-upload-modal'
+          onCancel={handleCloseTeacherModal}
+          // title='Show Subject Teacher'
+          centered
+          closable={false}
+          width={'50vw'}
+          footer={
+            <Button type='default' className='th-br-8' onClick={handleCloseTeacherModal}>
+              Close
+            </Button>
+          }
+        >
+          <div className='p-3'>
+            {/* <div style={{ maxHeight: 450, overflowY: 'auto' }}> */}
+            <div className='d-flex align-items-center justify-content-start flex-wrap'>
+              <Table
+                // className='th-table'
+                columns={columns}
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                }
+                dataSource={teacherList}
+                pagination={false}
+                scroll={{ y: 400 }}
+              />
+            </div>
+            {/* </div> */}
+          </div>
+        </Modal>
       </Layout>
     </React.Fragment>
   );
