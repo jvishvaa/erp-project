@@ -165,6 +165,9 @@ export default {
     diaryList: '/academic/general-dairy-messages/',
     diaryListv2: '/academic/v2/general-dairy-messages/',
   },
+  dailyDiary: {
+    newDiaryList: '/academic/new/dialy-diary-messages/',
+  },
   createQuestionApis: {
     // topicList: `${baseURLCentral}/assessment/topic/`,
     topicList: `${baseURLCentral}/assessment/topics-list/`,
@@ -323,12 +326,14 @@ export default {
     dateRangeSectionList: '/acad-tt/tt-view',
     sectionPeriodData: '/acad-tt/periods',
     teacherList: '/acad-tt/teacher-list',
-    studentTeacherList : `${baseURL}/acad-tt/stud-teach-list/`,
+    studentTeacherList: `${baseURL}/acad-tt/stud-teach-list/`,
     studentTimeTableView: '/acad-tt/sview',
     teacherTimeTableView: '/acad-tt/tea-view',
     duplicateTimeTable: '/acad-tt/duplicate',
     activeToggle: '/acad-tt/tt-active',
     studentTeacherList: `/acad-tt/stud-teach-list/`,
+    subjectsList: `/erp_user/v2/mapped-subjects-list/`,
+    downloadExcel: `/acad-tt/excel/`,
   },
   FINANCE_BUCKET,
   popupSetting: {

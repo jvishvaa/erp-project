@@ -197,7 +197,7 @@ const CreateTimeTable = ({ showTab }) => {
   };
   const fetchSubjectList = (params = {}) => {
     axios
-      .get(`/erp_user/v2/mapped-subjects-list/`, { params: { ...params } })
+      .get(`${endpoints?.timeTableNewFlow?.subjectsList}`, { params: { ...params } })
       .then((result) => {
         if (result?.data?.status_code == 200) {
           setSubjectList(result?.data?.result);
@@ -689,7 +689,7 @@ const CreateTimeTable = ({ showTab }) => {
       setPDFLoading(true);
     }
     axios
-      .get('/acad-tt/excel/', {
+      .get(`${endpoints?.timeTableNewFlow?.downloadExcel}`, {
         params: { ...params },
         responseType: 'blob',
       })

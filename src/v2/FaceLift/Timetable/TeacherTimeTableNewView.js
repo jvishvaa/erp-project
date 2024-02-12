@@ -19,7 +19,7 @@ const TeacherTimeTableNewView = withRouter(
     const fetchDiaryDetails = (diaryId) => {
       setLoading(true);
       axios
-        .get(`/academic/new/dialy-diary-messages/?diary_id=${diaryId}`)
+        .get(`${endpoints?.dailyDiary?.newDiaryList}?diary_id=${diaryId}`)
         .then((response) => {
           if (response?.data?.status_code == 200) {
             let diaryData = response.data?.result[0];
