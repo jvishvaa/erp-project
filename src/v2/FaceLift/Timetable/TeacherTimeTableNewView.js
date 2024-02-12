@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Button, message } from 'antd';
 import axios from 'v2/config/axios';
 import { withRouter, useHistory } from 'react-router-dom';
+import endpoints from 'v2/config/endpoints';
 
 const TeacherTimeTableNewView = withRouter(
   ({ currentWeekTimeTable, startDate, endDate, allowAutoAssignDiary }) => {
