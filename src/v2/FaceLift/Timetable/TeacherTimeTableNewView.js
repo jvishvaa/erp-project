@@ -1,17 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
-import { connect, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Button, message } from 'antd';
+import axios from 'v2/config/axios';
+import { withRouter, useHistory } from 'react-router-dom';
 
 const TeacherTimeTableNewView = withRouter(
-  ({ currentWeekTimeTable, startDate, endDate }) => {
+  ({ currentWeekTimeTable, startDate, endDate, allowAutoAssignDiary }) => {
     const today = new Date();
-
+    const history = useHistory();
     const [currentDay, setCurrentDay] = useState();
+    const [loading, setLoading] = useState(false);
     const [currentDayPeriodData, setCurrentDayPeriodData] = useState();
     const days = Object.keys(currentWeekTimeTable)?.map((item) =>
       moment(item).format('dddd')
     );
+
+    const fetchDiaryDetails = (diaryId) => {
+      setLoading(true);
+      axios
+        .get(`/academic/new/dialy-diary-messages/?diary_id=${diaryId}`)
+        .then((response) => {
+          if (response?.data?.status_code == 200) {
+            let diaryData = response.data?.result[0];
+            history.push({
+              pathname: '/create/diary',
+              state: {
+                data: diaryData?.grade_data[0],
+                subject: diaryData,
+                isDiaryEdit: true,
+                isDiaryAutoAssign: diaryData?.grade_data?.teacher_report?.homework
+                  ? true
+                  : false,
+              },
+            });
+          }
+        })
+        .catch((error) => {
+          message.error(error?.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
 
     useEffect(() => {
       let showDate =
@@ -48,6 +79,8 @@ const TeacherTimeTableNewView = withRouter(
           ' ' +
           lecture?.sec_map[0]?.grade_sec?.section,
         teacher: lecture.sub_teacher.map((t) => t?.name).join(', '),
+        dairy_details: lecture.dairy_details,
+        holidays: lecture?.holidays,
       });
     });
 
@@ -62,6 +95,8 @@ const TeacherTimeTableNewView = withRouter(
             subject: '',
             grade_section: '',
             teacher: '',
+            dairy_details: [],
+            holidays: [],
           });
         }
       }
@@ -173,15 +208,29 @@ const TeacherTimeTableNewView = withRouter(
                               }}
                             >
                               <div
-                                className='card w-100 d-flex justify-content-center p-2 flex-column'
+                                className={`card w-100 d-flex ${
+                                  eachPeriod?.subject || eachPeriod?.holidays?.length > 0
+                                    ? 'justify-content-between'
+                                    : 'justify-content-center'
+                                } p-2 flex-column`}
                                 style={{
                                   height: '100px',
                                 }}
                               >
-                                {eachPeriod?.subject ? (
+                                {eachPeriod?.holidays?.length > 0 ? (
+                                  <div className='mb-2 th-18 th-fw-600 th-green-1 d-flex flex-column justify-content-center h-100'>
+                                    Holiday
+                                    <div
+                                      className='th-grey th-12 text-truncate'
+                                      title={eachPeriod?.holidays[0]?.title}
+                                    >
+                                      {eachPeriod?.holidays[0]?.title}
+                                    </div>
+                                  </div>
+                                ) : eachPeriod?.subject ? (
                                   <>
                                     <div
-                                      className='mb-2 text-truncate'
+                                      className=' text-truncate'
                                       title={eachPeriod?.subject}
                                     >
                                       <span className='th-fw-600'>
@@ -195,6 +244,26 @@ const TeacherTimeTableNewView = withRouter(
                                       <span className='th-12 th-fw-500'>
                                         {eachPeriod?.grade_section}
                                       </span>
+                                    </div>
+                                    <div className='text-truncate py-1'>
+                                      <Button
+                                        type='default'
+                                        loading={loading}
+                                        className='th-12 th-br-8 px-2 th-bg-grey'
+                                        onClick={() => {
+                                          eachPeriod?.dairy_details?.length > 0
+                                            ? fetchDiaryDetails(
+                                                eachPeriod?.dairy_details[0]?.id
+                                              )
+                                            : history.push({
+                                                pathname: '/create/diary',
+                                              });
+                                        }}
+                                      >
+                                        {eachPeriod?.dairy_details?.length > 0
+                                          ? 'View Diary'
+                                          : '+ Add Diary & HW'}
+                                      </Button>
                                     </div>
                                   </>
                                 ) : (

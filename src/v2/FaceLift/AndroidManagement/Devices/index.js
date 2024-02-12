@@ -238,8 +238,8 @@ const Devices = () => {
           /> */}
           <div className='row'>
             {loading ? (
-              [...Array(4).keys()]?.map((el) => (
-                <div className='col-6'>
+              [...Array(6).keys()]?.map((el) => (
+                <div className='col-4'>
                   <Skeleton.Button
                     active
                     block

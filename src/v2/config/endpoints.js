@@ -324,6 +324,7 @@ export default {
     teacherTimeTableView: '/acad-tt/tea-view',
     duplicateTimeTable: '/acad-tt/duplicate',
     activeToggle: '/acad-tt/tt-active',
+    studentTeacherList: `/acad-tt/stud-teach-list/`,
   },
   FINANCE_BUCKET,
   popupSetting: {
