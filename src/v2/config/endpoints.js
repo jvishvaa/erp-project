@@ -72,6 +72,7 @@ export default {
     getStudentCountReportDataV2: '/erp_user/grade-section-wise-student-count-v2/',
     getConfigAnnouncement: '/assessment/check-sys-config/',
     erpBucket: ERP_BUCKET_2,
+    profanity : `/erp_user/profanity-txt/`
   },
   adminDashboard: {
     announcements: '/announcement/v2/inbox/',
