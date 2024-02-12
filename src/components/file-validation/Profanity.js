@@ -1,11 +1,11 @@
 import axiosInstance from 'config/axios';
-
+import endpoints from 'v2/config/endpoints';
 const token = JSON.parse(localStorage.getItem('userDetails'))?.token || null;
 let addProfanityWords = [];
 const getWords = async () => {
   if (token != null) {
     axiosInstance
-      .get(`/assessment/check-sys-config/?config_key=profanity-words`)
+      .get(`${endpoints.academics.profanity}`)
       .then((response) => {
         if (response?.data?.status_code == '200') {
           console.log(response, 'config data');
