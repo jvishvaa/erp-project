@@ -72,7 +72,7 @@ export default {
     getStudentCountReportDataV2: '/erp_user/grade-section-wise-student-count-v2/',
     getConfigAnnouncement: '/assessment/check-sys-config/',
     erpBucket: ERP_BUCKET_2,
-    profanity : `/erp_user/profanity-txt/`
+    profanity: `/erp_user/profanity-txt/`,
   },
   adminDashboard: {
     announcements: '/announcement/v2/inbox/',
@@ -166,9 +166,6 @@ export default {
     diaryList: '/academic/general-dairy-messages/',
     diaryListv2: '/academic/v2/general-dairy-messages/',
   },
-  dailyDiary: {
-    newDiaryList: '/academic/new/dialy-diary-messages/',
-  },
   createQuestionApis: {
     // topicList: `${baseURLCentral}/assessment/topic/`,
     topicList: `${baseURLCentral}/assessment/topics-list/`,
@@ -187,6 +184,7 @@ export default {
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
     upcomingPeriodData: `${baseURLCentral}/lesson_plan/v2/upcoming-period-data/`,
     centralHomeworkData: `${baseURLCentral}/lesson_plan/lesson/`,
+    newDiaryList: '/academic/new/dialy-diary-messages/',
   },
 
   diaryReport: {
