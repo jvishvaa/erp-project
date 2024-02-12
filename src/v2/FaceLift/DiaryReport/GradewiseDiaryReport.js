@@ -9,9 +9,7 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useSelector } from 'react-redux';
-
 const { Option } = Select;
-
 const GradewiseDiaryReport = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -25,13 +23,12 @@ const GradewiseDiaryReport = () => {
   const [sectionwiseDiaryData, setSectionwiseDiaryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingInner, setLoadingInner] = useState(false);
-
+  const [configOn, setConfigOn] = useState(null);
   const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value, 'DD/MM/YYYY').format('YYYY-MM-DD'));
     }
   };
-
   const handleDiaryType = (e) => {
     setDiaryType(Number(e));
   };
@@ -45,9 +42,9 @@ const GradewiseDiaryReport = () => {
         diary_type: diaryType,
         date: date,
         grade_id: record.grade_id,
+        configOn: configOn,
       });
     }
-
     setExpandedRowKeys(keys);
   };
   const fetchGradewiseReport = (params = {}) => {
@@ -56,12 +53,18 @@ const GradewiseDiaryReport = () => {
     setExpandedRowKeys([]);
     setLoading(true);
     axios
-      .get(`${endpoints.diaryReport.gradewiseReport}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-Host': X_DTS_HOST,
-        },
-      })
+      .get(
+        `${endpoints.diaryReport.gradewiseReport.replace(
+          '<version>',
+          configOn ? 'v3' : 'v2'
+        )}`,
+        {
+          params: { ...params },
+          headers: {
+            'X-DTS-Host': X_DTS_HOST,
+          },
+        }
+      )
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setGradewiseDiaryData(res?.data?.result?.data);
@@ -74,16 +77,21 @@ const GradewiseDiaryReport = () => {
         setLoading(false);
       });
   };
-
   const fetchSectionwiseReport = (params = {}) => {
     setLoadingInner(true);
     axios
-      .get(`${endpoints.diaryReport.sectionwiseReport}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-Host': X_DTS_HOST,
-        },
-      })
+      .get(
+        `${endpoints.diaryReport.sectionwiseReport.replace(
+          '<version>',
+          configOn ? 'v3' : 'v2'
+        )}`,
+        {
+          params: { ...params },
+          headers: {
+            'X-DTS-Host': X_DTS_HOST,
+          },
+        }
+      )
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setSectionwiseDiaryData(res?.data?.result?.data);
@@ -95,37 +103,41 @@ const GradewiseDiaryReport = () => {
         setLoadingInner(false);
       });
   };
-
   const expandedRowRender = (record) => {
     const innerdailyColumn = [
       {
         dataIndex: 'sections_count',
         align: 'center',
-        width: '25%',
+        width: tableWidthCalculator(25) + '%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
         dataIndex: 'section_name',
         align: 'center',
-        width: tableWidthCalculator(25) + '%',
+        width: tableWidthCalculator(20) + '%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
         dataIndex: 'diary_count',
         align: 'center',
-        width: '25%',
+        width: tableWidthCalculator(20) + '%',
         render: (data) => <span className='th-black-2'>{data}</span>,
       },
       {
         dataIndex: 'pending_diaries',
         align: 'center',
-        width: '20%',
+        width: tableWidthCalculator(20) + '%',
         render: (data) => <span className='th-black-2'>{data}</span>,
+      },
+      {
+        dataIndex: 'sub_diary_count',
+        align: 'center',
+        width: tableWidthCalculator(20) + '%',
+        render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
       },
       {
         title: 'icon',
         align: 'center',
-        width: '5%',
         render: () => <RightOutlined className='th-grey th-pointer' />,
       },
     ];
@@ -178,6 +190,7 @@ const GradewiseDiaryReport = () => {
                   diaryType,
                   data: row,
                   date,
+                  newTimeTable : history?.location?.state?.newTimeTable
                 },
               });
             },
@@ -186,17 +199,6 @@ const GradewiseDiaryReport = () => {
       />
     );
   };
-
-  useEffect(() => {
-    if (date) {
-      fetchGradewiseReport({
-        acad_session_id: selectedBranch?.id,
-        diary_type: diaryType,
-        date: date,
-      });
-    }
-  }, [date, diaryType]);
-
   useEffect(() => {
     if (history.location.state) {
       if (history.location.state?.diaryType) {
@@ -204,8 +206,22 @@ const GradewiseDiaryReport = () => {
         setDate(history.location.state?.date);
       }
     }
-  }, [window.location.pathname]);
-
+  }, [window.location.pathname, history.location.state]);
+  useEffect(() => {
+    if (history?.location?.state?.newTimeTable) {
+      setConfigOn(true);
+    } else {
+      setConfigOn(false);
+    }
+    if (history.location.state) {
+      fetchGradewiseReport({
+        acad_session_id: selectedBranch?.id,
+        diary_type: diaryType,
+        date: date,
+        configOn: configOn,
+      });
+    }
+  }, [date, diaryType, history.location.state]);
   const generalDiaryColumns = [
     {
       title: <span className='th-white pl-md-5 th-fw-700 '>GRADE</span>,
@@ -229,7 +245,6 @@ const GradewiseDiaryReport = () => {
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
   ];
-
   const dailyDiarycolumns = [
     {
       title: <span className='th-white pl-md-5 th-fw-700 '>GRADE</span>,
@@ -242,14 +257,14 @@ const GradewiseDiaryReport = () => {
       title: <span className='th-white th-fw-700'>TOTAL SECTIONS</span>,
       dataIndex: 'section_count',
       align: 'center',
-      width: '25%',
+      width: '20%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>TOTAL ASSIGNED</span>,
       dataIndex: 'diary_count',
       align: 'center',
-      width: '25%',
+      width: '20%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
     {
@@ -259,8 +274,14 @@ const GradewiseDiaryReport = () => {
       width: '20%',
       render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
     },
+    {
+      title: <span className='th-white th-fw-700'>SUBSITUTE DIARY</span>,
+      dataIndex: 'distinct_sub_diary_count',
+      align: 'center',
+      width: '20%',
+      render: (data) => <span className='th-fw-400 th-black-1'>{data}</span>,
+    },
   ];
-
   return (
     <Layout>
       <div className='row py-3 px-2'>
@@ -346,7 +367,7 @@ const GradewiseDiaryReport = () => {
               expandable={{ expandedRowRender }}
               dataSource={gradewiseDiaryData}
               pagination={false}
-              expandIconColumnIndex={4}
+              expandIconColumnIndex={5}
               expandedRowKeys={expandedRowKeys}
               onExpand={onTableRowExpand}
               expandIcon={({ expanded, onExpand, record }) =>
@@ -370,5 +391,4 @@ const GradewiseDiaryReport = () => {
     </Layout>
   );
 };
-
 export default GradewiseDiaryReport;

@@ -21,9 +21,30 @@ const TodaysClass = ({ newTimeTable }) => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
+
   const fetchTodaysClassData = (params = {}) => {
     setLoading(true);
-    axios
+    if(newTimeTable){
+      axios
+      .get(`${endpoints.teacherDashboard.todaysClassV2}`, {
+        params: { ...params },
+        headers: {
+          'X-DTS-HOST': X_DTS_HOST,
+        },
+      })
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setTodaysClassData(response?.data?.result);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false);
+      });
+    }
+    else{
+      axios
       .get(`${endpoints.teacherDashboard.todaysClass}`, {
         params: { ...params },
         headers: {
@@ -40,6 +61,7 @@ const TodaysClass = ({ newTimeTable }) => {
         message.error(error.message);
         setLoading(false);
       });
+    }
   };
   const getPeriodStatus = (period) => {
     const format = 'HH:mm:ss';
@@ -64,12 +86,10 @@ const TodaysClass = ({ newTimeTable }) => {
   };
 
   useEffect(() => {
-    if (!newTimeTable) {
       fetchTodaysClassData({
         acadsession_id: selectedBranch?.id,
       });
-    }
-  }, []);
+  }, [newTimeTable]);
   useEffect(() => {
     if (myRef.current) executeScroll();
   }, [myRef.current]);
@@ -93,7 +113,7 @@ const TodaysClass = ({ newTimeTable }) => {
           </div>
         </div>
       </div>
-      {newTimeTable ? (
+      {!newTimeTable ? (
         <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
           <span className='th-grey th-30'>Timetable coming soon !</span>
         </div>

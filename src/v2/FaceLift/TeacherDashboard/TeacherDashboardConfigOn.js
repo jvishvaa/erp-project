@@ -93,7 +93,7 @@ const TeacherdashboardNew = ({ newTimeTable }) => {
           </div>
         </div>
         <div className='col-lg-4 th-custom-col-padding'>
-          <TeacherDiaryStats />
+          <TeacherDiaryStats newTimeTable={newTimeTable} />
           <CalendarCard />
           <Announcement scrollHeight={'640px'} />
         </div>
