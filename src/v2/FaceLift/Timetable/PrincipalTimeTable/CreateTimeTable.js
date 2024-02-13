@@ -250,18 +250,24 @@ const CreateTimeTable = ({ showTab }) => {
   };
 
   const fetchDayWisePeriods = (params = {}) => {
+    let payload = {
+      start_date: params?.start_date,
+      end_date: params?.end_date,
+      sec_map: params?.sec_map,
+      tt_id: params?.tt_id,
+    };
     setPeriodListLoading(true);
     axios
-      .get(`${endpoints.timeTableNewFlow.sectionPeriodData}/`, { params: params })
+      .get(`${endpoints.timeTableNewFlow.sectionPeriodData}/`, { params: payload })
       .then((res) => {
         if (res?.data?.status_code == 200) {
           let list = res?.data?.result;
           setPeriodListData(list);
-          if (selectedDate) {
+          if (params?.showDataforDate) {
             let currentData = list.find(
               (item) =>
                 item?.week_days ==
-                handleTexttoWeekDay(moment(selectedDate).format('dddd'))
+                handleTexttoWeekDay(moment(params?.showDataforDate).format('dddd'))
             );
             setCurrentDayPeriodData(currentData?.period_slot);
           } else {
@@ -539,6 +545,7 @@ const CreateTimeTable = ({ showTab }) => {
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
             tt_id: selectedSectionData?.id,
+            showDataforDate: selectedDate,
           });
           handleCloseEditTimeModal();
         }
@@ -580,6 +587,7 @@ const CreateTimeTable = ({ showTab }) => {
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
             tt_id: selectedSectionData?.id,
+            showDataforDate: selectedDate,
           });
           handleClosePeriodDetailsModal();
         }
@@ -653,6 +661,7 @@ const CreateTimeTable = ({ showTab }) => {
             end_date: currentDatePeriod?.end_date,
             sec_map: selectedSectionData?.sec_map,
             tt_id: selectedSectionData?.id,
+            showDataforDate: selectedDate,
           });
           if (type == 'lecture') {
             handleCloseEditLectureModal();
@@ -1188,15 +1197,16 @@ const CreateTimeTable = ({ showTab }) => {
                         start_date: newStartDate,
                         end_date: newEndDate,
                       });
-
+                      setPeriodListLoading(true);
                       setTimeout(() => {
                         fetchDayWisePeriods({
                           start_date: newStartDate,
                           end_date: newEndDate,
                           sec_map: selectedSectionData?.sec_map,
                           tt_id: selectedSectionData?.id,
+                          showDataforDate: newStartDate,
                         });
-                      }, 500);
+                      }, 1000);
                     } else {
                       message.error(<>You can &#39;t go to back to the range date</>);
                     }
@@ -1247,14 +1257,16 @@ const CreateTimeTable = ({ showTab }) => {
                         start_date: newStartDate,
                         end_date: newEndDate,
                       });
+                      setPeriodListLoading(true);
                       setTimeout(() => {
                         fetchDayWisePeriods({
                           start_date: newStartDate,
                           end_date: newEndDate,
                           sec_map: selectedSectionData?.sec_map,
                           tt_id: selectedSectionData?.id,
+                          showDataforDate: newStartDate,
                         });
-                      }, 500);
+                      }, 1000);
                     } else {
                       message.error(<>You can&#39;t go forward to range date </>);
                     }
@@ -1266,10 +1278,10 @@ const CreateTimeTable = ({ showTab }) => {
           <div className='d-flex justify-content-between mt-2'>
             {periodListData?.map((item, index) => {
               let currentWeekday = moment(currentDatePeriod?.start_date)
-                .add(item?.week_days, 'days')
+                .add(index, 'days')
                 .format('dddd');
               let currentDate = moment(currentDatePeriod?.start_date)
-                .add(item?.week_days, 'days')
+                .add(index, 'days')
                 .format('YYYY-MM-DD');
               return (
                 <div
@@ -1282,7 +1294,7 @@ const CreateTimeTable = ({ showTab }) => {
                   onClick={() => {
                     setSelectedDate(
                       moment(currentDatePeriod?.start_date)
-                        .add(item?.week_days, 'days')
+                        .add(index, 'days')
                         .format('YYYY-MM-DD')
                     );
                     let currentData = periodListData.find(
@@ -1293,13 +1305,13 @@ const CreateTimeTable = ({ showTab }) => {
                 >
                   <div>
                     {moment(currentDatePeriod?.start_date)
-                      .add(item?.week_days, 'days')
+                      .add(index, 'days')
                       .format('Do MMM')}
                   </div>
                   <div>
                     {' '}
                     {moment(currentDatePeriod?.start_date)
-                      .add(item?.week_days, 'days')
+                      .add(index, 'days')
                       .format('dddd')}
                   </div>
                 </div>
