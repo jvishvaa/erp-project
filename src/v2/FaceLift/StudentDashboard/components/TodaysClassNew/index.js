@@ -88,8 +88,8 @@ const TodaysClass = ({ newTimeTable }) => {
   const getPeriodStatus = (period) => {
     const format = 'HH:mm:ss';
     const time = moment(moment(), format);
-    const start_time = moment(period?.start_time, format);
-    const end_time = moment(period?.end_time, format);
+    const start_time = moment(period?.period_slot?.start_time, format);
+    const end_time = moment(period?.period_slot?.end_time, format);
     if (time.isSameOrAfter(end_time)) {
       return 'completed';
     } else if (time.isBetween(start_time, end_time)) {

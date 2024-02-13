@@ -1637,7 +1637,7 @@ const CreateTimeTable = ({ showTab }) => {
             </div>
             <div className='col-12 py-2'>
               <div className='row justify-content-between align-items-center'>
-                <div className='th-black th-500 col-5'>Select Teachers</div>
+                <div className='th-black th-500 col-5'>Select Class Teacher</div>
                 <div className='col-7'>
                   <Select
                     className='th-width-100 th-br-6'
