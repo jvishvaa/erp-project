@@ -168,25 +168,27 @@ const StudentTimeTable = () => {
                       />
                     </span>
                   </div>
-                  {
-                    currentWeekTimeTable?.length>0 && <Tooltip title={teacherList?.length>0 ? "" : "Timetable not created yet"}>
+                  {currentWeekTimeTable?.length > 0 && (
+                    <Tooltip
+                      title={teacherList?.length > 0 ? '' : 'Timetable not created yet'}
+                    >
                       <Button
-                    type='primary'
-                    className='th-br-8'
-                    icon={<EyeFilled />}
-                    onClick={teacherList?.length>0 && handleShowTeacherModal}
-                  >
-                    Show Teachers
-                  </Button>
+                        type='primary'
+                        className='th-br-8'
+                        icon={<EyeFilled />}
+                        onClick={teacherList?.length > 0 && handleShowTeacherModal}
+                      >
+                        Show Teachers
+                      </Button>
                     </Tooltip>
-                  }
+                  )}
                 </div>
               </div>
             </div>
 
             <div className={`${loading ? 'py-5' : ''}`}>
               <Spin spinning={loading}>
-                {!teacherLoading && currentWeekTimeTable?.length>0&& !loading && (
+                {!teacherLoading && currentWeekTimeTable?.length > 0 && !loading && (
                   <div className='col-12 mt-3 th-16'>
                     Class Teacher :{' '}
                     <span className='th-primary th-fw-600'>
