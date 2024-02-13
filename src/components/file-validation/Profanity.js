@@ -20,7 +20,8 @@ const getWords = async () => {
 getWords();
 
 const Profanity = (message) => {
-  console.log(addProfanityWords);
+  message = message.trim().replace(/\s+/g, ' ');
+  console.log('addProfanityWords', addProfanityWords);
   var profanity = require('profanity-hindi');
   var newWords = addProfanityWords;
   profanity.addWords(newWords);
