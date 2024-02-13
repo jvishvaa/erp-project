@@ -157,7 +157,7 @@ const Diary = ({ newTimetableFLow }) => {
               </div>
 
               <div className='col-sm-3 col-lg-2 col-6'>
-                {!isStudentDiary && !newTimetableFLow && (
+                {!isStudentDiary && user_level == 8 ? (
                   <Button
                     type='primary'
                     className='th-br-6 th-bg-primary th-pointer th-white'
@@ -174,6 +174,26 @@ const Diary = ({ newTimetableFLow }) => {
                     <PlusOutlined className='' />
                     Create Diary
                   </Button>
+                ) : (
+                  !isStudentDiary &&
+                  !newTimetableFLow && (
+                    <Button
+                      type='primary'
+                      className='th-br-6 th-bg-primary th-pointer th-white'
+                      onClick={() =>
+                        history.push({
+                          pathname: '/create/diary',
+                          state: {
+                            isSubstituteDiary: false,
+                          },
+                        })
+                      }
+                      block
+                    >
+                      <PlusOutlined className='' />
+                      Create Diary
+                    </Button>
+                  )
                 )}
               </div>
               <div className='col-md-6 col-lg-8 col-12 text-right'>
