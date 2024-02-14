@@ -108,10 +108,12 @@ const TodaysClass = ({ newTimeTable }) => {
   };
 
   useEffect(() => {
-      fetchTodaysClassData({
-        date: moment().format('YYYY-MM-DD'),
-        session_id: selectedAcademicYear?.id,
-      });
+      if(newTimeTable!==null) {
+        fetchTodaysClassData({
+          date: moment().format('YYYY-MM-DD'),
+          session_id: selectedAcademicYear?.id,
+        });
+      }
   }, [newTimeTable]);
   useEffect(() => {
     if (myRef.current) executeScroll();

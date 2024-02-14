@@ -52,56 +52,60 @@ const GradewiseDiaryReport = () => {
     setGradewiseDiaryStats();
     setExpandedRowKeys([]);
     setLoading(true);
-    axios
-      .get(
-        `${endpoints.diaryReport.gradewiseReport.replace(
-          '<version>',
-          configOn ? 'v3' : 'v2'
-        )}`,
-        {
-          params: { ...params },
-          headers: {
-            'X-DTS-Host': X_DTS_HOST,
-          },
-        }
-      )
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          setGradewiseDiaryData(res?.data?.result?.data);
-          setGradewiseDiaryStats(res?.data?.result);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
-      });
+    if (configOn !== null) {
+      axios
+        .get(
+          `${endpoints.diaryReport.gradewiseReport.replace(
+            '<version>',
+            configOn ? 'v3' : 'v2'
+          )}`,
+          {
+            params: { ...params },
+            headers: {
+              'X-DTS-Host': X_DTS_HOST,
+            },
+          }
+        )
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            setGradewiseDiaryData(res?.data?.result?.data);
+            setGradewiseDiaryStats(res?.data?.result);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoading(false);
+        });
+    }
   };
   const fetchSectionwiseReport = (params = {}) => {
     setLoadingInner(true);
-    axios
-      .get(
-        `${endpoints.diaryReport.sectionwiseReport.replace(
-          '<version>',
-          configOn ? 'v3' : 'v2'
-        )}`,
-        {
-          params: { ...params },
-          headers: {
-            'X-DTS-Host': X_DTS_HOST,
-          },
-        }
-      )
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          setSectionwiseDiaryData(res?.data?.result?.data);
-        }
-        setLoadingInner(false);
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoadingInner(false);
-      });
+    if (configOn !== null) {
+      axios
+        .get(
+          `${endpoints.diaryReport.sectionwiseReport.replace(
+            '<version>',
+            configOn ? 'v3' : 'v2'
+          )}`,
+          {
+            params: { ...params },
+            headers: {
+              'X-DTS-Host': X_DTS_HOST,
+            },
+          }
+        )
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            setSectionwiseDiaryData(res?.data?.result?.data);
+          }
+          setLoadingInner(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoadingInner(false);
+        });
+    }
   };
   const expandedRowRender = (record) => {
     const innerdailyColumn = [
@@ -190,7 +194,7 @@ const GradewiseDiaryReport = () => {
                   diaryType,
                   data: row,
                   date,
-                  newTimeTable : history?.location?.state?.newTimeTable
+                  newTimeTable: history?.location?.state?.newTimeTable,
                 },
               });
             },

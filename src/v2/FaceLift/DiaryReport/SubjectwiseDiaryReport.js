@@ -156,51 +156,61 @@ const SubjectwiseDiaryReport = () => {
     setSubjectwiseStats();
     setLoading(true);
     setExpandedRowKeys([]);
-    axios
-      .get(`${endpoints.diaryReport.subjectwiseReport.replace(
-        '<version>',
-       configOn ? 'v3' : "v2" 
-      )}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-Host': X_DTS_HOST,
-        },
-      })
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          setSubjectwiseReport(res?.data?.result?.data);
-          setSubjectwiseStats(res?.data?.result);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
-      });
+    if (configOn !== null) {
+      axios
+        .get(
+          `${endpoints.diaryReport.subjectwiseReport.replace(
+            '<version>',
+            configOn ? 'v3' : 'v2'
+          )}`,
+          {
+            params: { ...params },
+            headers: {
+              'X-DTS-Host': X_DTS_HOST,
+            },
+          }
+        )
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            setSubjectwiseReport(res?.data?.result?.data);
+            setSubjectwiseStats(res?.data?.result);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoading(false);
+        });
+    }
   };
 
   const fetchTeacherwiseReport = (params = {}) => {
     setLoadingInner(true);
-    axios
-      .get(`${endpoints.diaryReport.subjectTeacherReport.replace(
-        '<version>',
-        configOn ? 'v3' : "v2", 
-      )}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-Host': X_DTS_HOST,
-        },
-      })
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          setTeacherwiseReport(res?.data?.result?.data);
-        }
-        setLoadingInner(false);
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoadingInner(false);
-      });
+    if (configOn !== null) {
+      axios
+        .get(
+          `${endpoints.diaryReport.subjectTeacherReport.replace(
+            '<version>',
+            configOn ? 'v3' : 'v2'
+          )}`,
+          {
+            params: { ...params },
+            headers: {
+              'X-DTS-Host': X_DTS_HOST,
+            },
+          }
+        )
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            setTeacherwiseReport(res?.data?.result?.data);
+          }
+          setLoadingInner(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoadingInner(false);
+        });
+    }
   };
   const expandedRowRender = (record) => {
     const innerColumn = [
@@ -293,30 +303,28 @@ const SubjectwiseDiaryReport = () => {
       },
 
       {
-        title: <span className='th-white th-fw-700 '>SUBSITUTE DIARY</span>,  
+        title: <span className='th-white th-fw-700 '>SUBSITUTE DIARY</span>,
         align: 'center',
         // width: '5%',
         render: (data, text) => (
-          <span className='th-black-2'>
-            {data?.is_substitute_diary ? 1 : 0}
-          </span>
+          <span className='th-black-2'>{data?.is_substitute_diary ? 1 : 0}</span>
         ),
       },
     ];
 
     return (
-      <div style={{boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px"}}>
+      <div style={{ boxShadow: 'rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px' }}>
         <Table
-        columns={innerColumn}
-        dataSource={teacherwiseReport}
-        pagination={false}
-        loading={loadingInner}
-        showHeader={true}
-        bordered={false}
-        style={{ width: '100%' }}
-        className='th-inner-table-head-bg'
-        rowClassName={(record, index) => 'th-pointer th-row'}
-      />
+          columns={innerColumn}
+          dataSource={teacherwiseReport}
+          pagination={false}
+          loading={loadingInner}
+          showHeader={true}
+          bordered={false}
+          style={{ width: '100%' }}
+          className='th-inner-table-head-bg'
+          rowClassName={(record, index) => 'th-pointer th-row'}
+        />
       </div>
     );
   };
@@ -325,7 +333,7 @@ const SubjectwiseDiaryReport = () => {
       setSelectedSection(history?.location?.state?.data);
       setDate(history?.location?.state?.date);
       setDiaryType(history?.location?.state?.diaryType);
-      setConfigOn( history?.location?.state?.newTimeTable )
+      setConfigOn(history?.location?.state?.newTimeTable);
     }
   }, [window.location.pathname]);
   useEffect(() => {
@@ -337,7 +345,6 @@ const SubjectwiseDiaryReport = () => {
         date,
       });
   }, [date, configOn]);
-
 
   const columns = [
     {
@@ -404,7 +411,7 @@ const SubjectwiseDiaryReport = () => {
                   state: {
                     date,
                     diaryType,
-                    newTimeTable : history?.location?.state?.newTimeTable
+                    newTimeTable: history?.location?.state?.newTimeTable,
                   },
                 })
               }

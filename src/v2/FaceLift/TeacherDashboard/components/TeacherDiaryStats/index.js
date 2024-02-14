@@ -60,7 +60,7 @@ const DiaryStats = ({ newTimeTable }) => {
     }
   };
   useEffect(() => {
-    if (selectedAcademicYear)
+    if (selectedAcademicYear && newTimeTable !== null)
       fetchDiaryStats({
         acadsession_id: selectedBranch?.id,
       });

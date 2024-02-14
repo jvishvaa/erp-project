@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 
 const TeacherDashoboardNew = () => {
   const [configOn, setConfigOn] = useState(true);
-  const [newTimeTable, setNewTimeTable] = useState(false);
+  const [newTimeTable, setNewTimeTable] = useState(null);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
