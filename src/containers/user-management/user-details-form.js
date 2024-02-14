@@ -239,6 +239,9 @@ const UserDetailsForm = ({
                 inputProps={{ maxLength: 20 }}
                 label='Middle name'
               />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.middle_name ? formik.errors.middle_name : ''}
+              </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item md={4} xs={12}>
@@ -365,7 +368,6 @@ const UserDetailsForm = ({
                 : ''}
             </FormHelperText>
           </Grid>
-
           <Grid item md={2} xs={4}>
             <FormControl required fullWidth variant='outlined' size='small'>
               <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
@@ -457,7 +459,6 @@ const UserDetailsForm = ({
           </FormControl>
         </Grid> */}
           {/* </Grid> */}
-
           <Grid item xs={12}>
             <Divider />
           </Grid>
@@ -659,7 +660,6 @@ const UserDetailsForm = ({
                 </Grid>
         </DialogActions>
       </Dialog>} */}
-
           <Modal
             title='Change Password'
             onOk={() => {
