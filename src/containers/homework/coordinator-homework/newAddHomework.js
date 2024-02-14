@@ -387,20 +387,6 @@ const AddHomeworkCordNew = ({
         return;
       }
     }
-    if (questions) {
-      let flag = false;
-      questions.forEach((item) => {
-        if (item.is_attachment_enable) {
-          flag = true;
-        } else {
-          flag = false;
-        }
-      });
-      if (!flag) {
-        message.error('Kindly make the submission mode Online');
-        return;
-      }
-    }
     let hasOnlineQuestion = questions?.every((item) => item['is_online'] === true);
     let hasOfflineQuestion = questions?.every((item) => item['is_online'] === false);
     let hasBothQuestions =
