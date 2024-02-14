@@ -288,6 +288,7 @@ const Diary = ({ newTimetableFLow }) => {
                           state: {
                             date,
                             diaryType: 2,
+                            newTimeTable : newTimetableFLow
                           },
                         })
                       }

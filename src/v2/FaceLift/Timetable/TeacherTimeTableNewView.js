@@ -224,6 +224,7 @@ const TeacherTimeTableNewView = withRouter(
                                     <div
                                       className='th-grey th-12 text-truncate'
                                       title={eachPeriod?.holidays[0]?.title}
+                                      style={{ cursor: 'default' }}
                                     >
                                       {eachPeriod?.holidays[0]?.title}
                                     </div>

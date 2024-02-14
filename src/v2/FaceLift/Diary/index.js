@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 const DiaryMain = () => {
   const [loading, setLoading] = useState(false);
   const [showNewDiary, setShowNewDiary] = useState(false);
-  const [newTimetableFLow, setNewTimetableFLow] = useState(false);
+  const [newTimetableFLow, setNewTimetableFLow] = useState(null);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
