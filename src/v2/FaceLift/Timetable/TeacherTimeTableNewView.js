@@ -5,9 +5,13 @@ import { Button, message } from 'antd';
 import axios from 'v2/config/axios';
 import { withRouter, useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
+import { useSelector } from 'react-redux';
 
 const TeacherTimeTableNewView = withRouter(
-  ({ currentWeekTimeTable, startDate, endDate, allowAutoAssignDiary }) => {
+  ({ currentWeekTimeTable, startDate, endDate, allowAutoAssignDiary, sectionList }) => {
+    const selectedBranch = useSelector(
+      (state) => state.commonFilterReducer?.selectedBranch
+    );
     const today = new Date();
     const history = useHistory();
     const [currentDay, setCurrentDay] = useState();
@@ -82,6 +86,7 @@ const TeacherTimeTableNewView = withRouter(
         teacher: lecture.sub_teacher.map((t) => t?.name).join(', '),
         dairy_details: lecture.dairy_details,
         holidays: lecture?.holidays,
+        sectionDetails: lecture?.sec_map[0]?.grade_sec,
       });
     });
 
@@ -259,6 +264,39 @@ const TeacherTimeTableNewView = withRouter(
                                               )
                                             : history.push({
                                                 pathname: '/create/diary',
+                                                state: {
+                                                  comingFromTimetable: true,
+                                                  data: {
+                                                    academic_year_id: selectedBranch?.id,
+                                                    branch_id: selectedBranch?.branch?.id,
+                                                    branch_name:
+                                                      selectedBranch?.branch?.branch_name,
+                                                    diary_type: '2',
+                                                    grade_id:
+                                                      eachPeriod?.sectionDetails
+                                                        ?.grade_id,
+                                                    grade_name:
+                                                      eachPeriod?.sectionDetails?.grade,
+                                                    is_substitute_diary: false,
+                                                    section_id:
+                                                      eachPeriod?.sectionDetails
+                                                        ?.section_id,
+                                                    section_mapping_id: sectionList?.find(
+                                                      (item) =>
+                                                        item?.id ==
+                                                        eachPeriod?.sectionDetails
+                                                          ?.section_id
+                                                    )?.id,
+                                                    section_name:
+                                                      eachPeriod?.sectionDetails?.section,
+                                                    session_year:
+                                                      selectedBranch?.session_year
+                                                        ?.session_year,
+                                                    session_year_id:
+                                                      selectedBranch?.session_year?.id,
+                                                    substitute: false,
+                                                  },
+                                                },
                                               });
                                         }}
                                       >
