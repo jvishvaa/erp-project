@@ -16,7 +16,6 @@ const TeacherTimeTableNewView = withRouter(
     const days = Object.keys(currentWeekTimeTable)?.map((item) =>
       moment(item).format('dddd')
     );
-
     const fetchDiaryDetails = (diaryId) => {
       setLoading(true);
       axios
@@ -109,7 +108,6 @@ const TeacherTimeTableNewView = withRouter(
       current.setDate(current.getDate() + 1);
       return current.toISOString().split('T')[0];
     }
-
     return (
       <>
         <div className='tablewrap'>
@@ -248,24 +246,43 @@ const TeacherTimeTableNewView = withRouter(
                                       </span>
                                     </div>
                                     <div className='text-truncate py-1'>
-                                      <Button
-                                        type='default'
-                                        loading={loading}
-                                        className='th-12 th-br-8 px-2 th-bg-grey'
-                                        onClick={() => {
-                                          eachPeriod?.dairy_details?.length > 0
-                                            ? fetchDiaryDetails(
-                                                eachPeriod?.dairy_details[0]?.id
-                                              )
-                                            : history.push({
-                                                pathname: '/create/diary',
+                                      {moment(eachPeriod?.date).format('DD/MM/YYYY') ===
+                                        moment(today).format('DD/MM/YYYY') ||
+                                      eachPeriod?.dairy_details?.length > 0 ? (
+                                        <Button
+                                          key={eachPeriod?.dairy_details[0]?.id}
+                                          type='default'
+                                          loading={loading}
+                                          className='th-12 th-br-8 px-2 th-bg-grey'
+                                          onClick={() => {
+                                            if (eachPeriod?.dairy_details?.length > 0) {
+                                              history.push({
+                                                pathname: '/diary/teacher',
+                                                state: {
+                                                  eachPeriod: eachPeriod,
+                                                },
                                               });
-                                        }}
-                                      >
-                                        {eachPeriod?.dairy_details?.length > 0
-                                          ? 'View Diary'
-                                          : '+ Add Diary & HW'}
-                                      </Button>
+                                            } else {
+                                              history.push({
+                                                pathname: '/create/diary',
+                                                state: {
+                                                  eachPeriod: eachPeriod,
+                                                },
+                                              });
+                                            }
+                                          }}
+                                        >
+                                          {eachPeriod?.dairy_details?.length > 0
+                                            ? 'View Diary'
+                                            : moment(eachPeriod?.date).format(
+                                                'DD/MM/YYYY'
+                                              ) === moment(today).format('DD/MM/YYYY')
+                                            ? '+ Add Diary & HW'
+                                            : ''}
+                                        </Button>
+                                      ) : (
+                                        ''
+                                      )}
                                     </div>
                                   </>
                                 ) : (
