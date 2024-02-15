@@ -44,7 +44,7 @@ const Diary = ({ newTimetableFLow }) => {
   const [dailyDiaryData, setDailyDiaryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(
-    moment(moment(history?.location?.state?.eachPeriod?.date).format(dateFormat) || history?.location?.state?.diary_created_at).format(dateFormat)||
+    moment(history?.location?.state?.eachPeriod?.date).format(dateFormat) || moment(history?.location?.state?.diary_created_at).format(dateFormat)||
       moment().format(dateFormat)
   );
   const [showTab, setShowTab] = useState('1');
