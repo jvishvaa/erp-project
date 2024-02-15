@@ -312,6 +312,7 @@ const TeacherTimeTable = () => {
                           startDate={moment(value?.[0]).format('YYYY-MM-DD')}
                           endDate={moment(value?.[1]).format('YYYY-MM-DD')}
                           allowAutoAssignDiary={allowAutoAssignDiary}
+                          sectionList={sectionList}
                         />
                       </Card>
                     ) : (

@@ -148,6 +148,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
   const [combinedQuestionList, setCombinedQuestionList] = useState([]);
   const [hwSubTime, setHwSubTime] = useState(null);
+  const [comingFromTimeTable, setComingFromTimeTable] = useState();
+
   const questionModify = (questions) => {
     let arr = [];
     let uniqueQuestions = _.uniqBy(questions, 'question');
@@ -703,19 +705,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           section: each.value,
           module_id: moduleId,
         };
-        axios
-          .get(`${endpoints.academics.subjects}`, {
-            params: {
-              ...params,
-              ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}),
-            },
-          })
-          .then((result) => {
-            if (result?.data?.status_code == 200) {
-              setSubjectDropdown(result?.data?.data);
-            }
-          })
-          .catch((error) => message.error('error', error?.message));
+        fetchSubjectData(params);
       }
     }
   };
@@ -751,6 +741,21 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       };
       fetchSectionData(params);
     }
+  };
+  const fetchSubjectData = (params = {}) => {
+    axios
+      .get(`${endpoints.academics.subjects}`, {
+        params: {
+          ...params,
+          ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}),
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setSubjectDropdown(result?.data?.data);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
   };
   const fetchSectionData = (params = {}) => {
     axios
@@ -1123,18 +1128,17 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         questionList[index]['max_attachment'] = 0;
       }
     });
-    if(questionList){
-      let flag = false
+    if (questionList) {
+      let flag = false;
       questionList.forEach((item) => {
         if (Profanity(item.question)) {
           flag = true;
-        }
-        else{
+        } else {
           flag = false;
         }
       });
-      if(flag){
-        message.error('Question Contains Banned Words, Please Check');  
+      if (flag) {
+        message.error('Question Contains Banned Words, Please Check');
         flag = true;
         return;
       }
@@ -1372,7 +1376,29 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
 
   useEffect(() => {
-    if (history?.location?.state?.data) {
+    if (history?.location?.state?.comingFromTimetable) {
+      let editData = history.location.state.data;
+      formRef.current.setFieldsValue({
+        grade: editData?.grade_name,
+        section: editData?.section_name,
+      });
+      setAcadID(editData?.academic_year_id);
+      setBranchID(editData?.branch_id);
+      setGradeID(editData?.grade_id);
+      setGradeName(editData?.grade_name);
+      setSectionName(editData?.section_name);
+      setSectionID(editData?.section_id);
+      setSectionMappingID(editData?.section_mapping_id);
+      setComingFromTimeTable(true);
+      const params = {
+        session_year: selectedAcademicYear?.id,
+        branch: selectedBranch?.branch?.id,
+        grade: editData?.grade_id,
+        section: editData?.section_id,
+        //  module_id: moduleId,
+      };
+      fetchSubjectData(params);
+    } else if (history?.location?.state?.data) {
       let editData = history.location.state.data;
       let editSubject = history.location.state.subject;
       setIsDiaryEdit(history?.location?.state?.isDiaryEdit);
@@ -1706,7 +1732,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <div className='text-capitalize th-fw-700 th-black-1'>Grade</div>
                 <Form.Item name='grade'>
                   <Select
-                    disabled={isDiaryEdit || isAutoAssignDiary}
+                    disabled={isDiaryEdit || isAutoAssignDiary || comingFromTimeTable}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleGrade(value)}
                     placeholder='Grade'
@@ -1731,7 +1757,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <Form.Item name='section'>
                   <Select
                     disabled={
-                      isDiaryEdit ? true : sectionMappingID?.length == 1 ? true : false
+                      comingFromTimeTable || isDiaryEdit
+                        ? true
+                        : sectionMappingID?.length == 1
+                        ? true
+                        : false
                     }
                     mode={isAutoAssignDiary ? 'multiple' : 'single'}
                     className='th-width-100 th-br-6'
