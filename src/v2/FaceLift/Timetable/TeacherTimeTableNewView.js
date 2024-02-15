@@ -16,11 +16,11 @@ const TeacherTimeTableNewView = withRouter(
     const history = useHistory();
     const [currentDay, setCurrentDay] = useState();
     const [loading, setLoading] = useState(false);
+    const [currentDiaryId, setCurrentDiaryId] = useState();
     const [currentDayPeriodData, setCurrentDayPeriodData] = useState();
     const days = Object.keys(currentWeekTimeTable)?.map((item) =>
       moment(item).format('dddd')
     );
-
     const fetchDiaryDetails = (diaryId) => {
       setLoading(true);
       axios
@@ -114,7 +114,6 @@ const TeacherTimeTableNewView = withRouter(
       current.setDate(current.getDate() + 1);
       return current.toISOString().split('T')[0];
     }
-
     return (
       <>
         <div className='tablewrap'>
@@ -255,54 +254,81 @@ const TeacherTimeTableNewView = withRouter(
                                     <div className='text-truncate py-1'>
                                       <Button
                                         type='default'
-                                        loading={loading}
+                                        loading={
+                                          loading &&
+                                          currentDiaryId ===
+                                            eachPeriod?.dairy_details[0]?.id
+                                        }
+                                        // onMouseEnter={()=>}
                                         className='th-12 th-br-8 px-2 th-bg-grey'
                                         onClick={() => {
-                                          eachPeriod?.dairy_details?.length > 0
-                                            ? fetchDiaryDetails(
+                                          if (eachPeriod?.dairy_details?.length > 0) {
+                                            if (
+                                              moment(eachPeriod?.date).format(
+                                                'DD/MM/YYYY'
+                                              ) === moment(today).format('DD/MM/YYYY')
+                                            ) {
+                                              setCurrentDiaryId(
                                                 eachPeriod?.dairy_details[0]?.id
-                                              )
-                                            : history.push({
-                                                pathname: '/create/diary',
+                                              );
+
+                                              fetchDiaryDetails(
+                                                eachPeriod?.dairy_details[0]?.id
+                                              );
+                                            } else {
+                                              history.push({
+                                                pathname: '/diary/teacher',
                                                 state: {
-                                                  comingFromTimetable: true,
-                                                  data: {
-                                                    academic_year_id: selectedBranch?.id,
-                                                    branch_id: selectedBranch?.branch?.id,
-                                                    branch_name:
-                                                      selectedBranch?.branch?.branch_name,
-                                                    diary_type: '2',
-                                                    grade_id:
-                                                      eachPeriod?.sectionDetails
-                                                        ?.grade_id,
-                                                    grade_name:
-                                                      eachPeriod?.sectionDetails?.grade,
-                                                    is_substitute_diary: false,
-                                                    section_id:
-                                                      eachPeriod?.sectionDetails
-                                                        ?.section_id,
-                                                    section_mapping_id: sectionList?.find(
-                                                      (item) =>
-                                                        item?.id ==
-                                                        eachPeriod?.sectionDetails
-                                                          ?.section_id
-                                                    )?.id,
-                                                    section_name:
-                                                      eachPeriod?.sectionDetails?.section,
-                                                    session_year:
-                                                      selectedBranch?.session_year
-                                                        ?.session_year,
-                                                    session_year_id:
-                                                      selectedBranch?.session_year?.id,
-                                                    substitute: false,
-                                                  },
+                                                  eachPeriod: eachPeriod,
                                                 },
                                               });
+                                            }
+                                          } else {
+                                            history.push({
+                                              pathname: '/create/diary',
+                                              state: {
+                                                comingFromTimetable: true,
+                                                data: {
+                                                  academic_year_id: selectedBranch?.id,
+                                                  branch_id: selectedBranch?.branch?.id,
+                                                  branch_name:
+                                                    selectedBranch?.branch?.branch_name,
+                                                  diary_type: '2',
+                                                  grade_id:
+                                                    eachPeriod?.sectionDetails?.grade_id,
+                                                  grade_name:
+                                                    eachPeriod?.sectionDetails?.grade,
+                                                  is_substitute_diary: false,
+                                                  section_id:
+                                                    eachPeriod?.sectionDetails
+                                                      ?.section_id,
+                                                  section_mapping_id: sectionList?.find(
+                                                    (item) =>
+                                                      item?.id ==
+                                                      eachPeriod?.sectionDetails
+                                                        ?.section_id
+                                                  )?.id,
+                                                  section_name:
+                                                    eachPeriod?.sectionDetails?.section,
+                                                  session_year:
+                                                    selectedBranch?.session_year
+                                                      ?.session_year,
+                                                  session_year_id:
+                                                    selectedBranch?.session_year?.id,
+                                                  substitute: false,
+                                                },
+                                              },
+                                            });
+                                          }
                                         }}
                                       >
                                         {eachPeriod?.dairy_details?.length > 0
                                           ? 'View Diary'
-                                          : '+ Add Diary & HW'}
+                                          : moment(eachPeriod?.date).format(
+                                              'DD/MM/YYYY'
+                                            ) === moment(today).format('DD/MM/YYYY')
+                                          ? '+ Add Diary & HW'
+                                          : ''}
                                       </Button>
                                     </div>
                                   </>
