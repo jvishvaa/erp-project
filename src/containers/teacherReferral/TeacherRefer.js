@@ -80,7 +80,7 @@ const TeacherRefer = () => {
 
   const [countryCode, setCountryCode] = useState('');
 
-  const [buttonDisable, setButtonDisable] = useState(true)
+  const [buttonDisable, setButtonDisable] = useState(true);
 
   const formRef = useRef();
 
@@ -162,14 +162,12 @@ const TeacherRefer = () => {
         if (currentProgress === 'Joined') {
           content = 'Joined';
           color = 'green';
-        }
-        else if(currentProgress === "not_shortlisted"){
+        } else if (currentProgress === 'not_shortlisted') {
           content = 'Rejected';
-          color = "black"
-        }
-        else if(currentProgress == "pending"){
-          content = "Pending"
-          color = "red"
+          color = 'black';
+        } else if (currentProgress == 'pending') {
+          content = 'Pending';
+          color = 'red';
         }
 
         return <span style={{ color }}>{content}</span>;
@@ -186,12 +184,12 @@ const TeacherRefer = () => {
   ];
 
   const handleUserName = (e) => {
-    e.target.value.trim()
-    if(e){
+    e.target.value.trim();
+    if (e) {
       const trimmedValue = e.target.value.trim();
-    
+
       // Check if the trimmed value is not blank and does not exceed 100 characters
-      if (trimmedValue !== "" ) {
+      if (trimmedValue !== '') {
         validateUserName(trimmedValue);
         setUsername(trimmedValue);
       } else {
@@ -233,23 +231,19 @@ const TeacherRefer = () => {
   };
 
   const handlePhone = (e) => {
-    if(e){
+    if (e) {
       phonevalidate(e?.target?.value);
-    setPhone(e?.target?.value);
+      setPhone(e?.target?.value);
+    } else {
+      setPhone(null);
     }
-    else{
-
-      setPhone(null)
-    }
-    
   };
 
   const handleMail = (e) => {
-    if(e){
+    if (e) {
       setMail(e?.target?.value);
-    emailValidate(e?.target?.value);
-    }
-    else{
+      emailValidate(e?.target?.value);
+    } else {
       setMail(null);
     }
   };
@@ -314,36 +308,31 @@ const TeacherRefer = () => {
   };
 
   const handleUserRole = (e) => {
-    if(e){
+    if (e) {
       setUserRole(e);
-    }
-    else{
-      setUserRole(null)
+    } else {
+      setUserRole(null);
     }
   };
 
   const handleExperience = (e) => {
-    if(e){
+    if (e) {
       const trimmedValue = e.target.value.trim();
-      if(trimmedValue !==""){
-
+      if (trimmedValue !== '') {
         Setexperience(e.target.value);
+      } else {
+        Setexperience(null);
       }
-      else{
-        Setexperience(null)
-      }
-    }
-    else{
-      Setexperience(null)
+    } else {
+      Setexperience(null);
     }
   };
 
   const handleBoard = (e) => {
-    if(e){
+    if (e) {
       setBoard(e.toLowerCase());
-    }
-    else{
-      setBoard(null)
+    } else {
+      setBoard(null);
     }
   };
 
@@ -351,9 +340,8 @@ const TeacherRefer = () => {
     if (e) {
       const [selectedSubjectId, selectedSubjectTaught] = e.split(',');
       SetsubjectTaught(selectedSubjectId);
-    }
-    else{
-      SetsubjectTaught(null)
+    } else {
+      SetsubjectTaught(null);
     }
   };
 
@@ -361,9 +349,8 @@ const TeacherRefer = () => {
     if (e) {
       const [selectedBranchId, SelectedBranchName] = e.split(',');
       Setbranch(selectedBranchId);
-    }
-    else{
-      Setbranch(null)
+    } else {
+      Setbranch(null);
     }
   };
 
@@ -443,7 +430,6 @@ const TeacherRefer = () => {
     getSubjects();
   }, []);
 
-
   useEffect(() => {
     getData(refferListPageData.currentPage);
   }, [refferListPageData.currentPage, count]);
@@ -453,8 +439,7 @@ const TeacherRefer = () => {
       message.error('Please Enter Candidate Name');
       setLoading(false);
       return;
-    }
-     else if (userRole === null) {
+    } else if (userRole === null) {
       message.error('Please select the Candidate Role');
       setLoading(false);
       return;
@@ -470,10 +455,10 @@ const TeacherRefer = () => {
       message.error('Please select the Subject');
       setLoading(false);
       return;
-    } else if(phone.length <10){
-      message.error("Please enter a valid 10-digit phone number")
-      setLoading(false)
-      return
+    } else if (phone.length < 10) {
+      message.error('Please enter a valid 10-digit phone number');
+      setLoading(false);
+      return;
     } else if (phone == null) {
       message.error('Please Enter the Phone Number');
       setLoading(false);
@@ -586,12 +571,11 @@ const TeacherRefer = () => {
   };
 
   const handledateofbirth = (e) => {
-    if(e){
+    if (e) {
       const formattedDate = moment(e).format('YYYY-MM-DD');
-     SetdateOfBirth(formattedDate);
-    }
-    else{
-      SetdateOfBirth(null)
+      SetdateOfBirth(formattedDate);
+    } else {
+      SetdateOfBirth(null);
     }
   };
 
@@ -632,28 +616,30 @@ const TeacherRefer = () => {
   ));
 
   const onchangeCheckbox = (e) => {
-      if(e.target.checked===true) {
-
-        
-
-        if(username && userRole && experience && board && subjectTaught && phone && dateOfBirth && mail && city && branch && selectedFile){
-          setButtonDisable(false)
-          setChecked(true);
-          setCheckBoxError('');
-        }
-        else{
-          setChecked(false)
-          setButtonDisable(true)
-          message.error("Please Fill All The Fields")
-
-        }
-
+    if (e.target.checked === true) {
+      if (
+        username &&
+        userRole &&
+        experience &&
+        board &&
+        subjectTaught &&
+        phone &&
+        dateOfBirth &&
+        mail &&
+        city &&
+        branch &&
+        selectedFile
+      ) {
+        setButtonDisable(false);
+        setChecked(true);
+        setCheckBoxError('');
+      } else {
+        setChecked(false);
+        setButtonDisable(true);
+        message.error('Please Fill All The Fields');
       }
-
-     
-      else{
-      }
-    
+    } else {
+    }
   };
 
   const showModal = () => {
@@ -1136,22 +1122,21 @@ const TeacherRefer = () => {
                               </Form>
                               <br />
                               <div style={{ width: '60%' }}>
-                                <div style={{marginBottom : "5px"}}>
-                                  <span className='th-grey th-14 ' >
+                                <div style={{ marginBottom: '5px' }}>
+                                  <span className='th-grey th-14 '>
                                     Upload the resume ( size less than 10 MB )*
                                   </span>
                                 </div>
 
-                                
-                                  <Upload {...draggerProps}>
-                                    <Button
-                                      icon={<UploadOutlined />}
-                                      style={{ width: '289%' }}
-                                    >
-                                      Select File
-                                    </Button>
-                                  </Upload>
-                                
+                                <Upload {...draggerProps}>
+                                  <Button
+                                    icon={<UploadOutlined />}
+                                    style={{ width: '289%' }}
+                                  >
+                                    Select File
+                                  </Button>
+                                </Upload>
+
                                 <div
                                   style={{
                                     marginTop: '2px',
@@ -1172,8 +1157,8 @@ const TeacherRefer = () => {
                               </div>
                               <div style={{ width: '58%', marginTop: '10px' }}>
                                 <small style={{ textAlign: 'left' }}>
-                                  <b>Note :</b> Only ['.pdf', '.docx', '.doc']
-                                  files are allowed.
+                                  <b>Note :</b> Only ['.pdf', '.docx', '.doc'] files are
+                                  allowed.
                                 </small>
                               </div>
                               <br />
@@ -1212,17 +1197,17 @@ const TeacherRefer = () => {
                                     <p>
                                       <b>Incentives for Teachers: </b>
                                       Teachers will be eligible for incentives based on
-                                      their tenure: 
-                                      <br/>
-                                      a) 2 to 4 years - ₹3,000 
-                                      <br/>
-                                      b) 5 years - ₹5,000 
-                                      <br/>
-                                      c) 7 years - ₹7,000 
+                                      their tenure:
                                       <br />
-                                      d) 10 years and beyond - ₹10,000 
+                                      a) 2 to 4 years - ₹3,000
                                       <br />
-                                      <br/>
+                                      b) 5 years - ₹5,000
+                                      <br />
+                                      c) 7 years - ₹7,000
+                                      <br />
+                                      d) 10 years and beyond - ₹10,000
+                                      <br />
+                                      <br />
                                       <b>Referral Incentive:</b> Upon a teacher joining
                                       and successfully completing 30 days, the referring
                                       staff member will receive an incentive for the
@@ -1308,17 +1293,6 @@ const TeacherRefer = () => {
                           `${range[0]}-${range[1]} of ${total} items`
                         }
                       />
-                    </div>
-                  )}
-                  {!loading && (
-                    <div
-                      style={{
-                        color: '#3956A1',
-                      }}
-                      className='d-flex align-items-center justify-content-center mt-4'
-                    >
-                      Note: Referral concession will be applied once your referral
-                      successfully pays their tuition fees
                     </div>
                   )}
                 </div>
