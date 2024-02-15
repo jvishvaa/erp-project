@@ -44,7 +44,7 @@ const Diary = ({ newTimetableFLow }) => {
   const [dailyDiaryData, setDailyDiaryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(
-    moment(history?.location?.state?.diary_created_at).format(dateFormat) ||
+    moment(moment(history?.location?.state?.eachPeriod?.date).format(dateFormat) || history?.location?.state?.diary_created_at).format(dateFormat)||
       moment().format(dateFormat)
   );
   const [showTab, setShowTab] = useState('1');
@@ -151,7 +151,7 @@ const Diary = ({ newTimetableFLow }) => {
                   // placement='bottomRight'
                   value={moment(date)}
                   showToday={false}
-                  onChange={handleDateChange}
+                  onChange={(e)=>handleDateChange(e)}
                   format={'DD/MM/YYYY'}
                 />
               </div>
