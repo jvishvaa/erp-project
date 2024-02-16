@@ -21,7 +21,7 @@ const TeacherTimeTable = () => {
 
   const startOfWeek = today.clone().startOf('isoWeek');
   const endOfWeek = today.clone().endOf('isoWeek');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [gradeID, setGradeID] = useState();
   const [gradeList, setGradeList] = useState([]);
   const [sectionMappingID, setSectionMappingID] = useState();
@@ -162,6 +162,7 @@ const TeacherTimeTable = () => {
 
   const fetchTeachersTimeTable = (params = {}) => {
     setLoading(true);
+    setCurrentWeekTimeTable({});
     axios
       .get(`${endpoints.timeTableNewFlow.teacherTimeTableView}/`, {
         params: { ...params },
@@ -301,12 +302,12 @@ const TeacherTimeTable = () => {
               </div>
 
               <div className={`mt-3 ${loading ? 'py-5' : ''}`}>
-                {sectionMappingID ? (
-                  <Spin spinning={loading}>
-                    {!Object.values(currentWeekTimeTable)?.every(
+                <Spin spinning={loading}>
+                  {sectionMappingID ? (
+                    !Object.values(currentWeekTimeTable)?.every(
                       (array) => Array.isArray(array) && array.length === 0
                     ) ? (
-                      <Card className='th-timetable-card th-br-8'>
+                      <Card className='th-timetable-card th-br-8' bordered={false}>
                         <TeacherTimeTableNewView
                           currentWeekTimeTable={currentWeekTimeTable}
                           startDate={moment(value?.[0]).format('YYYY-MM-DD')}
@@ -325,15 +326,15 @@ const TeacherTimeTable = () => {
                           </p>
                         </div>
                       )
-                    )}
-                  </Spin>
-                ) : (
-                  <div className='text-center py-5'>
-                    <span className='th-25 th-fw-500'>
-                      Please select the section first you wish to display
-                    </span>
-                  </div>
-                )}
+                    )
+                  ) : (
+                    <div className='text-center py-5'>
+                      <span className='th-25 th-fw-500'>
+                        Please select the section first you wish to display
+                      </span>
+                    </div>
+                  )}
+                </Spin>
               </div>
             </div>
           </div>
