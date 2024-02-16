@@ -182,7 +182,9 @@ const TeacherTimeTableNewView = withRouter(
             <tbody>
               {periodSlots?.length > 0 ? (
                 periodSlots?.map((item, index) => {
-                  const periodDetails = filterUniqueObjects(periodData[item?.name]);
+                  const periodDetails = filterUniqueObjects(
+                    periodData[item?.name]
+                  )?.slice(0, 7);
                   return (
                     <tr className='tableR' style={{ borderTop: 0 }}>
                       <>
