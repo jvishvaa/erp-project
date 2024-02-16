@@ -87,11 +87,12 @@ const EbookCards = (props) => {
         .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`)
         .then((res) => {
           setLoading(false);
-          if (props?.recently == true) {
-            setPageNumber(data?.page_number);
-          } else {
-            setPageNumber(res?.data?.page_number);
-          }
+          // if (props?.recently == true) {
+          //   setPageNumber(data?.page_number);
+          // } else {
+          //   setPageNumber(res?.data?.page_number);
+          // }
+          setPageNumber(res?.data?.page_number);
           setTimeSpent(res?.data?.time_spent);
           setOpen(true);
         })
