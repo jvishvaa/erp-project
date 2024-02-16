@@ -114,6 +114,18 @@ const TeacherTimeTableNewView = withRouter(
       current.setDate(current.getDate() + 1);
       return current.toISOString().split('T')[0];
     }
+
+    const filterUniqueObjects = (arr) => {
+      return Object.values(
+        arr.reduce((acc, obj) => {
+          const key = obj.date;
+          if (!acc[key]) {
+            acc[key] = obj;
+          }
+          return acc;
+        }, {})
+      );
+    };
     return (
       <>
         <div className='tablewrap'>
@@ -169,7 +181,7 @@ const TeacherTimeTableNewView = withRouter(
             <tbody>
               {periodSlots?.length > 0 ? (
                 periodSlots?.map((item, index) => {
-                  const periodDetails = periodData[item?.name]?.slice(0, 7);
+                  const periodDetails = filterUniqueObjects(periodData[item?.name]);
                   return (
                     <tr className='tableR' style={{ borderTop: 0 }}>
                       <>
@@ -213,11 +225,7 @@ const TeacherTimeTableNewView = withRouter(
                               }}
                             >
                               <div
-                                className={`card w-100 d-flex ${
-                                  eachPeriod?.subject || eachPeriod?.holidays?.length > 0
-                                    ? 'justify-content-between'
-                                    : 'justify-content-center'
-                                } p-2 flex-column`}
+                                className={`card w-100 d-flex justify-content-center p-2 flex-column`}
                                 style={{
                                   height: '100px',
                                 }}
@@ -251,86 +259,88 @@ const TeacherTimeTableNewView = withRouter(
                                         {eachPeriod?.grade_section}
                                       </span>
                                     </div>
-                                    <div className='text-truncate py-1'>
-                                      <Button
-                                        type='default'
-                                        loading={
-                                          loading &&
-                                          currentDiaryId ===
-                                            eachPeriod?.dairy_details[0]?.id
-                                        }
-                                        // onMouseEnter={()=>}
-                                        className='th-12 th-br-8 px-2 th-bg-grey'
-                                        onClick={() => {
-                                          if (eachPeriod?.dairy_details?.length > 0) {
-                                            if (
-                                              moment(eachPeriod?.date).format(
-                                                'DD/MM/YYYY'
-                                              ) === moment(today).format('DD/MM/YYYY')
-                                            ) {
-                                              setCurrentDiaryId(
-                                                eachPeriod?.dairy_details[0]?.id
-                                              );
+                                    {eachPeriod?.dairy_details?.length > 0 && (
+                                      <div className='text-truncate py-1'>
+                                        <Button
+                                          type='default'
+                                          loading={
+                                            loading &&
+                                            currentDiaryId ===
+                                              eachPeriod?.dairy_details[0]?.id
+                                          }
+                                          className='th-12 th-br-8 px-2 th-bg-grey'
+                                          onClick={() => {
+                                            if (eachPeriod?.dairy_details?.length > 0) {
+                                              if (
+                                                moment(eachPeriod?.date).format(
+                                                  'DD/MM/YYYY'
+                                                ) === moment(today).format('DD/MM/YYYY')
+                                              ) {
+                                                setCurrentDiaryId(
+                                                  eachPeriod?.dairy_details[0]?.id
+                                                );
 
-                                              fetchDiaryDetails(
-                                                eachPeriod?.dairy_details[0]?.id
-                                              );
+                                                fetchDiaryDetails(
+                                                  eachPeriod?.dairy_details[0]?.id
+                                                );
+                                              } else {
+                                                history.push({
+                                                  pathname: '/diary/teacher',
+                                                  state: {
+                                                    eachPeriod: eachPeriod,
+                                                  },
+                                                });
+                                              }
                                             } else {
                                               history.push({
-                                                pathname: '/diary/teacher',
+                                                pathname: '/create/diary',
                                                 state: {
-                                                  eachPeriod: eachPeriod,
+                                                  comingFromTimetable: true,
+                                                  data: {
+                                                    academic_year_id: selectedBranch?.id,
+                                                    branch_id: selectedBranch?.branch?.id,
+                                                    branch_name:
+                                                      selectedBranch?.branch?.branch_name,
+                                                    diary_type: '2',
+                                                    grade_id:
+                                                      eachPeriod?.sectionDetails
+                                                        ?.grade_id,
+                                                    grade_name:
+                                                      eachPeriod?.sectionDetails?.grade,
+                                                    is_substitute_diary: false,
+                                                    section_id:
+                                                      eachPeriod?.sectionDetails
+                                                        ?.section_id,
+                                                    section_mapping_id: sectionList?.find(
+                                                      (item) =>
+                                                        item?.id ==
+                                                        eachPeriod?.sectionDetails
+                                                          ?.section_id
+                                                    )?.id,
+                                                    section_name:
+                                                      eachPeriod?.sectionDetails?.section,
+                                                    session_year:
+                                                      selectedBranch?.session_year
+                                                        ?.session_year,
+                                                    session_year_id:
+                                                      selectedBranch?.session_year?.id,
+                                                    substitute: false,
+                                                  },
                                                 },
                                               });
                                             }
-                                          } else {
-                                            history.push({
-                                              pathname: '/create/diary',
-                                              state: {
-                                                comingFromTimetable: true,
-                                                data: {
-                                                  academic_year_id: selectedBranch?.id,
-                                                  branch_id: selectedBranch?.branch?.id,
-                                                  branch_name:
-                                                    selectedBranch?.branch?.branch_name,
-                                                  diary_type: '2',
-                                                  grade_id:
-                                                    eachPeriod?.sectionDetails?.grade_id,
-                                                  grade_name:
-                                                    eachPeriod?.sectionDetails?.grade,
-                                                  is_substitute_diary: false,
-                                                  section_id:
-                                                    eachPeriod?.sectionDetails
-                                                      ?.section_id,
-                                                  section_mapping_id: sectionList?.find(
-                                                    (item) =>
-                                                      item?.id ==
-                                                      eachPeriod?.sectionDetails
-                                                        ?.section_id
-                                                  )?.id,
-                                                  section_name:
-                                                    eachPeriod?.sectionDetails?.section,
-                                                  session_year:
-                                                    selectedBranch?.session_year
-                                                      ?.session_year,
-                                                  session_year_id:
-                                                    selectedBranch?.session_year?.id,
-                                                  substitute: false,
-                                                },
-                                              },
-                                            });
-                                          }
-                                        }}
-                                      >
-                                        {eachPeriod?.dairy_details?.length > 0
-                                          ? 'View Diary'
-                                          : moment(eachPeriod?.date).format(
-                                              'DD/MM/YYYY'
-                                            ) === moment(today).format('DD/MM/YYYY')
-                                          ? '+ Add Diary & HW'
-                                          : ''}
-                                      </Button>
-                                    </div>
+                                          }}
+                                        >
+                                          {eachPeriod?.dairy_details?.length > 0
+                                            ? 'View Diary'
+                                            : moment(eachPeriod?.date).format(
+                                                'DD/MM/YYYY'
+                                              ) === moment(today).format('DD/MM/YYYY')
+                                            ? '+ Add Diary & HW'
+                                            : ''}
+                                        </Button>
+                                      </div>
+                                    )}
                                   </>
                                 ) : (
                                   <div className='mb-2 text-truncate th-12 th-grey-1'>
