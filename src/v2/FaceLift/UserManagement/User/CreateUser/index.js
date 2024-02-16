@@ -29,6 +29,7 @@ import moment from 'moment/moment';
 import { useHistory, useParams } from 'react-router-dom';
 import AcademicYearList from './AcademicYearList';
 import ChangePasswordPopup from './../../../ChangePassword/changePasswordModal';
+import dayjs from 'dayjs';
 const { Step } = Steps;
 const CreateUser = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -351,6 +352,7 @@ const CreateUser = () => {
             aadhaar: user?.aadhaar,
           },
           user_level: user?.user_level,
+          device_expiry: user?.device_expiry ?? '',
           designation: user?.designation,
           siblings: user?.siblings,
         };
@@ -414,6 +416,7 @@ const CreateUser = () => {
         var schoolDetails = {
           user_level: transformedSchoolDetails?.user_level,
           designation: transformedSchoolDetails?.designation?.id,
+          device_expiry: user?.device_expiry ? moment(user?.device_expiry) : '',
           academic_year: academicYearObj[0]?.session_year,
           branch: transformedUser?.branch?.pop()?.map((e) => e.id),
           grade: gradeObj?.map((e) => e.grade_name),
@@ -744,6 +747,10 @@ const CreateUser = () => {
       moment(studentFormValues?.date_of_birth).format('YYYY-MM-DD') ?? ''
     );
     formData.append('age', studentFormValues?.age ?? '');
+    formData.append(
+      'device_expiry',
+      moment(studentFormValues?.device_expiry).format('YYYY-MM-DD') ?? ''
+    );
     formData.append('birth_place', studentFormValues?.birth_place ?? '');
     formData.append('old_school_name', studentFormValues?.old_school_name ?? '');
     formData.append('special_needs', studentFormValues?.special_needs ?? '');
