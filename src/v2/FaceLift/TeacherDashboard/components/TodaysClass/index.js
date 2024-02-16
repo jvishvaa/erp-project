@@ -20,7 +20,6 @@ const TodaysClass = ({ newTimeTable }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-
   const fetchTodaysClassData = (params = {}) => {
     setLoading(true);
     if (newTimeTable) {
@@ -33,7 +32,8 @@ const TodaysClass = ({ newTimeTable }) => {
         })
         .then((response) => {
           if (response?.data?.status_code === 200) {
-            setTodaysClassData(response?.data?.result);
+            const formattedData = formatClassData(response?.data?.result);
+            setTodaysClassData(formattedData);
           }
           setLoading(false);
         })
@@ -51,7 +51,8 @@ const TodaysClass = ({ newTimeTable }) => {
         })
         .then((response) => {
           if (response?.data?.status_code === 200) {
-            setTodaysClassData(response?.data?.result);
+            const formattedData = formatClassData(response?.data?.result);
+            setTodaysClassData(formattedData);
           }
           setLoading(false);
         })
@@ -93,6 +94,28 @@ const TodaysClass = ({ newTimeTable }) => {
     if (myRef.current) executeScroll();
   }, [myRef.current]);
 
+  const formatClassData = (data) => {
+    const groupedData = {};
+    data.forEach((item) => {
+      const key = `${item.start_time}-${item.end_time}`;
+      if (!groupedData[key]) {
+        groupedData[key] = [item];
+      } else {
+        groupedData[key].push(item);
+      }
+    });
+
+    const formattedData = Object.values(groupedData).map((group) => {
+      const firstItem = group[0];
+      const subjectNames = group.map((item) => item.subject_name).join(', ');
+      return {
+        ...firstItem,
+        subject_names: subjectNames,
+      };
+    });
+
+    return formattedData;
+  };
   return (
     <div className='th-bg-white th-br-5 pt-3 px-2 shadow-sm' style={{ height: 400 }}>
       <div className='row justify-content-between'>
@@ -181,8 +204,8 @@ const TodaysClass = ({ newTimeTable }) => {
                           </div>
                           <div className='col-7 col-sm-8 px-1 px-md-2 py-1'>
                             <div className='th-black-1 th-fw-600 text-truncate'>
-                              <Tooltip title={item?.subject_name}>
-                                {item?.subject_name}
+                              <Tooltip title={item?.subject_names}>
+                                {item?.subject_names}
                               </Tooltip>
                             </div>
                           </div>

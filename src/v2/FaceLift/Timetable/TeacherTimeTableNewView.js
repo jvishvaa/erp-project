@@ -87,6 +87,7 @@ const TeacherTimeTableNewView = withRouter(
         dairy_details: lecture.dairy_details,
         holidays: lecture?.holidays,
         sectionDetails: lecture?.sec_map[0]?.grade_sec,
+        sujectDetails: lecture?.sub,
       });
     });
 
@@ -259,7 +260,8 @@ const TeacherTimeTableNewView = withRouter(
                                         {eachPeriod?.grade_section}
                                       </span>
                                     </div>
-                                    {eachPeriod?.dairy_details?.length > 0 && (
+                                    {moment(eachPeriod?.date).format('DD/MM/YYYY') ===
+                                    moment(today).format('DD/MM/YYYY') ? (
                                       <div className='text-truncate py-1'>
                                         <Button
                                           type='default'
@@ -271,11 +273,11 @@ const TeacherTimeTableNewView = withRouter(
                                           className='th-12 th-br-8 px-2 th-bg-grey'
                                           onClick={() => {
                                             if (eachPeriod?.dairy_details?.length > 0) {
-                                              if (
-                                                moment(eachPeriod?.date).format(
-                                                  'DD/MM/YYYY'
-                                                ) === moment(today).format('DD/MM/YYYY')
-                                              ) {
+                                              if (eachPeriod?.sujectDetails?.length > 1) {
+                                                history.push({
+                                                  pathname: '/diary/teacher',
+                                                });
+                                              } else {
                                                 setCurrentDiaryId(
                                                   eachPeriod?.dairy_details[0]?.id
                                                 );
@@ -283,13 +285,6 @@ const TeacherTimeTableNewView = withRouter(
                                                 fetchDiaryDetails(
                                                   eachPeriod?.dairy_details[0]?.id
                                                 );
-                                              } else {
-                                                history.push({
-                                                  pathname: '/diary/teacher',
-                                                  state: {
-                                                    eachPeriod: eachPeriod,
-                                                  },
-                                                });
                                               }
                                             } else {
                                               history.push({
@@ -340,6 +335,29 @@ const TeacherTimeTableNewView = withRouter(
                                             : ''}
                                         </Button>
                                       </div>
+                                    ) : moment(today).isBefore(
+                                        moment(eachPeriod?.date)
+                                      ) ? (
+                                      ''
+                                    ) : eachPeriod?.dairy_details?.length > 0 ? (
+                                      <div className='text-truncate py-1'>
+                                        <Button
+                                          type='default'
+                                          className='th-12 th-br-8 px-2 th-bg-grey'
+                                          onClick={() => {
+                                            history.push({
+                                              pathname: '/diary/teacher',
+                                              state: {
+                                                eachPeriod: eachPeriod,
+                                              },
+                                            });
+                                          }}
+                                        >
+                                          View Diary
+                                        </Button>
+                                      </div>
+                                    ) : (
+                                      ''
                                     )}
                                   </>
                                 ) : (
