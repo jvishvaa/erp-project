@@ -304,7 +304,7 @@ const TeacherTimeTableNewView = withRouter(
                                                       ?.section_id,
                                                   section_mapping_id: sectionList?.find(
                                                     (item) =>
-                                                      item?.id ==
+                                                      item?.section_id ==
                                                       eachPeriod?.sectionDetails
                                                         ?.section_id
                                                   )?.id,
