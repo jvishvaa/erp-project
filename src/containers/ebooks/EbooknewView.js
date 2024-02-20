@@ -430,18 +430,46 @@ const EbookView = (props) => {
     }
   }, [ibookData]);
 
+  // const getSortedIbookData = (data) => {
+  //   const conceptWisedata = data
+  //     ?.sort((a, b) => Number(a.chapter) - Number(b.chapter))
+  //     ?.reduce((initialValue, data) => {
+  //       let key = data?.chapter_name;
+  //       if (!initialValue[key]) {
+  //         initialValue[key] = [];
+  //       }
+  //       initialValue[key].push(data);
+  //       return initialValue;
+  //     }, {});
+  //   const sortedConceptData = Object.keys(conceptWisedata)?.map((concept) => {
+  //     return {
+  //       concept,
+  //       data: conceptWisedata[concept],
+  //     };
+  //   });
+
+  //   return sortedConceptData;
+  // };
+
   const getSortedIbookData = (data) => {
-    const conceptWisedata = data
-      ?.sort((a, b) => Number(a.chapter) - Number(b.chapter))
-      ?.reduce((initialValue, data) => {
+    const conceptWisedata = data?.reduce(
+      (initialValue, data) => {
         let key = data?.chapter_name;
         if (!initialValue[key]) {
           initialValue[key] = [];
+          initialValue.order.push(key);
         }
-        initialValue[key].push(data);
+        if (data.lst_opened_date) {
+          initialValue[key].unshift(data); // Insert at the beginning if last opened
+        } else {
+          initialValue[key].push(data); // Insert at the end otherwise
+        }
         return initialValue;
-      }, {});
-    const sortedConceptData = Object.keys(conceptWisedata)?.map((concept) => {
+      },
+      { order: [] }
+    );
+
+    const sortedConceptData = conceptWisedata.order.map((concept) => {
       return {
         concept,
         data: conceptWisedata[concept],
