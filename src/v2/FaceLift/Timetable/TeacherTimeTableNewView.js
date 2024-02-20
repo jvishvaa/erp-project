@@ -336,6 +336,9 @@ const TeacherTimeTableNewView = withRouter(
                                                     selectedBranch?.session_year?.id,
                                                   substitute: false,
                                                 },
+                                                subject:{
+                                                  subject_id: eachPeriod?.subject[0]?.subject_id,
+                                                  subject_name: eachPeriod?.subject[0]?.subject_name}
                                               },
                                             });
                                           }
