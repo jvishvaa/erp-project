@@ -88,7 +88,7 @@ const NewIbook = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-
+  console.log(props, 'props');
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL);
@@ -264,6 +264,15 @@ const NewIbook = (props) => {
       page_number: '1',
       session_year: selectedAcademicYear?.id,
     });
+    if (props?.recently == true) {
+      props.fetchIbooksDefault({
+        book_type: '4',
+        session_year: selectedAcademicYear?.session_year,
+        page_number: props?.page,
+        page_size: '9',
+        domain_name: domain_name,
+      });
+    }
   };
   const ebookClose = (params) => {
     axiosInstance

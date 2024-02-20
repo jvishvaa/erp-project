@@ -607,6 +607,9 @@ const EbookView = (props) => {
                   page={page}
                   handlePageChange={handlePageChange}
                   centralSubject={centralSubject}
+                  recently={recently}
+                  props={props}
+                  fetchIbooksDefault={fetchIbooksDefault}
                 />
               </div>
             ) : (
