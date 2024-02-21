@@ -135,11 +135,7 @@ const TodaysClass = ({ newTimeTable }) => {
           </div>
         </div>
       </div>
-      {!newTimeTable ? (
-        <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
-          <span className='th-grey th-30'>Timetable coming soon !</span>
-        </div>
-      ) : loading ? (
+      { loading ? (
         <div className='th-width-100 d-flex align-items-center justify-content-center h-75'>
           <Spin tip='Loading...'></Spin>
         </div>
