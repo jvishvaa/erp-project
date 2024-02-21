@@ -81,6 +81,7 @@ import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig
 import EnterPrises from 'v2/FaceLift/AndroidManagement/Enterprises';
 import Devices from 'v2/FaceLift/AndroidManagement/Devices';
 import Policies from 'v2/FaceLift/AndroidManagement/Policies';
+import BranchHomework from '../containers/centralise_homework/BranchStaffSide';
 
 const V2Router = () => {
   useEffect(() => {
@@ -397,6 +398,9 @@ const V2Router = () => {
                         </Route>
                         <Route path='/enterprise-management/enterprises'>
                           {({ match }) => <EnterPrises match={match} />}
+                        </Route>
+                        <Route path='/centralised-homework/branchstaff'>
+                          {({ match }) => <BranchHomework match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {
