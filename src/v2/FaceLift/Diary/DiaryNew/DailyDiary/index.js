@@ -1378,9 +1378,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   useEffect(() => {
     if (history?.location?.state?.comingFromTimetable) {
       let editData = history.location.state.data;
+      let editSubject = history.location.state.subject;
       formRef.current.setFieldsValue({
         grade: editData?.grade_name,
         section: editData?.section_name,
+        subject:editSubject?.subject_name
       });
       setAcadID(editData?.academic_year_id);
       setBranchID(editData?.branch_id);
@@ -1390,6 +1392,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSectionID(editData?.section_id);
       setSectionMappingID(editData?.section_mapping_id);
       setComingFromTimeTable(true);
+      setSubjectID(editSubject?.subject_id);
+      setSubjectName(editSubject?.subject_name);
       const params = {
         session_year: selectedAcademicYear?.id,
         branch: selectedBranch?.branch?.id,
@@ -1398,6 +1402,35 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         //  module_id: moduleId,
       };
       fetchSubjectData(params);
+      fetchChapterDropdown({
+        branch_id: selectedBranch.branch.id,
+        subject_id: editSubject?.subject_id,
+        grade_id: editData?.grade_id,
+      });
+      fetchAssessmentData({
+        section_mapping: editData?.section_mapping_id,
+        subject_id: editSubject?.subject_id,
+        date: moment().format('YYYY-MM-DD'),
+      });
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id:editData?.grade_id,
+        section_id: editData?.section_id,
+        start_date: moment().format('YYYY-MM-DD'),
+        type: editSubject?.subject_name.split('_')[
+          editSubject?.subject_name.split('_').length - 1
+        ],
+      });
+     
+      checkAssignedHomework({
+        section_mapping: editData?.section_mapping_id,
+        subject: editSubject?.subject_id,
+        date: moment().format('YYYY-MM-DD'),
+      });
+      fetchTodaysTopic({
+        section_mapping: editData?.section_mapping_id,
+        subject_id: editSubject?.subject_id,
+      });
     } else if (history?.location?.state?.data) {
       let editData = history.location.state.data;
       let editSubject = history.location.state.subject;
@@ -1787,7 +1820,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <div className='text-capitalize th-fw-700 th-black-1'>Subject</div>
                 <Form.Item name='subject'>
                   <Select
-                    disabled={isDiaryEdit || isAutoAssignDiary}
+                    disabled={isDiaryEdit || isAutoAssignDiary || comingFromTimeTable}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleSubject(value)}
                     getPopupContainer={(trigger) => trigger.parentNode}

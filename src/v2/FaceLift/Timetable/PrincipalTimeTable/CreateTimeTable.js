@@ -954,7 +954,7 @@ const CreateTimeTable = ({ showTab }) => {
 
         setCurrentDatePeriod({
           start_date: previousDate.format('YYYY-MM-DD'),
-          end_date: nextDate.format('YYYY-MM-DD'),
+          end_date: moment(todayDate)?.endOf('isoWeek').format('YYYY-MM-DD'),
         });
       } else {
         setCurrentDatePeriod({
@@ -963,6 +963,7 @@ const CreateTimeTable = ({ showTab }) => {
         });
       }
     } else {
+      
       setCurrentDatePeriod({
         start_date: record?.start_date,
         end_date: moment(record?.start_date).add(6, 'days').format('YYYY-MM-DD'),
@@ -993,6 +994,7 @@ const CreateTimeTable = ({ showTab }) => {
     setSelectedDate(null);
     setSelectedSectionData(null);
     setCurrentDayPeriodData([]);
+    console.log({currentDatePeriod})
     if (expanded) {
       setSelectedSectionData(record);
       fetchDayWisePeriods({

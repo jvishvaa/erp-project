@@ -627,7 +627,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                           <span className='th-green th-16'>Edit</span>
                         </div>
 
-                        {moment().format('DD/MM/YYYY') ===
+                        {moment().format('DD/MM/YYYY') ==
                           moment(diary?.created_at).format('DD/MM/YYYY') && (
                           <Popconfirm
                             placement='bottomRight'

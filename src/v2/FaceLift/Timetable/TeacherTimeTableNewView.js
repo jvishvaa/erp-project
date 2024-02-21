@@ -291,9 +291,11 @@ const TeacherTimeTableNewView = withRouter(
                                               setCurrentDiaryId(
                                                 eachPeriod?.dairy_details[0]?.id
                                               );
-                                              fetchDiaryDetails(
-                                                eachPeriod?.dairy_details[0]?.id
-                                              );
+                                              // fetchDiaryDetails(
+                                              //   eachPeriod?.dairy_details[0]?.id
+                                              // );
+                                              history.push({
+                                                pathname: '/diary/teacher',})
                                             } else {
                                               history.push({
                                                 pathname: '/diary/teacher',
@@ -336,6 +338,9 @@ const TeacherTimeTableNewView = withRouter(
                                                     selectedBranch?.session_year?.id,
                                                   substitute: false,
                                                 },
+                                                subject:{
+                                                  subject_id: eachPeriod?.subject[0]?.subject_id,
+                                                  subject_name: eachPeriod?.subject[0]?.subject_name}
                                               },
                                             });
                                           }
