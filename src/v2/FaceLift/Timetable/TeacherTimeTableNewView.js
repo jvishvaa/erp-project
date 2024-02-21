@@ -291,9 +291,11 @@ const TeacherTimeTableNewView = withRouter(
                                               setCurrentDiaryId(
                                                 eachPeriod?.dairy_details[0]?.id
                                               );
-                                              fetchDiaryDetails(
-                                                eachPeriod?.dairy_details[0]?.id
-                                              );
+                                              // fetchDiaryDetails(
+                                              //   eachPeriod?.dairy_details[0]?.id
+                                              // );
+                                              history.push({
+                                                pathname: '/diary/teacher',})
                                             } else {
                                               history.push({
                                                 pathname: '/diary/teacher',
