@@ -5,6 +5,7 @@ const orchidsLsit = [
   'qa.olvorchidnaigaon.letseduvate.com',
   'orchids-stage.stage-vm.letseduvate.com',
   'orchids-prod.letseduvate.com',
+  'orchids.prod.letseduvate.com',
 ];
 
 export function IsOrchidsChecker() {
