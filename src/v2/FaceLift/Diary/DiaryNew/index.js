@@ -167,7 +167,7 @@ const Diary = ({ newTimetableFLow }) => {
                         pathname: '/create/diary',
                         state: {
                           isSubstituteDiary: false,
-                          newTimetableFLow: newTimetableFLow,
+                          newTimetableFLow: user_level == 8 ? false :newTimetableFLow,
                         },
                       })
                     }
