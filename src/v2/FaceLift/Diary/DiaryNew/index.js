@@ -158,7 +158,8 @@ const Diary = ({ newTimetableFLow }) => {
               </div>
 
               <div className='col-sm-3 col-lg-2 col-6'>
-                {!isStudentDiary && user_level == 8 || showTab==2  ? (
+                {isStudentDiary ? '':
+                 user_level == 8 || showTab==2  ? (
                   <Button
                     type='primary'
                     className='th-br-6 th-bg-primary th-pointer th-white'
@@ -177,7 +178,6 @@ const Diary = ({ newTimetableFLow }) => {
                     Create Diary
                   </Button>
                 ) : (
-                  !isStudentDiary &&
                   !newTimetableFLow && (
                     <Button
                       type='primary'
