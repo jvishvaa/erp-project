@@ -226,22 +226,6 @@ const SchoolInformation = ({
                 </Form.Item>
               </Col>
             )}
-            {userLevel == 70 && (
-              <Col md={8}>
-                <Form.Item
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please select device expiry date!',
-                    },
-                  ]}
-                  name='device_expiry'
-                  label='Device Expiry Date'
-                >
-                  <DatePicker className='w-100 text-center' format={'YYYY-MM-DD'} />
-                </Form.Item>
-              </Col>
-            )}
           </Row>
           <Divider className='my-1' />
           <Row className='py-2 ' gutter={24}>
