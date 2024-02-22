@@ -78,9 +78,9 @@ import SignatureUploadv2 from 'v2/FaceLift/MasterManagement/signature-upload/sig
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import EditReportConfig from 'containers/assessment-central/ReportCardConfig/EditReportConfig';
 import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig/PhysicalEducation/CreatePeReportConfig';
-import EnterPrises from 'v2/FaceLift/AndroidManagement/Enterprises';
-import Devices from 'v2/FaceLift/AndroidManagement/Devices';
-import Policies from 'v2/FaceLift/AndroidManagement/Policies';
+// import EnterPrises from 'v2/FaceLift/AndroidManagement/Enterprises';
+// import Devices from 'v2/FaceLift/AndroidManagement/Devices';
+// import Policies from 'v2/FaceLift/AndroidManagement/Policies';
 
 const V2Router = () => {
   useEffect(() => {
