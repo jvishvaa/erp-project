@@ -14,7 +14,6 @@ import {
   Space,
   Select,
   Spin,
-  Image,
 } from 'antd';
 import axios from 'v2/config/axios';
 import {
@@ -43,7 +42,7 @@ const EnterPrises = () => {
   const [showEnrollMentModal, setShowEnrollMentModal] = useState(false);
   const [enrollMentQR, setEnrollMentQR] = useState();
   const [policyList, setPolicyList] = useState();
-  const [policySelected, setPolicySelected] = useState();
+  const [policySelected, setPolicySelected] = useState(null);
   const [enterPriseSelected, setEnterPriseSelected] = useState();
   const [policyLoading, setPolicyLoading] = useState(false);
   const [pageDetails, setPageDetails] = useState({ current: 1, total: 0 });
@@ -126,7 +125,7 @@ const EnterPrises = () => {
             </Tag>
             <Popconfirm
               placement='bottomRight'
-              title={'Are you sure you want to delete this item?'}
+              title={'Are you sure you want to delete this enterprise?'}
               onConfirm={() => handleDeleteEnterprise(enterpriseId)}
               okText='Yes'
               cancelText='No'
@@ -187,8 +186,8 @@ const EnterPrises = () => {
 
   const handleCloseEnterpriseDrawer = () => {
     setShowEnterpriseDrawer(false);
+    enterpriseFormRef.current.resetFields();
     setEditEnterPrise({});
-    enterpriseFormRef.current.restFields();
   };
 
   const handleCreateEnterprise = () => {
@@ -341,6 +340,7 @@ const EnterPrises = () => {
             className='th-br-8'
             icon={<PlusCircleOutlined />}
             onClick={() => {
+              setEditEnterPrise();
               handleShowEnterpriseDrawer();
             }}
           >
@@ -372,7 +372,13 @@ const EnterPrises = () => {
         title={<span>{editEnterPrise ? 'Update' : 'Create'} Enterprise</span>}
         footer={
           <div className='d-flex justify-content-end'>
-            <Button type='default' className='th-br-8'>
+            <Button
+              type='default'
+              className='th-br-8'
+              onClick={() => {
+                handleCloseEnterpriseDrawer();
+              }}
+            >
               Cancel
             </Button>
             <Button
@@ -400,7 +406,12 @@ const EnterPrises = () => {
                 label='Enterprise Name'
                 rules={[{ required: true, message: 'Please enter enterprise name' }]}
               >
-                <Input placeholder='Enterprise Name' className='w-100' />
+                <Input
+                  placeholder='Enterprise Name'
+                  className='w-100'
+                  maxLength={100}
+                  showCount
+                />
               </Form.Item>
               <Form.Item
                 name='enterpriseDisplayName'
@@ -409,7 +420,12 @@ const EnterPrises = () => {
                   { required: true, message: 'Please enter enterprise display name' },
                 ]}
               >
-                <Input placeholder='Enterprise Display Name' className='w-100' />
+                <Input
+                  placeholder='Enterprise Display Name'
+                  className='w-100'
+                  maxLength={100}
+                  showCount
+                />
               </Form.Item>
             </div>
           </div>
@@ -437,7 +453,7 @@ const EnterPrises = () => {
                 * Please select the desired policy
               </div>
               <Select
-                placeHolder='Select Policy to enroll device'
+                placeholder='Select Policy to enroll device'
                 className='w-100'
                 value={policySelected}
                 onChange={(e) => {
@@ -452,11 +468,15 @@ const EnterPrises = () => {
               <>
                 {' '}
                 <div className='col-12 text-center'>
-                  <Image src={enrollMentQR?.qrcode_url} alt='qr_code' />
+                  <img
+                    src={enrollMentQR?.qrcode_url}
+                    alt='qr_code'
+                    style={{ height: 300, width: 300, objectFit: 'contain' }}
+                  />
                 </div>
                 <div className='col-12 text-center'>
                   <span className='th-black th-20 th-fw-500'>
-                    Please scan this QR Code from you device{' '}
+                    Please scan this QR Code from your device{' '}
                   </span>
                   <p>
                     Valid till{' '}
