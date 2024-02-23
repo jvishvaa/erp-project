@@ -15,6 +15,7 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import DiaryReport from '../myComponents/DiaryReport';
 import { useHistory } from 'react-router-dom';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const { Option } = Select;
 
@@ -33,6 +34,8 @@ const SuperAdmindashboardNew = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+
+  const showAndroidManagement = !IsOrchidsChecker() && [1,5,26,8].includes(userLevel)
   const [selectedBranchList, setSelectedBranchList] = useState([]);
   const [feesBranch, setFeesBranch] = useState([]);
   const branchOptions = branchList?.map((each) => {
@@ -89,13 +92,13 @@ const SuperAdmindashboardNew = () => {
           </div>
           <div className='col-md-4 th-16 py-3'>
             <div className='d-flex'>
-              {/* <Button
+              {showAndroidManagement && <Button
                 type='primary'
                 className='th-br-8 mx-2'
                 onClick={() => history.push('/enterprise-management/enterprises')}
               >
                 Enterprise Management <SendOutlined className='ml-1' />
-              </Button> */}
+              </Button>}
               <Select
                 className='th-primary th-bg-white th-br-4 w-100 text-left mt-1'
                 placement='bottomRight'
