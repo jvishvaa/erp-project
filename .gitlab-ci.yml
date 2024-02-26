@@ -228,12 +228,10 @@ deploy_preprod_gcp:
     stage: deploy
     script:
       - whoami
-      # - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && export NVM_DIR="$HOME/.nvm" [ -s "$NVM_DIR/nvm.sh" ] &&"$NVM_DIR/nvm.sh" [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-      # - nvm install 14.21.3
       - pwd
       #- sudo systemctl restart nginx
       - echo "Deploy to pre-production server"
-      - npm install
+      - sudo npm install
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=8196
