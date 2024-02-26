@@ -226,7 +226,7 @@ const SchoolInformation = ({
                 </Form.Item>
               </Col>
             )}
-             {userLevel == 70 && (
+            {userLevel == 70 && (
               <Col md={8}>
                 <Form.Item
                   rules={[
@@ -238,11 +238,14 @@ const SchoolInformation = ({
                   name='device_expiry'
                   label='Device Expiry Date'
                 >
-                  <DatePicker className='w-100 text-center' format={'YYYY-MM-DD'} />
+                  <DatePicker
+                    className='w-100 text-center'
+                    format={'YYYY-MM-DD'}
+                    disabledDate={(current) => current && current.valueOf() < Date.now()}
+                  />
                 </Form.Item>
               </Col>
             )}
-
           </Row>
           <Divider className='my-1' />
           <Row className='py-2 ' gutter={24}>
