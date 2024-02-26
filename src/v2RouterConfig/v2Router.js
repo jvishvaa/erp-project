@@ -82,6 +82,7 @@ import EnterPrises from 'v2/FaceLift/AndroidManagement/Enterprises';
 import Devices from 'v2/FaceLift/AndroidManagement/Devices';
 import Policies from 'v2/FaceLift/AndroidManagement/Policies';
 import BranchHomework from '../containers/centralise_homework/BranchStaffSide';
+import CentralizedStudentHw from '../containers/centralise_homework/student';
 
 const V2Router = () => {
   useEffect(() => {
@@ -390,8 +391,12 @@ const V2Router = () => {
                           {({ match }) => <SignatureUploadv2 match={match} />}
                         </Route>
                         ,
-                        <Route path='/centralised-homework/branchstaff'>
+                        <Route path='/centralized-homework/branchstaff'>
                           {({ match }) => <BranchHomework match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralized-homework/student'>
+                          {({ match }) => <CentralizedStudentHw match={match} />}
                         </Route>
                         ,
                         {/* <Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
