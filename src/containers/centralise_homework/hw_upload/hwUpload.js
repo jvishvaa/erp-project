@@ -29,10 +29,10 @@ import { fetchBranchesForCreateUser } from 'redux/actions';
 import axiosInstance from 'v2/config/axios';
 import axios from 'axios';
 import FileSaver from 'file-saver';
-import FilesView from './filesview';
-import './branchside.scss';
+import UploadTable from './uploadtable';
+import '../BranchStaffSide/branchside.scss';
 
-const BranchHomework = () => {
+const HwUpload = () => {
   const history = useHistory();
   const [branches, setBranches] = useState([]);
   const [branch, setBranch] = useState('');
@@ -576,7 +576,7 @@ const BranchHomework = () => {
                 Dashboard
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
-                Branch Staff Homework
+                Wokrsheet & Classwork
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -594,8 +594,8 @@ const BranchHomework = () => {
                   style={{ width: '100%' }}
                 >
                   <div className='row'>
-                    <div className='col-md-9 row'>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                    <div className='col-md-12 row'>
+                      <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='grade'>
                           <Select
                             mode='multiple'
@@ -623,7 +623,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -651,7 +651,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -679,7 +679,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -707,35 +707,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
-                        <Form.Item name='section'>
-                          <Select
-                            mode='multiple'
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            maxTagCount={1}
-                            allowClear={true}
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                            placement='bottomRight'
-                            showArrow={true}
-                            onChange={(e, value) => handleChangeSection(value)}
-                            onClear={handleClearSection}
-                            dropdownMatchSelectWidth={false}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            showSearch
-                            placeholder='Select section'
-                          >
-                            {sectionOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -764,33 +736,16 @@ const BranchHomework = () => {
                         </Form.Item>
                       </div>
                     </div>
-                    <div className='col-md-3 p-0'>
-                      <div
-                        className='col-md-12'
-                        style={{
-                          border: '2px solid black',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        <div className='col-md-12 row justify-content-between'>
-                          <span>Total Assessed</span>
-                          <span>50</span>
-                        </div>
-                        <div className='col-md-12 row justify-content-between'>
-                          <span>Total Under Assessed</span>
-                          <span>50</span>
-                        </div>
-                        <div className='col-md-12 row justify-content-between'>
-                          <span>Total Unread Chat</span>
-                          <span>10</span>
-                        </div>
-                      </div>
+                    <div className='col-md-4'>
+                      <Button className='col-md-6' type='primary'>
+                        Upload
+                      </Button>
                     </div>
                   </div>
                 </Form>
               </div>
 
-              <div className='row mt-4 '>
+              <div className='row '>
                 {showFilterPage ? (
                   <div className='col-12'>
                     <Result
@@ -802,7 +757,7 @@ const BranchHomework = () => {
                   </div>
                 ) : (
                   <div className='col-md-12 mb-3'>
-                    <FilesView />
+                    <UploadTable />
                   </div>
                 )}
               </div>
@@ -816,4 +771,4 @@ const BranchHomework = () => {
   );
 };
 
-export default BranchHomework;
+export default HwUpload;

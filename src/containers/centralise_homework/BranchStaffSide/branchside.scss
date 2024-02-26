@@ -1,0 +1,50 @@
+.wholetabCentralHW{
+    .th-tabs .ant-tabs-nav-wrap{
+        background: white !important;
+    }
+    .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+        justify-content: end;
+      }
+      .ant-tabs-tab{
+        border-radius: 12px 12px 0 0;
+      }
+      .attachments-list-outer-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        .prev-btn,
+        .next-btn {
+          width: 45px;
+        }
+        .attachments-list {
+          &::-webkit-scrollbar {
+            display: none;
+          }
+          scroll-behavior: smooth;
+          flex-grow: 1;
+          overflow-x: auto;
+          display: flex;
+          margin: 1rem 0;
+          width: calc(100% - 90px);
+          .attachment {
+            flex-shrink: 0;
+            width: 750px;
+          }
+        }
+      }
+      
+}
+
+.chatDrawer{
+  .ant-drawer-body{
+    padding: 0;
+  }
+  .userchat{
+    background: blanchedalmond;
+    border-radius: 10px 10px 10px 0;
+  }
+  .supchat{
+   background: blue;
+   border-radius: 10px 10px 0 10px;
+  }
+}
