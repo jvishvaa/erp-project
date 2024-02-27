@@ -35,7 +35,7 @@ const SuperAdmindashboardNew = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
-  const showAndroidManagement = !IsOrchidsChecker() && [1,5,26,8].includes(userLevel)
+  const showAndroidManagement = !IsOrchidsChecker() && [1,5,26].includes(userLevel)
   const [selectedBranchList, setSelectedBranchList] = useState([]);
   const [feesBranch, setFeesBranch] = useState([]);
   const branchOptions = branchList?.map((each) => {
