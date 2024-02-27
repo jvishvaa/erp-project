@@ -17,7 +17,7 @@ const TimeTableCheck = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const [showNewTimeTable, setShowNewTimeTable] = useState(false);
+  const [showNewTimeTable, setShowNewTimeTable] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

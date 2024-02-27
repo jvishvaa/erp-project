@@ -67,6 +67,7 @@ import {
   Breadcrumb,
 } from 'antd';
 import Loader from 'components/loader/loader';
+import { Profanity } from 'components/file-validation/Profanity';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -207,14 +208,16 @@ const ViewHomeworkNew = withRouter(
     const evaluateAnswer = async () => {
       let currentQuestion;
       if (isQuestionwise) {
-        console.log(questionsState, 'qstate');
+       
         let chckremark = questionsState?.filter((item) => item?.remark == '');
         console.log(chckremark, 'cj');
-        // if (chckremark?.length > 0) {
-        //   setAlert('error', 'Please Add Remark for All Questions');
-        // } else {
+        
         try {
           await evaluateHomeworkQuestionWise(homeworkId, questionsState);
+          if (Profanity(remark)) {
+            message.error('Remarks / Overall Remarks Contains Banned Words , Please Check');
+            return;
+          }
           setAlert('success', 'Saved Successfully');
           setDisableEv(false);
         } catch (e) {

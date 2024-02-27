@@ -70,6 +70,7 @@ import {
 import { LeftOutlined, UploadOutlined, InfoCircleTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import Loader from 'components/loader/loader';
+import { Profanity } from 'components/file-validation/Profanity';
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
     color: '#ff6b6b',
@@ -257,6 +258,21 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   };
 
   const handleHomeworkSubmit = () => {
+    if (attachmentData.length > 0) {
+      let flag = false;
+      attachmentData.forEach((ele) => {
+        if (Profanity(ele.comments)) {
+          flag = true;
+        } else {
+          flag = false;
+        }
+      });
+      if (flag) {
+        message.error('Comments Contains Banned Words , Please Check');
+        return;
+      }
+    }
+    console.log(attachmentData, 'data');
     let count = 0;
     if (isQuestionWise)
       for (let i = 0; i < attachmentDataDisplay.length; i++) {

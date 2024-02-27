@@ -8,6 +8,29 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 import NoClassIcon from 'v2/Assets/dashboardIcons/studentDashboardIcons/noclass.png';
 
+const LectureTypeChoices = [
+  {
+    id: 1,
+    type: 'Split Lecture',
+  },
+  {
+    id: 2,
+    type: 'Buddy Lecture',
+  },
+  {
+    id: 3,
+    type: 'Substitute Lecture',
+  },
+  // {
+  //   id: 4,
+  //   type: 'Combined Lecture',
+  // },
+  {
+    id: 5,
+    type: 'Normal Lecture',
+  },
+];
+
 const TodaysClass = ({ newTimeTable }) => {
   const myRef = useRef();
   let periodNumber = 0;
@@ -20,30 +43,52 @@ const TodaysClass = ({ newTimeTable }) => {
 
   const fetchTodaysClassData = (params = {}) => {
     setLoading(true);
-    axios
-      .get(`${endpoints.studentDashboard.todaysTimeTable}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        if (response?.data?.status_code === 200) {
-          setTodaysAttendance(response?.data?.result?.todays_attendance);
-          setTodaysClassData(response?.data?.result?.classes);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
-      });
+    if (newTimeTable) {
+      axios
+        .get(`${endpoints.studentDashboard.todaysTimeTableV2}`, {
+          params: { ...params },
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if (response?.data?.status_code === 200) {
+            setTodaysAttendance(response?.data?.result?.todays_attendance);
+            setTodaysClassData(response?.data?.result?.classes);
+            console.log(response?.data?.result?.classes);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoading(false);
+        });
+    } else {
+      axios
+        .get(`${endpoints.studentDashboard.todaysTimeTable}`, {
+          params: { ...params },
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if (response?.data?.status_code === 200) {
+            setTodaysAttendance(response?.data?.result?.todays_attendance);
+            setTodaysClassData(response?.data?.result?.classes);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoading(false);
+        });
+    }
   };
   const getPeriodStatus = (period) => {
     const format = 'HH:mm:ss';
     const time = moment(moment(), format);
-    const start_time = moment(period?.start_time, format);
-    const end_time = moment(period?.end_time, format);
+    const start_time = moment(period?.period_slot?.start_time, format);
+    const end_time = moment(period?.period_slot?.end_time, format);
     if (time.isSameOrAfter(end_time)) {
       return 'completed';
     } else if (time.isBetween(start_time, end_time)) {
@@ -62,13 +107,13 @@ const TodaysClass = ({ newTimeTable }) => {
   };
 
   useEffect(() => {
-    if (!newTimeTable) {
+    if (newTimeTable !== null) {
       fetchTodaysClassData({
         date: moment().format('YYYY-MM-DD'),
         session_id: selectedAcademicYear?.id,
       });
     }
-  }, []);
+  }, [newTimeTable]);
   useEffect(() => {
     if (myRef.current) executeScroll();
   }, [myRef.current]);
@@ -116,11 +161,7 @@ const TodaysClass = ({ newTimeTable }) => {
         className='py-3 mt-2 th-timeline'
         style={{ height: 265, overflowY: 'auto', overflowX: 'hidden' }}
       >
-        {newTimeTable ? (
-          <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
-            <span className='th-grey th-30'>Timetable coming soon !</span>
-          </div>
-        ) : loading ? (
+        {loading ? (
           <div className='th-width-100 d-flex align-items-center justify-content-center'>
             <Spin tip='Loading...'></Spin>
           </div>
@@ -140,9 +181,18 @@ const TodaysClass = ({ newTimeTable }) => {
                         } th-fw-500 mt-2 mt-md-0`}
                         style={{ fontSize: window.innerWidth < 768 ? '8px' : '12px' }}
                       >
-                        {moment(item?.start_time, 'hh:mm A').format('hh:mm A')} <br /> to
+                        {newTimeTable
+                          ? moment(item?.period_slot?.start_time, 'hh:mm A').format(
+                              'hh:mm A'
+                            ) + ' '
+                          : moment(item?.start_time, 'hh:mm A').format('hh:mm A') + ' '}
+                        <br /> to
                         <br />
-                        {moment(item?.end_time, 'hh:mm A').format('hh:mm A')}{' '}
+                        {newTimeTable
+                          ? moment(item?.period_slot?.end_time, 'hh:mm A').format(
+                              'hh:mm A'
+                            ) + ' '
+                          : moment(item?.end_time, 'hh:mm A').format('hh:mm A') + ' '}
                       </div>
                     }
                     color={
@@ -190,13 +240,39 @@ const TodaysClass = ({ newTimeTable }) => {
                               <div className='d-none d-sm-block px-0 px-md-2 col-md-2 py-1'>
                                 <span className='th-grey'>Subject</span>
                               </div>
-                              <div className='col-7 col-sm-8 px-1 px-md-2 py-1'>
-                                <div className='th-black-1 th-fw-600 text-truncate'>
+                              <div
+                                className='col-7 col-sm-8 px-1 px-md-2 py-1'
+                                style={{ display: 'flex', gap: '5px', width: '100%' }}
+                              >
+                                {newTimeTable ? (
+                                  item?.sub_map?.length === 1 ? (
+                                    <Tooltip title={item?.sub_map[0]?.subject_name}>
+                                      <div className='th-black-1 th-fw-600 text-truncate'>
+                                        {item?.sub_map[0]?.subject_name}
+                                      </div>
+                                    </Tooltip>
+                                  ) : (
+                                    <Tooltip
+                                      title={item?.sub_map
+                                        ?.map((each) => each?.subject_name)
+                                        ?.join(', ')}
+                                    >
+                                      <div className='th-black-1 th-fw-600 text-truncate'>
+                                        {item?.sub_map
+                                          ?.map((each) => each?.subject_name)
+                                          ?.join(', ')}
+                                      </div>
+                                    </Tooltip>
+                                  )
+                                ) : (
                                   <Tooltip title={item?.subject_name}>
-                                    {item?.subject_name}
+                                    <div className='th-black-1 th-fw-600 text-truncate'>
+                                      {item?.subject_name}
+                                    </div>
                                   </Tooltip>
-                                </div>
+                                )}
                               </div>
+
                               <div
                                 className={`col-5 col-sm-4 col-md-2 px-0 text-md-right`}
                               >
@@ -225,7 +301,20 @@ const TodaysClass = ({ newTimeTable }) => {
                                 <span className='th-grey'>Type</span>
                               </div>
                               <div className='col-5 col-md-3 px-1 px-md-2 py-1 text-truncate'>
-                                <span className='th-black-1 th-fw-600'>{item?.type}</span>
+                                <span className='th-black-1 th-fw-600'>
+                                  {newTimeTable
+                                    ? item?.lecture_type &&
+                                      LectureTypeChoices?.some(
+                                        (type) => type?.id === item?.lecture_type
+                                      )
+                                      ? LectureTypeChoices?.find(
+                                          (type) => type?.id === item?.lecture_type
+                                        ).type
+                                      : 'Unknown Lecture Type'
+                                    : item?.type
+                                    ? item?.type
+                                    : 'Unknown Lecture Type'}
+                                </span>
                               </div>
                               <div className='col-7 pb-1 px-0 px-md-2 d-flex justify-content-end align-items-center'>
                                 <div className='mr-2'>
@@ -247,13 +336,28 @@ const TodaysClass = ({ newTimeTable }) => {
                                     />
                                   )}
                                 </div>
-                                <div className='text-truncate'>
-                                  <Tooltip
-                                    title={item?.teacher_name}
-                                    placement='bottomRight'
-                                  >
-                                    {item?.teacher_name}
-                                  </Tooltip>
+                                <div style={{ display: 'flex', gap: '5px' }}>
+                                  {newTimeTable ? (
+                                    item?.teacher?.length === 1 ? (
+                                      <Tooltip title={item?.teacher[0]?.name}>
+                                        {item?.teacher[0]?.name}
+                                      </Tooltip>
+                                    ) : (
+                                      <Tooltip
+                                        title={item?.teacher
+                                          ?.map((each) => each?.name)
+                                          ?.join(' , ')}
+                                      >
+                                        {item?.teacher
+                                          ?.map((each) => each?.name)
+                                          ?.join(', ')}
+                                      </Tooltip>
+                                    )
+                                  ) : (
+                                    <Tooltip title={item?.teacher_name}>
+                                      {item?.teacher_name}
+                                    </Tooltip>
+                                  )}
                                 </div>
                               </div>
                             </div>

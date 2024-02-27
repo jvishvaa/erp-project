@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 const DiaryMain = () => {
   const [loading, setLoading] = useState(false);
   const [showNewDiary, setShowNewDiary] = useState(false);
+  const [newTimetableFLow, setNewTimetableFLow] = useState(null);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -32,8 +33,28 @@ const DiaryMain = () => {
         message.error('error', error?.message);
       });
   };
+  const fetchNewTimetableStatus = () => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=tt-enabled-v2`)
+      .then((response) => {
+        if (response?.data?.result) {
+          if (response?.data?.result.includes(String(selectedBranch?.branch?.id))) {
+            setNewTimetableFLow(true);
+          } else {
+            setNewTimetableFLow(false);
+          }
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        message.error('error', error?.message);
+      });
+  };
   useEffect(() => {
     fetchNewDiaryStatus();
+    fetchNewTimetableStatus();
   }, [selectedBranch]);
   return (
     <>
@@ -45,7 +66,7 @@ const DiaryMain = () => {
             <OldStudentDiary />
           )
         ) : showNewDiary ? (
-          <NewDiary />
+          <NewDiary newTimetableFLow={newTimetableFLow} />
         ) : (
           <OldTeacherDiary />
         )

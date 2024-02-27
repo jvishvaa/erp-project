@@ -4,6 +4,7 @@ import { Button, Form, Input, Pagination, Result, Select, Table, message } from 
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
+import { Profanity } from 'components/file-validation/Profanity';
 
 const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => {
   const { Option } = Select;
@@ -138,7 +139,9 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
       return;
     }
 
-    let params = `?page=${pageNo}&page_size=${pageLimit}&level=13${sectionParams ? `&section_mapping_id=${selectedSection}` : ''}`;
+    let params = `?page=${pageNo}&page_size=${pageLimit}&level=13${
+      sectionParams ? `&section_mapping_id=${selectedSection}` : ''
+    }`;
     setShowFilter(false);
     setLoading(true);
     axiosInstance
@@ -341,6 +344,10 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
       message.error('Please enter group name');
       return;
     }
+    if(Profanity(groupName)){
+      message.error('Group name is Banned');
+      return;
+    }
 
     setLoading(true);
     if (!isEdit) {
@@ -504,7 +511,6 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
                   </div>
                 </div>
               </div>
-           
               <div className='col-md-3 col-sm-6 col-12'>
                 <Form.Item name='search-input'>
                   <Input
@@ -527,6 +533,16 @@ const CreateGroup = ({ setShowTab, isEdit, editData, handleFetchUserGroup }) => 
                           message: 'Group name should contain only character',
                         },
                         { required: true, message: 'Please Enter Group name' },
+                        {
+                          validator: (_, value) => {
+                            if (value && Profanity(value)) {
+                              return Promise.reject(
+                                `Group name Contains Banned Words , Please Check`
+                              );
+                            }
+                            return Promise.resolve();
+                          },
+                        },
                       ]}
                       required={true}
                       validationTrigger='onChange'

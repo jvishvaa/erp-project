@@ -56,6 +56,7 @@ import {
 import QuestionCardNew from './questioncardnew';
 import Loader from 'components/loader/loader';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import { Profanity } from 'components/file-validation/Profanity';
 
 const { confirm } = Modal;
 
@@ -341,6 +342,9 @@ const AddHomeworkCordNew = ({
     if (name == undefined || name == '') {
       return message.error('Please Add Title');
     }
+    if (Profanity(name)) {
+      return message.error('Title Contains Banned Words , Please Check');
+    }
     if (dateValue == undefined || dateValue == '') {
       return message.error('Please Add Due Date');
     }
@@ -355,6 +359,9 @@ const AddHomeworkCordNew = ({
     if (questions.filter((item) => item?.question == '')?.length > 0) {
       return message.error('Please Add Questions');
     }
+    if (Profanity(description)) {
+      return message.error('Instructions Contains Banned Words , Please Check');
+    }
     let NewQuestionList = questions?.map((item, index) => {
       if (item?.is_attachment_enable == false) {
         questions[index]['max_attachment'] = 0;
@@ -365,7 +372,21 @@ const AddHomeworkCordNew = ({
         questions[index]['max_attachment'] = 10;
       }
     });
-
+    if (questions) {
+      let flag = false;
+      questions.forEach((item) => {
+        if (Profanity(item.question)) {
+          flag = true;
+        } else {
+          flag = false;
+        }
+      });
+      if (flag) {
+        message.error('Question Contains Banned Words, Please Check');
+        flag = true;
+        return;
+      }
+    }
     let hasOnlineQuestion = questions?.every((item) => item['is_online'] === true);
     let hasOfflineQuestion = questions?.every((item) => item['is_online'] === false);
     let hasBothQuestions =

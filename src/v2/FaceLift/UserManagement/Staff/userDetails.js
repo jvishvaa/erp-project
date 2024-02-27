@@ -13,6 +13,7 @@ import React, { useEffect, useState } from 'react';
 import './step.scss';
 import countryList from '../../../../containers/user-management/list';
 import moment from 'moment';
+import { Profanity } from 'components/file-validation/Profanity';
 
 const UserDetails = ({ userDetails, setUserDetails }) => {
   const [image, setImage] = useState('');
@@ -157,6 +158,16 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
                   message: 'First Name should contain only character',
                 },
                 { required: true, message: 'Please Enter First Name' },
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `First Name contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
               ]}
               validationTrigger='onChange'
             >
@@ -173,7 +184,17 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
               rules={[
                 {
                   pattern: /^[a-zA-Z ]*$/,
-                  message: 'First Name should contain only character',
+                  message: 'Middle Name should contain only character',
+                },
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `Middle Name contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
                 },
               ]}
               validationTrigger='onChange'
@@ -194,6 +215,16 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
                   message: 'Last Name should contain only character',
                 },
                 { required: true, message: 'Please Enter Last Name' },
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `Last Name contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
               ]}
             >
               <Input
@@ -311,6 +342,18 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
               name='username'
               label='Username'
               // rules={[{ required: true, message: 'Please Enter Username' }]}
+              rules={[
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `Username contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
             >
               <Input
                 placeholder='Username'
@@ -337,7 +380,19 @@ const UserDetails = ({ userDetails, setUserDetails }) => {
             <Form.Item
               name='address'
               label='Address'
-              rules={[{ required: true, message: 'Please Enter Address' }]}
+              rules={[
+                { required: true, message: 'Please Enter Address' },
+                {
+                  validator: (_, value) => {
+                    if (value && Profanity(value)) {
+                      return Promise.reject(
+                        `Address contains Banned Words , Please Check`
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
             >
               <Input.TextArea
                 rows={3}

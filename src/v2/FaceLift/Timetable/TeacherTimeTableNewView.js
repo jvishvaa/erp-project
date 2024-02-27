@@ -1,19 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
-import { connect, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Button, message } from 'antd';
+import axios from 'v2/config/axios';
+import { withRouter, useHistory } from 'react-router-dom';
+import endpoints from 'v2/config/endpoints';
+import { useSelector } from 'react-redux';
 
 const TeacherTimeTableNewView = withRouter(
-  ({ currentWeekTimeTable, startDate, endDate }) => {
+  ({ currentWeekTimeTable, startDate, endDate, allowAutoAssignDiary, sectionList }) => {
+    const selectedBranch = useSelector(
+      (state) => state.commonFilterReducer?.selectedBranch
+    );
     const today = new Date();
-
+    const history = useHistory();
     const [currentDay, setCurrentDay] = useState();
+    const [loading, setLoading] = useState(false);
+    const [currentDiaryId, setCurrentDiaryId] = useState();
     const [currentDayPeriodData, setCurrentDayPeriodData] = useState();
     const days = Object.keys(currentWeekTimeTable)?.map((item) =>
       moment(item).format('dddd')
     );
+    const userDetails = JSON.parse(localStorage?.getItem('userDetails'));
+    const [userId, setUserId] = useState();
+    const fetchDiaryDetails = (diaryId) => {
+      setLoading(true);
+      axios
+        .get(`${endpoints?.dailyDiary?.newDiaryList}?diary_id=${diaryId}`)
+        .then((response) => {
+          if (response?.data?.status_code == 200) {
+            let diaryData = response.data?.result[0];
+            history.push({
+              pathname: '/create/diary',
+              state: {
+                data: diaryData?.grade_data[0],
+                subject: diaryData,
+                isDiaryEdit: true,
+                isDiaryAutoAssign: diaryData?.grade_data?.teacher_report?.homework
+                  ? true
+                  : false,
+              },
+            });
+          }
+        })
+        .catch((error) => {
+          message.error(error?.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
 
     useEffect(() => {
+      setUserId(userDetails?.user_id);
       let showDate =
         Object.keys(currentWeekTimeTable)?.filter(
           (item) =>
@@ -42,12 +81,16 @@ const TeacherTimeTableNewView = withRouter(
       periodData[slotName].push({
         date,
         period: slotName,
-        subject: sub?.map((el) => el?.subject_name).join(', '),
+        subject: sub,
         grade_section:
           lecture?.sec_map[0]?.grade_sec?.grade +
           ' ' +
           lecture?.sec_map[0]?.grade_sec?.section,
         teacher: lecture.sub_teacher.map((t) => t?.name).join(', '),
+        dairy_details: lecture.dairy_details,
+        holidays: lecture?.holidays,
+        sectionDetails: lecture?.sec_map[0]?.grade_sec,
+        sujectDetails: lecture?.sub,
       });
     });
 
@@ -62,6 +105,8 @@ const TeacherTimeTableNewView = withRouter(
             subject: '',
             grade_section: '',
             teacher: '',
+            dairy_details: [],
+            holidays: [],
           });
         }
       }
@@ -74,6 +119,17 @@ const TeacherTimeTableNewView = withRouter(
       return current.toISOString().split('T')[0];
     }
 
+    const filterUniqueObjects = (arr) => {
+      return Object.values(
+        arr.reduce((acc, obj) => {
+          const key = obj.date;
+          if (!acc[key]) {
+            acc[key] = obj;
+          }
+          return acc;
+        }, {})
+      );
+    };
     return (
       <>
         <div className='tablewrap'>
@@ -129,7 +185,9 @@ const TeacherTimeTableNewView = withRouter(
             <tbody>
               {periodSlots?.length > 0 ? (
                 periodSlots?.map((item, index) => {
-                  const periodDetails = periodData[item?.name]?.slice(0, 7);
+                  const periodDetails = filterUniqueObjects(
+                    periodData[item?.name]
+                  )?.slice(0, 7);
                   return (
                     <tr className='tableR' style={{ borderTop: 0 }}>
                       <>
@@ -173,19 +231,34 @@ const TeacherTimeTableNewView = withRouter(
                               }}
                             >
                               <div
-                                className='card w-100 d-flex justify-content-center p-2 flex-column'
+                                className={`card w-100 d-flex justify-content-center p-2 flex-column`}
                                 style={{
                                   height: '100px',
                                 }}
                               >
-                                {eachPeriod?.subject ? (
+                                {eachPeriod?.holidays?.length > 0 ? (
+                                  <div className='mb-2 th-18 th-fw-600 th-green-1 d-flex flex-column justify-content-center h-100'>
+                                    Holiday
+                                    <div
+                                      className='th-grey th-12 text-truncate'
+                                      title={eachPeriod?.holidays[0]?.title}
+                                      style={{ cursor: 'default' }}
+                                    >
+                                      {eachPeriod?.holidays[0]?.title}
+                                    </div>
+                                  </div>
+                                ) : eachPeriod?.subject ? (
                                   <>
                                     <div
-                                      className='mb-2 text-truncate'
-                                      title={eachPeriod?.subject}
+                                      className=' text-truncate'
+                                      title={eachPeriod?.subject
+                                        ?.map((el) => el?.subject_name)
+                                        .join(', ')}
                                     >
                                       <span className='th-fw-600'>
-                                        {eachPeriod?.subject}
+                                        {eachPeriod?.subject
+                                          ?.map((el) => el?.subject_name)
+                                          .join(', ')}
                                       </span>
                                     </div>
                                     <div
@@ -196,6 +269,99 @@ const TeacherTimeTableNewView = withRouter(
                                         {eachPeriod?.grade_section}
                                       </span>
                                     </div>
+                                    {moment(eachPeriod?.date).format('DD/MM/YYYY') ===
+                                    moment(today).format('DD/MM/YYYY') ? (
+                                    <div className='text-truncate py-1'>
+                                      <Button
+                                        type='default'
+                                        loading={
+                                          loading &&
+                                          currentDiaryId ===
+                                            eachPeriod?.dairy_details[0]?.id
+                                        }
+                                        // onMouseEnter={()=>}
+                                        className='th-12 th-br-8 px-2 th-bg-grey'
+                                        onClick={() => {
+                                          if (eachPeriod?.dairy_details?.length > 0) {
+                                            const createdByCurrentUser =
+                                              eachPeriod.dairy_details.some(
+                                                (detail) => detail.created_by === userId
+                                              );
+                                            if (createdByCurrentUser) {
+                                              setCurrentDiaryId(
+                                                eachPeriod?.dairy_details[0]?.id
+                                              );
+                                              // fetchDiaryDetails(
+                                              //   eachPeriod?.dairy_details[0]?.id
+                                              // );
+                                              history.push({
+                                                pathname: '/diary/teacher',})
+                                            } else {
+                                              history.push({
+                                                pathname: '/diary/teacher',
+                                                state: {
+                                                  eachPeriod: eachPeriod,
+                                                },
+                                              });
+                                            }
+                                          } else {
+                                            history.push({
+                                              pathname: '/create/diary',
+                                              state: {
+                                                comingFromTimetable: true,
+                                                data: {
+                                                  academic_year_id: selectedBranch?.id,
+                                                  branch_id: selectedBranch?.branch?.id,
+                                                  branch_name:
+                                                    selectedBranch?.branch?.branch_name,
+                                                  diary_type: '2',
+                                                  grade_id:
+                                                    eachPeriod?.sectionDetails?.grade_id,
+                                                  grade_name:
+                                                    eachPeriod?.sectionDetails?.grade,
+                                                  is_substitute_diary: false,
+                                                  section_id:
+                                                    eachPeriod?.sectionDetails
+                                                      ?.section_id,
+                                                  section_mapping_id: sectionList?.find(
+                                                    (item) =>
+                                                      item?.section_id ==
+                                                      eachPeriod?.sectionDetails
+                                                        ?.section_id
+                                                  )?.id,
+                                                  section_name:
+                                                    eachPeriod?.sectionDetails?.section,
+                                                  session_year:
+                                                    selectedBranch?.session_year
+                                                      ?.session_year,
+                                                  session_year_id:
+                                                    selectedBranch?.session_year?.id,
+                                                  substitute: false,
+                                                },
+                                                subject:{
+                                                  subject_id: eachPeriod?.subject[0]?.subject_id,
+                                                  subject_name: eachPeriod?.subject[0]?.subject_name}
+                                              },
+                                            });
+                                          }
+                                        }}
+                                      >
+                                        {eachPeriod?.dairy_details?.length > 0
+                                          ? eachPeriod?.dairy_details?.some((detail) =>
+                                              eachPeriod?.subject?.some(
+                                                (sub) =>
+                                                  sub.subject_id === detail.subject_id
+                                              )
+                                            )
+                                            ? 'View Diary'
+                                            : '+ Add Diary & HW'
+                                          : moment(eachPeriod?.date).format(
+                                              'DD/MM/YYYY'
+                                            ) === moment(today).format('DD/MM/YYYY')
+                                          ? '+ Add Diary & HW'
+                                          : ''}
+                                      </Button>
+                                    </div> ) : ""}
                                   </>
                                 ) : (
                                   <div className='mb-2 text-truncate th-12 th-grey-1'>

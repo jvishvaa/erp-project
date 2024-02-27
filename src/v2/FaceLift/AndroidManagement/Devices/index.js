@@ -212,7 +212,7 @@ const Devices = () => {
             <Breadcrumb.Item className='th-black-1 th-16'>Devices</Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <div className='col-4 text-right'>
+        <div className='col-4 d-none text-right'>
           <Button
             type='primary'
             className='th-br-8'
@@ -238,8 +238,8 @@ const Devices = () => {
           /> */}
           <div className='row'>
             {loading ? (
-              [...Array(4).keys()]?.map((el) => (
-                <div className='col-6'>
+              [...Array(6).keys()]?.map((el) => (
+                <div className='col-4'>
                   <Skeleton.Button
                     active
                     block
@@ -280,7 +280,7 @@ const Devices = () => {
                                 }
                               </span>
 
-                              <span className='th-14 th-grey th-fw-500'>
+                              <span className='th-14 th-grey th-fw-500 d-none'>
                                 Last Seen 18 hrs ago
                               </span>
                             </div>
@@ -368,14 +368,14 @@ const Devices = () => {
                 label='Device Name'
                 rules={[{ required: true, message: 'Please enter device name' }]}
               >
-                <Input placeholder='Device Name' className='w-100' />
+                <Input placeholder='Device Name' className='w-100' maxLength={100} showCount />
               </Form.Item>
               <Form.Item
                 name='DeviceDisplayName'
                 label='Device Display Name'
                 rules={[{ required: true, message: 'Please enter device display name' }]}
               >
-                <Input placeholder='Device Display Name' className='w-100' />
+                <Input placeholder='Device Display Name' className='w-100' maxLength={100} showCount />
               </Form.Item>
             </div>
           </div>

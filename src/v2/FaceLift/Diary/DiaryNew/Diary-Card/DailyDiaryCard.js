@@ -578,7 +578,6 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
       });
     }
   }, [drawerVisible]);
-
   return (
     <>
       <div
@@ -616,37 +615,40 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
             diary?.hw_status != 3 &&
             diary?.hw_status != 4 && (
               <div className='col-1 text-right pl-0'>
-                <Popover
-                  content={
-                    <>
-                      <div
-                        className='row justify-content-between th-pointer'
-                        onClick={() => editDiary(diary)}
-                      >
-                        <span className='th-green th-16'>Edit</span>
-                      </div>
-
-                      {moment().format('DD/MM/YYYY') ==
-                        moment(diary?.created_at).format('DD/MM/YYYY') && (
-                        <Popconfirm
-                          placement='bottomRight'
-                          title={'Are you sure you want to delete this diary?'}
-                          onConfirm={() => deleteDiary(diary?.diary_id)}
-                          okText='Yes'
-                          cancelText='No'
+                {moment().format('DD/MM/YYYY') ===
+                  moment(diary?.created_at).format('DD/MM/YYYY') && (
+                  <Popover
+                    content={
+                      <>
+                        <div
+                          className='row justify-content-between th-pointer'
+                          onClick={() => editDiary(diary)}
                         >
-                          <div className='row justify-content-between th-pointer pt-2'>
-                            <span className='th-red th-16 '>Delete</span>
-                          </div>
-                        </Popconfirm>
-                      )}
-                    </>
-                  }
-                  trigger='click'
-                  placement='bottomRight'
-                >
-                  <MoreOutlined />
-                </Popover>
+                          <span className='th-green th-16'>Edit</span>
+                        </div>
+
+                        {moment().format('DD/MM/YYYY') ==
+                          moment(diary?.created_at).format('DD/MM/YYYY') && (
+                          <Popconfirm
+                            placement='bottomRight'
+                            title={'Are you sure you want to delete this diary?'}
+                            onConfirm={() => deleteDiary(diary?.diary_id)}
+                            okText='Yes'
+                            cancelText='No'
+                          >
+                            <div className='row justify-content-between th-pointer pt-2'>
+                              <span className='th-red th-16 '>Delete</span>
+                            </div>
+                          </Popconfirm>
+                        )}
+                      </>
+                    }
+                    trigger='click'
+                    placement='bottomRight'
+                  >
+                    <MoreOutlined />
+                  </Popover>
+                )}
               </div>
             )}
         </div>
@@ -1334,7 +1336,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                       const extension =
                         fullName.split('.')[fullName?.split('.').length - 1];
 
-                      const fileName2 = each?.split('/')[each?.split('/').length - 1]
+                      const fileName2 = each?.split('/')[each?.split('/').length - 1];
 
                       return (
                         <div

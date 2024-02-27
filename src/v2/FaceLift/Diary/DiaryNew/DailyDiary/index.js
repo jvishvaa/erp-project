@@ -148,6 +148,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [allowAutoAssignDiary, setAllowAutoAssignDiary] = useState(false);
   const [combinedQuestionList, setCombinedQuestionList] = useState([]);
   const [hwSubTime, setHwSubTime] = useState(null);
+  const [comingFromTimeTable, setComingFromTimeTable] = useState();
+
   const questionModify = (questions) => {
     let arr = [];
     let uniqueQuestions = _.uniqBy(questions, 'question');
@@ -703,19 +705,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           section: each.value,
           module_id: moduleId,
         };
-        axios
-          .get(`${endpoints.academics.subjects}`, {
-            params: {
-              ...params,
-              ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}),
-            },
-          })
-          .then((result) => {
-            if (result?.data?.status_code == 200) {
-              setSubjectDropdown(result?.data?.data);
-            }
-          })
-          .catch((error) => message.error('error', error?.message));
+        fetchSubjectData(params);
       }
     }
   };
@@ -751,6 +741,21 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       };
       fetchSectionData(params);
     }
+  };
+  const fetchSubjectData = (params = {}) => {
+    axios
+      .get(`${endpoints.academics.subjects}`, {
+        params: {
+          ...params,
+          ...(isSubstituteDiary ? { is_substitue_teacher: 1 } : {}),
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setSubjectDropdown(result?.data?.data);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
   };
   const fetchSectionData = (params = {}) => {
     axios
@@ -1110,11 +1115,34 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       message.error('Please fill Homework Title');
       return;
     }
+    if (Profanity(homeworkTitle)) {
+      message.error('Title Contains Banned Words , Please Check');
+      return;
+    }
+    if (Profanity(homeworkInstructions)) {
+      message.error('Instructions Contains Banned Words , Please Check');
+      return;
+    }
     let NewQuestionList = questionList?.map((item, index) => {
       if (item?.is_attachment_enable == false) {
         questionList[index]['max_attachment'] = 0;
       }
     });
+    if (questionList) {
+      let flag = false;
+      questionList.forEach((item) => {
+        if (Profanity(item.question)) {
+          flag = true;
+        } else {
+          flag = false;
+        }
+      });
+      if (flag) {
+        message.error('Question Contains Banned Words, Please Check');
+        flag = true;
+        return;
+      }
+    }
     if (!questionList[0]?.question) {
       message.error('Please add questions');
       return;
@@ -1348,7 +1376,62 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   };
 
   useEffect(() => {
-    if (history?.location?.state?.data) {
+    if (history?.location?.state?.comingFromTimetable) {
+      let editData = history.location.state.data;
+      let editSubject = history.location.state.subject;
+      formRef.current.setFieldsValue({
+        grade: editData?.grade_name,
+        section: editData?.section_name,
+        subject:editSubject?.subject_name
+      });
+      setAcadID(editData?.academic_year_id);
+      setBranchID(editData?.branch_id);
+      setGradeID(editData?.grade_id);
+      setGradeName(editData?.grade_name);
+      setSectionName(editData?.section_name);
+      setSectionID(editData?.section_id);
+      setSectionMappingID(editData?.section_mapping_id);
+      setComingFromTimeTable(true);
+      setSubjectID(editSubject?.subject_id);
+      setSubjectName(editSubject?.subject_name);
+      const params = {
+        session_year: selectedAcademicYear?.id,
+        branch: selectedBranch?.branch?.id,
+        grade: editData?.grade_id,
+        section: editData?.section_id,
+        //  module_id: moduleId,
+      };
+      fetchSubjectData(params);
+      fetchChapterDropdown({
+        branch_id: selectedBranch.branch.id,
+        subject_id: editSubject?.subject_id,
+        grade_id: editData?.grade_id,
+      });
+      fetchAssessmentData({
+        section_mapping: editData?.section_mapping_id,
+        subject_id: editSubject?.subject_id,
+        date: moment().format('YYYY-MM-DD'),
+      });
+      fetchActivityData({
+        branch_id: selectedBranch?.branch?.id,
+        grade_id:editData?.grade_id,
+        section_id: editData?.section_id,
+        start_date: moment().format('YYYY-MM-DD'),
+        type: editSubject?.subject_name.split('_')[
+          editSubject?.subject_name.split('_').length - 1
+        ],
+      });
+     
+      checkAssignedHomework({
+        section_mapping: editData?.section_mapping_id,
+        subject: editSubject?.subject_id,
+        date: moment().format('YYYY-MM-DD'),
+      });
+      fetchTodaysTopic({
+        section_mapping: editData?.section_mapping_id,
+        subject_id: editSubject?.subject_id,
+      });
+    } else if (history?.location?.state?.data) {
       let editData = history.location.state.data;
       let editSubject = history.location.state.subject;
       setIsDiaryEdit(history?.location?.state?.isDiaryEdit);
@@ -1682,7 +1765,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <div className='text-capitalize th-fw-700 th-black-1'>Grade</div>
                 <Form.Item name='grade'>
                   <Select
-                    disabled={isDiaryEdit || isAutoAssignDiary}
+                    disabled={isDiaryEdit || isAutoAssignDiary || comingFromTimeTable}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleGrade(value)}
                     placeholder='Grade'
@@ -1707,7 +1790,11 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <Form.Item name='section'>
                   <Select
                     disabled={
-                      isDiaryEdit ? true : sectionMappingID?.length == 1 ? true : false
+                      comingFromTimeTable || isDiaryEdit
+                        ? true
+                        : sectionMappingID?.length == 1
+                        ? true
+                        : false
                     }
                     mode={isAutoAssignDiary ? 'multiple' : 'single'}
                     className='th-width-100 th-br-6'
@@ -1733,7 +1820,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                 <div className='text-capitalize th-fw-700 th-black-1'>Subject</div>
                 <Form.Item name='subject'>
                   <Select
-                    disabled={isDiaryEdit || isAutoAssignDiary}
+                    disabled={isDiaryEdit || isAutoAssignDiary || comingFromTimeTable}
                     className='th-width-100 th-br-6'
                     onChange={(e, value) => handleSubject(value)}
                     getPopupContainer={(trigger) => trigger.parentNode}

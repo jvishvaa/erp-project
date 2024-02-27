@@ -1,11 +1,11 @@
 import axiosInstance from 'config/axios';
-
+import endpoints from 'v2/config/endpoints';
 const token = JSON.parse(localStorage.getItem('userDetails'))?.token || null;
 let addProfanityWords = [];
 const getWords = async () => {
   if (token != null) {
     axiosInstance
-      .get(`/assessment/check-sys-config/?config_key=profanity-words`)
+      .get(`${endpoints.academics.profanity}`)
       .then((response) => {
         if (response?.data?.status_code == '200') {
           console.log(response, 'config data');
@@ -20,13 +20,23 @@ const getWords = async () => {
 getWords();
 
 const Profanity = (message) => {
-  console.log(addProfanityWords);
-  var profanity = require('profanity-hindi');
-  var newWords = addProfanityWords;
-  profanity.addWords(newWords);
-  var cleaned = profanity.isMessageDirty(message);
-  console.log(cleaned, 'profanity');
-  return cleaned;
+  if (message) {
+    message = message.trim().replace(/\s+/g, ' '); // Remove extra spaces
+    const words = message.split(',').map((word) => word.trim()); // Split message by commas and trim each word
+    const profanity = require('profanity-hindi');
+    const newWords = addProfanityWords;
+    profanity.addWords(newWords);
+
+    let cleaned = false;
+    words.forEach((word) => {
+      if (typeof word === 'string' && word.length > 0 && profanity.isMessageDirty(word)) {
+        cleaned = true;
+      }
+    });
+
+    console.log(cleaned, 'profanity');
+    return cleaned;
+  }
 };
 
 export { Profanity };

@@ -295,6 +295,7 @@ const Policies = () => {
           <div className='col-12'>
             <Input
               placeholder='Enter policy name'
+              maxLength={100} showCount
               onChange={(e) =>
                 setPolicyDetails({
                   ...policyDetails,

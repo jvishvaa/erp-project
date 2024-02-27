@@ -21,9 +21,13 @@ const TimeTableNewUI = withRouter(
     let periodData = [];
     for (let i = 0; i < slotLength; i++) {
       periodData.push(
-        currentWeekTimeTable?.map((el) => el?.period_slot?.map((item) => item)[i])
+        currentWeekTimeTable?.map(
+          (el) => el?.period_slot?.map((item) => ({ ...item, holidays: el.holidays }))[i]
+        )
       );
     }
+
+    console.log({ periodData });
     return (
       <>
         <div className='tablewrap'>
@@ -125,7 +129,17 @@ const TimeTableNewUI = withRouter(
                               height: '100px',
                             }}
                           >
-                            {eachPeriod ? (
+                            {each?.holidays?.length > 0 ? (
+                              <div className='th-18 th-fw-600 th-green-1 d-flex flex-column justify-content-center h-100'>
+                                <div className='mb-2'>Holiday</div>
+                                <div
+                                  title={each?.holidays[0]?.title}
+                                  className='th-fw-500 th-12 th-grey text-truncate'
+                                >
+                                  {each?.holidays[0]?.title}
+                                </div>
+                              </div>
+                            ) : eachPeriod ? (
                               <>
                                 <div
                                   className='mb-2 text-truncate'

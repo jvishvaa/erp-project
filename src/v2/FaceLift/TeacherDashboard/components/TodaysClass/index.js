@@ -20,26 +20,47 @@ const TodaysClass = ({ newTimeTable }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-
   const fetchTodaysClassData = (params = {}) => {
     setLoading(true);
-    axios
-      .get(`${endpoints.teacherDashboard.todaysClass}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        if (response?.data?.status_code === 200) {
-          setTodaysClassData(response?.data?.result);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
-      });
+    if (newTimeTable) {
+      axios
+        .get(`${endpoints.teacherDashboard.todaysClassV2}`, {
+          params: { ...params },
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if (response?.data?.status_code === 200) {
+            const formattedData = formatClassData(response?.data?.result);
+            setTodaysClassData(formattedData);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoading(false);
+        });
+    } else {
+      axios
+        .get(`${endpoints.teacherDashboard.todaysClass}`, {
+          params: { ...params },
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        })
+        .then((response) => {
+          if (response?.data?.status_code === 200) {
+            const formattedData = formatClassData(response?.data?.result);
+            setTodaysClassData(formattedData);
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          message.error(error.message);
+          setLoading(false);
+        });
+    }
   };
   const getPeriodStatus = (period) => {
     const format = 'HH:mm:ss';
@@ -62,18 +83,39 @@ const TodaysClass = ({ newTimeTable }) => {
       alignToTop: 'true',
     });
   };
-
   useEffect(() => {
-    if (!newTimeTable) {
+    if (newTimeTable !== null) {
       fetchTodaysClassData({
         acadsession_id: selectedBranch?.id,
       });
     }
-  }, []);
+  }, [newTimeTable]);
   useEffect(() => {
     if (myRef.current) executeScroll();
   }, [myRef.current]);
 
+  const formatClassData = (data) => {
+    const groupedData = {};
+    data.forEach((item) => {
+      const key = `${item.start_time}-${item.end_time}`;
+      if (!groupedData[key]) {
+        groupedData[key] = [item];
+      } else {
+        groupedData[key].push(item);
+      }
+    });
+
+    const formattedData = Object.values(groupedData).map((group) => {
+      const firstItem = group[0];
+      const subjectNames = group.map((item) => item.subject_name).join(', ');
+      return {
+        ...firstItem,
+        subject_names: subjectNames,
+      };
+    });
+
+    return formattedData;
+  };
   return (
     <div className='th-bg-white th-br-5 pt-3 px-2 shadow-sm' style={{ height: 400 }}>
       <div className='row justify-content-between'>
@@ -93,11 +135,7 @@ const TodaysClass = ({ newTimeTable }) => {
           </div>
         </div>
       </div>
-      {newTimeTable ? (
-        <div className='d-flex w-100 justify-content-center align-items-center pt-5'>
-          <span className='th-grey th-30'>Timetable coming soon !</span>
-        </div>
-      ) : loading ? (
+      { loading ? (
         <div className='th-width-100 d-flex align-items-center justify-content-center h-75'>
           <Spin tip='Loading...'></Spin>
         </div>
@@ -162,8 +200,8 @@ const TodaysClass = ({ newTimeTable }) => {
                           </div>
                           <div className='col-7 col-sm-8 px-1 px-md-2 py-1'>
                             <div className='th-black-1 th-fw-600 text-truncate'>
-                              <Tooltip title={item?.subject_name}>
-                                {item?.subject_name}
+                              <Tooltip title={item?.subject_names}>
+                                {item?.subject_names}
                               </Tooltip>
                             </div>
                           </div>
