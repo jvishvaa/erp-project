@@ -240,7 +240,6 @@ const SchoolInformation = ({
                 >
                   <DatePicker
                     className='w-100 text-center'
-                    format={'YYYY-MM-DD'}
                     disabledDate={(current) => current && current.valueOf() < Date.now()}
                   />
                 </Form.Item>
