@@ -43,10 +43,19 @@
   border: 1px solid #1b4ccb;
   position: relative;
 }
+.notebook-list {
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
 .notebook-list-item {
   display: flex;
   border-bottom: 1px solid #1b4ccb;
-  margin-bottom: 1rem;
+  padding: 0.5rem;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  align-items: center;
 }
 .notebook-list-item:last-child {
   margin-bottom: 0 !important;
@@ -89,10 +98,46 @@
 
 .bookmarked-icon {
   position: absolute;
-  top: 0;
+  top: -10px;
 }
 
-.attachment-action-icon{
-    width: 24px;
-    height: 24px;
+.attachment-action-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.attachment-control-icon {
+  position: absolute;
+  top: 50%;
+  font-size: 25px;
+  background-color: #f8f8f8;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.attachment-control-icon:focus {
+  box-shadow: none !important;
+}
+.attachment-control-icon.prev {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.attachment-control-icon.next {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.tox .tox-toolbar--scrolling .tox-toolbar__group {
+  flex-wrap: wrap !important;
+  width: 100% !important;
+}
+
+.zip-container {
+  width: 100%;
+  height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #ccc;
+  border-radius: 8px;
 }
