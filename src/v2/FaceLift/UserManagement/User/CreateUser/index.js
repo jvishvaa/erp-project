@@ -29,7 +29,6 @@ import moment from 'moment/moment';
 import { useHistory, useParams } from 'react-router-dom';
 import AcademicYearList from './AcademicYearList';
 import ChangePasswordPopup from './../../../ChangePassword/changePasswordModal';
-import dayjs from 'dayjs';
 const { Step } = Steps;
 const CreateUser = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -417,7 +416,7 @@ const CreateUser = () => {
           user_level: transformedSchoolDetails?.user_level,
           designation: transformedSchoolDetails?.designation?.id,
           academic_year: academicYearObj[0]?.session_year,
-          device_expiry: user?.device_expiry ? moment(user?.device_expiry) : '',
+          device_expiry: transformedSchoolDetails?.device_expiry ? moment(transformedSchoolDetails?.device_expiry) : '',
           branch: transformedUser?.branch?.pop()?.map((e) => e.id),
           grade: gradeObj?.map((e) => e.grade_name),
           section: sectionObj?.map((e) => e.section_name),
@@ -750,7 +749,7 @@ const CreateUser = () => {
     formData.append('birth_place', studentFormValues?.birth_place ?? '');
     formData.append(
       'device_expiry',
-      moment(studentFormValues?.device_expiry).format('YYYY-MM-DD') ?? ''
+      moment(schoolFormValues?.device_expiry).format('YYYY-MM-DD') ?? ''
     );
 
     formData.append('old_school_name', studentFormValues?.old_school_name ?? '');
