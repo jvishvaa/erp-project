@@ -83,7 +83,7 @@ import Devices from 'v2/FaceLift/AndroidManagement/Devices';
 import Policies from 'v2/FaceLift/AndroidManagement/Policies';
 import BranchHomework from '../containers/centralise_homework/BranchStaffSide';
 import HwUpload from '../containers/centralise_homework/hw_upload/hwUpload';
-
+import UploadHomework from '../containers/centralise_homework/hw_upload/uploadFile';
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -395,8 +395,12 @@ const V2Router = () => {
                           {({ match }) => <BranchHomework match={match} />}
                         </Route>
                         ,
-                        <Route path='/centralised-homework/homework-upload'>
+                        <Route path='/centralised-homework/homework-upload-status'>
                           {({ match }) => <HwUpload match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralised-homework/homework-upload'>
+                          {({ match }) => <UploadHomework match={match} />}
                         </Route>
                         ,
                         {/* <Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
