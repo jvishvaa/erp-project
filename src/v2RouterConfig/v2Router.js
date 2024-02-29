@@ -84,6 +84,8 @@ import Policies from 'v2/FaceLift/AndroidManagement/Policies';
 import BranchHomework from '../containers/centralise_homework/BranchStaffSide';
 import CentralizedStudentHw from '../containers/centralise_homework/student';
 
+import HwUpload from '../containers/centralise_homework/hw_upload/hwUpload';
+import UploadHomework from '../containers/centralise_homework/hw_upload/uploadFile';
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -397,6 +399,14 @@ const V2Router = () => {
                         ,
                         <Route path='/centralized-homework/student'>
                           {({ match }) => <CentralizedStudentHw match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralised-homework/homework-upload-status'>
+                          {({ match }) => <HwUpload match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralised-homework/homework-upload'>
+                          {({ match }) => <UploadHomework match={match} />}
                         </Route>
                         ,
                         {/* <Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>

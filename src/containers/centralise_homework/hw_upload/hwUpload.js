@@ -565,6 +565,10 @@ const HwUpload = () => {
     searchRef.current.resetFields();
   };
 
+  const handleUploadPage = () => {
+    history.push('/centralised-homework/homework-upload');
+  };
+
   return (
     <React.Fragment>
       <Layout>
@@ -737,7 +741,11 @@ const HwUpload = () => {
                       </div>
                     </div>
                     <div className='col-md-4'>
-                      <Button className='col-md-6' type='primary'>
+                      <Button
+                        className='col-md-6'
+                        type='primary'
+                        onClick={handleUploadPage}
+                      >
                         Upload
                       </Button>
                     </div>
