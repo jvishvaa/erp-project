@@ -588,7 +588,7 @@ const HwUpload = () => {
 
         <div className='row'>
           <div className='col-md-12'>
-            <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
+            <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm mb-3'>
               <div className='row'>
                 <Form
                   id='filterForm'
@@ -607,7 +607,7 @@ const HwUpload = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeGrade(value)}
@@ -635,7 +635,7 @@ const HwUpload = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -663,7 +663,7 @@ const HwUpload = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -691,7 +691,7 @@ const HwUpload = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -719,7 +719,7 @@ const HwUpload = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -739,15 +739,15 @@ const HwUpload = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                    </div>
-                    <div className='col-md-4'>
-                      <Button
-                        className='col-md-6'
-                        type='primary'
-                        onClick={handleUploadPage}
-                      >
-                        Upload
-                      </Button>
+                      <div className='col-md-2 col-sm-6 col-12'>
+                        <Button
+                          className='w-100 th-br-4'
+                          type='primary'
+                          onClick={handleUploadPage}
+                        >
+                          Upload
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </Form>
@@ -764,7 +764,7 @@ const HwUpload = () => {
                     />
                   </div>
                 ) : (
-                  <div className='col-md-12 mb-3'>
+                  <div className='my-3'>
                     <UploadTable />
                   </div>
                 )}

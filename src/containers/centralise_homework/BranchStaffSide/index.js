@@ -584,7 +584,7 @@ const BranchHomework = () => {
 
         <div className='row'>
           <div className='col-md-12'>
-            <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
+            <div className='th-bg-white th-br-5 py-3 px-3 shadow-sm'>
               <div className='row'>
                 <Form
                   id='filterForm'
@@ -595,7 +595,7 @@ const BranchHomework = () => {
                 >
                   <div className='row'>
                     <div className='col-md-9 row'>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                         <Form.Item name='grade'>
                           <Select
                             mode='multiple'
@@ -603,7 +603,7 @@ const BranchHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeGrade(value)}
@@ -623,7 +623,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -631,7 +631,7 @@ const BranchHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -651,7 +651,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -659,7 +659,7 @@ const BranchHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -679,7 +679,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -687,7 +687,7 @@ const BranchHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -707,7 +707,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -715,7 +715,7 @@ const BranchHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -735,7 +735,7 @@ const BranchHomework = () => {
                           </Select>
                         </Form.Item>
                       </div>
-                      <div className='col-md-3 col-sm-6 col-12'>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
@@ -743,7 +743,7 @@ const BranchHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -766,9 +766,9 @@ const BranchHomework = () => {
                     </div>
                     <div className='col-md-3 p-0'>
                       <div
-                        className='col-md-12'
+                        className='col-md-12 py-2'
                         style={{
-                          border: '2px solid black',
+                          border: '2px solid #868686',
                           borderRadius: '10px',
                         }}
                       >
@@ -790,7 +790,7 @@ const BranchHomework = () => {
                 </Form>
               </div>
 
-              <div className='row mt-4 '>
+              <div className='mt-4 '>
                 {showFilterPage ? (
                   <div className='col-12'>
                     <Result
@@ -801,7 +801,7 @@ const BranchHomework = () => {
                     />
                   </div>
                 ) : (
-                  <div className='col-md-12 mb-3'>
+                  <div className='mb-3'>
                     <FilesView />
                   </div>
                 )}
