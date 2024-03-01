@@ -21,6 +21,7 @@ import axios from 'axios';
 import '../BranchStaffSide/branchside.scss';
 import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDropIcon.svg';
 import { CloseCircleOutlined } from '@ant-design/icons';
+import './../student/style.css';
 
 const UploadHomework = () => {
   const history = useHistory();
@@ -264,7 +265,7 @@ const UploadHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeGrade(value)}
@@ -292,7 +293,7 @@ const UploadHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -320,7 +321,7 @@ const UploadHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -348,7 +349,7 @@ const UploadHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -376,7 +377,7 @@ const UploadHomework = () => {
                             maxTagCount={1}
                             allowClear={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleChangeSection(value)}
@@ -412,7 +413,7 @@ const UploadHomework = () => {
                         style={{
                           border: '1px solid #D9D9D9',
                           boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                          width: window.innerWidth < 768 ? 330 : 450,
+                          width: window.innerWidth < 768 ? 330 : 600,
                           height: 200,
                         }}
                       >
@@ -441,34 +442,44 @@ const UploadHomework = () => {
                     {fileList?.length > 0 && (
                       <span className='th-black-1 mt-3'>Selected Files</span>
                     )}
-                    <div
-                      className='row my-2 th-grey'
-                      style={{ height: 150, overflowY: 'auto' }}
-                    >
-                      {uniqueFilesList?.map((item) => {
-                        const filename = item?.name?.split('.')[0];
-                        const extension = item?.type?.split('/')[1];
+                    {uniqueFilesList?.length > 0 && (
+                      <div
+                        className='row my-2 th-grey'
+                        style={{ height: 150, overflowY: 'auto' }}
+                      >
+                        {uniqueFilesList?.map((item) => {
+                          const filename = item?.name?.split('.')[0];
+                          const extension = item?.type?.split('/')[1];
 
-                        return (
-                          <div className='row mb-1 align-items-center th-12 th-bg-grey py-1'>
-                            <div className='col-6 text-truncate'>{filename}</div>
-                            <div className='col-2 px-0'>{getSize(item?.size)}</div>
-                            <div className='col-2 pr-0'>.{extension}</div>
-                            <div className='col-2'>
-                              <CloseCircleOutlined
-                                onClick={() => {
-                                  draggerProps.onRemove(item);
-                                }}
-                              />
+                          return (
+                            <div className='row mb-1 align-items-center th-12 th-bg-grey py-1'>
+                              <div className='col-6 text-truncate'>{filename}</div>
+                              <div className='col-2 px-0'>{getSize(item?.size)}</div>
+                              <div className='col-2 pr-0'>.{extension}</div>
+                              <div className='col-2'>
+                                <CloseCircleOutlined
+                                  onClick={() => {
+                                    draggerProps.onRemove(item);
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                  <div className='row justify-content-end'>
+                    <div className='col-md-3 mt-3'>
+                      <Button
+                        className=' th-br-4 float-right w-100'
+                        type='primary'
+                        onClick={handleUpload}
+                      >
+                        Upload
+                      </Button>
                     </div>
                   </div>
-                  <Button className='col-md-3' type='primary' onClick={handleUpload}>
-                    Upload
-                  </Button>
                 </div>
               </div>
             </div>

@@ -354,7 +354,7 @@ const CentralizedStudentHw = () => {
                   <div className='card-body'>
                     <div className='d-flex justify-content-between'>
                       <div>
-                        <p className='text-uppercase'>Notebook</p>
+                        <p className='text-uppercase'>Homework Files</p>
                       </div>
                       <div className='text-muted' style={{ cursor: 'pointer' }}>
                         <Popover

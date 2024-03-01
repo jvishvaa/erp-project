@@ -401,11 +401,11 @@ const V2Router = () => {
                           {({ match }) => <CentralizedStudentHw match={match} />}
                         </Route>
                         ,
-                        <Route path='/centralised-homework/homework-upload-status'>
+                        <Route path='/centralized-homework/homework-upload-status'>
                           {({ match }) => <HwUpload match={match} />}
                         </Route>
                         ,
-                        <Route path='/centralised-homework/homework-upload'>
+                        <Route path='/centralized-homework/homework-upload'>
                           {({ match }) => <UploadHomework match={match} />}
                         </Route>
                         ,

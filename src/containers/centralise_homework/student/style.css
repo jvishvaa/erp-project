@@ -141,3 +141,15 @@
   border: 2px solid #ccc;
   border-radius: 8px;
 }
+
+.th-tabs-hw .ant-tabs-nav-wrap {
+  background-color: #fff !important;
+}
+
+.th-modal .ant-modal-body {
+  padding: 24px !important;
+}
+
+.th-modal .ant-modal-header {
+  border-radius: 10px !important;
+}
