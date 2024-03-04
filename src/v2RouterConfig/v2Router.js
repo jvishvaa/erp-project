@@ -411,11 +411,11 @@ const V2Router = () => {
                           {({ match }) => <UploadHomework match={match} />}
                         </Route>
                         ,
-                        <Route path='/centralised-homework/evaluator-dash'>
+                        <Route path='/centralized-homework/evaluator-dash'>
                           {({ match }) => <EvaluatorDash match={match} />}
                         </Route>
                         ,
-                        <Route path='/centralised-homework/evaluator-hw'>
+                        <Route path='/centralized-homework/evaluator-hw'>
                           {({ match }) => <EvaluatorHomework match={match} />}
                         </Route>
                         ,

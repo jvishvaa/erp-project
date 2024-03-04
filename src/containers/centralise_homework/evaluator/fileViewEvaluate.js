@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Breadcrumb, Tabs, Select, Drawer, Input } from 'antd';
+import { Tooltip, Tabs, Select, Drawer, Input } from 'antd';
 import './index.scss';
+import './../student/style.css';
 import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -12,6 +13,9 @@ import placeholder from 'assets/images/placeholder_small.jpg';
 import DescriptiveTestcorrectionModule from 'components/EvaluationTool';
 import QuestionPng from 'assets/images/question.png';
 import { SendOutlined } from '@ant-design/icons';
+import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
+import BOOKMARKICON from './../../../assets/images/bookmark-icon.png';
+import NOTEICON from './../../../assets/images/note-icon.png';
 const { TabPane } = Tabs;
 
 let chatarr = [
@@ -140,6 +144,7 @@ let chatarr = [
 const FilesViewEvaluate = () => {
   const history = useHistory();
   const scrollableContainer = useRef(null);
+  const attachmentContainer = useRef(null);
   const chatRef = useRef(null);
 
   const [volume, setVolume] = useState('');
@@ -150,6 +155,8 @@ const FilesViewEvaluate = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [chattext, setChatText] = useState('');
   const [chatsData, setChatsData] = useState(chatarr);
+  const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
+
   const showDrawer = () => {
     setOpenDrawer(true);
   };
@@ -188,18 +195,76 @@ const FilesViewEvaluate = () => {
   };
 
   const handleScroll = (dir) => {
+    console.log(attachmentContainer);
     if (dir === 'left') {
-      scrollableContainer.current.scrollLeft -= 150;
+      scrollableContainer.current.scrollLeft -= attachmentContainer?.current?.clientWidth;
+      setSelectedHomeworkIndex(
+        selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
+      );
     } else {
-      scrollableContainer.current.scrollLeft += 150;
+      scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
+      setSelectedHomeworkIndex(
+        selectedHomeworkIndex === imgarr.length - 1
+          ? imgarr.length - 1
+          : selectedHomeworkIndex + 1
+      );
     }
   };
 
+  let imgarr2 = [
+    '40/38/193/993/2543/homework/1702384133_image_2_.png',
+    '40/38/193/993/2543/homework/1702384133_image_2_.png',
+    '40/38/193/993/2543/homework/1702384133_image_2_.png',
+    '40/38/193/993/2543/homework/1702384133_image_2_.png',
+  ];
+
   let imgarr = [
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
+    {
+      name: 'Notebook 1',
+      description:
+        'notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing',
+      isNote: true,
+      isBookmarked: true,
+      isDownload: true,
+      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
+      dueDate: '01/09/2023',
+    },
+    {
+      name: 'Notebook 2',
+      description: 'notebook description testing',
+      isNote: false,
+      isBookmarked: false,
+      isDownload: true,
+      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
+      dueDate: '01/09/2023',
+    },
+    {
+      name: 'Notebook 3',
+      description: 'notebook description testing',
+      isNote: true,
+      isBookmarked: true,
+      isDownload: true,
+      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
+      dueDate: '01/09/2023',
+    },
+    {
+      name: 'Notebook 4',
+      description: 'notebook description testing',
+      isNote: true,
+      isBookmarked: false,
+      isDownload: true,
+      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
+      dueDate: '01/09/2023',
+    },
+    {
+      name: 'Notebook 5',
+      description: 'notebook description testing',
+      isNote: true,
+      isBookmarked: true,
+      isDownload: true,
+      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
+      dueDate: '01/09/2023',
+    },
   ];
 
   const handleSaveEvaluatedFile = async (file) => {
@@ -252,169 +317,218 @@ const FilesViewEvaluate = () => {
   };
 
   const handleImageScroll = (index) => {
-    let imgwidth = index * 750;
+    setSelectedHomeworkIndex(index);
+    let imgwidth = index * attachmentContainer?.current?.clientWidth;
     console.log(scrollableContainer.current, 'scroll');
     scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
   };
 
   return (
     <React.Fragment>
-      <div className='row wholetabCentralHW'>
-        <div className='col-12'>
-          <div className=' th-bg-white'>
-            <div className='col-md-12 row'>
-              <div className='col-md-3' style={{ border: '1px solid black' }}>
-                <div className=' d-flex justify-content-center'>
-                  <span className='th-16'>Files</span>
-                </div>
-                <div
-                  className='d-flex justify-content-center'
-                  style={{ flexDirection: 'column' }}
-                >
-                  {imgarr?.map((url, index) => (
-                    <div
-                      className='p-2'
-                      onClick={() => handleImageScroll(index)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {index + 1} File {index + 1}
+      <div className='wholetabCentralHW'>
+        <div className='th-tabs th-tabs-hw mt-3 th-bg-white'>
+          <div className=' row'>
+            <div className='col-md-5 col-xl-4 pl-0'>
+              {/* <div className=' d-flex justify-content-center'>
+                      <span className='th-16'>Files</span>
+                    </div> */}
+              <div className='card shadow border-0 th-br-4 w-100'>
+                <div className='card-body'>
+                  <div className='col-md-12 row'>
+                    <div className='col-md-6'>
+                      <p className='th-15 mb-0 text-muted text-truncate text-center'>
+                        <span className='th-fw-600'>Worksheet</span>
+                      </p>
                     </div>
-                  ))}
-                </div>
-              </div>
-              <div className='col-md-9 row'>
-                <div className='col-md-11 p-0'>
-                  {/* Image Area */}
-                  <div>
-                    <div className='attachments-list-outer-container'>
-                      <div className='prev-btn'>
-                        <IconButton onClick={() => handleScroll('left')}>
-                          <ArrowBackIosIcon />
-                        </IconButton>
-                      </div>
-                      <SimpleReactLightbox>
-                        <div
-                          className='attachments-list'
-                          ref={scrollableContainer}
-                          onScroll={(e) => {
-                            e.preventDefault();
-                          }}
-                        >
-                          {imgarr.map((url, i) => {
-                            {
-                              console.log('homeworkAtta', url, url.includes('.doc'));
-                            }
-                            const actions = ['preview', 'download', 'pentool'];
-
-                            return (
-                              <>
-                                <div className='attachment' style={{ maxWidth: '100%' }}>
-                                  <Attachment
-                                    key={`homework_student_question_attachment_${i}`}
-                                    fileUrl={url}
-                                    fileName={`Attachment-${i + 1}`}
-                                    // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                    urlPrefix={
-                                      'https://mgmt-cdn-stage.stage-gke.letseduvate.com/dev/lesson_plan_file/'
-                                    }
-                                    index={i}
-                                    actions={
-                                      url.includes('.doc')
-                                        ? ['download']
-                                        : ['preview', 'download', 'pentool']
-                                    }
-                                    onOpenInPenTool={openInPenTool}
-                                  />
-                                </div>
-                              </>
-                            );
-                          })}
-                          <div
-                            style={{
-                              position: 'absolute',
-                              width: '0',
-                              height: '0',
-                              visibility: 'hidden',
-                            }}
-                          >
-                            <SRLWrapper>
-                              {imgarr.map((url, i) => (
-                                <img
-                                  //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                                  src={`https://mgmt-cdn-stage.stage-gke.letseduvate.com/dev/lesson_plan_file/${url}`}
-                                  onError={(e) => {
-                                    e.target.src = placeholder;
-                                  }}
-                                  alt={`Attachment-${i + 1}`}
-                                  style={{ width: '0', height: '0' }}
-                                />
-                              ))}
-                            </SRLWrapper>
-                          </div>
-                        </div>
-                      </SimpleReactLightbox>
-                      <div className='next-btn'>
-                        <IconButton onClick={() => handleScroll('right')}>
-                          <ArrowForwardIosIcon color='primary' />
-                        </IconButton>
-                      </div>
+                    <div className='col-md-6'>
+                      <p className='th-15 mb-0 text-muted text-truncate text-center'>
+                        <span className='th-fw-600'>Due Date</span>
+                      </p>
                     </div>
                   </div>
-
-                  {penToolOpen && (
-                    <DescriptiveTestcorrectionModule
-                      desTestDetails={desTestDetails}
-                      mediaContent={mediaContent}
-                      handleClose={handleCloseCorrectionModal}
-                      alert={undefined}
-                      open={penToolOpen}
-                      callBackOnPageChange={() => {}}
-                      handleSaveFile={handleSaveEvaluatedFile}
-                    />
-                  )}
-
-                  {/* Image Area Ends */}
+                  <div className='notebook-list mt-3'>
+                    {imgarr?.map((item, index) => (
+                      <div
+                        className='notebook-list-item col-md-12'
+                        key={index}
+                        style={{
+                          backgroundColor: `${
+                            selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
+                          }`,
+                        }}
+                        onClick={() => handleImageScroll(index)}
+                      >
+                        <div
+                          className='notebook-content ml-2 col-md-6'
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <Tooltip
+                            title={`${item.description}`}
+                            showArrow={false}
+                            placement='right'
+                            overlayInnerStyle={{
+                              borderRadius: 4,
+                              backgroundColor: 'white',
+                              color: 'black',
+                              maxHeight: 200,
+                              overflowY: 'scroll',
+                              textTransform: 'capitalize',
+                            }}
+                          >
+                            <h5 className='th-14 mb-0'>{item.name}</h5>
+                            <p className='th-12 mb-0 text-muted text-truncate'>
+                              <span className='th-fw-600'>Description:</span>
+                              {item.description}
+                            </p>
+                          </Tooltip>
+                        </div>
+                        <div className='col-md-6'>
+                          <p className='th-12 mb-0 text-muted text-truncate text-center'>
+                            <span className='th-fw-600'>{item?.dueDate}</span>
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-            <Drawer
-              title={drawerTitle()}
-              onClose={onClose}
-              visible={openDrawer}
-              closeIcon={false}
-              className='chatDrawer'
-            >
-              <span className='pb-1'>Subject/Worksheet/Volume_Number</span>
-              <div style={{ maxHeight: '75vh', overflowY: 'scroll' }} ref={chatRef}>
-                {chatsData?.map((item) => (
-                  <div className='col-md-12'>
-                    {item?.user == 'user' ? (
-                      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <div className='p-2 col-md-6 userchat my-1'>
-                          <span>{item?.chat}</span>
+            <div className='col-md-7 col-xl-8 row'>
+              <div className='col-md-11 p-0'>
+                {/* Image Area */}
+                <div>
+                  <div className='attachments-list-outer-container'>
+                    <div className='prev-btn'>
+                      <IconButton onClick={() => handleScroll('left')}>
+                        <ArrowBackIosIcon />
+                      </IconButton>
+                    </div>
+                    <SimpleReactLightbox>
+                      <div
+                        className='attachments-list'
+                        ref={scrollableContainer}
+                        onScroll={(e) => {
+                          e.preventDefault();
+                        }}
+                      >
+                        {imgarr.map((url, i) => {
+                          {
+                            console.log('homeworkAtta', url, url?.file.includes('.doc'));
+                          }
+                          const actions = ['preview', 'download', 'pentool'];
+
+                          return (
+                            <>
+                              <div
+                                className='attachment'
+                                style={{ maxWidth: '100%' }}
+                                ref={attachmentContainer}
+                              >
+                                <Attachment
+                                  key={`homework_student_question_attachment_${i}`}
+                                  fileUrl={url?.file}
+                                  fileName={`Attachment-${i + 1}`}
+                                  // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
+                                  urlPrefix={
+                                    'https://mgmt-cdn-stage.stage-gke.letseduvate.com/dev/lesson_plan_file/'
+                                  }
+                                  index={i}
+                                  actions={
+                                    url?.file.includes('.doc')
+                                      ? ['download']
+                                      : ['preview', 'download', 'pentool']
+                                  }
+                                  onOpenInPenTool={openInPenTool}
+                                />
+                              </div>
+                            </>
+                          );
+                        })}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            width: '0',
+                            height: '0',
+                            visibility: 'hidden',
+                          }}
+                        >
+                          <SRLWrapper>
+                            {imgarr.map((url, i) => (
+                              <img
+                                //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
+                                src={`https://mgmt-cdn-stage.stage-gke.letseduvate.com/dev/lesson_plan_file/${url?.file}`}
+                                onError={(e) => {
+                                  e.target.src = placeholder;
+                                }}
+                                alt={`Attachment-${i + 1}`}
+                                style={{ width: '0', height: '0' }}
+                              />
+                            ))}
+                          </SRLWrapper>
                         </div>
                       </div>
-                    ) : (
-                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <div className='p-2 col-md-6 supchat my-1'>
-                          <span>{item?.chat}</span>
-                        </div>
-                      </div>
-                    )}
+                    </SimpleReactLightbox>
+                    <div className='next-btn'>
+                      <IconButton onClick={() => handleScroll('right')}>
+                        <ArrowForwardIosIcon color='primary' />
+                      </IconButton>
+                    </div>
                   </div>
-                ))}
+                </div>
+
+                {penToolOpen && (
+                  <DescriptiveTestcorrectionModule
+                    desTestDetails={desTestDetails}
+                    mediaContent={mediaContent}
+                    handleClose={handleCloseCorrectionModal}
+                    alert={undefined}
+                    open={penToolOpen}
+                    callBackOnPageChange={() => {}}
+                    handleSaveFile={handleSaveEvaluatedFile}
+                  />
+                )}
+
+                {/* Image Area Ends */}
               </div>
-              <div className='col-md-12'>
-                <Input
-                  size='large'
-                  placeholder='Send Text'
-                  suffix={suffix}
-                  value={chattext}
-                  onChange={(e) => handlechange(e.target.value)}
-                />
-              </div>
-            </Drawer>
+            </div>
           </div>
+          <Drawer
+            title={drawerTitle()}
+            onClose={onClose}
+            visible={openDrawer}
+            closeIcon={false}
+            className='chatDrawer'
+          >
+            <span className='pb-1'>Subject/Worksheet/Volume_Number</span>
+            <div style={{ maxHeight: '75vh', overflowY: 'scroll' }} ref={chatRef}>
+              {chatsData?.map((item) => (
+                <div className='col-md-12'>
+                  {item?.user == 'user' ? (
+                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                      <div className='p-2 col-md-6 userchat my-1'>
+                        <span>{item?.chat}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <div className='p-2 col-md-6 supchat my-1'>
+                        <span>{item?.chat}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className='col-md-12'>
+              <Input
+                size='large'
+                placeholder='Send Text'
+                suffix={suffix}
+                value={chattext}
+                onChange={(e) => handlechange(e.target.value)}
+              />
+            </div>
+          </Drawer>
         </div>
       </div>
     </React.Fragment>
