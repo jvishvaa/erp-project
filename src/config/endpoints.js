@@ -238,6 +238,7 @@ export default {
     submitToUnsubmit: '/academic/homework-submitted-unsubmitted/',
     // resourcesS3: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com',
     resourcesFiles: `${CENTRAL_BUCKET}`,
+    teacherData : `/hw-hub/hw_view/`,
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',

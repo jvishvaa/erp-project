@@ -1,12 +1,18 @@
 import {
+  CheckSquareFilled,
+  CloseSquareFilled,
   DeleteOutlined,
   DownOutlined,
   EditOutlined,
   HistoryOutlined,
+  IeSquareFilled,
   PlusCircleOutlined,
   SearchOutlined,
+  SmileFilled,
+  StopFilled,
   StopOutlined,
   UpOutlined,
+  XOutlined,
 } from '@ant-design/icons';
 import {
   Breadcrumb,
@@ -18,6 +24,7 @@ import {
   Select,
   Table,
   message,
+  DatePicker,
 } from 'antd';
 import { Input, Space } from 'antd';
 import endpoints from 'config/endpoints';
@@ -32,6 +39,15 @@ import axios from 'axios';
 import FileSaver from 'file-saver';
 import FilesViewEvaluate from './fileViewEvaluate';
 import './index.scss';
+import {
+  CheckBoxOutlineBlank,
+  CropSquareSharp,
+  SquareFoot,
+  SquareFootRounded,
+} from '@material-ui/icons';
+import moment from 'moment';
+
+const { RangePicker } = DatePicker;
 
 const EvaluatorHomework = () => {
   const history = useHistory();
@@ -60,6 +76,18 @@ const EvaluatorHomework = () => {
   const [searchData, setSearchData] = useState('');
   const [showFilterPage, setShowFilterPage] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+
+  const [volumeList, setVolumeList] = useState([]);
+  const [volume, setVolume] = useState('');
+
+  const [subjectList, setSubjectList] = useState([]);
+  const [subject, setSubject] = useState('');
+
+  const dateFormat = "DD-MM-YYYY"
+
+  const [date, setDate] = useState(null)
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
 
   const handleFilters = () => {
     if (showFilters) {
@@ -146,12 +174,22 @@ const EvaluatorHomework = () => {
     setGrade([]);
     setSection('');
     setSectionList([]);
+    setVolumeList([]);
+    setVolume('');
+    setSubjectList([]);
+    setSubject('');
+    setDate(null)
+    setStartDate(null)
+    setEndDate(null)
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
+      volume: [],
+      subject: [],
+      date : null,
     });
   };
-
+  console.log(startDate, endDate, "coming")
   const fetchSection = async (grade) => {
     try {
       const result = await axiosInstance.get(
@@ -169,11 +207,80 @@ const EvaluatorHomework = () => {
 
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option key={each?.id} value={each.sec_id}>
         {each?.section__section_name}
       </Option>
     );
   });
+
+  const fetchVolumeData = () => {
+    axios
+      .get(`${endpoints.lessonPlan.volumeList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setVolumeList(result?.data?.result?.results);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  const volumeOptions = volumeList?.map((each) => (
+    <Select.Option key={each?.id} value={each?.id}>
+      {each?.volume_name}
+    </Select.Option>
+  ));
+
+  const fetchSubjectList = async (sectionId) => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpointsV2.academics.subjects}?session_year=${selectedYear.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${sectionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${loggedUserData?.token}`,
+          },
+        }
+      );
+      if (result.data.status_code === 200) {
+        setSubjectList(result?.data?.data);
+      } else {
+        message.error(result.data.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  const subjectListOptions = subjectList?.map((each) => (
+    <Select.Option key={each?.id} value={each?.subject_mapping_id}>
+      {each?.sub_name}
+    </Select.Option>
+  ));
+
+  const fetchTeacherData = async () => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.homework.teacherData}?is_assessed=False&start_date=${startDate}&end_date=${endDate}&sub_sec_mpng=${subject}`,
+        {
+          headers: {
+            Authorization: `Bearer ${loggedUserData?.token}`,
+          },
+        }
+      );
+      if (result.data.status_code === 200) {
+        console.log(result?.data)
+      } else {
+        message.error(result.data.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
 
   const handleChangeSection = (each) => {
     setPageNo(1);
@@ -183,10 +290,43 @@ const EvaluatorHomework = () => {
       formRef.current.setFieldsValue({
         section: sectionList?.map((item) => item.id),
       });
+      fetchSubjectList(allsections);
     } else {
-      setSection(each.map((item) => item.value).join(','));
+      const section = each.map((item) => item.value).join(',');
+      setSection(section);
+      fetchSubjectList(section);
     }
   };
+
+  const handleChangeVolume = (each) => {
+    if (each) {
+      setVolume(each);
+    } else {
+      setVolume('');
+    }
+  };
+
+  const handleChangeSubject = (each) => {
+    if (each) {
+      setSubject(each);
+      console.log(each, "coming")
+    } else {
+      setSubject('');
+    }
+  };
+
+  const handleDateChange = (each)=>{
+    if(each){
+      setStartDate(moment(each[0]).format(dateFormat))
+      setEndDate(moment(each[1]).format(dateFormat))
+      setDate([moment(each[0]), moment(each[1])])
+    }
+    else{
+      setStartDate(null)
+      setEndDate(null)
+      setDate(null)
+    }
+  }
 
   const handleClearSection = () => {
     setSection([]);
@@ -222,7 +362,7 @@ const EvaluatorHomework = () => {
                     style={{ width: '100%' }}
                   >
                     <div className='row justify-content-between'>
-                      <div className='col-md-6 row'>
+                      <div className='col-xl-7 col-md-6 row'>
                         <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                           <Form.Item name='grade'>
                             <Select
@@ -279,9 +419,9 @@ const EvaluatorHomework = () => {
                             </Select>
                           </Form.Item>
                         </div>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name='section'>
-                            <Select
+                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                          <Form.Item name='date'>
+                            {/* <Select
                               mode='multiple'
                               getPopupContainer={(trigger) => trigger.parentNode}
                               maxTagCount={1}
@@ -290,7 +430,7 @@ const EvaluatorHomework = () => {
                               className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                               placement='bottomRight'
                               showArrow={true}
-                              onChange={(e, value) => handleChangeSection(value)}
+                              onChange={(e, value) => handleChangeVolume(value)}
                               onClear={handleClearSection}
                               dropdownMatchSelectWidth={false}
                               filterOption={(input, options) => {
@@ -301,14 +441,49 @@ const EvaluatorHomework = () => {
                                 );
                               }}
                               showSearch
-                              placeholder='Select section'
+                              placeholder='Select Volume'
                             >
-                              {sectionOptions}
+                              {volumeOptions}
+                            </Select> */}
+
+                            <RangePicker
+                              className='th-width-100 th-br-4'
+                              onChange={(value) => handleDateChange(value)}
+                              defaultValue={[moment(), moment()]}
+                              format={dateFormat}
+                              separator={'to'}
+                            />
+                          </Form.Item>
+                        </div>
+                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                          <Form.Item name='subject'>
+                            <Select
+                              getPopupContainer={(trigger) => trigger.parentNode}
+                              maxTagCount={1}
+                              allowClear={true}
+                              suffixIcon={<DownOutlined className='th-grey' />}
+                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                              placement='bottomRight'
+                              showArrow={true}
+                              onChange={(e) => handleChangeSubject(e)}
+                              onClear={handleClearSection}
+                              dropdownMatchSelectWidth={false}
+                              filterOption={(input, options) => {
+                                return (
+                                  options.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                              showSearch
+                              placeholder='Select Subject'
+                            >
+                              {subjectListOptions}
                             </Select>
                           </Form.Item>
                         </div>
                         <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name='section'>
+                          <Form.Item name=''>
                             <Select
                               mode='multiple'
                               getPopupContainer={(trigger) => trigger.parentNode}
@@ -329,67 +504,92 @@ const EvaluatorHomework = () => {
                                 );
                               }}
                               showSearch
-                              placeholder='Select section'
+                              placeholder='Select Doc Type'
                             >
-                              {sectionOptions}
+                              {/* {sectionOptions} */}
                             </Select>
                           </Form.Item>
                         </div>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
                           <Form.Item name='section'>
-                            <Select
-                              mode='multiple'
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              maxTagCount={1}
-                              allowClear={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                              placement='bottomRight'
-                              showArrow={true}
-                              onChange={(e, value) => handleChangeSection(value)}
-                              onClear={handleClearSection}
-                              dropdownMatchSelectWidth={false}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              showSearch
-                              placeholder='Select section'
+                            <Button
+                              className=' th-br-4 w-100 text-left th-select'
+                              type='primary'
+                              onClick={()=>fetchTeacherData()}
                             >
-                              {sectionOptions}
-                            </Select>
+                              Search
+                            </Button>
                           </Form.Item>
                         </div>
                       </div>
-                      <div className='col-md-3 p-0 row'>
+                      <div className='col-md-5 col-xl-3  p-0 row mb-2'>
                         <div
                           className='col-md-12 py-2'
                           style={{
-                            border: '2px solid #868686',
+                            boxShadow:
+                              'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
                             borderRadius: '10px',
+                            marginBottom: '5px',
                           }}
                         >
-                          <div className='col-md-12 row justify-content-between th-13'>
+                          <div
+                            className='col-md-12 row justify-content-between th-13'
+                            style={{ marginTop: '6px' }}
+                          >
                             <div>
-                              <span>Completed :</span>
-                              <span>500</span>
+                              <span>
+                                Completed : <span style={{ color: 'green' }}>500</span>{' '}
+                              </span>
                             </div>
-                            <div>
-                              <span>Completed :</span>
-                              <span>500</span>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <span>Completed </span>
+                              <span
+                                style={{
+                                  backgroundColor: 'green',
+                                  color: 'white',
+                                  height: '15px',
+                                  width: '15px',
+                                  borderRadius: '5px',
+                                  display: 'inline-block',
+                                  marginLeft: '20px',
+                                }}
+                              ></span>
                             </div>
                           </div>
-                          <div className='col-md-12 row justify-content-between th-13'>
+                          <div
+                            className='col-md-12 row justify-content-between th-13'
+                            style={{ marginTop: '6px' }}
+                          >
                             <div>
-                              <span>Completed :</span>
-                              <span>500</span>
+                              <span>
+                                Pending : <span style={{ color: 'red' }}>363</span>
+                              </span>
                             </div>
-                            <div>
-                              <span>Completed :</span>
-                              <span>500</span>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <span>Pending </span>
+                              <span
+                                style={{
+                                  backgroundColor: 'red',
+                                  color: 'white',
+                                  height: '15px',
+                                  width: '15px',
+                                  borderRadius: '5px',
+                                  display: 'inline-block',
+                                  marginLeft: '20px',
+                                }}
+                              ></span>
                             </div>
                           </div>
                         </div>
