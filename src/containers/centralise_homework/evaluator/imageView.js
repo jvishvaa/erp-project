@@ -89,6 +89,8 @@ const EvaluatorHomework = () => {
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
 
+  const [evaluateData, setEvaluateData] = useState([]);
+
   const handleFilters = () => {
     if (showFilters) {
       setShowFilters(false);
@@ -189,7 +191,6 @@ const EvaluatorHomework = () => {
       date : null,
     });
   };
-  console.log(startDate, endDate, "coming")
   const fetchSection = async (grade) => {
     try {
       const result = await axiosInstance.get(
@@ -273,7 +274,7 @@ const EvaluatorHomework = () => {
         }
       );
       if (result.data.status_code === 200) {
-        console.log(result?.data)
+        setEvaluateData(result?.data?.result?.results)
       } else {
         message.error(result.data.message);
       }
@@ -305,11 +306,10 @@ const EvaluatorHomework = () => {
       setVolume('');
     }
   };
-
+  console.log(evaluateData?.length, "coming")
   const handleChangeSubject = (each) => {
     if (each) {
       setSubject(each);
-      console.log(each, "coming")
     } else {
       setSubject('');
     }
@@ -612,7 +612,7 @@ const EvaluatorHomework = () => {
                 )}
               </div>
               <div className='mt-4 '>
-                {showFilterPage ? (
+                {evaluateData?.length ===0 ? (
                   <div className='col-12'>
                     <Result
                       status='warning'
@@ -623,7 +623,7 @@ const EvaluatorHomework = () => {
                   </div>
                 ) : (
                   <div className='mb-3'>
-                    <FilesViewEvaluate />
+                    <FilesViewEvaluate evaluateData={evaluateData} />
                   </div>
                 )}
               </div>

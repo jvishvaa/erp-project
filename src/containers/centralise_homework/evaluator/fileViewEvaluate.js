@@ -141,7 +141,7 @@ let chatarr = [
   },
 ];
 
-const FilesViewEvaluate = () => {
+const FilesViewEvaluate = ({ evaluateData }) => {
   const history = useHistory();
   const scrollableContainer = useRef(null);
   const attachmentContainer = useRef(null);
@@ -347,7 +347,7 @@ const FilesViewEvaluate = () => {
                     </div>
                   </div>
                   <div className='notebook-list mt-3'>
-                    {imgarr?.map((item, index) => (
+                    {evaluateData?.map((item, index) => (
                       <div
                         className='notebook-list-item col-md-12'
                         key={index}
@@ -363,7 +363,7 @@ const FilesViewEvaluate = () => {
                           style={{ cursor: 'pointer' }}
                         >
                           <Tooltip
-                            title={`${item.description}`}
+                            title={`${item?.student_erp}`}
                             showArrow={false}
                             placement='right'
                             overlayInnerStyle={{
@@ -375,11 +375,11 @@ const FilesViewEvaluate = () => {
                               textTransform: 'capitalize',
                             }}
                           >
-                            <h5 className='th-14 mb-0'>{item.name}</h5>
-                            <p className='th-12 mb-0 text-muted text-truncate'>
+                            <h5 className='th-14 mb-0'>{item.student_erp}</h5>
+                            {/* <p className='th-12 mb-0 text-muted text-truncate'>
                               <span className='th-fw-600'>Description:</span>
                               {item.description}
-                            </p>
+                            </p> */}
                           </Tooltip>
                         </div>
                         <div className='col-md-6'>
@@ -411,10 +411,7 @@ const FilesViewEvaluate = () => {
                           e.preventDefault();
                         }}
                       >
-                        {imgarr.map((url, i) => {
-                          {
-                            console.log('homeworkAtta', url, url?.file.includes('.doc'));
-                          }
+                        {evaluateData.map((url, i) => {
                           const actions = ['preview', 'download', 'pentool'];
 
                           return (
@@ -426,15 +423,13 @@ const FilesViewEvaluate = () => {
                               >
                                 <Attachment
                                   key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url?.file}
+                                  fileUrl={url?.file_location}
                                   fileName={`Attachment-${i + 1}`}
                                   // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                  urlPrefix={
-                                    'https://mgmt-cdn-stage.stage-gke.letseduvate.com/dev/lesson_plan_file/'
-                                  }
+                                  urlPrefix={endpoints.erpBucket}
                                   index={i}
                                   actions={
-                                    url?.file.includes('.doc')
+                                    url?.file?.includes('.doc')
                                       ? ['download']
                                       : ['preview', 'download', 'pentool']
                                   }
@@ -453,10 +448,10 @@ const FilesViewEvaluate = () => {
                           }}
                         >
                           <SRLWrapper>
-                            {imgarr.map((url, i) => (
+                            {evaluateData.map((url, i) => (
                               <img
                                 //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                                src={`https://mgmt-cdn-stage.stage-gke.letseduvate.com/dev/lesson_plan_file/${url?.file}`}
+                                src={`${endpoints.erpBucket}${url?.file_location}`}
                                 onError={(e) => {
                                   e.target.src = placeholder;
                                 }}
