@@ -21,6 +21,7 @@ import axios from 'axios';
 import '../BranchStaffSide/branchside.scss';
 import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDropIcon.svg';
 import { CloseCircleOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import './../student/style.css';
 
 const UploadHomework = () => {
@@ -30,6 +31,8 @@ const UploadHomework = () => {
   const [grade, setGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [section, setSection] = useState('');
+  const [subjectList, setSubjectList] = useState([]);
+  const [subject, setSubject] = useState('');
   const [status, setStatus] = useState('');
 
   const { Option } = Select;
@@ -95,6 +98,26 @@ const UploadHomework = () => {
     }
   };
 
+  const handleChangeSection = (each) => {
+    if (each.some((item) => item.value === 'all')) {
+      const allsections = sectionList?.map((item) => item.section_id).join(',');
+      setSection(allsections);
+      formRef.current.setFieldsValue({
+        section: sectionList?.map((item) => item.id),
+      });
+      fetchSubject(allsections);
+    } else {
+      const singleSection = each.map((item) => item.value).join(',');
+      setSection(singleSection);
+      fetchSubject(singleSection);
+    }
+  };
+
+  const handleChangeSubject = (each) => {
+    console.log(each);
+    setSubject(each);
+  };
+
   const handleClearGrade = () => {
     setGrade([]);
     setSection('');
@@ -120,28 +143,43 @@ const UploadHomework = () => {
     }
   };
 
+  const fetchSubject = async (section) => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.academics.subjects}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}&section=${section}`
+      );
+      if (result.data.status_code === 200) {
+        setSubjectList(result.data.data);
+      } else {
+        message.error(result.data.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option key={each?.id} value={each.section_id}>
         {each?.section__section_name}
       </Option>
     );
   });
 
-  const handleChangeSection = (each) => {
-    if (each.some((item) => item.value === 'all')) {
-      const allsections = sectionList?.map((item) => item.id).join(',');
-      setSection(allsections);
-      formRef.current.setFieldsValue({
-        section: sectionList?.map((item) => item.id),
-      });
-    } else {
-      setSection(each.map((item) => item.value).join(','));
-    }
-  };
+  const subjectOptions = subjectList?.map((each) => {
+    return (
+      <Option key={each?.subject__id} value={each.subject_mapping_id}>
+        {each?.subject__subject_name}
+      </Option>
+    );
+  });
 
   const handleClearSection = () => {
     setSection([]);
+  };
+
+  const handleClearSubject = () => {
+    setSubject([]);
   };
 
   const [fileList, setFileList] = useState([]);
@@ -156,39 +194,42 @@ const UploadHomework = () => {
     return Math.round(parseFloat(bytes / Math.pow(k, i))) + ' ' + sizes[i];
   };
 
-  const handleUpload = () => {
-    console.log(uniqueFilesList);
-    // uniqueFilesList.forEach((file) => {
-    //   const formData = new FormData();
-    //   formData.append('branch_name', props?.branchName);
-    //   formData.append('grades', props?.gradeID);
-    //   formData.append('file', file);
-    //   if (props?.section) {
-    //     formData.append('section', props?.section);
-    //   }
+  let todayDate = moment().format('DD-MM-YYYY');
 
-    //   axios
-    //     .post(`${endpoints.dailyDiary.upload}`, formData)
-    //     .then((res) => {
-    //       if (res?.data?.status_code === 200) {
-    //         message.success('Attachment Added');
-    //         props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
-    //         setFileList([]);
-    //         props.handleClose();
-    //         setUploading(false);
-    //       }
-    //     })
-    //     .catch((e) => {
-    //       message.error(e);
-    //     });
-    // });
+  const handleUpload = () => {
+    if (!subject?.value) {
+      return message.error('Please Select Filters First !');
+    }
+    console.log(uniqueFilesList);
+    uniqueFilesList.forEach((file) => {
+      const formData = new FormData();
+      formData.append('sub_sec_mpng', subject?.value);
+      formData.append('file', file);
+      formData.append('date', todayDate);
+
+      axios
+        .post(`${endpoints.homework.uploadZip}`, formData)
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            message.success('Attachment Added');
+            // props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
+            setFileList([]);
+            setUploading(false);
+          }
+        })
+        .catch((e) => {
+          message.error('Upload Failed');
+        });
+    });
   };
   const { Dragger } = Upload;
   const draggerProps = {
     showUploadList: false,
     disabled: false,
-    accept: '.jpeg,.jpg,.png,.pdf ',
-    multiple: true,
+    // accept: '.jpeg,.jpg,.png,.pdf ',
+    accept: '.zip',
+    multiple: false,
+    maxCount: 1,
     onRemove: (file) => {
       const index = fileList.indexOf(file);
       const newFileList = fileList.slice();
@@ -197,8 +238,9 @@ const UploadHomework = () => {
     },
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
-      if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
-        setFileList([...fileList, ...file[1]]);
+      // if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
+      if (['zip'].includes(type)) {
+        setFileList([...file[1]]);
         setFileTypeError(false);
       } else {
         setFileTypeError(true);
@@ -237,8 +279,14 @@ const UploadHomework = () => {
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
               </Breadcrumb.Item>
+              <Breadcrumb.Item
+                className='th-black-1 th-16'
+                href='/centralized-homework/homework-upload-status'
+              >
+                Homework Upload Status
+              </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
-                Wokrsheet & Classwork
+                Homework Upload Status
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -314,9 +362,9 @@ const UploadHomework = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
-                        <Form.Item name='section'>
+                        <Form.Item name='Subject'>
                           <Select
-                            mode='multiple'
+                            // mode='multiple'
                             getPopupContainer={(trigger) => trigger.parentNode}
                             maxTagCount={1}
                             allowClear={true}
@@ -324,8 +372,8 @@ const UploadHomework = () => {
                             className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                             placement='bottomRight'
                             showArrow={true}
-                            onChange={(e, value) => handleChangeSection(value)}
-                            onClear={handleClearSection}
+                            onChange={(e, value) => handleChangeSubject(value)}
+                            onClear={handleClearSubject}
                             dropdownMatchSelectWidth={false}
                             filterOption={(input, options) => {
                               return (
@@ -335,65 +383,9 @@ const UploadHomework = () => {
                               );
                             }}
                             showSearch
-                            placeholder='Select section'
+                            placeholder='Select Subject'
                           >
-                            {sectionOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-2 col-sm-6 col-12'>
-                        <Form.Item name='section'>
-                          <Select
-                            mode='multiple'
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            maxTagCount={1}
-                            allowClear={true}
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                            placement='bottomRight'
-                            showArrow={true}
-                            onChange={(e, value) => handleChangeSection(value)}
-                            onClear={handleClearSection}
-                            dropdownMatchSelectWidth={false}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            showSearch
-                            placeholder='Select section'
-                          >
-                            {sectionOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-2 col-sm-6 col-12'>
-                        <Form.Item name='section'>
-                          <Select
-                            mode='multiple'
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            maxTagCount={1}
-                            allowClear={true}
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                            placement='bottomRight'
-                            showArrow={true}
-                            onChange={(e, value) => handleChangeSection(value)}
-                            onClear={handleClearSection}
-                            dropdownMatchSelectWidth={false}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            showSearch
-                            placeholder='Select section'
-                          >
-                            {sectionOptions}
+                            {subjectOptions}
                           </Select>
                         </Form.Item>
                       </div>

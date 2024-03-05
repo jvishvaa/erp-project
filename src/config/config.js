@@ -120,6 +120,7 @@ const stage = {
     msReportsUrl: 'https://api-reports-stage.stage-gke.letseduvate.com',
     crm: 'https://marketing.stage-gke.letseduvate.com',
     cvbox: 'https://cvbox.stage-gke.letseduvate.com',
+    gcloud: 'https://asia-south1-prj-stage-service-k12.cloudfunctions.net',
   },
 };
 

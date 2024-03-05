@@ -104,6 +104,7 @@ const stage = {
     finance: `https://${hostUrl[0]}.finance.stage-vm.letseduvate.com`,
     crm: 'https://marketing.stage-gke.letseduvate.com',
     cvbox: 'https://cvbox.stage-gke.letseduvate.com',
+    gcloud: 'https://asia-south1-prj-stage-service-k12.cloudfunctions.net',
   },
 };
 

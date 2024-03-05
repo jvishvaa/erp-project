@@ -141,7 +141,7 @@ let chatarr = [
   },
 ];
 
-const FilesView = () => {
+const FilesView = ({ evaluateData }) => {
   const history = useHistory();
   const scrollableContainer = useRef(null);
   const attachmentContainer = useRef(null);
@@ -204,8 +204,8 @@ const FilesView = () => {
     } else {
       scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
-        selectedHomeworkIndex === imgarr.length - 1
-          ? imgarr.length - 1
+        selectedHomeworkIndex === evaluateData.length - 1
+          ? evaluateData.length - 1
           : selectedHomeworkIndex + 1
       );
     }
@@ -335,7 +335,7 @@ const FilesView = () => {
                         <p className='text-uppercase'>Homework Files</p>
                       </div>
                       <div className='notebook-list mt-3'>
-                        {imgarr?.map((item, index) => (
+                        {evaluateData?.map((item, index) => (
                           <div
                             className='notebook-list-item'
                             key={index}
@@ -358,7 +358,7 @@ const FilesView = () => {
                               onClick={() => handleImageScroll(index)}
                             >
                               <Tooltip
-                                title={`${item.description}`}
+                                title={`${item.student_erp}`}
                                 showArrow={false}
                                 placement='right'
                                 overlayInnerStyle={{
@@ -370,11 +370,11 @@ const FilesView = () => {
                                   textTransform: 'capitalize',
                                 }}
                               >
-                                <h5 className='th-14 mb-0'>{item.name}</h5>
-                                <p className='th-12 mb-0 text-muted text-truncate'>
+                                <h5 className='th-14 mb-0'>{item.student_erp}</h5>
+                                {/* <p className='th-12 mb-0 text-muted text-truncate'>
                                   <span className='th-fw-600'>Description:</span>
                                   {item.description}
-                                </p>
+                                </p> */}
                               </Tooltip>
                             </div>
                           </div>
@@ -401,14 +401,7 @@ const FilesView = () => {
                               e.preventDefault();
                             }}
                           >
-                            {imgarr.map((url, i) => {
-                              {
-                                console.log(
-                                  'homeworkAtta',
-                                  url,
-                                  url?.file.includes('.doc')
-                                );
-                              }
+                            {evaluateData.map((url, i) => {
                               const actions = ['preview', 'download', 'pentool'];
 
                               return (
@@ -420,18 +413,12 @@ const FilesView = () => {
                                   >
                                     <Attachment
                                       key={`homework_student_question_attachment_${i}`}
-                                      fileUrl={url?.file}
+                                      fileUrl={url?.file_location}
                                       fileName={`Attachment-${i + 1}`}
                                       // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                      urlPrefix={
-                                        'https://mgmt-cdn-stage.stage-gke.letseduvate.com/dev/lesson_plan_file/'
-                                      }
+                                      urlPrefix={endpoints.erpBucket}
                                       index={i}
-                                      actions={
-                                        url?.file.includes('.doc')
-                                          ? ['download']
-                                          : ['preview', 'download', 'pentool']
-                                      }
+                                      actions={['preview', 'download', 'pentool']}
                                       onOpenInPenTool={openInPenTool}
                                     />
                                   </div>
@@ -447,10 +434,10 @@ const FilesView = () => {
                               }}
                             >
                               <SRLWrapper>
-                                {imgarr.map((url, i) => (
+                                {evaluateData.map((url, i) => (
                                   <img
                                     //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                                    src={`https://mgmt-cdn-stage.stage-gke.letseduvate.com/dev/lesson_plan_file/${url?.file}`}
+                                    src={`${endpoints.erpBucket}${url?.file_location}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
                                     }}

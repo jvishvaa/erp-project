@@ -14,6 +14,7 @@ const {
     msOriginUrl,
     crm,
     cvbox,
+    gcloud,
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -238,6 +239,8 @@ export default {
     submitToUnsubmit: '/academic/homework-submitted-unsubmitted/',
     // resourcesS3: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com',
     resourcesFiles: `${CENTRAL_BUCKET}`,
+    uploadZip: `${gcloud}/hw_zip_upload_v1`,
+    teacherData: '/hw-hub/hw_view/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
@@ -925,12 +928,12 @@ export default {
 
   teacherReferral: {
     referred_applicants: `${cvbox}/qbox/apiV2/referral/referral-form/`,
-    referral_position_list : `${cvbox}/qbox/apiV2/recruiter/referral-position-list/`,
-    candidate_refferal : `${cvbox}/qbox/apiV2/referral/referral-form/`,
-    city_list : `${cvbox}/qbox/recruiter/CityListAPIView/`,
-    branch_list : `${cvbox}/qbox/authenticate/branchcity/`,
-    subject_list : `${cvbox}/qbox/apiV2/referral/subject-list/`
-    },
+    referral_position_list: `${cvbox}/qbox/apiV2/recruiter/referral-position-list/`,
+    candidate_refferal: `${cvbox}/qbox/apiV2/referral/referral-form/`,
+    city_list: `${cvbox}/qbox/recruiter/CityListAPIView/`,
+    branch_list: `${cvbox}/qbox/authenticate/branchcity/`,
+    subject_list: `${cvbox}/qbox/apiV2/referral/subject-list/`,
+  },
 
   period: {
     getDate: '/period/calendar/',
