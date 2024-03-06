@@ -55,7 +55,7 @@ const HomeworkAttachment = ({ ...props }) => {
             ] !== 'zip' ? ( */}
             <div
               style={{
-                backgroundImage: `url(${endpoints.erpBucket}${selectedHomework?.file_location})`,
+                backgroundImage: `url(${endpoints.erpBucket}/${selectedHomework?.file_location})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 cursor: 'pointer',
@@ -66,10 +66,9 @@ const HomeworkAttachment = ({ ...props }) => {
               onClick={() => handleAttachmentView(true)}
             ></div>
             {/* <img
-              src={selectedHomework?.file}
-              alt={selectedHomework?.name}
+              src={`${endpoints.erpBucket}/${selectedHomework?.file_location}`}
+              alt={`${endpoints.erpBucket}${selectedHomework?.file_location}`}
               className='w-100'
-              style={{}}
             /> */}
             {/* ) : (
               <>
