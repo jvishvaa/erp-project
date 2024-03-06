@@ -26,6 +26,8 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
 
   const [erpUpdateModal, setErpUpdateModal] = useState(false);
   const [erpUpdateModalData, setErpUpdateModalData] = useState();
+  const [imagePrevModal, setImagePrevModal] = useState(false);
+  const [imagePrev, setImagePrev] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [grade, setGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
@@ -90,18 +92,20 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
               onClick={() => {
                 const fileName = data;
                 const fileSrc = `${endpoints.assessment.erpBucket}/${fileName}`;
-                // const fileSrc = data;
-                openPreview({
-                  currentAttachmentIndex: 0,
-                  attachmentsArray: [
-                    {
-                      src: fileSrc,
-                      name: 'Portion Document',
-                      extension:
-                        '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
-                    },
-                  ],
-                });
+                //   // const fileSrc = data;
+                //   openPreview({
+                //     currentAttachmentIndex: 0,
+                //     attachmentsArray: [
+                //       {
+                //         src: fileSrc,
+                //         name: 'Portion Document',
+                //         extension:
+                //           '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                //       },
+                //     ],
+                //   });
+                // }}
+                handleImagePrev(fileSrc);
               }}
             >
               <div className=' pl-0 th-primary '>
@@ -144,18 +148,19 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
               onClick={() => {
                 const fileName = data;
                 //   const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
-                const fileSrc = data;
-                openPreview({
-                  currentAttachmentIndex: 0,
-                  attachmentsArray: [
-                    {
-                      src: fileSrc,
-                      name: 'Portion Document',
-                      extension:
-                        '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
-                    },
-                  ],
-                });
+                const fileSrc = `${endpoints.assessment.erpBucket}/${fileName}`;
+                // openPreview({
+                //   currentAttachmentIndex: 0,
+                //   attachmentsArray: [
+                //     {
+                //       src: fileSrc,
+                //       name: 'Portion Document',
+                //       extension:
+                //         '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                //     },
+                //   ],
+                // });
+                handleImagePrev(fileSrc);
               }}
             >
               <div className=' pl-0 col-12 th-primary '>
@@ -420,6 +425,11 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
     setSection([]);
   };
 
+  const handleImagePrev = (data) => {
+    setImagePrev(data);
+    setImagePrevModal(true);
+  };
+
   return (
     <React.Fragment>
       <div className='row'>
@@ -562,6 +572,17 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
               </div>
             </div>
           </Form>
+        </Modal>
+
+        <Modal
+          centered
+          visible={imagePrevModal}
+          footer={false}
+          className='th-modal'
+          onCancel={() => setImagePrevModal(false)}
+          width={'80%'}
+        >
+          <img src={imagePrev} alt={imagePrev} className='img-fluid' />
         </Modal>
       </div>
     </React.Fragment>

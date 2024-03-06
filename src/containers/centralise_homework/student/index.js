@@ -507,7 +507,7 @@ const CentralizedStudentHw = () => {
                                     className='img-fluid'
                                     onClick={() => {
                                       downloadHomeworkAttachment(
-                                        `${endpoints.erpBucket}/${item?.file_location}`,
+                                        `${endpoints.erpBucket}${item?.file_location}`,
                                         item.file_location
                                       );
                                     }}

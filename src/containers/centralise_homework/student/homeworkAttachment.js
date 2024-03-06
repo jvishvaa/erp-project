@@ -55,7 +55,7 @@ const HomeworkAttachment = ({ ...props }) => {
             ] !== 'zip' ? ( */}
             <div
               style={{
-                backgroundImage: `url(${endpoints.erpBucket}/${selectedHomework?.file_location})`,
+                backgroundImage: `url(${endpoints.erpBucket}${selectedHomework?.file_location})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 cursor: 'pointer',
