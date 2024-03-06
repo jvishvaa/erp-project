@@ -75,7 +75,7 @@ const EvaluatorHomework = () => {
   const [userData, setUserData] = useState('');
   const [searchData, setSearchData] = useState('');
   const [showFilterPage, setShowFilterPage] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
 
   const [volumeList, setVolumeList] = useState([]);
   const [volume, setVolume] = useState('');
@@ -83,13 +83,14 @@ const EvaluatorHomework = () => {
   const [subjectList, setSubjectList] = useState([]);
   const [subject, setSubject] = useState('');
 
-  const dateFormat = "DD-MM-YYYY"
+  const dateFormat = 'DD-MM-YYYY';
 
-  const [date, setDate] = useState(null)
-  const [startDate, setStartDate] = useState(null)
-  const [endDate, setEndDate] = useState(null)
+  const [date, setDate] = useState(null);
+  const [startDate, setStartDate] = useState(moment().format('DD-MM-YYYY'));
+  const [endDate, setEndDate] = useState(moment().format('DD-MM-YYYY'));
 
   const [evaluateData, setEvaluateData] = useState([]);
+  const [countData, setCountData] = useState(null);
 
   const handleFilters = () => {
     if (showFilters) {
@@ -100,7 +101,6 @@ const EvaluatorHomework = () => {
   };
 
   const formRef = useRef();
-  const searchRef = useRef();
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -109,23 +109,6 @@ const EvaluatorHomework = () => {
   useEffect(() => {
     fetchGrade(selectedBranch?.branch?.id);
   }, [selectedBranch]);
-
-  const fetchUserLevel = async () => {
-    try {
-      const result = await axios.get(endpoints.userManagement.userLevelList, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      });
-      if (result.status === 200) {
-        setUserLevelList(result?.data?.result);
-      } else {
-        message.error(result?.data?.message);
-      }
-    } catch (error) {
-      message.error(error?.message);
-    }
-  };
 
   const fetchGrade = async (branch) => {
     try {
@@ -180,15 +163,15 @@ const EvaluatorHomework = () => {
     setVolume('');
     setSubjectList([]);
     setSubject('');
-    setDate(null)
-    setStartDate(null)
-    setEndDate(null)
+    setDate(null);
+    setStartDate(null);
+    setEndDate(null);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
       volume: [],
       subject: [],
-      date : null,
+      date: null,
     });
   };
   const fetchSection = async (grade) => {
@@ -264,6 +247,15 @@ const EvaluatorHomework = () => {
   ));
 
   const fetchTeacherData = async () => {
+    if (!subject) {
+      return message.error('Please Select Filters !');
+    }
+    if (!startDate) {
+      return message.error('Please Select Start Date !');
+    }
+    if (!endDate) {
+      return message.error('Please Select End Date !');
+    }
     try {
       const result = await axiosInstance.get(
         `${endpoints.homework.teacherData}?is_assessed=False&start_date=${startDate}&end_date=${endDate}&sub_sec_mpng=${subject}`,
@@ -274,7 +266,8 @@ const EvaluatorHomework = () => {
         }
       );
       if (result.data.status_code === 200) {
-        setEvaluateData(result?.data?.result?.results)
+        setEvaluateData(result?.data?.result?.results);
+        setCountData(result?.data?.result);
       } else {
         message.error(result.data.message);
       }
@@ -306,7 +299,7 @@ const EvaluatorHomework = () => {
       setVolume('');
     }
   };
-  console.log(evaluateData?.length, "coming")
+  console.log(evaluateData?.length, 'coming');
   const handleChangeSubject = (each) => {
     if (each) {
       setSubject(each);
@@ -315,18 +308,17 @@ const EvaluatorHomework = () => {
     }
   };
 
-  const handleDateChange = (each)=>{
-    if(each){
-      setStartDate(moment(each[0]).format(dateFormat))
-      setEndDate(moment(each[1]).format(dateFormat))
-      setDate([moment(each[0]), moment(each[1])])
+  const handleDateChange = (each) => {
+    if (each) {
+      setStartDate(moment(each[0]).format(dateFormat));
+      setEndDate(moment(each[1]).format(dateFormat));
+      setDate([moment(each[0]), moment(each[1])]);
+    } else {
+      setStartDate(null);
+      setEndDate(null);
+      setDate(null);
     }
-    else{
-      setStartDate(null)
-      setEndDate(null)
-      setDate(null)
-    }
-  }
+  };
 
   const handleClearSection = () => {
     setSection([]);
@@ -513,86 +505,96 @@ const EvaluatorHomework = () => {
                         <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
                           <Form.Item name='section'>
                             <Button
-                              className=' th-br-4 w-100 text-left th-select'
+                              className=' th-br-4 w-100  th-select'
                               type='primary'
-                              onClick={()=>fetchTeacherData()}
+                              onClick={() => fetchTeacherData()}
                             >
-                              Search
+                              Filter
                             </Button>
                           </Form.Item>
                         </div>
                       </div>
                       <div className='col-md-5 col-xl-3  p-0 row mb-2'>
-                        <div
-                          className='col-md-12 py-2'
-                          style={{
-                            boxShadow:
-                              'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
-                            borderRadius: '10px',
-                            marginBottom: '5px',
-                          }}
-                        >
+                        {countData ? (
                           <div
-                            className='col-md-12 row justify-content-between th-13'
-                            style={{ marginTop: '6px' }}
+                            className='col-md-12 py-2'
+                            style={{
+                              boxShadow:
+                                'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
+                              borderRadius: '10px',
+                              marginBottom: '5px',
+                            }}
                           >
-                            <div>
-                              <span>
-                                Completed : <span style={{ color: 'green' }}>500</span>{' '}
-                              </span>
+                            <div
+                              className='col-md-12 row justify-content-between th-13'
+                              style={{ marginTop: '6px' }}
+                            >
+                              <div>
+                                <span>
+                                  Completed :{' '}
+                                  <span style={{ color: 'green' }}>
+                                    {countData?.total_assessed}
+                                  </span>{' '}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <span>Completed </span>
+                                <span
+                                  style={{
+                                    backgroundColor: 'green',
+                                    color: 'white',
+                                    height: '15px',
+                                    width: '15px',
+                                    borderRadius: '5px',
+                                    display: 'inline-block',
+                                    marginLeft: '20px',
+                                  }}
+                                ></span>
+                              </div>
                             </div>
                             <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
+                              className='col-md-12 row justify-content-between th-13'
+                              style={{ marginTop: '6px' }}
                             >
-                              <span>Completed </span>
-                              <span
+                              <div>
+                                <span>
+                                  Pending :{' '}
+                                  <span style={{ color: 'red' }}>
+                                    {countData?.total_under_assessed}
+                                  </span>
+                                </span>
+                              </div>
+                              <div
                                 style={{
-                                  backgroundColor: 'green',
-                                  color: 'white',
-                                  height: '15px',
-                                  width: '15px',
-                                  borderRadius: '5px',
-                                  display: 'inline-block',
-                                  marginLeft: '20px',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
                                 }}
-                              ></span>
+                              >
+                                <span>Pending </span>
+                                <span
+                                  style={{
+                                    backgroundColor: 'red',
+                                    color: 'white',
+                                    height: '15px',
+                                    width: '15px',
+                                    borderRadius: '5px',
+                                    display: 'inline-block',
+                                    marginLeft: '20px',
+                                  }}
+                                ></span>
+                              </div>
                             </div>
                           </div>
-                          <div
-                            className='col-md-12 row justify-content-between th-13'
-                            style={{ marginTop: '6px' }}
-                          >
-                            <div>
-                              <span>
-                                Pending : <span style={{ color: 'red' }}>363</span>
-                              </span>
-                            </div>
-                            <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                              }}
-                            >
-                              <span>Pending </span>
-                              <span
-                                style={{
-                                  backgroundColor: 'red',
-                                  color: 'white',
-                                  height: '15px',
-                                  width: '15px',
-                                  borderRadius: '5px',
-                                  display: 'inline-block',
-                                  marginLeft: '20px',
-                                }}
-                              ></span>
-                            </div>
-                          </div>
-                        </div>
+                        ) : (
+                          ''
+                        )}
                       </div>
                     </div>
                   </Form>
@@ -612,7 +614,7 @@ const EvaluatorHomework = () => {
                 )}
               </div>
               <div className='mt-4 '>
-                {evaluateData?.length ===0 ? (
+                {evaluateData?.length === 0 ? (
                   <div className='col-12'>
                     <Result
                       status='warning'

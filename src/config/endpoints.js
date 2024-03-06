@@ -241,6 +241,8 @@ export default {
     resourcesFiles: `${CENTRAL_BUCKET}`,
     uploadZip: `${gcloud}/hw_zip_upload_v1`,
     teacherData: '/hw-hub/hw_view/',
+    updateImage: '/hw-hub/upload_hw_files/',
+    getCount: '/hw-hub/get_hw_count/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',

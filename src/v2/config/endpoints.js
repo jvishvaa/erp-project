@@ -211,6 +211,7 @@ export default {
   homework: {
     resourcesFiles: `${CENTRAL_BUCKET}`,
     uploadZip: `${gcloud}/hw_zip_upload_v1`,
+    updateImage: '/hw-hub/upload_hw_files/',
   },
   grievances: {
     grievanceTicket: `${baseFinanceURL}/apiV1/ticket/`,

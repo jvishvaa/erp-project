@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Tooltip, Tabs, Select, Drawer, Input } from 'antd';
+import { Tooltip, Tabs, Select, Drawer, Input, message, Pagination } from 'antd';
 import './index.scss';
 import './../student/style.css';
 import { useHistory } from 'react-router-dom';
@@ -16,6 +16,7 @@ import { SendOutlined } from '@ant-design/icons';
 import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
 import BOOKMARKICON from './../../../assets/images/bookmark-icon.png';
 import NOTEICON from './../../../assets/images/note-icon.png';
+import axiosInstance from 'config/axios';
 const { TabPane } = Tabs;
 
 let chatarr = [
@@ -204,75 +205,32 @@ const FilesViewEvaluate = ({ evaluateData }) => {
     } else {
       scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
-        selectedHomeworkIndex === imgarr.length - 1
-          ? imgarr.length - 1
+        selectedHomeworkIndex === evaluateData.length - 1
+          ? evaluateData.length - 1
           : selectedHomeworkIndex + 1
       );
     }
   };
 
-  let imgarr2 = [
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-  ];
-
-  let imgarr = [
-    {
-      name: 'Notebook 1',
-      description:
-        'notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing',
-      isNote: true,
-      isBookmarked: true,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-      dueDate: '01/09/2023',
-    },
-    {
-      name: 'Notebook 2',
-      description: 'notebook description testing',
-      isNote: false,
-      isBookmarked: false,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-      dueDate: '01/09/2023',
-    },
-    {
-      name: 'Notebook 3',
-      description: 'notebook description testing',
-      isNote: true,
-      isBookmarked: true,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-      dueDate: '01/09/2023',
-    },
-    {
-      name: 'Notebook 4',
-      description: 'notebook description testing',
-      isNote: true,
-      isBookmarked: false,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-      dueDate: '01/09/2023',
-    },
-    {
-      name: 'Notebook 5',
-      description: 'notebook description testing',
-      isNote: true,
-      isBookmarked: true,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-      dueDate: '01/09/2023',
-    },
-  ];
-
   const handleSaveEvaluatedFile = async (file) => {
+    console.log(file, evaluateData[selectedHomeworkIndex], 'filedata');
+    let path = evaluateData[selectedHomeworkIndex]?.file_location;
     const fd = new FormData();
     fd.append('file', file);
-    // const filePath = await uploadFile(fd);
-    // setPenToolUrl(null);
-    // setcurrentEvaluatedFileName(null);
+    fd.append('destination_path', path);
+
+    axiosInstance
+      .post(`${endpoints.homework.updateImage}`, fd)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          message.success('Attachment Added');
+          // setFileList([]);
+          // setUploading(false);
+        }
+      })
+      .catch((e) => {
+        message.error('Upload Failed');
+      });
   };
 
   const mediaContent = {
@@ -486,6 +444,9 @@ const FilesViewEvaluate = ({ evaluateData }) => {
                 {/* Image Area Ends */}
               </div>
             </div>
+          </div>
+          <div className='row col-md-12 justify-content-center'>
+            <Pagination />
           </div>
           <Drawer
             title={drawerTitle()}
