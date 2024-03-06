@@ -142,7 +142,11 @@ let chatarr = [
   },
 ];
 
-const FilesViewEvaluate = ({ evaluateData }) => {
+const FilesViewEvaluate = ({
+  evaluateData,
+  selectedHomeworkIndex,
+  setSelectedHomeworkIndex,
+}) => {
   const history = useHistory();
   const scrollableContainer = useRef(null);
   const attachmentContainer = useRef(null);
@@ -156,7 +160,6 @@ const FilesViewEvaluate = ({ evaluateData }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [chattext, setChatText] = useState('');
   const [chatsData, setChatsData] = useState(chatarr);
-  const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
 
   const showDrawer = () => {
     setOpenDrawer(true);
@@ -446,7 +449,7 @@ const FilesViewEvaluate = ({ evaluateData }) => {
             </div>
           </div>
           <div className='row col-md-12 justify-content-center'>
-            <Pagination />
+            {/* <Pagination /> */}
           </div>
           <Drawer
             title={drawerTitle()}

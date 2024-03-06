@@ -343,4 +343,5 @@ export default {
     popupSetting: `${baseFinanceURL}/apiV1/popup-details/`,
     studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
   },
+  erpBucket2: ERP_BUCKET_2,
 };

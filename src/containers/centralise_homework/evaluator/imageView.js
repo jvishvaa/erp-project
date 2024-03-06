@@ -91,6 +91,7 @@ const EvaluatorHomework = () => {
 
   const [evaluateData, setEvaluateData] = useState([]);
   const [countData, setCountData] = useState(null);
+  const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
 
   const handleFilters = () => {
     if (showFilters) {
@@ -246,7 +247,7 @@ const EvaluatorHomework = () => {
     </Select.Option>
   ));
 
-  const fetchTeacherData = async () => {
+  const fetchTeacherData = async (params = {}) => {
     if (!subject) {
       return message.error('Please Select Filters !');
     }
@@ -258,7 +259,10 @@ const EvaluatorHomework = () => {
     }
     try {
       const result = await axiosInstance.get(
-        `${endpoints.homework.teacherData}?is_assessed=False&start_date=${startDate}&end_date=${endDate}&sub_sec_mpng=${subject}`,
+        `${endpoints.homework.teacherData}`,
+        {
+          params: { ...params },
+        },
         {
           headers: {
             Authorization: `Bearer ${loggedUserData?.token}`,
@@ -268,6 +272,8 @@ const EvaluatorHomework = () => {
       if (result.data.status_code === 200) {
         setEvaluateData(result?.data?.result?.results);
         setCountData(result?.data?.result);
+        setTotalPage(result?.data?.result?.count);
+        setPageLimit(result?.data?.result?.limit);
       } else {
         message.error(result.data.message);
       }
@@ -507,7 +513,15 @@ const EvaluatorHomework = () => {
                             <Button
                               className=' th-br-4 w-100  th-select'
                               type='primary'
-                              onClick={() => fetchTeacherData()}
+                              onClick={() =>
+                                fetchTeacherData({
+                                  is_assessed: 'False',
+                                  start_date: startDate,
+                                  end_date: endDate,
+                                  sub_sec_mpng: subject,
+                                  page: pageNo,
+                                })
+                              }
                             >
                               Filter
                             </Button>
@@ -625,7 +639,30 @@ const EvaluatorHomework = () => {
                   </div>
                 ) : (
                   <div className='mb-3'>
-                    <FilesViewEvaluate evaluateData={evaluateData} />
+                    <FilesViewEvaluate
+                      selectedHomeworkIndex={selectedHomeworkIndex}
+                      setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                      evaluateData={evaluateData}
+                    />
+
+                    <Pagination
+                      current={pageNo}
+                      total={totalPage}
+                      showSizeChanger={false}
+                      pageSize={pageLimit}
+                      onChange={(current) => {
+                        setPageNo(current);
+                        setSelectedHomeworkIndex(0);
+                        fetchTeacherData({
+                          is_assessed: 'False',
+                          start_date: startDate,
+                          end_date: endDate,
+                          sub_sec_mpng: subject,
+                          page: current,
+                        });
+                      }}
+                      className='text-center'
+                    />
                   </div>
                 )}
               </div>

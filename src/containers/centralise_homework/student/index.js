@@ -518,8 +518,8 @@ const CentralizedStudentHw = () => {
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => handleAttachment(index)}
                                 >
-                                  {/* <Tooltip
-                                    title={`${item.description}`}
+                                  <Tooltip
+                                    title={`${item.file_location}`}
                                     showArrow={false}
                                     placement='right'
                                     overlayInnerStyle={{
@@ -530,13 +530,13 @@ const CentralizedStudentHw = () => {
                                       overflowY: 'scroll',
                                       textTransform: 'capitalize',
                                     }}
-                                  > */}
+                                  >
                                   <h5 className='th-14 mb-0'>{item.file_location}</h5>
                                   {/* <p className='th-12 mb-0 text-muted text-truncate'>
                                       <span className='th-fw-600'>Description:</span>
                                       {item.description}
                                     </p> */}
-                                  {/* </Tooltip> */}
+                                  </Tooltip>
                                 </div>
                                 <div className='notebook-action'>
                                   {item.isBookmarked && (

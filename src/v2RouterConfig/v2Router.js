@@ -88,6 +88,9 @@ import HwUpload from '../containers/centralise_homework/hw_upload/hwUpload';
 import UploadHomework from '../containers/centralise_homework/hw_upload/uploadFile';
 import EvaluatorDash from '../containers/centralise_homework/evaluator';
 import EvaluatorHomework from '../containers/centralise_homework/evaluator/imageView';
+
+import CentralizedHomework from '../containers/centralise_homework/index';
+
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -393,6 +396,10 @@ const V2Router = () => {
                         ,
                         <Route path='/master-management/signature-upload'>
                           {({ match }) => <SignatureUploadv2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/homework/centralized'>
+                          {({ match }) => <CentralizedHomework match={match} />}
                         </Route>
                         ,
                         <Route path='/centralized-homework/branchstaff'>
