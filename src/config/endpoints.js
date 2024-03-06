@@ -247,6 +247,10 @@ export default {
     submitHomework: '/academic/homework-submission/',
     hwupdate: '/academic/',
   },
+  centralizedHomework: {
+    docType: 'hw-hub/get_doctype/',
+    studentView: 'hw-hub/hw_view/',
+  },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',
     subjects: '/academic/lesson-plan-subjects/',
@@ -925,12 +929,12 @@ export default {
 
   teacherReferral: {
     referred_applicants: `${cvbox}/qbox/apiV2/referral/referral-form/`,
-    referral_position_list : `${cvbox}/qbox/apiV2/recruiter/referral-position-list/`,
-    candidate_refferal : `${cvbox}/qbox/apiV2/referral/referral-form/`,
-    city_list : `${cvbox}/qbox/recruiter/CityListAPIView/`,
-    branch_list : `${cvbox}/qbox/authenticate/branchcity/`,
-    subject_list : `${cvbox}/qbox/apiV2/referral/subject-list/`
-    },
+    referral_position_list: `${cvbox}/qbox/apiV2/recruiter/referral-position-list/`,
+    candidate_refferal: `${cvbox}/qbox/apiV2/referral/referral-form/`,
+    city_list: `${cvbox}/qbox/recruiter/CityListAPIView/`,
+    branch_list: `${cvbox}/qbox/authenticate/branchcity/`,
+    subject_list: `${cvbox}/qbox/apiV2/referral/subject-list/`,
+  },
 
   period: {
     getDate: '/period/calendar/',
