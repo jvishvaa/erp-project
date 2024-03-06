@@ -43,6 +43,12 @@ const UploadHomework = () => {
   //eslint-disable-next-line
   const [loading, setLoading] = useState(false);
 
+  const [volumeList, setVolumeList] = useState([]);
+  const [volume, setVolume] = useState('');
+
+  const [docType, setDocType] = useState([]);
+  const [docTypeId, setDocTypeId] = useState('');
+
   const formRef = useRef();
   const searchRef = useRef();
 
@@ -52,6 +58,7 @@ const UploadHomework = () => {
 
   useEffect(() => {
     fetchGrade(selectedBranch?.branch?.id);
+    fetchDocType();
   }, [selectedBranch]);
 
   const fetchGrade = async (branch) => {
@@ -68,6 +75,48 @@ const UploadHomework = () => {
       message.error(error.message);
     }
   };
+
+  const fetchVolumeData = () => {
+    axios
+      .get(`${endpoints.lessonPlan.volumeList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setVolumeList(result?.data?.result?.results);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  const fetchDocType = async () => {
+    try {
+      const result = await axiosInstance.get(`${endpoints.homework.hwDoctType}`);
+      if (result.data.status_code === 200) {
+        setDocType(result?.data?.result?.results);
+      } else {
+        message.error(result.data.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  const volumeOptions = volumeList?.map((each) => (
+    <Select.Option key={each?.id} value={each?.id}>
+      {each?.volume_name}
+    </Select.Option>
+  ));
+
+  const doctTypeOptions = docType?.map((each) => (
+    <Select.Option key={each?.id} value={each?.id}>
+      {each?.doc_type_name}
+    </Select.Option>
+  ));
 
   const gradeOptions = gradeList?.map((each) => {
     return (
@@ -114,17 +163,22 @@ const UploadHomework = () => {
   };
 
   const handleChangeSubject = (each) => {
-    console.log(each);
-    setSubject(each);
+    if (each) {
+      setSubject(each);
+      fetchVolumeData();
+    }
   };
 
   const handleClearGrade = () => {
     setGrade([]);
     setSection('');
     setSectionList([]);
+    volumeList([]);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
+      volume: [],
+      docType: [],
     });
   };
 
@@ -182,6 +236,23 @@ const UploadHomework = () => {
     setSubject([]);
   };
 
+  const handleChangeVolume = (each) => {
+    if (each) {
+      setVolume(each?.value);
+    } else {
+      setVolume('');
+    }
+  };
+
+  const handleDocType = (each)=>{
+    if(each){
+      setDocTypeId(each?.value)
+    }
+    else{
+      setDocTypeId("")
+    }
+  }
+
   const [fileList, setFileList] = useState([]);
   const [fileTypeError, setFileTypeError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -206,16 +277,19 @@ const UploadHomework = () => {
       formData.append('sub_sec_mpng', subject?.value);
       formData.append('file', file);
       formData.append('date', todayDate);
+      formData.append("volume_id", volume)
+      formData.append("doc_type_id", docTypeId)
 
       axios
         .post(`${endpoints.homework.uploadZip}`, formData)
         .then((res) => {
-          if (res?.data?.status_code === 200) {
+          if(res?.data?.status===200){
             message.success('Attachment Added');
-            // props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
+            // // props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
             setFileList([]);
             setUploading(false);
           }
+          
         })
         .catch((e) => {
           message.error('Upload Failed');
@@ -364,7 +438,6 @@ const UploadHomework = () => {
                       <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='Subject'>
                           <Select
-                            // mode='multiple'
                             getPopupContainer={(trigger) => trigger.parentNode}
                             maxTagCount={1}
                             allowClear={true}
@@ -386,6 +459,58 @@ const UploadHomework = () => {
                             placeholder='Select Subject'
                           >
                             {subjectOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-md-2 col-sm-6 col-12'>
+                        <Select
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          maxTagCount={1}
+                          allowClear={true}
+                          suffixIcon={<DownOutlined className='th-grey' />}
+                          className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                          placement='bottomRight'
+                          showArrow={true}
+                          onChange={(e, value) => handleChangeVolume(value)}
+                          onClear={handleClearSection}
+                          dropdownMatchSelectWidth={false}
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          showSearch
+                          placeholder='Select Volume'
+                        >
+                          {volumeOptions}
+                        </Select>
+                      </div>
+                      <div className='col-md-2 col-sm-6 col-12'>
+                        <Form.Item name=''>
+                          <Select
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            maxTagCount={1}
+                            allowClear={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                            placement='bottomRight'
+                            showArrow={true}
+                            onChange={(e, value) => handleDocType(value)}
+                            onClear={handleClearSection}
+                            dropdownMatchSelectWidth={false}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            showSearch
+                            placeholder='Select Doc Type'
+                          >
+                            {doctTypeOptions}
                           </Select>
                         </Form.Item>
                       </div>

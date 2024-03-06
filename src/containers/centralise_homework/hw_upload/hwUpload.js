@@ -17,6 +17,7 @@ import {
   Select,
   Table,
   message,
+  DatePicker,
 } from 'antd';
 import { Input, Space } from 'antd';
 import endpoints from 'config/endpoints';
@@ -30,7 +31,10 @@ import axiosInstance from 'v2/config/axios';
 import axios from 'axios';
 import FileSaver from 'file-saver';
 import UploadTable from './uploadtable';
+import moment from 'moment';
 import '../BranchStaffSide/branchside.scss';
+
+const { RangePicker } = DatePicker;
 
 const HwUpload = () => {
   const history = useHistory();
@@ -52,6 +56,12 @@ const HwUpload = () => {
   const [subject, setSubject] = useState('');
   const [subjectList, setSubjectList] = useState([]);
 
+  const [date, setDate] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const dateFormat = 'DD-MM-YYYY';
+
   const formRef = useRef();
 
   const selectedBranch = useSelector(
@@ -60,7 +70,7 @@ const HwUpload = () => {
 
   useEffect(() => {
     fetchGrade(selectedBranch?.branch?.id);
-  }, [selectedBranch]);
+  }, [selectedBranch, startDate, endDate, section]);
 
   const fetchGrade = async (branch) => {
     try {
@@ -111,9 +121,13 @@ const HwUpload = () => {
     setGrade([]);
     setSection('');
     setSectionList([]);
+    setStartDate(null);
+    setEndDate(null);
+    setDate(null);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
+      date: null,
     });
   };
 
@@ -164,18 +178,20 @@ const HwUpload = () => {
   });
 
   const handleChangeSection = (each) => {
-    setPageNo(1);
-    if (each.some((item) => item.value === 'all')) {
-      const allsections = sectionList?.map((item) => item.section_id).join(',');
-      setSection(allsections);
-      formRef.current.setFieldsValue({
-        section: sectionList?.map((item) => item.section_id),
-      });
-      fetchSubject(allsections);
-    } else {
-      const singleSection = each.map((item) => item.value).join(',');
-      setSection(singleSection);
-      fetchSubject(singleSection);
+    if (each.length !== 0) {
+      setPageNo(1);
+      if (each.some((item) => item.value === 'all')) {
+        const allsections = sectionList?.map((item) => item.section_id).join(',');
+        setSection(allsections);
+        formRef.current.setFieldsValue({
+          section: sectionList?.map((item) => item.section_id),
+        });
+        fetchSubject(allsections);
+      } else {
+        const singleSection = each.map((item) => item.value).join(',');
+        setSection(singleSection);
+        fetchSubject(singleSection);
+      }
     }
   };
 
@@ -200,6 +216,18 @@ const HwUpload = () => {
 
   const handleClearSection = () => {
     setSection([]);
+  };
+
+  const handleDateChange = (each) => {
+    if (each) {
+      setStartDate(moment(each[0]).format(dateFormat));
+      setEndDate(moment(each[1]).format(dateFormat));
+      setDate([moment(each[0]), moment(each[1])]);
+    } else {
+      setStartDate(null);
+      setEndDate(null);
+      setDate(null);
+    }
   };
 
   const handleUploadPage = () => {
@@ -321,6 +349,18 @@ const HwUpload = () => {
                         </Form.Item>
                       </div>
 
+                      <div className='col-md-3 col-sm-6 col-12'>
+                        <Form.Item name='date'>
+                          <RangePicker
+                            className='th-width-100 th-br-4'
+                            onChange={(value) => handleDateChange(value)}
+                            defaultValue={[moment(), moment()]}
+                            format={dateFormat}
+                            separator={'to'}
+                          />
+                        </Form.Item>
+                      </div>
+
                       <div className='col-md-2 col-sm-6 col-12'>
                         <Button
                           className='w-100 th-br-4'
@@ -347,7 +387,11 @@ const HwUpload = () => {
                   </div>
                 ) : (
                   <div className='my-3'>
-                    <UploadTable />
+                    <UploadTable
+                      startDate={startDate}
+                      endDate={endDate}
+                      subejctId={subject}
+                    />
                   </div>
                 )}
               </div>

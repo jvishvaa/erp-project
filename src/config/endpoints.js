@@ -243,6 +243,8 @@ export default {
     teacherData: '/hw-hub/hw_view/',
     updateImage: '/hw-hub/upload_hw_files/',
     getCount: '/hw-hub/get_hw_count/',
+    hwData : '/hw-hub/hw-files/',
+    hwDoctType : '/hw-hub/get_doctype/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',

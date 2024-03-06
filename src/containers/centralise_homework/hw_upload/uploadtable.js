@@ -9,7 +9,7 @@ import endpoints from 'config/endpoints';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
 
-const UploadTable = () => {
+const UploadTable = ({ startDate, endDate, subejctId }) => {
   const history = useHistory();
   const { TabPane } = Tabs;
   const { Option } = Select;
@@ -31,12 +31,18 @@ const UploadTable = () => {
   const [sectionList, setSectionList] = useState([]);
   const [section, setSection] = useState('');
 
+  const [hwFiles, setHwFiles] = useState([]);
+
   useEffect(() => {
     fetchGrade();
-  }, []);
+
+    if (startDate && endDate && subejctId.length !== 0 && showTab) {
+      const status = showTab == 1 ? 'True' : 'False';
+      fecthHwData(startDate, endDate, subejctId, status);
+    }
+  }, [startDate, endDate, subejctId, showTab]);
 
   const handleErp = (e, data, row) => {
-    console.log(e, data, row, 'dataa value erp');
     setErpNumber(e);
   };
 
@@ -50,14 +56,14 @@ const UploadTable = () => {
     },
     {
       title: <span className='th-white th-fw-700'>Name</span>,
-      dataIndex: 'name',
+      dataIndex: 'doc_type_name',
       align: 'center',
       width: '15%',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>ERP Id</span>,
-      dataIndex: 'erp',
+      dataIndex: 'student_erp',
       align: 'center',
       width: '15%',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
@@ -71,7 +77,7 @@ const UploadTable = () => {
     },
     {
       title: <span className='th-white th-fw-700'>Action</span>,
-      dataIndex: 'img',
+      dataIndex: 'file_location',
       align: 'center',
       width: '30%',
       render: (data) => (
@@ -83,8 +89,8 @@ const UploadTable = () => {
             <a
               onClick={() => {
                 const fileName = data;
-                //   const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
-                const fileSrc = data;
+                const fileSrc = `${endpoints.assessment.erpBucket}/${fileName}`;
+                // const fileSrc = data;
                 openPreview({
                   currentAttachmentIndex: 0,
                   attachmentsArray: [
@@ -125,7 +131,7 @@ const UploadTable = () => {
     },
     {
       title: <span className='th-white th-fw-700'>File</span>,
-      dataIndex: 'img',
+      dataIndex: 'file_location',
       align: 'center',
       width: '50%',
       render: (data) => (
@@ -162,7 +168,7 @@ const UploadTable = () => {
     },
     {
       title: <span className='th-white th-fw-700'>ERP No</span>,
-      dataIndex: 'erp',
+      dataIndex: 'student_erp',
       align: 'center',
       width: '40%',
       render: (data, row, index) => (
@@ -361,6 +367,21 @@ const UploadTable = () => {
     }
   };
 
+  const fecthHwData = async (start, end, sec, status) => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.homework.hwData}?start_date=${start}&end_date=${end}&sub_sec_mpng=${sec}&status=${status}`
+      );
+      if (result.data.status_code === 200) {
+        setHwFiles(result?.data?.result?.results);
+      } else {
+        message.error(result.data.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
   const gradeOptions = gradeList?.map((each) => {
     return (
       <Option key={each?.grade_id} value={each.grade_id}>
@@ -390,7 +411,9 @@ const UploadTable = () => {
   };
 
   const handleChangeSection = (each) => {
-    setSection(each.map((item) => item.value).join(','));
+    if (each) {
+      setSection(each?.value);
+    }
   };
 
   const handleClearSection = () => {
@@ -418,7 +441,7 @@ const UploadTable = () => {
                       loading={loading}
                       columns={columns}
                       rowKey={(record) => record?.id}
-                      dataSource={userData}
+                      dataSource={hwFiles}
                       pagination={false}
                       scroll={{ y: '300px' }}
                     />
@@ -438,7 +461,7 @@ const UploadTable = () => {
                     loading={loading}
                     columns={columnsFailed}
                     rowKey={(record) => record?.id}
-                    dataSource={failedUserData}
+                    dataSource={hwFiles}
                     pagination={false}
                     scroll={{ y: '300px' }}
                   />
