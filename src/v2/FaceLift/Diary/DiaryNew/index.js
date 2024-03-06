@@ -44,7 +44,8 @@ const Diary = ({ newTimetableFLow }) => {
   const [dailyDiaryData, setDailyDiaryData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(
-    moment(history?.location?.state?.eachPeriod?.date).format(dateFormat) || moment(history?.location?.state?.diary_created_at).format(dateFormat)||
+    moment(history?.location?.state?.eachPeriod?.date).format(dateFormat) ||
+      moment(history?.location?.state?.diary_created_at).format(dateFormat) ||
       moment().format(dateFormat)
   );
   const [showTab, setShowTab] = useState('1');
@@ -151,13 +152,14 @@ const Diary = ({ newTimetableFLow }) => {
                   // placement='bottomRight'
                   value={moment(date)}
                   showToday={false}
-                  onChange={(e)=>handleDateChange(e)}
+                  onChange={(e) => handleDateChange(e)}
                   format={'DD/MM/YYYY'}
                 />
               </div>
 
               <div className='col-sm-3 col-lg-2 col-6'>
-                {!isStudentDiary && user_level == 8 ? (
+                {isStudentDiary ? '':
+                 user_level == 8 || showTab==2  ? (
                   <Button
                     type='primary'
                     className='th-br-6 th-bg-primary th-pointer th-white'
@@ -166,6 +168,7 @@ const Diary = ({ newTimetableFLow }) => {
                         pathname: '/create/diary',
                         state: {
                           isSubstituteDiary: false,
+                          newTimetableFLow: user_level == 8 ? false :newTimetableFLow,
                         },
                       })
                     }
@@ -175,7 +178,6 @@ const Diary = ({ newTimetableFLow }) => {
                     Create Diary
                   </Button>
                 ) : (
-                  !isStudentDiary &&
                   !newTimetableFLow && (
                     <Button
                       type='primary'
@@ -185,6 +187,7 @@ const Diary = ({ newTimetableFLow }) => {
                           pathname: '/create/diary',
                           state: {
                             isSubstituteDiary: false,
+                            newTimetableFLow: newTimetableFLow,
                           },
                         })
                       }
@@ -288,7 +291,7 @@ const Diary = ({ newTimetableFLow }) => {
                           state: {
                             date,
                             diaryType: 2,
-                            newTimeTable : newTimetableFLow
+                            newTimeTable: newTimetableFLow,
                           },
                         })
                       }

@@ -419,15 +419,17 @@ const V2Router = () => {
                           {({ match }) => <EvaluatorHomework match={match} />}
                         </Route>
                         ,
-                        {/* <Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
+                        <Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
                           {({ match }) => <Devices match={match} />}
                         </Route>
+                        ,
                         <Route path='/enterprise-management/:enterPriseName/:enterPriseId/policies'>
                           {({ match }) => <Policies match={match} />}
                         </Route>
+                        ,
                         <Route path='/enterprise-management/enterprises'>
                           {({ match }) => <EnterPrises match={match} />}
-                        </Route> */}
+                        </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;

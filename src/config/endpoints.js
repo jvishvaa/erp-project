@@ -252,6 +252,10 @@ export default {
     submitHomework: '/academic/homework-submission/',
     hwupdate: '/academic/',
   },
+  centralizedHomework: {
+    docType: 'hw-hub/get_doctype/',
+    studentView: 'hw-hub/hw_view/',
+  },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',
     subjects: '/academic/lesson-plan-subjects/',

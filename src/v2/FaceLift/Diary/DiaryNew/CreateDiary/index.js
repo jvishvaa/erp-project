@@ -17,10 +17,19 @@ const CreateDiary = () => {
       setDiaryType(1);
     }
   };
-
+  
   useEffect(() => {
-    if (history?.location?.state)
+    if (history?.location?.state?.newTimetableFLow) {
+      setDiaryType(1);
+      return;
+    }
+    if (history?.location?.state?.comingFromTimetable) {
+      setDiaryType(2);
+      return
+    }
+    if (history?.location?.state?.isSubstituteDiary) {
       setIsSubstituteDiary(history?.location?.state?.isSubstituteDiary);
+    }
   }, [window.location.pathname]);
   return (
     <>
@@ -41,9 +50,9 @@ const CreateDiary = () => {
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <div className='col-12 py-2'>
+        <div className='col-12 py-2'>
             <div className='row th-bg-white py-2'>
-              <div className='row py-2 pl-4'>
+            {!(history?.location?.state?.newTimetableFLow || history?.location?.state?.comingFromTimetable) && <div className='row py-2 pl-4'>
                 <div
                   className='px-2 py-1 th-br-4 th-diary-radio'
                   style={{ border: '1px solid #d9d9d9', background: '#f2f6fe' }}
@@ -53,7 +62,7 @@ const CreateDiary = () => {
                     <Radio value={1}>General Diary</Radio>
                   </Radio.Group>
                 </div>
-              </div>
+              </div>}
 
               <div className='row'>
                 {diaryType == 2 ? (

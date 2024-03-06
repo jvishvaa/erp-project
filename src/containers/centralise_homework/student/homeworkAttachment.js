@@ -5,6 +5,7 @@ import BOOKMARKEDICON from './../../../assets/images/bookmarked-icon.png';
 import CHATICON from './../../../assets/images/chat-icon.png';
 import NOTEICON from './../../../assets/images/note-icon.png';
 import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
+import endpoints from 'config/endpoints';
 
 const HomeworkAttachment = ({ ...props }) => {
   const {
@@ -48,30 +49,29 @@ const HomeworkAttachment = ({ ...props }) => {
             >
               <LeftOutlined className='icon' />
             </button>
-            {console.log(
-              selectedHomework?.file?.split('.')[
-                selectedHomework?.file?.split('.').length - 1
-              ]
-            )}
-            {selectedHomework?.file?.split('.')[
+
+            {/* {selectedHomework?.file?.split('.')[
               selectedHomework?.file?.split('.').length - 1
-            ] !== 'zip' ? (
-              <img
-                src={selectedHomework?.file}
-                alt={selectedHomework?.name}
-                className='w-100'
-                style={{
-                  cursor: 'pointer',
-                  borderWidth: 2,
-                  borderStyle: 'solid',
-                  borderColor: '#ccc',
-                  maxHeight: 350,
-                  borderRadius: 4,
-                  overflow: 'hidden',
-                }}
-                onClick={() => handleAttachmentView(true)}
-              />
-            ) : (
+            ] !== 'zip' ? ( */}
+            <div
+              style={{
+                backgroundImage: `url(${endpoints.erpBucket}${selectedHomework?.file_location})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                cursor: 'pointer',
+                borderRadius: 4,
+                overflow: 'hidden',
+                aspectRatio: '1',
+              }}
+              onClick={() => handleAttachmentView(true)}
+            ></div>
+            {/* <img
+              src={selectedHomework?.file}
+              alt={selectedHomework?.name}
+              className='w-100'
+              style={{}}
+            /> */}
+            {/* ) : (
               <>
                 <div
                   className='download-icon'
@@ -96,7 +96,7 @@ const HomeworkAttachment = ({ ...props }) => {
                   />
                 </div>
               </>
-            )}
+            )} */}
             <button
               className='attachment-control-icon next btn'
               onClick={() => handleAttachmentControl('next', selectedHomeworkIndex)}
@@ -104,11 +104,11 @@ const HomeworkAttachment = ({ ...props }) => {
             >
               <RightOutlined className='icon' />
             </button>
-            {selectedHomework?.isBookmarked && (
+            {/* {selectedHomework?.isBookmarked && (
               <div className='bookmarked-icon'>
                 <img src={BOOKMARKEDICON} alt='bookmarked' className='img-fluid' />
               </div>
-            )}
+            )} */}
           </div>
         </div>
         <div
@@ -116,18 +116,18 @@ const HomeworkAttachment = ({ ...props }) => {
           style={{ width: '10%' }}
         >
           <div
-            className='p-1 p-lg-3 text-center cursor-pointer'
+            className='p-1 p-md-2 p-lg-3 text-center cursor-pointer'
             onClick={() => handleBookmarkAttachment()}
           >
             <img className='attachment-action-icon' alt='bookmark' src={BOOKMARKICON} />
           </div>
           <div
-            className='p-1 p-lg-3 text-center cursor-pointer'
+            className='p-1 p-md-2 p-lg-3 text-center cursor-pointer'
             onClick={() => handleNoteTakerView(true)}
           >
             <img className='attachment-action-icon' alt='note' src={NOTEICON} />
           </div>
-          <div className='p-1 p-lg-3 text-center cursor-pointer'>
+          <div className='p-1 p-md-2 p-lg-3 text-center cursor-pointer'>
             <img className='attachment-action-icon' alt='Chat' src={CHATICON} />
           </div>
         </div>
