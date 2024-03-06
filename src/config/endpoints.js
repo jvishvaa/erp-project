@@ -1071,6 +1071,7 @@ export default {
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,
   erpBucket: ERP_BUCKET,
+  erpBucket2: ERP_BUCKET_2,
   centralBucket: CENTRAL_BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
