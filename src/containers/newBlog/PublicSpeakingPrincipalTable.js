@@ -154,14 +154,14 @@ const PublicSpeakingPrincipalTable = (props) => {
       align: 'left',
       width: '50%',
       render: (text, row) => {
-        return row.criterion;
+        return row?.criterion;
       },
     },
     {
       title: <span className='th-white th-fw-600'>Remarks</span>,
       align: 'center',
       width: '50%',
-      render: (text, row) => row?.levels?.filter((item) => item.status == true)[0].name,
+      render: (text, row) => row?.levels?.filter((item) => item?.status == true)[0]?.name,
     },
   ];
 
@@ -172,7 +172,7 @@ const PublicSpeakingPrincipalTable = (props) => {
       key: 'height',
       align: 'center',
       render: (text, row, index) => (
-        <span>{(pageDetails.current - 1) * 10 + index + 1}.</span>
+        <span>{(pageDetails?.current - 1) * 10 + index + 1}.</span>
       ),
     },
     {
@@ -209,7 +209,6 @@ const PublicSpeakingPrincipalTable = (props) => {
     },
   ];
 
-  console.log({ props, totalSubmitted });
   const erpAPI = () => {
     setLoadingBig(true);
     axios
