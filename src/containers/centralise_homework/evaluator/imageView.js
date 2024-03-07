@@ -135,25 +135,26 @@ const EvaluatorHomework = () => {
   });
 
   const handleChangeGrade = (each) => {
+
     setPageNo(1);
-    if (each.some((item) => item.value === 'all')) {
-      const allGrade = gradeList.map((item) => item.grade_id).join(',');
-      setGrade(allGrade);
-      fetchSection(allGrade);
-      setSection([]);
-      formRef.current.setFieldsValue({
-        grade: gradeList.map((item) => item.grade_id),
-        section: [],
-      });
-    } else {
-      const singleGrade = each.map((item) => item.value).join(',');
-      setGrade(singleGrade);
-      fetchSection(singleGrade);
-      setSection([]);
-      formRef.current.setFieldsValue({
-        section: [],
-      });
-    }
+    // if (each?.some((item) => item.value === 'all')) {
+    //   const allGrade = gradeList.map((item) => item.grade_id).join(',');
+    //   setGrade(allGrade);
+    //   fetchSection(allGrade);
+    //   setSection([]);
+    //   formRef.current.setFieldsValue({
+    //     grade: gradeList.map((item) => item.grade_id),
+    //     section: [],
+    //   });
+    // } else {
+    // const singleGrade = each.map((item) => item.value).join(',');
+    setGrade(each?.value);
+    fetchSection(each?.value);
+    setSection(null);
+    formRef.current.setFieldsValue({
+      section: null,
+    });
+    // }
   };
 
   const handleClearGrade = () => {
@@ -284,18 +285,18 @@ const EvaluatorHomework = () => {
 
   const handleChangeSection = (each) => {
     setPageNo(1);
-    if (each.some((item) => item.value === 'all')) {
-      const allsections = sectionList?.map((item) => item.id).join(',');
-      setSection(allsections);
-      formRef.current.setFieldsValue({
-        section: sectionList?.map((item) => item.id),
-      });
-      fetchSubjectList(allsections);
-    } else {
-      const section = each.map((item) => item.value).join(',');
-      setSection(section);
-      fetchSubjectList(section);
-    }
+    // if (each.some((item) => item.value === 'all')) {
+    //   const allsections = sectionList?.map((item) => item.id).join(',');
+    //   setSection(allsections);
+    //   formRef.current.setFieldsValue({
+    //     section: sectionList?.map((item) => item.id),
+    //   });
+    //   fetchSubjectList(allsections);
+    // } else {
+    const section = each?.value;
+    setSection(section);
+    fetchSubjectList(section);
+    // }
   };
 
   const handleChangeVolume = (each) => {
@@ -364,7 +365,7 @@ const EvaluatorHomework = () => {
                         <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                           <Form.Item name='grade'>
                             <Select
-                              mode='multiple'
+                              // mode='multiple'
                               getPopupContainer={(trigger) => trigger.parentNode}
                               maxTagCount={1}
                               allowClear={true}
@@ -392,7 +393,7 @@ const EvaluatorHomework = () => {
                         <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                           <Form.Item name='section'>
                             <Select
-                              mode='multiple'
+                              // mode='multiple'
                               getPopupContainer={(trigger) => trigger.parentNode}
                               maxTagCount={1}
                               allowClear={true}
@@ -513,15 +514,15 @@ const EvaluatorHomework = () => {
                             <Button
                               className=' th-br-4 w-100  th-select'
                               type='primary'
-                              onClick={() =>
+                              onClick={() => {
                                 fetchTeacherData({
                                   // is_assessed: 'False',
                                   start_date: startDate,
                                   end_date: endDate,
                                   sub_sec_mpng: subject,
                                   page: pageNo,
-                                })
-                              }
+                                });
+                              }}
                             >
                               Filter
                             </Button>
@@ -643,6 +644,8 @@ const EvaluatorHomework = () => {
                       selectedHomeworkIndex={selectedHomeworkIndex}
                       setSelectedHomeworkIndex={setSelectedHomeworkIndex}
                       evaluateData={evaluateData}
+                      selectedGrade={grade}
+                      selectedSubSecMap={subject}
                     />
 
                     <Pagination

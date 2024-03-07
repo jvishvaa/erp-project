@@ -1,5 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Tooltip, Tabs, Select, Drawer, Input, message, Modal, Progress } from 'antd';
+import {
+  Tooltip,
+  Tabs,
+  Select,
+  Drawer,
+  Input,
+  message,
+  Modal,
+  Progress,
+  Form,
+  Button,
+} from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import './index.scss';
 import './../student/style.css';
 import { useHistory } from 'react-router-dom';
@@ -9,6 +21,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import Attachment from 'containers/homework/teacher-homework/attachment';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import endpoints from 'v2/config/endpoints';
+import endpointsV1 from 'config/endpoints';
 import placeholder from 'assets/images/placeholder_small.jpg';
 import DescriptiveTestcorrectionModule from 'components/EvaluationTool';
 import QuestionPng from 'assets/images/question.png';
@@ -17,6 +30,7 @@ import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
 import BOOKMARKICON from './../../../assets/images/bookmark-icon.png';
 import NOTEICON from './../../../assets/images/note-icon.png';
 import axiosInstance from 'config/axios';
+import { useSelector } from 'react-redux';
 const { TabPane } = Tabs;
 
 let chatarr = [
@@ -146,8 +160,11 @@ const FilesViewEvaluate = ({
   evaluateData,
   selectedHomeworkIndex,
   setSelectedHomeworkIndex,
+  selectedGrade,
+  selectedSubSecMap,
 }) => {
   const history = useHistory();
+  const { Option } = Select;
   const scrollableContainer = useRef(null);
   const attachmentContainer = useRef(null);
   const chatRef = useRef(null);
@@ -166,6 +183,16 @@ const FilesViewEvaluate = ({
 
   const [percentValue, setPercentValue] = useState(10);
   const [uploadStart, setUploadStart] = useState(false);
+  const [erpList, setErpList] = useState([]);
+  const [selectedErp, setSelectedErp] = useState();
+
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const showDrawer = () => {
     setOpenDrawer(true);
@@ -173,6 +200,18 @@ const FilesViewEvaluate = ({
   const onClose = () => {
     setOpenDrawer(false);
   };
+
+  useEffect(() => {
+    fetchErp({
+      session_year: selectedAcademicYear?.id,
+      branch: selectedBranch?.branch?.id,
+      user_level: 13,
+      grade: selectedGrade,
+      section_mapping_id: selectedSubSecMap,
+      status: 1,
+    });
+  }, [selectedGrade, selectedSubSecMap]);
+
   useEffect(() => {
     if (openDrawer == true) {
       scrollToBottom();
@@ -331,10 +370,103 @@ const FilesViewEvaluate = ({
     scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
   };
 
+  const fetchErp = (params = {}) => {
+    axiosInstance
+      .get(`${endpointsV1.communication.viewUser}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        console.log({ res });
+        setErpList(res?.data?.results);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  const handleErpChange = (e) => {
+    setSelectedErp(e?.value);
+  };
+
+  const handleClearErp = () => {
+    setSelectedErp(null);
+  };
+
+  const erpOptions = erpList?.map((each) => {
+    return (
+      <Option key={each?.erp_id} value={each.erp_id}>
+        {each?.erp_id}
+      </Option>
+    );
+  });
+
+  const handleSaveErp = async () => {
+    axiosInstance
+      .patch(`${endpointsV1.homework.hwData}${selectedHomework?.id}/`, {
+        file_location: selectedHomework?.file_location,
+        student_erp: selectedErp,
+      })
+      .then((res) => {
+        console.log({ res });
+        if (res?.data?.status_code === 200) {
+          message.success('Erp Updated');
+          setSelectedErp(null);
+          let updatedErp = res?.data?.result?.student_erp;
+          // setFileList([]);
+          // setUploading(false);
+        }
+      })
+      .catch((e) => {
+        message.error('Upload Failed');
+      });
+  };
+
+  console.log({ selectedHomework });
+
   return (
     <React.Fragment>
       <div className='wholetabCentralHW'>
         <div className='th-tabs th-tabs-hw mt-3 th-bg-white'>
+          {selectedHomework?.student_erp === 'INVALID' && (
+            <div className='row'>
+              <div className='col-md-4 col-xl-3'>
+                <Form>
+                  <Form.Item name='student_erp'>
+                    <Select
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      maxTagCount={1}
+                      allowClear={true}
+                      suffixIcon={<DownOutlined className='th-grey' />}
+                      className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                      placement='bottomRight'
+                      showArrow={true}
+                      onChange={(e, value) => handleErpChange(value)}
+                      onClear={handleClearErp}
+                      dropdownMatchSelectWidth={false}
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      showSearch
+                      placeholder='Select Erp'
+                    >
+                      {erpOptions}
+                    </Select>
+                  </Form.Item>
+                </Form>
+              </div>
+              <div className='col-md-2 col-xl-2'>
+                <Button
+                  className=' th-br-4 w-100  th-select'
+                  type='primary'
+                  onClick={handleSaveErp}
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+          )}
           <div className=' row'>
             <div className='col-md-5 col-xl-4 pl-0'>
               {/* <div className=' d-flex justify-content-center'>
