@@ -97,36 +97,47 @@ const HwUpload = () => {
 
   const handleChangeGrade = (each) => {
     setPageNo(1);
-    if (each.some((item) => item.value === 'all')) {
-      const allGrade = gradeList.map((item) => item.grade_id).join(',');
-      setGrade(allGrade);
-      fetchSection(allGrade);
+    if (each) {
+      setGrade(each?.value);
+      fetchSection(each?.value);
       setSection([]);
       formRef.current.setFieldsValue({
-        grade: gradeList.map((item) => item.grade_id),
-        section: [],
-      });
-    } else {
-      const singleGrade = each.map((item) => item.value).join(',');
-      setGrade(singleGrade);
-      fetchSection(singleGrade);
-      setSection([]);
-      formRef.current.setFieldsValue({
+        grade: each?.value,
         section: [],
       });
     }
+    // if (each.some((item) => item.value === 'all')) {
+    //   const allGrade = gradeList.map((item) => item.grade_id).join(',');
+    //   setGrade(allGrade);
+    //   fetchSection(allGrade);
+    //   setSection([]);
+    //   formRef.current.setFieldsValue({
+    //     grade: gradeList.map((item) => item.grade_id),
+    //     section: [],
+    //   });
+    // } else {
+    //   const singleGrade = each.map((item) => item.value).join(',');
+    //   setGrade(singleGrade);
+    //   fetchSection(singleGrade);
+    //   setSection([]);
+    //   formRef.current.setFieldsValue({
+    //     section: [],
+    //   });
+    // }
   };
 
   const handleClearGrade = () => {
     setGrade([]);
     setSection('');
     setSectionList([]);
+    setSubject('');
     setStartDate(null);
     setEndDate(null);
     setDate(null);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
+      subject,
       date: null,
     });
   };
@@ -178,36 +189,48 @@ const HwUpload = () => {
   });
 
   const handleChangeSection = (each) => {
-    if (each.length !== 0) {
-      setPageNo(1);
-      if (each.some((item) => item.value === 'all')) {
-        const allsections = sectionList?.map((item) => item.section_id).join(',');
-        setSection(allsections);
-        formRef.current.setFieldsValue({
-          section: sectionList?.map((item) => item.section_id),
-        });
-        fetchSubject(allsections);
-      } else {
-        const singleSection = each.map((item) => item.value).join(',');
-        setSection(singleSection);
-        fetchSubject(singleSection);
-      }
+    setPageNo(1);
+    if (each) {
+      setSection(each?.value);
+      formRef.current.setFieldsValue({
+        section: each?.value,
+      });
+      fetchSubject(each?.value);
+      // if (each.some((item) => item.value === 'all')) {
+      //   const allsections = sectionList?.map((item) => item.section_id).join(',');
+      //   setSection(allsections);
+      //   formRef.current.setFieldsValue({
+      //     section: sectionList?.map((item) => item.section_id),
+      //   });
+      //   fetchSubject(allsections);
+      // } else {
+      //   const singleSection = each.map((item) => item.value).join(',');
+      //   setSection(singleSection);
+      //   fetchSubject(singleSection);
+      // }
     }
   };
 
   const handleChangeSubject = (each) => {
     console.log(each, 'subject');
     setPageNo(1);
-    if (each.some((item) => item.value === 'all')) {
-      const allsubjects = subjectList?.map((item) => item.id).join(',');
-      setSubject(allsubjects);
+    if (each) {
+      setSubject(each?.value);
       formRef.current.setFieldsValue({
-        section: subjectList?.map((item) => item.id),
+        subject: each?.value,
       });
-    } else {
-      const singleSubject = each.map((item) => item.value).join(',');
-      setSubject(singleSubject);
+      fetchSubject(each?.value);
     }
+    // if (each.some((item) => item.value === 'all')) {
+    //   const allsubjects = subjectList?.map((item) => item.id).join(',');
+    //   setSubject(allsubjects);
+    //   formRef.current.setFieldsValue({
+    //     section: subjectList?.map((item) => item.id),
+    //   });
+    // } else {
+    //   const singleSubject = each.map((item) => item.value).join(',');
+    //   setSubject(singleSubject);
+    // }
   };
 
   const handleClearSubject = () => {
@@ -267,7 +290,6 @@ const HwUpload = () => {
                       <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='grade'>
                           <Select
-                            mode='multiple'
                             getPopupContainer={(trigger) => trigger.parentNode}
                             maxTagCount={1}
                             allowClear={true}
@@ -295,7 +317,6 @@ const HwUpload = () => {
                       <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='section'>
                           <Select
-                            mode='multiple'
                             getPopupContainer={(trigger) => trigger.parentNode}
                             maxTagCount={1}
                             allowClear={true}
@@ -321,9 +342,8 @@ const HwUpload = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
-                        <Form.Item name='Subject'>
+                        <Form.Item name='subject'>
                           <Select
-                            mode='multiple'
                             getPopupContainer={(trigger) => trigger.parentNode}
                             maxTagCount={1}
                             allowClear={true}
@@ -391,6 +411,7 @@ const HwUpload = () => {
                       startDate={startDate}
                       endDate={endDate}
                       subejctId={subject}
+                      sectionId={section}
                     />
                   </div>
                 )}

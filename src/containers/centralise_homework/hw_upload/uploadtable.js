@@ -1,5 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { message, Form, Tabs, Select, Modal, Input, Table, Button } from 'antd';
+import {
+  message,
+  Form,
+  Tabs,
+  Select,
+  Modal,
+  Input,
+  Table,
+  Button,
+  Pagination,
+} from 'antd';
 import '../BranchStaffSide/branchside.scss';
 import { useHistory } from 'react-router-dom';
 import QuestionPng from 'assets/images/question.png';
@@ -8,8 +18,11 @@ import { AttachmentPreviewerContext } from 'components/attachment-previewer/atta
 import endpoints from 'config/endpoints';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
+import Loader from 'components/loader/loader';
+import axios from 'axios';
+import { fetchErpList } from 'containers/Finance/src/components/Finance/store/actions';
 
-const UploadTable = ({ startDate, endDate, subejctId }) => {
+const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
   const history = useHistory();
   const { TabPane } = Tabs;
   const { Option } = Select;
@@ -19,6 +32,8 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+
+  const loggedUserData = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [showTab, setShowTab] = useState('1');
   const [loading, setLoading] = useState(false);
@@ -32,6 +47,17 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
   const [grade, setGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [section, setSection] = useState('');
+  const [erpList, setErpList] = useState([]);
+  const [erp, setErp] = useState('');
+  const [updatedErp, setUpdatedErp] = useState('');
+  const [count, setCount] = useState(0);
+
+  const [refferListPageData, setRefferListPageData] = useState({
+    currentPage: 1,
+    pageSize: 15,
+    totalCount: 0,
+    totalPage: 0,
+  });
 
   const [hwFiles, setHwFiles] = useState([]);
 
@@ -41,11 +67,33 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
     if (startDate && endDate && subejctId.length !== 0 && showTab) {
       const status = showTab == 1 ? 'True' : 'False';
       fecthHwData(startDate, endDate, subejctId, status);
+      fecthErp(sectionId);
     }
-  }, [startDate, endDate, subejctId, showTab]);
+  }, [
+    startDate,
+    endDate,
+    subejctId,
+    showTab,
+    updatedErp,
+    section,
+    grade,
+    refferListPageData.currentPage,
+  ]);
 
   const handleErp = (e, data, row) => {
     setErpNumber(e);
+  };
+
+  const handleUpdateErp = (row) => {
+    if (row) {
+      setErp(row?.id);
+    }
+  };
+
+  const handleCurrentErp = (value) => {
+    if (value) {
+      setUpdatedErp(value?.value);
+    }
   };
 
   const columns = [
@@ -178,8 +226,45 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
       width: '40%',
       render: (data, row, index) => (
         <div className='col-md-12 d-flex justify-content-center'>
-          <div className='col-md-12 d-flex justify-content-center'>
-            <div>
+            <div className='col-sm-6 col-md-12' style={{display : "flex", justifyContent : "center", gap : "10px"}}>
+              <Form.Item name='erp'>
+                <Select
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  maxTagCount={1}
+                  allowClear={true}
+                  suffixIcon={<DownOutlined className='th-grey' />}
+                  className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                  placement='bottomRight'
+                  showArrow={true}
+                  onChange={(e, value) => handleCurrentErp(value)}
+                  dropdownMatchSelectWidth={false}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  value={updatedErp}
+                  showSearch
+                  placeholder='Select Erp'
+                >
+                  {ErpOptions}
+                </Select>
+              </Form.Item>
+              {!loading ? (
+                <Button
+                  className='th-br-4'
+                  type='primary'
+                  onClick={() => {
+                    saveErp(row?.file_location, row?.id);
+                  }}
+                >
+                  Save
+                </Button>
+              ) : (
+                ''
+              )}
+            </div>
+            {/* <div>
               <input
                 type='text'
                 placeholder='Erp No.'
@@ -192,10 +277,10 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
               <EditOutlined
                 onClick={() => {
                   setErpUpdateModal(true);
+                  handleUpdateErp(row);
                 }}
               />
-            </div>
-          </div>
+            </div> */}
           {/* <div className='col-md-4'>
             <Button className='w-100 th-br-4' type='primary'>
               Save
@@ -206,140 +291,14 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
     },
   ];
 
-  let userData = [
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      erp: '12344555544',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-  ];
-
-  let failedUserData = [
-    {
-      id: '23',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      id: '23',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      id: '23',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      id: '23',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      id: '23',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-    {
-      id: '23',
-      name: 'Avik Das',
-      sec: 'Sec A',
-      img: 'https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg',
-      status: 'Assessed',
-    },
-  ];
-
   const onChange = (key) => {
     setShowTab(key);
+    if (key === '2') {
+      setRefferListPageData({
+        ...refferListPageData,
+        currentPage: 1,
+      });
+    }
   };
 
   const fetchGrade = async () => {
@@ -375,15 +334,76 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
   const fecthHwData = async (start, end, sec, status) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.homework.hwData}?start_date=${start}&end_date=${end}&sub_sec_mpng=${sec}&status=${status}`
+        `${endpoints.homework.hwData}?start_date=${start}&end_date=${end}&sub_sec_mpng=${sec}&status=${status}&page=${refferListPageData.currentPage}`
       );
       if (result.data.status_code === 200) {
+        setRefferListPageData({
+          ...refferListPageData,
+          totalCount: result?.data?.result?.count,
+          totalPage: Math.ceil(result?.data?.result?.count / refferListPageData.pageSize),
+        });
+        setCount(result?.data?.result?.count);
         setHwFiles(result?.data?.result?.results);
       } else {
         message.error(result.data.message);
       }
     } catch (error) {
       message.error(error.message);
+    }
+  };
+
+  const fecthErp = async (sectionId) => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.homework.hwErp}?section_mapping_id=${sectionId}&status=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${loggedUserData?.token}`,
+          },
+        }
+      );
+      if (result?.status === 200) {
+        setErpList(result?.data?.results);
+      } else {
+        message.error(result.data.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  const saveErp = async (file_location, erpId) => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('file_location', file_location);
+      formData.append('student_erp', updatedErp);
+
+      const result = await axiosInstance.patch(
+        `${endpoints.homework.hwData}${erpId}/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${loggedUserData?.token}`,
+          },
+        }
+      );
+
+      if (result?.data?.status_code === 200) {
+        message.success(result?.data?.message);
+        setErpUpdateModal(false);
+        if (startDate && endDate && subejctId.length !== 0 && showTab) {
+          const status = showTab == 1 ? 'True' : 'False';
+          fecthHwData(startDate, endDate, subejctId, status);
+        }
+        handleClearGrade();
+        setLoading(false);
+      } else {
+        message.error(result?.data?.message);
+      }
+      console.log(result, 'coming');
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -403,9 +423,16 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
     );
   });
 
+  const ErpOptions = erpList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.erp_id}>
+        {each?.erp_id}
+      </Option>
+    );
+  });
+
   const handleChangeGrade = (each) => {
     // const singleGrade = each.map((item) => item.value).join(',');
-    console.log({ each });
     setGrade(each?.value);
     fetchSection(each?.value);
     setSection();
@@ -413,6 +440,10 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
 
   const handleClearGrade = () => {
     setGrade('');
+    setSection('');
+    setSectionList([]);
+    setGradeList([]);
+    setUpdatedErp('');
   };
 
   const handleChangeSection = (each) => {
@@ -438,9 +469,9 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
             <Tabs type='card' className='' onChange={onChange} defaultActiveKey={showTab}>
               <TabPane tab='Passed' key='1'>
                 <div className=''>
-                  <div className='d-flex justify-content-between mb-2'>
-                    <span className=''>Total Unique Students -10</span>
-                    <span className=''>Total Count-10</span>
+                  <div className='d-flex justify-content-end mb-2'>
+                    {/* <span className=''>Total Unique Students -10</span> */}
+                    <span className=''>Total Count- {count}</span>
                   </div>
                   <div>
                     <Table
@@ -457,10 +488,28 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
                     />
                   </div>
                 </div>
+                <div className='text-center mt-2'>
+                  <Pagination
+                    current={refferListPageData.currentPage}
+                    total={refferListPageData.totalCount}
+                    pageSize={refferListPageData.pageSize}
+                    onChange={(value) =>
+                      setRefferListPageData({
+                        ...refferListPageData,
+                        currentPage: value,
+                      })
+                    }
+                    showSizeChanger={false}
+                    showQuickJumper={false}
+                    showTotal={(total, range) =>
+                      `${range[0]}-${range[1]} of ${total} items`
+                    }
+                  />
+                </div>
               </TabPane>
               <TabPane tab='Failed' key='2'>
                 <div className='d-flex justify-content-end mb-2'>
-                  <span className=''>Total Count-10</span>
+                  <span className=''>Total Count- {count}</span>
                 </div>
                 <div>
                   <Table
@@ -472,8 +521,26 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
                     columns={columnsFailed}
                     rowKey={(record) => record?.id}
                     dataSource={hwFiles}
-                    pagination={false}
                     scroll={{ y: '300px' }}
+                    pagination={false}
+                  />
+                </div>
+                <div className='text-center mt-2'>
+                  <Pagination
+                    current={refferListPageData.currentPage}
+                    total={refferListPageData.totalCount}
+                    pageSize={refferListPageData.pageSize}
+                    onChange={(value) =>
+                      setRefferListPageData({
+                        ...refferListPageData,
+                        currentPage: value,
+                      })
+                    }
+                    showSizeChanger={false}
+                    showQuickJumper={false}
+                    showTotal={(total, range) =>
+                      `${range[0]}-${range[1]} of ${total} items`
+                    }
                   />
                 </div>
               </TabPane>
@@ -508,6 +575,7 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
                         options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       );
                     }}
+                    value={grade}
                     showSearch
                     placeholder='Select Grade'
                   >
@@ -533,6 +601,7 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
                         options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       );
                     }}
+                    value={section}
                     showSearch
                     placeholder='Select section'
                   >
@@ -550,23 +619,27 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
                     className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
                     placement='bottomRight'
                     showArrow={true}
-                    onChange={(e, value) => handleChangeSection(value)}
-                    onClear={handleClearSection}
+                    onChange={(e, value) => handleCurrentErp(value)}
                     dropdownMatchSelectWidth={false}
                     filterOption={(input, options) => {
                       return (
                         options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       );
                     }}
+                    value={updatedErp}
                     showSearch
                     placeholder='Select Erp'
                   >
-                    {sectionOptions}
+                    {ErpOptions}
                   </Select>
                 </Form.Item>
               </div>
               <div className='col-sm-6 col-12'>
-                <Button className='w-100 th-br-4' type='primary'>
+                <Button
+                  className='w-100 th-br-4'
+                  type='primary'
+                  onClick={() => saveErp()}
+                >
                   Save
                 </Button>
               </div>
