@@ -6,7 +6,8 @@ import {
   Popconfirm,
   Result,
   Select,
-  Table,
+  Modal,
+  Progress,
   message,
 } from 'antd';
 import { Input, Space, Upload } from 'antd';
@@ -34,6 +35,8 @@ const UploadHomework = () => {
   const [subjectList, setSubjectList] = useState([]);
   const [subject, setSubject] = useState('');
   const [status, setStatus] = useState('');
+  const [percentValue, setPercentValue] = useState(10);
+  const [uploadStart, setUploadStart] = useState(false);
 
   const { Option } = Select;
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
@@ -60,6 +63,29 @@ const UploadHomework = () => {
     fetchGrade(selectedBranch?.branch?.id);
     fetchDocType();
   }, [selectedBranch]);
+
+  let idInterval = null;
+  useEffect(() => {
+    if (uploadStart == true && percentValue < 90) {
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
+    }
+
+    return () => {
+      clearInterval(idInterval);
+      setPercentValue(10);
+    };
+  }, [uploadStart]);
+
+  const checkCount = (count) => {
+    if (count < 90) {
+      return count + 5;
+    } else {
+      return count;
+    }
+  };
 
   const fetchGrade = async (branch) => {
     try {
@@ -244,14 +270,13 @@ const UploadHomework = () => {
     }
   };
 
-  const handleDocType = (each)=>{
-    if(each){
-      setDocTypeId(each?.value)
+  const handleDocType = (each) => {
+    if (each) {
+      setDocTypeId(each?.value);
+    } else {
+      setDocTypeId('');
     }
-    else{
-      setDocTypeId("")
-    }
-  }
+  };
 
   const [fileList, setFileList] = useState([]);
   const [fileTypeError, setFileTypeError] = useState(false);
@@ -268,6 +293,7 @@ const UploadHomework = () => {
   let todayDate = moment().format('DD-MM-YYYY');
 
   const handleUpload = () => {
+    setUploadStart(true);
     if (!subject?.value) {
       return message.error('Please Select Filters First !');
     }
@@ -277,19 +303,19 @@ const UploadHomework = () => {
       formData.append('sub_sec_mpng', subject?.value);
       formData.append('file', file);
       formData.append('date', todayDate);
-      formData.append("volume_id", volume)
-      formData.append("doc_type_id", docTypeId)
+      formData.append('volume_id', volume);
+      formData.append('doc_type_id', docTypeId);
 
       axios
         .post(`${endpoints.homework.uploadZip}`, formData)
         .then((res) => {
-          if(res?.data?.status===200){
+          if (res?.data?.status === 200) {
             message.success('Attachment Added');
             // // props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
             setFileList([]);
             setUploading(false);
+            setUploadStart(false);
           }
-          
         })
         .catch((e) => {
           message.error('Upload Failed');
@@ -602,7 +628,24 @@ const UploadHomework = () => {
             </div>
           </div>
         </div>
-
+        <Modal
+          maskClosable={false}
+          closable={false}
+          footer={null}
+          visible={uploadStart}
+          width={1000}
+          centered
+        >
+          <Progress
+            strokeColor={{
+              from: '#108ee9',
+              to: '#87d068',
+            }}
+            percent={percentValue}
+            status='active'
+            className='p-4'
+          />
+        </Modal>
         {/* </div> */}
       </Layout>
     </React.Fragment>

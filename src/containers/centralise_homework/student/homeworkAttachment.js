@@ -66,10 +66,9 @@ const HomeworkAttachment = ({ ...props }) => {
               onClick={() => handleAttachmentView(true)}
             ></div>
             {/* <img
-              src={selectedHomework?.file}
-              alt={selectedHomework?.name}
+              src={`${endpoints.erpBucket}/${selectedHomework?.file_location}`}
+              alt={`${endpoints.erpBucket}${selectedHomework?.file_location}`}
               className='w-100'
-              style={{}}
             /> */}
             {/* ) : (
               <>

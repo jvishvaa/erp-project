@@ -515,7 +515,7 @@ const EvaluatorHomework = () => {
                               type='primary'
                               onClick={() =>
                                 fetchTeacherData({
-                                  is_assessed: 'False',
+                                  // is_assessed: 'False',
                                   start_date: startDate,
                                   end_date: endDate,
                                   sub_sec_mpng: subject,
@@ -654,7 +654,7 @@ const EvaluatorHomework = () => {
                         setPageNo(current);
                         setSelectedHomeworkIndex(0);
                         fetchTeacherData({
-                          is_assessed: 'False',
+                          // is_assessed: 'False',
                           start_date: startDate,
                           end_date: endDate,
                           sub_sec_mpng: subject,
