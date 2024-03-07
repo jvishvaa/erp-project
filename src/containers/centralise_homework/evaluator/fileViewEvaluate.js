@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Tooltip, Tabs, Select, Drawer, Input, message, Pagination } from 'antd';
+import { Tooltip, Tabs, Select, Drawer, Input, message, Modal, Progress } from 'antd';
 import './index.scss';
 import './../student/style.css';
 import { useHistory } from 'react-router-dom';
@@ -160,6 +160,12 @@ const FilesViewEvaluate = ({
   const [openDrawer, setOpenDrawer] = useState(false);
   const [chattext, setChatText] = useState('');
   const [chatsData, setChatsData] = useState(chatarr);
+  const [selectedHomework, setSelectedHomework] = useState(
+    evaluateData[selectedHomeworkIndex]
+  );
+
+  const [percentValue, setPercentValue] = useState(10);
+  const [uploadStart, setUploadStart] = useState(false);
 
   const showDrawer = () => {
     setOpenDrawer(true);
@@ -189,6 +195,29 @@ const FilesViewEvaluate = ({
     }
   }, [penToolUrl]);
 
+  let idInterval = null;
+  useEffect(() => {
+    if (uploadStart == true && percentValue < 90) {
+      idInterval = setInterval(
+        () => setPercentValue((oldCount) => checkCount(oldCount)),
+        1000
+      );
+    }
+
+    return () => {
+      clearInterval(idInterval);
+      setPercentValue(10);
+    };
+  }, [uploadStart]);
+
+  const checkCount = (count) => {
+    if (count < 90) {
+      return count + 5;
+    } else {
+      return count;
+    }
+  };
+
   const getVolume = (value) => {
     setVolume(value);
   };
@@ -205,6 +234,9 @@ const FilesViewEvaluate = ({
       setSelectedHomeworkIndex(
         selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
       );
+      setSelectedHomework(
+        evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1]
+      );
     } else {
       scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
@@ -212,21 +244,35 @@ const FilesViewEvaluate = ({
           ? evaluateData.length - 1
           : selectedHomeworkIndex + 1
       );
+      setSelectedHomework(
+        evaluateData[
+          selectedHomeworkIndex === evaluateData.length - 1
+            ? evaluateData.length - 1
+            : selectedHomeworkIndex + 1
+        ]
+      );
     }
   };
 
   const handleSaveEvaluatedFile = async (file) => {
-    console.log(file, evaluateData[selectedHomeworkIndex], 'filedata');
+    console.log(
+      file,
+      evaluateData[selectedHomeworkIndex],
+      selectedHomework?.id,
+      'filedata'
+    );
+    setUploadStart(true);
     let path = evaluateData[selectedHomeworkIndex]?.file_location;
     const fd = new FormData();
     fd.append('file', file);
     fd.append('destination_path', path);
 
     axiosInstance
-      .post(`${endpoints.homework.updateImage}`, fd)
+      .patch(`${endpoints.homework.updateImage}${selectedHomework?.id}/`, fd)
       .then((res) => {
         if (res?.data?.status_code === 200) {
           message.success('Attachment Added');
+          setUploadStart(false);
           // setFileList([]);
           // setUploading(false);
         }
@@ -279,6 +325,7 @@ const FilesViewEvaluate = ({
 
   const handleImageScroll = (index) => {
     setSelectedHomeworkIndex(index);
+    setSelectedHomework(evaluateData[index]);
     let imgwidth = index * attachmentContainer?.current?.clientWidth;
     console.log(scrollableContainer.current, 'scroll');
     scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
@@ -489,6 +536,24 @@ const FilesViewEvaluate = ({
             </div>
           </Drawer>
         </div>
+        <Modal
+          maskClosable={false}
+          closable={false}
+          footer={null}
+          visible={uploadStart}
+          width={1000}
+          centered
+        >
+          <Progress
+            strokeColor={{
+              from: '#108ee9',
+              to: '#87d068',
+            }}
+            percent={percentValue}
+            status='active'
+            className='p-4'
+          />
+        </Modal>
       </div>
     </React.Fragment>
   );

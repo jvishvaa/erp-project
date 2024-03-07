@@ -579,7 +579,10 @@ const UploadTable = ({ startDate, endDate, subejctId }) => {
           visible={imagePrevModal}
           footer={false}
           className='th-modal'
-          onCancel={() => setImagePrevModal(false)}
+          onCancel={() => {
+            setImagePrev(null);
+            setImagePrevModal(false);
+          }}
           width={'80%'}
         >
           <img src={imagePrev} alt={imagePrev} className='img-fluid' />
