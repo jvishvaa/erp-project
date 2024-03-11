@@ -153,39 +153,17 @@ const UploadHomework = () => {
   });
 
   const handleChangeGrade = (each) => {
-    if (each.some((item) => item.value === 'all')) {
-      const allGrade = gradeList.map((item) => item.grade_id).join(',');
-      setGrade(allGrade);
-      fetchSection(allGrade);
-      setSection([]);
-      formRef.current.setFieldsValue({
-        grade: gradeList.map((item) => item.grade_id),
-        section: [],
-      });
-    } else {
-      const singleGrade = each.map((item) => item.value).join(',');
-      setGrade(singleGrade);
-      fetchSection(singleGrade);
-      setSection([]);
-      formRef.current.setFieldsValue({
-        section: [],
-      });
-    }
+    setGrade(each?.value);
+    fetchSection(each?.value);
+    setSection([]);
+    formRef.current.setFieldsValue({
+      section: [],
+    });
   };
 
   const handleChangeSection = (each) => {
-    if (each.some((item) => item.value === 'all')) {
-      const allsections = sectionList?.map((item) => item.section_id).join(',');
-      setSection(allsections);
-      formRef.current.setFieldsValue({
-        section: sectionList?.map((item) => item.id),
-      });
-      fetchSubject(allsections);
-    } else {
-      const singleSection = each.map((item) => item.value).join(',');
-      setSection(singleSection);
-      fetchSubject(singleSection);
-    }
+    setSection(each?.value);
+    fetchSubject(each?.value);
   };
 
   const handleChangeSubject = (each) => {
@@ -408,7 +386,6 @@ const UploadHomework = () => {
                       <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='grade'>
                           <Select
-                            mode='multiple'
                             getPopupContainer={(trigger) => trigger.parentNode}
                             maxTagCount={1}
                             allowClear={true}
@@ -436,7 +413,6 @@ const UploadHomework = () => {
                       <div className='col-md-2 col-sm-6 col-12'>
                         <Form.Item name='section'>
                           <Select
-                            mode='multiple'
                             getPopupContainer={(trigger) => trigger.parentNode}
                             maxTagCount={1}
                             allowClear={true}

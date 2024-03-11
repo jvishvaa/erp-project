@@ -135,7 +135,6 @@ const EvaluatorHomework = () => {
   });
 
   const handleChangeGrade = (each) => {
-
     setPageNo(1);
     // if (each?.some((item) => item.value === 'all')) {
     //   const allGrade = gradeList.map((item) => item.grade_id).join(',');
@@ -645,7 +644,7 @@ const EvaluatorHomework = () => {
                       setSelectedHomeworkIndex={setSelectedHomeworkIndex}
                       evaluateData={evaluateData}
                       selectedGrade={grade}
-                      selectedSubSecMap={subject}
+                      selectedSubSecMap={section}
                     />
 
                     <Pagination
