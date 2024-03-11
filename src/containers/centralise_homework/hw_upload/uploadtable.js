@@ -226,14 +226,14 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
       width: '40%',
       render: (data, row, index) => (
         <div className='col-md-12 d-flex justify-content-center'>
-            <div className='col-sm-6 col-md-12' style={{display : "flex", justifyContent : "center", gap : "10px"}}>
-              <Form.Item name='erp'>
+              <div className='col-sm-6 col-md-12' style={{display : "flex", justifyContent : "center", gap : "10px",}}>
+              <Form.Item name='erp' style={{width : "50%"}}>
                 <Select
                   getPopupContainer={(trigger) => trigger.parentNode}
                   maxTagCount={1}
                   allowClear={true}
                   suffixIcon={<DownOutlined className='th-grey' />}
-                  className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                  className='th-grey th-bg-grey th-br-4 text-left th-select'
                   placement='bottomRight'
                   showArrow={true}
                   onChange={(e, value) => handleCurrentErp(value)}
