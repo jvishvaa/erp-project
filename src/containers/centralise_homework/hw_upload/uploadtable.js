@@ -226,14 +226,14 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
       width: '40%',
       render: (data, row, index) => (
         <div className='col-md-12 d-flex justify-content-center'>
-            <div className='col-sm-6 col-md-12' style={{display : "flex", justifyContent : "center", gap : "10px"}}>
-              <Form.Item name='erp'>
+              <div className='col-sm-6 col-md-12' style={{display : "flex", justifyContent : "center", gap : "10px",}}>
+              <Form.Item name='erp' style={{width : "50%"}}>
                 <Select
                   getPopupContainer={(trigger) => trigger.parentNode}
                   maxTagCount={1}
                   allowClear={true}
                   suffixIcon={<DownOutlined className='th-grey' />}
-                  className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                  className='th-grey th-bg-grey th-br-4 text-left th-select'
                   placement='bottomRight'
                   showArrow={true}
                   onChange={(e, value) => handleCurrentErp(value)}
@@ -304,7 +304,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
   const fetchGrade = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}`
+        `${endpoints.communication.grades}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}`
       );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
@@ -319,7 +319,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
   const fetchSection = async (grade) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
+        `${endpoints.academics.sections}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
       );
       if (result.data.status_code === 200) {
         setSectionList(result.data.data);
@@ -417,7 +417,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
 
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option key={each?.id} value={each?.id}>
         {each?.section__section_name}
       </Option>
     );

@@ -562,7 +562,7 @@ const FilesViewEvaluate = ({
                                   fileUrl={url?.file_location}
                                   fileName={`Attachment-${i + 1}`}
                                   // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                  urlPrefix={endpoints.erpBucket}
+                                  urlPrefix={endpoints.erp_googleapi}
                                   index={i}
                                   actions={
                                     url?.file?.includes('.doc')
@@ -587,7 +587,7 @@ const FilesViewEvaluate = ({
                             {evaluateData.map((url, i) => (
                               <img
                                 //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                                src={`${endpoints.erpBucket}${url?.file_location}`}
+                                src={`${endpoints.erp_googleapi}${url?.file_location}`}
                                 onError={(e) => {
                                   e.target.src = placeholder;
                                 }}
