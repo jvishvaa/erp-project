@@ -16,6 +16,7 @@ const {
   s3: {
     BUCKET: s3BUCKET,
     ERP_BUCKET,
+    erp_googleapi,
     ERP_BUCKET_2,
     CENTRAL_BUCKET: CENTRAL_BUCKET,
     IBOOK_BUCKET: IBOOK_BUCKET,
@@ -344,4 +345,5 @@ export default {
     studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
   },
   erpBucket2: ERP_BUCKET_2,
+  erp_googleapi: erp_googleapi,
 };
