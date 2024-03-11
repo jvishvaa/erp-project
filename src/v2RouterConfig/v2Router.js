@@ -81,6 +81,15 @@ import CreatePeReportConfig from 'containers/assessment-central/ReportCardConfig
 import EnterPrises from 'v2/FaceLift/AndroidManagement/Enterprises';
 import Devices from 'v2/FaceLift/AndroidManagement/Devices';
 import Policies from 'v2/FaceLift/AndroidManagement/Policies';
+import BranchHomework from '../containers/centralise_homework/BranchStaffSide';
+import CentralizedStudentHw from '../containers/centralise_homework/student';
+
+import HwUpload from '../containers/centralise_homework/hw_upload/hwUpload';
+import UploadHomework from '../containers/centralise_homework/hw_upload/uploadFile';
+import EvaluatorDash from '../containers/centralise_homework/evaluator';
+import EvaluatorHomework from '../containers/centralise_homework/evaluator/imageView';
+
+import CentralizedHomework from '../containers/centralise_homework/index';
 
 const V2Router = () => {
   useEffect(() => {
@@ -389,12 +398,42 @@ const V2Router = () => {
                           {({ match }) => <SignatureUploadv2 match={match} />}
                         </Route>
                         ,
+                        <Route path='/homework/centralized'>
+                          {({ match }) => <CentralizedHomework match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralized-homework/branchstaff'>
+                          {({ match }) => <BranchHomework match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralized-homework/student'>
+                          {({ match }) => <CentralizedStudentHw match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralized-homework/homework-upload-status'>
+                          {({ match }) => <HwUpload match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralized-homework/homework-upload'>
+                          {({ match }) => <UploadHomework match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralized-homework/evaluator-dash'>
+                          {({ match }) => <EvaluatorDash match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/centralized-homework/evaluator-hw'>
+                          {({ match }) => <EvaluatorHomework match={match} />}
+                        </Route>
+                        ,
                         <Route path='/enterprise-management/:enterPriseName/:enterPriseId/devices'>
                           {({ match }) => <Devices match={match} />}
                         </Route>
+                        ,
                         <Route path='/enterprise-management/:enterPriseName/:enterPriseId/policies'>
                           {({ match }) => <Policies match={match} />}
                         </Route>
+                        ,
                         <Route path='/enterprise-management/enterprises'>
                           {({ match }) => <EnterPrises match={match} />}
                         </Route>

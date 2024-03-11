@@ -11,10 +11,12 @@ const {
     msOriginUrl,
     msReportsUrlNew,
     newBlogURL,
+    gcloud,
   },
   s3: {
     BUCKET: s3BUCKET,
     ERP_BUCKET,
+    erp_googleapi,
     ERP_BUCKET_2,
     CENTRAL_BUCKET: CENTRAL_BUCKET,
     IBOOK_BUCKET: IBOOK_BUCKET,
@@ -209,6 +211,8 @@ export default {
   },
   homework: {
     resourcesFiles: `${CENTRAL_BUCKET}`,
+    uploadZip: `${gcloud}/hw_zip_upload_v1`,
+    updateImage: '/hw-hub/upload_hw_files/',
   },
   grievances: {
     grievanceTicket: `${baseFinanceURL}/apiV1/ticket/`,
@@ -340,4 +344,6 @@ export default {
     popupSetting: `${baseFinanceURL}/apiV1/popup-details/`,
     studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
   },
+  erpBucket2: ERP_BUCKET_2,
+  erp_googleapi: erp_googleapi,
 };

@@ -184,6 +184,14 @@ const Layout = ({ children, history }) => {
         history.push('/homework/teacher');
         break;
       }
+      case 'Centralized Homework': {
+        history.push('/homework/centralized');
+        break;
+      }
+      case 'Upload Homework': {
+        history.push('/centralized-homework/homework-upload-status');
+        break;
+      }
       case 'Teacher Classwork Report': {
         history.push('/classwork-report-teacher-view');
         break;
