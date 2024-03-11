@@ -650,7 +650,7 @@ const EvaluatorHomework = () => {
                       setSelectedHomeworkIndex={setSelectedHomeworkIndex}
                       evaluateData={evaluateData}
                       selectedGrade={grade}
-                      selectedSubSecMap={subject}
+                      selectedSubSecMap={section}
                     />
 
                     <Pagination
