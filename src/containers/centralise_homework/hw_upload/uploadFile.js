@@ -90,7 +90,7 @@ const UploadHomework = () => {
   const fetchGrade = async (branch) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}`
+        `${endpoints.communication.grades}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}`
       );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
@@ -178,7 +178,7 @@ const UploadHomework = () => {
       const allsections = sectionList?.map((item) => item.section_id).join(',');
       setSection(allsections);
       formRef.current.setFieldsValue({
-        section: sectionList?.map((item) => item.id),
+        section: sectionList?.map((item) => item?.id),
       });
       fetchSubject(allsections);
     } else {
@@ -211,7 +211,7 @@ const UploadHomework = () => {
   const fetchSection = async (grade) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
+        `${endpoints.academics.sections}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
       );
       if (result.data.status_code === 200) {
         setSectionList(result.data.data);
@@ -226,7 +226,7 @@ const UploadHomework = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}&section=${section}`
+        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);

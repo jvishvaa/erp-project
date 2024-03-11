@@ -304,7 +304,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
   const fetchGrade = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}`
+        `${endpoints.communication.grades}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}`
       );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
@@ -319,7 +319,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
   const fetchSection = async (grade) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
+        `${endpoints.academics.sections}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
       );
       if (result.data.status_code === 200) {
         setSectionList(result.data.data);
@@ -417,7 +417,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
 
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option key={each?.id} value={each?.id}>
         {each?.section__section_name}
       </Option>
     );
