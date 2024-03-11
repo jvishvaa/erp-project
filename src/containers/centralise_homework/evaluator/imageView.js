@@ -45,6 +45,7 @@ import {
   SquareFoot,
   SquareFootRounded,
 } from '@material-ui/icons';
+import Loader from '../../../components/loader/loader';
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
@@ -135,7 +136,6 @@ const EvaluatorHomework = () => {
   });
 
   const handleChangeGrade = (each) => {
-
     setPageNo(1);
     // if (each?.some((item) => item.value === 'all')) {
     //   const allGrade = gradeList.map((item) => item.grade_id).join(',');
@@ -249,6 +249,7 @@ const EvaluatorHomework = () => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
+    setLoading(true);
     if (!subject) {
       return message.error('Please Select Filters !');
     }
@@ -275,11 +276,14 @@ const EvaluatorHomework = () => {
         setCountData(result?.data?.result);
         setTotalPage(result?.data?.result?.count);
         setPageLimit(result?.data?.result?.limit);
+        setLoading(false);
       } else {
         message.error(result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       message.error(error.message);
+      setLoading(false);
     }
   };
 
@@ -335,6 +339,7 @@ const EvaluatorHomework = () => {
     <React.Fragment>
       <Layout>
         {/* Breadcrumb */}
+        {loading && <Loader />}
         <div className='row py-3'>
           <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
@@ -481,7 +486,7 @@ const EvaluatorHomework = () => {
                             </Select>
                           </Form.Item>
                         </div>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                        {/* <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                           <Form.Item name=''>
                             <Select
                               mode='multiple'
@@ -505,10 +510,10 @@ const EvaluatorHomework = () => {
                               showSearch
                               placeholder='Select Doc Type'
                             >
-                              {/* {sectionOptions} */}
+                              {sectionOptions}
                             </Select>
                           </Form.Item>
-                        </div>
+                        </div> */}
                         <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
                           <Form.Item name='section'>
                             <Button

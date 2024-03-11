@@ -293,11 +293,14 @@ const UploadHomework = () => {
   let todayDate = moment().format('DD-MM-YYYY');
 
   const handleUpload = () => {
-    setUploadStart(true);
     if (!subject?.value) {
       return message.error('Please Select Filters First !');
     }
+    if (uniqueFilesList?.length == 0) {
+      return message.error('Please Select File !');
+    }
     console.log(uniqueFilesList);
+    setUploadStart(true);
     uniqueFilesList.forEach((file) => {
       const formData = new FormData();
       formData.append('sub_sec_mpng', subject?.value);
@@ -319,6 +322,7 @@ const UploadHomework = () => {
         })
         .catch((e) => {
           message.error('Upload Failed');
+          setUploadStart(false);
         });
     });
   };

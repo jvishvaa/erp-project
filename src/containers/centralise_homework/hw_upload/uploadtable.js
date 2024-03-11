@@ -226,45 +226,46 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
       width: '40%',
       render: (data, row, index) => (
         <div className='col-md-12 d-flex justify-content-center'>
-              <div className='col-sm-6 col-md-12' style={{display : "flex", justifyContent : "center", gap : "10px",}}>
-              <Form.Item name='erp' style={{width : "50%"}}>
-                <Select
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  maxTagCount={1}
-                  allowClear={true}
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                  className='th-grey th-bg-grey th-br-4 text-left th-select'
-                  placement='bottomRight'
-                  showArrow={true}
-                  onChange={(e, value) => handleCurrentErp(value)}
-                  dropdownMatchSelectWidth={false}
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  value={updatedErp}
-                  showSearch
-                  placeholder='Select Erp'
-                >
-                  {ErpOptions}
-                </Select>
-              </Form.Item>
-              {!loading ? (
-                <Button
-                  className='th-br-4'
-                  type='primary'
-                  onClick={() => {
-                    saveErp(row?.file_location, row?.id);
-                  }}
-                >
-                  Save
-                </Button>
-              ) : (
-                ''
-              )}
-            </div>
-            {/* <div>
+          <div
+            className='col-sm-6 col-md-12'
+            style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}
+          >
+            <Form.Item name='erp' style={{ width: '50%' }}>
+              <Select
+                getPopupContainer={(trigger) => trigger.parentNode}
+                maxTagCount={1}
+                allowClear={true}
+                suffixIcon={<DownOutlined className='th-grey' />}
+                className='th-grey th-bg-grey th-br-4 text-left th-select'
+                placement='bottomRight'
+                showArrow={true}
+                onChange={(e, value) => handleCurrentErp(value)}
+                dropdownMatchSelectWidth={false}
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                value={updatedErp}
+                showSearch
+                placeholder='Select Erp'
+              >
+                {ErpOptions}
+              </Select>
+            </Form.Item>
+            {!loading ? (
+              <Button
+                className='th-br-4'
+                type='primary'
+                onClick={() => {
+                  saveErp(row?.file_location, row?.id);
+                }}
+              >
+                Save
+              </Button>
+            ) : (
+              ''
+            )}
+          </div>
+          {/* <div>
               <input
                 type='text'
                 placeholder='Erp No.'
@@ -332,6 +333,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
   };
 
   const fecthHwData = async (start, end, sec, status) => {
+    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.homework.hwData}?start_date=${start}&end_date=${end}&sub_sec_mpng=${sec}&status=${status}&page=${refferListPageData.currentPage}`
@@ -344,11 +346,14 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
         });
         setCount(result?.data?.result?.count);
         setHwFiles(result?.data?.result?.results);
+        setLoading(false);
       } else {
         message.error(result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       message.error(error.message);
+      setLoading(false);
     }
   };
 
