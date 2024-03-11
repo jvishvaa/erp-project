@@ -203,14 +203,10 @@ const FilesViewEvaluate = ({
 
   useEffect(() => {
     fetchErp({
-      session_year: selectedAcademicYear?.id,
-      branch: selectedBranch?.branch?.id,
-      user_level: 13,
-      grade: selectedGrade,
       section_mapping_id: selectedSubSecMap,
       status: 1,
     });
-  }, [selectedGrade, selectedSubSecMap]);
+  }, [selectedSubSecMap]);
 
   useEffect(() => {
     if (openDrawer == true) {
