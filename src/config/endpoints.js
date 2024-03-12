@@ -23,6 +23,7 @@ const {
     UDAAN_BUCKET: s3UDAAN_BUCKET,
     CENTRAL_BUCKET: CENTRAL_BUCKET,
     FINANCE_BUCKET: FINANCE_BUCKET,
+    erp_googleapi,
   },
 } = ENVCONFIG;
 
@@ -243,10 +244,10 @@ export default {
     teacherData: '/hw-hub/hw_view/',
     updateImage: '/hw-hub/upload_hw_files/',
     getCount: '/hw-hub/get_hw_count/',
-    hwData : '/hw-hub/hw-files/',
-    hwDoctType : '/hw-hub/get_doctype/',
-    hwErp : '/communication/v1/view-users/',
-    hwErpUpdate : '/hw-hub/upload_hw_files/'
+    hwData: '/hw-hub/hw-files/',
+    hwDoctType: '/hw-hub/get_doctype/',
+    hwErp: '/communication/v1/view-users/',
+    hwErpUpdate: '/hw-hub/upload_hw_files/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
@@ -1083,4 +1084,5 @@ export default {
   baseURLCentral,
   s3UDAAN_BUCKET: s3UDAAN_BUCKET,
   FINANCE_BUCKET,
+  erp_googleapi,
 };

@@ -264,7 +264,7 @@ const CentralizedStudentHw = () => {
 
   return (
     <React.Fragment>
-      <Layout>
+      {/* <Layout>
         <div className='row py-3'>
           <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
@@ -276,330 +276,308 @@ const CentralizedStudentHw = () => {
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
-        </div>
+        </div> */}
 
-        <div className='th-br-8 th-bg-white mx-3 mb-3 py-3'>
-          {!attachmentView && (
-            <div className='col-md-12'>
-              <div
-                style={{ width: '100%', margin: '0 auto' }}
-                className='row justify-content-between'
-              >
-                <div className='col-md-9 col-xl-10 my-4 p-0 row'>
+      <div className='th-br-8 th-bg-white mx-3 mb-3 py-3'>
+        {!attachmentView && (
+          <div className='col-md-12'>
+            <div
+              style={{ width: '100%', margin: '0 auto' }}
+              className='row justify-content-between'
+            >
+              <div className='col-md-9 col-xl-10 my-4 p-0 row'>
+                <div className='col-md-3 col-xl-2 col-6 p-1'>
+                  <Button
+                    onClick={() => handleSubjectFilter('all')}
+                    className={`${
+                      subjectSelected == 'all' ? 'th-button-active' : 'th-button'
+                    } th-width-100 th-br-6 text-truncate th-pointer`}
+                  >
+                    All Subject
+                  </Button>
+                </div>
+                {subjectList?.slice(0, showSubjectCount).map((sub) => (
+                  <div className='col-md-3 col-xl-2 col-6 p-1'>
+                    <Tooltip title={sub?.sub_name}>
+                      <Button
+                        className={`${
+                          sub?.subject_mapping_id == subjectSelected?.id
+                            ? 'th-button-active'
+                            : 'th-button'
+                        } th-width-100 th-br-6 text-truncate th-pointer`}
+                        onClick={() => handleSubjectFilter(sub)}
+                      >
+                        {sub?.sub_name}
+                      </Button>
+                    </Tooltip>
+                  </div>
+                ))}
+                {subjectList?.length > 10 && (
                   <div className='col-md-3 col-xl-2 col-6 p-1'>
                     <Button
-                      onClick={() => handleSubjectFilter('all')}
-                      className={`${
-                        subjectSelected == 'all' ? 'th-button-active' : 'th-button'
-                      } th-width-100 th-br-6 text-truncate th-pointer`}
+                      className='th-width-100 th-br-6 text-truncate th-pointer th-button'
+                      onClick={() => {
+                        showSubjectCount == subjectList.length
+                          ? setShowSubjectCount(10)
+                          : setShowSubjectCount(subjectList.length);
+                      }}
                     >
-                      All Subject
+                      Show {showSubjectCount == subjectList.length ? 'Less' : 'All'}
                     </Button>
                   </div>
-                  {subjectList?.slice(0, showSubjectCount).map((sub) => (
-                    <div className='col-md-3 col-xl-2 col-6 p-1'>
-                      <Tooltip title={sub?.subject__subject_name}>
-                        <Button
-                          className={`${
-                            sub?.subject_mapping_id == subjectSelected?.id
-                              ? 'th-button-active'
-                              : 'th-button'
-                          } th-width-100 th-br-6 text-truncate th-pointer`}
-                          onClick={() => handleSubjectFilter(sub)}
-                        >
-                          {sub?.subject__subject_name}
-                        </Button>
-                      </Tooltip>
-                    </div>
-                  ))}
-                  {subjectList?.length > 10 && (
-                    <div className='col-md-3 col-xl-2 col-6 p-1'>
-                      <Button
-                        className='th-width-100 th-br-6 text-truncate th-pointer th-button'
-                        onClick={() => {
-                          showSubjectCount == subjectList.length
-                            ? setShowSubjectCount(10)
-                            : setShowSubjectCount(subjectList.length);
-                        }}
-                      >
-                        Show {showSubjectCount == subjectList.length ? 'Less' : 'All'}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-                <div className='col-md-3 col-xl-2 mt-md-4 p-1'>
-                  <Select
-                    placeholder='Select Volume'
-                    allowClear
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e) => {
-                      handleVolume(e);
-                    }}
-                    onClear={handleClearVolume}
-                    className='w-100 text-left th-black-1 th-bg-grey th-select'
-                  >
-                    {VolumeOptions}
-                  </Select>
+                )}
+              </div>
+              <div className='col-md-3 col-xl-2 mt-md-4 p-1'>
+                <Select
+                  placeholder='Select Volume'
+                  allowClear
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e) => {
+                    handleVolume(e);
+                  }}
+                  onClear={handleClearVolume}
+                  className='w-100 text-left th-black-1 th-bg-grey th-select'
+                >
+                  {VolumeOptions}
+                </Select>
 
-                  <Select
-                    placeholder='Select Doc Type'
-                    allowClear
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    onChange={(e) => {
-                      handleDocType(e);
-                    }}
-                    onClear={handleClearDocType}
-                    className='w-100 text-left th-black-1 th-bg-grey th-select mt-2'
-                  >
-                    {DocTypeOptions}
-                  </Select>
+                <Select
+                  placeholder='Select Doc Type'
+                  allowClear
+                  optionFilterProp='children'
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  onChange={(e) => {
+                    handleDocType(e);
+                  }}
+                  onClear={handleClearDocType}
+                  className='w-100 text-left th-black-1 th-bg-grey th-select mt-2'
+                >
+                  {DocTypeOptions}
+                </Select>
+              </div>
+            </div>
+          </div>
+        )}
+        {homeworkData?.length > 0 ? (
+          <>
+            <div
+              style={{ width: '100%', margin: '0 auto' }}
+              className='row justify-content-between mt-3'
+            >
+              <div className='col-md-8 col-xl-9 col-sm-12 col-12'>
+                <div className='row mb-3'>
+                  <div className='col-md-6 col-sm-12 col-12 text-center'>
+                    <p className='th-15 mb-0'>
+                      Total Assessed :
+                      <span className='text-success th-fw-600'>
+                        {homework?.total_assessed}
+                      </span>
+                    </p>
+                  </div>
+                  <div className='col-md-6 col-sm-12 col-12 text-center th-left-border'>
+                    <p className='th-15 mb-0'>
+                      Total Under Assessed :
+                      <span className='text-danger th-fw-600'>
+                        {homework?.total_under_assessed}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className='col-md-4 col-xl-3 col-sm-12 col-12'>
+                <div className='d-flex justify-content-between'>
+                  Total Assessed: <span className='assessed-mark assessed'></span>
+                </div>
+                <div className='d-flex justify-content-between mt-2'>
+                  Total Under Assessed:
+                  <span className='assessed-mark under-assessed'></span>
                 </div>
               </div>
             </div>
-          )}
-          {homeworkData?.length > 0 ? (
-            <>
-              <div
-                style={{ width: '100%', margin: '0 auto' }}
-                className='row justify-content-between mt-3'
-              >
-                <div className='col-md-8 col-xl-9 col-sm-12 col-12'>
-                  <div className='row mb-3'>
-                    <div className='col-md-6 col-sm-12 col-12 text-center'>
-                      <p className='th-15 mb-0'>
-                        Total Assessed :
-                        <span className='text-success th-fw-600'>
-                          {homework?.total_assessed}
-                        </span>
-                      </p>
-                    </div>
-                    <div className='col-md-6 col-sm-12 col-12 text-center th-left-border'>
-                      <p className='th-15 mb-0'>
-                        Total Under Assessed :
-                        <span className='text-danger th-fw-600'>
-                          {homework?.total_under_assessed}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
+            <div className='row mt-3'>
+              {attachmentView && (
+                <div className='row my-2'>
+                  <p className='th-16 col-12 th-fw-600'>
+                    <ArrowLeftOutlined onClick={() => handleAttachmentView(false)} />
+                    <span className='ml-2'>{selectedHomework?.name}</span>
+                  </p>
                 </div>
-                <div className='col-md-4 col-xl-3 col-sm-12 col-12'>
-                  <div className='d-flex justify-content-between'>
-                    Total Assessed: <span className='assessed-mark assessed'></span>
-                  </div>
-                  <div className='d-flex justify-content-between mt-2'>
-                    Total Under Assessed:
-                    <span className='assessed-mark under-assessed'></span>
-                  </div>
-                </div>
-              </div>
-              <div className='row mt-3'>
-                {attachmentView && (
-                  <div className='row my-2'>
-                    <p className='th-16 col-12 th-fw-600'>
-                      <ArrowLeftOutlined onClick={() => handleAttachmentView(false)} />
-                      <span className='ml-2'>{selectedHomework?.name}</span>
-                    </p>
-                  </div>
-                )}
+              )}
 
-                {console.log({ selectedHomework })}
+              {console.log({ selectedHomework })}
 
-                {!attachmentView && (
-                  <div className='col-md-5 col-xl-4 col-sm-12 col-12 mb-3'>
-                    <div className='card shadow border-0 th-br-4 w-100'>
-                      <div className='card-body'>
-                        <div className='d-flex justify-content-between'>
-                          <div>
-                            <p className='text-uppercase'>Homework Files</p>
-                          </div>
-                          <div className='text-muted' style={{ cursor: 'pointer' }}>
-                            <Popover
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              showArrow={false}
-                              overlayClassName='th-popover'
-                              content={
-                                <div className='w-100 th-br-4'>
-                                  <div className=' py-1'>
-                                    <Checkbox
-                                      className='th-large-checkbox'
-                                      name='notebook_filter'
-                                      value={'bookmarked'}
-                                      onChange={(e) =>
-                                        setSelectedHomeworkFilter(e.target.value)
-                                      }
-                                      checked={selectedHomeworkFilter === 'bookmarked'}
-                                    >
-                                      Bookmarked
-                                    </Checkbox>
-                                  </div>
-                                  <div className='py-1'>
-                                    <Checkbox
-                                      className='th-large-checkbox'
-                                      name='notebook_filter'
-                                      value={'withnotes'}
-                                      onChange={(e) =>
-                                        setSelectedHomeworkFilter(e.target.value)
-                                      }
-                                      checked={selectedHomeworkFilter === 'withnotes'}
-                                    >
-                                      With Notes
-                                    </Checkbox>
-                                  </div>
-
-                                  <div className='d-flex mt-3 justify-content-between'>
-                                    <span
-                                      className='text-muted th-fw-600'
-                                      style={{ cursor: 'pointer' }}
-                                      onClick={searchHomework}
-                                    >
-                                      Search
-                                    </span>
-                                    <span
-                                      className='text-muted th-fw-600'
-                                      style={{ cursor: 'pointer' }}
-                                      onClick={resetHomeworkFilter}
-                                    >
-                                      Reset
-                                    </span>
-                                  </div>
-                                </div>
-                              }
-                              trigger='click'
-                              placement='bottomRight'
-                              visible={homeworkFilterVisible}
-                              onClick={() =>
-                                setHomeworkFilterVisible(!homeworkFilterVisible)
-                              }
-                            >
-                              Filter <FilterOutlined />
-                            </Popover>
-                          </div>
+              {!attachmentView && (
+                <div className='col-md-5 col-xl-4 col-sm-12 col-12 mb-3'>
+                  <div className='card shadow border-0 th-br-4 w-100'>
+                    <div className='card-body'>
+                      <div className='d-flex justify-content-between'>
+                        <div>
+                          <p className='text-uppercase'>Homework Files</p>
                         </div>
-
-                        <div className='notebook-list mt-3'>
-                          {Array.isArray(homeworkData) &&
-                            homeworkData?.length > 0 &&
-                            homeworkData?.map((item, index) => (
-                              <div
-                                className='notebook-list-item'
-                                key={index}
-                                style={{
-                                  backgroundColor: `${
-                                    selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
-                                  }`,
-                                }}
-                              >
-                                <div className='download-icon cursor-pointer'>
-                                  <img
-                                    src={DOWNLOADICON}
-                                    alt='download'
-                                    className='img-fluid'
-                                    onClick={() => {
-                                      downloadHomeworkAttachment(
-                                        `${endpoints.erpBucket}${item?.file_location}`,
-                                        item.file_location
-                                      );
-                                    }}
-                                  />
-                                </div>
-                                <div
-                                  className='notebook-content ml-2'
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => handleAttachment(index)}
-                                >
-                                  <Tooltip
-                                    title={`${item.file_location}`}
-                                    showArrow={false}
-                                    placement='right'
-                                    overlayInnerStyle={{
-                                      borderRadius: 4,
-                                      backgroundColor: 'white',
-                                      color: 'black',
-                                      maxHeight: 200,
-                                      overflowY: 'scroll',
-                                      textTransform: 'capitalize',
-                                    }}
+                        <div className='text-muted' style={{ cursor: 'pointer' }}>
+                          <Popover
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            showArrow={false}
+                            overlayClassName='th-popover'
+                            content={
+                              <div className='w-100 th-br-4'>
+                                <div className=' py-1'>
+                                  <Checkbox
+                                    className='th-large-checkbox'
+                                    name='notebook_filter'
+                                    value={'bookmarked'}
+                                    onChange={(e) =>
+                                      setSelectedHomeworkFilter(e.target.value)
+                                    }
+                                    checked={selectedHomeworkFilter === 'bookmarked'}
                                   >
-                                    <h5 className='th-14 mb-0'>{item.file_location}</h5>
-                                    {/* <p className='th-12 mb-0 text-muted text-truncate'>
+                                    Bookmarked
+                                  </Checkbox>
+                                </div>
+                                <div className='py-1'>
+                                  <Checkbox
+                                    className='th-large-checkbox'
+                                    name='notebook_filter'
+                                    value={'withnotes'}
+                                    onChange={(e) =>
+                                      setSelectedHomeworkFilter(e.target.value)
+                                    }
+                                    checked={selectedHomeworkFilter === 'withnotes'}
+                                  >
+                                    With Notes
+                                  </Checkbox>
+                                </div>
+
+                                <div className='d-flex mt-3 justify-content-between'>
+                                  <span
+                                    className='text-muted th-fw-600'
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={searchHomework}
+                                  >
+                                    Search
+                                  </span>
+                                  <span
+                                    className='text-muted th-fw-600'
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={resetHomeworkFilter}
+                                  >
+                                    Reset
+                                  </span>
+                                </div>
+                              </div>
+                            }
+                            trigger='click'
+                            placement='bottomRight'
+                            visible={homeworkFilterVisible}
+                            onClick={() =>
+                              setHomeworkFilterVisible(!homeworkFilterVisible)
+                            }
+                          >
+                            Filter <FilterOutlined />
+                          </Popover>
+                        </div>
+                      </div>
+
+                      <div className='notebook-list mt-3'>
+                        {Array.isArray(homeworkData) &&
+                          homeworkData?.length > 0 &&
+                          homeworkData?.map((item, index) => (
+                            <div
+                              className='notebook-list-item'
+                              key={index}
+                              style={{
+                                backgroundColor: `${
+                                  selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
+                                }`,
+                              }}
+                            >
+                              <div className='download-icon cursor-pointer'>
+                                <img
+                                  src={DOWNLOADICON}
+                                  alt='download'
+                                  className='img-fluid'
+                                  onClick={() => {
+                                    downloadHomeworkAttachment(
+                                      `${endpoints.erpBucket}${item?.file_location}`,
+                                      item.file_location
+                                    );
+                                  }}
+                                />
+                              </div>
+                              <div
+                                className='notebook-content ml-2'
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleAttachment(index)}
+                              >
+                                <Tooltip
+                                  title={`${item.file_location}`}
+                                  showArrow={false}
+                                  placement='right'
+                                  overlayInnerStyle={{
+                                    borderRadius: 4,
+                                    backgroundColor: 'white',
+                                    color: 'black',
+                                    maxHeight: 200,
+                                    overflowY: 'scroll',
+                                    textTransform: 'capitalize',
+                                  }}
+                                >
+                                  <h5 className='th-14 mb-0'>{item.file_location}</h5>
+                                  {/* <p className='th-12 mb-0 text-muted text-truncate'>
                                       <span className='th-fw-600'>Description:</span>
                                       {item.description}
                                     </p> */}
-                                  </Tooltip>
-                                </div>
-                                <div className='notebook-action'>
-                                  {item.isBookmarked && (
-                                    <span>
-                                      <img
-                                        className='img-fluid'
-                                        alt='bookmark'
-                                        src={BOOKMARKICON}
-                                      />
-                                    </span>
-                                  )}
-                                  {item.isNote && (
-                                    <span>
-                                      <img
-                                        className='img-fluid'
-                                        alt='notebook'
-                                        src={NOTEICON}
-                                      />
-                                    </span>
-                                  )}
-                                </div>
+                                </Tooltip>
                               </div>
-                            ))}
-                        </div>
+                              <div className='notebook-action'>
+                                {item.isBookmarked && (
+                                  <span>
+                                    <img
+                                      className='img-fluid'
+                                      alt='bookmark'
+                                      src={BOOKMARKICON}
+                                    />
+                                  </span>
+                                )}
+                                {item.isNote && (
+                                  <span>
+                                    <img
+                                      className='img-fluid'
+                                      alt='notebook'
+                                      src={NOTEICON}
+                                    />
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
                       </div>
                     </div>
                   </div>
-                )}
-                {attachmentView && noteTakerView && (
-                  <div
-                    className={` ${
-                      attachmentView && noteTakerView
-                        ? 'col-md-5 col-xl-4 col-12'
-                        : attachmentView
-                        ? 'col-12'
-                        : 'col-md-7 col-xl-4 col-sm-12 col-12'
-                    }`}
-                  >
-                    <NoteTaker
-                      noteTakerView={noteTakerView}
-                      setNoteTakerView={setNoteTakerView}
-                      handleNoteTakerView={handleNoteTakerView}
-                      selectedHomework={selectedHomework}
-                      setSelectedHomework={setSelectedHomework}
-                      selectedHomeworkIndex={selectedHomeworkIndex}
-                      setSelectedHomeworkIndex={setSelectedHomeworkIndex}
-                      homeworkData={homeworkData}
-                    />
-                  </div>
-                )}
+                </div>
+              )}
+              {attachmentView && noteTakerView && (
                 <div
                   className={` ${
                     attachmentView && noteTakerView
-                      ? 'col-md-7 col-xl-8 col-12 mb-3'
+                      ? 'col-md-5 col-xl-4 col-12'
                       : attachmentView
-                      ? 'col-12 mb-3'
-                      : 'col-md-7 col-xl-8 col-sm-12 col-12 mb-3'
+                      ? 'col-12'
+                      : 'col-md-7 col-xl-4 col-sm-12 col-12'
                   }`}
                 >
-                  <HomeworkAttachments
-                    attachmentView={attachmentView}
-                    setAttachmentView={setAttachmentView}
-                    handleAttachmentView={handleAttachmentView}
+                  <NoteTaker
+                    noteTakerView={noteTakerView}
+                    setNoteTakerView={setNoteTakerView}
                     handleNoteTakerView={handleNoteTakerView}
                     selectedHomework={selectedHomework}
                     setSelectedHomework={setSelectedHomework}
@@ -608,16 +586,38 @@ const CentralizedStudentHw = () => {
                     homeworkData={homeworkData}
                   />
                 </div>
+              )}
+              <div
+                className={` ${
+                  attachmentView && noteTakerView
+                    ? 'col-md-7 col-xl-8 col-12 mb-3'
+                    : attachmentView
+                    ? 'col-12 mb-3'
+                    : 'col-md-7 col-xl-8 col-sm-12 col-12 mb-3'
+                }`}
+              >
+                <HomeworkAttachments
+                  attachmentView={attachmentView}
+                  setAttachmentView={setAttachmentView}
+                  handleAttachmentView={handleAttachmentView}
+                  handleNoteTakerView={handleNoteTakerView}
+                  selectedHomework={selectedHomework}
+                  setSelectedHomework={setSelectedHomework}
+                  selectedHomeworkIndex={selectedHomeworkIndex}
+                  setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                  homeworkData={homeworkData}
+                />
               </div>
-            </>
-          ) : (
-            <Result
-              status='warning'
-              title={<span className='th-grey'>Nothing to show</span>}
-            />
-          )}
-        </div>
-      </Layout>
+            </div>
+          </>
+        ) : (
+          <Result
+            status='warning'
+            title={<span className='th-grey'>Nothing to show</span>}
+          />
+        )}
+      </div>
+      {/* </Layout> */}
     </React.Fragment>
   );
 };

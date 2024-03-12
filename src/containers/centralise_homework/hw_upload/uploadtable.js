@@ -226,45 +226,46 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
       width: '40%',
       render: (data, row, index) => (
         <div className='col-md-12 d-flex justify-content-center'>
-              <div className='col-sm-6 col-md-12' style={{display : "flex", justifyContent : "center", gap : "10px",}}>
-              <Form.Item name='erp' style={{width : "50%"}}>
-                <Select
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  maxTagCount={1}
-                  allowClear={true}
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                  className='th-grey th-bg-grey th-br-4 text-left th-select'
-                  placement='bottomRight'
-                  showArrow={true}
-                  onChange={(e, value) => handleCurrentErp(value)}
-                  dropdownMatchSelectWidth={false}
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  value={updatedErp}
-                  showSearch
-                  placeholder='Select Erp'
-                >
-                  {ErpOptions}
-                </Select>
-              </Form.Item>
-              {!loading ? (
-                <Button
-                  className='th-br-4'
-                  type='primary'
-                  onClick={() => {
-                    saveErp(row?.file_location, row?.id);
-                  }}
-                >
-                  Save
-                </Button>
-              ) : (
-                ''
-              )}
-            </div>
-            {/* <div>
+          <div
+            className='col-sm-6 col-md-12'
+            style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}
+          >
+            <Form.Item name='erp' style={{ width: '50%' }}>
+              <Select
+                getPopupContainer={(trigger) => trigger.parentNode}
+                maxTagCount={1}
+                allowClear={true}
+                suffixIcon={<DownOutlined className='th-grey' />}
+                className='th-grey th-bg-grey th-br-4 text-left th-select'
+                placement='bottomRight'
+                showArrow={true}
+                onChange={(e, value) => handleCurrentErp(value)}
+                dropdownMatchSelectWidth={false}
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+                value={updatedErp}
+                showSearch
+                placeholder='Select Erp'
+              >
+                {ErpOptions}
+              </Select>
+            </Form.Item>
+            {!loading ? (
+              <Button
+                className='th-br-4'
+                type='primary'
+                onClick={() => {
+                  saveErp(row?.file_location, row?.id);
+                }}
+              >
+                Save
+              </Button>
+            ) : (
+              ''
+            )}
+          </div>
+          {/* <div>
               <input
                 type='text'
                 placeholder='Erp No.'
@@ -488,24 +489,26 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
                     />
                   </div>
                 </div>
-                <div className='text-center mt-2'>
-                  <Pagination
-                    current={refferListPageData.currentPage}
-                    total={refferListPageData.totalCount}
-                    pageSize={refferListPageData.pageSize}
-                    onChange={(value) =>
-                      setRefferListPageData({
-                        ...refferListPageData,
-                        currentPage: value,
-                      })
-                    }
-                    showSizeChanger={false}
-                    showQuickJumper={false}
-                    showTotal={(total, range) =>
-                      `${range[0]}-${range[1]} of ${total} items`
-                    }
-                  />
-                </div>
+                {hwFiles?.length > 0 && (
+                  <div className='text-center mt-2'>
+                    <Pagination
+                      current={refferListPageData.currentPage}
+                      total={refferListPageData.totalCount}
+                      pageSize={refferListPageData.pageSize}
+                      onChange={(value) =>
+                        setRefferListPageData({
+                          ...refferListPageData,
+                          currentPage: value,
+                        })
+                      }
+                      showSizeChanger={false}
+                      showQuickJumper={false}
+                      showTotal={(total, range) =>
+                        `${range[0]}-${range[1]} of ${total} items`
+                      }
+                    />
+                  </div>
+                )}
               </TabPane>
               <TabPane tab='Failed' key='2'>
                 <div className='d-flex justify-content-end mb-2'>
@@ -525,24 +528,26 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
                     pagination={false}
                   />
                 </div>
-                <div className='text-center mt-2'>
-                  <Pagination
-                    current={refferListPageData.currentPage}
-                    total={refferListPageData.totalCount}
-                    pageSize={refferListPageData.pageSize}
-                    onChange={(value) =>
-                      setRefferListPageData({
-                        ...refferListPageData,
-                        currentPage: value,
-                      })
-                    }
-                    showSizeChanger={false}
-                    showQuickJumper={false}
-                    showTotal={(total, range) =>
-                      `${range[0]}-${range[1]} of ${total} items`
-                    }
-                  />
-                </div>
+                {hwFiles?.length > 0 && (
+                  <div className='text-center mt-2'>
+                    <Pagination
+                      current={refferListPageData.currentPage}
+                      total={refferListPageData.totalCount}
+                      pageSize={refferListPageData.pageSize}
+                      onChange={(value) =>
+                        setRefferListPageData({
+                          ...refferListPageData,
+                          currentPage: value,
+                        })
+                      }
+                      showSizeChanger={false}
+                      showQuickJumper={false}
+                      showTotal={(total, range) =>
+                        `${range[0]}-${range[1]} of ${total} items`
+                      }
+                    />
+                  </div>
+                )}
               </TabPane>
             </Tabs>
           </div>

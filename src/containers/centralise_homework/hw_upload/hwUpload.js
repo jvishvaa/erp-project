@@ -259,8 +259,7 @@ const HwUpload = () => {
 
   return (
     <React.Fragment>
-      <Layout>
-        {/* Breadcrumb */}
+      {/* <Layout>
         <div className='row py-3'>
           <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
@@ -272,156 +271,148 @@ const HwUpload = () => {
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
-        </div>
+        </div> */}
 
-        <div className='row'>
-          <div className='col-md-12'>
-            <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm mb-3'>
-              <div className='row'>
-                <Form
-                  id='filterForm'
-                  className='mt-3'
-                  layout={'vertical'}
-                  ref={formRef}
-                  style={{ width: '100%' }}
-                >
-                  <div className='row'>
-                    <div className='col-md-12 row'>
-                      <div className='col-md-2 col-sm-6 col-12'>
-                        <Form.Item name='grade'>
-                          <Select
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            maxTagCount={1}
-                            allowClear={true}
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                            placement='bottomRight'
-                            showArrow={true}
-                            onChange={(e, value) => handleChangeGrade(value)}
-                            onClear={handleClearGrade}
-                            dropdownMatchSelectWidth={false}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            showSearch
-                            placeholder='Select Grade'
-                          >
-                            {gradeOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-2 col-sm-6 col-12'>
-                        <Form.Item name='section'>
-                          <Select
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            maxTagCount={1}
-                            allowClear={true}
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                            placement='bottomRight'
-                            showArrow={true}
-                            onChange={(e, value) => handleChangeSection(value)}
-                            onClear={handleClearSection}
-                            dropdownMatchSelectWidth={false}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            showSearch
-                            placeholder='Select section'
-                          >
-                            {sectionOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-2 col-sm-6 col-12'>
-                        <Form.Item name='subject'>
-                          <Select
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            maxTagCount={1}
-                            allowClear={true}
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                            placement='bottomRight'
-                            showArrow={true}
-                            onChange={(e, value) => handleChangeSubject(value)}
-                            onClear={handleClearSubject}
-                            dropdownMatchSelectWidth={false}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            showSearch
-                            placeholder='Select Subject'
-                          >
-                            {subjectOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-
-                      <div className='col-md-3 col-sm-6 col-12'>
-                        <Form.Item name='date'>
-                          <RangePicker
-                            className='th-width-100 th-br-4'
-                            onChange={(value) => handleDateChange(value)}
-                            defaultValue={[moment(), moment()]}
-                            format={dateFormat}
-                            separator={'to'}
-                          />
-                        </Form.Item>
-                      </div>
-
-                      <div className='col-md-2 col-sm-6 col-12'>
-                        <Button
-                          className='w-100 th-br-4'
-                          type='primary'
-                          onClick={handleUploadPage}
-                        >
-                          Upload
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </Form>
+      {/* <div className='row'>
+        <div className='col-md-12'>
+          <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm mb-3'> */}
+      <div className='row'>
+        <Form
+          id='filterForm'
+          className='mt-3'
+          layout={'vertical'}
+          ref={formRef}
+          style={{ width: '100%' }}
+        >
+          <div className='row'>
+            <div className='col-md-12 row'>
+              <div className='col-md-2 col-sm-6 col-12'>
+                <Form.Item name='grade'>
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    maxTagCount={1}
+                    allowClear={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                    placement='bottomRight'
+                    showArrow={true}
+                    onChange={(e, value) => handleChangeGrade(value)}
+                    onClear={handleClearGrade}
+                    dropdownMatchSelectWidth={false}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    showSearch
+                    placeholder='Select Grade'
+                  >
+                    {gradeOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-2 col-sm-6 col-12'>
+                <Form.Item name='section'>
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    maxTagCount={1}
+                    allowClear={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                    placement='bottomRight'
+                    showArrow={true}
+                    onChange={(e, value) => handleChangeSection(value)}
+                    onClear={handleClearSection}
+                    dropdownMatchSelectWidth={false}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    showSearch
+                    placeholder='Select section'
+                  >
+                    {sectionOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-2 col-sm-6 col-12'>
+                <Form.Item name='subject'>
+                  <Select
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    maxTagCount={1}
+                    allowClear={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                    placement='bottomRight'
+                    showArrow={true}
+                    onChange={(e, value) => handleChangeSubject(value)}
+                    onClear={handleClearSubject}
+                    dropdownMatchSelectWidth={false}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    showSearch
+                    placeholder='Select Subject'
+                  >
+                    {subjectOptions}
+                  </Select>
+                </Form.Item>
               </div>
 
-              <div className='row '>
-                {showFilterPage ? (
-                  <div className='col-12'>
-                    <Result
-                      status='warning'
-                      title={
-                        <span className='th-grey'>Please apply filter to view data</span>
-                      }
-                    />
-                  </div>
-                ) : (
-                  <div className='my-3'>
-                    <UploadTable
-                      startDate={startDate}
-                      endDate={endDate}
-                      subejctId={subject}
-                      sectionId={section}
-                    />
-                  </div>
-                )}
+              <div className='col-md-3 col-sm-6 col-12'>
+                <Form.Item name='date'>
+                  <RangePicker
+                    className='th-width-100 th-br-4'
+                    onChange={(value) => handleDateChange(value)}
+                    defaultValue={[moment(), moment()]}
+                    format={dateFormat}
+                    separator={'to'}
+                  />
+                </Form.Item>
+              </div>
+
+              <div className='col-md-2 col-sm-6 col-12'>
+                <Button
+                  className='w-100 th-br-4'
+                  type='primary'
+                  onClick={handleUploadPage}
+                >
+                  Upload
+                </Button>
               </div>
             </div>
           </div>
-        </div>
+        </Form>
+      </div>
 
-        {/* </div> */}
-      </Layout>
+      <div className='row '>
+        {showFilterPage ? (
+          <div className='col-12'>
+            <Result
+              status='warning'
+              title={<span className='th-grey'>Please apply filter to view data</span>}
+            />
+          </div>
+        ) : (
+          <div className='my-3'>
+            <UploadTable
+              startDate={startDate}
+              endDate={endDate}
+              subejctId={subject}
+              sectionId={section}
+            />
+          </div>
+        )}
+      </div>
+      {/* </div>
+        </div>
+      </div> */}
+
+      {/* </div> */}
+      {/* </Layout> */}
     </React.Fragment>
   );
 };

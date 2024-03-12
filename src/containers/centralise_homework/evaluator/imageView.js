@@ -332,8 +332,7 @@ const EvaluatorHomework = () => {
 
   return (
     <React.Fragment>
-      <Layout>
-        {/* Breadcrumb */}
+      {/* <Layout>
         <div className='row py-3'>
           <div className='col-md-9' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
@@ -345,81 +344,81 @@ const EvaluatorHomework = () => {
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
-        </div>
+        </div> */}
 
-        <div className='row'>
-          <div className='col-md-12'>
-            <div className='th-bg-white th-br-5 py-3 px-3 shadow-sm'>
-              {showFilters ? (
-                <div className='row card p-2'>
-                  <Form
-                    id='filterForm'
-                    className='mt-3'
-                    layout={'vertical'}
-                    ref={formRef}
-                    style={{ width: '100%' }}
-                  >
-                    <div className='row justify-content-between'>
-                      <div className='col-xl-7 col-md-6 row'>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name='grade'>
-                            <Select
-                              // mode='multiple'
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              maxTagCount={1}
-                              allowClear={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                              placement='bottomRight'
-                              showArrow={true}
-                              onChange={(e, value) => handleChangeGrade(value)}
-                              onClear={handleClearGrade}
-                              dropdownMatchSelectWidth={false}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              showSearch
-                              placeholder='Select Grade'
-                            >
-                              {gradeOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name='section'>
-                            <Select
-                              // mode='multiple'
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              maxTagCount={1}
-                              allowClear={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                              placement='bottomRight'
-                              showArrow={true}
-                              onChange={(e, value) => handleChangeSection(value)}
-                              onClear={handleClearSection}
-                              dropdownMatchSelectWidth={false}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              showSearch
-                              placeholder='Select section'
-                            >
-                              {sectionOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name='date'>
-                            {/* <Select
+      <div className='row'>
+        <div className='col-md-12'>
+          <div className='th-bg-white th-br-5 py-3 px-3 shadow-sm'>
+            {showFilters ? (
+              <div className='row card p-2'>
+                <Form
+                  id='filterForm'
+                  className='mt-3'
+                  layout={'vertical'}
+                  ref={formRef}
+                  style={{ width: '100%' }}
+                >
+                  <div className='row justify-content-between'>
+                    <div className='col-xl-7 col-md-6 row'>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                        <Form.Item name='grade'>
+                          <Select
+                            // mode='multiple'
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            maxTagCount={1}
+                            allowClear={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                            placement='bottomRight'
+                            showArrow={true}
+                            onChange={(e, value) => handleChangeGrade(value)}
+                            onClear={handleClearGrade}
+                            dropdownMatchSelectWidth={false}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            showSearch
+                            placeholder='Select Grade'
+                          >
+                            {gradeOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                        <Form.Item name='section'>
+                          <Select
+                            // mode='multiple'
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            maxTagCount={1}
+                            allowClear={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                            placement='bottomRight'
+                            showArrow={true}
+                            onChange={(e, value) => handleChangeSection(value)}
+                            onClear={handleClearSection}
+                            dropdownMatchSelectWidth={false}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            showSearch
+                            placeholder='Select section'
+                          >
+                            {sectionOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                        <Form.Item name='date'>
+                          {/* <Select
                               mode='multiple'
                               getPopupContainer={(trigger) => trigger.parentNode}
                               maxTagCount={1}
@@ -444,236 +443,236 @@ const EvaluatorHomework = () => {
                               {volumeOptions}
                             </Select> */}
 
-                            <RangePicker
-                              className='th-width-100 th-br-4'
-                              onChange={(value) => handleDateChange(value)}
-                              defaultValue={[moment(), moment()]}
-                              format={dateFormat}
-                              separator={'to'}
-                            />
-                          </Form.Item>
-                        </div>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name='subject'>
-                            <Select
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              maxTagCount={1}
-                              allowClear={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                              placement='bottomRight'
-                              showArrow={true}
-                              onChange={(e) => handleChangeSubject(e)}
-                              onClear={handleClearSection}
-                              dropdownMatchSelectWidth={false}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              showSearch
-                              placeholder='Select Subject'
-                            >
-                              {subjectListOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name=''>
-                            <Select
-                              mode='multiple'
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              maxTagCount={1}
-                              allowClear={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                              placement='bottomRight'
-                              showArrow={true}
-                              onChange={(e, value) => handleChangeSection(value)}
-                              onClear={handleClearSection}
-                              dropdownMatchSelectWidth={false}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              showSearch
-                              placeholder='Select Doc Type'
-                            >
-                              {/* {sectionOptions} */}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name='section'>
-                            <Button
-                              className=' th-br-4 w-100  th-select'
-                              type='primary'
-                              onClick={() => {
-                                fetchTeacherData({
-                                  // is_assessed: 'False',
-                                  start_date: startDate,
-                                  end_date: endDate,
-                                  sub_sec_mpng: subject,
-                                  page: pageNo,
-                                });
-                              }}
-                            >
-                              Filter
-                            </Button>
-                          </Form.Item>
-                        </div>
+                          <RangePicker
+                            className='th-width-100 th-br-4'
+                            onChange={(value) => handleDateChange(value)}
+                            defaultValue={[moment(), moment()]}
+                            format={dateFormat}
+                            separator={'to'}
+                          />
+                        </Form.Item>
                       </div>
-                      <div className='col-md-5 col-xl-3  p-0 row mb-2'>
-                        {countData ? (
-                          <div
-                            className='col-md-12 py-2'
-                            style={{
-                              boxShadow:
-                                'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
-                              borderRadius: '10px',
-                              marginBottom: '5px',
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                        <Form.Item name='subject'>
+                          <Select
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            maxTagCount={1}
+                            allowClear={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                            placement='bottomRight'
+                            showArrow={true}
+                            onChange={(e) => handleChangeSubject(e)}
+                            onClear={handleClearSection}
+                            dropdownMatchSelectWidth={false}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            showSearch
+                            placeholder='Select Subject'
+                          >
+                            {subjectListOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                        <Form.Item name=''>
+                          <Select
+                            mode='multiple'
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            maxTagCount={1}
+                            allowClear={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                            placement='bottomRight'
+                            showArrow={true}
+                            onChange={(e, value) => handleChangeSection(value)}
+                            onClear={handleClearSection}
+                            dropdownMatchSelectWidth={false}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            showSearch
+                            placeholder='Select Doc Type'
+                          >
+                            {/* {sectionOptions} */}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                        <Form.Item name='section'>
+                          <Button
+                            className=' th-br-4 w-100  th-select'
+                            type='primary'
+                            onClick={() => {
+                              fetchTeacherData({
+                                // is_assessed: 'False',
+                                start_date: startDate,
+                                end_date: endDate,
+                                sub_sec_mpng: subject,
+                                page: pageNo,
+                              });
                             }}
                           >
-                            <div
-                              className='col-md-12 row justify-content-between th-13'
-                              style={{ marginTop: '6px' }}
-                            >
-                              <div>
-                                <span>
-                                  Completed :{' '}
-                                  <span style={{ color: 'green' }}>
-                                    {countData?.total_assessed}
-                                  </span>{' '}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <span>Completed </span>
-                                <span
-                                  style={{
-                                    backgroundColor: 'green',
-                                    color: 'white',
-                                    height: '15px',
-                                    width: '15px',
-                                    borderRadius: '5px',
-                                    display: 'inline-block',
-                                    marginLeft: '20px',
-                                  }}
-                                ></span>
-                              </div>
-                            </div>
-                            <div
-                              className='col-md-12 row justify-content-between th-13'
-                              style={{ marginTop: '6px' }}
-                            >
-                              <div>
-                                <span>
-                                  Pending :{' '}
-                                  <span style={{ color: 'red' }}>
-                                    {countData?.total_under_assessed}
-                                  </span>
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <span>Pending </span>
-                                <span
-                                  style={{
-                                    backgroundColor: 'red',
-                                    color: 'white',
-                                    height: '15px',
-                                    width: '15px',
-                                    borderRadius: '5px',
-                                    display: 'inline-block',
-                                    marginLeft: '20px',
-                                  }}
-                                ></span>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          ''
-                        )}
+                            Filter
+                          </Button>
+                        </Form.Item>
                       </div>
                     </div>
-                  </Form>
+                    <div className='col-md-5 col-xl-3  p-0 row mb-2'>
+                      {countData ? (
+                        <div
+                          className='col-md-12 py-2'
+                          style={{
+                            boxShadow:
+                              'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
+                            borderRadius: '10px',
+                            marginBottom: '5px',
+                          }}
+                        >
+                          <div
+                            className='col-md-12 row justify-content-between th-13'
+                            style={{ marginTop: '6px' }}
+                          >
+                            <div>
+                              <span>
+                                Completed :{' '}
+                                <span style={{ color: 'green' }}>
+                                  {countData?.total_assessed}
+                                </span>{' '}
+                              </span>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <span>Completed </span>
+                              <span
+                                style={{
+                                  backgroundColor: 'green',
+                                  color: 'white',
+                                  height: '15px',
+                                  width: '15px',
+                                  borderRadius: '5px',
+                                  display: 'inline-block',
+                                  marginLeft: '20px',
+                                }}
+                              ></span>
+                            </div>
+                          </div>
+                          <div
+                            className='col-md-12 row justify-content-between th-13'
+                            style={{ marginTop: '6px' }}
+                          >
+                            <div>
+                              <span>
+                                Pending :{' '}
+                                <span style={{ color: 'red' }}>
+                                  {countData?.total_under_assessed}
+                                </span>
+                              </span>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <span>Pending </span>
+                              <span
+                                style={{
+                                  backgroundColor: 'red',
+                                  color: 'white',
+                                  height: '15px',
+                                  width: '15px',
+                                  borderRadius: '5px',
+                                  display: 'inline-block',
+                                  marginLeft: '20px',
+                                }}
+                              ></span>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  </div>
+                </Form>
+              </div>
+            ) : (
+              ''
+            )}
+            <div className='col-md-12 p-0 d-flex justify-content-end'>
+              {showFilters ? (
+                <div>
+                  <Button icon={<UpOutlined />} onClick={handleFilters} />
                 </div>
               ) : (
-                ''
+                <div>
+                  <Button icon={<DownOutlined />} onClick={handleFilters} />
+                </div>
               )}
-              <div className='col-md-12 p-0 d-flex justify-content-end'>
-                {showFilters ? (
-                  <div>
-                    <Button icon={<UpOutlined />} onClick={handleFilters} />
-                  </div>
-                ) : (
-                  <div>
-                    <Button icon={<DownOutlined />} onClick={handleFilters} />
-                  </div>
-                )}
-              </div>
-              <div className='mt-4 '>
-                {evaluateData?.length === 0 ? (
-                  <div className='col-12'>
-                    <Result
-                      status='warning'
-                      title={
-                        <span className='th-grey'>Please apply filter to view data</span>
-                      }
-                    />
-                  </div>
-                ) : (
-                  <div className='mb-3'>
-                    <FilesViewEvaluate
-                      selectedHomeworkIndex={selectedHomeworkIndex}
-                      setSelectedHomeworkIndex={setSelectedHomeworkIndex}
-                      evaluateData={evaluateData}
-                      selectedGrade={grade}
-                      selectedSubSecMap={section}
-                    />
+            </div>
+            <div className='mt-4 '>
+              {evaluateData?.length === 0 ? (
+                <div className='col-12'>
+                  <Result
+                    status='warning'
+                    title={
+                      <span className='th-grey'>Please apply filter to view data</span>
+                    }
+                  />
+                </div>
+              ) : (
+                <div className='mb-3'>
+                  <FilesViewEvaluate
+                    selectedHomeworkIndex={selectedHomeworkIndex}
+                    setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                    evaluateData={evaluateData}
+                    selectedGrade={grade}
+                    selectedSubSecMap={section}
+                  />
 
-                    <Pagination
-                      current={pageNo}
-                      total={totalPage}
-                      showSizeChanger={false}
-                      pageSize={pageLimit}
-                      onChange={(current) => {
-                        setPageNo(current);
-                        setSelectedHomeworkIndex(0);
-                        fetchTeacherData({
-                          // is_assessed: 'False',
-                          start_date: startDate,
-                          end_date: endDate,
-                          sub_sec_mpng: subject,
-                          page: current,
-                        });
-                      }}
-                      className='text-center'
-                    />
-                  </div>
-                )}
-              </div>
+                  <Pagination
+                    current={pageNo}
+                    total={totalPage}
+                    showSizeChanger={false}
+                    pageSize={pageLimit}
+                    onChange={(current) => {
+                      setPageNo(current);
+                      setSelectedHomeworkIndex(0);
+                      fetchTeacherData({
+                        // is_assessed: 'False',
+                        start_date: startDate,
+                        end_date: endDate,
+                        sub_sec_mpng: subject,
+                        page: current,
+                      });
+                    }}
+                    className='text-center'
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
+      </div>
 
-        {/* </div> */}
-      </Layout>
+      {/* </div> */}
+      {/* </Layout> */}
     </React.Fragment>
   );
 };

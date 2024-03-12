@@ -9,9 +9,17 @@ import {
   Modal,
   Progress,
   Form,
+  Image,
   Button,
+  Carousel,
 } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import {
+  DownOutlined,
+  LeftOutlined,
+  RightOutlined,
+  LeftCircleFilled,
+  RightCircleFilled,
+} from '@ant-design/icons';
 import './index.scss';
 import './../student/style.css';
 import { useHistory } from 'react-router-dom';
@@ -168,6 +176,7 @@ const FilesViewEvaluate = ({
   const scrollableContainer = useRef(null);
   const attachmentContainer = useRef(null);
   const chatRef = useRef(null);
+  const carousel = useRef();
 
   const [volume, setVolume] = useState('');
   const [showTab, setShowTab] = useState('1');
@@ -185,6 +194,7 @@ const FilesViewEvaluate = ({
   const [uploadStart, setUploadStart] = useState(false);
   const [erpList, setErpList] = useState([]);
   const [selectedErp, setSelectedErp] = useState();
+  const [visible, setVisible] = useState(false);
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -265,15 +275,16 @@ const FilesViewEvaluate = ({
   const handleScroll = (dir) => {
     console.log(attachmentContainer);
     if (dir === 'left') {
-      scrollableContainer.current.scrollLeft -= attachmentContainer?.current?.clientWidth;
+      // scrollableContainer.current.scrollLeft -= attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
         selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
       );
       setSelectedHomework(
         evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1]
       );
+      carousel.current.next();
     } else {
-      scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
+      // scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
         selectedHomeworkIndex === evaluateData.length - 1
           ? evaluateData.length - 1
@@ -286,6 +297,7 @@ const FilesViewEvaluate = ({
             : selectedHomeworkIndex + 1
         ]
       );
+      carousel.current.prev();
     }
   };
 
@@ -361,9 +373,11 @@ const FilesViewEvaluate = ({
   const handleImageScroll = (index) => {
     setSelectedHomeworkIndex(index);
     setSelectedHomework(evaluateData[index]);
-    let imgwidth = index * attachmentContainer?.current?.clientWidth;
-    console.log(scrollableContainer.current, 'scroll');
-    scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
+    carousel.current.goTo(index);
+
+    // let imgwidth = index * attachmentContainer?.current?.clientWidth;
+    // console.log(scrollableContainer.current, 'scroll');
+    // scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
   };
 
   const fetchErp = (params = {}) => {
@@ -418,6 +432,13 @@ const FilesViewEvaluate = ({
   };
 
   console.log({ selectedHomework });
+  const onCarouselChange = (currentSlide) => {
+    console.log(currentSlide);
+  };
+
+  const handleNext = () => carousel.current.next();
+
+  const handlePrev = () => carousel.current.prev();
 
   return (
     <React.Fragment>
@@ -529,10 +550,10 @@ const FilesViewEvaluate = ({
                 </div>
               </div>
             </div>
-            <div className='col-md-7 col-xl-8 row'>
+            <div className='col-md-7 col-xl-8'>
               <div className='col-md-11 p-0'>
                 {/* Image Area */}
-                <div>
+                {/* <div>
                   <div className='attachments-list-outer-container'>
                     <div className='prev-btn'>
                       <IconButton onClick={() => handleScroll('left')}>
@@ -562,7 +583,7 @@ const FilesViewEvaluate = ({
                                   fileUrl={url?.file_location}
                                   fileName={`Attachment-${i + 1}`}
                                   // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                  urlPrefix={endpoints.erp_googleapi}
+                                  urlPrefix={`${endpointsV1.erp_googleapi}`}
                                   index={i}
                                   actions={
                                     url?.file?.includes('.doc')
@@ -587,7 +608,7 @@ const FilesViewEvaluate = ({
                             {evaluateData.map((url, i) => (
                               <img
                                 //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                                src={`${endpoints.erp_googleapi}${url?.file_location}`}
+                                src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
                                 onError={(e) => {
                                   e.target.src = placeholder;
                                 }}
@@ -605,7 +626,89 @@ const FilesViewEvaluate = ({
                       </IconButton>
                     </div>
                   </div>
+                </div> */}
+                <Image.PreviewGroup
+                  preview={{
+                    visible,
+                    onVisibleChange: (vis) => setVisible(vis),
+                    current: selectedHomeworkIndex,
+                  }}
+                >
+                  <Carousel
+                    afterChange={onCarouselChange}
+                    prevArrow={<LeftOutlined />}
+                    nextArrow={<RightOutlined />}
+                    effect='fade'
+                    dots={false}
+                    ref={carousel}
+                  >
+                    {evaluateData.map((url, i) => {
+                      return (
+                        <div>
+                          <Image
+                            preview={{
+                              visible: false,
+                            }}
+                            style={{ left: 70 }}
+                            width={'100%'}
+                            height={400}
+                            src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
+                            onClick={() => setVisible(true)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </Carousel>
+                </Image.PreviewGroup>
+                {/* <Image
+                  preview={{
+                    visible: false,
+                  }}
+                  width={200}
+                  src='https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp'
+                  onClick={() => setVisible(true)}
+                /> */}
+
+                <div className='d-flex justify-content-between'>
+                  <LeftCircleFilled
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '0%',
+                      fontSize: '30px',
+                    }}
+                    onClick={() => handleScroll('left')}
+                  />
+                  <RightCircleFilled
+                    style={{
+                      position: 'absolute',
+                      top: '50%',
+                      right: '0%',
+                      fontSize: '30px',
+                    }}
+                    onClick={() => handleScroll('right')}
+                  />
                 </div>
+                {/* <div
+                  style={{
+                    display: 'none',
+                  }}
+                >
+                  <Image.PreviewGroup
+                    preview={{
+                      visible,
+                      onVisibleChange: (vis) => setVisible(vis),
+                    }}
+                  >
+                    {evaluateData.map((url, i) => {
+                      return (
+                        <Image
+                          src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
+                        />
+                      );
+                    })}
+                  </Image.PreviewGroup>
+                </div> */}
 
                 {penToolOpen && (
                   <DescriptiveTestcorrectionModule
