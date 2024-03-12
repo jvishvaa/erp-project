@@ -493,24 +493,26 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
                     />
                   </div>
                 </div>
-                <div className='text-center mt-2'>
-                  <Pagination
-                    current={refferListPageData.currentPage}
-                    total={refferListPageData.totalCount}
-                    pageSize={refferListPageData.pageSize}
-                    onChange={(value) =>
-                      setRefferListPageData({
-                        ...refferListPageData,
-                        currentPage: value,
-                      })
-                    }
-                    showSizeChanger={false}
-                    showQuickJumper={false}
-                    showTotal={(total, range) =>
-                      `${range[0]}-${range[1]} of ${total} items`
-                    }
-                  />
-                </div>
+                {hwFiles?.length > 0 && (
+                  <div className='text-center mt-2'>
+                    <Pagination
+                      current={refferListPageData.currentPage}
+                      total={refferListPageData.totalCount}
+                      pageSize={refferListPageData.pageSize}
+                      onChange={(value) =>
+                        setRefferListPageData({
+                          ...refferListPageData,
+                          currentPage: value,
+                        })
+                      }
+                      showSizeChanger={false}
+                      showQuickJumper={false}
+                      showTotal={(total, range) =>
+                        `${range[0]}-${range[1]} of ${total} items`
+                      }
+                    />
+                  </div>
+                )}
               </TabPane>
               <TabPane tab='Failed' key='2'>
                 <div className='d-flex justify-content-end mb-2'>
@@ -530,24 +532,26 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
                     pagination={false}
                   />
                 </div>
-                <div className='text-center mt-2'>
-                  <Pagination
-                    current={refferListPageData.currentPage}
-                    total={refferListPageData.totalCount}
-                    pageSize={refferListPageData.pageSize}
-                    onChange={(value) =>
-                      setRefferListPageData({
-                        ...refferListPageData,
-                        currentPage: value,
-                      })
-                    }
-                    showSizeChanger={false}
-                    showQuickJumper={false}
-                    showTotal={(total, range) =>
-                      `${range[0]}-${range[1]} of ${total} items`
-                    }
-                  />
-                </div>
+                {hwFiles?.length > 0 && (
+                  <div className='text-center mt-2'>
+                    <Pagination
+                      current={refferListPageData.currentPage}
+                      total={refferListPageData.totalCount}
+                      pageSize={refferListPageData.pageSize}
+                      onChange={(value) =>
+                        setRefferListPageData({
+                          ...refferListPageData,
+                          currentPage: value,
+                        })
+                      }
+                      showSizeChanger={false}
+                      showQuickJumper={false}
+                      showTotal={(total, range) =>
+                        `${range[0]}-${range[1]} of ${total} items`
+                      }
+                    />
+                  </div>
+                )}
               </TabPane>
             </Tabs>
           </div>

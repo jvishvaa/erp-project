@@ -89,7 +89,7 @@ import UploadHomework from '../containers/centralise_homework/hw_upload/uploadFi
 import EvaluatorDash from '../containers/centralise_homework/evaluator';
 import EvaluatorHomework from '../containers/centralise_homework/evaluator/imageView';
 
-import CentralizedHomework from '../containers/centralise_homework/index';
+import CentralizedHome from '../containers/centralise_homework/CentralizedHome';
 
 const V2Router = () => {
   useEffect(() => {
@@ -399,7 +399,7 @@ const V2Router = () => {
                         </Route>
                         ,
                         <Route path='/homework/centralized'>
-                          {({ match }) => <CentralizedHomework match={match} />}
+                          {({ match }) => <CentralizedHome match={match} />}
                         </Route>
                         ,
                         <Route path='/centralized-homework/branchstaff'>
