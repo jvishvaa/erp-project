@@ -479,7 +479,7 @@ const FilesViewEvaluate = ({
                     </div>
                     <div className='col-md-6'>
                       <p className='th-15 mb-0 text-muted text-truncate text-center'>
-                        <span className='th-fw-600'>Corrected Date</span>
+                        <span className='th-fw-600'>Alloted Date</span>
                       </p>
                     </div>
                   </div>
@@ -531,7 +531,7 @@ const FilesViewEvaluate = ({
                           <p className='th-12 mb-0 text-muted text-truncate text-center'>
                             <span className='th-fw-600'>
                               {item?.corrected_at
-                                ? moment(item?.corrected_at).format('DD-MM-YYYY')
+                                ? moment(item?.hw_date).format('DD-MM-YYYY')
                                 : ''}
                             </span>
                           </p>

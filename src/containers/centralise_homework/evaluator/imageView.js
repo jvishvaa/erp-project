@@ -508,12 +508,13 @@ const EvaluatorHomework = () => {
                       </div>
                       <div className='col-md-5 col-xl-3  p-0 row mb-2'>
                         <div
-                          className='col-md-12 py-2'
+                          className='col-md-12 py-2 mt-2'
                           style={{
                             boxShadow:
                               'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
                             borderRadius: '10px',
                             marginBottom: '5px',
+                            height: '20vh',
                           }}
                         >
                           <div
