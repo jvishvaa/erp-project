@@ -491,7 +491,7 @@ const FilesViewEvaluate = ({
                       <span className='th-16'>Files</span>
                     </div> */}
               <div className='card shadow border-0 th-br-4 w-100'>
-                <div className='card-body'>
+                <div className='p-2'>
                   <div className='col-md-12 row'>
                     <div className='col-md-6'>
                       <p className='th-15 mb-0 text-muted text-truncate text-center'>
@@ -563,10 +563,9 @@ const FilesViewEvaluate = ({
                 </div>
               </div>
             </div>
-            <div className='col-md-7 col-xl-8'>
-              <div className='col-md-11 p-0'>
-                {/* Image Area */}
-                {/* <div>
+            <div className='col-md-7 col-xl-8 pr-0'>
+              {/* Image Area */}
+              {/* <div>
                   <div className='attachments-list-outer-container'>
                     <div className='prev-btn'>
                       <IconButton onClick={() => handleScroll('left')}>
@@ -640,40 +639,40 @@ const FilesViewEvaluate = ({
                     </div>
                   </div>
                 </div> */}
-                <Image.PreviewGroup
-                  preview={{
-                    visible,
-                    onVisibleChange: (vis) => setVisible(vis),
-                    current: selectedHomeworkIndex,
-                  }}
+              <Image.PreviewGroup
+                preview={{
+                  visible,
+                  onVisibleChange: (vis) => setVisible(vis),
+                  current: selectedHomeworkIndex,
+                }}
+              >
+                <Carousel
+                  afterChange={onCarouselChange}
+                  prevArrow={<LeftOutlined />}
+                  nextArrow={<RightOutlined />}
+                  effect='fade'
+                  dots={false}
+                  ref={carousel}
                 >
-                  <Carousel
-                    afterChange={onCarouselChange}
-                    prevArrow={<LeftOutlined />}
-                    nextArrow={<RightOutlined />}
-                    effect='fade'
-                    dots={false}
-                    ref={carousel}
-                  >
-                    {evaluateData.map((url, i) => {
-                      return (
-                        <div>
-                          <Image
-                            preview={{
-                              visible: false,
-                            }}
-                            style={{ left: 70 }}
-                            width={'100%'}
-                            height={400}
-                            src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
-                            onClick={() => setVisible(true)}
-                          />
-                        </div>
-                      );
-                    })}
-                  </Carousel>
-                </Image.PreviewGroup>
-                {/* <Image
+                  {evaluateData.map((url, i) => {
+                    return (
+                      <div>
+                        <Image
+                          preview={{
+                            visible: false,
+                          }}
+                          style={{ left: 70 }}
+                          width={'100%'}
+                          height={400}
+                          src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
+                          onClick={() => setVisible(true)}
+                        />
+                      </div>
+                    );
+                  })}
+                </Carousel>
+              </Image.PreviewGroup>
+              {/* <Image
                   preview={{
                     visible: false,
                   }}
@@ -682,27 +681,27 @@ const FilesViewEvaluate = ({
                   onClick={() => setVisible(true)}
                 /> */}
 
-                <div className='d-flex justify-content-between'>
-                  <LeftCircleFilled
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '0%',
-                      fontSize: '30px',
-                    }}
-                    onClick={() => handleScroll('left')}
-                  />
-                  <RightCircleFilled
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      right: '0%',
-                      fontSize: '30px',
-                    }}
-                    onClick={() => handleScroll('right')}
-                  />
-                </div>
-                {/* <div
+              <div className='d-flex justify-content-between'>
+                <LeftCircleFilled
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '0%',
+                    fontSize: '30px',
+                  }}
+                  onClick={() => handleScroll('left')}
+                />
+                <RightCircleFilled
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: '0%',
+                    fontSize: '30px',
+                  }}
+                  onClick={() => handleScroll('right')}
+                />
+              </div>
+              {/* <div
                   style={{
                     display: 'none',
                   }}
@@ -723,20 +722,19 @@ const FilesViewEvaluate = ({
                   </Image.PreviewGroup>
                 </div> */}
 
-                {penToolOpen && (
-                  <DescriptiveTestcorrectionModule
-                    desTestDetails={desTestDetails}
-                    mediaContent={mediaContent}
-                    handleClose={handleCloseCorrectionModal}
-                    alert={undefined}
-                    open={penToolOpen}
-                    callBackOnPageChange={() => {}}
-                    handleSaveFile={handleSaveEvaluatedFile}
-                  />
-                )}
+              {penToolOpen && (
+                <DescriptiveTestcorrectionModule
+                  desTestDetails={desTestDetails}
+                  mediaContent={mediaContent}
+                  handleClose={handleCloseCorrectionModal}
+                  alert={undefined}
+                  open={penToolOpen}
+                  callBackOnPageChange={() => {}}
+                  handleSaveFile={handleSaveEvaluatedFile}
+                />
+              )}
 
-                {/* Image Area Ends */}
-              </div>
+              {/* Image Area Ends */}
             </div>
           </div>
           <div className='row col-md-12 justify-content-center'>
