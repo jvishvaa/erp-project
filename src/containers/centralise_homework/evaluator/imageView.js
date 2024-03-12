@@ -64,12 +64,10 @@ const EvaluatorHomework = () => {
 
   const { Option } = Select;
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
-  // const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const loggedUserData = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [pageNo, setPageNo] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
-  //eslint-disable-next-line
   const [pageLimit, setPageLimit] = useState(15);
   const [loading, setLoading] = useState(false);
 
@@ -80,6 +78,7 @@ const EvaluatorHomework = () => {
 
   const [volumeList, setVolumeList] = useState([]);
   const [volume, setVolume] = useState('');
+  const [dates, setDates] = useState(null);
 
   const [subjectList, setSubjectList] = useState([]);
   const [subject, setSubject] = useState('');
@@ -135,19 +134,19 @@ const EvaluatorHomework = () => {
     );
   });
 
+  const disabledDate = (current) => {
+    if (!dates) {
+      return false;
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
+
+    return !!tooEarly || !!tooLate;
+  };
+
   const handleChangeGrade = (each) => {
     setPageNo(1);
-    // if (each?.some((item) => item.value === 'all')) {
-    //   const allGrade = gradeList.map((item) => item.grade_id).join(',');
-    //   setGrade(allGrade);
-    //   fetchSection(allGrade);
-    //   setSection([]);
-    //   formRef.current.setFieldsValue({
-    //     grade: gradeList.map((item) => item.grade_id),
-    //     section: [],
-    //   });
-    // } else {
-    // const singleGrade = each.map((item) => item.value).join(',');
+
     setGrade(each?.value);
     fetchSection(each?.value);
     setSection(null);
@@ -289,18 +288,9 @@ const EvaluatorHomework = () => {
 
   const handleChangeSection = (each) => {
     setPageNo(1);
-    // if (each.some((item) => item.value === 'all')) {
-    //   const allsections = sectionList?.map((item) => item.id).join(',');
-    //   setSection(allsections);
-    //   formRef.current.setFieldsValue({
-    //     section: sectionList?.map((item) => item.id),
-    //   });
-    //   fetchSubjectList(allsections);
-    // } else {
     const section = each?.value;
     setSection(section);
     fetchSubjectList(section);
-    // }
   };
 
   const handleChangeVolume = (each) => {
@@ -356,18 +346,45 @@ const EvaluatorHomework = () => {
         <div className='row'>
           <div className='col-md-12'>
             <div className='th-bg-white th-br-5 py-3 px-3 shadow-sm'>
+              <div className='col-md-12 p-0 d-flex justify-content-end'>
+                {showFilters ? (
+                  <div>
+                    <Button
+                      icon={<UpOutlined />}
+                      onClick={handleFilters}
+                      type='dashed'
+                      size='small'
+                    >
+                      Collapse{' '}
+                    </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <Button
+                      icon={<DownOutlined />}
+                      onClick={handleFilters}
+                      type='dashed'
+                      size='small'
+                    >
+                      Expand
+                    </Button>
+                  </div>
+                )}
+              </div>
               {showFilters ? (
-                <div className='row card p-2'>
+                <div className='row p-2' style={{ borderBottom: '1px solid #d6d6d6' }}>
                   <Form
                     id='filterForm'
-                    className='mt-3'
+                    // className='mt-3'
                     layout={'vertical'}
                     ref={formRef}
                     style={{ width: '100%' }}
                   >
                     <div className='row justify-content-between'>
                       <div className='col-xl-7 col-md-6 row'>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                          <div className='mb-2 text-left'>Grade</div>
+
                           <Form.Item name='grade'>
                             <Select
                               // mode='multiple'
@@ -395,7 +412,10 @@ const EvaluatorHomework = () => {
                             </Select>
                           </Form.Item>
                         </div>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+
+                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                          <div className='mb-2 text-left'>Section</div>
+
                           <Form.Item name='section'>
                             <Select
                               // mode='multiple'
@@ -423,43 +443,9 @@ const EvaluatorHomework = () => {
                             </Select>
                           </Form.Item>
                         </div>
-                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name='date'>
-                            {/* <Select
-                              mode='multiple'
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              maxTagCount={1}
-                              allowClear={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                              placement='bottomRight'
-                              showArrow={true}
-                              onChange={(e, value) => handleChangeVolume(value)}
-                              onClear={handleClearSection}
-                              dropdownMatchSelectWidth={false}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              showSearch
-                              placeholder='Select Volume'
-                            >
-                              {volumeOptions}
-                            </Select> */}
 
-                            <RangePicker
-                              className='th-width-100 th-br-4'
-                              onChange={(value) => handleDateChange(value)}
-                              defaultValue={[moment(), moment()]}
-                              format={dateFormat}
-                              separator={'to'}
-                            />
-                          </Form.Item>
-                        </div>
-                        <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                          <div className='mb-2 text-left'>Subject</div>
                           <Form.Item name='subject'>
                             <Select
                               getPopupContainer={(trigger) => trigger.parentNode}
@@ -486,34 +472,20 @@ const EvaluatorHomework = () => {
                             </Select>
                           </Form.Item>
                         </div>
-                        {/* <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
-                          <Form.Item name=''>
-                            <Select
-                              mode='multiple'
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              maxTagCount={1}
-                              allowClear={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                              placement='bottomRight'
-                              showArrow={true}
-                              onChange={(e, value) => handleChangeSection(value)}
-                              onClear={handleClearSection}
-                              dropdownMatchSelectWidth={false}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              showSearch
-                              placeholder='Select Doc Type'
-                            >
-                              {sectionOptions}
-                            </Select>
+                        <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                          <Form.Item name='date'>
+                            <RangePicker
+                              className='th-width-100 th-br-4'
+                              onChange={(value) => handleDateChange(value)}
+                              onCalendarChange={(val) => setDates(val)}
+                              defaultValue={[moment(), moment()]}
+                              format={dateFormat}
+                              disabledDate={disabledDate}
+                              separator={'to'}
+                            />
                           </Form.Item>
-                        </div> */}
+                        </div>
+
                         <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
                           <Form.Item name='section'>
                             <Button
@@ -535,86 +507,87 @@ const EvaluatorHomework = () => {
                         </div>
                       </div>
                       <div className='col-md-5 col-xl-3  p-0 row mb-2'>
-                        {countData ? (
+                        <div
+                          className='col-md-12 py-2 mt-2'
+                          style={{
+                            boxShadow:
+                              'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
+                            borderRadius: '10px',
+                            marginBottom: '5px',
+                            height: '20vh',
+                          }}
+                        >
                           <div
-                            className='col-md-12 py-2'
-                            style={{
-                              boxShadow:
-                                'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
-                              borderRadius: '10px',
-                              marginBottom: '5px',
-                            }}
+                            className='col-md-12 row justify-content-between th-13'
+                            style={{ marginTop: '6px' }}
                           >
-                            <div
-                              className='col-md-12 row justify-content-between th-13'
-                              style={{ marginTop: '6px' }}
-                            >
-                              <div>
-                                <span>
-                                  Completed :{' '}
-                                  <span style={{ color: 'green' }}>
-                                    {countData?.total_assessed}
-                                  </span>{' '}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <span>Completed </span>
-                                <span
-                                  style={{
-                                    backgroundColor: 'green',
-                                    color: 'white',
-                                    height: '15px',
-                                    width: '15px',
-                                    borderRadius: '5px',
-                                    display: 'inline-block',
-                                    marginLeft: '20px',
-                                  }}
-                                ></span>
-                              </div>
+                            <div>
+                              <span>
+                                Completed :{' '}
+                                <span style={{ color: 'green' }}>
+                                  {countData?.total_assessed
+                                    ? countData?.total_assessed
+                                    : '-'}
+                                </span>{' '}
+                              </span>
                             </div>
                             <div
-                              className='col-md-12 row justify-content-between th-13'
-                              style={{ marginTop: '6px' }}
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
                             >
-                              <div>
-                                <span>
-                                  Pending :{' '}
-                                  <span style={{ color: 'red' }}>
-                                    {countData?.total_under_assessed}
-                                  </span>
-                                </span>
-                              </div>
-                              <div
+                              <span>Completed </span>
+                              <span
                                 style={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
+                                  backgroundColor: 'green',
+                                  color: 'white',
+                                  height: '15px',
+                                  width: '15px',
+                                  borderRadius: '5px',
+                                  display: 'inline-block',
+                                  marginLeft: '20px',
                                 }}
-                              >
-                                <span>Pending </span>
-                                <span
-                                  style={{
-                                    backgroundColor: 'red',
-                                    color: 'white',
-                                    height: '15px',
-                                    width: '15px',
-                                    borderRadius: '5px',
-                                    display: 'inline-block',
-                                    marginLeft: '20px',
-                                  }}
-                                ></span>
-                              </div>
+                              ></span>
                             </div>
                           </div>
-                        ) : (
-                          ''
-                        )}
+                          <div
+                            className='col-md-12 row justify-content-between th-13'
+                            style={{ marginTop: '6px' }}
+                          >
+                            <div>
+                              <span>
+                                Pending :{' '}
+                                <span style={{ color: 'red' }}>
+                                  {countData?.total_under_assessed
+                                    ? countData?.total_under_assessed
+                                    : '-'}
+                                </span>
+                              </span>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <span>Pending </span>
+                              <span
+                                style={{
+                                  backgroundColor: 'red',
+                                  color: 'white',
+                                  height: '15px',
+                                  width: '15px',
+                                  borderRadius: '5px',
+                                  display: 'inline-block',
+                                  marginLeft: '20px',
+                                }}
+                              ></span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Form>
@@ -622,17 +595,7 @@ const EvaluatorHomework = () => {
               ) : (
                 ''
               )}
-              <div className='col-md-12 p-0 d-flex justify-content-end'>
-                {showFilters ? (
-                  <div>
-                    <Button icon={<UpOutlined />} onClick={handleFilters} />
-                  </div>
-                ) : (
-                  <div>
-                    <Button icon={<DownOutlined />} onClick={handleFilters} />
-                  </div>
-                )}
-              </div>
+
               <div className='mt-4 '>
                 {evaluateData?.length === 0 ? (
                   <div className='col-12'>
@@ -677,8 +640,6 @@ const EvaluatorHomework = () => {
             </div>
           </div>
         </div>
-
-        {/* </div> */}
       </Layout>
     </React.Fragment>
   );

@@ -31,6 +31,7 @@ import BOOKMARKICON from './../../../assets/images/bookmark-icon.png';
 import NOTEICON from './../../../assets/images/note-icon.png';
 import axiosInstance from 'config/axios';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 const { TabPane } = Tabs;
 
 let chatarr = [
@@ -478,7 +479,7 @@ const FilesViewEvaluate = ({
                     </div>
                     <div className='col-md-6'>
                       <p className='th-15 mb-0 text-muted text-truncate text-center'>
-                        <span className='th-fw-600'>Due Date</span>
+                        <span className='th-fw-600'>Alloted Date</span>
                       </p>
                     </div>
                   </div>
@@ -505,13 +506,21 @@ const FilesViewEvaluate = ({
                             overlayInnerStyle={{
                               borderRadius: 4,
                               backgroundColor: 'white',
-                              color: 'black',
+                              // color: 'black',
+                              color: item?.is_corrected ? '#006b00' : '#ff3b3c',
                               maxHeight: 200,
                               overflowY: 'scroll',
                               textTransform: 'capitalize',
                             }}
                           >
-                            <h5 className='th-14 mb-0'>{item.student_erp}</h5>
+                            <h5
+                              className='th-14 mb-0'
+                              style={{
+                                color: item?.is_corrected ? '#006b00' : '#ff3b3c',
+                              }}
+                            >
+                              {item.student_erp}
+                            </h5>
                             {/* <p className='th-12 mb-0 text-muted text-truncate'>
                               <span className='th-fw-600'>Description:</span>
                               {item.description}
@@ -520,7 +529,11 @@ const FilesViewEvaluate = ({
                         </div>
                         <div className='col-md-6'>
                           <p className='th-12 mb-0 text-muted text-truncate text-center'>
-                            <span className='th-fw-600'>{item?.dueDate}</span>
+                            <span className='th-fw-600'>
+                              {item?.corrected_at
+                                ? moment(item?.hw_date).format('DD-MM-YYYY')
+                                : ''}
+                            </span>
                           </p>
                         </div>
                       </div>
