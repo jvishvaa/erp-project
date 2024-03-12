@@ -57,8 +57,8 @@ const HwUpload = () => {
   const [subjectList, setSubjectList] = useState([]);
 
   const [date, setDate] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState(moment().format('DD-MM-YYYY'));
+  const [endDate, setEndDate] = useState(moment().format('DD-MM-YYYY'));
 
   const dateFormat = 'DD-MM-YYYY';
 
@@ -175,7 +175,7 @@ const HwUpload = () => {
   const sectionOptions = sectionList?.map((each) => {
     return (
       <Option key={each?.id} value={each.section_id}>
-        {each?.section__section_name}
+        {each?.sec_name}
       </Option>
     );
   });
@@ -183,7 +183,7 @@ const HwUpload = () => {
   const subjectOptions = subjectList?.map((each) => {
     return (
       <Option key={each?.subject__id} value={each.subject_mapping_id}>
-        {each?.subject__subject_name}
+        {each?.sub_name}
       </Option>
     );
   });

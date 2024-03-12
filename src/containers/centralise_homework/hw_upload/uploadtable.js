@@ -333,6 +333,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
   };
 
   const fecthHwData = async (start, end, sec, status) => {
+    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.homework.hwData}?start_date=${start}&end_date=${end}&sub_sec_mpng=${sec}&status=${status}&page=${refferListPageData.currentPage}`
@@ -345,11 +346,14 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
         });
         setCount(result?.data?.result?.count);
         setHwFiles(result?.data?.result?.results);
+        setLoading(false);
       } else {
         message.error(result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       message.error(error.message);
+      setLoading(false);
     }
   };
 
