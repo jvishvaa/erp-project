@@ -227,7 +227,7 @@ const UploadHomework = () => {
   const subjectOptions = subjectList?.map((each) => {
     return (
       <Option key={each?.subject__id} value={each.subject_mapping_id}>
-        {each?.subject__subject_name}
+        {each?.sub_name}
       </Option>
     );
   });
@@ -294,6 +294,10 @@ const UploadHomework = () => {
             message.success('Attachment Added');
             // // props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
             setFileList([]);
+            setUploading(false);
+            setUploadStart(false);
+          } else {
+            message.error(res?.data?.msg);
             setUploading(false);
             setUploadStart(false);
           }
