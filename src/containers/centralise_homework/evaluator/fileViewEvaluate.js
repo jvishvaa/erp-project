@@ -26,7 +26,7 @@ import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import Attachment from 'containers/homework/teacher-homework/attachment';
+import Attachment from './CentralAttachment';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import endpoints from 'v2/config/endpoints';
 import endpointsV1 from 'config/endpoints';
@@ -196,6 +196,7 @@ const FilesViewEvaluate = ({
   const [erpList, setErpList] = useState([]);
   const [selectedErp, setSelectedErp] = useState();
   const [visible, setVisible] = useState(false);
+  const [uploadBtn, setUploadBtn] = useState(false);
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -276,16 +277,16 @@ const FilesViewEvaluate = ({
   const handleScroll = (dir) => {
     console.log(attachmentContainer);
     if (dir === 'left') {
-      // scrollableContainer.current.scrollLeft -= attachmentContainer?.current?.clientWidth;
+      scrollableContainer.current.scrollLeft -= attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
         selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
       );
       setSelectedHomework(
         evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1]
       );
-      carousel.current.next();
+      // carousel.current.next();
     } else {
-      // scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
+      scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
         selectedHomeworkIndex === evaluateData.length - 1
           ? evaluateData.length - 1
@@ -298,7 +299,7 @@ const FilesViewEvaluate = ({
             : selectedHomeworkIndex + 1
         ]
       );
-      carousel.current.prev();
+      // carousel.current.prev();
     }
   };
 
@@ -374,11 +375,11 @@ const FilesViewEvaluate = ({
   const handleImageScroll = (index) => {
     setSelectedHomeworkIndex(index);
     setSelectedHomework(evaluateData[index]);
-    carousel.current.goTo(index);
+    // carousel.current.goTo(index);
 
-    // let imgwidth = index * attachmentContainer?.current?.clientWidth;
-    // console.log(scrollableContainer.current, 'scroll');
-    // scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
+    let imgwidth = index * attachmentContainer?.current?.clientWidth;
+    console.log(scrollableContainer.current, 'scroll');
+    scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
   };
 
   const fetchErp = (params = {}) => {
@@ -405,13 +406,14 @@ const FilesViewEvaluate = ({
 
   const erpOptions = erpList?.map((each) => {
     return (
-      <Option key={each?.erp_id} value={each.erp_id}>
-        {each?.erp_id}
+      <Option key={each?.erp_id} value={each.erp_id} title={each?.erp_id}>
+        {each?.user?.first_name} {each?.user?.last_name}
       </Option>
     );
   });
 
   const handleSaveErp = async () => {
+    setUploadBtn(true);
     axiosInstance
       .patch(`${endpointsV1.homework.hwData}${selectedHomework?.id}/`, {
         file_location: selectedHomework?.file_location,
@@ -429,6 +431,9 @@ const FilesViewEvaluate = ({
       })
       .catch((e) => {
         message.error('Upload Failed');
+      })
+      .finally(() => {
+        setUploadBtn(false);
       });
   };
 
@@ -479,6 +484,7 @@ const FilesViewEvaluate = ({
                   className=' th-br-4 w-100  th-select'
                   type='primary'
                   onClick={handleSaveErp}
+                  disabled={uploadBtn}
                 >
                   Save
                 </Button>
@@ -565,81 +571,82 @@ const FilesViewEvaluate = ({
             </div>
             <div className='col-md-7 col-xl-8 pr-0'>
               {/* Image Area */}
-              {/* <div>
-                  <div className='attachments-list-outer-container'>
-                    <div className='prev-btn'>
-                      <IconButton onClick={() => handleScroll('left')}>
-                        <ArrowBackIosIcon />
-                      </IconButton>
-                    </div>
-                    <SimpleReactLightbox>
+
+              <div className='attachments-container'>
+                <div className='attachments-list-outer-container'>
+                  <div className='prev-btn'>
+                    <IconButton onClick={() => handleScroll('left')}>
+                      <ArrowBackIosIcon />
+                    </IconButton>
+                  </div>
+                  <SimpleReactLightbox>
+                    <div
+                      className='attachments-list'
+                      ref={scrollableContainer}
+                      onScroll={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      {evaluateData.map((url, i) => {
+                        const actions = ['preview', 'download', 'pentool'];
+
+                        return (
+                          <>
+                            <div
+                              className='attachment'
+                              style={{ maxWidth: '100%' }}
+                              ref={attachmentContainer}
+                            >
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={url?.file_location}
+                                fileName={`Attachment-${i + 1}`}
+                                // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
+                                urlPrefix={`${endpointsV1.erp_googleapi}`}
+                                index={i}
+                                actions={
+                                  url?.file?.includes('.doc')
+                                    ? ['download']
+                                    : ['preview', 'download', 'pentool']
+                                }
+                                onOpenInPenTool={openInPenTool}
+                              />
+                            </div>
+                          </>
+                        );
+                      })}
                       <div
-                        className='attachments-list'
-                        ref={scrollableContainer}
-                        onScroll={(e) => {
-                          e.preventDefault();
+                        style={{
+                          position: 'absolute',
+                          width: '0',
+                          height: '0',
+                          visibility: 'hidden',
                         }}
                       >
-                        {evaluateData.map((url, i) => {
-                          const actions = ['preview', 'download', 'pentool'];
-
-                          return (
-                            <>
-                              <div
-                                className='attachment'
-                                style={{ maxWidth: '100%' }}
-                                ref={attachmentContainer}
-                              >
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url?.file_location}
-                                  fileName={`Attachment-${i + 1}`}
-                                  // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                  urlPrefix={`${endpointsV1.erp_googleapi}`}
-                                  index={i}
-                                  actions={
-                                    url?.file?.includes('.doc')
-                                      ? ['download']
-                                      : ['preview', 'download', 'pentool']
-                                  }
-                                  onOpenInPenTool={openInPenTool}
-                                />
-                              </div>
-                            </>
-                          );
-                        })}
-                        <div
-                          style={{
-                            position: 'absolute',
-                            width: '0',
-                            height: '0',
-                            visibility: 'hidden',
-                          }}
-                        >
-                          <SRLWrapper>
-                            {evaluateData.map((url, i) => (
-                              <img
-                                //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                                src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
-                                onError={(e) => {
-                                  e.target.src = placeholder;
-                                }}
-                                alt={`Attachment-${i + 1}`}
-                                style={{ width: '0', height: '0' }}
-                              />
-                            ))}
-                          </SRLWrapper>
-                        </div>
+                        <SRLWrapper>
+                          {evaluateData.map((url, i) => (
+                            <img
+                              //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
+                              src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
+                              onError={(e) => {
+                                e.target.src = placeholder;
+                              }}
+                              alt={`Attachment-${i + 1}`}
+                              style={{ width: '0', height: '0' }}
+                            />
+                          ))}
+                        </SRLWrapper>
                       </div>
-                    </SimpleReactLightbox>
-                    <div className='next-btn'>
-                      <IconButton onClick={() => handleScroll('right')}>
-                        <ArrowForwardIosIcon color='primary' />
-                      </IconButton>
                     </div>
+                  </SimpleReactLightbox>
+                  <div className='next-btn'>
+                    <IconButton onClick={() => handleScroll('right')}>
+                      <ArrowForwardIosIcon color='primary' />
+                    </IconButton>
                   </div>
-                </div> */}
-              <Image.PreviewGroup
+                </div>
+              </div>
+              {/* <Image.PreviewGroup
                 preview={{
                   visible,
                   onVisibleChange: (vis) => setVisible(vis),
@@ -671,7 +678,7 @@ const FilesViewEvaluate = ({
                     );
                   })}
                 </Carousel>
-              </Image.PreviewGroup>
+              </Image.PreviewGroup> */}
               {/* <Image
                   preview={{
                     visible: false,
@@ -681,7 +688,7 @@ const FilesViewEvaluate = ({
                   onClick={() => setVisible(true)}
                 /> */}
 
-              <div className='d-flex justify-content-between'>
+              {/* <div className='d-flex justify-content-between'>
                 <LeftCircleFilled
                   style={{
                     position: 'absolute',
@@ -700,7 +707,7 @@ const FilesViewEvaluate = ({
                   }}
                   onClick={() => handleScroll('right')}
                 />
-              </div>
+              </div> */}
               {/* <div
                   style={{
                     display: 'none',
@@ -721,6 +728,69 @@ const FilesViewEvaluate = ({
                     })}
                   </Image.PreviewGroup>
                 </div> */}
+
+              {/* <div className='attachments-container'>
+                <div className='attachments-list-outer-container'>
+                  <div className='prev-btn'>
+                    <IconButton onClick={() => handleScroll('left')}>
+                      <ArrowBackIosIcon />
+                    </IconButton>
+                  </div>
+                  <SimpleReactLightbox>
+                    <div
+                      className='attachments-list'
+                      ref={scrollableContainer}
+                      onScroll={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      {evaluateData.map((url, i) => {
+                        return (
+                          <>
+                            <div className='attachment'>
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={url?.file_location}
+                                fileName={`Attachment-${i + 1}`}
+                                urlPrefix={`${endpointsV1.erp_googleapi}`}
+                                index={i}
+                                onOpenInPenTool={openInPenTool}
+                                actions={['preview', 'download', 'pentool']}
+                              />
+                            </div>
+                          </>
+                        );
+                      })}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          width: '0',
+                          height: '0',
+                          visibility: 'hidden',
+                        }}
+                      >
+                        <SRLWrapper>
+                          {evaluateData.map((url, i) => (
+                            <img
+                              src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
+                              onError={(e) => {
+                                e.target.src = placeholder;
+                              }}
+                              alt={`Attachment-${i + 1}`}
+                              style={{ width: '0', height: '0' }}
+                            />
+                          ))}
+                        </SRLWrapper>
+                      </div>
+                    </div>
+                  </SimpleReactLightbox>
+                  <div className='next-btn'>
+                    <IconButton onClick={() => handleScroll('right')}>
+                      <ArrowForwardIosIcon color='primary' />
+                    </IconButton>
+                  </div>
+                </div>
+              </div> */}
 
               {penToolOpen && (
                 <DescriptiveTestcorrectionModule
