@@ -115,6 +115,10 @@ const BranchHomework = () => {
         grade: gradeList.map((item) => item.grade_id),
         section: [],
       });
+      setListPageData({
+        ...ListPageData,
+        currentPage : 1
+      });
     } else {
       const singleGrade = each.map((item) => item.value).join(',');
       setGrade(singleGrade);
@@ -154,7 +158,7 @@ const BranchHomework = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}&section=${section}`
+        `${endpoints.academics.subjects}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);
@@ -191,6 +195,10 @@ const BranchHomework = () => {
         section: sectionList?.map((item) => item.section_id),
       });
       fetchSubject(allsections);
+      setListPageData({
+        ...ListPageData,
+        currentPage : 1
+      });
     } else {
       const singleSection = each.map((item) => item.value).join(',');
       setSection(singleSection);
@@ -206,6 +214,10 @@ const BranchHomework = () => {
       setSubject(allsubjects);
       formRef.current.setFieldsValue({
         section: subjectList?.map((item) => item.id),
+      });
+      setListPageData({
+        ...ListPageData,
+        currentPage : 1
       });
     } else {
       const singleSubject = each.map((item) => item.value).join(',');
@@ -225,6 +237,10 @@ const BranchHomework = () => {
     if (value) {
       setStartDate(moment(value[0]).format('DD-MM-YYYY'));
       setEndDate(moment(value[1]).format('DD-MM-YYYY'));
+      setListPageData({
+        ...ListPageData,
+        currentPage : 1
+      });
     }
   };
 
