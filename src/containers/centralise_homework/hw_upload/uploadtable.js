@@ -430,8 +430,8 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
 
   const ErpOptions = erpList?.map((each) => {
     return (
-      <Option key={each?.id} value={each?.erp_id}>
-        {each?.erp_id}
+      <Option key={each?.id} value={each?.erp_id} title={each?.erp_id}>
+        {each?.user?.first_name} {each?.user?.last_name}
       </Option>
     );
   });
