@@ -248,7 +248,6 @@ const EvaluatorHomework = () => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
-    setLoading(true);
     if (!subject) {
       return message.error('Please Select Filters !');
     }
@@ -258,6 +257,7 @@ const EvaluatorHomework = () => {
     if (!endDate) {
       return message.error('Please Select End Date !');
     }
+    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.homework.teacherData}`,

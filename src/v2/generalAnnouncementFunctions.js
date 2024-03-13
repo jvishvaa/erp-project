@@ -83,6 +83,8 @@ export const getRole = (type) => {
       return 'Finance Accountant';
     case 33:
       return 'Store Admin';
+    case 34:
+      return 'EA Academics';
     default:
       return '--';
   }

@@ -7,6 +7,7 @@ const { TabPane } = Tabs;
 
 const CenralizedHome = () => {
   const [showTab, setShowTab] = useState(1);
+  const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
 
   const onChange = (key) => {
     setShowTab(key);
@@ -34,9 +35,14 @@ const CenralizedHome = () => {
                   <TabPane tab='HOMEWORK' key='1'>
                     <CentralizedHomework />
                   </TabPane>
-                  <TabPane tab='UPLOAD' key='2'>
-                    <HwUpload />
-                  </TabPane>
+                  {userLevel === 34 ||
+                  userLevel === 8 ||
+                  userLevel === 11 ||
+                  userLevel === 10 ? (
+                    <TabPane tab='UPLOAD' key='2'>
+                      <HwUpload />
+                    </TabPane>
+                  ) : null}
                 </Tabs>
               </div>
             </div>
