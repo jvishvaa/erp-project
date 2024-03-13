@@ -222,7 +222,7 @@ const BranchHomework = () => {
     if (startDate && endDate && subject) {
       handleGetTeacherData();
     }
-  }, [endDate, subject]);
+  }, [endDate, subject, startDate]);
 
   const handleGetTeacherData = () => {
     const params = {
