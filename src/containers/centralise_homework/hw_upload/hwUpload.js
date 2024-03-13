@@ -221,7 +221,6 @@ const HwUpload = () => {
     console.log(each, 'subject');
     setPageNo(1);
     if (each) {
-      console.log()
       setSubject(each?.value);
       formRef.current.setFieldsValue({
         subject: each?.value,
