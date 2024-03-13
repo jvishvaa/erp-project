@@ -106,6 +106,12 @@ const HwUpload = () => {
         section: [],
       });
     }
+    else{
+      formRef.current.setFieldsValue({
+        grade: [],
+        section: [],
+      });
+    }
     // if (each.some((item) => item.value === 'all')) {
     //   const allGrade = gradeList.map((item) => item.grade_id).join(',');
     //   setGrade(allGrade);
@@ -137,7 +143,7 @@ const HwUpload = () => {
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
-      subject,
+      subject: [],
       date: null,
     });
   };
@@ -215,11 +221,11 @@ const HwUpload = () => {
     console.log(each, 'subject');
     setPageNo(1);
     if (each) {
+      console.log()
       setSubject(each?.value);
       formRef.current.setFieldsValue({
         subject: each?.value,
       });
-      fetchSubject(each?.value);
     }
     // if (each.some((item) => item.value === 'all')) {
     //   const allsubjects = subjectList?.map((item) => item.id).join(',');
