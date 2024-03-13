@@ -27,7 +27,7 @@ const CentralAttachment = (props) => {
   const { openLightbox } = useLightbox();
   const [openModal, setOpenModal] = useState(false);
   const isDairy = window.location.pathname.includes('/diary/') ? true : false;
-
+  console.log(index, fileUrl, 'preview');
   // console.log(props, 'teachers data');
 
   let markup = null;
