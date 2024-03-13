@@ -471,14 +471,14 @@ const FilesView = ({ evaluateData }) => {
 
                     {/* Image Area Ends */}
                   </div>
-                  <div className='col-md-1 p-0'>
+                  {/* <div className='col-md-1 p-0'>
                     <IconButton
                       onClick={showDrawer}
                       style={{ backgroundColor: '#0000000a' }}
                     >
                       <img src={QuestionPng} width='24px' />
                     </IconButton>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <Drawer
@@ -518,9 +518,6 @@ const FilesView = ({ evaluateData }) => {
                   />
                 </div>
               </Drawer>
-            </TabPane>
-            <TabPane tab='Under Assessed' key='2'>
-              <p>Hello</p>
             </TabPane>
           </Tabs>
         </div>

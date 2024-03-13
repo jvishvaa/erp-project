@@ -201,6 +201,7 @@ const FilesViewEvaluate = ({
   const [erpList, setErpList] = useState([]);
   const [selectedErp, setSelectedErp] = useState();
   const [visible, setVisible] = useState(false);
+  const [uploadBtn, setUploadBtn] = useState(false);
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -418,13 +419,14 @@ const FilesViewEvaluate = ({
 
   const erpOptions = erpList?.map((each) => {
     return (
-      <Option key={each?.erp_id} value={each.erp_id}>
-        {each?.erp_id}
+      <Option key={each?.erp_id} value={each.erp_id} title={each?.erp_id}>
+        {each?.user?.first_name} {each?.user?.last_name}
       </Option>
     );
   });
 
   const handleSaveErp = async () => {
+    setUploadBtn(true);
     axiosInstance
       .patch(`${endpointsV1.homework.hwData}${selectedHomework?.id}/`, {
         file_location: selectedHomework?.file_location,
@@ -442,6 +444,9 @@ const FilesViewEvaluate = ({
       })
       .catch((e) => {
         message.error('Upload Failed');
+      })
+      .finally(() => {
+        setUploadBtn(false);
       });
   };
 
@@ -492,6 +497,7 @@ const FilesViewEvaluate = ({
                   className=' th-br-4 w-100  th-select'
                   type='primary'
                   onClick={handleSaveErp}
+                  disabled={uploadBtn}
                 >
                   Save
                 </Button>

@@ -939,7 +939,7 @@ export default {
 
   teacherReferral: {
     referred_applicants: `${cvbox}/qbox/apiV2/referral/referral-form/`,
-    referral_position_list: `${cvbox}/qbox/apiV2/recruiter/referral-position-list/`,
+    referral_position_list: `${cvbox}/qbox/apiV2/referral/referral-position-list/`,
     candidate_refferal: `${cvbox}/qbox/apiV2/referral/referral-form/`,
     city_list: `${cvbox}/qbox/recruiter/CityListAPIView/`,
     branch_list: `${cvbox}/qbox/authenticate/branchcity/`,

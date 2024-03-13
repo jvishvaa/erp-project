@@ -248,7 +248,6 @@ const EvaluatorHomework = () => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
-    setLoading(true);
     if (!subject) {
       return message.error('Please Select Filters !');
     }
@@ -258,6 +257,7 @@ const EvaluatorHomework = () => {
     if (!endDate) {
       return message.error('Please Select End Date !');
     }
+    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.homework.teacherData}`,
@@ -304,6 +304,7 @@ const EvaluatorHomework = () => {
   const handleChangeSubject = (each) => {
     if (each) {
       setSubject(each);
+      setPageNo(1);
     } else {
       setSubject('');
     }
@@ -314,6 +315,7 @@ const EvaluatorHomework = () => {
       setStartDate(moment(each[0]).format(dateFormat));
       setEndDate(moment(each[1]).format(dateFormat));
       setDate([moment(each[0]), moment(each[1])]);
+      setPageNo(1);
     } else {
       setStartDate(null);
       setEndDate(null);
