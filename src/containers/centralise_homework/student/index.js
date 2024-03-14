@@ -43,6 +43,7 @@ const CentralizedStudentHw = () => {
 
   const [selectedHomework, setSelectedHomework] = useState(null);
   const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
+  const [selectedSection, setSelectedSection] = useState(null);
 
   console.log({ attachmentView });
 
@@ -59,15 +60,45 @@ const CentralizedStudentHw = () => {
 
   console.log({ studentGrade });
 
+  const fetchSection = async (grade) => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
+      );
+      if (result.data.status_code === 200) {
+        if (result?.data?.data?.length > 0) {
+          setSelectedSection(result?.data?.data[0]?.sec_id);
+        } else {
+          setSelectedSection(null);
+        }
+        console.log('slist', result.data.data);
+      } else {
+        message.error(result.data.message);
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
   useEffect(() => {
-    getSubject({
-      acad_session_id: selectedAcademicYear?.id,
-      branch: selectedBranch?.branch?.id,
-      grade: studentGrade?.grade_id,
-    });
+    fetchSection(studentGrade?.grade_id);
+
     fetchVolumeData();
     fetchDocType();
   }, []);
+
+  console.log({ selectedSection });
+  useEffect(() => {
+    if (selectedSection) {
+      getSubject({
+        session_year: selectedAcademicYear?.id,
+        branch: selectedBranch?.branch?.id,
+        grade: studentGrade?.grade_id,
+        section: selectedSection,
+      });
+    }
+    console.log('use effect');
+  }, [selectedSection]);
 
   useEffect(() => {
     if (subjectList?.length > 0) {
