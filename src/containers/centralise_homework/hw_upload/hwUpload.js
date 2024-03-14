@@ -100,10 +100,13 @@ const HwUpload = () => {
     if (each) {
       setGrade(each?.value);
       fetchSection(each?.value);
-      setSection([]);
+      setSection(null);
+      setSubject([]);
+      setSubjectList([]);
       formRef.current.setFieldsValue({
         grade: each?.value,
-        section: [],
+        section: null,
+        subject: null,
       });
     }
     // if (each.some((item) => item.value === 'all')) {
@@ -131,14 +134,14 @@ const HwUpload = () => {
     setSection('');
     setSectionList([]);
     setSubject('');
-    setStartDate(null);
-    setEndDate(null);
-    setDate(null);
+    setSubjectList([]);
+    // setStartDate(null);
+    // setEndDate(null);
+    // setDates(null);
     formRef.current.setFieldsValue({
-      grade: [],
-      section: [],
-      subject,
-      date: null,
+      grade: null,
+      section: null,
+      subject: null,
     });
   };
 
@@ -192,8 +195,10 @@ const HwUpload = () => {
     setPageNo(1);
     if (each) {
       setSection(each?.value);
+      setSubject([]);
       formRef.current.setFieldsValue({
         section: each?.value,
+        subject: [],
       });
       fetchSubject(each?.value);
       // if (each.some((item) => item.value === 'all')) {
@@ -219,7 +224,6 @@ const HwUpload = () => {
       formRef.current.setFieldsValue({
         subject: each?.value,
       });
-      fetchSubject(each?.value);
     }
     // if (each.some((item) => item.value === 'all')) {
     //   const allsubjects = subjectList?.map((item) => item.id).join(',');
@@ -239,6 +243,11 @@ const HwUpload = () => {
 
   const handleClearSection = () => {
     setSection([]);
+    setSubject('');
+    setSubjectList([]);
+    formRef.current.setFieldsValue({
+      subject: null,
+    });
   };
 
   const handleDateChange = (each) => {

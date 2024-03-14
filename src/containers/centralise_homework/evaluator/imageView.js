@@ -146,12 +146,14 @@ const EvaluatorHomework = () => {
 
   const handleChangeGrade = (each) => {
     setPageNo(1);
-
     setGrade(each?.value);
     fetchSection(each?.value);
     setSection(null);
+    setSubjectList([]);
+    setSubject('');
     formRef.current.setFieldsValue({
       section: null,
+      subject: null,
     });
     // }
   };
@@ -160,19 +162,15 @@ const EvaluatorHomework = () => {
     setGrade([]);
     setSection('');
     setSectionList([]);
-    setVolumeList([]);
-    setVolume('');
     setSubjectList([]);
     setSubject('');
-    setDate(null);
-    setStartDate(null);
-    setEndDate(null);
+    // setDate(null);
+    // setStartDate(null);
+    // setEndDate(null);
     formRef.current.setFieldsValue({
-      grade: [],
-      section: [],
-      volume: [],
-      subject: [],
-      date: null,
+      grade: null,
+      section: null,
+      subject: null,
     });
   };
   const fetchSection = async (grade) => {
@@ -287,10 +285,25 @@ const EvaluatorHomework = () => {
   };
 
   const handleChangeSection = (each) => {
-    setPageNo(1);
-    const section = each?.value;
-    setSection(section);
-    fetchSubjectList(section);
+    if (each) {
+      setPageNo(1);
+      const section = each?.value;
+      setSection(section);
+      fetchSubjectList(section);
+      setSubject('');
+      formRef.current.setFieldsValue({
+        subject: null,
+      });
+    }
+  };
+
+  const handleClearSection = () => {
+    setSection([]);
+    setSubject('');
+    setSubjectList([]);
+    formRef.current.setFieldsValue({
+      subject: null,
+    });
   };
 
   const handleChangeVolume = (each) => {
@@ -319,10 +332,6 @@ const EvaluatorHomework = () => {
       setEndDate(null);
       setDate(null);
     }
-  };
-
-  const handleClearSection = () => {
-    setSection([]);
   };
 
   return (
