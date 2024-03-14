@@ -244,6 +244,12 @@ const HwUpload = () => {
 
   const handleClearSection = () => {
     setSection([]);
+    setSubject([]);
+    setSubjectList([])
+    formRef.current.setFieldsValue({
+      section: [],
+      subject: [],
+    });
   };
 
   const handleDateChange = (each) => {
