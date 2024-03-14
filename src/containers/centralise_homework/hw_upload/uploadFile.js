@@ -217,7 +217,7 @@ const UploadHomework = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade_id=${grade}&section=${section}`
+        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);
@@ -590,12 +590,12 @@ const UploadHomework = () => {
                           Browse Files
                         </Button>
                       </Dragger>
+                    </div>
                       {fileTypeError && (
-                        <div className='row pt-3 justify-content-center th-red'>
-                          Please add image and pdf files only
+                        <div className='row pt-3 justify-content-center align-item-center th-red'>
+                          Please Select Zip Files Only
                         </div>
                       )}
-                    </div>
                     {fileList?.length > 0 && (
                       <span className='th-black-1 mt-3'>Selected Files</span>
                     )}
