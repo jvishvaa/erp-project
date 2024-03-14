@@ -146,31 +146,28 @@ const EvaluatorHomework = () => {
 
   const handleChangeGrade = (each) => {
     setPageNo(1);
-    setGrade(each?.value);
-    fetchSection(each?.value);
-    setSection(null);
-    setSubjectList([]);
-    setSubject('');
-    formRef.current.setFieldsValue({
-      section: null,
-      subject: null,
-    });
+    if (each) {
+      setGrade(each?.value);
+      fetchSection(each?.value);
+    }
   };
 
   const handleClearGrade = () => {
-    setGrade([]);
+    setGrade('');
     setSection('');
     setSectionList([]);
     setSubjectList([]);
     setSubject('');
-    // setDate(null);
-    // setStartDate(null);
-    // setEndDate(null);
     formRef.current.setFieldsValue({
       grade: null,
       section: null,
       subject: null,
+      date: null,
     });
+    setEvaluateData([]);
+    setStartDate(null);
+    setEndDate(null);
+    setDate(null);
   };
   const fetchSection = async (grade) => {
     try {
@@ -302,7 +299,9 @@ const EvaluatorHomework = () => {
     setSubjectList([]);
     formRef.current.setFieldsValue({
       subject: null,
+      date: null,
     });
+    setEvaluateData([])
   };
 
   const handleChangeVolume = (each) => {
@@ -312,13 +311,21 @@ const EvaluatorHomework = () => {
       setVolume('');
     }
   };
-  console.log(evaluateData?.length, 'coming');
+
   const handleChangeSubject = (each) => {
     if (each) {
       setSubject(each);
       setPageNo(1);
     } else {
       setSubject('');
+      formRef.current.setFieldsValue({
+        subject: null,
+        date: null,
+      });
+      setEvaluateData([]);
+      setStartDate(null);
+      setEndDate(null);
+      setDate(null);
     }
   };
 
@@ -332,6 +339,7 @@ const EvaluatorHomework = () => {
       setStartDate(null);
       setEndDate(null);
       setDate(null);
+      setEvaluateData([])
     }
   };
 
@@ -463,7 +471,6 @@ const EvaluatorHomework = () => {
                         placement='bottomRight'
                         showArrow={true}
                         onChange={(e) => handleChangeSubject(e)}
-                        onClear={handleClearSection}
                         dropdownMatchSelectWidth={false}
                         filterOption={(input, options) => {
                           return (
