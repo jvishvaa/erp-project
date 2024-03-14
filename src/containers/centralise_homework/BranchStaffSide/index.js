@@ -134,9 +134,11 @@ const BranchHomework = () => {
     setGrade([]);
     setSection('');
     setSectionList([]);
+    setSubjectList([]);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
+      Subject : [],
     });
   };
 

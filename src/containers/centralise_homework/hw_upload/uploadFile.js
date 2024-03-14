@@ -153,23 +153,35 @@ const UploadHomework = () => {
   });
 
   const handleChangeGrade = (each) => {
-    setGrade(each?.value);
-    fetchSection(each?.value);
-    setSection([]);
-    formRef.current.setFieldsValue({
-      section: [],
-    });
+    if (each) {
+      setGrade(each?.value);
+      fetchSection(each?.value);
+      setSection([]);
+      formRef.current.setFieldsValue({
+        section: [],
+      });
+    }
   };
 
   const handleChangeSection = (each) => {
-    setSection(each?.value);
-    fetchSubject(each?.value);
+    if (each) {
+      setSection(each?.value);
+      fetchSubject(each?.value);
+    }
   };
 
   const handleChangeSubject = (each) => {
     if (each) {
       setSubject(each);
       fetchVolumeData();
+    } else {
+      setSubject('');
+      setVolumeList([]);
+      formRef.current.setFieldsValue({
+        Subject: [],
+        volume: [],
+        docType: [],
+      });
     }
   };
 
@@ -177,10 +189,11 @@ const UploadHomework = () => {
     setGrade([]);
     setSection('');
     setSectionList([]);
-    volumeList([]);
+    setVolumeList([]);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
+      Subject: [],
       volume: [],
       docType: [],
     });
@@ -234,6 +247,14 @@ const UploadHomework = () => {
 
   const handleClearSection = () => {
     setSection([]);
+    setSubjectList([]);
+    setVolumeList([]);
+    formRef.current.setFieldsValue({
+      section: [],
+      Subject: [],
+      volume: [],
+      docType: [],
+    });
   };
 
   const handleClearSubject = () => {
@@ -245,6 +266,10 @@ const UploadHomework = () => {
       setVolume(each?.value);
     } else {
       setVolume('');
+      formRef.current.setFieldsValue({
+        volume: [],
+        docType: [],
+      });
     }
   };
 
@@ -392,6 +417,7 @@ const UploadHomework = () => {
                   <div className='row'>
                     <div className='col-md-12 row'>
                       <div className='col-md-2 col-sm-6 col-12'>
+                        <div className='mb-1'>Grade</div>
                         <Form.Item name='grade'>
                           <Select
                             getPopupContainer={(trigger) => trigger.parentNode}
@@ -419,6 +445,7 @@ const UploadHomework = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
+                        <div className='mb-1'>Section</div>
                         <Form.Item name='section'>
                           <Select
                             getPopupContainer={(trigger) => trigger.parentNode}
@@ -446,6 +473,7 @@ const UploadHomework = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
+                        <div className='mb-1'>Subject</div>
                         <Form.Item name='Subject'>
                           <Select
                             getPopupContainer={(trigger) => trigger.parentNode}
@@ -473,32 +501,35 @@ const UploadHomework = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
-                        <Select
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          maxTagCount={1}
-                          allowClear={true}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                          placement='bottomRight'
-                          showArrow={true}
-                          onChange={(e, value) => handleChangeVolume(value)}
-                          onClear={handleClearSection}
-                          dropdownMatchSelectWidth={false}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                          showSearch
-                          placeholder='Select Volume'
-                        >
-                          {volumeOptions}
-                        </Select>
+                        <div className='mb-1'>Volume</div>
+                        <Form.Item name='volume'>
+                          <Select
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            maxTagCount={1}
+                            allowClear={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                            placement='bottomRight'
+                            showArrow={true}
+                            onChange={(e, value) => handleChangeVolume(value)}
+                            dropdownMatchSelectWidth={false}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            showSearch
+                            placeholder='Select Volume'
+                          >
+                            {volumeOptions}
+                          </Select>
+                        </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
-                        <Form.Item name=''>
+                        <div className='mb-1'>Select Doc Type</div>
+                        <Form.Item name='docType'>
                           <Select
                             getPopupContainer={(trigger) => trigger.parentNode}
                             maxTagCount={1}
@@ -508,7 +539,6 @@ const UploadHomework = () => {
                             placement='bottomRight'
                             showArrow={true}
                             onChange={(e, value) => handleDocType(value)}
-                            onClear={handleClearSection}
                             dropdownMatchSelectWidth={false}
                             filterOption={(input, options) => {
                               return (
