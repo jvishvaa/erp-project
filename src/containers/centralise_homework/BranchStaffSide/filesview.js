@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import Attachment from 'containers/homework/teacher-homework/attachment';
+import Attachment from './../evaluator/CentralAttachment';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import endpoints from 'v2/config/endpoints';
 import placeholder from 'assets/images/placeholder_small.jpg';
@@ -16,6 +16,7 @@ import { SendOutlined } from '@ant-design/icons';
 import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
 import BOOKMARKICON from './../../../assets/images/bookmark-icon.png';
 import NOTEICON from './../../../assets/images/note-icon.png';
+import { saveAs } from 'file-saver';
 const { TabPane } = Tabs;
 
 let chatarr = [
@@ -318,6 +319,13 @@ const FilesView = ({ evaluateData }) => {
     scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
   };
 
+  const downloadHomeworkAttachment = async (url, filename) => {
+    console.log(url, filename);
+    const res = await fetch(url);
+    const blob = await res.blob();
+    saveAs(blob, filename);
+  };
+
   return (
     <React.Fragment>
       <div className='wholetabCentralHW'>
@@ -345,7 +353,15 @@ const FilesView = ({ evaluateData }) => {
                               }`,
                             }}
                           >
-                            <div className='download-icon'>
+                            <div
+                              className='download-icon cursor-pointer'
+                              onClick={() => {
+                                downloadHomeworkAttachment(
+                                  `${endpoints.erpBucket}${item?.file_location}`,
+                                  item.file_location
+                                );
+                              }}
+                            >
                               <img
                                 src={DOWNLOADICON}
                                 alt='download'
@@ -386,7 +402,8 @@ const FilesView = ({ evaluateData }) => {
                 <div className='col-md-7 col-xl-8 row'>
                   <div className='col-md-11 p-0'>
                     {/* Image Area */}
-                    <div>
+
+                    <div className='attachments-container'>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
                           <IconButton onClick={() => handleScroll('left')}>
@@ -416,9 +433,13 @@ const FilesView = ({ evaluateData }) => {
                                       fileUrl={url?.file_location}
                                       fileName={`Attachment-${i + 1}`}
                                       // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                      urlPrefix={endpoints.erpBucket}
+                                      urlPrefix={`${endpoints.erp_googleapi}`}
                                       index={i}
-                                      actions={['preview', 'download', 'pentool']}
+                                      actions={
+                                        url?.file?.includes('.doc')
+                                          ? ['download']
+                                          : ['preview', 'download']
+                                      }
                                       onOpenInPenTool={openInPenTool}
                                     />
                                   </div>
@@ -437,7 +458,9 @@ const FilesView = ({ evaluateData }) => {
                                 {evaluateData.map((url, i) => (
                                   <img
                                     //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                                    src={`${endpoints.erpBucket}${url?.file_location}`}
+                                    src={`${endpoints.erp_googleapi}/${
+                                      url?.file_location
+                                    }?${escape(new Date().getTime())}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
                                     }}
