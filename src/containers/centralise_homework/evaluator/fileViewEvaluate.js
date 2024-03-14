@@ -31,7 +31,7 @@ import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import endpoints from 'v2/config/endpoints';
 import endpointsV1 from 'config/endpoints';
 import placeholder from 'assets/images/placeholder_small.jpg';
-import DescriptiveTestcorrectionModule from 'components/EvaluationTool';
+import DescriptiveTestcorrectionModule from './EvaluationTool';
 import QuestionPng from 'assets/images/question.png';
 import { SendOutlined } from '@ant-design/icons';
 import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
@@ -171,6 +171,11 @@ const FilesViewEvaluate = ({
   setSelectedHomeworkIndex,
   selectedGrade,
   selectedSubSecMap,
+  fetchTeacherData,
+  startDate,
+  endDate,
+  sub_sec_mpng,
+  page,
 }) => {
   const history = useHistory();
   const { Option } = Select;
@@ -308,6 +313,7 @@ const FilesViewEvaluate = ({
       file,
       evaluateData[selectedHomeworkIndex],
       selectedHomework?.id,
+      selectedHomeworkIndex,
       'filedata'
     );
     setUploadStart(true);
@@ -322,6 +328,13 @@ const FilesViewEvaluate = ({
         if (res?.data?.status_code === 200) {
           message.success('Attachment Added');
           setUploadStart(false);
+          handleCloseCorrectionModal();
+          fetchTeacherData({
+            start_date: startDate,
+            end_date: endDate,
+            sub_sec_mpng: sub_sec_mpng,
+            page: page,
+          });
           // setFileList([]);
           // setUploading(false);
         }
@@ -557,7 +570,7 @@ const FilesViewEvaluate = ({
                         <div className='col-md-6'>
                           <p className='th-12 mb-0 text-muted text-truncate text-center'>
                             <span className='th-fw-600'>
-                              {item?.corrected_at
+                              {item?.hw_date
                                 ? moment(item?.hw_date).format('DD-MM-YYYY')
                                 : ''}
                             </span>
@@ -627,7 +640,9 @@ const FilesViewEvaluate = ({
                           {evaluateData.map((url, i) => (
                             <img
                               //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                              src={`${endpointsV1.erp_googleapi}/${url?.file_location}`}
+                              src={`${endpointsV1.erp_googleapi}/${
+                                url?.file_location
+                              }?${escape(new Date().getTime())}`}
                               onError={(e) => {
                                 e.target.src = placeholder;
                               }}

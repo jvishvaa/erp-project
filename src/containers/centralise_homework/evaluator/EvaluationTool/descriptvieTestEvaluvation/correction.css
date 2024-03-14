@@ -1,0 +1,51 @@
+
+
+.add__icon{
+  display:inline-block;
+  width:47px;
+  height:47px;
+  background:
+  linear-gradient( #82807f,#82807f),
+  linear-gradient(#82807f,#82807f);
+  background-position:center;
+  background-size: 50% 2px,2px 50%; 
+  background-repeat:no-repeat;
+  margin-left: 210px;
+}
+.start__journey__card{
+    margin-top: 60px;
+    margin-left: 15px;
+    width: fit-content;
+    height: 100%;
+    border: 2px solid #82807f;
+}
+.slider__content{
+    margin-top: 41px;
+    margin-left: 45px;
+    animation: reveal 0.27s forwards;
+    overflow: scroll;
+}
+@keyframes reveal {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+    .start__journey__card{
+        margin-top: 50px;
+        margin-left: 8px;
+        width:156%;
+        height: 100%;
+        border: 2px solid papayawhip;
+    }
+    .add__icon{
+        margin-left: 110px;
+    }
+}
+
+

@@ -60,6 +60,16 @@ const BranchHomework = () => {
   const [evaluateData, setEvaluateData] = useState([]);
   const formRef = useRef();
 
+  const [ListPageData, setListPageData] = useState({
+    currentPage: 1,
+    pageSize: 10,
+    totalCount: null,
+    totalPage: null,
+  });
+
+  const [totalAssesed, setTotalAssesed] = useState(0);
+  const [totalunderAssesed, setTotalunderAssesed] = useState(0);
+
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -105,6 +115,10 @@ const BranchHomework = () => {
         grade: gradeList.map((item) => item.grade_id),
         section: [],
       });
+      setListPageData({
+        ...ListPageData,
+        currentPage : 1
+      });
     } else {
       const singleGrade = each.map((item) => item.value).join(',');
       setGrade(singleGrade);
@@ -144,7 +158,7 @@ const BranchHomework = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}&section=${section}`
+        `${endpoints.academics.subjects}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);
@@ -181,6 +195,10 @@ const BranchHomework = () => {
         section: sectionList?.map((item) => item.section_id),
       });
       fetchSubject(allsections);
+      setListPageData({
+        ...ListPageData,
+        currentPage : 1
+      });
     } else {
       const singleSection = each.map((item) => item.value).join(',');
       setSection(singleSection);
@@ -196,6 +214,10 @@ const BranchHomework = () => {
       setSubject(allsubjects);
       formRef.current.setFieldsValue({
         section: subjectList?.map((item) => item.id),
+      });
+      setListPageData({
+        ...ListPageData,
+        currentPage : 1
       });
     } else {
       const singleSubject = each.map((item) => item.value).join(',');
@@ -215,6 +237,10 @@ const BranchHomework = () => {
     if (value) {
       setStartDate(moment(value[0]).format('DD-MM-YYYY'));
       setEndDate(moment(value[1]).format('DD-MM-YYYY'));
+      setListPageData({
+        ...ListPageData,
+        currentPage : 1
+      });
     }
   };
 
@@ -222,7 +248,7 @@ const BranchHomework = () => {
     if (startDate && endDate && subject) {
       handleGetTeacherData();
     }
-  }, [endDate, subject, startDate]);
+  }, [endDate, subject, startDate, ListPageData.currentPage]);
 
   const handleGetTeacherData = () => {
     const params = {
@@ -230,7 +256,8 @@ const BranchHomework = () => {
       start_date: startDate,
       end_date: endDate,
       erp_id: loggedUserData?.erp,
-      is_assessed: 'False',
+      is_assessed: 'True',
+      page : ListPageData.currentPage,
     };
     axiosInstance
       .get(`${endpoints.homework.teacherData}`, { params })
@@ -239,6 +266,13 @@ const BranchHomework = () => {
           message.success('Data Fetched');
           setEvaluateData(result?.data?.result?.results);
           // setDiaryListData(result?.data?.result?.results);
+          setTotalAssesed(result?.data?.result?.total_assessed);
+          setTotalunderAssesed(result?.data?.result?.total_under_assessed);
+          setListPageData({
+            ...ListPageData,
+            totalCount: result?.data?.result?.count,
+            totalPage: Math.ceil(result?.data?.result?.count / ListPageData.pageSize),
+          });
         }
         setLoading(false);
       })
@@ -278,6 +312,7 @@ const BranchHomework = () => {
                 <div className='row'>
                   <div className='col-md-9 row'>
                     <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                      <div className='mb-2 text-left'>Grade</div>
                       <Form.Item name='grade'>
                         <Select
                           mode='multiple'
@@ -306,6 +341,7 @@ const BranchHomework = () => {
                       </Form.Item>
                     </div>
                     <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                      <div className='mb-2 text-left'>Section</div>
                       <Form.Item name='section'>
                         <Select
                           mode='multiple'
@@ -334,6 +370,7 @@ const BranchHomework = () => {
                       </Form.Item>
                     </div>
                     <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                      <div className='mb-2 text-left'>Subject</div>
                       <Form.Item name='Subject'>
                         <Select
                           mode='multiple'
@@ -362,6 +399,7 @@ const BranchHomework = () => {
                       </Form.Item>
                     </div>
                     <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
+                      <div className='mb-2 text-left'>Select Dates</div>
                       <RangePicker
                         className='th-width-100 th-br-4'
                         onChange={(value) => handleDateChange(value)}
@@ -375,21 +413,23 @@ const BranchHomework = () => {
                     <div
                       className='col-md-12 py-2'
                       style={{
-                        border: '2px solid #868686',
+                        boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
                         borderRadius: '10px',
                       }}
                     >
-                      <div className='col-md-12 row justify-content-between'>
-                        <span>Total Assessed</span>
-                        <span>50</span>
+                      <div
+                        className='col-md-12 row justify-content-between'
+                        style={{ color: 'green' }}
+                      >
+                        <span className='th-fw-600'>Total Assessed</span>
+                        {evaluateData.length && <span>{totalAssesed}</span>}
                       </div>
-                      <div className='col-md-12 row justify-content-between'>
-                        <span>Total Under Assessed</span>
-                        <span>50</span>
-                      </div>
-                      <div className='col-md-12 row justify-content-between'>
-                        <span>Total Unread Chat</span>
-                        <span>10</span>
+                      <div
+                        className='col-md-12 row justify-content-between'
+                        style={{ color: 'red' }}
+                      >
+                        <span className='th-fw-600'>Total Under Assessed</span>
+                        {evaluateData.length && <span>{totalunderAssesed}</span>}
                       </div>
                     </div>
                   </div>
@@ -408,9 +448,30 @@ const BranchHomework = () => {
                   />
                 </div>
               ) : (
-                <div className='mb-3'>
-                  <FilesView evaluateData={evaluateData} />
-                </div>
+                <>
+                  <div className='mb-3'>
+                    <FilesView evaluateData={evaluateData} />
+                  </div>
+
+                  <div className='text-center mt-2'>
+                    <Pagination
+                      current={ListPageData.currentPage}
+                      total={ListPageData.totalCount}
+                      pageSize={ListPageData.pageSize}
+                      onChange={(value) =>
+                        setListPageData({
+                          ...ListPageData,
+                          currentPage: value,
+                        })
+                      }
+                      showSizeChanger={false}
+                      showQuickJumper={false}
+                      showTotal={(total, range) =>
+                        `${range[0]}-${range[1]} of ${total} items`
+                      }
+                    />
+                  </div>
+                </>
               )}
             </div>
           </div>

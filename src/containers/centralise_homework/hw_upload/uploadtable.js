@@ -405,10 +405,12 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
         setLoading(false);
       } else {
         message.error(result?.data?.message);
+        setLoading(false)
       }
       console.log(result, 'coming');
     } catch (error) {
       console.log(error);
+      setLoading(false)
     }
   };
 

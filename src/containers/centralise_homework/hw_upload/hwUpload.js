@@ -163,7 +163,7 @@ const HwUpload = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}&section=${section}`
+        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);
@@ -296,6 +296,7 @@ const HwUpload = () => {
           <div className='row'>
             <div className='col-md-12 row'>
               <div className='col-md-2 col-sm-6 col-12'>
+              <div className='mb-2 text-left'>Grade</div>
                 <Form.Item name='grade'>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -321,6 +322,7 @@ const HwUpload = () => {
                 </Form.Item>
               </div>
               <div className='col-md-2 col-sm-6 col-12'>
+              <div className='mb-2 text-left'>Section</div>
                 <Form.Item name='section'>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -346,6 +348,7 @@ const HwUpload = () => {
                 </Form.Item>
               </div>
               <div className='col-md-2 col-sm-6 col-12'>
+              <div className='mb-2 text-left'>Subject</div>
                 <Form.Item name='subject'>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -372,6 +375,7 @@ const HwUpload = () => {
               </div>
 
               <div className='col-md-3 col-sm-6 col-12'>
+              <div className='mb-2 text-left'>Select Dates</div>
                 <Form.Item name='date'>
                   <RangePicker
                     className='th-width-100 th-br-4'
@@ -388,6 +392,7 @@ const HwUpload = () => {
                   className='w-100 th-br-4'
                   type='primary'
                   onClick={handleUploadPage}
+                  style={{marginTop:"30px"}}
                 >
                   Upload
                 </Button>
