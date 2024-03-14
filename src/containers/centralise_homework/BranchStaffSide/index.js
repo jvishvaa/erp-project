@@ -59,7 +59,7 @@ const BranchHomework = () => {
   const [endDate, setEndDate] = useState(moment().format('DD-MM-YYYY'));
   const [evaluateData, setEvaluateData] = useState([]);
   const formRef = useRef();
-
+  const [count, setCount] = useState(0);
   const [ListPageData, setListPageData] = useState({
     currentPage: 1,
     pageSize: 10,
@@ -117,9 +117,9 @@ const BranchHomework = () => {
       });
       setListPageData({
         ...ListPageData,
-        currentPage : 1
+        currentPage: 1,
       });
-    } else {
+    } else if (each.length !== 0) {
       const singleGrade = each.map((item) => item.value).join(',');
       setGrade(singleGrade);
       fetchSection(singleGrade);
@@ -135,10 +135,15 @@ const BranchHomework = () => {
     setSection('');
     setSectionList([]);
     setSubjectList([]);
+    setSubject('');
+    setStartDate(moment().format('DD-MM-YYYY'));
+    setEndDate(moment().format('DD-MM-YYYY'));
+    setEvaluateData([]);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
-      Subject : [],
+      Subject: [],
+      date: null,
     });
   };
 
@@ -199,17 +204,31 @@ const BranchHomework = () => {
       fetchSubject(allsections);
       setListPageData({
         ...ListPageData,
-        currentPage : 1
+        currentPage: 1,
       });
-    } else {
+    } else if (each.length !== 0) {
       const singleSection = each.map((item) => item.value).join(',');
       setSection(singleSection);
       fetchSubject(singleSection);
+      setListPageData({
+        ...ListPageData,
+        currentPage: 1,
+      });
+    } else {
+      setSubject('');
+      setSubjectList([]);
+      setStartDate(moment().format('DD-MM-YYYY'));
+      setEndDate(moment().format('DD-MM-YYYY'));
+      formRef.current.setFieldsValue({
+        section: [],
+        Subject: [],
+        date: null,
+      });
+      setEvaluateData([]);
     }
   };
 
   const handleChangeSubject = (each) => {
-    console.log(each, 'subject');
     setPageNo(1);
     if (each.some((item) => item.value === 'all')) {
       const allsubjects = subjectList?.map((item) => item.id).join(',');
@@ -219,11 +238,20 @@ const BranchHomework = () => {
       });
       setListPageData({
         ...ListPageData,
-        currentPage : 1
+        currentPage: 1,
       });
-    } else {
+    } else if (each.length !== 0) {
       const singleSubject = each.map((item) => item.value).join(',');
       setSubject(singleSubject);
+    } else {
+      setSubject('');
+      setEvaluateData([]);
+      setStartDate(moment().format('DD-MM-YYYY'));
+      setEndDate(moment().format('DD-MM-YYYY'));
+      formRef.current.setFieldsValue({
+        Subject: [],
+        date: null,
+      });
     }
   };
 
@@ -237,11 +265,17 @@ const BranchHomework = () => {
 
   const handleDateChange = (value) => {
     if (value) {
+      setCount((prev) => prev + 1);
       setStartDate(moment(value[0]).format('DD-MM-YYYY'));
       setEndDate(moment(value[1]).format('DD-MM-YYYY'));
       setListPageData({
         ...ListPageData,
-        currentPage : 1
+        currentPage: 1,
+      });
+    } else {
+      setEvaluateData([]);
+      formRef.current.setFieldsValue({
+        date: null,
       });
     }
   };
@@ -250,7 +284,7 @@ const BranchHomework = () => {
     if (startDate && endDate && subject) {
       handleGetTeacherData();
     }
-  }, [endDate, subject, startDate, ListPageData.currentPage]);
+  }, [endDate, subject, startDate, ListPageData.currentPage, section, count]);
 
   const handleGetTeacherData = () => {
     const params = {
@@ -259,7 +293,7 @@ const BranchHomework = () => {
       end_date: endDate,
       erp_id: loggedUserData?.erp,
       is_assessed: 'True',
-      page : ListPageData.currentPage,
+      page: ListPageData.currentPage,
     };
     axiosInstance
       .get(`${endpoints.homework.teacherData}`, { params })
@@ -402,20 +436,22 @@ const BranchHomework = () => {
                     </div>
                     <div className='col-xl-3 col-md-4 col-sm-6 col-12 pl-0'>
                       <div className='mb-2 text-left'>Select Dates</div>
-                      <RangePicker
-                        className='th-width-100 th-br-4'
-                        onChange={(value) => handleDateChange(value)}
-                        defaultValue={[moment(), moment()]}
-                        format={dateFormat}
-                        separator={'to'}
-                      />
+                      <Form.Item name='date'>
+                        <RangePicker
+                          className='th-width-100 th-br-4'
+                          onChange={(value) => handleDateChange(value)}
+                          defaultValue={[moment(), moment()]}
+                          format={dateFormat}
+                          separator={'to'}
+                        />
+                      </Form.Item>
                     </div>
                   </div>
                   <div className='col-md-3 p-0'>
                     <div
                       className='col-md-12 py-2'
                       style={{
-                        boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+                        boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
                         borderRadius: '10px',
                       }}
                     >
