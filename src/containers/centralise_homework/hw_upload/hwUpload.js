@@ -111,6 +111,12 @@ const HwUpload = () => {
         subject: null,
       });
     }
+    else{
+      formRef.current.setFieldsValue({
+        grade: [],
+        section: [],
+      });
+    }
     // if (each.some((item) => item.value === 'all')) {
     //   const allGrade = gradeList.map((item) => item.grade_id).join(',');
     //   setGrade(allGrade);
@@ -142,9 +148,10 @@ const HwUpload = () => {
     // setEndDate(null);
     // setDates(null);
     formRef.current.setFieldsValue({
-      grade: null,
-      section: null,
-      subject: null,
+      grade: [],
+      section: [],
+      subject: [],
+      date: null,
     });
   };
 
@@ -247,11 +254,11 @@ const HwUpload = () => {
 
   const handleClearSection = () => {
     setSection([]);
-    setSectionName('');
-    setSubject('');
-    setSubjectList([]);
+    setSubject([]);
+    setSubjectList([])
     formRef.current.setFieldsValue({
-      subject: null,
+      section: [],
+      subject: [],
     });
   };
 

@@ -69,12 +69,14 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
       fecthHwData(startDate, endDate, subejctId, status);
       fecthErp(sectionId);
     }
+    else{
+      setHwFiles([])
+    }
   }, [
     startDate,
     endDate,
     subejctId,
     showTab,
-    updatedErp,
     section,
     grade,
     refferListPageData.currentPage,
