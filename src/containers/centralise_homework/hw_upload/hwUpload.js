@@ -167,7 +167,7 @@ const HwUpload = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
+        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);
@@ -409,7 +409,7 @@ const HwUpload = () => {
                   onClick={handleUploadPage}
                   style={{ marginTop: '30px' }}
                 >
-                  Upload
+                  Upload Files
                 </Button>
               </div>
             </div>

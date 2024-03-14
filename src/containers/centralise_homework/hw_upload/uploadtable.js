@@ -123,45 +123,53 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId, sectionName }) 
       title: <span className='th-white th-fw-700'>Section</span>,
       dataIndex: 'sec',
       align: 'center',
-      width: '15%',
+      width: '10%',
       render: (data) => <span className='th-black-1 th-14'>{sectionName}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>Action</span>,
+      title: <span className='th-white th-fw-700'>File Location</span>,
       dataIndex: 'file_location',
       align: 'center',
       width: '30%',
       render: (data) => (
         <div className='col-md-12 pl-0 col-12 d-flex justify-content-center align-items-center'>
-          <div className='col-10 text-truncate' title={`${data}`}>
+          <div className='text-truncate' title={`${data}`}>
             {data}
           </div>
-          <div className='col-2'>
-            <a
-              onClick={() => {
-                const fileName = data;
-                const fileSrc = `${endpoints.assessment.erpBucket}/${fileName}`;
-                //   // const fileSrc = data;
-                //   openPreview({
-                //     currentAttachmentIndex: 0,
-                //     attachmentsArray: [
-                //       {
-                //         src: fileSrc,
-                //         name: 'Portion Document',
-                //         extension:
-                //           '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
-                //       },
-                //     ],
-                //   });
-                // }}
-                handleImagePrev(fileSrc);
-              }}
-            >
-              <div className=' pl-0 th-primary '>
-                <EyeFilled />
-              </div>
-            </a>
-          </div>
+        </div>
+      ),
+    },
+    {
+      title: <span className='th-white th-fw-700'>Action</span>,
+      dataIndex: 'file_location',
+      align: 'center',
+      width: '20%',
+      render: (data) => (
+        <div className='col-md-12 pl-0 col-12 d-flex justify-content-center align-items-center'>
+          <a
+            onClick={() => {
+              const fileName = data;
+              const fileSrc = `${endpoints.assessment.erpBucket}/${fileName}`;
+              //   // const fileSrc = data;
+              //   openPreview({
+              //     currentAttachmentIndex: 0,
+              //     attachmentsArray: [
+              //       {
+              //         src: fileSrc,
+              //         name: 'Portion Document',
+              //         extension:
+              //           '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+              //       },
+              //     ],
+              //   });
+              // }}
+              handleImagePrev(fileSrc);
+            }}
+          >
+            <div className=' pl-0 th-primary '>
+              <EyeFilled />
+            </div>
+          </a>
         </div>
       ),
     },

@@ -187,7 +187,7 @@ const EvaluatorHomework = () => {
   const sectionOptions = sectionList?.map((each) => {
     return (
       <Option key={each?.id} value={each.sec_id}>
-        {each?.section__section_name}
+        {each?.sec_name}
       </Option>
     );
   });
