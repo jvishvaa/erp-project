@@ -500,17 +500,19 @@ const CentralizedStudentHw = () => {
                                 }`,
                               }}
                             >
-                              <div className='download-icon cursor-pointer'>
+                              <div
+                                className='download-icon cursor-pointer'
+                                onClick={() => {
+                                  downloadHomeworkAttachment(
+                                    `${endpoints.erpBucket}${item?.file_location}`,
+                                    item.file_location
+                                  );
+                                }}
+                              >
                                 <img
                                   src={DOWNLOADICON}
                                   alt='download'
                                   className='img-fluid'
-                                  onClick={() => {
-                                    downloadHomeworkAttachment(
-                                      `${endpoints.erpBucket}${item?.file_location}`,
-                                      item.file_location
-                                    );
-                                  }}
                                 />
                               </div>
                               <div

@@ -42,6 +42,7 @@ const HwUpload = () => {
   const [grade, setGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [section, setSection] = useState('');
+  const [sectionName, setSectionName] = useState('');
   const [status, setStatus] = useState('');
 
   const { Option } = Select;
@@ -101,6 +102,7 @@ const HwUpload = () => {
       setGrade(each?.value);
       fetchSection(each?.value);
       setSection(null);
+      setSectionName(null);
       setSubject([]);
       setSubjectList([]);
       formRef.current.setFieldsValue({
@@ -132,6 +134,7 @@ const HwUpload = () => {
   const handleClearGrade = () => {
     setGrade([]);
     setSection('');
+    setSectionName('');
     setSectionList([]);
     setSubject('');
     setSubjectList([]);
@@ -177,7 +180,7 @@ const HwUpload = () => {
 
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.id} value={each.section_id}>
+      <Option key={each?.id} name={each?.sec_name} value={each.section_id}>
         {each?.sec_name}
       </Option>
     );
@@ -195,6 +198,7 @@ const HwUpload = () => {
     setPageNo(1);
     if (each) {
       setSection(each?.value);
+      setSectionName(each?.name);
       setSubject([]);
       formRef.current.setFieldsValue({
         section: each?.value,
@@ -243,6 +247,7 @@ const HwUpload = () => {
 
   const handleClearSection = () => {
     setSection([]);
+    setSectionName('');
     setSubject('');
     setSubjectList([]);
     formRef.current.setFieldsValue({
@@ -296,7 +301,7 @@ const HwUpload = () => {
           <div className='row'>
             <div className='col-md-12 row'>
               <div className='col-md-2 col-sm-6 col-12'>
-              <div className='mb-2 text-left'>Grade</div>
+                <div className='mb-2 text-left'>Grade</div>
                 <Form.Item name='grade'>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -322,7 +327,7 @@ const HwUpload = () => {
                 </Form.Item>
               </div>
               <div className='col-md-2 col-sm-6 col-12'>
-              <div className='mb-2 text-left'>Section</div>
+                <div className='mb-2 text-left'>Section</div>
                 <Form.Item name='section'>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -348,7 +353,7 @@ const HwUpload = () => {
                 </Form.Item>
               </div>
               <div className='col-md-2 col-sm-6 col-12'>
-              <div className='mb-2 text-left'>Subject</div>
+                <div className='mb-2 text-left'>Subject</div>
                 <Form.Item name='subject'>
                   <Select
                     getPopupContainer={(trigger) => trigger.parentNode}
@@ -375,7 +380,7 @@ const HwUpload = () => {
               </div>
 
               <div className='col-md-3 col-sm-6 col-12'>
-              <div className='mb-2 text-left'>Select Dates</div>
+                <div className='mb-2 text-left'>Select Dates</div>
                 <Form.Item name='date'>
                   <RangePicker
                     className='th-width-100 th-br-4'
@@ -392,7 +397,7 @@ const HwUpload = () => {
                   className='w-100 th-br-4'
                   type='primary'
                   onClick={handleUploadPage}
-                  style={{marginTop:"30px"}}
+                  style={{ marginTop: '30px' }}
                 >
                   Upload
                 </Button>
@@ -417,6 +422,7 @@ const HwUpload = () => {
               endDate={endDate}
               subejctId={subject}
               sectionId={section}
+              sectionName={sectionName}
             />
           </div>
         )}

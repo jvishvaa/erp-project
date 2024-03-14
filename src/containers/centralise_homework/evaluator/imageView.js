@@ -155,7 +155,6 @@ const EvaluatorHomework = () => {
       section: null,
       subject: null,
     });
-    // }
   };
 
   const handleClearGrade = () => {
