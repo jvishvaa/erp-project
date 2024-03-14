@@ -392,6 +392,7 @@ const UploadHomework = () => {
                   <div className='row'>
                     <div className='col-md-12 row'>
                       <div className='col-md-2 col-sm-6 col-12'>
+                      <div className='mb-1'>Grade</div>
                         <Form.Item name='grade'>
                           <Select
                             getPopupContainer={(trigger) => trigger.parentNode}
@@ -419,6 +420,7 @@ const UploadHomework = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
+                      <div className='mb-1'>Section</div>
                         <Form.Item name='section'>
                           <Select
                             getPopupContainer={(trigger) => trigger.parentNode}
@@ -446,6 +448,7 @@ const UploadHomework = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
+                      <div className='mb-1'>Subject</div>
                         <Form.Item name='Subject'>
                           <Select
                             getPopupContainer={(trigger) => trigger.parentNode}
@@ -473,6 +476,7 @@ const UploadHomework = () => {
                         </Form.Item>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
+                      <div className='mb-1'>Volume</div>
                         <Select
                           getPopupContainer={(trigger) => trigger.parentNode}
                           maxTagCount={1}
@@ -498,6 +502,7 @@ const UploadHomework = () => {
                         </Select>
                       </div>
                       <div className='col-md-2 col-sm-6 col-12'>
+                      <div className='mb-1'>Select Doc Type</div>
                         <Form.Item name=''>
                           <Select
                             getPopupContainer={(trigger) => trigger.parentNode}
