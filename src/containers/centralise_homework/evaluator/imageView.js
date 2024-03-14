@@ -606,6 +606,11 @@ const EvaluatorHomework = () => {
                 evaluateData={evaluateData}
                 selectedGrade={grade}
                 selectedSubSecMap={section}
+                fetchTeacherData={fetchTeacherData}
+                startDate={startDate}
+                endDate={endDate}
+                sub_sec_mpng={subject}
+                page={pageNo}
               />
 
               <Pagination
