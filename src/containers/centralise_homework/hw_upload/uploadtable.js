@@ -22,7 +22,7 @@ import Loader from 'components/loader/loader';
 import axios from 'axios';
 import { fetchErpList } from 'containers/Finance/src/components/Finance/store/actions';
 
-const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
+const UploadTable = ({ startDate, endDate, subejctId, sectionId, sectionName }) => {
   const history = useHistory();
   const { TabPane } = Tabs;
   const { Option } = Select;
@@ -68,9 +68,8 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
       const status = showTab == 1 ? 'True' : 'False';
       fecthHwData(startDate, endDate, subejctId, status);
       fecthErp(sectionId);
-    }
-    else{
-      setHwFiles([])
+    } else {
+      setHwFiles([]);
     }
   }, [
     startDate,
@@ -125,7 +124,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
       dataIndex: 'sec',
       align: 'center',
       width: '15%',
-      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+      render: (data) => <span className='th-black-1 th-14'>{sectionName}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Action</span>,
@@ -166,13 +165,13 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
         </div>
       ),
     },
-    {
-      title: <span className='th-white th-fw-700'>Status</span>,
-      dataIndex: 'status',
-      align: 'center',
-      width: '15%',
-      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>Status</span>,
+    //   dataIndex: 'status',
+    //   align: 'center',
+    //   width: '15%',
+    //   render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    // },
   ];
 
   const columnsFailed = [
@@ -407,12 +406,12 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId }) => {
         setLoading(false);
       } else {
         message.error(result?.data?.message);
-        setLoading(false)
+        setLoading(false);
       }
       console.log(result, 'coming');
     } catch (error) {
       console.log(error);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
