@@ -22,7 +22,14 @@ import Loader from 'components/loader/loader';
 import axios from 'axios';
 import { fetchErpList } from 'containers/Finance/src/components/Finance/store/actions';
 
-const UploadTable = ({ startDate, endDate, subejctId, sectionId, sectionName }) => {
+const UploadTable = ({
+  startDate,
+  endDate,
+  subejctId,
+  sectionId,
+  sectionMappingId,
+  sectionName,
+}) => {
   const history = useHistory();
   const { TabPane } = Tabs;
   const { Option } = Select;
@@ -64,7 +71,14 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId, sectionName }) 
   useEffect(() => {
     fetchGrade();
 
-    if (startDate && endDate && subejctId.length !== 0 && showTab) {
+    if (
+      startDate &&
+      endDate &&
+      subejctId.length !== 0 &&
+      startDate !== 'Invalid date' &&
+      endDate !== 'Invalid date' &&
+      showTab
+    ) {
       const status = showTab == 1 ? 'True' : 'False';
       fecthHwData(startDate, endDate, subejctId, status);
       fecthErp(sectionId);
@@ -369,7 +383,7 @@ const UploadTable = ({ startDate, endDate, subejctId, sectionId, sectionName }) 
   const fecthErp = async (sectionId) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.homework.hwErp}?section_mapping_id=${sectionId}&status=1`,
+        `${endpoints.homework.hwErp}?section_mapping_id=${sectionMappingId}&status=1&user_level=13`,
         {
           headers: {
             Authorization: `Bearer ${loggedUserData?.token}`,
