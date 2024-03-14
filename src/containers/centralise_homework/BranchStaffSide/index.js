@@ -51,11 +51,11 @@ const BranchHomework = () => {
   const [totalPage, setTotalPage] = useState(0);
   const [pageLimit, setPageLimit] = useState(15);
   const [loading, setLoading] = useState(false);
-
+  let defaultStartDate = moment().subtract(6, 'days');
   const [showFilterPage, setShowFilter] = useState(false);
   const [subject, setSubject] = useState(null);
   const [subjectList, setSubjectList] = useState([]);
-  const [startDate, setStartDate] = useState(moment().format('DD-MM-YYYY'));
+  const [startDate, setStartDate] = useState(defaultStartDate.format('DD-MM-YYYY'));
   const [endDate, setEndDate] = useState(moment().format('DD-MM-YYYY'));
   const [evaluateData, setEvaluateData] = useState([]);
   const formRef = useRef();
@@ -69,6 +69,7 @@ const BranchHomework = () => {
 
   const [totalAssesed, setTotalAssesed] = useState(0);
   const [totalunderAssesed, setTotalunderAssesed] = useState(0);
+  const [dates, setDates] = useState(null);
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -136,7 +137,7 @@ const BranchHomework = () => {
     setSectionList([]);
     setSubjectList([]);
     setSubject('');
-    setStartDate(moment().format('DD-MM-YYYY'));
+    setStartDate(defaultStartDate.format('DD-MM-YYYY'));
     setEndDate(moment().format('DD-MM-YYYY'));
     setEvaluateData([]);
     formRef.current.setFieldsValue({
@@ -217,7 +218,7 @@ const BranchHomework = () => {
     } else {
       setSubject('');
       setSubjectList([]);
-      setStartDate(moment().format('DD-MM-YYYY'));
+      setStartDate(defaultStartDate.format('DD-MM-YYYY'));
       setEndDate(moment().format('DD-MM-YYYY'));
       formRef.current.setFieldsValue({
         section: [],
@@ -246,7 +247,7 @@ const BranchHomework = () => {
     } else {
       setSubject('');
       setEvaluateData([]);
-      setStartDate(moment().format('DD-MM-YYYY'));
+      setStartDate(defaultStartDate.format('DD-MM-YYYY'));
       setEndDate(moment().format('DD-MM-YYYY'));
       formRef.current.setFieldsValue({
         Subject: [],
@@ -268,6 +269,7 @@ const BranchHomework = () => {
       setCount((prev) => prev + 1);
       setStartDate(moment(value[0]).format('DD-MM-YYYY'));
       setEndDate(moment(value[1]).format('DD-MM-YYYY'));
+      setDates(value);
       setListPageData({
         ...ListPageData,
         currentPage: 1,
@@ -281,7 +283,14 @@ const BranchHomework = () => {
   };
 
   useEffect(() => {
-    if (startDate && endDate && subject) {
+    console.log({ startDate, endDate, subject });
+    if (
+      startDate &&
+      endDate &&
+      subject &&
+      startDate !== 'Invalid date' &&
+      endDate !== 'Invalid date'
+    ) {
       handleGetTeacherData();
     }
   }, [endDate, subject, startDate, ListPageData.currentPage, section, count]);
@@ -291,7 +300,7 @@ const BranchHomework = () => {
       sub_sec_mpng: subject,
       start_date: startDate,
       end_date: endDate,
-      erp_id: loggedUserData?.erp,
+      // erp_id: loggedUserData?.erp,
       is_assessed: 'True',
       page: ListPageData.currentPage,
     };
@@ -317,6 +326,33 @@ const BranchHomework = () => {
         setLoading(false);
       });
   };
+
+  const onOpenChange = (open) => {
+    if (open) {
+      setStartDate(null);
+      setEndDate(null);
+      setDates([null, null]);
+      formRef.current.setFieldsValue({
+        date: [null, null],
+      });
+    } else {
+      setStartDate(null);
+      setEndDate(null);
+      setDates(null);
+    }
+  };
+
+  const disabledDate = (current) => {
+    if (!dates) {
+      return false;
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
+
+    return !!tooEarly || !!tooLate;
+  };
+
+  console.log({ endDate });
 
   return (
     <React.Fragment>
@@ -435,8 +471,10 @@ const BranchHomework = () => {
                     <Form.Item name='date'>
                       <RangePicker
                         className='th-width-100 th-br-4'
-                        onChange={(value) => handleDateChange(value)}
-                        defaultValue={[moment(), moment()]}
+                        onCalendarChange={(value) => handleDateChange(value)}
+                        onOpenChange={onOpenChange}
+                        defaultValue={dates || [moment().subtract(6, 'days'), moment()]}
+                        disabledDate={disabledDate}
                         format={dateFormat}
                         separator={'to'}
                       />
