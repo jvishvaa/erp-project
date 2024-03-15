@@ -104,7 +104,7 @@ const HwUpload = () => {
       setGrade(each?.value);
       fetchSection(each?.value);
       setSection(null);
-      setSectionMappingId(null)
+      setSectionMappingId(null);
       setSectionName(null);
       setSubject('');
       setSubjectList([]);
@@ -137,7 +137,7 @@ const HwUpload = () => {
   const handleClearGrade = () => {
     setGrade([]);
     setSection('');
-    setSectionMappingId(null)
+    setSectionMappingId(null);
     setSectionName('');
     setSectionList([]);
     setSubject('');
@@ -208,7 +208,7 @@ const HwUpload = () => {
     setPageNo(1);
     if (each) {
       setSection(each?.value);
-      setSectionMappingId(each?.mappingId)
+      setSectionMappingId(each?.mappingId);
       setSectionName(each?.name);
       setSubject('');
       formRef.current.setFieldsValue({
@@ -264,7 +264,7 @@ const HwUpload = () => {
 
   const handleClearSection = () => {
     setSection([]);
-    setSectionMappingId(null)
+    setSectionMappingId(null);
     setSubject([]);
     setSubjectList([]);
     formRef.current.setFieldsValue({
@@ -296,8 +296,8 @@ const HwUpload = () => {
         date: [null, null],
       });
     } else {
-      setStartDate(null);
-      setEndDate(null);
+      // setStartDate(null);
+      // setEndDate(null);
       setDate(null);
     }
   };
