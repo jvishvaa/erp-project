@@ -217,7 +217,7 @@ const UploadHomework = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
+        `${endpoints.centralizedHomework.subjectList}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);

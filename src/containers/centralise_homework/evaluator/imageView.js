@@ -208,7 +208,7 @@ const EvaluatorHomework = () => {
   const fetchSubjectList = async (sectionId) => {
     try {
       const result = await axiosInstance.get(
-        `${endpointsV2.academics.subjects}?session_year=${selectedYear.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${sectionId}`,
+        `${endpoints.centralizedHomework.subjectList}?session_year=${selectedYear.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${sectionId}`,
         {
           headers: {
             Authorization: `Bearer ${loggedUserData?.token}`,
