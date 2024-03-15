@@ -185,7 +185,7 @@ const FeesOverview = (props) => {
   const feesListdata = [
     { duration: 'Last 24 hours', amount: feesStats?.fee_daily_data },
     { duration: 'Last Week', amount: feesStats?.fee_weekely_data },
-    { duration: 'Last Quater', amount: feesStats?.fee_quarter_data },
+    { duration: 'Last Quarter', amount: feesStats?.fee_quarter_data },
   ];
 
   return (

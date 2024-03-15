@@ -40,7 +40,7 @@ const HomeworkAttachment = ({ ...props }) => {
   return (
     <React.Fragment>
       <div className='w-100'>
-        <div className='th-bg-white attachment-left-box shadow p-3 w-90 float-left'>
+        <div className='th-bg-white attachment-left-box shadow p-3 w-100 float-left'>
           <div className='position-relative'>
             <button
               className='attachment-control-icon prev btn'
@@ -110,7 +110,9 @@ const HomeworkAttachment = ({ ...props }) => {
             )} */}
           </div>
         </div>
-        <div
+
+        {/* ACTION ATTACHMENT */}
+        {/* <div
           className='th-bg-white attachment-right-box float-right'
           style={{ width: '10%' }}
         >
@@ -129,7 +131,7 @@ const HomeworkAttachment = ({ ...props }) => {
           <div className='p-1 p-md-2 p-lg-3 text-center cursor-pointer'>
             <img className='attachment-action-icon' alt='Chat' src={CHATICON} />
           </div>
-        </div>
+        </div> */}
       </div>
     </React.Fragment>
   );

@@ -336,8 +336,8 @@ const BranchHomework = () => {
         date: [null, null],
       });
     } else {
-      setStartDate(null);
-      setEndDate(null);
+      // setStartDate(null);
+      // setEndDate(null);
       setDates(null);
     }
   };
