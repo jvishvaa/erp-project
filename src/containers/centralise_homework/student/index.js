@@ -152,7 +152,7 @@ const CentralizedStudentHw = () => {
 
   const getSubject = (params = {}) => {
     axiosInstance
-      .get(`${endpoints.academics.subjects}`, {
+      .get(`${endpoints.centralizedHomework.subjectList}`, {
         params: { ...params },
       })
       .then((res) => {
