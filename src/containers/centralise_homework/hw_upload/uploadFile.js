@@ -392,12 +392,17 @@ const UploadHomework = () => {
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className='th-black-1 th-16'
-                href='/centralized-homework/homework-upload-status'
+                onClick={()=>
+                history.push({
+                  pathname : "/homework/centralized"
+                })
+                }
+                style={{ cursor: 'pointer' }}
               >
                 Homework Upload Status
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
-                Homework Upload Status
+                Homework Upload Files
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
