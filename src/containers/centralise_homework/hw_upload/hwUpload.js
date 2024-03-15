@@ -463,7 +463,7 @@ const HwUpload = () => {
             />
           </div>
         ) : (
-          <div className='my-3'>
+          <div className='my-3 col-md-12'>
             <UploadTable
               startDate={startDate}
               endDate={endDate}
