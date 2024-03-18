@@ -3,7 +3,7 @@ import Layout from 'containers/Layout';
 import { Breadcrumb, Tabs } from 'antd';
 import CentralizedHomework from './index';
 import HwUpload from './hw_upload/hwUpload';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useHistory } from 'react-router-dom';
 const { TabPane } = Tabs;
 
 const CenralizedHome = () => {
