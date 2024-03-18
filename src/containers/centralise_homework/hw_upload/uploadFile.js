@@ -217,7 +217,7 @@ const UploadHomework = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
+        `${endpoints.centralizedHomework.subjectList}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);
@@ -392,12 +392,20 @@ const UploadHomework = () => {
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className='th-black-1 th-16'
-                href='/centralized-homework/homework-upload-status'
+                onClick={()=>
+                history.push({
+                  pathname : "/homework/centralized",
+                  state : {
+                    key : "2"
+                  }
+                })
+                }
+                style={{ cursor: 'pointer' }}
               >
                 Homework Upload Status
               </Breadcrumb.Item>
               <Breadcrumb.Item className='th-black-1 th-16'>
-                Homework Upload Status
+                Homework Upload Files
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

@@ -494,7 +494,7 @@ const UploadTable = ({
   return (
     <React.Fragment>
       <div className='row'>
-        <div className='col-12'>
+        <div className='col-md-12'>
           <div className='th-tabs th-tabs-hw mt-2 th-bg-white'>
             <Tabs type='card' className='' onChange={onChange} defaultActiveKey={showTab}>
               <TabPane tab='Passed' key='1'>
@@ -503,7 +503,7 @@ const UploadTable = ({
                     {/* <span className=''>Total Unique Students -10</span> */}
                     <span className=''>Total Count- {count}</span>
                   </div>
-                  <div>
+                  <div className='convert col-md-12'>
                     <Table
                       className='th-table'
                       rowClassName={(record, index) =>
