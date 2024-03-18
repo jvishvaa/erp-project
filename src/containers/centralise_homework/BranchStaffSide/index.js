@@ -474,6 +474,7 @@ const BranchHomework = () => {
                         onCalendarChange={(value) => handleDateChange(value)}
                         onOpenChange={onOpenChange}
                         defaultValue={dates || [moment().subtract(6, 'days'), moment()]}
+                        value={dates || [moment().subtract(6, 'days'), moment()]}
                         disabledDate={disabledDate}
                         format={dateFormat}
                         separator={'to'}

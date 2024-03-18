@@ -401,10 +401,10 @@ const CentralizedStudentHw = () => {
         {homeworkData?.length > 0 ? (
           <>
             <div
-              style={{ width: '100%', margin: '0 auto' }}
-              className='row align-items-center  justify-content-between my-3'
+              style={{ width: '100%', margin: '0 auto' , display:"flex", justifyContent:"flex-end"}}
+              className=''
             >
-              <div className='col-md-8 col-xl-9 col-sm-12 col-12'>
+              {/* <div className='col-md-8 col-xl-9 col-sm-12 col-12'>
                 <div className='row align-items-center'>
                   <div className='col-md-6 col-sm-12 col-12 text-center'>
                     <p className='th-15 mb-0'>
@@ -440,7 +440,31 @@ const CentralizedStudentHw = () => {
                   Total Under Assessed:
                   <span className='assessed-mark under-assessed'></span>
                 </div>
-              </div>
+              </div> */}
+              <div className='col-md-3 p-0' style={{display:"flex", justifyContent:"flex-end"}}>
+                  <div
+                    className='col-md-12 py-2'
+                    style={{
+                      boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+                      borderRadius: '10px',
+                    }}
+                  >
+                    <div
+                      className='col-md-12 row justify-content-between'
+                      style={{ color: 'green' }}
+                    >
+                      <span className='th-fw-600'>Total Assessed</span>
+                      {homeworkData.length && <span>{homework?.total_assessed}</span>}
+                    </div>
+                    <div
+                      className='col-md-12 row justify-content-between'
+                      style={{ color: 'red' }}
+                    >
+                      <span className='th-fw-600'>Total Under Assessed</span>
+                      {homeworkData.length && <span>{homework?.total_under_assessed}</span>}
+                    </div>
+                  </div>
+                </div>
             </div>
             <div className='row mt-3'>
               {attachmentView && (

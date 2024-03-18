@@ -3,10 +3,12 @@ import Layout from 'containers/Layout';
 import { Breadcrumb, Tabs } from 'antd';
 import CentralizedHomework from './index';
 import HwUpload from './hw_upload/hwUpload';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 const { TabPane } = Tabs;
 
 const CenralizedHome = () => {
-  const [showTab, setShowTab] = useState(1);
+  const history = useHistory()
+  const [showTab, setShowTab] = useState(history?.location?.state?.key || 1);
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
 
   const onChange = (key) => {
