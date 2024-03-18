@@ -394,7 +394,10 @@ const UploadHomework = () => {
                 className='th-black-1 th-16'
                 onClick={()=>
                 history.push({
-                  pathname : "/homework/centralized"
+                  pathname : "/homework/centralized",
+                  state : {
+                    key : "2"
+                  }
                 })
                 }
                 style={{ cursor: 'pointer' }}
