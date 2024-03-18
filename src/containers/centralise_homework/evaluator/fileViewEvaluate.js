@@ -176,6 +176,7 @@ const FilesViewEvaluate = ({
   endDate,
   sub_sec_mpng,
   page,
+  sectionMappingId,
 }) => {
   const history = useHistory();
   const { Option } = Select;
@@ -220,10 +221,11 @@ const FilesViewEvaluate = ({
 
   useEffect(() => {
     fetchErp({
-      section_mapping_id: selectedSubSecMap,
+      section_mapping_id: sectionMappingId,
+      user_level: 13,
       status: 1,
     });
-  }, [selectedSubSecMap]);
+  }, [sectionMappingId]);
 
   useEffect(() => {
     if (openDrawer == true) {
@@ -280,7 +282,6 @@ const FilesViewEvaluate = ({
   };
 
   const handleScroll = (dir) => {
-    console.log(attachmentContainer);
     if (dir === 'left') {
       scrollableContainer.current.scrollLeft -= attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
@@ -309,13 +310,6 @@ const FilesViewEvaluate = ({
   };
 
   const handleSaveEvaluatedFile = async (file) => {
-    console.log(
-      file,
-      evaluateData[selectedHomeworkIndex],
-      selectedHomework?.id,
-      selectedHomeworkIndex,
-      'filedata'
-    );
     setUploadStart(true);
     let path = evaluateData[selectedHomeworkIndex]?.file_location;
     const fd = new FormData();
@@ -364,7 +358,6 @@ const FilesViewEvaluate = ({
   };
 
   const handlechange = (e) => {
-    console.log(e);
     setChatText(e);
   };
 
@@ -373,7 +366,6 @@ const FilesViewEvaluate = ({
       user: 'user',
       chat: chattext,
     };
-    console.log(data, 'arrdata');
     setChatsData([...chatsData, data]);
     setTimeout(scrollToBottom, 1000);
   };
@@ -391,17 +383,16 @@ const FilesViewEvaluate = ({
     // carousel.current.goTo(index);
 
     let imgwidth = index * attachmentContainer?.current?.clientWidth;
-    console.log(scrollableContainer.current, 'scroll');
+    // console.log(scrollableContainer.current, 'scroll');
     scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
   };
 
   const fetchErp = (params = {}) => {
     axiosInstance
-      .get(`${endpointsV1.communication.viewUser}`, {
+      .get(`${endpointsV1.homework.hwErp}`, {
         params: { ...params },
       })
       .then((res) => {
-        console.log({ res });
         setErpList(res?.data?.results);
       })
       .catch((error) => {
@@ -433,7 +424,6 @@ const FilesViewEvaluate = ({
         student_erp: selectedErp,
       })
       .then((res) => {
-        console.log({ res });
         if (res?.data?.status_code === 200) {
           message.success('Erp Updated');
           setSelectedErp(null);
@@ -450,7 +440,6 @@ const FilesViewEvaluate = ({
       });
   };
 
-  console.log({ selectedHomework });
   const onCarouselChange = (currentSlide) => {
     console.log(currentSlide);
   };

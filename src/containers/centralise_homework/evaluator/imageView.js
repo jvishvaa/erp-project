@@ -60,6 +60,7 @@ const EvaluatorHomework = () => {
   const [grade, setGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [section, setSection] = useState('');
+  const [sectionMappingId, setSectionMappingId] = useState('');
   const [status, setStatus] = useState('');
 
   const { Option } = Select;
@@ -145,6 +146,7 @@ const EvaluatorHomework = () => {
   const handleClearGrade = () => {
     setGrade('');
     setSection('');
+    setSectionMappingId('');
     setSectionList([]);
     setSubjectList([]);
     setSubject('');
@@ -274,6 +276,7 @@ const EvaluatorHomework = () => {
     if (each) {
       setPageNo(1);
       const section = each?.value;
+      setSectionMappingId(each?.key);
       setSection(section);
       fetchSubjectList(section);
       setSubject('');
@@ -285,6 +288,7 @@ const EvaluatorHomework = () => {
 
   const handleClearSection = () => {
     setSection([]);
+    setSectionMappingId('');
     setSubject('');
     setSubjectList([]);
     formRef.current.setFieldsValue({
@@ -652,6 +656,7 @@ const EvaluatorHomework = () => {
                 startDate={startDate}
                 endDate={endDate}
                 sub_sec_mpng={subject}
+                sectionMappingId={sectionMappingId}
                 page={pageNo}
               />
 
