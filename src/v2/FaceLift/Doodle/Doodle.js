@@ -5,25 +5,37 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import ENVCONFIG from 'v2/config/config';
-import ReactHtmlParser from 'react-html-parser'
-
+import ReactHtmlParser from 'react-html-parser';
 
 const Doodle = () => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [doodleData, setDoodleData] = useState([]);
+  const [payConfigData, setPayConfigData] = useState(null);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const handleFinance = () => {
-    window.location.href.includes('dheerajinternational')
-      ? window.open(
-          `https://formbuilder.ccavenue.com/live/dheeraj-international-school`,
-          '_blank'
-        )
-      : window.open(
-          `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
-          '_blank'
-        );
+    // window.location.href.includes('dheerajinternational')
+    //   ? window.open(
+    //       `https://formbuilder.ccavenue.com/live/dheeraj-international-school`,
+    //       '_blank'
+    //     )
+    //   : window.open(
+    //       `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+    //       '_blank'
+    //     );
+    if (payConfigData?.length > 0) {
+      let modifiedUrl = checkToken(payConfigData[1]);
+      console.log(modifiedUrl, 'mod');
+      window.open(modifiedUrl, '_blank');
+    }
+  };
+  const checkToken = (url) => {
+    if (url.includes('#token')) {
+      return url.replace(new RegExp('#token', 'g'), token);
+    } else {
+      return url;
+    }
   };
   const fetchDoodle = () => {
     axios
@@ -36,8 +48,21 @@ const Doodle = () => {
       .catch((error) => message.error('error', error?.message));
   };
 
+  const fetchPayConfig = () => {
+    axios
+      .get(`${endpoints.doodle.fetchDoodlePayConfig}`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          console.log(response.data, 'payconfig');
+          setPayConfigData(response?.data?.result);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+
   useEffect(() => {
     fetchDoodle();
+    fetchPayConfig();
   }, []);
 
   const doodleInfo = () => {
@@ -63,7 +88,9 @@ const Doodle = () => {
               className='row py-3 th-black-2 pr-2 mt-1 text-wrap text-justify'
               style={{ height: '220px', overflowY: 'scroll' }}
             >
-              {ReactHtmlParser(doodleData?.description?.replace(/(?:\r\n|\r|\n)/g, '<br />'))}
+              {ReactHtmlParser(
+                doodleData?.description?.replace(/(?:\r\n|\r|\n)/g, '<br />')
+              )}
             </div>
           </div>
           <div className='col-md-8 shadow-sm px-0 '>
@@ -92,19 +119,23 @@ const Doodle = () => {
               (branchId) => branchId === selectedBranch?.id
             ) && (
               <div style={{ position: 'absolute', bottom: '20px', right: '60px' }}>
-                <Button
-                  type='primary'
-                  className='btn-block th-br-4 th-14'
-                  style={{
-                    width: '80px',
-                    height: '30px',
-                    fontWeight: 'bold',
-                    padding: '0px 2px',
-                  }}
-                  onClick={handleFinance}
-                >
-                  Pay Now
-                </Button>
+                {payConfigData?.length > 0 ? (
+                  <Button
+                    type='primary'
+                    className='btn-block th-br-4 th-14'
+                    style={{
+                      width: '80px',
+                      height: '30px',
+                      fontWeight: 'bold',
+                      padding: '0px 2px',
+                    }}
+                    onClick={handleFinance}
+                  >
+                    {payConfigData?.length > 0 && payConfigData[0]}
+                  </Button>
+                ) : (
+                  ''
+                )}
               </div>
             )}
           </div>
