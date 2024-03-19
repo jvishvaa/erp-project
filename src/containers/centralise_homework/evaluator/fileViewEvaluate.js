@@ -32,6 +32,7 @@ import endpoints from 'v2/config/endpoints';
 import endpointsV1 from 'config/endpoints';
 import placeholder from 'assets/images/placeholder_small.jpg';
 import DescriptiveTestcorrectionModule from './EvaluationTool';
+import AuditorRating from './Auditor';
 import QuestionPng from 'assets/images/question.png';
 import { SendOutlined } from '@ant-design/icons';
 import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
@@ -283,7 +284,7 @@ const FilesViewEvaluate = ({
 
   const handleScroll = (dir) => {
     if (dir === 'left') {
-      scrollableContainer.current.scrollLeft -= attachmentContainer?.current?.clientWidth;
+      scrollableContainer.current.scrollLeft -= scrollableContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
         selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
       );
@@ -292,7 +293,7 @@ const FilesViewEvaluate = ({
       );
       // carousel.current.next();
     } else {
-      scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
+      scrollableContainer.current.scrollLeft += scrollableContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
         selectedHomeworkIndex === evaluateData.length - 1
           ? evaluateData.length - 1
@@ -382,7 +383,7 @@ const FilesViewEvaluate = ({
     setSelectedHomework(evaluateData[index]);
     // carousel.current.goTo(index);
 
-    let imgwidth = index * attachmentContainer?.current?.clientWidth;
+    let imgwidth = index * scrollableContainer?.current?.clientWidth;
     // console.log(scrollableContainer.current, 'scroll');
     scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
   };
@@ -574,6 +575,12 @@ const FilesViewEvaluate = ({
             <div className='col-md-7 col-xl-8 pr-0'>
               {/* Image Area */}
 
+              {/* <div className='auditor row'>
+                <div className='col-md-3 offset-md-8 pr-0'>
+                  <AuditorRating />
+                </div>
+              </div> */}
+
               <div className='attachments-container'>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
@@ -591,30 +598,27 @@ const FilesViewEvaluate = ({
                     >
                       {evaluateData.map((url, i) => {
                         const actions = ['preview', 'download', 'pentool'];
-
                         return (
-                          <>
-                            <div
-                              className='attachment'
-                              style={{ maxWidth: '100%' }}
-                              ref={attachmentContainer}
-                            >
-                              <Attachment
-                                key={`homework_student_question_attachment_${i}`}
-                                fileUrl={url?.file_location}
-                                fileName={`Attachment-${i + 1}`}
-                                // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                urlPrefix={`${endpointsV1.erp_googleapi}`}
-                                index={i}
-                                actions={
-                                  url?.file?.includes('.doc')
-                                    ? ['download']
-                                    : ['preview', 'download', 'pentool']
-                                }
-                                onOpenInPenTool={openInPenTool}
-                              />
-                            </div>
-                          </>
+                          <div
+                            className='attachment'
+                            style={{ maxWidth: '100%' }}
+                            ref={attachmentContainer}
+                          >
+                            <Attachment
+                              key={`homework_student_question_attachment_${i}`}
+                              fileUrl={url?.file_location}
+                              fileName={`Attachment-${i + 1}`}
+                              // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
+                              urlPrefix={`${endpointsV1.erp_googleapi}`}
+                              index={i}
+                              actions={
+                                url?.file?.includes('.doc')
+                                  ? ['download']
+                                  : ['preview', 'download', 'pentool']
+                              }
+                              onOpenInPenTool={openInPenTool}
+                            />
+                          </div>
                         );
                       })}
                       <div
