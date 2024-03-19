@@ -152,7 +152,7 @@ const CentralizedStudentHw = () => {
 
   const getSubject = (params = {}) => {
     axiosInstance
-      .get(`${endpoints.academics.subjects}`, {
+      .get(`${endpoints.centralizedHomework.subjectList}`, {
         params: { ...params },
       })
       .then((res) => {
@@ -311,7 +311,7 @@ const CentralizedStudentHw = () => {
 
       <div className='th-br-8 th-bg-white mx-3 mb-3 py-3'>
         {!attachmentView && (
-          <div className='col-md-12'>
+          <div className=''>
             <div
               style={{ width: '100%', margin: '0 auto' }}
               className='row justify-content-between'
@@ -401,11 +401,11 @@ const CentralizedStudentHw = () => {
         {homeworkData?.length > 0 ? (
           <>
             <div
-              style={{ width: '100%', margin: '0 auto' }}
-              className='row justify-content-between mt-3'
+              style={{ width: '100%', margin: '0 auto' , display:"flex", justifyContent:"flex-end"}}
+              className=''
             >
-              <div className='col-md-8 col-xl-9 col-sm-12 col-12'>
-                <div className='row mb-3'>
+              {/* <div className='col-md-8 col-xl-9 col-sm-12 col-12'>
+                <div className='row align-items-center'>
                   <div className='col-md-6 col-sm-12 col-12 text-center'>
                     <p className='th-15 mb-0'>
                       Total Assessed :
@@ -424,7 +424,15 @@ const CentralizedStudentHw = () => {
                   </div>
                 </div>
               </div>
-              <div className='col-md-4 col-xl-3 col-sm-12 col-12'>
+              <div
+                className='col-md-4 col-xl-3 th-br-10 col-sm-12  py-3 col-12'
+                style={{
+                  boxShadow:
+                    'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
+                  marginBottom: '5px',
+                  height: 'fit-content',
+                }}
+              >
                 <div className='d-flex justify-content-between'>
                   Total Assessed: <span className='assessed-mark assessed'></span>
                 </div>
@@ -432,7 +440,31 @@ const CentralizedStudentHw = () => {
                   Total Under Assessed:
                   <span className='assessed-mark under-assessed'></span>
                 </div>
-              </div>
+              </div> */}
+              <div className='col-md-3 p-0' style={{display:"flex", justifyContent:"flex-end"}}>
+                  <div
+                    className='col-md-12 py-2'
+                    style={{
+                      boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+                      borderRadius: '10px',
+                    }}
+                  >
+                    <div
+                      className='col-md-12 row justify-content-between'
+                      style={{ color: 'green' }}
+                    >
+                      <span className='th-fw-600'>Total Assessed</span>
+                      {homeworkData.length && <span>{homework?.total_assessed}</span>}
+                    </div>
+                    <div
+                      className='col-md-12 row justify-content-between'
+                      style={{ color: 'red' }}
+                    >
+                      <span className='th-fw-600'>Total Under Assessed</span>
+                      {homeworkData.length && <span>{homework?.total_under_assessed}</span>}
+                    </div>
+                  </div>
+                </div>
             </div>
             <div className='row mt-3'>
               {attachmentView && (
@@ -447,14 +479,15 @@ const CentralizedStudentHw = () => {
               {console.log({ selectedHomework })}
 
               {!attachmentView && (
-                <div className='col-md-5 col-xl-4 col-sm-12 col-12 mb-3'>
+                <div className='col-md-5 pl-0 col-xl-4 col-sm-12 col-12 mb-3'>
                   <div className='card shadow border-0 th-br-4 w-100'>
                     <div className='card-body'>
                       <div className='d-flex justify-content-between'>
                         <div>
                           <p className='text-uppercase'>Homework Files</p>
                         </div>
-                        <div className='text-muted' style={{ cursor: 'pointer' }}>
+                        {/* FILETR */}
+                        {/* <div className='text-muted' style={{ cursor: 'pointer' }}>
                           <Popover
                             getPopupContainer={(trigger) => trigger.parentNode}
                             showArrow={false}
@@ -515,7 +548,7 @@ const CentralizedStudentHw = () => {
                           >
                             Filter <FilterOutlined />
                           </Popover>
-                        </div>
+                        </div> */}
                       </div>
 
                       <div className='notebook-list mt-3'>
@@ -623,10 +656,10 @@ const CentralizedStudentHw = () => {
               <div
                 className={` ${
                   attachmentView && noteTakerView
-                    ? 'col-md-7 col-xl-8 col-12 mb-3'
+                    ? 'col-md-7 pr-0 col-xl-8 col-12 mb-3'
                     : attachmentView
-                    ? 'col-12 mb-3'
-                    : 'col-md-7 col-xl-8 col-sm-12 col-12 mb-3'
+                    ? 'col-12 pr-0 mb-3'
+                    : 'col-md-7 pr-0 col-xl-8 col-sm-12 col-12 mb-3'
                 }`}
               >
                 <HomeworkAttachments

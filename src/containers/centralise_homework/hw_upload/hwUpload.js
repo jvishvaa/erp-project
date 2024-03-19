@@ -42,6 +42,7 @@ const HwUpload = () => {
   const [grade, setGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [section, setSection] = useState('');
+  const [sectionMappingId, setSectionMappingId] = useState('');
   const [sectionName, setSectionName] = useState('');
   const [status, setStatus] = useState('');
 
@@ -57,8 +58,9 @@ const HwUpload = () => {
   const [subject, setSubject] = useState('');
   const [subjectList, setSubjectList] = useState([]);
 
+  let defaultStartDate = moment().subtract(6, 'days');
   const [date, setDate] = useState(null);
-  const [startDate, setStartDate] = useState(moment().format('DD-MM-YYYY'));
+  const [startDate, setStartDate] = useState(defaultStartDate.format('DD-MM-YYYY'));
   const [endDate, setEndDate] = useState(moment().format('DD-MM-YYYY'));
 
   const dateFormat = 'DD-MM-YYYY';
@@ -102,6 +104,7 @@ const HwUpload = () => {
       setGrade(each?.value);
       fetchSection(each?.value);
       setSection(null);
+      setSectionMappingId(null);
       setSectionName(null);
       setSubject('');
       setSubjectList([]);
@@ -134,6 +137,7 @@ const HwUpload = () => {
   const handleClearGrade = () => {
     setGrade([]);
     setSection('');
+    setSectionMappingId(null);
     setSectionName('');
     setSectionList([]);
     setSubject('');
@@ -167,7 +171,7 @@ const HwUpload = () => {
   const fetchSubject = async (section) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.subjects}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
+        `${endpoints.centralizedHomework.subjectList}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${section}`
       );
       if (result.data.status_code === 200) {
         setSubjectList(result.data.data);
@@ -181,7 +185,12 @@ const HwUpload = () => {
 
   const sectionOptions = sectionList?.map((each) => {
     return (
-      <Option key={each?.id} name={each?.sec_name} value={each.section_id}>
+      <Option
+        key={each?.id}
+        name={each?.sec_name}
+        mappingId={each?.id}
+        value={each.section_id}
+      >
         {each?.sec_name}
       </Option>
     );
@@ -199,6 +208,7 @@ const HwUpload = () => {
     setPageNo(1);
     if (each) {
       setSection(each?.value);
+      setSectionMappingId(each?.mappingId);
       setSectionName(each?.name);
       setSubject('');
       formRef.current.setFieldsValue({
@@ -244,8 +254,8 @@ const HwUpload = () => {
 
   const handleClearSubject = () => {
     setSubject('');
-    setStartDate(null)
-    setEndDate(null)
+    setStartDate(null);
+    setEndDate(null);
     formRef.current.setFieldsValue({
       subject: [],
       date: null,
@@ -254,6 +264,7 @@ const HwUpload = () => {
 
   const handleClearSection = () => {
     setSection([]);
+    setSectionMappingId(null);
     setSubject([]);
     setSubjectList([]);
     formRef.current.setFieldsValue({
@@ -261,8 +272,8 @@ const HwUpload = () => {
       subject: [],
       date: null,
     });
-    setStartDate(null)
-    setEndDate(null)
+    setStartDate(null);
+    setEndDate(null);
   };
 
   const handleDateChange = (each) => {
@@ -275,6 +286,30 @@ const HwUpload = () => {
       setEndDate(null);
       setDate(null);
     }
+  };
+  const onOpenChange = (open) => {
+    if (open) {
+      setStartDate(null);
+      setEndDate(null);
+      setDate([null, null]);
+      formRef.current.setFieldsValue({
+        date: [null, null],
+      });
+    } else {
+      // setStartDate(null);
+      // setEndDate(null);
+      setDate(null);
+    }
+  };
+
+  const disabledDate = (current) => {
+    if (!date) {
+      return false;
+    }
+    const tooLate = date[0] && current.diff(date[0], 'days') > 6;
+    const tooEarly = date[1] && date[1].diff(current, 'days') > 6;
+
+    return !!tooEarly || !!tooLate;
   };
 
   const handleUploadPage = () => {
@@ -394,8 +429,10 @@ const HwUpload = () => {
                 <Form.Item name='date'>
                   <RangePicker
                     className='th-width-100 th-br-4'
-                    onChange={(value) => handleDateChange(value)}
-                    defaultValue={[moment(), moment()]}
+                    onCalendarChange={(value) => handleDateChange(value)}
+                    onOpenChange={onOpenChange}
+                    defaultValue={date || [moment().subtract(6, 'days'), moment()]}
+                    disabledDate={disabledDate}
                     format={dateFormat}
                     separator={'to'}
                   />
@@ -426,12 +463,13 @@ const HwUpload = () => {
             />
           </div>
         ) : (
-          <div className='my-3'>
+          <div className='my-3 col-md-12'>
             <UploadTable
               startDate={startDate}
               endDate={endDate}
               subejctId={subject}
               sectionId={section}
+              sectionMappingId={sectionMappingId}
               sectionName={sectionName}
             />
           </div>

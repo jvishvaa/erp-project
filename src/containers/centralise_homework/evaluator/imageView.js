@@ -60,6 +60,7 @@ const EvaluatorHomework = () => {
   const [grade, setGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [section, setSection] = useState('');
+  const [sectionMappingId, setSectionMappingId] = useState('');
   const [status, setStatus] = useState('');
 
   const { Option } = Select;
@@ -84,9 +85,9 @@ const EvaluatorHomework = () => {
   const [subject, setSubject] = useState('');
 
   const dateFormat = 'DD-MM-YYYY';
-
+  let defaultStartDate = moment().subtract(6, 'days');
   const [date, setDate] = useState(null);
-  const [startDate, setStartDate] = useState(moment().format('DD-MM-YYYY'));
+  const [startDate, setStartDate] = useState(defaultStartDate.format('DD-MM-YYYY'));
   const [endDate, setEndDate] = useState(moment().format('DD-MM-YYYY'));
 
   const [evaluateData, setEvaluateData] = useState([]);
@@ -134,16 +135,6 @@ const EvaluatorHomework = () => {
     );
   });
 
-  const disabledDate = (current) => {
-    if (!dates) {
-      return false;
-    }
-    const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
-    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
-
-    return !!tooEarly || !!tooLate;
-  };
-
   const handleChangeGrade = (each) => {
     setPageNo(1);
     if (each) {
@@ -155,6 +146,7 @@ const EvaluatorHomework = () => {
   const handleClearGrade = () => {
     setGrade('');
     setSection('');
+    setSectionMappingId('');
     setSectionList([]);
     setSubjectList([]);
     setSubject('');
@@ -167,7 +159,7 @@ const EvaluatorHomework = () => {
     setEvaluateData([]);
     setStartDate(null);
     setEndDate(null);
-    setDate(null);
+    setDates(null);
   };
   const fetchSection = async (grade) => {
     try {
@@ -218,7 +210,7 @@ const EvaluatorHomework = () => {
   const fetchSubjectList = async (sectionId) => {
     try {
       const result = await axiosInstance.get(
-        `${endpointsV2.academics.subjects}?session_year=${selectedYear.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${sectionId}`,
+        `${endpoints.centralizedHomework.subjectList}?session_year=${selectedYear.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${sectionId}`,
         {
           headers: {
             Authorization: `Bearer ${loggedUserData?.token}`,
@@ -284,6 +276,7 @@ const EvaluatorHomework = () => {
     if (each) {
       setPageNo(1);
       const section = each?.value;
+      setSectionMappingId(each?.key);
       setSection(section);
       fetchSubjectList(section);
       setSubject('');
@@ -295,13 +288,14 @@ const EvaluatorHomework = () => {
 
   const handleClearSection = () => {
     setSection([]);
+    setSectionMappingId('');
     setSubject('');
     setSubjectList([]);
     formRef.current.setFieldsValue({
       subject: null,
       date: null,
     });
-    setEvaluateData([])
+    setEvaluateData([]);
   };
 
   const handleChangeVolume = (each) => {
@@ -325,22 +319,59 @@ const EvaluatorHomework = () => {
       setEvaluateData([]);
       setStartDate(null);
       setEndDate(null);
-      setDate(null);
+      setDates(null);
     }
   };
 
-  const handleDateChange = (each) => {
-    if (each) {
-      setStartDate(moment(each[0]).format(dateFormat));
-      setEndDate(moment(each[1]).format(dateFormat));
-      setDate([moment(each[0]), moment(each[1])]);
+  // const handleDateChange = (each) => {
+  //   if (each) {
+  //     setStartDate(moment(each[0]).format(dateFormat));
+  //     setEndDate(moment(each[1]).format(dateFormat));
+  //     setDate([moment(each[0]), moment(each[1])]);
+  //     setPageNo(1);
+  //   } else {
+  //     setStartDate(null);
+  //     setEndDate(null);
+  //     setDate(null);
+  //     setEvaluateData([]);
+  //   }
+  // };
+
+  const handleDateChange = (value) => {
+    if (value) {
+      setStartDate(moment(value[0]).format('DD-MM-YYYY'));
+      setEndDate(moment(value[1]).format('DD-MM-YYYY'));
+      setDates(value);
       setPageNo(1);
     } else {
+      setEvaluateData([]);
+      formRef.current.setFieldsValue({
+        date: null,
+      });
+    }
+  };
+
+  const onOpenChange = (open) => {
+    if (open) {
       setStartDate(null);
       setEndDate(null);
-      setDate(null);
-      setEvaluateData([])
+      setDates([null, null]);
+      formRef.current.setFieldsValue({
+        date: [null, null],
+      });
+    } else {
+      setDates(null);
     }
+  };
+
+  const disabledDate = (current) => {
+    if (!dates) {
+      return false;
+    }
+    const tooLate = dates[0] && current.diff(dates[0], 'days') > 6;
+    const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
+
+    return !!tooEarly || !!tooLate;
   };
 
   return (
@@ -489,9 +520,9 @@ const EvaluatorHomework = () => {
                     <Form.Item name='date'>
                       <RangePicker
                         className='th-width-100 th-br-4'
-                        onChange={(value) => handleDateChange(value)}
-                        onCalendarChange={(val) => setDates(val)}
-                        defaultValue={[moment(), moment()]}
+                        onCalendarChange={(value) => handleDateChange(value)}
+                        onOpenChange={onOpenChange}
+                        defaultValue={dates || [moment().subtract(6, 'days'), moment()]}
                         format={dateFormat}
                         disabledDate={disabledDate}
                         separator={'to'}
@@ -625,6 +656,7 @@ const EvaluatorHomework = () => {
                 startDate={startDate}
                 endDate={endDate}
                 sub_sec_mpng={subject}
+                sectionMappingId={sectionMappingId}
                 page={pageNo}
               />
 

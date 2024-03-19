@@ -260,6 +260,7 @@ export default {
   centralizedHomework: {
     docType: 'hw-hub/get_doctype/',
     studentView: 'hw-hub/hw_view/',
+    subjectList : 'hw-hub/user-subject-list/'
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',
