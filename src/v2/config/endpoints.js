@@ -142,6 +142,7 @@ export default {
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,
+    fetchDoodlePayConfig: `/assessment/check-sys-config/?config_key=pay-now`,
   },
   userManagementBlog: {
     getUserLevel: '/erp_user/level_list/',
