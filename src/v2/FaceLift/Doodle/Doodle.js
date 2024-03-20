@@ -128,6 +128,7 @@ const Doodle = () => {
                       height: '30px',
                       fontWeight: 'bold',
                       padding: '0px 2px',
+                      boxShadow: '0px 0px 8px 2px rgba(81, 179, 255, 1)',
                     }}
                     onClick={handleFinance}
                   >
