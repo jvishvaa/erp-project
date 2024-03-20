@@ -565,15 +565,15 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       })}
                       {eachScholastic?.sub_component?.length > 1 ? (
                         <>
-                          <td className='th-width-12 th-fw-600 text-center'>
+                          <td className='th-width-12 th-fw-600 text-center' colSpan='2'>
                             {eachScholastic?.annual_score?.overall_mark}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
+                          <td className='th-width-12 th-fw-600 text-center' >
                             {eachScholastic?.annual_score?.total_grade}
                           </td>
-                          <td className='th-width-12 th-fw-600 text-center'>
+                          {/* <td className='th-width-12 th-fw-600 text-center'>
                             {eachScholastic?.annual_score?.overall_osr}
-                          </td>
+                          </td> */}
                           {/* <td className='th-width-12 th-fw-600 text-center'>
                           {eachScholastic?.annual_score?.overall_air}
                         </td> */}
@@ -1109,7 +1109,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                       {eachCompetitive?.sub_component?.length > 1 ? (
                         <>
                           {' '}
-                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
+                          <td className='th-width-12 th-fw-600 text-center' rowSpan={2} colSpan={2}>
                             {'(S1 +S2)/2'}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center' rowSpan={2}>
@@ -1225,6 +1225,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                               <td
                                 className='th-width-10  text-center'
                                 style={{ backgroundColor: '#ffffff' }}
+                                colspan={2}
                               >
                                 {eachCompetitive?.annual_score?.marks[subjectIndex]}
                               </td>
@@ -1236,12 +1237,12 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                                 {eachCompetitive?.annual_score?.grade[subjectIndex]}
                               </td>
                               {/* Avg OSR */}
-                              <td
+                              {/* <td
                                 className='th-width-10  text-center'
                                 style={{ backgroundColor: '#ffffff' }}
                               >
                                 {eachCompetitive?.annual_score?.OSR[subjectIndex]}
-                              </td>
+                              </td> */}
                               {/* Avg AIR */}
                               {/* <td
                               className='th-width-10  text-center'
