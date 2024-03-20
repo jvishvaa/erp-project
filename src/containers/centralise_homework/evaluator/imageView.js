@@ -154,12 +154,8 @@ const EvaluatorHomework = () => {
       grade: null,
       section: null,
       subject: null,
-      date: null,
     });
     setEvaluateData([]);
-    setStartDate(null);
-    setEndDate(null);
-    setDates(null);
   };
   const fetchSection = async (grade) => {
     try {
@@ -234,16 +230,19 @@ const EvaluatorHomework = () => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
+    setLoading(true);
     if (!subject) {
+      setLoading(false);
       return message.error('Please Select Filters !');
     }
     if (!startDate) {
+      setLoading(false);
       return message.error('Please Select Start Date !');
     }
     if (!endDate) {
+      setLoading(false);
       return message.error('Please Select End Date !');
     }
-    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.homework.teacherData}`,
@@ -293,7 +292,6 @@ const EvaluatorHomework = () => {
     setSubjectList([]);
     formRef.current.setFieldsValue({
       subject: null,
-      date: null,
     });
     setEvaluateData([]);
   };
@@ -309,17 +307,12 @@ const EvaluatorHomework = () => {
   const handleChangeSubject = (each) => {
     if (each) {
       setSubject(each);
-      setPageNo(1);
     } else {
       setSubject('');
       formRef.current.setFieldsValue({
         subject: null,
-        date: null,
       });
       setEvaluateData([]);
-      setStartDate(null);
-      setEndDate(null);
-      setDates(null);
     }
   };
 
@@ -345,9 +338,9 @@ const EvaluatorHomework = () => {
       setPageNo(1);
     } else {
       setEvaluateData([]);
-      formRef.current.setFieldsValue({
-        date: null,
-      });
+      setStartDate(null);
+      setEndDate(null);
+      setDates(null);
     }
   };
 
@@ -517,7 +510,7 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
                   <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
-                    <Form.Item name='date'>
+                    <Form.Item name="date">
                       <RangePicker
                         className='th-width-100 th-br-4'
                         onCalendarChange={(value) => handleDateChange(value)}
