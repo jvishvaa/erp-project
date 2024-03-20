@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Button, Popover, message } from 'antd';
+import { Button, Popover, message, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -120,20 +120,23 @@ const Doodle = () => {
             ) && (
               <div style={{ position: 'absolute', bottom: '20px', right: '60px' }}>
                 {payConfigData?.length > 0 ? (
-                  <Button
-                    type='primary'
-                    className='btn-block th-br-4 th-14'
-                    style={{
-                      width: '80px',
-                      height: '30px',
-                      fontWeight: 'bold',
-                      padding: '0px 2px',
-                      boxShadow: '0px 0px 8px 2px rgba(81, 179, 255, 1)',
-                    }}
-                    onClick={handleFinance}
-                  >
-                    {payConfigData?.length > 0 && payConfigData[0]}
-                  </Button>
+                  <Tooltip title={payConfigData?.length > 0 && payConfigData[0]}>
+                    <Button
+                      type='primary'
+                      className='btn-block th-br-4 th-14 text-truncate'
+                      style={{
+                        height: '30px',
+                        fontWeight: 'bold',
+                        minWidth: '100px',
+                        maxWidth: '250px',
+                        padding: '0px 10px',
+                        boxShadow: '0px 0px 8px 2px rgba(81, 179, 255, 1)',
+                      }}
+                      onClick={handleFinance}
+                    >
+                      {payConfigData?.length > 0 && payConfigData[0]}
+                    </Button>
+                  </Tooltip>
                 ) : (
                   ''
                 )}
