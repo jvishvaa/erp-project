@@ -230,19 +230,16 @@ const EvaluatorHomework = () => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
-    setLoading(true);
     if (!subject) {
-      setLoading(false);
       return message.error('Please Select Filters !');
     }
     if (!startDate) {
-      setLoading(false);
       return message.error('Please Select Start Date !');
     }
     if (!endDate) {
-      setLoading(false);
       return message.error('Please Select End Date !');
     }
+    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.homework.teacherData}`,
