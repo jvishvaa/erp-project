@@ -161,6 +161,15 @@ const V2Router = () => {
                         <Route path='/profile'>
                           {({ match }) => <Profile match={match} />}
                         </Route>
+                        <Route path='/student-dashboard'>
+                          {({ match }) => <StudentDashboardNew />}
+                        </Route>
+                        <Route path='/teacher-dashboard'>
+                          {({ match }) => <TeacherdashboardNew />}
+                        </Route>
+                        <Route path='/super-admin-dashboard'>
+                          {({ match }) => <SuperAdmindashboardNew match={match} />}
+                        </Route>
                         <Route path='/dashboard'>
                           {({ match }) => {
                             switch (userLevel) {

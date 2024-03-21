@@ -173,7 +173,7 @@ const Appbar = ({ children, history, ...props }) => {
 
   useEffect(() => {
     if (isLogout) {
-      window.location.href = '/';
+      history.push('/');
       setIsLogout(false);
     }
   }, [isLogout]);

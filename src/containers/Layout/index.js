@@ -245,7 +245,16 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Dashboard': {
-        history.push('/dashboard');
+        if (userLevel === 11) {
+          history.push('/teacher-dashboard');
+        } else if (userLevel === 13) {
+          history.push('/student-dashboard');
+        } else if ([1, 2, 4, 8, 10].includes(userLevel)) {
+          history.push('/super-admin-dashboard');
+        } else {
+          history.push('/acad-calendar');
+        }
+        break;
         break;
       }
       // case 'user-management': {
