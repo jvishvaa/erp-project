@@ -215,6 +215,12 @@ export default {
     uploadZip: `${gcloud}/hw_zip_upload_v1`,
     updateImage: '/hw-hub/upload_hw_files/',
   },
+  centralizedHomework: {
+    docType: 'hw-hub/get_doctype/',
+    studentView: 'hw-hub/hw_view/',
+    subjectList: 'hw-hub/user-subject-list/',
+    rating: '/hw-hub/rating/',
+  },
   grievances: {
     grievanceTicket: `${baseFinanceURL}/apiV1/ticket/`,
   },
