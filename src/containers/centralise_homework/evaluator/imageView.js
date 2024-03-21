@@ -94,7 +94,7 @@ const EvaluatorHomework = () => {
   const [evaluateData, setEvaluateData] = useState([]);
   const [countData, setCountData] = useState(null);
   const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
-  const [isAuditor, setIsAuditor] = useState(true);
+  const [isAuditor, setIsAuditor] = useState(false);
 
   const [showTab, setShowTab] = useState('1');
 
@@ -180,12 +180,8 @@ const EvaluatorHomework = () => {
       grade: null,
       section: null,
       subject: null,
-      date: null,
     });
     setEvaluateData([]);
-    setStartDate(null);
-    setEndDate(null);
-    setDates(null);
   };
   const fetchSection = async (grade) => {
     try {
@@ -319,7 +315,6 @@ const EvaluatorHomework = () => {
     setSubjectList([]);
     formRef.current.setFieldsValue({
       subject: null,
-      date: null,
     });
     setEvaluateData([]);
   };
@@ -335,17 +330,12 @@ const EvaluatorHomework = () => {
   const handleChangeSubject = (each) => {
     if (each) {
       setSubject(each);
-      setPageNo(1);
     } else {
       setSubject('');
       formRef.current.setFieldsValue({
         subject: null,
-        date: null,
       });
       setEvaluateData([]);
-      setStartDate(null);
-      setEndDate(null);
-      setDates(null);
     }
   };
 
@@ -371,9 +361,9 @@ const EvaluatorHomework = () => {
       setPageNo(1);
     } else {
       setEvaluateData([]);
-      formRef.current.setFieldsValue({
-        date: null,
-      });
+      setStartDate(null);
+      setEndDate(null);
+      setDates(null);
     }
   };
 

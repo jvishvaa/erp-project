@@ -152,7 +152,6 @@ const BranchHomework = () => {
       grade: [],
       section: [],
       Subject: [],
-      date: null,
     });
   };
 
@@ -231,7 +230,6 @@ const BranchHomework = () => {
       formRef.current.setFieldsValue({
         section: [],
         Subject: [],
-        date: null,
       });
       setEvaluateData([]);
     }
@@ -259,7 +257,6 @@ const BranchHomework = () => {
       setEndDate(moment().format('DD-MM-YYYY'));
       formRef.current.setFieldsValue({
         Subject: [],
-        date: null,
       });
     }
   };
@@ -284,9 +281,9 @@ const BranchHomework = () => {
       });
     } else {
       setEvaluateData([]);
-      formRef.current.setFieldsValue({
-        date: null,
-      });
+      setStartDate(null);
+      setEndDate(null);
+      setDates(null);
     }
   };
 
