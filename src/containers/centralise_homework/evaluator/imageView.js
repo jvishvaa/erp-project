@@ -22,7 +22,7 @@ import {
   Popconfirm,
   Result,
   Select,
-  Table,
+  Tabs,
   message,
   DatePicker,
 } from 'antd';
@@ -52,6 +52,7 @@ const { RangePicker } = DatePicker;
 
 const EvaluatorHomework = () => {
   const history = useHistory();
+  const { TabPane } = Tabs;
   const [branches, setBranches] = useState([]);
   const [branch, setBranch] = useState('');
   const [userLevelList, setUserLevelList] = useState([]);
@@ -93,6 +94,31 @@ const EvaluatorHomework = () => {
   const [evaluateData, setEvaluateData] = useState([]);
   const [countData, setCountData] = useState(null);
   const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
+  const [isAuditor, setIsAuditor] = useState(false);
+
+  const [showTab, setShowTab] = useState('1');
+
+  const onChange = (key) => {
+    setShowTab(key);
+    setPageNo(1);
+    fetchTeacherData({
+      is_assessed: key === '1' ? 'True' : 'False',
+      start_date: startDate,
+      end_date: endDate,
+      sub_sec_mpng: subject,
+      page: 1,
+    });
+  };
+
+  // useEffect(() => {
+  //   fetchTeacherData({
+  //     // is_assessed: 'False',
+  //     start_date: '13-03-2024',
+  //     end_date: '19-03-2024',
+  //     sub_sec_mpng: 7485,
+  //     page: 1,
+  //   });
+  // }, []);
 
   const handleFilters = () => {
     if (showFilters) {
@@ -154,12 +180,8 @@ const EvaluatorHomework = () => {
       grade: null,
       section: null,
       subject: null,
-      date: null,
     });
     setEvaluateData([]);
-    setStartDate(null);
-    setEndDate(null);
-    setDates(null);
   };
   const fetchSection = async (grade) => {
     try {
@@ -234,15 +256,15 @@ const EvaluatorHomework = () => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
-    if (!subject) {
-      return message.error('Please Select Filters !');
-    }
-    if (!startDate) {
-      return message.error('Please Select Start Date !');
-    }
-    if (!endDate) {
-      return message.error('Please Select End Date !');
-    }
+    // if (!subject) {
+    //   return message.error('Please Select Filters !');
+    // }
+    // if (!startDate) {
+    //   return message.error('Please Select Start Date !');
+    // }
+    // if (!endDate) {
+    //   return message.error('Please Select End Date !');
+    // }
     setLoading(true);
     try {
       const result = await axiosInstance.get(
@@ -293,7 +315,6 @@ const EvaluatorHomework = () => {
     setSubjectList([]);
     formRef.current.setFieldsValue({
       subject: null,
-      date: null,
     });
     setEvaluateData([]);
   };
@@ -309,17 +330,12 @@ const EvaluatorHomework = () => {
   const handleChangeSubject = (each) => {
     if (each) {
       setSubject(each);
-      setPageNo(1);
     } else {
       setSubject('');
       formRef.current.setFieldsValue({
         subject: null,
-        date: null,
       });
       setEvaluateData([]);
-      setStartDate(null);
-      setEndDate(null);
-      setDates(null);
     }
   };
 
@@ -345,9 +361,9 @@ const EvaluatorHomework = () => {
       setPageNo(1);
     } else {
       setEvaluateData([]);
-      formRef.current.setFieldsValue({
-        date: null,
-      });
+      setStartDate(null);
+      setEndDate(null);
+      setDates(null);
     }
   };
 
@@ -376,23 +392,8 @@ const EvaluatorHomework = () => {
 
   return (
     <React.Fragment>
-      {/* <Layout>
-        <div className='row py-3'>
-          <div className='col-md-9' style={{ zIndex: 2 }}>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                Dashboard
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>
-                Evaluate Homework
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-        </div> */}
-
       {loading && <Loader />}
-      {/* <div className='row'>
-        <div className='col-md-12'>*/}
+
       <div className='px-3'>
         <div className='col-md-12 p-0 d-flex justify-content-end'>
           {showFilters ? (
@@ -429,8 +430,14 @@ const EvaluatorHomework = () => {
               style={{ width: '100%' }}
             >
               <div className='row justify-content-between'>
-                <div className='col-xl-7 col-md-6 row'>
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                <div
+                  className={isAuditor ? 'col-xl-12 col-12 row' : 'col-xl-7 col-md-6 row'}
+                >
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
                     <div className='mb-2 text-left'>Grade</div>
 
                     <Form.Item name='grade'>
@@ -460,7 +467,11 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
 
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
                     <div className='mb-2 text-left'>Section</div>
 
                     <Form.Item name='section'>
@@ -490,7 +501,11 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
 
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
                     <div className='mb-2 text-left'>Subject</div>
                     <Form.Item name='subject'>
                       <Select
@@ -516,7 +531,43 @@ const EvaluatorHomework = () => {
                       </Select>
                     </Form.Item>
                   </div>
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+
+                  {isAuditor && (
+                    <div
+                      className={`${
+                        isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                      }  col-sm-6 col-12 pl-0`}
+                    >
+                      <div className='mb-2 text-left'>Evaluator</div>
+                      <Form.Item name='evaluator'>
+                        <Select
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          maxTagCount={1}
+                          allowClear={true}
+                          suffixIcon={<DownOutlined className='th-grey' />}
+                          className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                          placement='bottomRight'
+                          showArrow={true}
+                          dropdownMatchSelectWidth={false}
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          showSearch
+                          placeholder='Select Evaluator'
+                        ></Select>
+                      </Form.Item>
+                    </div>
+                  )}
+
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
                     <Form.Item name='date'>
                       <RangePicker
                         className='th-width-100 th-br-4'
@@ -530,14 +581,18 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
 
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
-                    <Form.Item name='section'>
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
+                    <Form.Item name='filter'>
                       <Button
                         className=' th-br-4 w-100  th-select'
                         type='primary'
                         onClick={() => {
                           fetchTeacherData({
-                            // is_assessed: 'False',
+                            is_assessed: showTab === '1' ? 'True' : 'False',
                             start_date: startDate,
                             end_date: endDate,
                             sub_sec_mpng: subject,
@@ -550,87 +605,91 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
                 </div>
-                <div className='col-md-5 col-xl-3  p-0 row mb-2'>
-                  <div
-                    className='col-md-12 py-2 mt-2'
-                    style={{
-                      boxShadow:
-                        'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
-                      borderRadius: '10px',
-                      marginBottom: '5px',
-                      height: 'fit-content',
-                    }}
-                  >
+                {!isAuditor && (
+                  <div className='col-md-5 col-xl-3  p-0 row mb-2'>
                     <div
-                      className='col-md-12 row justify-content-between th-13'
-                      style={{ marginTop: '6px' }}
+                      className='col-md-12 py-2 mt-2'
+                      style={{
+                        boxShadow:
+                          'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
+                        borderRadius: '10px',
+                        marginBottom: '5px',
+                        height: 'fit-content',
+                      }}
                     >
-                      <div>
-                        <span>
-                          Completed :{' '}
-                          <span style={{ color: 'green' }}>
-                            {countData?.total_assessed ? countData?.total_assessed : '-'}
-                          </span>{' '}
-                        </span>
-                      </div>
                       <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
+                        className='col-md-12 row justify-content-between th-13'
+                        style={{ marginTop: '6px' }}
                       >
-                        <span>Completed </span>
-                        <span
-                          style={{
-                            backgroundColor: 'green',
-                            color: 'white',
-                            height: '15px',
-                            width: '15px',
-                            borderRadius: '5px',
-                            display: 'inline-block',
-                            marginLeft: '20px',
-                          }}
-                        ></span>
-                      </div>
-                    </div>
-                    <div
-                      className='col-md-12 row justify-content-between th-13'
-                      style={{ marginTop: '6px' }}
-                    >
-                      <div>
-                        <span>
-                          Pending :{' '}
-                          <span style={{ color: 'red' }}>
-                            {countData?.total_under_assessed
-                              ? countData?.total_under_assessed
-                              : '-'}
+                        <div>
+                          <span>
+                            Total Assessed :{' '}
+                            <span style={{ color: 'green' }}>
+                              {countData?.total_assessed
+                                ? countData?.total_assessed
+                                : '-'}
+                            </span>{' '}
                           </span>
-                        </span>
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {/* <span>Completed </span> */}
+                          <span
+                            style={{
+                              backgroundColor: 'green',
+                              color: 'white',
+                              height: '15px',
+                              width: '15px',
+                              borderRadius: '5px',
+                              display: 'inline-block',
+                              marginLeft: '20px',
+                            }}
+                          ></span>
+                        </div>
                       </div>
                       <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
+                        className='col-md-12 row justify-content-between th-13'
+                        style={{ marginTop: '6px' }}
                       >
-                        <span>Pending </span>
-                        <span
+                        <div>
+                          <span>
+                            Total Under Assessed :{' '}
+                            <span style={{ color: 'red' }}>
+                              {countData?.total_under_assessed
+                                ? countData?.total_under_assessed
+                                : '-'}
+                            </span>
+                          </span>
+                        </div>
+                        <div
                           style={{
-                            backgroundColor: 'red',
-                            color: 'white',
-                            height: '15px',
-                            width: '15px',
-                            borderRadius: '5px',
-                            display: 'inline-block',
-                            marginLeft: '20px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}
-                        ></span>
+                        >
+                          {/* <span>Pending </span> */}
+                          <span
+                            style={{
+                              backgroundColor: 'red',
+                              color: 'white',
+                              height: '15px',
+                              width: '15px',
+                              borderRadius: '5px',
+                              display: 'inline-block',
+                              marginLeft: '20px',
+                            }}
+                          ></span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </Form>
           </div>
@@ -645,20 +704,41 @@ const EvaluatorHomework = () => {
               />
             </div>
           ) : (
-            <div className='mb-3'>
-              <FilesViewEvaluate
-                selectedHomeworkIndex={selectedHomeworkIndex}
-                setSelectedHomeworkIndex={setSelectedHomeworkIndex}
-                evaluateData={evaluateData}
-                selectedGrade={grade}
-                selectedSubSecMap={section}
-                fetchTeacherData={fetchTeacherData}
-                startDate={startDate}
-                endDate={endDate}
-                sub_sec_mpng={subject}
-                sectionMappingId={sectionMappingId}
-                page={pageNo}
-              />
+            <div className='th-tabs th-tabs-hw mt-3 th-bg-white mb-3'>
+              <Tabs type='card' onChange={onChange} defaultActiveKey={showTab}>
+                <TabPane tab='Assessed' key='1'>
+                  <FilesViewEvaluate
+                    selectedHomeworkIndex={selectedHomeworkIndex}
+                    setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                    evaluateData={evaluateData}
+                    selectedGrade={grade}
+                    selectedSubSecMap={section}
+                    fetchTeacherData={fetchTeacherData}
+                    startDate={startDate}
+                    endDate={endDate}
+                    sub_sec_mpng={subject}
+                    sectionMappingId={sectionMappingId}
+                    page={pageNo}
+                    activeTab={showTab}
+                  />
+                </TabPane>
+                <TabPane tab='Under Assessed' key='2'>
+                  <FilesViewEvaluate
+                    selectedHomeworkIndex={selectedHomeworkIndex}
+                    setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                    evaluateData={evaluateData}
+                    selectedGrade={grade}
+                    selectedSubSecMap={section}
+                    fetchTeacherData={fetchTeacherData}
+                    startDate={startDate}
+                    endDate={endDate}
+                    sub_sec_mpng={subject}
+                    sectionMappingId={sectionMappingId}
+                    page={pageNo}
+                    activeTab={showTab}
+                  />
+                </TabPane>
+              </Tabs>
 
               <Pagination
                 current={pageNo}
@@ -669,7 +749,7 @@ const EvaluatorHomework = () => {
                   setPageNo(current);
                   setSelectedHomeworkIndex(0);
                   fetchTeacherData({
-                    // is_assessed: 'False',
+                    is_assessed: showTab === '1' ? 'True' : 'False',
                     start_date: startDate,
                     end_date: endDate,
                     sub_sec_mpng: subject,
@@ -682,9 +762,6 @@ const EvaluatorHomework = () => {
           )}
         </div>
       </div>
-      {/*   </div>
-      </div> */}
-      {/* </Layout> */}
     </React.Fragment>
   );
 };

@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Layout from 'containers/Layout';
-import {
-  Breadcrumb,
-  Button,
-  Tooltip,
-  message,
-  Select,
-  Popover,
-  Checkbox,
-  Result,
-} from 'antd';
+import { Tabs, Button, Tooltip, message, Select, Popover, Checkbox, Result } from 'antd';
 import { FilterOutlined } from '@ant-design/icons';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import axiosInstance from '../../../config/axios';
@@ -27,6 +18,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const CentralizedStudentHw = () => {
   const { Option } = Select;
+  const { TabPane } = Tabs;
   const [homeworkData, setHomeworkData] = useState([]);
   const [homework, setHomework] = useState();
   const [subjectSelected, setSubjectSelected] = useState(null);
@@ -44,6 +36,21 @@ const CentralizedStudentHw = () => {
   const [selectedHomework, setSelectedHomework] = useState(null);
   const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
   const [selectedSection, setSelectedSection] = useState(null);
+
+  const [showTab, setShowTab] = useState('1');
+
+  const onTabChange = (key) => {
+    setShowTab(key);
+    fetchStudentHomework({
+      sub_sec_mpng:
+        subjectSelected === 'all'
+          ? subjectList?.map((e) => e?.subject_mapping_id).join(',')
+          : parseInt(subjectSelected?.subject_mapping_id),
+      volume: selectedVolume,
+      doc_type: selectedDocType ?? selectedDocType,
+      is_assessed: key === '1' ? 'True' : 'False',
+    });
+  };
 
   console.log({ attachmentView });
 
@@ -109,6 +116,7 @@ const CentralizedStudentHw = () => {
             : parseInt(subjectSelected?.subject_mapping_id),
         volume: selectedVolume ?? selectedVolume,
         doc_type: selectedDocType ?? selectedDocType,
+        is_assessed: showTab === '1' ? 'True' : 'False',
       });
     }
   }, [subjectSelected]);
@@ -212,6 +220,7 @@ const CentralizedStudentHw = () => {
           : parseInt(subjectSelected?.subject_mapping_id),
       volume: e,
       doc_type: selectedDocType ?? selectedDocType,
+      is_assessed: showTab === '1' ? 'True' : 'False',
     });
   };
 
@@ -228,6 +237,7 @@ const CentralizedStudentHw = () => {
           : parseInt(subjectSelected?.subject_mapping_id),
       volume: selectedVolume ?? selectedVolume,
       doc_type: e,
+      is_assessed: showTab === '1' ? 'True' : 'False',
     });
   };
 
@@ -398,10 +408,16 @@ const CentralizedStudentHw = () => {
             </div>
           </div>
         )}
-        {homeworkData?.length > 0 ? (
+
+        {!attachmentView && (
           <>
             <div
-              style={{ width: '100%', margin: '0 auto' , display:"flex", justifyContent:"flex-end"}}
+              style={{
+                width: '100%',
+                margin: '0 auto',
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
               className=''
             >
               {/* <div className='col-md-8 col-xl-9 col-sm-12 col-12'>
@@ -441,53 +457,66 @@ const CentralizedStudentHw = () => {
                   <span className='assessed-mark under-assessed'></span>
                 </div>
               </div> */}
-              <div className='col-md-3 p-0' style={{display:"flex", justifyContent:"flex-end"}}>
+              <div
+                className='col-md-3 p-0'
+                style={{ display: 'flex', justifyContent: 'flex-end' }}
+              >
+                <div
+                  className='col-md-12 py-2'
+                  style={{
+                    boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
+                    borderRadius: '10px',
+                  }}
+                >
                   <div
-                    className='col-md-12 py-2'
-                    style={{
-                      boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
-                      borderRadius: '10px',
-                    }}
+                    className='col-md-12 row justify-content-between'
+                    style={{ color: 'green' }}
                   >
-                    <div
-                      className='col-md-12 row justify-content-between'
-                      style={{ color: 'green' }}
-                    >
-                      <span className='th-fw-600'>Total Assessed</span>
-                      {homeworkData.length && <span>{homework?.total_assessed}</span>}
-                    </div>
-                    <div
-                      className='col-md-12 row justify-content-between'
-                      style={{ color: 'red' }}
-                    >
-                      <span className='th-fw-600'>Total Under Assessed</span>
-                      {homeworkData.length && <span>{homework?.total_under_assessed}</span>}
-                    </div>
+                    <span className='th-fw-600'>Total Assessed</span>
+                    {homeworkData.length && <span>{homework?.total_assessed}</span>}
+                  </div>
+                  <div
+                    className='col-md-12 row justify-content-between'
+                    style={{ color: 'red' }}
+                  >
+                    <span className='th-fw-600'>Total Under Assessed</span>
+                    {homeworkData.length && <span>{homework?.total_under_assessed}</span>}
                   </div>
                 </div>
+              </div>
             </div>
-            <div className='row mt-3'>
-              {attachmentView && (
-                <div className='row my-2'>
-                  <p className='th-16 col-12 th-fw-600'>
-                    <ArrowLeftOutlined onClick={() => handleAttachmentView(false)} />
-                    <span className='ml-2'>{selectedHomework?.name}</span>
-                  </p>
-                </div>
-              )}
 
-              {console.log({ selectedHomework })}
+            <div className='th-tabs th-tabs-hw mt-3 th-bg-white'>
+              <Tabs type='card' onChange={onTabChange} defaultActiveKey={showTab}>
+                <TabPane tab='Assessed' key='1'></TabPane>
+                <TabPane tab='Under Assessed' key='2'></TabPane>
+              </Tabs>
+            </div>
+          </>
+        )}
+        {homeworkData?.length > 0 ? (
+          <div className='row '>
+            {attachmentView && (
+              <div className='row my-2'>
+                <p className='th-16 col-12 th-fw-600'>
+                  <ArrowLeftOutlined onClick={() => handleAttachmentView(false)} />
+                  <span className='ml-2'>{selectedHomework?.name}</span>
+                </p>
+              </div>
+            )}
 
-              {!attachmentView && (
-                <div className='col-md-5 pl-0 col-xl-4 col-sm-12 col-12 mb-3'>
-                  <div className='card shadow border-0 th-br-4 w-100'>
-                    <div className='card-body'>
-                      <div className='d-flex justify-content-between'>
-                        <div>
-                          <p className='text-uppercase'>Homework Files</p>
-                        </div>
-                        {/* FILETR */}
-                        {/* <div className='text-muted' style={{ cursor: 'pointer' }}>
+            {console.log({ selectedHomework })}
+
+            {!attachmentView && (
+              <div className='col-md-5 pl-0 col-xl-4 col-sm-12 col-12 mb-3'>
+                <div className='card shadow border-0 th-br-4 w-100'>
+                  <div className='card-body'>
+                    <div className='d-flex justify-content-between'>
+                      <div>
+                        <p className='text-uppercase'>Homework Files</p>
+                      </div>
+                      {/* FILETR */}
+                      {/* <div className='text-muted' style={{ cursor: 'pointer' }}>
                           <Popover
                             getPopupContainer={(trigger) => trigger.parentNode}
                             showArrow={false}
@@ -549,123 +578,101 @@ const CentralizedStudentHw = () => {
                             Filter <FilterOutlined />
                           </Popover>
                         </div> */}
-                      </div>
+                    </div>
 
-                      <div className='notebook-list mt-3'>
-                        {Array.isArray(homeworkData) &&
-                          homeworkData?.length > 0 &&
-                          homeworkData?.map((item, index) => (
+                    <div className='notebook-list mt-3'>
+                      {Array.isArray(homeworkData) &&
+                        homeworkData?.length > 0 &&
+                        homeworkData?.map((item, index) => (
+                          <div
+                            className='notebook-list-item'
+                            key={index}
+                            style={{
+                              backgroundColor: `${
+                                selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
+                              }`,
+                            }}
+                          >
                             <div
-                              className='notebook-list-item'
-                              key={index}
-                              style={{
-                                backgroundColor: `${
-                                  selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
-                                }`,
+                              className='download-icon cursor-pointer'
+                              onClick={() => {
+                                downloadHomeworkAttachment(
+                                  `${endpoints.erpBucket}${item?.file_location}`,
+                                  item.file_location
+                                );
                               }}
                             >
-                              <div
-                                className='download-icon cursor-pointer'
-                                onClick={() => {
-                                  downloadHomeworkAttachment(
-                                    `${endpoints.erpBucket}${item?.file_location}`,
-                                    item.file_location
-                                  );
+                              <img
+                                src={DOWNLOADICON}
+                                alt='download'
+                                className='img-fluid'
+                              />
+                            </div>
+                            <div
+                              className='notebook-content ml-2'
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleAttachment(index)}
+                            >
+                              <Tooltip
+                                title={`${item.file_location}`}
+                                showArrow={false}
+                                placement='right'
+                                overlayInnerStyle={{
+                                  borderRadius: 4,
+                                  backgroundColor: 'white',
+                                  color: 'black',
+                                  maxHeight: 200,
+                                  overflowY: 'scroll',
+                                  textTransform: 'capitalize',
                                 }}
                               >
-                                <img
-                                  src={DOWNLOADICON}
-                                  alt='download'
-                                  className='img-fluid'
-                                />
-                              </div>
-                              <div
-                                className='notebook-content ml-2'
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => handleAttachment(index)}
-                              >
-                                <Tooltip
-                                  title={`${item.file_location}`}
-                                  showArrow={false}
-                                  placement='right'
-                                  overlayInnerStyle={{
-                                    borderRadius: 4,
-                                    backgroundColor: 'white',
-                                    color: 'black',
-                                    maxHeight: 200,
-                                    overflowY: 'scroll',
-                                    textTransform: 'capitalize',
-                                  }}
-                                >
-                                  <h5 className='th-14 mb-0'>{item.file_location}</h5>
-                                  {/* <p className='th-12 mb-0 text-muted text-truncate'>
+                                <h5 className='th-14 mb-0'>{item.file_location}</h5>
+                                {/* <p className='th-12 mb-0 text-muted text-truncate'>
                                       <span className='th-fw-600'>Description:</span>
                                       {item.description}
                                     </p> */}
-                                </Tooltip>
-                              </div>
-                              <div className='notebook-action'>
-                                {item.isBookmarked && (
-                                  <span>
-                                    <img
-                                      className='img-fluid'
-                                      alt='bookmark'
-                                      src={BOOKMARKICON}
-                                    />
-                                  </span>
-                                )}
-                                {item.isNote && (
-                                  <span>
-                                    <img
-                                      className='img-fluid'
-                                      alt='notebook'
-                                      src={NOTEICON}
-                                    />
-                                  </span>
-                                )}
-                              </div>
+                              </Tooltip>
                             </div>
-                          ))}
-                      </div>
+                            <div className='notebook-action'>
+                              {item.isBookmarked && (
+                                <span>
+                                  <img
+                                    className='img-fluid'
+                                    alt='bookmark'
+                                    src={BOOKMARKICON}
+                                  />
+                                </span>
+                              )}
+                              {item.isNote && (
+                                <span>
+                                  <img
+                                    className='img-fluid'
+                                    alt='notebook'
+                                    src={NOTEICON}
+                                  />
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>
-              )}
-              {attachmentView && noteTakerView && (
-                <div
-                  className={` ${
-                    attachmentView && noteTakerView
-                      ? 'col-md-5 col-xl-4 col-12'
-                      : attachmentView
-                      ? 'col-12'
-                      : 'col-md-7 col-xl-4 col-sm-12 col-12'
-                  }`}
-                >
-                  <NoteTaker
-                    noteTakerView={noteTakerView}
-                    setNoteTakerView={setNoteTakerView}
-                    handleNoteTakerView={handleNoteTakerView}
-                    selectedHomework={selectedHomework}
-                    setSelectedHomework={setSelectedHomework}
-                    selectedHomeworkIndex={selectedHomeworkIndex}
-                    setSelectedHomeworkIndex={setSelectedHomeworkIndex}
-                    homeworkData={homeworkData}
-                  />
-                </div>
-              )}
+              </div>
+            )}
+            {attachmentView && noteTakerView && (
               <div
                 className={` ${
                   attachmentView && noteTakerView
-                    ? 'col-md-7 pr-0 col-xl-8 col-12 mb-3'
+                    ? 'col-md-5 col-xl-4 col-12'
                     : attachmentView
-                    ? 'col-12 pr-0 mb-3'
-                    : 'col-md-7 pr-0 col-xl-8 col-sm-12 col-12 mb-3'
+                    ? 'col-12'
+                    : 'col-md-7 col-xl-4 col-sm-12 col-12'
                 }`}
               >
-                <HomeworkAttachments
-                  attachmentView={attachmentView}
-                  setAttachmentView={setAttachmentView}
-                  handleAttachmentView={handleAttachmentView}
+                <NoteTaker
+                  noteTakerView={noteTakerView}
+                  setNoteTakerView={setNoteTakerView}
                   handleNoteTakerView={handleNoteTakerView}
                   selectedHomework={selectedHomework}
                   setSelectedHomework={setSelectedHomework}
@@ -674,8 +681,29 @@ const CentralizedStudentHw = () => {
                   homeworkData={homeworkData}
                 />
               </div>
+            )}
+            <div
+              className={` ${
+                attachmentView && noteTakerView
+                  ? 'col-md-7 pr-0 col-xl-8 col-12 mb-3'
+                  : attachmentView
+                  ? 'col-12 pr-0 mb-3'
+                  : 'col-md-7 pr-0 col-xl-8 col-sm-12 col-12 mb-3'
+              }`}
+            >
+              <HomeworkAttachments
+                attachmentView={attachmentView}
+                setAttachmentView={setAttachmentView}
+                handleAttachmentView={handleAttachmentView}
+                handleNoteTakerView={handleNoteTakerView}
+                selectedHomework={selectedHomework}
+                setSelectedHomework={setSelectedHomework}
+                selectedHomeworkIndex={selectedHomeworkIndex}
+                setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                homeworkData={homeworkData}
+              />
             </div>
-          </>
+          </div>
         ) : (
           <Result
             status='warning'

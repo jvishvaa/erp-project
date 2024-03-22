@@ -18,6 +18,7 @@ import {
   Table,
   message,
   DatePicker,
+  Tabs,
 } from 'antd';
 import { Input, Space } from 'antd';
 import endpoints from 'config/endpoints';
@@ -43,6 +44,7 @@ const BranchHomework = () => {
   const [status, setStatus] = useState('');
 
   const { Option } = Select;
+  const { TabPane } = Tabs;
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   // const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -70,6 +72,12 @@ const BranchHomework = () => {
   const [totalAssesed, setTotalAssesed] = useState(0);
   const [totalunderAssesed, setTotalunderAssesed] = useState(0);
   const [dates, setDates] = useState(null);
+  const [showTab, setShowTab] = useState('1');
+
+  const onChange = (key) => {
+    setShowTab(key);
+    setPageNo(1);
+  };
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -144,7 +152,6 @@ const BranchHomework = () => {
       grade: [],
       section: [],
       Subject: [],
-      date: null,
     });
   };
 
@@ -223,7 +230,6 @@ const BranchHomework = () => {
       formRef.current.setFieldsValue({
         section: [],
         Subject: [],
-        date: null,
       });
       setEvaluateData([]);
     }
@@ -251,7 +257,6 @@ const BranchHomework = () => {
       setEndDate(moment().format('DD-MM-YYYY'));
       formRef.current.setFieldsValue({
         Subject: [],
-        date: null,
       });
     }
   };
@@ -276,9 +281,9 @@ const BranchHomework = () => {
       });
     } else {
       setEvaluateData([]);
-      formRef.current.setFieldsValue({
-        date: null,
-      });
+      setStartDate(null);
+      setEndDate(null);
+      setDates(null);
     }
   };
 
@@ -293,7 +298,7 @@ const BranchHomework = () => {
     ) {
       handleGetTeacherData();
     }
-  }, [endDate, subject, startDate, ListPageData.currentPage, section, count]);
+  }, [endDate, subject, startDate, ListPageData.currentPage, section, count, showTab]);
 
   const handleGetTeacherData = () => {
     const params = {
@@ -301,7 +306,7 @@ const BranchHomework = () => {
       start_date: startDate,
       end_date: endDate,
       // erp_id: loggedUserData?.erp,
-      is_assessed: 'True',
+      is_assessed: showTab === '1' ? 'True' : 'False',
       page: ListPageData.currentPage,
     };
     axiosInstance
@@ -523,7 +528,16 @@ const BranchHomework = () => {
             ) : (
               <>
                 <div className='mb-3'>
-                  <FilesView evaluateData={evaluateData} />
+                  <div className='th-tabs th-tabs-hw mt-3 th-bg-white'>
+                    <Tabs type='card' onChange={onChange} defaultActiveKey={showTab}>
+                      <TabPane tab='Assessed' key='1'>
+                        <FilesView evaluateData={evaluateData} activeTab={showTab} />
+                      </TabPane>
+                      <TabPane tab='Under Assessed' key='2'>
+                        <FilesView evaluateData={evaluateData} activeTab={showTab} />
+                      </TabPane>
+                    </Tabs>
+                  </div>
                 </div>
 
                 <div className='text-center mt-2'>

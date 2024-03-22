@@ -178,6 +178,7 @@ const FilesViewEvaluate = ({
   sub_sec_mpng,
   page,
   sectionMappingId,
+  activeTab,
 }) => {
   const history = useHistory();
   const { Option } = Select;
@@ -202,7 +203,6 @@ const FilesViewEvaluate = ({
   const [uploadStart, setUploadStart] = useState(false);
   const [erpList, setErpList] = useState([]);
   const [selectedErp, setSelectedErp] = useState();
-  const [visible, setVisible] = useState(false);
   const [uploadBtn, setUploadBtn] = useState(false);
 
   const selectedBranch = useSelector(
@@ -329,6 +329,7 @@ const FilesViewEvaluate = ({
             end_date: endDate,
             sub_sec_mpng: sub_sec_mpng,
             page: page,
+            is_assessed: activeTab === '1' ? 'True' : 'False',
           });
           // setFileList([]);
           // setUploading(false);
@@ -429,6 +430,14 @@ const FilesViewEvaluate = ({
           message.success('Erp Updated');
           setSelectedErp(null);
           let updatedErp = res?.data?.result?.student_erp;
+          setSelectedHomework({ ...selectedHomework, student_erp: updatedErp });
+          fetchTeacherData({
+            is_assessed: activeTab === 1 ? 'True' : 'False',
+            start_date: startDate,
+            end_date: endDate,
+            sub_sec_mpng: sub_sec_mpng,
+            page: page,
+          });
           // setFileList([]);
           // setUploading(false);
         }
@@ -440,14 +449,6 @@ const FilesViewEvaluate = ({
         setUploadBtn(false);
       });
   };
-
-  const onCarouselChange = (currentSlide) => {
-    console.log(currentSlide);
-  };
-
-  const handleNext = () => carousel.current.next();
-
-  const handlePrev = () => carousel.current.prev();
 
   return (
     <React.Fragment>
@@ -576,11 +577,10 @@ const FilesViewEvaluate = ({
               {/* Image Area */}
 
               {/* <div className='auditor row'>
-                <div className='col-md-3 offset-md-8 pr-0'>
-                  <AuditorRating />
-                </div>
-              </div> */}
-
+                  <div className='col-md-3 offset-md-8 pr-0'>
+                    <AuditorRating selectedHomework={selectedHomework} />
+                  </div>
+                </div> */}
               <div className='attachments-container'>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
