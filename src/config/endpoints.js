@@ -262,6 +262,8 @@ export default {
     studentView: 'hw-hub/hw_view/',
     subjectList: 'hw-hub/user-subject-list/',
     rating: '/hw-hub/rating/',
+    evaluatorList: '/hw-hub/get_evaluators/',
+    checkEvaluator: '/hw-hub/evaluator-check/',
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',

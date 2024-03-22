@@ -9,7 +9,7 @@ import {
   Modal,
   Progress,
   Form,
-  Image,
+  Rate,
   Button,
   Carousel,
 } from 'antd';
@@ -179,6 +179,9 @@ const FilesViewEvaluate = ({
   page,
   sectionMappingId,
   activeTab,
+  isAuditor,
+  rating,
+  fetchRating,
 }) => {
   const history = useHistory();
   const { Option } = Select;
@@ -204,7 +207,6 @@ const FilesViewEvaluate = ({
   const [erpList, setErpList] = useState([]);
   const [selectedErp, setSelectedErp] = useState();
   const [uploadBtn, setUploadBtn] = useState(false);
-
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -212,7 +214,6 @@ const FilesViewEvaluate = ({
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-
   const showDrawer = () => {
     setOpenDrawer(true);
   };
@@ -291,6 +292,15 @@ const FilesViewEvaluate = ({
       setSelectedHomework(
         evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1]
       );
+      if (
+        evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1]
+          ?.is_audited
+      ) {
+        fetchRating({
+          hw_dist_file:
+            evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1].id,
+        });
+      }
       // carousel.current.next();
     } else {
       scrollableContainer.current.scrollLeft += scrollableContainer?.current?.clientWidth;
@@ -306,6 +316,22 @@ const FilesViewEvaluate = ({
             : selectedHomeworkIndex + 1
         ]
       );
+      if (
+        evaluateData[
+          selectedHomeworkIndex === evaluateData.length - 1
+            ? evaluateData.length - 1
+            : selectedHomeworkIndex + 1
+        ]?.is_audited
+      ) {
+        fetchRating({
+          hw_dist_file:
+            evaluateData[
+              selectedHomeworkIndex === evaluateData.length - 1
+                ? evaluateData.length - 1
+                : selectedHomeworkIndex + 1
+            ].id,
+        });
+      }
       // carousel.current.prev();
     }
   };
@@ -382,6 +408,11 @@ const FilesViewEvaluate = ({
   const handleImageScroll = (index) => {
     setSelectedHomeworkIndex(index);
     setSelectedHomework(evaluateData[index]);
+    if (evaluateData[index]?.is_audited) {
+      fetchRating({
+        hw_dist_file: evaluateData[index]?.id,
+      });
+    }
     // carousel.current.goTo(index);
 
     let imgwidth = index * scrollableContainer?.current?.clientWidth;
@@ -575,12 +606,17 @@ const FilesViewEvaluate = ({
             </div>
             <div className='col-md-7 col-xl-8 pr-0'>
               {/* Image Area */}
-
-              {/* <div className='auditor row'>
+              {!selectedHomework?.is_audited && isAuditor && activeTab === '1' && (
+                <div className='auditor row'>
                   <div className='col-md-3 offset-md-8 pr-0'>
-                    <AuditorRating selectedHomework={selectedHomework} />
+                    <AuditorRating
+                      selectedHomework={selectedHomework}
+                      setSelectedHomework={setSelectedHomework}
+                      fetchRating={fetchRating}
+                    />
                   </div>
-                </div> */}
+                </div>
+              )}
               <div className='attachments-container'>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
@@ -668,6 +704,18 @@ const FilesViewEvaluate = ({
               )}
 
               {/* Image Area Ends */}
+              {selectedHomework.is_audited && activeTab === '1' && (
+                <>
+                  <div className='rating-area mb-3 pl-5'>
+                    <Rate
+                      disabled
+                      defaultValue={rating?.overall_stat?.[0]?.average_rating}
+                      value={rating?.overall_stat?.[0]?.average_rating}
+                    />
+                    <p>{rating?.overall_stat?.[0].feedbacks?.[0]?.feedback}</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
           <div className='row col-md-12 justify-content-center'>
