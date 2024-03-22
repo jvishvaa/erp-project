@@ -129,7 +129,7 @@ function LoginForm(props) {
             }
             userData['erp_config'] = erpConfig;
             localStorage.setItem('userDetails', JSON.stringify(userData));
-            // window.location.reload();
+            window.location.reload();
           });
         } else {
           setAlert('error', response?.message);
