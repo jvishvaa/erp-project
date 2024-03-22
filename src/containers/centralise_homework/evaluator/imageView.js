@@ -50,7 +50,7 @@ import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 
-const EvaluatorHomework = () => {
+const EvaluatorHomework = ({ is_auditor }) => {
   const history = useHistory();
   const { TabPane } = Tabs;
   const [branches, setBranches] = useState([]);
@@ -94,9 +94,10 @@ const EvaluatorHomework = () => {
   const [evaluateData, setEvaluateData] = useState([]);
   const [countData, setCountData] = useState(null);
   const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
-  const [isAuditor, setIsAuditor] = useState(false);
-
+  const [isAuditor, setIsAuditor] = useState(is_auditor);
+  const [rating, setRating] = useState([]);
   const [showTab, setShowTab] = useState('1');
+  const [evaluatorList, setEvaluatorList] = useState([]);
 
   const onChange = (key) => {
     setShowTab(key);
@@ -111,8 +112,9 @@ const EvaluatorHomework = () => {
   };
 
   // useEffect(() => {
+  //   fetchEvaluator();
   //   fetchTeacherData({
-  //     // is_assessed: 'False',
+  //     is_assessed: showTab === 1 ? 'True' : 'False',
   //     start_date: '13-03-2024',
   //     end_date: '19-03-2024',
   //     sub_sec_mpng: 7485,
@@ -198,6 +200,50 @@ const EvaluatorHomework = () => {
     }
   };
 
+  const fetchRating = async (params = {}) => {
+    console.log({ params });
+    await axiosInstance
+      .get(`${endpoints.centralizedHomework.rating}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setRating(res?.data?.result);
+        } else {
+          message.error(res?.data?.message);
+        }
+        console.log({ res });
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  const fetchEvaluator = async (params = {}) => {
+    console.log({ params });
+    await axiosInstance
+      .get(`${endpoints.centralizedHomework.evaluatorList}`)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setEvaluatorList(res?.data?.result);
+        } else {
+          message.error(res?.data?.message);
+        }
+        console.log({ res });
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  const evaluatorOptions = evaluatorList?.map((each) => {
+    return (
+      <Option key={each?.evaluator_id} value={each.evaluator_id}>
+        {each?.name}
+      </Option>
+    );
+  });
+
   const sectionOptions = sectionList?.map((each) => {
     return (
       <Option key={each?.id} value={each.sec_id}>
@@ -256,15 +302,15 @@ const EvaluatorHomework = () => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
-    // if (!subject) {
-    //   return message.error('Please Select Filters !');
-    // }
-    // if (!startDate) {
-    //   return message.error('Please Select Start Date !');
-    // }
-    // if (!endDate) {
-    //   return message.error('Please Select End Date !');
-    // }
+    if (!subject) {
+      return message.error('Please Select Filters !');
+    }
+    if (!startDate) {
+      return message.error('Please Select Start Date !');
+    }
+    if (!endDate) {
+      return message.error('Please Select End Date !');
+    }
     setLoading(true);
     try {
       const result = await axiosInstance.get(
@@ -280,6 +326,11 @@ const EvaluatorHomework = () => {
       );
       if (result.data.status_code === 200) {
         setEvaluateData(result?.data?.result?.results);
+        if (result?.data?.result?.results?.[0]?.is_audited) {
+          const ratingData = await fetchRating({
+            hw_dist_file: result?.data?.result?.results[0]?.id,
+          });
+        }
         setCountData(result?.data?.result);
         setTotalPage(result?.data?.result?.count);
         setPageLimit(result?.data?.result?.limit);
@@ -558,7 +609,9 @@ const EvaluatorHomework = () => {
                           }}
                           showSearch
                           placeholder='Select Evaluator'
-                        ></Select>
+                        >
+                          {evaluatorOptions}
+                        </Select>
                       </Form.Item>
                     </div>
                   )}
@@ -711,14 +764,17 @@ const EvaluatorHomework = () => {
                     selectedHomeworkIndex={selectedHomeworkIndex}
                     setSelectedHomeworkIndex={setSelectedHomeworkIndex}
                     evaluateData={evaluateData}
+                    rating={rating}
                     selectedGrade={grade}
                     selectedSubSecMap={section}
                     fetchTeacherData={fetchTeacherData}
+                    fetchRating={fetchRating}
                     startDate={startDate}
                     endDate={endDate}
                     sub_sec_mpng={subject}
                     sectionMappingId={sectionMappingId}
                     page={pageNo}
+                    isAuditor={isAuditor}
                     activeTab={showTab}
                   />
                 </TabPane>
@@ -726,15 +782,18 @@ const EvaluatorHomework = () => {
                   <FilesViewEvaluate
                     selectedHomeworkIndex={selectedHomeworkIndex}
                     setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                    rating={rating}
                     evaluateData={evaluateData}
                     selectedGrade={grade}
                     selectedSubSecMap={section}
                     fetchTeacherData={fetchTeacherData}
+                    fetchRating={fetchRating}
                     startDate={startDate}
                     endDate={endDate}
                     sub_sec_mpng={subject}
                     sectionMappingId={sectionMappingId}
                     page={pageNo}
+                    isAuditor={isAuditor}
                     activeTab={showTab}
                   />
                 </TabPane>

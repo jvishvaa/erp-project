@@ -634,7 +634,7 @@ const CentralizedStudentHw = () => {
                               </Tooltip>
                             </div>
                             <div className='notebook-action'>
-                              {item.isBookmarked && (
+                              {item.is_bookmarked && (
                                 <span>
                                   <img
                                     className='img-fluid'
@@ -701,6 +701,7 @@ const CentralizedStudentHw = () => {
                 selectedHomeworkIndex={selectedHomeworkIndex}
                 setSelectedHomeworkIndex={setSelectedHomeworkIndex}
                 homeworkData={homeworkData}
+                setHomeworkData={setHomeworkData}
               />
             </div>
           </div>

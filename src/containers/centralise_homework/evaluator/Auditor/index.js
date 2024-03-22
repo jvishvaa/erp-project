@@ -4,11 +4,9 @@ import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 import './style.scss';
 
-const AuditorRating = ({ selectedHomework }) => {
+const AuditorRating = ({ selectedHomework, setSelectedHomework, fetchRating }) => {
   const auditorFormRef = useRef(null);
   const [isAuditorModalOpen, setIsAuditorModalOpen] = useState(false);
-  const [rating, setRating] = useState();
-  const [feedback, setFeedback] = useState();
   const [uploadStart, setUploadStart] = useState(false);
   const { TextArea } = Input;
   const openAuditorModal = () => {
@@ -37,14 +35,18 @@ const AuditorRating = ({ selectedHomework }) => {
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
+          setSelectedHomework((prevState) => ({ ...prevState, is_audited: true }));
+          fetchRating({
+            hw_dist_file: selectedHomework?.id,
+          });
           message.success(res?.data?.message ?? 'Evaluator rated successfully');
           closeAuditorModal();
         } else {
-          message.error(res?.data?.message ?? 'Something went wrong');
+          message.error(res?.data?.message ?? 'Something went wrong 3');
         }
       })
       .catch((e) => {
-        message.error(e?.response?.data?.message ?? 'Something went wrong');
+        message.error(e?.response?.data?.message ?? 'Something went wrong 6');
       })
       .finally(() => {
         setUploadStart(false);
