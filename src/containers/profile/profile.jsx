@@ -16,7 +16,6 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ChangePassword from './change-password/change-password';
 import Layout from '../Layout';
-import Loading from 'components/loader/loader';
 import { connect, useSelector } from 'react-redux';
 import './profile.css';
 import { useHistory } from 'react-router-dom';
@@ -42,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Profile = (props) => {
-  const [loading, setLoading] = useState(true);
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const { role_details: roleDetailes, user_level: userLevel } =
@@ -64,7 +62,6 @@ const Profile = (props) => {
   );
 
   const getUserDetails = async () => {
-    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.profile.userDetails}?erp_user_id=${roleDetailes.erp_user_id}`,
@@ -141,8 +138,6 @@ const Profile = (props) => {
       }
     } catch (error) {
       setAlert('error', error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -347,7 +342,6 @@ const Profile = (props) => {
   return (
     <>
       <Layout>
-        {loading ? <Loading message='Loading...' /> : null}
         <div style={{ height: '100%' }}>
           <div className='profile_breadcrumb_wrapper'>
             <CommonBreadcrumbs componentName='Profile' />
