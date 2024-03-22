@@ -98,6 +98,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
   const [rating, setRating] = useState([]);
   const [showTab, setShowTab] = useState('1');
   const [evaluatorList, setEvaluatorList] = useState([]);
+  const [selectedEvaluator, setSelectedEvaluator] = useState();
 
   const onChange = (key) => {
     setShowTab(key);
@@ -111,16 +112,16 @@ const EvaluatorHomework = ({ is_auditor }) => {
     });
   };
 
-  // useEffect(() => {
-  //   fetchEvaluator();
-  //   fetchTeacherData({
-  //     is_assessed: showTab === 1 ? 'True' : 'False',
-  //     start_date: '13-03-2024',
-  //     end_date: '19-03-2024',
-  //     sub_sec_mpng: 7485,
-  //     page: 1,
-  //   });
-  // }, []);
+  useEffect(() => {
+    fetchEvaluator();
+    // fetchTeacherData({
+    //   is_assessed: showTab === 1 ? 'True' : 'False',
+    //   start_date: '13-03-2024',
+    //   end_date: '19-03-2024',
+    //   sub_sec_mpng: 7485,
+    //   page: 1,
+    // });
+  }, []);
 
   const handleFilters = () => {
     if (showFilters) {
@@ -243,6 +244,13 @@ const EvaluatorHomework = ({ is_auditor }) => {
       </Option>
     );
   });
+
+  const handleChangeEvaluator = (each) => {
+    setPageNo(1);
+    if (each) {
+      setSelectedEvaluator(each?.value);
+    }
+  };
 
   const sectionOptions = sectionList?.map((each) => {
     return (
@@ -600,6 +608,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                           placement='bottomRight'
                           showArrow={true}
                           dropdownMatchSelectWidth={false}
+                          onChange={(e) => handleChangeEvaluator(e)}
                           filterOption={(input, options) => {
                             return (
                               options.children
