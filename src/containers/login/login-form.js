@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useStyles } from './useStyles';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -233,8 +232,7 @@ function LoginForm(props) {
           onClick={() => {
             handleLogin();
           }}
-          startIcon={disableLogin ? <CircularProgress size={20} color="inherit" /> : null}
-          >
+        >
           Sign In
         </Button>
 
