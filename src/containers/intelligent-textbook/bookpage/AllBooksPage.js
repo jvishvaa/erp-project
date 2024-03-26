@@ -29,6 +29,7 @@ import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import unfiltered from 'assets/images/unfiltered.svg';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { domain_name } from 'v2/commonDomain';
+import { useSelector } from 'react-redux';
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //     window.location.host.split('.')[0] === 'qa'
@@ -87,6 +88,10 @@ const AllBooksPage = () => {
   const [showGrievanceModal, setShowGrievanceModal] = useState(false);
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [filtered, setFiltered] = useState(false);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL);
@@ -176,7 +181,9 @@ const AllBooksPage = () => {
     chapter,
     keyConcept
   ) => {
-    const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
+    const filterAcad = `${
+      selectedBranch ? `&acad_session_id=${selectedBranch?.id}` : ''
+    }`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
     const filterSubject = `${subject ? `&subject=${subject?.central_subject}` : ''}`;
@@ -223,7 +230,7 @@ const AllBooksPage = () => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.ibook.studentBook}?domain_name=${domain_name}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
+          `${endpoints.ibook.studentBook}?domain_name=${domain_name}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}${filterAcad}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
