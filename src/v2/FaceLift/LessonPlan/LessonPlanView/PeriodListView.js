@@ -224,6 +224,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           branch_id: selectedBranch?.branch?.id,
           board: boardId,
           module_id: nextPeriodDetails?.module_id,
+          acad_session_id: selectedBranch?.id,
         });
       } else if (nextPeriodDetails.chapter_id !== chapterId) {
         let chapterName = nextPeriodDetails?.chapter__chapter_name;
@@ -423,6 +424,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       page_size: '10',
       page_number: pageEbook,
       board: boardId,
+      acad_session_id: selectedBranch?.id,
     });
   };
   const fetchEbookCount = (params) => {
@@ -451,6 +453,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       lesson_plan: 'true',
       page_size: '10',
       page_number: pageEbook,
+      acad_session_id: selectedBranch?.id,
     });
     showEbookDrawer();
   };
@@ -467,6 +470,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       page_size: '10',
       page: pageIbook,
       board: boardId,
+      acad_session_id: selectedBranch?.id,
     });
     showIbookDrawer();
   };
@@ -556,12 +560,14 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
 
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
+    console.log(item, 'item');
     let sectionsCompletedSuccess = [];
     if (completeSections?.length > 0) {
       setShowError(false);
       completeSections.map((section, index) => {
         let payLoad = {
           academic_year: selectedAcademicYear?.session_year,
+          acad_session_id: selectedBranch?.id,
           academic_year_id: resourcesData?.central_academic_year_id,
           volume_id: Number(volumeId),
           volume_name: volumeName,
@@ -655,6 +661,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       })
       .then((result) => {
         if (result?.data?.status === 200) {
+          console.log(result?.data?.data[0], 'access');
           setResourcesData(result?.data?.data[0]);
           setLoadingDrawer(false);
           if (allowAutoAssignDiary) {
@@ -824,6 +831,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
         grade_id: history?.location?.state?.gradeID,
         branch_id: selectedBranch?.branch?.id,
         board: history?.location?.state?.boardID,
+        acad_session_id: selectedBranch?.id,
       });
       setGradeId(history?.location?.state?.gradeID);
       setGradeName(history?.location?.state?.gradeName);
@@ -861,6 +869,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           branch_id: selectedBranch?.branch?.id,
           board: boardId,
           module_id: selectedModuleId,
+          acad_session_id: selectedBranch?.id,
         });
       }
     }
@@ -909,6 +918,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           grade_id: gradeId,
           branch_id: selectedBranch?.branch?.id,
           board: boardId,
+          acad_session_id: selectedBranch?.id,
         });
       } else {
         fetchChapterListData({
@@ -917,6 +927,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           grade_id: gradeId,
           branch_id: selectedBranch?.branch?.id,
           board: boardId,
+          acad_session_id: selectedBranch?.id,
         });
       }
     }

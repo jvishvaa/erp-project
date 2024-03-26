@@ -88,6 +88,9 @@ const NewIbook = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL);
@@ -116,7 +119,8 @@ const NewIbook = (props) => {
   useEffect(() => {
     if (branch != '') {
       getEbook(
-        acadmicYear,
+        // acadmicYear,
+        selectedBranch?.id,
         branch,
         grade,
         subject,
@@ -164,7 +168,17 @@ const NewIbook = (props) => {
     setModuleId(moduleId);
     setChapter(chapter);
     setKeyConcept(keyConcept);
-    getEbook(acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept);
+    getEbook(
+      selectedBranch?.id,
+      branch,
+      grade,
+      sub,
+      vol,
+      board,
+      moduleId,
+      chapter,
+      keyConcept
+    );
   };
 
   const getEbook = (
@@ -178,7 +192,9 @@ const NewIbook = (props) => {
     chapter,
     keyConcept
   ) => {
-    const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
+    const filterAcad = `${
+      selectedBranch ? `&acad_session_id=${selectedBranch?.id}` : ''
+    }`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
     const filterSubject = `${subject ? `&subject=${subject?.central_subject}` : ''}`;
@@ -225,7 +241,7 @@ const NewIbook = (props) => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.ibook.studentBook}?domain_name=${domain_name}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
+          ebookClose`${endpoints.ibook.studentBook}?domain_name=${domain_name}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}${filterAcad}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -270,6 +286,7 @@ const NewIbook = (props) => {
         page_number: props?.page,
         page_size: '9',
         domain_name: domain_name,
+        acad_session_id: selectedBranch?.id,
       });
     }
   };

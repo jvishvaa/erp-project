@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 const modulesArray = [
   { id: 'lesson-plan', label: 'Lesson plan', key: 'is_lesson_plan', value: true },
-  { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
+  // { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
   { id: 'ebook', label: 'Ebook', key: 'is_ebook', value: true },
   { id: 'ibook', label: 'Ibook', key: 'is_ibook', value: true },
 ];
