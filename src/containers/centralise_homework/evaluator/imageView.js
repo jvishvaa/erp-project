@@ -819,23 +819,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                     activeTab={showTab}
                   />
                 )}
-                {/* <FilesViewEvaluate
-                  selectedHomeworkIndex={selectedHomeworkIndex}
-                  setSelectedHomeworkIndex={setSelectedHomeworkIndex}
-                  rating={rating}
-                  evaluateData={evaluateData}
-                  selectedGrade={grade}
-                  selectedSubSecMap={section}
-                  fetchTeacherData={fetchTeacherData}
-                  fetchRating={fetchRating}
-                  startDate={startDate}
-                  endDate={endDate}
-                  sub_sec_mpng={subject}
-                  sectionMappingId={sectionMappingId}
-                  page={pageNo}
-                  isAuditor={isAuditor}
-                  activeTab={showTab}
-                /> */}
+                {/* */}
               </TabPane>
             </Tabs>
 
