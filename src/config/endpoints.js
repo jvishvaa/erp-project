@@ -224,6 +224,9 @@ export default {
     defaultAcademicYear: '/erp_user/default-current-session-year/',
     centralGrades: '/erp_user/v1/grades-list/',
     centralSubjects: '/erp_user/v1/subjects-list/',
+    versionData: `${baseURLCentral}/lesson_plan/version-content/`,
+    branchWiseVersion: `/academic/branch-wise-lesson-plan/`,
+    schoolList: `${baseURLCentral}/lesson_plan/school-mapping/`,
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
