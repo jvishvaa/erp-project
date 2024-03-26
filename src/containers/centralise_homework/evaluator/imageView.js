@@ -690,7 +690,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                             <span style={{ color: 'green' }}>
                               {countData?.total_assessed
                                 ? countData?.total_assessed
-                                : '-'}
+                                : '0'}
                             </span>{' '}
                           </span>
                         </div>
@@ -725,7 +725,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                             <span style={{ color: 'red' }}>
                               {countData?.total_under_assessed
                                 ? countData?.total_under_assessed
-                                : '-'}
+                                : '0'}
                             </span>
                           </span>
                         </div>
@@ -759,17 +759,17 @@ const EvaluatorHomework = ({ is_auditor }) => {
         )}
 
         <div className='mt-4 '>
-          {evaluateData?.length === 0 ? (
-            <div className='col-12'>
-              <Result
-                status='warning'
-                title={<span className='th-grey'>Please apply filter to view data</span>}
-              />
-            </div>
-          ) : (
-            <div className='th-tabs th-tabs-hw mt-3 th-bg-white mb-3'>
-              <Tabs type='card' onChange={onChange} defaultActiveKey={showTab}>
-                <TabPane tab='Assessed' key='1'>
+          <div className='th-tabs th-tabs-hw mt-3 th-bg-white mb-3'>
+            <Tabs type='card' onChange={onChange} defaultActiveKey={showTab}>
+              <TabPane tab='Assessed' key='1'>
+                {evaluateData?.length === 0 ? (
+                  <div className='col-12'>
+                    <Result
+                      status='warning'
+                      title={<span className='th-grey'>No Data Available</span>}
+                    />
+                  </div>
+                ) : (
                   <FilesViewEvaluate
                     selectedHomeworkIndex={selectedHomeworkIndex}
                     setSelectedHomeworkIndex={setSelectedHomeworkIndex}
@@ -787,8 +787,20 @@ const EvaluatorHomework = ({ is_auditor }) => {
                     isAuditor={isAuditor}
                     activeTab={showTab}
                   />
-                </TabPane>
-                <TabPane tab='Under Assessed' key='2'>
+                )}
+                {/*  */}
+              </TabPane>
+              <TabPane tab='Under Assessed' key='2'>
+                {evaluateData?.length === 0 ? (
+                  <div className='col-12'>
+                    <Result
+                      status='warning'
+                      title={
+                        <span className='th-grey'>Please apply filter to view data</span>
+                      }
+                    />
+                  </div>
+                ) : (
                   <FilesViewEvaluate
                     selectedHomeworkIndex={selectedHomeworkIndex}
                     setSelectedHomeworkIndex={setSelectedHomeworkIndex}
@@ -806,29 +818,46 @@ const EvaluatorHomework = ({ is_auditor }) => {
                     isAuditor={isAuditor}
                     activeTab={showTab}
                   />
-                </TabPane>
-              </Tabs>
+                )}
+                {/* <FilesViewEvaluate
+                  selectedHomeworkIndex={selectedHomeworkIndex}
+                  setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                  rating={rating}
+                  evaluateData={evaluateData}
+                  selectedGrade={grade}
+                  selectedSubSecMap={section}
+                  fetchTeacherData={fetchTeacherData}
+                  fetchRating={fetchRating}
+                  startDate={startDate}
+                  endDate={endDate}
+                  sub_sec_mpng={subject}
+                  sectionMappingId={sectionMappingId}
+                  page={pageNo}
+                  isAuditor={isAuditor}
+                  activeTab={showTab}
+                /> */}
+              </TabPane>
+            </Tabs>
 
-              <Pagination
-                current={pageNo}
-                total={totalPage}
-                showSizeChanger={false}
-                pageSize={pageLimit}
-                onChange={(current) => {
-                  setPageNo(current);
-                  setSelectedHomeworkIndex(0);
-                  fetchTeacherData({
-                    is_assessed: showTab === '1' ? 'True' : 'False',
-                    start_date: startDate,
-                    end_date: endDate,
-                    sub_sec_mpng: subject,
-                    page: current,
-                  });
-                }}
-                className='text-center'
-              />
-            </div>
-          )}
+            <Pagination
+              current={pageNo}
+              total={totalPage}
+              showSizeChanger={false}
+              pageSize={pageLimit}
+              onChange={(current) => {
+                setPageNo(current);
+                setSelectedHomeworkIndex(0);
+                fetchTeacherData({
+                  is_assessed: showTab === '1' ? 'True' : 'False',
+                  start_date: startDate,
+                  end_date: endDate,
+                  sub_sec_mpng: subject,
+                  page: current,
+                });
+              }}
+              className='text-center'
+            />
+          </div>
         </div>
       </div>
     </React.Fragment>
