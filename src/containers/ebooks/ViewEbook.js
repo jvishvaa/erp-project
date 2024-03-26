@@ -22,6 +22,8 @@ import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import Loader from 'components/loader/loader';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { domain_name } from '../../v2/commonDomain';
+import { useSelector } from 'react-redux';
+
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //     window.location.host.split('.')[0] === 'qa'
@@ -101,6 +103,9 @@ class ViewEbook extends Component {
   componentDidMount() {
     this.handleBranchid();
   }
+
+  selectedBranch = () =>
+    useSelector((state) => state.commonFilterReducer?.selectedBranch);
 
   handleBranchid = () => {
     axiosInstance
@@ -274,7 +279,9 @@ class ViewEbook extends Component {
 
     const domainTobeSent = subDomain;
 
-    const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
+    const filterAcad = `${
+      this.selectedBranch ? `&acad_session_id=${this.selectedBranch?.id}` : ''
+    }`;
     const filterAcadYear = `${acad ? `&session_year=${acad?.session_year}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     let filterGrade;
@@ -295,7 +302,7 @@ class ViewEbook extends Component {
           endpoints.ebook.ebook
         }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
           tabValue + 1
-        }&grade=[${this.state.central_grade}]`;
+        }&grade=[${this.state.central_grade}]${filterAcad}`;
       } else {
         urlPath = `${
           endpoints.ebook.ebook
