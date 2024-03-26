@@ -418,13 +418,7 @@ const AnnouncementList = () => {
         <div className='row th-16 py-3 px-2'>
           <div className='col-md-8' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item
-                onClick={() => {
-                  history.push('/dashboard');
-                }}
-                style={{ cursor: 'pointer' }}
-                className='th-grey th-16'
-              >
+              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
               </Breadcrumb.Item>
 

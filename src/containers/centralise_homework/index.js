@@ -9,12 +9,14 @@ import axiosInstance from 'config/axios';
 const CentralizedHomework = () => {
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
   const [isAuditor, setIsAuditor] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     checkEvaluator();
   }, []);
 
   const checkEvaluator = async (params = {}) => {
+    setLoading(true);
     await axiosInstance
       .get(`${endpoints.centralizedHomework.checkEvaluator}`)
       .then((res) => {
@@ -27,6 +29,9 @@ const CentralizedHomework = () => {
       })
       .catch((error) => {
         message.error(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -37,7 +42,7 @@ const CentralizedHomework = () => {
       ) : userLevel === 11 ? (
         <BranchHomework />
       ) : userLevel === 2 || userLevel === 8 ? (
-        <EvaluatorHomework is_auditor={isAuditor} />
+        <>{!loading && <EvaluatorHomework is_auditor={isAuditor} />}</>
       ) : null}
     </>
   );
