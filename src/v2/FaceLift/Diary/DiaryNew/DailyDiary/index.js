@@ -64,6 +64,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+
   const dispatch = useDispatch();
   // const { erp } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -288,6 +289,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         central_gs_id: Number(params.value.chapter__grade_subject_mapping_id),
         for_diary: 1,
         key_concepts: Number(params.value.key_concept_id),
+        // acad_session_id: selectedAcademicYear?.id,
       });
       setKeyConceptName(params.value.key_concept__topic_name);
       setChapterName(params.value.chapter__chapter_name);
@@ -652,11 +654,16 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
       });
-      fetchTodaysTopic({ section_mapping: sectionMappingID, subject_id: e.value });
+      fetchTodaysTopic({
+        section_mapping: sectionMappingID,
+        subject_id: e.value,
+        acad_session_id: selectedBranch?.id,
+      });
       fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: e.value,
         grade_id: gradeID,
+        acad_session_id: selectedBranch?.id,
       });
       fetchAssessmentData({
         section_mapping: sectionMappingID,
@@ -1257,6 +1264,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
+          console.log(result?.data?.result?.results, selectedAcademicYear, 'application');
           setCentralAcademicYearID(
             result?.data?.result?.results?.filter(
               (item) => item?.session_year == selectedAcademicYear.session_year
@@ -1268,12 +1276,15 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         message.error(error?.message);
       });
   };
+  console.log(centralAcademicYearID, 'centralAcademicYearID');
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
+    console.log(item, 'markPeriodComplete');
     if (Array.isArray(sectionMappingID)) {
       sectionMappingID.map((section, index) => {
         let payLoad = {
           academic_year: selectedAcademicYear?.session_year,
+          acad_session_id: selectedBranch?.id,
           academic_year_id: centralAcademicYearID,
           volume_id: Number(item?.chapter__volume_id),
           volume_name: item?.chapter__volume__volume_name,
@@ -1312,6 +1323,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     } else {
       let payLoad = {
         academic_year: selectedAcademicYear?.session_year,
+        acad_session_id: selectedBranch?.id,
         academic_year_id: centralAcademicYearID,
         volume_id: Number(item?.chapter__volume_id),
         volume_name: item?.chapter__volume__volume_name,
@@ -1382,7 +1394,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       formRef.current.setFieldsValue({
         grade: editData?.grade_name,
         section: editData?.section_name,
-        subject:editSubject?.subject_name
+        subject: editSubject?.subject_name,
       });
       setAcadID(editData?.academic_year_id);
       setBranchID(editData?.branch_id);
@@ -1406,6 +1418,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         branch_id: selectedBranch.branch.id,
         subject_id: editSubject?.subject_id,
         grade_id: editData?.grade_id,
+        acad_session_id: selectedBranch?.id,
       });
       fetchAssessmentData({
         section_mapping: editData?.section_mapping_id,
@@ -1414,14 +1427,14 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       });
       fetchActivityData({
         branch_id: selectedBranch?.branch?.id,
-        grade_id:editData?.grade_id,
+        grade_id: editData?.grade_id,
         section_id: editData?.section_id,
         start_date: moment().format('YYYY-MM-DD'),
         type: editSubject?.subject_name.split('_')[
           editSubject?.subject_name.split('_').length - 1
         ],
       });
-     
+
       checkAssignedHomework({
         section_mapping: editData?.section_mapping_id,
         subject: editSubject?.subject_id,
@@ -1430,6 +1443,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       fetchTodaysTopic({
         section_mapping: editData?.section_mapping_id,
         subject_id: editSubject?.subject_id,
+        acad_session_id: selectedBranch?.id,
       });
     } else if (history?.location?.state?.data) {
       let editData = history.location.state.data;
@@ -1482,6 +1496,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       fetchChapterDropdown({
         branch_id: selectedBranch.branch.id,
         subject_id: editSubject?.subject_id,
+        acad_session_id: selectedBranch?.id,
         grade_id: Array.isArray(editData?.grade_id)
           ? editData?.grade_id[0]
           : editData?.grade_id,
@@ -1539,6 +1554,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
           branch_id: selectedBranch.branch.id,
           subject_id: periodData?.subjectID,
           grade_id: periodData?.gradeID,
+          acad_session_id: selectedBranch?.id,
         });
         checkAssignedHomework({
           section_mapping: periodData?.sections.map((item) => item?.id).join(','),
@@ -1548,6 +1564,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         fetchTodaysTopic({
           section_mapping: periodData?.sections.map((item) => item?.id).join(','),
           subject_id: periodData?.subjectID,
+          acad_session_id: selectedBranch?.id,
         });
         setCurrentPeriodData([
           ...currentPeriodData,
