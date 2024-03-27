@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import Layout from '../Layout/index';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -40,12 +40,15 @@ import jsPDF from 'jspdf';
 
 const ListandFilter = (props) => {
   const { Option } = Select;
+  const AssignMappingRef = useRef();
+  const AssessmentCategoryMappingRef = useRef();
   const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const [branch, setBranchRes] = useState([]);
   const [gradeRes, setGradeRes] = useState([]);
   const [selectedYear, setSelectedYear] = useState(null);
   const [branchValue, setBranchValue] = useState(null);
+  const [branchFilter, setBranchFilter] = useState(null);
   const [gradeValue, setGradeValue] = useState(null);
   const [schoolGsMapping, setSchoolGsMapping] = useState([]);
   const [error, setError] = useState(null);
@@ -71,7 +74,7 @@ const ListandFilter = (props) => {
   const [gradeSubjectList, setGradeSubjectList] = useState([]);
   const moduleList = [
     { id: 'lesson-plan', label: 'Lesson plan', key: 'is_lesson_plan', value: true },
-    // { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
+    { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
     { id: 'ebook', label: 'Ebook', key: 'is_ebook', value: true },
     { id: 'ibook', label: 'Ibook', key: 'is_ibook', value: true },
   ];
@@ -140,7 +143,7 @@ const ListandFilter = (props) => {
       case 40:
         return 'Version 3';
       default:
-        return 'Version';
+        return '-';
     }
   };
 
@@ -179,15 +182,13 @@ const ListandFilter = (props) => {
   const gradeColumns = [
     {
       title: 'Grade',
-      dataIndex: 'grade.grade_name',
+      dataIndex: ['grade', 'grade_name'], // Use array notation to access nested properties
       key: 'grade',
-      // render: (grade) => grade.grade_name,
     },
     {
       title: 'Subject',
-      dataIndex: 'subject.subject_name',
+      dataIndex: ['subject', 'subject_name'], // Use array notation to access nested properties
       key: 'subject',
-      // render: (subject) => subject.subject_name,
     },
   ];
 
@@ -199,6 +200,7 @@ const ListandFilter = (props) => {
 
   const handleCloseModal = () => {
     setModalToggle(false);
+    AssignMappingRef.current.resetFields();
   };
 
   const handleOpenCategoryModal = () => {
@@ -210,6 +212,7 @@ const ListandFilter = (props) => {
     setCategoryToggle(false);
     setSelectedERPCategory(null);
     setSelectedCentralCategory(null);
+    AssessmentCategoryMappingRef.current.resetFields();
   };
 
   const navigateToCreatePage = () => {
@@ -277,15 +280,11 @@ const ListandFilter = (props) => {
       });
   };
 
-  const getBranchWiseTable = async () => {
+  const getBranchWiseTable = async (branch) => {
     axiosInstance
-      .get(
-        `${endpoints.masterManagement.branchWiseVersion}?acad_session=${selectedBranch?.id}`
-      )
+      .get(`${endpoints.masterManagement.branchWiseVersion}?acad_session=${branch?.id}`)
       .then((res) => {
-        console.log(res?.data?.result, 'academicccc');
         if (res?.data?.result) {
-          // setAcademicYear(res.data.data);
           setTableData(res?.data?.result);
           setSchoolId(res?.data?.result[0]?.school_id);
         }
@@ -312,7 +311,19 @@ const ListandFilter = (props) => {
   }, []);
 
   useEffect(() => {
-    getBranchWiseTable();
+    axiosInstance
+      .get(
+        `${endpoints.masterManagement.branchWiseVersion}?acad_session=${selectedBranch?.id}`
+      )
+      .then((res) => {
+        if (res?.data?.result) {
+          setTableData(res?.data?.result);
+          setSchoolId(res?.data?.result[0]?.school_id);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   useEffect(() => {
@@ -356,7 +367,7 @@ const ListandFilter = (props) => {
         module: moduleKey,
         [moduleKey]: value,
         eduvate_sy: versionId?.academic_year,
-        acad_session: selectedBranch?.id,
+        acad_session: branchValue?.id,
       };
       console.log(body, 'branch');
 
@@ -374,91 +385,9 @@ const ListandFilter = (props) => {
           console.log(err);
         });
     }
-    getBranchWiseTable();
+    getBranchWiseTable(branchValue);
     handleCloseModal();
   };
-
-  // const handleConfirm = () => {
-  //   // Handle confirmation logic
-  //   // You may want to handle the selected values from the Select fields here
-  //   if (
-  //     selectedYear === null ||
-  //     branchValue === null ||
-  //     selectedModule === null ||
-  //     versionId === null
-  //   ) {
-  //     setAlert('error', 'Please select all the fields');
-  //     return;
-  //   }
-  //   const { key: moduleKey, value } = selectedModule;
-  //   let body = {
-  //     branch: branchValue && branchValue.branch.id,
-  //     erp_grade: gradeValue && gradeValue.grade_id,
-  //     erp_gs_mapping: subjectValue && subjectValue,
-  //     erp_subject_id: subjectId && subjectId,
-  //     central_grade: centralGradeValue && centralGradeValue.grade,
-  //     central_grade_name: centralGradeValue && centralGradeValue.grade_name,
-  //     central_subject: centralSubValue && centralSubValue.subject_id,
-  //     // central_gs_mapping: gradeValue && gradeValue.id,
-  //     // central_gs_mapping: centralGrade[0] && centralGrade[0].id,
-  //     central_gs_mapping: centralSubValue && centralSubValue.grade_subject_id,
-  //     central_subject_name: centralSubValue && centralSubValue.subject_name,
-  //     module: moduleKey,
-  //     [moduleKey]: value,
-  //   };
-  //   if (!props.location.edit) {
-  //     const valid = Validation(body);
-  //     if (valid.isValid === true) {
-  //       axiosInstance
-  //         .post(endpoints.mappingStudentGrade.assign, body)
-  //         .then((res) => {
-  //           if (res.data.status_code === 200) {
-  //             setAlert('success', res.data.message);
-  //             props.history.push('/subject/grade');
-  //           } else {
-  //             setAlert('warning', res.data.message);
-  //           }
-  //         })
-  //         .catch((err) => {
-  //           setAlert('error', err.message);
-  //           console.log(err);
-  //         });
-  //     } else {
-  //       setError(valid && valid.error);
-  //     }
-  //   } else {
-  //     let body = {
-  //       branch: branchValue.id,
-  //       erp_grade: gradeValue.id,
-  //       erp_gs_mapping:
-  //         subjectUpdateValue.map((ele) => ele.id) || subjectValue.map((ele) => ele.id),
-  //       central_grade: centralGradeValue.grade,
-  //       central_grade_name: centralGradeValue.grade_name,
-  //       central_subject: centralSubValue.id,
-  //       // central_gs_mapping: gradeValue.id,
-  //       central_gs_mapping: centralGrade[0] && centralGrade[0].id,
-  //       central_subject_name: centralSubValue.subject_name,
-  //     };
-  //     axiosInstance
-  //       .put(
-  //         `${endpoints.mappingStudentGrade.updateAssign}/${updateId}/update-school-gs-mapping/`,
-  //         body
-  //       )
-  //       .then((res) => {
-  //         if (res.data.status_code === 200) {
-  //           setAlert('success', res.data.message);
-  //           props.history.push('/subject/grade');
-  //         } else {
-  //           setAlert('warning', res.data.message);
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         setAlert('error', err.message);
-  //         console.log(err);
-  //       });
-  //   }
-  //   handleCloseModal();
-  // };
 
   console.log(selectedERPCategory, 'selected');
 
@@ -578,33 +507,28 @@ const ListandFilter = (props) => {
     }
   }, [academicYear]);
 
+  const handleBranchFilter = (e, value) => {
+    if (value) {
+      setBranchFilter(JSON.parse(value?.value));
+    } else {
+      setBranchFilter(null);
+    }
+  };
+
   const handleChangeBranch = (e, value) => {
     if (value) {
       setBranchValue(JSON.parse(value?.value));
       setSelectedModule(null);
-      // axiosInstance
-      //   .get(
-      //     `${endpoints.mappingStudentGrade.grade}?session_year=${selectedYear?.id}&branch_id=${value?.id}&module_id=${moduleId}`
-      //   )
-      //   .then((res) => {
-      //     if (res.data.data) {
-      //       setGradeRes(res.data.data);
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
     } else {
       setBranchValue(null);
     }
+    getBranchWiseTable(JSON.parse(value?.value));
   };
 
   const handleChangeModule = (e, value) => {
-    console.log(value, schoolId, 'change');
     if (value && schoolId) {
       setSelectedModule(JSON.parse(value?.value));
       const module = JSON.parse(value?.value);
-
       getVersion(module?.key, schoolId);
     } else {
       setSelectedModule(null);
@@ -692,46 +616,21 @@ const ListandFilter = (props) => {
       })
       .then((res) => {
         setGradeSubjectList(res?.data?.result[0]?.grade_subject_mapping);
-        console.log(res?.data?.result[0]?.grade_subject_mapping, 'uccess');
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  console.log(gradeSubjectList, tableData, 'seleted');
-  // const getVersion = (module) => {
-  //   console.log(module, 'version');
-  //   const { id: schoolId } = branchValue?.branch || {};
-  //   const { key, value } = module || {};
-  //   const queryString = generateQueryParamSting({ school: schoolId, [module]: true });
-  //   axios
-  //     .get(`${endpoints.masterManagement.versionData}?${queryString}`, {
-  //       headers: { 'x-api-key': 'vikash@12345#1231' },
-  //     })
-  //     .then((result) => {
-  //       console.log(result?.data?.result?.result, 'success');
-  //       // setVersionData(result?.data?.result?.result);
-  //       // setSessionYearDropdown(result?.data?.result?.result[0]?.school_versions);
-  //     })
-  //     .catch((error) => {
-  //       setAlert('error', error.message);
-  //     });
-  // };
-
   const handleFilter = async () => {
-    if (branchValue === null) {
+    if (branchFilter === null) {
       setAlert('warning', 'Select Branch');
       return false;
     } else {
-      let body = {
-        acad_session: branchValue && branchValue?.id,
-      };
-      console.log(branchValue, 'branchhh');
       setFilter(true);
       await axiosInstance
         .get(
-          `${endpoints.masterManagement.branchWiseVersion}?acad_session=${branchValue?.id}`
+          `${endpoints.masterManagement.branchWiseVersion}?acad_session=${branchFilter?.id}`
         )
         .then((res) => {
           setTableData(res?.data?.result);
@@ -739,59 +638,8 @@ const ListandFilter = (props) => {
         .catch((err) => {
           console.log(err);
         });
-
-      // const valid = Validation(body);
-      // if (valid.isValid === true) {
-      //   setFilter(true);
-      //   axiosInstance
-      //     .get(
-      //       `${endpoints.mappingStudentGrade.schoolGsMapping}?branch=${body?.branch}&session_year=${selectedAcademicYear?.id}`
-      //     )
-      //     .then((res) => {
-      //       setSchoolGsMapping(res?.data?.data?.results);
-      //     })
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-      // } else {
-      //   setError(valid);
-      // }
     }
   };
-
-  // const handleFilter = () => {
-  //   if (!selectedModule) {
-  //     setAlert('warning', 'Select Module');
-  //     return false;
-  //   }
-  //   if (branchValue === null && gradeValue === null) {
-  //     setAlert('warning', 'Select Grade');
-  //     return false;
-  //   } else {
-  //     const { key, value } = selectedModule || {};
-  //     let body = {
-  //       branch: branchValue && branchValue.branch.id,
-  //       erp_grade: gradeValue && gradeValue.grade_id,
-  //     };
-  //     const queryString = generateQueryParamSting({ [key]: value });
-  //     const valid = Validation(body);
-  //     if (valid.isValid === true) {
-  //       setFilter(true);
-  //       axiosInstance
-  //         .get(
-  //           `${endpoints.mappingStudentGrade.schoolGsMapping}?branch=${body.branch}&session_year=${selectedAcademicYear?.id}&erp_grade=${body.erp_grade}&${queryString}`
-  //         )
-  //         .then((res) => {
-  //           setSchoolGsMapping(res.data.data.results);
-  //         })
-  //         .catch((err) => {
-  //           console.log(err);
-  //         });
-  //     } else {
-  //       setError(valid);
-  //     }
-  //   }
-  // };
 
   const updateDeletData = (value, index) => {
     const newData = value;
@@ -833,8 +681,6 @@ const ListandFilter = (props) => {
   const closeModal = () => {
     setSelectedRow(null);
   };
-
-  console.log(selectedERPCategory, selectedCentralCategory, 'testing');
 
   return (
     <Layout>
@@ -880,25 +726,14 @@ const ListandFilter = (props) => {
                     showSearch
                     placeholder='Select Branch'
                     onChange={(e, value) => {
-                      handleChangeBranch(e, value);
+                      handleBranchFilter(e, value);
                     }}
                     bordered={false}
                   >
                     {branchOption}
                   </Select>
                 </div>
-                {/* <div
-                  className='col-lg-2 col-md-3 col-sm-4 col-6 pr-1 mt-4'
-                  style={{ marginTop: '5px' }}
-                >
-                  <Button
-                    type='secondary'
-                    className='btn-block mt-0 th-br-4 th-14'
-                    onClick={handleClearAll}
-                  >
-                    Clear All
-                  </Button>
-                </div> */}
+
                 <div
                   className='col-lg-2 col-md-3 col-sm-4 col-6 pl-1 mb-2 mt-4'
                   style={{ marginTop: '5px' }}
@@ -931,11 +766,139 @@ const ListandFilter = (props) => {
                     visible={modalToggle}
                     onOk={handleConfirm}
                     onCancel={handleCloseModal}
-                    width={'30%'}
                     centered
                     okText='Assign'
                   >
-                    <div className='p-2 mt-3 mb-3 d-flex flex-column justify-content-center align-items-center'>
+                    <div className='p-2 mt-3 mb-3 d-flex justify-content-center align-items-center'>
+                      <div className='col-12'>
+                        <Form ref={AssignMappingRef} layout={'vertical'}>
+                          <div className='col-md-12 col-sm-10 col-12 mb-4'>
+                            <Form.Item name={'Academic Year'} label='Academic Year'>
+                              <Select
+                                mode='single'
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                allowClear={true}
+                                suffixIcon={<DownOutlined className='th-grey' />}
+                                className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                placement='bottomRight'
+                                showArrow={true}
+                                dropdownMatchSelectWidth={true}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                showSearch
+                                placeholder='Select Academic Year*'
+                                onChange={(e, value) => {
+                                  handleChangeYear(e, value);
+                                }}
+                                bordered={false}
+                              >
+                                {academicYearOption}
+                              </Select>
+                            </Form.Item>
+                          </div>
+
+                          <div className='col-md-12 col-sm-10 col-12 mb-4'>
+                            <Form.Item name={'Branch'} label='Branch'>
+                              <Select
+                                mode='single'
+                                // key={branchValue}
+                                // value={branchValue}
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                allowClear={true}
+                                suffixIcon={<DownOutlined className='th-grey' />}
+                                className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                placement='bottomRight'
+                                showArrow={true}
+                                dropdownMatchSelectWidth={true}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                showSearch
+                                placeholder='Select Branch*'
+                                onChange={(e, value) => {
+                                  handleChangeBranch(e, value);
+                                }}
+                                bordered={false}
+                              >
+                                {branchOption}
+                              </Select>
+                            </Form.Item>
+                          </div>
+
+                          <div className='col-md-12 col-sm-10 col-12 mb-4'>
+                            <Form.Item name={'Module'} label='Module'>
+                              <Select
+                                mode='single'
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                allowClear={true}
+                                suffixIcon={<DownOutlined className='th-grey' />}
+                                className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                placement='bottomRight'
+                                showArrow={true}
+                                dropdownMatchSelectWidth={true}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                showSearch
+                                placeholder='Select Module*'
+                                onChange={(e, value) => {
+                                  handleChangeModule(e, value);
+                                }}
+                                bordered={false}
+                              >
+                                {moduleOption}
+                              </Select>
+                            </Form.Item>
+                          </div>
+
+                          {selectedModule?.id !== 'assessment' && (
+                            <div className='col-md-12 col-sm-10 col-12 mb-4'>
+                              <Form.Item name={'Version'} label='Version'>
+                                <Select
+                                  mode='single'
+                                  getPopupContainer={(trigger) => trigger.parentNode}
+                                  allowClear={true}
+                                  suffixIcon={<DownOutlined className='th-grey' />}
+                                  className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                  placement='bottomRight'
+                                  showArrow={true}
+                                  dropdownMatchSelectWidth={true}
+                                  filterOption={(input, options) => {
+                                    return (
+                                      options.children
+                                        .toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                    );
+                                  }}
+                                  showSearch
+                                  placeholder='Select Version*'
+                                  onChange={(e, value) => {
+                                    handleChangeVersion(e, value);
+                                  }}
+                                  bordered={false}
+                                >
+                                  {versionOption}
+                                </Select>
+                              </Form.Item>
+                            </div>
+                          )}
+                        </Form>
+                      </div>
+                    </div>
+                    {/* <div className='p-2 mt-3 mb-3 d-flex flex-column justify-content-center align-items-center'>
                       <div className='col-md-10 col-sm-10 col-12 mb-4'>
                         <div className='mb-2 text-left' style={{ marginLeft: '2%' }}>
                           Academic Year
@@ -1061,7 +1024,7 @@ const ListandFilter = (props) => {
                           {versionOption}
                         </Select>
                       </div>
-                    </div>
+                    </div> */}
                   </Modal>
                   <div className='col-lg-4 col-md-5 col-sm-6 col-6 pl-1'>
                     <Button
@@ -1079,13 +1042,81 @@ const ListandFilter = (props) => {
                     title='Assignment Category Mapping'
                     visible={categoryToggle}
                     onOk={categoryMappingSubmit}
-                    afterClose={handleCloseCategoryModal}
                     onCancel={handleCloseCategoryModal}
-                    width={'30%'}
                     centered
                     okText='Assign'
                   >
-                    <div className='p-2 mt-3 mb-3 d-flex flex-column justify-content-center align-items-center'>
+                    <div className='p-2 mt-3 mb-3 d-flex justify-content-center align-items-center'>
+                      <div className='col-12'>
+                        <Form ref={AssessmentCategoryMappingRef} layout={'vertical'}>
+                          <div className='col-md-12 col-sm-10 col-12 mb-4'>
+                            <Form.Item name={'ERP Category'} label='ERP Category'>
+                              <Select
+                                mode='single'
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                allowClear={true}
+                                defaultValue={selectedERPCategory?.category_name}
+                                suffixIcon={<DownOutlined className='th-grey' />}
+                                className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                placement='bottomRight'
+                                showArrow={true}
+                                dropdownMatchSelectWidth={true}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                showSearch
+                                placeholder='Select ERP Category*'
+                                // value={
+                                //   selectedERPCategory ? selectedERPCategory?.category_name : null
+                                // }
+                                onChange={(e, val) => {
+                                  handleErpCategory(e, val);
+                                }}
+                                bordered={false}
+                              >
+                                {erpCategoryOption}
+                              </Select>
+                            </Form.Item>
+                          </div>
+
+                          <div className='col-md-12 col-sm-10 col-12 mb-4'>
+                            <Form.Item name={'Central Category'} label='Central Category'>
+                              <Select
+                                mode='single'
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                allowClear={true}
+                                suffixIcon={<DownOutlined className='th-grey' />}
+                                className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                placement='bottomRight'
+                                showArrow={true}
+                                dropdownMatchSelectWidth={true}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                showSearch
+                                placeholder='Select Central Category*'
+                                onChange={(e, value) => {
+                                  handleCentralCategory(e, value);
+                                  // setSelectedCentralCategory(e, value);
+                                }}
+                                bordered={false}
+                              >
+                                {centralCategoryOption}
+                              </Select>
+                            </Form.Item>
+                          </div>
+                        </Form>
+                      </div>
+                    </div>
+                    {/* <div className='p-2 mt-3 mb-3 d-flex flex-column justify-content-center align-items-center'>
                       <div className='col-md-10 col-sm-10 col-12 mb-4'>
                         <div className='mb-2 text-left' style={{ marginLeft: '2%' }}>
                           ERP Category
@@ -1151,7 +1182,7 @@ const ListandFilter = (props) => {
                           {centralCategoryOption}
                         </Select>
                       </div>
-                    </div>
+                    </div> */}
                   </Modal>
                 </div>
               </div>
@@ -1166,7 +1197,6 @@ const ListandFilter = (props) => {
               index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
             }
             // loading={loading}
-            // columns={columns}
             columns={columns.map((col, index) => ({
               ...col,
               onCell: (record) => ({
@@ -1180,13 +1210,10 @@ const ListandFilter = (props) => {
               x: window.innerWidth > 400 ? '100%' : 'max-content',
               y: 350,
             }}
-            // onRow={(record) => ({
-            //   onClick: () => handleRowClick(record),
-            // })}
           />
         </div>
         <Modal
-          title='Grade Subject Mapping'
+          title='Content Mapping'
           visible={selectedRow !== null}
           onCancel={closeModal}
           onOk={closeModal}
