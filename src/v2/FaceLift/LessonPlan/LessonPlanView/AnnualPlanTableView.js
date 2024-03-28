@@ -353,6 +353,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       lesson_plan: 'true',
       page_size: '10',
       page_number: e,
+      acad_session_id: selectedBranch?.id,
     });
     const element = document.getElementById('ebooktop');
     element.scrollTo({ top: 0, behavior: 'smooth' });
@@ -365,6 +366,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       volume: volumeId,
       grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
+      acad_session_id: selectedBranch?.id,
       book_type: '4',
       branch: selectedBranch?.branch?.id,
       domain_name: domain_name,
