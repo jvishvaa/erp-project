@@ -22,7 +22,7 @@ import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import Loader from 'components/loader/loader';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { domain_name } from '../../v2/commonDomain';
-import { useSelector } from 'react-redux';
+import { useSelector, connect } from 'react-redux';
 
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
@@ -74,6 +74,10 @@ const styles = (theme) => ({
     flexGrow: 1,
   },
 });
+
+const mapStateToProps = (state) => ({
+  selectedBranch: state.commonFilterReducer?.selectedBranch,
+});
 class ViewEbook extends Component {
   constructor(props) {
     super(props);
@@ -102,10 +106,8 @@ class ViewEbook extends Component {
 
   componentDidMount() {
     this.handleBranchid();
+    console.log(this.props.selectedBranch, 'selectedBranch');
   }
-
-  selectedBranch = () =>
-    useSelector((state) => state.commonFilterReducer?.selectedBranch);
 
   handleBranchid = () => {
     axiosInstance
@@ -280,7 +282,7 @@ class ViewEbook extends Component {
     const domainTobeSent = subDomain;
 
     const filterAcad = `${
-      this.selectedBranch ? `&acad_session_id=${this.selectedBranch?.id}` : ''
+      this.props.selectedBranch ? `&acad_session_id=${this.props.selectedBranch?.id}` : ''
     }`;
     const filterAcadYear = `${acad ? `&session_year=${acad?.session_year}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
@@ -499,4 +501,5 @@ class ViewEbook extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(ViewEbook));
+// export default withRouter(withStyles(styles)(ViewEbook));
+export default withRouter(withStyles(styles)(connect(mapStateToProps)(ViewEbook)));
