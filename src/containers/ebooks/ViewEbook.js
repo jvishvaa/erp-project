@@ -22,6 +22,8 @@ import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import Loader from 'components/loader/loader';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { domain_name } from '../../v2/commonDomain';
+import { useSelector, connect } from 'react-redux';
+
 // const isOrchids =
 //   window.location.host.split('.')[0] === 'orchids' ||
 //     window.location.host.split('.')[0] === 'qa'
@@ -72,6 +74,10 @@ const styles = (theme) => ({
     flexGrow: 1,
   },
 });
+
+const mapStateToProps = (state) => ({
+  selectedBranch: state.commonFilterReducer?.selectedBranch,
+});
 class ViewEbook extends Component {
   constructor(props) {
     super(props);
@@ -100,6 +106,7 @@ class ViewEbook extends Component {
 
   componentDidMount() {
     this.handleBranchid();
+    console.log(this.props.selectedBranch, 'selectedBranch');
   }
 
   handleBranchid = () => {
@@ -274,7 +281,9 @@ class ViewEbook extends Component {
 
     const domainTobeSent = subDomain;
 
-    const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
+    const filterAcad = `${
+      this.props.selectedBranch ? `&acad_session_id=${this.props.selectedBranch?.id}` : ''
+    }`;
     const filterAcadYear = `${acad ? `&session_year=${acad?.session_year}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     let filterGrade;
@@ -295,7 +304,7 @@ class ViewEbook extends Component {
           endpoints.ebook.ebook
         }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
           tabValue + 1
-        }&grade=[${this.state.central_grade}]`;
+        }&grade=[${this.state.central_grade}]${filterAcad}`;
       } else {
         urlPath = `${
           endpoints.ebook.ebook
@@ -492,4 +501,5 @@ class ViewEbook extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(ViewEbook));
+// export default withRouter(withStyles(styles)(ViewEbook));
+export default withRouter(withStyles(styles)(connect(mapStateToProps)(ViewEbook)));
