@@ -16,6 +16,7 @@ import axios from 'axios';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { domain_name } from 'v2/commonDomain';
+import { connect } from 'react-redux';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -59,6 +60,10 @@ const styles = (theme) => ({
     width: '100%',
     flexGrow: 1,
   },
+});
+
+const mapStateToProps = (state) => ({
+  selectedBranch: state.commonFilterReducder?.selectedBranch,
 });
 
 class ViewEbook extends Component {
@@ -202,6 +207,9 @@ class ViewEbook extends Component {
     }
     const domainTobeSent = subDomain;
 
+    const filterSelectedBranch = `${
+      this.props.selectedBranch ? `&acad_session_id=${this.props.selectedBranch?.id}` : ''
+    }`;
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
@@ -214,11 +222,11 @@ class ViewEbook extends Component {
         endpoints.ebook.ebook
       }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
         tabValue + 1
-      }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterSelectedBranch}`;
     } else if (tabValue === 2) {
       urlPath = `${
         endpoints.ebook.ebook
-      }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      }?domain_name=${domain_name}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterSelectedBranch}`;
     }
 
     axios
@@ -350,4 +358,4 @@ class ViewEbook extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(ViewEbook));
+export default withRouter(withStyles(styles)(connect(mapStateToProps)(ViewEbook)));
