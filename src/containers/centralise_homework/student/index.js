@@ -342,12 +342,17 @@ const CentralizedStudentHw = () => {
                     <Tooltip title={sub?.sub_name}>
                       <Button
                         className={`${
-                          sub?.subject_mapping_id == subjectSelected?.id
+                          sub?.subject_mapping_id == subjectSelected?.subject_mapping_id
                             ? 'th-button-active'
                             : 'th-button'
                         } th-width-100 th-br-6 text-truncate th-pointer`}
                         onClick={() => handleSubjectFilter(sub)}
                       >
+                        {console.log(
+                          'selected tab',
+                          sub?.subject_mapping_id,
+                          subjectSelected?.id
+                        )}
                         {sub?.sub_name}
                       </Button>
                     </Tooltip>
