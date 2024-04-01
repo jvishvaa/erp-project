@@ -16,6 +16,7 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ChangePassword from './change-password/change-password';
 import Layout from '../Layout';
+import Loading from 'components/loader/loader';
 import { connect, useSelector } from 'react-redux';
 import './profile.css';
 import { useHistory } from 'react-router-dom';
@@ -46,6 +47,7 @@ const Profile = (props) => {
   const { role_details: roleDetailes, user_level: userLevel } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [loading, setLoading] = useState(false);
   const [update, setUpdate] = useState(false);
   const [userId, setUserId] = useState('');
   const [passwordPopUp, setPasswordPopUp] = useState(false);
@@ -62,6 +64,7 @@ const Profile = (props) => {
   );
 
   const getUserDetails = async () => {
+    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.profile.userDetails}?erp_user_id=${roleDetailes.erp_user_id}`,
@@ -138,10 +141,13 @@ const Profile = (props) => {
       }
     } catch (error) {
       setAlert('error', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const getStudentDetails = async () => {
+    setLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints.profile.studentDetails}?session_year_id=${selectedAcademicYear?.id}`,
@@ -258,6 +264,8 @@ const Profile = (props) => {
       }
     } catch (error) {
       setAlert('error', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -342,6 +350,7 @@ const Profile = (props) => {
   return (
     <>
       <Layout>
+      {loading ? <Loading message='Loading...' /> : null}
         <div style={{ height: '100%' }}>
           <div className='profile_breadcrumb_wrapper'>
             <CommonBreadcrumbs componentName='Profile' />
