@@ -74,83 +74,107 @@ const ListandFilter = (props) => {
   const [gradeSubjectList, setGradeSubjectList] = useState([]);
   const moduleList = [
     { id: 'lesson-plan', label: 'Lesson plan', key: 'is_lesson_plan', value: true },
-    { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
+    // { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
     { id: 'ebook', label: 'Ebook', key: 'is_ebook', value: true },
     { id: 'ibook', label: 'Ibook', key: 'is_ibook', value: true },
   ];
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const schooldata = JSON.parse(localStorage.getItem('schoolDetails')) || {};
+  const school_id = schooldata.id;
 
-  const dummyData = [
-    {
-      key: '1',
-      branch: 'Branch A',
-      lessonPlan: 'Plan A',
-      ebook: 'Ebook A',
-      ibook: 'Ibook A',
-    },
-    {
-      key: '2',
-      branch: 'Branch B',
-      lessonPlan: 'Plan B',
-      ebook: 'Ebook B',
-      ibook: 'Ibook B',
-    },
-    {
-      key: '3',
-      branch: 'Branch C',
-      lessonPlan: 'Plan C',
-      ebook: 'Ebook C',
-      ibook: 'Ibook C',
-    },
-    {
-      key: '4',
-      branch: 'Branch D',
-      lessonPlan: 'Plan D',
-      ebook: 'Ebook D',
-      ibook: 'Ibook D',
-    },
-  ];
-
-  const gardeSubjectData = [
-    {
-      key: '1',
-      grade: 'Grade 1',
-      subject: 'Biology',
-    },
-    {
-      key: '2',
-      grade: 'Grade 2',
-      subject: 'EVS',
-    },
-    {
-      key: '3',
-      grade: 'Grade 1',
-      subject: 'English',
-    },
-    {
-      key: '4',
-      grade: 'Grade 1',
-      subject: 'Maths',
-    },
-  ];
-
-  const getVersionName = (value) => {
-    switch (value) {
-      case 15:
-        return 'Version 1';
-      case 38:
-        return 'Version 2';
-      case 40:
-        return 'Version 3';
-      default:
-        return '-';
-    }
-  };
+  const [lesson, setlesson] = useState('');
+  const [ebook, setebook] = useState('');
+  const [ibook, setibook] = useState('');
 
   const dataIndexToNameMap = {
     lesson_plan_version: 'is_lesson_plan',
     ebook_version: 'is_ebook',
     ibook_version: 'is_ibook',
+  };
+
+  const getVersionName = async (value, module, plan) => {
+    if (plan == 'lesson') {
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        const versionList = response.data?.result?.result[0]?.school_versions;
+
+        const versionMap = versionList.reduce((acc, cur) => {
+          acc[cur.academic_year] = cur.version_name;
+          return acc;
+        }, {});
+
+        const versionName = versionMap[value];
+        setlesson(versionName ? versionName : '-');
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
+    if (plan == 'ebook') {
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        const versionList = response.data?.result?.result[0]?.school_versions;
+
+        const versionMap = versionList.reduce((acc, cur) => {
+          acc[cur.academic_year] = cur.version_name;
+          return acc;
+        }, {});
+
+        const versionName = versionMap[value];
+
+        setebook(versionName ? versionName : '-');
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
+    if (plan == 'ibook') {
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        const versionList = response.data?.result?.result[0]?.school_versions;
+
+        const versionMap = versionList.reduce((acc, cur) => {
+          acc[cur.academic_year] = cur.version_name;
+          return acc;
+        }, {});
+
+        const versionName = versionMap[value];
+
+        setibook(versionName ? versionName : '-');
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
   };
 
   const columns = [
@@ -163,36 +187,40 @@ const ListandFilter = (props) => {
       title: 'Lesson Plan',
       dataIndex: 'lesson_plan_version',
       key: 'lesson_plan_version',
-      render: (value) => getVersionName(value),
+      render: (value, record) => {
+        return <span>{lesson}</span>;
+      },
     },
     {
       title: 'Ebook',
       dataIndex: 'ebook_version',
       key: 'ebook_version',
-      render: (value) => getVersionName(value),
+      render: (value, record) => {
+        return <span>{ebook}</span>;
+      },
     },
     {
       title: 'Ibook',
       dataIndex: 'ibook_version',
       key: 'ibook_version',
-      render: (value) => getVersionName(value),
+      render: (value, record) => {
+        return <span>{ibook}</span>;
+      },
     },
   ];
 
   const gradeColumns = [
     {
       title: 'Grade',
-      dataIndex: ['grade', 'grade_name'], // Use array notation to access nested properties
+      dataIndex: ['grade', 'grade_name'],
       key: 'grade',
     },
     {
       title: 'Subject',
-      dataIndex: ['subject', 'subject_name'], // Use array notation to access nested properties
+      dataIndex: ['subject', 'subject_name'],
       key: 'subject',
     },
   ];
-
-  console.log(selectedYear, 'selectedAcademicYear');
 
   const handleOpenModal = () => {
     setModalToggle(true);
@@ -208,7 +236,6 @@ const ListandFilter = (props) => {
   };
 
   const handleCloseCategoryModal = () => {
-    console.log('closing');
     setCategoryToggle(false);
     setSelectedERPCategory(null);
     setSelectedCentralCategory(null);
@@ -287,6 +314,13 @@ const ListandFilter = (props) => {
         if (res?.data?.result) {
           setTableData(res?.data?.result);
           setSchoolId(res?.data?.result[0]?.school_id);
+          getVersionName(
+            res?.data?.result[0]?.lesson_plan_version,
+            'is_lesson_plan',
+            'lesson'
+          );
+          getVersionName(res?.data?.result[0]?.ebook_version, 'is_ebook', 'ebook');
+          getVersionName(res?.data?.result[0]?.ibook_version, 'is_ibook', 'ibook');
         }
       })
       .catch((err) => {
@@ -294,14 +328,11 @@ const ListandFilter = (props) => {
       });
   };
 
-  console.log(tableData, 'table');
-
   useEffect(() => {
     axiosInstance
       .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
       .then((res) => {
         if (res.data.data) {
-          console.log(res.data, 'academic');
           setAcademicYear(res.data.data);
         }
       })
@@ -319,6 +350,13 @@ const ListandFilter = (props) => {
         if (res?.data?.result) {
           setTableData(res?.data?.result);
           setSchoolId(res?.data?.result[0]?.school_id);
+          getVersionName(
+            res?.data?.result[0]?.lesson_plan_version,
+            'is_lesson_plan',
+            'lesson'
+          );
+          getVersionName(res?.data?.result[0]?.ebook_version, 'is_ebook', 'ebook');
+          getVersionName(res?.data?.result[0]?.ibook_version, 'is_ibook', 'ibook');
         }
       })
       .catch((err) => {
@@ -349,8 +387,6 @@ const ListandFilter = (props) => {
     getERPCategory();
   }, []);
 
-  console.log(branchValue, 'Student');
-
   const handleConfirm = async () => {
     if (
       selectedYear === null ||
@@ -369,7 +405,6 @@ const ListandFilter = (props) => {
         eduvate_sy: versionId?.academic_year,
         acad_session: branchValue?.id,
       };
-      console.log(body, 'branch');
 
       await axiosInstance
         .post(endpoints.masterManagement.branchWiseVersion, body)
@@ -389,8 +424,6 @@ const ListandFilter = (props) => {
     handleCloseModal();
   };
 
-  console.log(selectedERPCategory, 'selected');
-
   let body = {
     central_category_name:
       selectedCentralCategory && selectedCentralCategory?.category_name,
@@ -398,14 +431,7 @@ const ListandFilter = (props) => {
     central_category_id: selectedCentralCategory && selectedCentralCategory?.id,
   };
 
-  // console.log(body, 'selected');
-
-  // const handleConfirmCategory = () => {
-  //   handleCloseCategoryModal();
-  // };
-
   const categoryMappingSubmit = () => {
-    console.log(selectedERPCategory, selectedCentralCategory);
     if (selectedERPCategory && selectedCentralCategory) {
       //   const { key: moduleKey, value } = selectedModule;
       let body = {
@@ -467,8 +493,6 @@ const ListandFilter = (props) => {
     );
   });
 
-  console.log(versionList, 'version');
-
   const versionOption = versionList?.map((each) => {
     return (
       <Option key={each?.academic_year} value={JSON.stringify(each)}>
@@ -519,17 +543,17 @@ const ListandFilter = (props) => {
     if (value) {
       setBranchValue(JSON.parse(value?.value));
       setSelectedModule(null);
+      // getBranchWiseTable(JSON.parse(value?.value));
     } else {
       setBranchValue(null);
     }
-    getBranchWiseTable(JSON.parse(value?.value));
   };
 
   const handleChangeModule = (e, value) => {
-    if (value && schoolId) {
+    if (value && school_id) {
       setSelectedModule(JSON.parse(value?.value));
       const module = JSON.parse(value?.value);
-      getVersion(module?.key, schoolId);
+      getVersion(module?.key, school_id);
     } else {
       setSelectedModule(null);
     }
@@ -537,7 +561,6 @@ const ListandFilter = (props) => {
 
   const handleChangeVersion = (e, value) => {
     if (value) {
-      console.log(JSON.parse(value?.value, 'version'));
       setVersionId(JSON.parse(value?.value));
     }
   };
@@ -595,7 +618,6 @@ const ListandFilter = (props) => {
         headers: { 'x-api-key': 'vikash@12345#1231' },
       })
       .then((result) => {
-        console.log(result?.data?.result?.result[0]?.school_versions, 'success');
         setVersionList(result?.data?.result?.result[0]?.school_versions);
       })
       .catch((error) => {
@@ -634,6 +656,13 @@ const ListandFilter = (props) => {
         )
         .then((res) => {
           setTableData(res?.data?.result);
+          getVersionName(
+            res?.data?.result[0]?.lesson_plan_version,
+            'is_lesson_plan',
+            'lesson'
+          );
+          getVersionName(res?.data?.result[0]?.ebook_version, 'is_ebook', 'ebook');
+          getVersionName(res?.data?.result[0]?.ibook_version, 'is_ibook', 'ibook');
         })
         .catch((err) => {
           console.log(err);
@@ -675,7 +704,6 @@ const ListandFilter = (props) => {
     fetchDetails(record?.school_id, dataIndexToNameMap[dataIndex], record[dataIndex]);
     setSelectedRow({ record, dataIndex });
     // setVersionId(record[dataIndex]);
-    console.log(record[dataIndex], dataIndex, 'rowclicked');
   };
 
   const closeModal = () => {
@@ -898,133 +926,6 @@ const ListandFilter = (props) => {
                         </Form>
                       </div>
                     </div>
-                    {/* <div className='p-2 mt-3 mb-3 d-flex flex-column justify-content-center align-items-center'>
-                      <div className='col-md-10 col-sm-10 col-12 mb-4'>
-                        <div className='mb-2 text-left' style={{ marginLeft: '2%' }}>
-                          Academic Year
-                        </div>
-                        <Select
-                          mode='single'
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          allowClear={true}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                          placement='bottomRight'
-                          showArrow={true}
-                          dropdownMatchSelectWidth={true}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                          showSearch
-                          placeholder='Select Academic Year*'
-                          onChange={(e, value) => {
-                            handleChangeYear(e, value);
-                          }}
-                          bordered={false}
-                        >
-                          {academicYearOption}
-                        </Select>
-                      </div>
-
-                      <div className='col-md-10 col-sm-10 col-12 mb-4'>
-                        <div className='mb-2 text-left' style={{ marginLeft: '2%' }}>
-                          Branch
-                        </div>
-                        <Select
-                          mode='single'
-                          // key={branchValue}
-                          // value={branchValue}
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          allowClear={true}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                          placement='bottomRight'
-                          showArrow={true}
-                          dropdownMatchSelectWidth={true}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                          showSearch
-                          placeholder='Select Branch*'
-                          onChange={(e, value) => {
-                            handleChangeBranch(e, value);
-                          }}
-                          bordered={false}
-                        >
-                          {branchOption}
-                        </Select>
-                      </div>
-
-                      <div className='col-md-10 col-sm-10 col-12 mb-4'>
-                        <div className='mb-2 text-left' style={{ marginLeft: '2%' }}>
-                          Module
-                        </div>
-                        <Select
-                          mode='single'
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          allowClear={true}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                          placement='bottomRight'
-                          showArrow={true}
-                          dropdownMatchSelectWidth={true}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                          showSearch
-                          placeholder='Select Module*'
-                          onChange={(e, value) => {
-                            handleChangeModule(e, value);
-                          }}
-                          bordered={false}
-                        >
-                          {moduleOption}
-                        </Select>
-                      </div>
-
-                      <div className='col-md-10 col-sm-10 col-12'>
-                        <div className='mb-2 text-left' style={{ marginLeft: '2%' }}>
-                          Version
-                        </div>
-                        <Select
-                          mode='single'
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          allowClear={true}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                          placement='bottomRight'
-                          showArrow={true}
-                          dropdownMatchSelectWidth={true}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                          showSearch
-                          placeholder='Select Version*'
-                          onChange={(e, value) => {
-                            handleChangeVersion(e, value);
-                          }}
-                          bordered={false}
-                        >
-                          {versionOption}
-                        </Select>
-                      </div>
-                    </div> */}
                   </Modal>
                   <div className='col-lg-4 col-md-5 col-sm-6 col-6 pl-1'>
                     <Button
@@ -1116,73 +1017,6 @@ const ListandFilter = (props) => {
                         </Form>
                       </div>
                     </div>
-                    {/* <div className='p-2 mt-3 mb-3 d-flex flex-column justify-content-center align-items-center'>
-                      <div className='col-md-10 col-sm-10 col-12 mb-4'>
-                        <div className='mb-2 text-left' style={{ marginLeft: '2%' }}>
-                          ERP Category
-                        </div>
-                        <Select
-                          mode='single'
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          allowClear={true}
-                          defaultValue={selectedERPCategory?.category_name}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                          placement='bottomRight'
-                          showArrow={true}
-                          dropdownMatchSelectWidth={true}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                          showSearch
-                          placeholder='Select ERP Category*'
-                          // value={
-                          //   selectedERPCategory ? selectedERPCategory?.category_name : null
-                          // }
-                          onChange={(e, val) => {
-                            handleErpCategory(e, val);
-                          }}
-                          bordered={false}
-                        >
-                          {erpCategoryOption}
-                        </Select>
-                      </div>
-                      <div className='col-md-10 col-sm-10 col-12 mb-4'>
-                        <div className='mb-2 text-left' style={{ marginLeft: '2%' }}>
-                          Central Category
-                        </div>
-                        <Select
-                          mode='single'
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          allowClear={true}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                          placement='bottomRight'
-                          showArrow={true}
-                          dropdownMatchSelectWidth={true}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                          showSearch
-                          placeholder='Select Central Category*'
-                          onChange={(e, value) => {
-                            handleCentralCategory(e, value);
-                            // setSelectedCentralCategory(e, value);
-                          }}
-                          bordered={false}
-                        >
-                          {centralCategoryOption}
-                        </Select>
-                      </div>
-                    </div> */}
                   </Modal>
                 </div>
               </div>
@@ -1230,7 +1064,11 @@ const ListandFilter = (props) => {
                 </div>
                 <div className='row'>
                   <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Module: </div>
-                  <div>{selectedRow?.dataIndex}</div>
+                  <div>
+                    {selectedRow?.dataIndex === 'lesson_plan_version' && 'Lesson Plan'}
+                    {selectedRow?.dataIndex === 'ebook_version' && 'Ebook'}
+                    {selectedRow?.dataIndex === 'ibook_version' && 'Ibook'}
+                  </div>
                 </div>
                 {/* </div> */}
               </div>
@@ -1254,175 +1092,6 @@ const ListandFilter = (props) => {
             </div>
           )}
         </Modal>
-        {/* <div>
-        <Table
-                      dataSource={refferList}
-                      columns={columns}
-                      className='custom-table'
-                      pagination={false}
-                      bordered
-                      rowClassName={(record, index) =>
-                        index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                      }
-                    />
-        </div> */}
-        {/* <Grid
-          container
-          spacing={2}
-          style={{ width: '95%', overflow: 'hidden', margin: '20px auto' }}
-        >
-          <Grid container spacing={2} style={{ marginTop: '10px' }}>
-            <Grid item md={3} xs={12} sm={6}>
-              <FormControl style={{ width: '100%' }} className={`select-form`}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  value={selectedYear}
-                  id='tags-outlined'
-                  className='dropdownIcon'
-                  options={academicYear}
-                  getOptionLabel={(option) => option?.session_year}
-                  filterSelectedOptions
-                  size='small'
-                  renderInput={(params) => (
-                    <TextField {...params} variant='outlined' label='Academic Year' />
-                  )}
-                  onChange={(e, value) => {
-                    handleChangeYear(value);
-                  }}
-                  getOptionSelected={(option, value) => value && option.id == value.id}
-                />
-                <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
-                  {error && error.errorMessage && error.errorMessage.branchError}
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid item md={3} xs={12} sm={6}>
-              <FormControl style={{ width: '100%' }} className={`select-form`}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  value={branchValue}
-                  id='tags-outlined'
-                  options={branch}
-                  className='dropdownIcon'
-                  getOptionLabel={(option) => option?.branch?.branch_name}
-                  filterSelectedOptions
-                  size='small'
-                  renderInput={(params) => (
-                    <TextField {...params} variant='outlined' label='Branch' />
-                  )}
-                  onChange={(e, value) => {
-                    handleChangeBranch(value);
-                  }}
-                  getOptionSelected={(option, value) => value && option.id == value.id}
-                />
-                <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
-                  {error && error.errorMessage && error.errorMessage.branchError}
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid item md={3} xs={12} sm={6}>
-              <FormControl style={{ width: '100%' }} className={`subject-form`}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  required={true}
-                  value={gradeValue}
-                  id='tags-outlined'
-                  options={gradeRes}
-                  className='dropdownIcon'
-                  getOptionLabel={(option) => option.grade__grade_name}
-                  filterSelectedOptions
-                  size='small'
-                  renderInput={(params) => (
-                    <TextField {...params} variant='outlined' label='Grade' />
-                  )}
-                  onChange={(e, value) => {
-                    handleGradeChange(value);
-                  }}
-                  getOptionSelected={(option, value) => value && option.id == value.id}
-                />
-                <FormHelperText style={{ marginLeft: '20px', color: 'red' }}>
-                  {error && error.errorMessage && error.errorMessage.erp_gradeError}
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid item md={3} xs={12} sm={6}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                required={true}
-                value={selectedModule}
-                id='tags-outlined'
-                options={moduleList}
-                className='dropdownIcon'
-                getOptionLabel={(option) => option.label}
-                filterSelectedOptions
-                size='small'
-                renderInput={(params) => (
-                  <TextField {...params} variant='outlined' label='Module' />
-                )}
-                onChange={(e, value) => {
-                  setSelectedModule(value);
-                }}
-                getOptionSelected={(option, value) => value && option.id == value.id}
-              />
-            </Grid>
-          </Grid>
-          <div className='btn-list'>
-            <Button
-              variant='contained'
-              className='cancelButton labelColor'
-              onClick={handleClearAll}
-            >
-              Clear All
-            </Button>
-            <Button
-              variant='contained'
-              color='primary'
-              className='filter-btn'
-              style={{ color: 'white', marginLeft: 15 }}
-              onClick={handleFilter}
-            >
-              Filter
-            </Button>
-          </div>
-          <div className='button-container-map'>
-            <StyledButton
-              variant='outlined'
-              color='primary'
-              style={{ color: 'white', marginTop: '4px' }}
-              onClick={navigateToCreatePage}
-            >
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ width: '12px', marginRight: '5px' }}
-                    src={Addicon}
-                    alt='given'
-                  />
-                )}
-              />
-              Assign Mapping
-            </StyledButton>
-          </div>
-          <div className='button-container-map'>
-            <StyledButton
-              variant='outlined'
-              color='primary'
-              style={{ color: 'white', marginTop: '4px' }}
-              onClick={navigateToCategoryPage}
-            >
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ width: '12px', marginRight: '5px' }}
-                    src={Addicon}
-                    alt='given'
-                  />
-                )}
-              />
-              Assign Category Mapping
-            </StyledButton>
-          </div>
-        </Grid> */}
         {/* <Grid container spacing={2} className='mapping-sub-grade-container'>
           <Grid item md={12} xs={12} className='mapping-grade-subject-container'>
             <Subjectcard
