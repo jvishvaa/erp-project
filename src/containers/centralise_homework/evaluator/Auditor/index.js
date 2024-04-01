@@ -35,18 +35,20 @@ const AuditorRating = ({ selectedHomework, setSelectedHomework, fetchRating }) =
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          setSelectedHomework((prevState) => ({ ...prevState, is_audited: true }));
+          selectedHomework.is_audited = true;
+          // setSelectedHomework((prevState) => ({ ...prevState, is_audited: true }));
+          setSelectedHomework({ selectedHomework });
           fetchRating({
             hw_dist_file: selectedHomework?.id,
           });
           message.success(res?.data?.message ?? 'Evaluator rated successfully');
           closeAuditorModal();
         } else {
-          message.error(res?.data?.message ?? 'Something went wrong 3');
+          message.error(res?.data?.message ?? 'Something went wrong');
         }
       })
       .catch((e) => {
-        message.error(e?.response?.data?.message ?? 'Something went wrong 6');
+        message.error(e?.response?.data?.message ?? 'Something went wrong');
       })
       .finally(() => {
         setUploadStart(false);
