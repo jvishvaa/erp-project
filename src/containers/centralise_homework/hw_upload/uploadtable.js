@@ -265,7 +265,13 @@ const UploadTable = ({
                 onChange={(e, value) => handleCurrentErp(value)}
                 dropdownMatchSelectWidth={false}
                 filterOption={(input, options) => {
-                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  return (
+                    options.children
+                      ?.join()
+                      .trim()
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  );
                 }}
                 value={updatedErp}
                 showSearch
@@ -391,7 +397,7 @@ const UploadTable = ({
         }
       );
       if (result?.status === 200) {
-        setErpList(result?.data?.results);
+        setErpList(result?.data);
       } else {
         message.error(result.data.message);
       }
@@ -455,8 +461,8 @@ const UploadTable = ({
 
   const ErpOptions = erpList?.map((each) => {
     return (
-      <Option key={each?.id} value={each?.erp_id} title={each?.erp_id}>
-        {each?.user?.first_name} {each?.user?.last_name}
+      <Option key={each?.erp_id} value={each.erp_id} title={each?.erp_id}>
+        {each?.user__first_name} {each?.user__last_name}
       </Option>
     );
   });
@@ -500,10 +506,8 @@ const UploadTable = ({
               <TabPane tab='Passed' key='1'>
                 <div className=''>
                   <div className='d-flex justify-content-end mb-2'>
-                    {/* <span className=''>Total Unique Students -10</span> */}
                     <span className=''>Total Count- {count}</span>
                   </div>
-                  <div className='convert col-md-12'>
                     <Table
                       className='th-table'
                       rowClassName={(record, index) =>
@@ -516,7 +520,6 @@ const UploadTable = ({
                       pagination={false}
                       scroll={{ y: '300px' }}
                     />
-                  </div>
                 </div>
                 {hwFiles?.length > 0 && (
                   <div className='text-center mt-2'>
