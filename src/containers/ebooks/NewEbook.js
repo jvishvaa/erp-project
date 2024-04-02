@@ -5,7 +5,6 @@ import EbookView from './EbooknewView';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import EbookViewStudent from './ebookViewStudent';
 import { useHistory } from 'react-router-dom';
-import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const { TabPane } = Tabs;
 
 const NewEbookView = (props) => {
@@ -13,7 +12,6 @@ const NewEbookView = (props) => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showTab, setShowTab] = useState('1');
   const [changeRecent, setChangeRecent] = useState(false);
-  const isOrchids = IsOrchidsChecker;
 
   const onChangeTab = (e) => {
     setShowTab(e);
@@ -56,15 +54,13 @@ const NewEbookView = (props) => {
                       <EbookView showTab={showTab} changeRecent={changeRecent} />
                     )}
                   </TabPane>
-                  {!isOrchids && (
-                    <TabPane tab='IBOOK' key='2'>
-                      {user_level == 13 ? (
-                        <EbookViewStudent showTab={showTab} changeRecent={changeRecent} />
-                      ) : (
-                        <EbookView showTab={showTab} changeRecent={changeRecent} />
-                      )}
-                    </TabPane>
-                  )}
+                  <TabPane tab='IBOOK' key='2'>
+                    {user_level == 13 ? (
+                      <EbookViewStudent showTab={showTab} changeRecent={changeRecent} />
+                    ) : (
+                      <EbookView showTab={showTab} changeRecent={changeRecent} />
+                    )}
+                  </TabPane>
                 </Tabs>
               </div>
             </div>
