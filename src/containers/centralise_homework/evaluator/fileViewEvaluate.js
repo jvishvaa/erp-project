@@ -426,7 +426,7 @@ const FilesViewEvaluate = ({
         params: { ...params },
       })
       .then((res) => {
-        setErpList(res?.data?.results);
+        setErpList(res?.data);
       })
       .catch((error) => {
         message.error(error.message);
@@ -434,7 +434,9 @@ const FilesViewEvaluate = ({
   };
 
   const handleErpChange = (e) => {
-    setSelectedErp(e?.value);
+    if (e) {
+      setSelectedErp(e?.value);
+    }
   };
 
   const handleClearErp = () => {
@@ -444,7 +446,7 @@ const FilesViewEvaluate = ({
   const erpOptions = erpList?.map((each) => {
     return (
       <Option key={each?.erp_id} value={each.erp_id} title={each?.erp_id}>
-        {each?.user?.first_name} {each?.user?.last_name}
+        {each?.user__first_name} {each?.user__last_name}
       </Option>
     );
   });
@@ -503,7 +505,11 @@ const FilesViewEvaluate = ({
                       dropdownMatchSelectWidth={false}
                       filterOption={(input, options) => {
                         return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          options.children
+                            ?.join()
+                            .trim()
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
                         );
                       }}
                       showSearch
