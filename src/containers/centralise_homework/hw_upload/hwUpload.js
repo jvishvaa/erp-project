@@ -452,7 +452,6 @@ const HwUpload = () => {
             />
           </div>
         ) : (
-          <div className='my-3 col-md-12'>
             <UploadTable
               startDate={startDate}
               endDate={endDate}
@@ -461,7 +460,6 @@ const HwUpload = () => {
               sectionMappingId={sectionMappingId}
               sectionName={sectionName}
             />
-          </div>
         )}
       </div>
       {/* </div>

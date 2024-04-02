@@ -796,7 +796,9 @@ const EvaluatorHomework = ({ is_auditor }) => {
                   <div className='col-12'>
                     <Result
                       status='warning'
-                      title={<span className='th-grey'>No Data Availabl</span>}
+                      title={
+                        <span className='th-grey'>No Data Available</span>
+                      }
                     />
                   </div>
                 ) : (
