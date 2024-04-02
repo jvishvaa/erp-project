@@ -182,6 +182,7 @@ const FilesViewEvaluate = ({
   isAuditor,
   rating,
   fetchRating,
+  selectedEvaluator,
 }) => {
   const history = useHistory();
   const { Option } = Select;
@@ -356,6 +357,7 @@ const FilesViewEvaluate = ({
             sub_sec_mpng: sub_sec_mpng,
             page: page,
             is_assessed: activeTab === '1' ? 'True' : 'False',
+            evaluator_ids: selectedEvaluator,
           });
           // setFileList([]);
           // setUploading(false);
@@ -468,6 +470,7 @@ const FilesViewEvaluate = ({
             end_date: endDate,
             sub_sec_mpng: sub_sec_mpng,
             page: page,
+            evaluator_ids: selectedEvaluator,
           });
           // setFileList([]);
           // setUploading(false);

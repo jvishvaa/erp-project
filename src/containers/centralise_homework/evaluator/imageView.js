@@ -109,6 +109,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
       end_date: endDate,
       sub_sec_mpng: subject,
       page: 1,
+      evaluator_ids: selectedEvaluator,
     });
   };
 
@@ -239,7 +240,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
 
   const evaluatorOptions = evaluatorList?.map((each) => {
     return (
-      <Option key={each?.evaluator_id} value={each.evaluator_id}>
+      <Option key={each?.evaluator_id} value={each.user_id}>
         {each?.name}
       </Option>
     );
@@ -247,9 +248,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
 
   const handleChangeEvaluator = (each) => {
     setPageNo(1);
-    if (each) {
-      setSelectedEvaluator(each?.value);
-    }
+    setSelectedEvaluator(each ?? each);
   };
 
   const sectionOptions = sectionList?.map((each) => {
@@ -388,7 +387,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
 
   const handleChangeSubject = (each) => {
     if (each) {
-      setPageNo(1)
+      setPageNo(1);
       setSubject(each);
     } else {
       setSubject('');
@@ -660,6 +659,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                             end_date: endDate,
                             sub_sec_mpng: subject,
                             page: pageNo,
+                            evaluator_ids: selectedEvaluator,
                           });
                         }}
                       >
@@ -786,6 +786,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                     page={pageNo}
                     isAuditor={isAuditor}
                     activeTab={showTab}
+                    selectedEvaluator={selectedEvaluator}
                   />
                 )}
                 {/*  */}
@@ -795,9 +796,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                   <div className='col-12'>
                     <Result
                       status='warning'
-                      title={
-                        <span className='th-grey'>No Data Availabl</span>
-                      }
+                      title={<span className='th-grey'>No Data Availabl</span>}
                     />
                   </div>
                 ) : (
@@ -817,6 +816,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                     page={pageNo}
                     isAuditor={isAuditor}
                     activeTab={showTab}
+                    selectedEvaluator={selectedEvaluator}
                   />
                 )}
                 {/* */}
@@ -837,6 +837,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                   end_date: endDate,
                   sub_sec_mpng: subject,
                   page: current,
+                  evaluator_ids: selectedEvaluator,
                 });
               }}
               className='text-center'
