@@ -75,6 +75,10 @@ const CreateEbook = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
 
+  const selectedAcadSession = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+
   const handleSubmit = (e) => {
     console.log(files, '@@@');
     e.preventDefault();
@@ -90,6 +94,7 @@ const CreateEbook = () => {
     formData.set('subject_id', selectedSubject);
     formData.set('grade_id', selectedGrades);
     formData.set('ebook_author', author);
+    formData.set('acad_session_id', selectedAcadSession);
 
     axiosInstance
       .post(`${endpoints.ebook.ebook}`, formData)

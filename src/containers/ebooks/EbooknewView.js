@@ -171,6 +171,7 @@ const EbookView = (props) => {
       page_number: page,
       page_size: '9',
       domain_name: domain_name,
+      acad_session_id: selectedBranch?.id,
     });
     setRecently(true);
     formRef.current.setFieldsValue({
@@ -276,6 +277,7 @@ const EbookView = (props) => {
           branch: selectedBranch?.branch?.id,
           domain_name: domain_name,
           academic_year: selectedAcademicYear?.id,
+          acad_session_id: selectedBranch?.id,
           session_year: selectedAcademicYear?.session_year,
           page_number: page,
           page_size: '9',
@@ -285,6 +287,7 @@ const EbookView = (props) => {
         fetchIbooks({
           branch: selectedBranch?.branch?.id,
           academic_year: selectedAcademicYear?.id,
+          acad_session_id: selectedBranch?.id,
           session_year: selectedAcademicYear?.session_year,
           is_ebook: 'true',
           ebook_type: '1',
@@ -306,6 +309,7 @@ const EbookView = (props) => {
       fetchEbooksDefault({
         book_type: '3',
         session_year: selectedAcademicYear?.session_year,
+        acad_session_id: selectedBranch?.id,
         page_number: page,
         page_size: '9',
         domain_name: domain_name,
@@ -315,6 +319,7 @@ const EbookView = (props) => {
       fetchIbooksDefault({
         book_type: '4',
         session_year: selectedAcademicYear?.session_year,
+        acad_session_id: selectedBranch?.id,
         page_number: page,
         page_size: '9',
         domain_name: domain_name,

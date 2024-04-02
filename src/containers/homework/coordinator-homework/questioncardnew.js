@@ -116,6 +116,9 @@ const QuestionCardNew = ({
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   let sessionYear;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -394,6 +397,7 @@ const QuestionCardNew = ({
           grade_id: grade,
           branch_id: branch,
           board: selectedBoards,
+          acad_session_id: selectedBranch?.id,
         });
       }
     }
@@ -560,6 +564,7 @@ const QuestionCardNew = ({
         grade_id: grade,
         branch_id: branch,
         board: boardsID,
+        acad_session_id: selectedBranch?.id,
       });
     }
   };
@@ -583,6 +588,7 @@ const QuestionCardNew = ({
         branch_id: branch,
         board: selectedBoardsID,
         module_id: each?.id,
+        acad_session_id: selectedBranch?.id,
       });
     }
   };
