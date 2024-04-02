@@ -249,7 +249,7 @@ export default {
     getCount: '/hw-hub/get_hw_count/',
     hwData: '/hw-hub/hw-files/',
     hwDoctType: '/hw-hub/get_doctype/',
-    hwErp: '/communication/v1/view-users/',
+    hwErp: '/hw-hub/view-users/',
     hwErpUpdate: '/hw-hub/upload_hw_files/',
   },
   homeworkStudent: {

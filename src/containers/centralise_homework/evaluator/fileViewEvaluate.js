@@ -182,6 +182,7 @@ const FilesViewEvaluate = ({
   isAuditor,
   rating,
   fetchRating,
+  selectedEvaluator,
 }) => {
   const history = useHistory();
   const { Option } = Select;
@@ -356,6 +357,7 @@ const FilesViewEvaluate = ({
             sub_sec_mpng: sub_sec_mpng,
             page: page,
             is_assessed: activeTab === '1' ? 'True' : 'False',
+            evaluator_ids: selectedEvaluator,
           });
           // setFileList([]);
           // setUploading(false);
@@ -426,7 +428,7 @@ const FilesViewEvaluate = ({
         params: { ...params },
       })
       .then((res) => {
-        setErpList(res?.data?.results);
+        setErpList(res?.data);
       })
       .catch((error) => {
         message.error(error.message);
@@ -434,7 +436,9 @@ const FilesViewEvaluate = ({
   };
 
   const handleErpChange = (e) => {
-    setSelectedErp(e?.value);
+    if (e) {
+      setSelectedErp(e?.value);
+    }
   };
 
   const handleClearErp = () => {
@@ -444,7 +448,7 @@ const FilesViewEvaluate = ({
   const erpOptions = erpList?.map((each) => {
     return (
       <Option key={each?.erp_id} value={each.erp_id} title={each?.erp_id}>
-        {each?.user?.first_name} {each?.user?.last_name}
+        {each?.user__first_name} {each?.user__last_name}
       </Option>
     );
   });
@@ -468,6 +472,7 @@ const FilesViewEvaluate = ({
             end_date: endDate,
             sub_sec_mpng: sub_sec_mpng,
             page: page,
+            evaluator_ids: selectedEvaluator,
           });
           // setFileList([]);
           // setUploading(false);
@@ -503,7 +508,11 @@ const FilesViewEvaluate = ({
                       dropdownMatchSelectWidth={false}
                       filterOption={(input, options) => {
                         return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          options.children
+                            ?.join()
+                            .trim()
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
                         );
                       }}
                       showSearch
