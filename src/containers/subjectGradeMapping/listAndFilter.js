@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import React, { useEffect, useState, useContext, useRef, createRef } from 'react';
 import { useSelector } from 'react-redux';
 import Layout from '../Layout/index';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -22,7 +22,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import './subjectgrademapping.scss';
 import { generateQueryParamSting } from '../../utility-functions';
 import moment from 'moment';
-import { Breadcrumb, Select, Form, Table, Button, Modal } from 'antd';
+import { Breadcrumb, Select, Form, Table, Button, Modal, Input } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { AllInboxOutlined } from '@material-ui/icons';
 import jsPDF from 'jspdf';
@@ -85,11 +85,15 @@ const ListandFilter = (props) => {
   const [ebook, setebook] = useState('');
   const [ibook, setibook] = useState('');
 
+  // const [defaultVersion, setdefaultVersion] = useState(null);
+  // const [disabled, setdisabled] = useState(false);
+
   const dataIndexToNameMap = {
     lesson_plan_version: 'is_lesson_plan',
     ebook_version: 'is_ebook',
     ibook_version: 'is_ibook',
   };
+  // const formRef = createRef();
 
   const getVersionName = async (value, module, plan) => {
     if (plan == 'lesson') {
@@ -229,6 +233,7 @@ const ListandFilter = (props) => {
   const handleCloseModal = () => {
     setModalToggle(false);
     AssignMappingRef.current.resetFields();
+    // formRef.current.setFieldsValue({});
   };
 
   const handleOpenCategoryModal = () => {
@@ -543,6 +548,7 @@ const ListandFilter = (props) => {
     if (value) {
       setBranchValue(JSON.parse(value?.value));
       setSelectedModule(null);
+      setVersionId(null);
       // getBranchWiseTable(JSON.parse(value?.value));
     } else {
       setBranchValue(null);
@@ -554,6 +560,8 @@ const ListandFilter = (props) => {
       setSelectedModule(JSON.parse(value?.value));
       const module = JSON.parse(value?.value);
       getVersion(module?.key, school_id);
+      // getBranchWiseTable(branchValue);
+      // setDefaultVersion(JSON.parse(value?.value));
     } else {
       setSelectedModule(null);
     }
@@ -561,7 +569,12 @@ const ListandFilter = (props) => {
 
   const handleChangeVersion = (e, value) => {
     if (value) {
+      // setdefaultVersion(null);
       setVersionId(JSON.parse(value?.value));
+      // const val = JSON.parse(value?.value);
+      // formRef.current.setFieldsValue({
+      //   version: val?.id,
+      // });
     }
   };
 
@@ -590,27 +603,6 @@ const ListandFilter = (props) => {
     }
   };
 
-  // const getRoleApi = async () => {
-  //   try {
-  //     const result = await axios.get(endpoints.userManagement.userLevelList, {
-  //       headers: {
-  //         'x-api-key': 'vikash@12345#1231',
-  //       },
-  //     });
-  //     if (result.status === 200) {
-  //       // setRoles(result?.data?.result);
-  //     } else {
-  //       setAlert('error', result?.data?.message);
-  //     }
-  //   } catch (error) {
-  //     setAlert('error', error?.message);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getRoleApi();
-  // }, []);
-
   const getVersion = async (module, school_id) => {
     const queryString = generateQueryParamSting({ school: school_id, [module]: true });
     await axios
@@ -619,11 +611,43 @@ const ListandFilter = (props) => {
       })
       .then((result) => {
         setVersionList(result?.data?.result?.result[0]?.school_versions);
+
+        // const filterData = result?.data?.result?.result[0]?.school_versions?.filter(
+        //   (ele) => ele?.version_name == filterValue
+        // );
+        // console.log(filterData, 'dataisco');
+
+        // if (filterData) {
+        //   setdefaultVersion(filterData[0]?.version_name);
+        // } else {
+        //   setdefaultVersion(null);
+        // }
       })
       .catch((error) => {
         setAlert('error', error.message);
       });
   };
+
+  // function setDefaultVersion(value) {
+  //   let filterValue = '';
+  //   if (value?.id == 'lesson-plan') {
+  //     filterValue = lesson;
+  //   } else if (value?.id == 'ebook') {
+  //     filterValue = ebook;
+  //   } else if (value?.id == 'ibook') {
+  //     filterValue = ibook;
+  //   }
+  //   const filterData = versionList?.filter((ele) => ele?.version_name === filterValue);
+  //   console.log(versionList, 'coming');
+  //   if (filterData) {
+  //     setdefaultVersion(filterData[0]?.version_name);
+  //   } else {
+  //     setdefaultVersion(null);
+  //   }
+  // }
+  // useEffect(() => {
+  //   setdefaultVersion()
+  // }, [versionList]);
 
   const fetchDetails = async (selectedSchool, moduleKey, version_id) => {
     const queryString = generateQueryParamSting({
@@ -895,10 +919,19 @@ const ListandFilter = (props) => {
                           {selectedModule?.id !== 'assessment' && (
                             <div className='col-md-12 col-sm-10 col-12 mb-4'>
                               <Form.Item name={'Version'} label='Version'>
+                                {/* {defaultVersion ? (
+                                  <Input
+                                    defaultValue={defaultVersion}
+                                    disabled={defaultVersion ? true : false}
+                                  />
+                                ) : ( */}
                                 <Select
                                   mode='single'
                                   getPopupContainer={(trigger) => trigger.parentNode}
                                   allowClear={true}
+                                  // value={versionId}
+                                  // defaultValue={defaultVersion}
+                                  // disabled={defaultVersion ? true : false}
                                   suffixIcon={<DownOutlined className='th-grey' />}
                                   className='th-grey th-bg-grey th-br-4 w-100 text-left'
                                   placement='bottomRight'
@@ -920,6 +953,7 @@ const ListandFilter = (props) => {
                                 >
                                   {versionOption}
                                 </Select>
+                                {/* )} */}
                               </Form.Item>
                             </div>
                           )}
