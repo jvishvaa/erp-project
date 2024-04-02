@@ -186,8 +186,7 @@ const Appbar = ({ children, history, ...props }) => {
 
   useEffect(() => {
     if (isLogout) {
-      // window.location.href = '/';
-      history.push('/');
+      window.location.href = '/';
       setIsLogout(false);
     }
   }, [isLogout]);
