@@ -13,6 +13,7 @@ import './lesson.css';
 import { useLocation } from 'react-router-dom';
 import { getModuleInfo } from '../../../utility-functions';
 import { makeStyles } from '@material-ui/core/styles';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const useStyles = makeStyles((theme) => ({
   overviewSynopsisTag: {
     fontSize: '16px',
@@ -64,14 +65,7 @@ const LessonViewFilters = ({
   let token = JSON.parse(localStorage.getItem('userDetails'))?.token || {};
   const [erpYear, setErpYear] = useState({});
   const classes = useStyles();
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
 
   const [filterData, setFilterData] = useState({
     academic: '',
@@ -191,7 +185,7 @@ const LessonViewFilters = ({
   };
 
   useEffect(() => {
-    if (!boardFilterArr.includes(window.location.host)) {
+    if (!isOrchids) {
       if (filterData?.subject && boardDropdown.length > 0) {
         let data = boardDropdown?.filter((item) => item?.board_name === 'CBSE');
         handleBoard('', data);
@@ -412,7 +406,7 @@ const LessonViewFilters = ({
           .get('academic/get-board-list/')
           .then((result) => {
             if (result?.data?.status_code === 200) {
-              if (!boardFilterArr.includes(window.location.host)) {
+              if (!isOrchids) {
                 setBoardDropdown(result?.data?.result);
               }
               setLoading(false);
@@ -846,7 +840,7 @@ const LessonViewFilters = ({
           )}
         />
       </Grid>
-      {boardFilterArr.includes(window.location.host) && (
+      {isOrchids && (
         <Grid
           item
           xs={12}

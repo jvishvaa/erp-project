@@ -247,8 +247,6 @@ const Filters = () => {
           <div className='col-12'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
-                {/* {boardFilterArr.includes(window.location.host) && ( */}
-                {/* )} */}
                 <div className='col-md-2 col-6 px-1'>
                   <div className='mb-2 text-left th-fw-600'>Grade</div>
                   <Form.Item name='grade'>

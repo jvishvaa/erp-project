@@ -62,6 +62,7 @@ import diaryIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/diaryIcon.png';
 import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
 import { getFileIcon } from 'v2/getFileIcon';
 import { domain_name } from '../../../commonDomain';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -130,17 +131,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   const [assignedDiaryList, setAssignedDiaryList] = useState([]);
 
   let isStudent = window.location.pathname.includes('student-view');
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'localhost:3001',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'test.orchids.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
 
   const showEbookDrawer = () => {
     setOpenEbook(true);
@@ -911,7 +902,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
 
   useEffect(() => {
     if (volumeId) {
-      if (boardFilterArr.includes(window.location.host)) {
+      if (isOrchids) {
         setSelectedModuleId([]);
         fetchModuleListData({
           subject_id: subjectId,
@@ -1035,7 +1026,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                 </Select>
               </Form.Item>
             </div>
-            {boardFilterArr.includes(window.location.host) && (
+            {isOrchids && (
               <div className='col-md-3 col-6 pl-md-1'>
                 <div className='text-left'>Module</div>
                 <Form.Item name='module'>
@@ -1371,7 +1362,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                     {each?.chapter__chapter_name}
                                   </div>
                                 </div>
-                                {boardFilterArr.includes(window.location.host) && (
+                                {isOrchids && (
                                   <div className='row'>
                                     <div className='col-md-2 col-3 px-0 th-fw-600'>
                                       Module
@@ -1532,7 +1523,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                 </div>
               ) : resourcesData ? (
                 <div>
-                  {boardFilterArr.includes(window.location.host) && (
+                  {isOrchids && (
                     <div className='row mt-1 th-fw-600'>
                       <div className='col-2 th-black-1 px-0'>
                         <div className='d-flex justify-content-between'>
@@ -2613,7 +2604,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           }}
                         >
                           {nextPeriodDetails?.chapter__chapter_name}
-                          {boardFilterArr.includes(window.location.host)
+                          {isOrchids
                             ? ',' + nextPeriodDetails?.chapter__lt_module__lt_module_name
                             : null}
                         </div>

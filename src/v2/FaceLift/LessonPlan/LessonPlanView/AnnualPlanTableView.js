@@ -58,6 +58,7 @@ import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
 import moment from 'moment';
 import { getFileIcon } from 'v2/getFileIcon';
 import { domain_name } from '../../../commonDomain';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -134,16 +135,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const onIbookClose = () => {
     setOpenIbook(false);
   };
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'test.ordchids.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
   const showDrawer = () => {
     setDrawerVisible(true);
   };
@@ -1295,7 +1287,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                       }
                       key={i}
                     >
-                      {boardFilterArr.includes(window.location.host) && (
+                      {isOrchids && (
                         <div className='row mt-1 th-fw-600'>
                           <div className='col-2 th-black-1 px-0'>
                             <div className='row justify-content-between'>
@@ -2311,7 +2303,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                       }}
                     >
                       {nextPeriodDetails?.chapter__chapter_name}
-                      {boardFilterArr.includes(window.location.host)
+                      {isOrchids
                         ? ',' + nextPeriodDetails?.chapter__lt_module__lt_module_name
                         : null}
                     </div>
