@@ -709,7 +709,6 @@ console.log(marksselection, selectedQuestion, '@@@@@')
                   </Form.Item>
                 </div>
               )}
-              {/* {boardFilterArr.includes(window.location.host) && ( */}
               {!erpCategory && (
                 <div className='col-md-4 col-6 pl-0'>
                   {/* <div className='mb-2 text-left'>Question Level</div> */}

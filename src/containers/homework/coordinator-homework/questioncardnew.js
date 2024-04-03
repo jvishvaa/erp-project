@@ -65,6 +65,7 @@ import {
   FileAddOutlined,
 } from '@ant-design/icons';
 import { InfoCircleTwoTone } from '@ant-design/icons';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -160,15 +161,7 @@ const QuestionCardNew = ({
   const [submissionMode, setSubmissionMode] = useState(false);
 
   const [selectedResources, setSelectedResources] = useState([]);
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
   const handleScroll = (dir) => {
     if (dir === 'left') {
       attachmentsRef.current.scrollLeft -= 150;
@@ -389,7 +382,7 @@ const QuestionCardNew = ({
 
   useEffect(() => {
     if (selectedVolumeId) {
-      if (!boardFilterArr.includes(window.location.host)) {
+      if (!isOrchids) {
         fetchModuleListData({
           subject_id: subject,
           volume: selectedVolumeId,
@@ -469,7 +462,7 @@ const QuestionCardNew = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setBoardListData(result?.data?.result);
-          if (!boardFilterArr.includes(window.location.host)) {
+          if (!isOrchids) {
             let data = result?.data?.result?.filter(
               (item) => item?.board_name === 'CBSE'
             )[0];
@@ -536,7 +529,7 @@ const QuestionCardNew = ({
     if (each) {
       setSelectedVolume(each);
       setSelectedVolumeId(each?.id);
-      if (boardFilterArr.includes(window.location.host)) {
+      if (isOrchids) {
         fetchBoardListData();
       }
     }
@@ -1069,7 +1062,7 @@ const QuestionCardNew = ({
               )}
             />
           </Grid>
-          {boardFilterArr.includes(window.location.host) && (
+          {isOrchids && (
             <Grid item xs={12} sm={4}>
               <Autocomplete
                 multiple
