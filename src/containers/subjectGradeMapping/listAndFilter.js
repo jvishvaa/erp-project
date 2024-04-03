@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef, createRef } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import Layout from '../Layout/index';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -25,7 +25,6 @@ import moment from 'moment';
 import { Breadcrumb, Select, Form, Table, Button, Modal, Input } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { AllInboxOutlined } from '@material-ui/icons';
-import jsPDF from 'jspdf';
 
 // const StyledButton = withStyles((theme) => ({
 //   root: {
@@ -80,20 +79,21 @@ const ListandFilter = (props) => {
   ];
   const schooldata = JSON.parse(localStorage.getItem('schoolDetails')) || {};
   const school_id = schooldata.id;
+  const [lessonModel, setlessonModel] = useState('');
+  const [ebookModel, setebookModel] = useState('');
+  const [ibookModel, setibookModel] = useState('');
 
   const [lesson, setlesson] = useState('');
   const [ebook, setebook] = useState('');
   const [ibook, setibook] = useState('');
 
-  // const [defaultVersion, setdefaultVersion] = useState(null);
-  // const [disabled, setdisabled] = useState(false);
+  const [defaultVersion, setdefaultVersion] = useState(null);
 
   const dataIndexToNameMap = {
     lesson_plan_version: 'is_lesson_plan',
     ebook_version: 'is_ebook',
     ibook_version: 'is_ibook',
   };
-  // const formRef = createRef();
 
   const getVersionName = async (value, module, plan) => {
     if (plan == 'lesson') {
@@ -117,7 +117,7 @@ const ListandFilter = (props) => {
         }, {});
 
         const versionName = versionMap[value];
-        setlesson(versionName ? versionName : '-');
+        setlesson(versionName ? versionName : 'Default Version');
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
@@ -145,7 +145,7 @@ const ListandFilter = (props) => {
 
         const versionName = versionMap[value];
 
-        setebook(versionName ? versionName : '-');
+        setebook(versionName ? versionName : 'Default Version');
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
@@ -173,7 +173,93 @@ const ListandFilter = (props) => {
 
         const versionName = versionMap[value];
 
-        setibook(versionName ? versionName : '-');
+        setibook(versionName ? versionName : 'Default Version');
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
+  };
+
+  const getVersionNameModel = async (value, module, plan) => {
+    if (plan == 'lesson') {
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        const versionList = response.data?.result?.result[0]?.school_versions;
+
+        const versionMap = versionList.reduce((acc, cur) => {
+          acc[cur.academic_year] = cur.version_name;
+          return acc;
+        }, {});
+
+        const versionName = versionMap[value];
+        setlessonModel(versionName ? versionName : 'Default Version');
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
+    if (plan == 'ebook') {
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        const versionList = response.data?.result?.result[0]?.school_versions;
+
+        const versionMap = versionList.reduce((acc, cur) => {
+          acc[cur.academic_year] = cur.version_name;
+          return acc;
+        }, {});
+
+        const versionName = versionMap[value];
+
+        setebookModel(versionName ? versionName : 'Default Version');
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
+    if (plan == 'ibook') {
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        const versionList = response.data?.result?.result[0]?.school_versions;
+
+        const versionMap = versionList.reduce((acc, cur) => {
+          acc[cur.academic_year] = cur.version_name;
+          return acc;
+        }, {});
+
+        const versionName = versionMap[value];
+
+        setibookModel(versionName ? versionName : 'Default Version');
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
@@ -232,8 +318,11 @@ const ListandFilter = (props) => {
 
   const handleCloseModal = () => {
     setModalToggle(false);
+    setVersionList([]);
     AssignMappingRef.current.resetFields();
-    // formRef.current.setFieldsValue({});
+    if (defaultVersion) {
+      setdefaultVersion(null);
+    }
   };
 
   const handleOpenCategoryModal = () => {
@@ -333,6 +422,25 @@ const ListandFilter = (props) => {
       });
   };
 
+  const getBranchWiseTableData = async (branch) => {
+    axiosInstance
+      .get(`${endpoints.masterManagement.branchWiseVersion}?acad_session=${branch?.id}`)
+      .then((res) => {
+        if (res?.data?.result) {
+          getVersionNameModel(
+            res?.data?.result[0]?.lesson_plan_version,
+            'is_lesson_plan',
+            'lesson'
+          );
+          getVersionNameModel(res?.data?.result[0]?.ebook_version, 'is_ebook', 'ebook');
+          getVersionNameModel(res?.data?.result[0]?.ibook_version, 'is_ibook', 'ibook');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     axiosInstance
       .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
@@ -393,52 +501,48 @@ const ListandFilter = (props) => {
   }, []);
 
   const handleConfirm = async () => {
-    if (
-      selectedYear === null ||
-      branchValue === null ||
-      selectedModule === null ||
-      versionId === null
-    ) {
-      setAlert('error', 'Please select all the fields');
-      return;
+    if (defaultVersion) {
+      setAlert('error', 'Version already exists! Contact the admin team');
     } else {
-      const { key: moduleKey, value } = selectedModule;
-      let body = {
-        branch: branchValue && branchValue.branch.id,
-        module: moduleKey,
-        [moduleKey]: value,
-        eduvate_sy: versionId?.academic_year,
-        acad_session: branchValue?.id,
-      };
+      if (
+        selectedYear === null ||
+        branchValue === null ||
+        selectedModule === null ||
+        versionId === null
+      ) {
+        setAlert('error', 'Please select all the fields');
+        return;
+      } else {
+        const { key: moduleKey, value } = selectedModule;
+        let body = {
+          branch: branchValue && branchValue.branch.id,
+          module: moduleKey,
+          [moduleKey]: value,
+          eduvate_sy: versionId?.academic_year,
+          acad_session: branchValue?.id,
+        };
 
-      await axiosInstance
-        .post(endpoints.masterManagement.branchWiseVersion, body)
-        .then((res) => {
-          if (res.data.status_code === 200) {
-            setAlert('success', res.data.message);
-          } else {
-            setAlert('warning', res.data.message);
-          }
-        })
-        .catch((err) => {
-          setAlert('error', err.message);
-          console.log(err);
-        });
+        await axiosInstance
+          .post(endpoints.masterManagement.branchWiseVersion, body)
+          .then((res) => {
+            if (res.data.status_code === 200) {
+              setAlert('success', res.data.message);
+            } else {
+              setAlert('warning', res.data.message);
+            }
+          })
+          .catch((err) => {
+            setAlert('error', err.message);
+            console.log(err);
+          });
+      }
+      getBranchWiseTable(branchValue);
+      handleCloseModal();
     }
-    getBranchWiseTable(branchValue);
-    handleCloseModal();
-  };
-
-  let body = {
-    central_category_name:
-      selectedCentralCategory && selectedCentralCategory?.category_name,
-    category_id: selectedERPCategory && selectedERPCategory?.id,
-    central_category_id: selectedCentralCategory && selectedCentralCategory?.id,
   };
 
   const categoryMappingSubmit = () => {
     if (selectedERPCategory && selectedCentralCategory) {
-      //   const { key: moduleKey, value } = selectedModule;
       let body = {
         central_category_name:
           selectedCentralCategory && selectedCentralCategory?.category_name,
@@ -549,7 +653,17 @@ const ListandFilter = (props) => {
       setBranchValue(JSON.parse(value?.value));
       setSelectedModule(null);
       setVersionId(null);
-      // getBranchWiseTable(JSON.parse(value?.value));
+      getBranchWiseTableData(JSON.parse(value?.value));
+      if (AssignMappingRef && AssignMappingRef.current) {
+        const formInstance = AssignMappingRef.current;
+        formInstance.setFieldsValue({
+          Module: undefined,
+          Version: undefined,
+        });
+      }
+      if (defaultVersion) {
+        setdefaultVersion(null);
+      }
     } else {
       setBranchValue(null);
     }
@@ -559,9 +673,14 @@ const ListandFilter = (props) => {
     if (value && school_id) {
       setSelectedModule(JSON.parse(value?.value));
       const module = JSON.parse(value?.value);
-      getVersion(module?.key, school_id);
-      // getBranchWiseTable(branchValue);
-      // setDefaultVersion(JSON.parse(value?.value));
+      setdefaultVersion(null);
+      getVersion(module?.key, school_id, module);
+      if (AssignMappingRef && AssignMappingRef.current) {
+        const formInstance = AssignMappingRef.current;
+        formInstance.setFieldsValue({
+          Version: undefined,
+        });
+      }
     } else {
       setSelectedModule(null);
     }
@@ -569,17 +688,11 @@ const ListandFilter = (props) => {
 
   const handleChangeVersion = (e, value) => {
     if (value) {
-      // setdefaultVersion(null);
       setVersionId(JSON.parse(value?.value));
-      // const val = JSON.parse(value?.value);
-      // formRef.current.setFieldsValue({
-      //   version: val?.id,
-      // });
     }
   };
 
   const handleGradeChange = (value) => {
-    //setGradeValue(value);
     if (value) {
       setGradeValue(value);
     } else {
@@ -603,7 +716,15 @@ const ListandFilter = (props) => {
     }
   };
 
-  const getVersion = async (module, school_id) => {
+  const getVersion = async (module, school_id, value) => {
+    let filterValue = '';
+    if (value?.id == 'lesson-plan') {
+      filterValue = lessonModel;
+    } else if (value?.id == 'ebook') {
+      filterValue = ebookModel;
+    } else if (value?.id == 'ibook') {
+      filterValue = ibookModel;
+    }
     const queryString = generateQueryParamSting({ school: school_id, [module]: true });
     await axios
       .get(`${endpoints.masterManagement.versionData}?${queryString}`, {
@@ -612,60 +733,59 @@ const ListandFilter = (props) => {
       .then((result) => {
         setVersionList(result?.data?.result?.result[0]?.school_versions);
 
-        // const filterData = result?.data?.result?.result[0]?.school_versions?.filter(
-        //   (ele) => ele?.version_name == filterValue
-        // );
-        // console.log(filterData, 'dataisco');
+        const filterData = result?.data?.result?.result[0]?.school_versions?.filter(
+          (ele) => ele?.version_name === filterValue
+        );
 
-        // if (filterData) {
-        //   setdefaultVersion(filterData[0]?.version_name);
-        // } else {
-        //   setdefaultVersion(null);
-        // }
+        if (filterData) {
+          setdefaultVersion(filterData[0]?.version_name);
+        } else {
+          setdefaultVersion(null);
+        }
       })
       .catch((error) => {
         setAlert('error', error.message);
       });
   };
 
-  // function setDefaultVersion(value) {
-  //   let filterValue = '';
-  //   if (value?.id == 'lesson-plan') {
-  //     filterValue = lesson;
-  //   } else if (value?.id == 'ebook') {
-  //     filterValue = ebook;
-  //   } else if (value?.id == 'ibook') {
-  //     filterValue = ibook;
-  //   }
-  //   const filterData = versionList?.filter((ele) => ele?.version_name === filterValue);
-  //   console.log(versionList, 'coming');
-  //   if (filterData) {
-  //     setdefaultVersion(filterData[0]?.version_name);
-  //   } else {
-  //     setdefaultVersion(null);
-  //   }
-  // }
-  // useEffect(() => {
-  //   setdefaultVersion()
-  // }, [versionList]);
-
   const fetchDetails = async (selectedSchool, moduleKey, version_id) => {
-    const queryString = generateQueryParamSting({
-      school: selectedSchool,
-      version_id: version_id,
-      [moduleKey]: true,
-    });
-    const apiURL = `${endpoints.masterManagement.schoolList}?${queryString}`;
-    await axios
-      .get(apiURL, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
-      .then((res) => {
-        setGradeSubjectList(res?.data?.result[0]?.grade_subject_mapping);
-      })
-      .catch((err) => {
-        console.log(err);
+    if (version_id) {
+      const queryString = generateQueryParamSting({
+        school: selectedSchool,
+        version_id: version_id,
+        [moduleKey]: true,
       });
+      const apiURL = `${endpoints.masterManagement.schoolList}?${queryString}`;
+      await axios
+        .get(apiURL, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
+        .then((res) => {
+          setGradeSubjectList(res?.data?.result[0]?.grade_subject_mapping);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      const queryString = generateQueryParamSting({
+        school: selectedSchool,
+        [moduleKey]: true,
+      });
+      const apiURL = `${endpoints.masterManagement.schoolList}?${queryString}`;
+      await axios
+        .get(apiURL, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
+        .then((res) => {
+          const filterResult = res?.data?.result?.filter(
+            (item) => item?.is_school_wise === true
+          );
+          setGradeSubjectList(filterResult[0]?.grade_subject_mapping);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const handleFilter = async () => {
@@ -724,10 +844,9 @@ const ListandFilter = (props) => {
   };
 
   const handleRowClick = (record, dataIndex) => {
-    // setModuleName(dataIndexToNameMap[dataIndex]);
+    setGradeSubjectList([]);
     fetchDetails(record?.school_id, dataIndexToNameMap[dataIndex], record[dataIndex]);
     setSelectedRow({ record, dataIndex });
-    // setVersionId(record[dataIndex]);
   };
 
   const closeModal = () => {
@@ -919,41 +1038,41 @@ const ListandFilter = (props) => {
                           {selectedModule?.id !== 'assessment' && (
                             <div className='col-md-12 col-sm-10 col-12 mb-4'>
                               <Form.Item name={'Version'} label='Version'>
-                                {/* {defaultVersion ? (
+                                {defaultVersion ? (
                                   <Input
                                     defaultValue={defaultVersion}
                                     disabled={defaultVersion ? true : false}
+                                    style={{ borderWidth: '0.1px', color: 'gray' }}
                                   />
-                                ) : ( */}
-                                <Select
-                                  mode='single'
-                                  getPopupContainer={(trigger) => trigger.parentNode}
-                                  allowClear={true}
-                                  // value={versionId}
-                                  // defaultValue={defaultVersion}
-                                  // disabled={defaultVersion ? true : false}
-                                  suffixIcon={<DownOutlined className='th-grey' />}
-                                  className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                                  placement='bottomRight'
-                                  showArrow={true}
-                                  dropdownMatchSelectWidth={true}
-                                  filterOption={(input, options) => {
-                                    return (
-                                      options.children
-                                        .toLowerCase()
-                                        .indexOf(input.toLowerCase()) >= 0
-                                    );
-                                  }}
-                                  showSearch
-                                  placeholder='Select Version*'
-                                  onChange={(e, value) => {
-                                    handleChangeVersion(e, value);
-                                  }}
-                                  bordered={false}
-                                >
-                                  {versionOption}
-                                </Select>
-                                {/* )} */}
+                                ) : (
+                                  <Form.Item name={'Version'}>
+                                    <Select
+                                      mode='single'
+                                      getPopupContainer={(trigger) => trigger.parentNode}
+                                      allowClear={true}
+                                      suffixIcon={<DownOutlined className='th-grey' />}
+                                      className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                      placement='bottomRight'
+                                      showArrow={true}
+                                      dropdownMatchSelectWidth={true}
+                                      filterOption={(input, options) => {
+                                        return (
+                                          options.children
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
+                                        );
+                                      }}
+                                      showSearch
+                                      placeholder='Select Version*'
+                                      onChange={(e, value) => {
+                                        handleChangeVersion(e, value);
+                                      }}
+                                      bordered={false}
+                                    >
+                                      {versionOption}
+                                    </Select>
+                                  </Form.Item>
+                                )}
                               </Form.Item>
                             </div>
                           )}
@@ -985,12 +1104,12 @@ const ListandFilter = (props) => {
                       <div className='col-12'>
                         <Form ref={AssessmentCategoryMappingRef} layout={'vertical'}>
                           <div className='col-md-12 col-sm-10 col-12 mb-4'>
-                            <Form.Item name={'ERP Category'} label='ERP Category'>
+                            <Form.Item name={'ERP_Category'} label='ERP Category'>
                               <Select
                                 mode='single'
                                 getPopupContainer={(trigger) => trigger.parentNode}
                                 allowClear={true}
-                                defaultValue={selectedERPCategory?.category_name}
+                                // defaultValue={selectedERPCategory?.category_name}
                                 suffixIcon={<DownOutlined className='th-grey' />}
                                 className='th-grey th-bg-grey th-br-4 w-100 text-left'
                                 placement='bottomRight'
@@ -1005,9 +1124,6 @@ const ListandFilter = (props) => {
                                 }}
                                 showSearch
                                 placeholder='Select ERP Category*'
-                                // value={
-                                //   selectedERPCategory ? selectedERPCategory?.category_name : null
-                                // }
                                 onChange={(e, val) => {
                                   handleErpCategory(e, val);
                                 }}
@@ -1019,7 +1135,7 @@ const ListandFilter = (props) => {
                           </div>
 
                           <div className='col-md-12 col-sm-10 col-12 mb-4'>
-                            <Form.Item name={'Central Category'} label='Central Category'>
+                            <Form.Item name={'Central_Category'} label='Central Category'>
                               <Select
                                 mode='single'
                                 getPopupContainer={(trigger) => trigger.parentNode}
@@ -1040,7 +1156,6 @@ const ListandFilter = (props) => {
                                 placeholder='Select Central Category*'
                                 onChange={(e, value) => {
                                   handleCentralCategory(e, value);
-                                  // setSelectedCentralCategory(e, value);
                                 }}
                                 bordered={false}
                               >
