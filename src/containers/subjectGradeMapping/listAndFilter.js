@@ -25,6 +25,7 @@ import moment from 'moment';
 import { Breadcrumb, Select, Form, Table, Button, Modal, Input } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { AllInboxOutlined } from '@material-ui/icons';
+import Loader from 'components/loader/loader';
 
 // const StyledButton = withStyles((theme) => ({
 //   root: {
@@ -42,6 +43,8 @@ const ListandFilter = (props) => {
   const AssignMappingRef = useRef();
   const AssessmentCategoryMappingRef = useRef();
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
+  const [subjectLoading, setSubjectLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
   const [branch, setBranchRes] = useState([]);
   const [gradeRes, setGradeRes] = useState([]);
@@ -87,6 +90,10 @@ const ListandFilter = (props) => {
   const [ebook, setebook] = useState('');
   const [ibook, setibook] = useState('');
 
+  const [defaultBranch, setdefaultBranch] = useState('');
+  const [defaultLesson, setdefaultLesson] = useState('');
+  const [defaultEbook, setdefaultEbook] = useState('');
+  const [defaultIbook, setdefaultIbook] = useState('');
   const [defaultVersion, setdefaultVersion] = useState(null);
 
   const dataIndexToNameMap = {
@@ -97,6 +104,7 @@ const ListandFilter = (props) => {
 
   const getVersionName = async (value, module, plan) => {
     if (plan == 'lesson') {
+      setLoading(true);
       try {
         const queryString = generateQueryParamSting({
           school: school_id,
@@ -109,21 +117,31 @@ const ListandFilter = (props) => {
           }
         );
 
-        const versionList = response.data?.result?.result[0]?.school_versions;
+        if (response?.data?.status_code === 200) {
+          setLoading(false);
+          const versionList = response.data?.result?.result[0]?.school_versions;
 
-        const versionMap = versionList.reduce((acc, cur) => {
-          acc[cur.academic_year] = cur.version_name;
-          return acc;
-        }, {});
+          const schoolWiseVersion = versionList?.filter(
+            (item) => item.is_school_wise === true
+          );
 
-        const versionName = versionMap[value];
-        setlesson(versionName ? versionName : 'Default Version');
+          setdefaultLesson(schoolWiseVersion[0]?.version_name);
+
+          const versionMap = versionList?.reduce((acc, cur) => {
+            acc[cur.academic_year] = cur.version_name;
+            return acc;
+          }, {});
+
+          const versionName = versionMap[value];
+          setlesson(versionName ? versionName : 'Default Version');
+        }
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
       }
     }
     if (plan == 'ebook') {
+      setLoading(true);
       try {
         const queryString = generateQueryParamSting({
           school: school_id,
@@ -136,22 +154,32 @@ const ListandFilter = (props) => {
           }
         );
 
-        const versionList = response.data?.result?.result[0]?.school_versions;
+        if (response?.data?.status_code === 200) {
+          setLoading(false);
+          const versionList = response.data?.result?.result[0]?.school_versions;
 
-        const versionMap = versionList.reduce((acc, cur) => {
-          acc[cur.academic_year] = cur.version_name;
-          return acc;
-        }, {});
+          const schoolWiseVersion = versionList?.filter(
+            (item) => item.is_school_wise === true
+          );
 
-        const versionName = versionMap[value];
+          setdefaultEbook(schoolWiseVersion[0]?.version_name);
 
-        setebook(versionName ? versionName : 'Default Version');
+          const versionMap = versionList.reduce((acc, cur) => {
+            acc[cur.academic_year] = cur.version_name;
+            return acc;
+          }, {});
+
+          const versionName = versionMap[value];
+
+          setebook(versionName ? versionName : 'Default Version');
+        }
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
       }
     }
     if (plan == 'ibook') {
+      setLoading(true);
       try {
         const queryString = generateQueryParamSting({
           school: school_id,
@@ -164,16 +192,26 @@ const ListandFilter = (props) => {
           }
         );
 
-        const versionList = response.data?.result?.result[0]?.school_versions;
+        if (response?.data?.status_code === 200) {
+          setLoading(false);
 
-        const versionMap = versionList.reduce((acc, cur) => {
-          acc[cur.academic_year] = cur.version_name;
-          return acc;
-        }, {});
+          const versionList = response.data?.result?.result[0]?.school_versions;
 
-        const versionName = versionMap[value];
+          const schoolWiseVersion = versionList?.filter(
+            (item) => item.is_school_wise === true
+          );
 
-        setibook(versionName ? versionName : 'Default Version');
+          setdefaultIbook(schoolWiseVersion[0]?.version_name);
+
+          const versionMap = versionList.reduce((acc, cur) => {
+            acc[cur.academic_year] = cur.version_name;
+            return acc;
+          }, {});
+
+          const versionName = versionMap[value];
+
+          setibook(versionName ? versionName : 'Default Version');
+        }
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
@@ -266,6 +304,43 @@ const ListandFilter = (props) => {
       }
     }
   };
+
+  const DefaultData = [{ id: 'Default_row' }];
+
+  const Default_columns = [
+    {
+      title: 'Branch',
+      dataIndex: 'defaultBranch',
+      key: 'defaultBranch',
+      render: () => {
+        return <span>{defaultBranch}</span>;
+      },
+    },
+    {
+      title: 'Lesson Plan',
+      dataIndex: 'lesson_plan_version',
+      key: 'lesson_plan_version',
+      render: () => {
+        return <span>{'Default Version'}</span>;
+      },
+    },
+    {
+      title: 'Ebook',
+      dataIndex: 'ebook_version',
+      key: 'ebook_version',
+      render: () => {
+        return <span>{'Default Version'}</span>;
+      },
+    },
+    {
+      title: 'Ibook',
+      dataIndex: 'ibook_version',
+      key: 'ibook_version',
+      render: () => {
+        return <span>{'Default Version'}</span>;
+      },
+    },
+  ];
 
   const columns = [
     {
@@ -455,6 +530,7 @@ const ListandFilter = (props) => {
   }, []);
 
   useEffect(() => {
+    setdefaultBranch(selectedBranch?.branch?.branch_name);
     axiosInstance
       .get(
         `${endpoints.masterManagement.branchWiseVersion}?acad_session=${selectedBranch?.id}`
@@ -573,6 +649,17 @@ const ListandFilter = (props) => {
   const handleChangeYear = (e, vaule) => {
     setBranchValue(null);
     setSelectedModule(null);
+    if (AssignMappingRef && AssignMappingRef.current) {
+      const formInstance = AssignMappingRef.current;
+      formInstance.setFieldsValue({
+        Branch: undefined,
+        Module: undefined,
+        Version: undefined,
+      });
+    }
+    if (defaultVersion) {
+      setdefaultVersion(null);
+    }
     if (vaule) {
       setSelectedYear(JSON.parse(vaule?.value));
     }
@@ -649,38 +736,40 @@ const ListandFilter = (props) => {
   };
 
   const handleChangeBranch = (e, value) => {
+    if (AssignMappingRef && AssignMappingRef.current) {
+      const formInstance = AssignMappingRef.current;
+      formInstance.setFieldsValue({
+        Module: undefined,
+        Version: undefined,
+      });
+    }
+    if (defaultVersion) {
+      setdefaultVersion(null);
+    }
     if (value) {
       setBranchValue(JSON.parse(value?.value));
       setSelectedModule(null);
       setVersionId(null);
       getBranchWiseTableData(JSON.parse(value?.value));
-      if (AssignMappingRef && AssignMappingRef.current) {
-        const formInstance = AssignMappingRef.current;
-        formInstance.setFieldsValue({
-          Module: undefined,
-          Version: undefined,
-        });
-      }
-      if (defaultVersion) {
-        setdefaultVersion(null);
-      }
     } else {
       setBranchValue(null);
     }
   };
 
   const handleChangeModule = (e, value) => {
+    if (AssignMappingRef && AssignMappingRef.current) {
+      const formInstance = AssignMappingRef.current;
+      formInstance.setFieldsValue({
+        Version: undefined,
+      });
+    }
+    if (defaultVersion) {
+      setdefaultVersion(null);
+    }
     if (value && school_id) {
       setSelectedModule(JSON.parse(value?.value));
       const module = JSON.parse(value?.value);
-      setdefaultVersion(null);
       getVersion(module?.key, school_id, module);
-      if (AssignMappingRef && AssignMappingRef.current) {
-        const formInstance = AssignMappingRef.current;
-        formInstance.setFieldsValue({
-          Version: undefined,
-        });
-      }
     } else {
       setSelectedModule(null);
     }
@@ -750,6 +839,7 @@ const ListandFilter = (props) => {
 
   const fetchDetails = async (selectedSchool, moduleKey, version_id) => {
     if (version_id) {
+      setSubjectLoading(true);
       const queryString = generateQueryParamSting({
         school: selectedSchool,
         version_id: version_id,
@@ -761,12 +851,16 @@ const ListandFilter = (props) => {
           headers: { 'x-api-key': 'vikash@12345#1231' },
         })
         .then((res) => {
-          setGradeSubjectList(res?.data?.result[0]?.grade_subject_mapping);
+          if (res?.data?.status_code === 200) {
+            setSubjectLoading(false);
+            setGradeSubjectList(res?.data?.result[0]?.grade_subject_mapping);
+          }
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
+      setSubjectLoading(true);
       const queryString = generateQueryParamSting({
         school: selectedSchool,
         [moduleKey]: true,
@@ -777,10 +871,13 @@ const ListandFilter = (props) => {
           headers: { 'x-api-key': 'vikash@12345#1231' },
         })
         .then((res) => {
-          const filterResult = res?.data?.result?.filter(
-            (item) => item?.is_school_wise === true
-          );
-          setGradeSubjectList(filterResult[0]?.grade_subject_mapping);
+          if (res?.data?.status_code === 200) {
+            setSubjectLoading(false);
+            const filterResult = res?.data?.result?.filter(
+              (item) => item?.is_school_wise === true
+            );
+            setGradeSubjectList(filterResult[0]?.grade_subject_mapping);
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -793,6 +890,7 @@ const ListandFilter = (props) => {
       setAlert('warning', 'Select Branch');
       return false;
     } else {
+      setdefaultBranch(branchFilter?.branch?.branch_name);
       setFilter(true);
       await axiosInstance
         .get(
@@ -846,6 +944,11 @@ const ListandFilter = (props) => {
   const handleRowClick = (record, dataIndex) => {
     setGradeSubjectList([]);
     fetchDetails(record?.school_id, dataIndexToNameMap[dataIndex], record[dataIndex]);
+    setSelectedRow({ record, dataIndex });
+  };
+
+  const handleDefaultRowClick = (record, dataIndex) => {
+    fetchDetails(school_id, dataIndexToNameMap[dataIndex]);
     setSelectedRow({ record, dataIndex });
   };
 
@@ -944,7 +1047,7 @@ const ListandFilter = (props) => {
                       <div className='col-12'>
                         <Form ref={AssignMappingRef} layout={'vertical'}>
                           <div className='col-md-12 col-sm-10 col-12 mb-4'>
-                            <Form.Item name={'Academic Year'} label='Academic Year'>
+                            <Form.Item name={'AcademicYear'} label='Academic Year'>
                               <Select
                                 mode='single'
                                 getPopupContainer={(trigger) => trigger.parentNode}
@@ -1174,26 +1277,54 @@ const ListandFilter = (props) => {
         </div>
 
         <div className='convert col-md-12 mt-4'>
-          <Table
-            className='th-table version-table'
-            rowClassName={(record, index) =>
-              index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
-            }
-            // loading={loading}
-            columns={columns.map((col, index) => ({
-              ...col,
-              onCell: (record) => ({
-                onClick: index !== 0 ? () => handleRowClick(record, col.dataIndex) : null,
-              }),
-            }))}
-            rowKey={(record) => record?.id}
-            dataSource={tableData}
-            pagination={false}
-            scroll={{
-              x: window.innerWidth > 400 ? '100%' : 'max-content',
-              y: 350,
-            }}
-          />
+          {loading ? <Loader /> : null}
+          {tableData?.length > 0 ? (
+            <Table
+              className='th-table version-table'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
+              }
+              // loading={loading}
+              columns={columns.map((col, index) => ({
+                ...col,
+                onCell: (record) => ({
+                  onClick:
+                    index !== 0 ? () => handleRowClick(record, col.dataIndex) : null,
+                }),
+              }))}
+              rowKey={(record) => record?.id}
+              dataSource={tableData}
+              pagination={false}
+              scroll={{
+                x: window.innerWidth > 400 ? '100%' : 'max-content',
+                y: 350,
+              }}
+            />
+          ) : (
+            <Table
+              className='th-table version-table'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
+              }
+              // loading={loading}
+              columns={Default_columns.map((col, index) => ({
+                ...col,
+                onCell: (record) => ({
+                  onClick:
+                    index !== 0
+                      ? () => handleDefaultRowClick(record, col.dataIndex)
+                      : null,
+                }),
+              }))}
+              rowKey={(record) => record?.id}
+              dataSource={DefaultData}
+              pagination={false}
+              scroll={{
+                x: window.innerWidth > 400 ? '100%' : 'max-content',
+                y: 350,
+              }}
+            />
+          )}
         </div>
         <Modal
           title='Content Mapping'
@@ -1203,13 +1334,18 @@ const ListandFilter = (props) => {
           width={'40%'}
           centered
         >
+          {subjectLoading ? <Loader /> : null}
           {selectedRow && (
             <div className='p-2 mt-3 mb-3'>
               <div className='ml-3 d-flex justify-content-around'>
                 {/* <div className=''> */}
                 <div className='row'>
                   <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Branch: </div>
-                  <div>{selectedRow?.record?.academic_year__branch__branch_name}</div>
+                  {tableData?.length > 0 ? (
+                    <div>{selectedRow?.record?.academic_year__branch__branch_name}</div>
+                  ) : (
+                    <div>{defaultBranch}</div>
+                  )}
                 </div>
                 <div className='row'>
                   <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Module: </div>
