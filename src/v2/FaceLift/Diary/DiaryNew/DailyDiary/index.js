@@ -45,16 +45,7 @@ import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { Profanity } from 'components/file-validation/Profanity.js';
 
-let boardFilterArr = [
-  'orchids.letseduvate.com',
-  'localhost:3000',
-  'dev.olvorchidnaigaon.letseduvate.com',
-  'ui-revamp1.letseduvate.com',
-  'qa.olvorchidnaigaon.letseduvate.com',
-  'test.orchids.letseduvate.com',
-  'orchids-stage.stage-vm.letseduvate.com',
-  'orchids-prod.letseduvate.com',
-];
+const isOrchids = IsOrchidsChecker();
 const { Panel } = Collapse;
 const { confirm } = Modal;
 const DailyDiary = ({ isSubstituteDiary }) => {
@@ -2016,7 +2007,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                     }}
                                   >
                                     <div className='col-12 px-0'>
-                                      {boardFilterArr.includes(window.location.host) && (
+                                      {isOrchids && (
                                         <div className='row pt-3'>
                                           <div className='col-4 pr-0 th-fw-600'>
                                             Module :
@@ -2148,7 +2139,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                                       ) : null}
                                     </div>
                                   </div>
-                                  {boardFilterArr.includes(window.location.host) && (
+                                  {isOrchids && (
                                     <div className='row pt-3'>
                                       <div className='col-4 pr-0 th-fw-600'>
                                         Module :{' '}
@@ -2687,7 +2678,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                         }
                         key={i}
                       >
-                        {boardFilterArr.includes(window.location.host) && (
+                        {isOrchids && (
                           <div className='row mt-1 th-fw-600'>
                             <div className='col-3 col-md-2 th-black-1 px-0'>
                               <div className='row justify-content-between'>

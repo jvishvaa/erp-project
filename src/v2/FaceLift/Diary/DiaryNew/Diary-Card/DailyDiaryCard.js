@@ -40,16 +40,9 @@ import _ from 'lodash';
 import toddlerGroup from '../../../../../assets/images/toddler-group.svg';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const { Panel } = Collapse;
-let boardFilterArr = [
-  'orchids.letseduvate.com',
-  'localhost:3000',
-  'dev.olvorchidnaigaon.letseduvate.com',
-  'ui-revamp1.letseduvate.com',
-  'qa.olvorchidnaigaon.letseduvate.com',
-  'orchids-stage.stage-vm.letseduvate.com',
-  'orchids-prod.letseduvate.com',
-];
+const isOrchids = IsOrchidsChecker();
 
 const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
   const selectedBranch = useSelector(
@@ -867,7 +860,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                       >
                         <div className='row th-pointer py-2'>
                           <>
-                            {boardFilterArr.includes(window.location.host) && (
+                            {isOrchids && (
                               <div className='row'>
                                 <div className='col-4 pr-0 th-fw-600'>Module :</div>
                                 <div className='col-8 pl-0 text-truncate th-grey-1'>
@@ -1057,7 +1050,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
                     {diary?.up_coming_period?.period_name}
                   </div>
                 </div>
-                {boardFilterArr.includes(window.location.host) && (
+                {isOrchids && (
                   <div className='row'>
                     <div className='col-4 pr-0 th-fw-600'>Module :</div>
                     <div className='col-8 pl-0 text-truncate th-grey-1'>

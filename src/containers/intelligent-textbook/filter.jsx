@@ -10,6 +10,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import Loading from '../../components/loader/loader';
 import { getModuleInfo } from '../../utility-functions';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const Filter = ({ handleFilter, clearFilter, setclearFilter, setFiltered }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -54,14 +55,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter, setFiltered }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'test.orchids.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
   useEffect(() => {
     axiosInstance
       // .get(
@@ -308,7 +302,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter, setFiltered }) => {
   }
 
   useEffect(() => {
-    if (!boardFilterArr.includes(window.location.host)) {
+    if (!isOrchids) {
       if (volumeList && boardList.length > 0) {
         let data = boardList?.filter((item) => item?.board_name === 'CBSE');
         handleBoard('', data);
@@ -485,7 +479,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter, setFiltered }) => {
                   .get(`academic/get-board-list/`)
                   .then((result) => {
                     if (result?.data.status_code === 200) {
-                      if (!boardFilterArr.includes(window.location.host)) {
+                      if (!isOrchids) {
                         setBoardList(result?.data?.result);
                       }
                       setLoading(false);
@@ -518,7 +512,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter, setFiltered }) => {
             )}
           />
         </Grid>
-        {boardFilterArr.includes(window.location.host) && (
+        {isOrchids && (
           <Grid item md={3} xs={12}>
             <Autocomplete
               multiple

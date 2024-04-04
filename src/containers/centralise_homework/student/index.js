@@ -631,7 +631,8 @@ const CentralizedStudentHw = () => {
                                   textTransform: 'capitalize',
                                 }}
                               >
-                                <h5 className='th-14 mb-0'>{item.file_location}</h5>
+                                
+                                <h5 className='th-14 mb-0'>{item.student_erp}</h5>
                                 {/* <p className='th-12 mb-0 text-muted text-truncate'>
                                       <span className='th-fw-600'>Description:</span>
                                       {item.description}

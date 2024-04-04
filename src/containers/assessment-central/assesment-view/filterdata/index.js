@@ -676,8 +676,6 @@ if(filterData?.grade && (filterData?.subject || filterData?.erp_category?.value 
           <div className='col-12'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
-                {/* {boardFilterArr.includes(window.location.host) && ( */}
-                {/* )} */}
                 <div className='col-md-2 col-6 px-1'>
                   <div className='mb-2 text-left'>Grade</div>
                   <Form.Item name='grade'>

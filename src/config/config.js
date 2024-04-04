@@ -3,7 +3,11 @@ const hostUrl = webUrl.split('.');
 
 const chechUrl = hostUrl[0] === 'orchids' || hostUrl[0] === 'orchids-prod' ? true : false;
 
-const isPreprod = window.location.host == 'orchids.prod.letseduvate.com' ? true : false;
+const isPreprod =
+  window.location.host == 'orchids.prod.letseduvate.com' ||
+  window.location.host == 'b2b.prod.letseduvate.com'
+    ? true
+    : false;
 
 const local = {
   s3: {

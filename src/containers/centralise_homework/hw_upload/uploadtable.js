@@ -13,7 +13,12 @@ import {
 import '../BranchStaffSide/branchside.scss';
 import { useHistory } from 'react-router-dom';
 import QuestionPng from 'assets/images/question.png';
-import { EditOutlined, EyeFilled, DownOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  EyeFilled,
+  DownOutlined,
+  InfoCircleTwoTone,
+} from '@ant-design/icons';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import endpoints from 'config/endpoints';
 import { useSelector } from 'react-redux';
@@ -265,7 +270,13 @@ const UploadTable = ({
                 onChange={(e, value) => handleCurrentErp(value)}
                 dropdownMatchSelectWidth={false}
                 filterOption={(input, options) => {
-                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  return (
+                    options.children
+                      ?.join()
+                      .trim()
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  );
                 }}
                 value={updatedErp}
                 showSearch
@@ -391,7 +402,7 @@ const UploadTable = ({
         }
       );
       if (result?.status === 200) {
-        setErpList(result?.data?.results);
+        setErpList(result?.data);
       } else {
         message.error(result.data.message);
       }
@@ -455,8 +466,8 @@ const UploadTable = ({
 
   const ErpOptions = erpList?.map((each) => {
     return (
-      <Option key={each?.id} value={each?.erp_id} title={each?.erp_id}>
-        {each?.user?.first_name} {each?.user?.last_name}
+      <Option key={each?.erp_id} value={each.erp_id} title={each?.erp_id}>
+        {each?.user__first_name} {each?.user__last_name}
       </Option>
     );
   });
@@ -499,24 +510,31 @@ const UploadTable = ({
             <Tabs type='card' className='' onChange={onChange} defaultActiveKey={showTab}>
               <TabPane tab='Passed' key='1'>
                 <div className=''>
-                  <div className='d-flex justify-content-end mb-2'>
-                    {/* <span className=''>Total Unique Students -10</span> */}
-                    <span className=''>Total Count- {count}</span>
+                  <div className='d-flex justify-content-between align-items-center mb-2'>
+                    <span
+                      style={{ border: '1px solid #d9d9d9', padding : "5px" }}
+                    >
+                      <InfoCircleTwoTone className='pr-2' />
+                      <i className='th-grey th-fw-500 '>
+                        New Uploaded Files Will Take Some Time To Reflect. Please Wait For 10 to 15 Minutes.
+                      </i>
+                    </span>
+                    <div>
+                      <span className=''>Total Count- {count}</span>
+                    </div>
                   </div>
-                  <div className='convert col-md-12'>
-                    <Table
-                      className='th-table'
-                      rowClassName={(record, index) =>
-                        index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                      }
-                      loading={loading}
-                      columns={columns}
-                      rowKey={(record) => record?.id}
-                      dataSource={hwFiles}
-                      pagination={false}
-                      scroll={{ y: '300px' }}
-                    />
-                  </div>
+                  <Table
+                    className='th-table'
+                    rowClassName={(record, index) =>
+                      index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                    }
+                    loading={loading}
+                    columns={columns}
+                    rowKey={(record) => record?.id}
+                    dataSource={hwFiles}
+                    pagination={false}
+                    scroll={{ y: '300px' }}
+                  />
                 </div>
                 {hwFiles?.length > 0 && (
                   <div className='text-center mt-2'>
