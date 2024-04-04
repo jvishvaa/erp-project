@@ -1,18 +1,51 @@
 .evaluator-calendar {
-  border: 1px solid black;
-  border-radius: 10px;
-  margin: 10px;
+  // border: 1px solid black;
+  // border-radius: 10px;
+  // margin: 10px;
   .ant-picker-calendar-mode-switch {
     display: none;
   }
   td {
-    border: 1px solid #eaeaea;
+    border: 1px solid #d9d9d9;
   }
   .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-today {
-    background: #b0b0b0 !important;
+    background: #e6f7ff !important;
+  }
+  .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date {
+    border-top: none !important;
+  }
+  .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+  .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner {
+    background-color: #e6f7ff !important;
+  }
+  .ant-picker-calendar-header .ant-picker-calendar-month-select,
+  .ant-picker-calendar-header .ant-picker-calendar-year-select {
+    min-width: 135px !important;
+  }
+
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-radius: 4px !important;
+  }
+  .ant-picker-calendar .ant-picker-panel .ant-picker-body {
+    padding: 0 !important;
+    padding-top: 15px !important;
+    border-radius: 10px !important;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  }
+  .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date {
+    margin: 0 !important;
+  }
+  .ant-picker-cell-in-view {
+    color: black !important;
   }
 }
-
+.assesment-summary {
+  .ant-rate {
+    font-size: 25px !important;
+  }
+}
 .wholetabCentralHW {
   .th-tabs .ant-tabs-nav-wrap {
     background: white !important;
@@ -147,4 +180,23 @@
       font-size: 30px !important;
     }
   }
+}
+
+.evaluator-calendar {
+  .events {
+    bottom: 5px !important;
+    position: absolute !important;
+    text-align: center !important;
+    font-size: 16px !important;
+    left: 0 !important;
+  }
+}
+
+.summary-card {
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  width: 100% !important;
+  border-radius: 10px;
+  margin-top: 3.5rem !important;
 }
