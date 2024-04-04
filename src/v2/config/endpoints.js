@@ -222,6 +222,7 @@ export default {
     rating: '/hw-hub/rating/',
     evaluatorList: '/hw-hub/get_evaluators/',
     checkEvaluator: '/hw-hub/evaluator-check/',
+    evaluatorReport: '/hw-hub/evaluator-report/',
   },
   grievances: {
     grievanceTicket: `${baseFinanceURL}/apiV1/ticket/`,

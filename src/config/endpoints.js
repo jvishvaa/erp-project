@@ -267,6 +267,7 @@ export default {
     rating: '/hw-hub/rating/',
     evaluatorList: '/hw-hub/get_evaluators/',
     checkEvaluator: '/hw-hub/evaluator-check/',
+    evaluatorReport: '/hw-hub/evaluator-report/',
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',
