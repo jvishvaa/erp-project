@@ -1326,57 +1326,60 @@ const ListandFilter = (props) => {
             />
           )}
         </div>
-        <Modal
-          title='Content Mapping'
-          visible={selectedRow !== null}
-          onCancel={closeModal}
-          onOk={closeModal}
-          width={'40%'}
-          centered
-        >
-          {subjectLoading ? <Loader /> : null}
-          {selectedRow && (
-            <div className='p-2 mt-3 mb-3'>
-              <div className='ml-3 d-flex justify-content-around'>
-                {/* <div className=''> */}
-                <div className='row'>
-                  <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Branch: </div>
-                  {tableData?.length > 0 ? (
-                    <div>{selectedRow?.record?.academic_year__branch__branch_name}</div>
-                  ) : (
-                    <div>{defaultBranch}</div>
-                  )}
-                </div>
-                <div className='row'>
-                  <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Module: </div>
-                  <div>
-                    {selectedRow?.dataIndex === 'lesson_plan_version' && 'Lesson Plan'}
-                    {selectedRow?.dataIndex === 'ebook_version' && 'Ebook'}
-                    {selectedRow?.dataIndex === 'ibook_version' && 'Ibook'}
+        {subjectLoading ? (
+          <Loader />
+        ) : (
+          <Modal
+            title='Content Mapping'
+            visible={selectedRow !== null}
+            onCancel={closeModal}
+            onOk={closeModal}
+            width={'40%'}
+            centered
+          >
+            {selectedRow && (
+              <div className='p-2 mt-3 mb-3'>
+                <div className='ml-3 d-flex justify-content-around'>
+                  {/* <div className=''> */}
+                  <div className='row'>
+                    <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Branch: </div>
+                    {tableData?.length > 0 ? (
+                      <div>{selectedRow?.record?.academic_year__branch__branch_name}</div>
+                    ) : (
+                      <div>{defaultBranch}</div>
+                    )}
                   </div>
+                  <div className='row'>
+                    <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Module: </div>
+                    <div>
+                      {selectedRow?.dataIndex === 'lesson_plan_version' && 'Lesson Plan'}
+                      {selectedRow?.dataIndex === 'ebook_version' && 'Ebook'}
+                      {selectedRow?.dataIndex === 'ibook_version' && 'Ibook'}
+                    </div>
+                  </div>
+                  {/* </div> */}
                 </div>
-                {/* </div> */}
+                <div className='p-2 mt-2'>
+                  <Table
+                    className='th-table version-grade-table'
+                    rowClassName={(record, index) =>
+                      index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
+                    }
+                    // loading={loading}
+                    columns={gradeColumns}
+                    rowKey={(record) => record?.id}
+                    dataSource={gradeSubjectList}
+                    pagination={false}
+                    scroll={{
+                      x: window.innerWidth > 400 ? '100%' : 'max-content',
+                      y: 350,
+                    }}
+                  />
+                </div>
               </div>
-              <div className='p-2 mt-2'>
-                <Table
-                  className='th-table version-grade-table'
-                  rowClassName={(record, index) =>
-                    index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
-                  }
-                  // loading={loading}
-                  columns={gradeColumns}
-                  rowKey={(record) => record?.id}
-                  dataSource={gradeSubjectList}
-                  pagination={false}
-                  scroll={{
-                    x: window.innerWidth > 400 ? '100%' : 'max-content',
-                    y: 350,
-                  }}
-                />
-              </div>
-            </div>
-          )}
-        </Modal>
+            )}
+          </Modal>
+        )}
         {/* <Grid container spacing={2} className='mapping-sub-grade-container'>
           <Grid item md={12} xs={12} className='mapping-grade-subject-container'>
             <Subjectcard
