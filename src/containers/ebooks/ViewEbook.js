@@ -288,9 +288,9 @@ class ViewEbook extends Component {
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     let filterGrade;
     if (customGrade) {
-      filterGrade = `${grade ? `&grade=[${customGrade}]` : ''}`;
+      filterGrade = `${grade ? `&grade=${customGrade}` : ''}`;
     } else {
-      filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
+      filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
     }
 
     const filterSubject = `${subject ? `&subject=${subject}` : ''}`;
