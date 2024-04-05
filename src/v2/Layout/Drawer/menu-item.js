@@ -711,6 +711,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Non Academic Staff',
       Path: '/user-management/non-academic-staff',
     },
+    {
+      name: 'Activity Dashboard',
+      Path: '/activity-management-dashboard',
+    },
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);

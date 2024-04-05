@@ -78,6 +78,7 @@ const resolveMenu = (url) => {
   if (url.includes('student_store')) return 'Finance';
   if (url.includes('ShippingPayment')) return 'Finance';
   if (url.includes('ManagePayments')) return 'Finance';
+  if (url.includes('activity-management')) return 'Activity Management';
 
   // if (url.includes('Appointment')) return 'Appointments';
   return null;
