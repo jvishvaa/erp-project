@@ -94,8 +94,8 @@ const stage = {
     FINANCE_BUCKET: 'https://storage.googleapis.com/letseduvate/prod/media',
   },
   apiGateway: {
-    // baseURL: `${window.location.origin}/qbox`,
-    baseURL: `https://orchids-stage.stage-vm.letseduvate.com/qbox`,
+    baseURL: `${window.location.origin}/qbox`,
+    // baseURL: `https://orchids-stage.stage-vm.letseduvate.com/qbox`,
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
     baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
     // baseURLCentral: 'https://mgmt-stage.letseduvate.com/qbox',
