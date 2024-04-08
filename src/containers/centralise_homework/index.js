@@ -39,9 +39,9 @@ const CentralizedHomework = () => {
     <>
       {userLevel === 13 ? (
         <CentralizedStudentHw />
-      ) : userLevel === 11 ? (
+      ) : userLevel === 8 || userLevel === 10 || userLevel === 11 ? (
         <BranchHomework />
-      ) : userLevel === 2 || userLevel === 8 ? (
+      ) : userLevel === 2 ? (
         <>{!loading && <EvaluatorHomework is_auditor={isAuditor} />}</>
       ) : null}
     </>
