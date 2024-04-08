@@ -454,6 +454,10 @@ const FilesViewEvaluate = ({
   });
 
   const handleSaveErp = async () => {
+    if (!selectedErp) {
+      message.error('Please select ERP to update');
+      return;
+    }
     setUploadBtn(true);
     axiosInstance
       .patch(`${endpointsV1.homework.hwData}${selectedHomework?.id}/`, {
