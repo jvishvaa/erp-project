@@ -114,15 +114,13 @@ const EvaluatorHomework = ({ is_auditor }) => {
   };
 
   useEffect(() => {
-    fetchEvaluator();
-    // fetchTeacherData({
-    //   is_assessed: showTab === 1 ? 'True' : 'False',
-    //   start_date: '13-03-2024',
-    //   end_date: '19-03-2024',
-    //   sub_sec_mpng: 7485,
-    //   page: 1,
-    // });
-  }, []);
+    if (grade && section && subject) {
+      fetchEvaluator({ sub_sec_mpng: subject });
+    } else {
+      setEvaluatorList([]);
+      setSelectedEvaluator(null);
+    }
+  }, [grade, subject, section]);
 
   const handleFilters = () => {
     if (showFilters) {
@@ -180,6 +178,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
     setSectionList([]);
     setSubjectList([]);
     setSubject('');
+    setSelectedEvaluator(null);
     formRef.current.setFieldsValue({
       grade: null,
       section: null,
@@ -224,7 +223,9 @@ const EvaluatorHomework = ({ is_auditor }) => {
   const fetchEvaluator = async (params = {}) => {
     console.log({ params });
     await axiosInstance
-      .get(`${endpoints.centralizedHomework.evaluatorList}`)
+      .get(`${endpoints.centralizedHomework.evaluatorList}`, {
+        params: { ...params },
+      })
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setEvaluatorList(res?.data?.result);
@@ -796,9 +797,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                   <div className='col-12'>
                     <Result
                       status='warning'
-                      title={
-                        <span className='th-grey'>No Data Available</span>
-                      }
+                      title={<span className='th-grey'>No Data Available</span>}
                     />
                   </div>
                 ) : (
