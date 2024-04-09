@@ -28,6 +28,8 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
+import axiosInstance from 'v2/config/axios';
+import { message } from 'antd';
 
 const EditSchoolDetailsForm = ({
   details,
@@ -38,6 +40,8 @@ const EditSchoolDetailsForm = ({
   currentFormLength,
   isAcadDisabled = false,
   isEditable = false,
+  roleBasedUiConfig = null,
+  userLevelForEdit = null,
 }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -81,7 +85,7 @@ const EditSchoolDetailsForm = ({
   //     });
   //   }
   // }, []);
-  console.log(details, 'details edit');
+  console.log(details, 'values edit');
   const formik = useFormik({
     initialValues: {
       academic_year: details.academic_year,
@@ -116,16 +120,19 @@ const EditSchoolDetailsForm = ({
   const fetchBranches = (acadId) => {
     // fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
     fetchBranchesForCreateUser(acadId).then((data) => {
+      console.log({ data }, 'values');
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
         branch_code: obj.branch_code,
+        acadId: obj.acadId,
       }));
       if (transformedData?.length > 1) {
         transformedData.unshift({
           id: 'all',
           branch_name: 'Select All',
           branch_code: 'all',
+          acadId: 'all',
         });
       }
       setBranches(transformedData);
@@ -189,6 +196,37 @@ const EditSchoolDetailsForm = ({
           : values;
       formik.setFieldValue('branch', values);
       // fetchGrades(acadId, values, moduleId).then((data) => {
+      if (roleBasedUiConfig.includes(userLevelForEdit?.toString())) {
+        console.log({ values, acadId }, 'values');
+        axiosInstance
+          .get(`/erp_user/grade-list/`, {
+            params: { acad_session: values?.map((each) => each?.acadId).join(',') },
+          })
+          .then((response) => {
+            if (response.data.status_code === 200) {
+              const transformedData = response.data.result?.map((obj) => ({
+                // item_id: grade?.id,
+                id: obj?.grade_id,
+                grade_name: obj?.grade__grade_name,
+                // branch_id: grade?.acad_session__branch_id,
+              }));
+              if (transformedData?.length > 1) {
+                transformedData.unshift({
+                  // item_id: 'all',
+                  id: 'all',
+                  grade_name: 'Select All',
+                  // branch_id: '',
+                });
+              }
+              setGrades([...transformedData]);
+            }
+          })
+          .catch((error) => {
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          })
+          .finally(() => {});
+        return;
+      }
       fetchGrades(acadId, values).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
@@ -226,6 +264,38 @@ const EditSchoolDetailsForm = ({
       formik.setFieldValue('grade', values);
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch;
       // fetchSections(acadId, branchList, values, moduleId).then((data) => {
+      console.log({ values, details }, 'values grade');
+      if (roleBasedUiConfig.includes(userLevelForEdit?.toString())) {
+        axiosInstance
+          .get(`/erp_user/subject-list/`, {
+            params: {
+              acad_session: formik.values?.branch?.map((each) => each?.acadId).join(','),
+              grades: values?.map((each) => each?.id)?.join(','),
+            },
+          })
+          .then((response) => {
+            if (response.data.status_code === 200) {
+              const transformedData = response?.data?.result.map((obj) => ({
+                id: obj.subject_id,
+                item_id: obj.subject_id,
+                subject_name: obj.subject__subject_name,
+              }));
+              if (transformedData?.length > 1) {
+                transformedData.unshift({
+                  id: 'all',
+                  item_id: 'all',
+                  subject_name: 'Select All',
+                });
+              }
+              setSubjects([...transformedData]);
+            }
+          })
+          .catch((error) => {
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          })
+          .finally(() => {});
+        return;
+      }
       fetchSections(acadId, branchList, values).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
@@ -285,7 +355,13 @@ const EditSchoolDetailsForm = ({
   };
 
   useEffect(() => {
+    let formi = formik.values;
+    console.log({ details, formi, subjects }, 'values');
+  }, [formik.values, subjects, details]);
+
+  useEffect(() => {
     // if (moduleId) {
+
     fetchAcademicYears();
     getRoleApi();
     getDesignation(details.user_level);
@@ -295,15 +371,21 @@ const EditSchoolDetailsForm = ({
         handleChangeBranch(details.branch, details.academic_year[0]?.id);
         if (details?.grade?.length > 0) {
           handleChangeGrade(details.grade, details.academic_year[0]?.id, details.branch);
-          if (details?.section?.length > 0) {
-            handleChangeSection(
-              details.section,
-              details.academic_year[0]?.id,
-              details.branch,
-              details.grade
-            );
+          if (roleBasedUiConfig.includes(userLevelForEdit?.toString())) {
             if (details?.subjects?.length > 0) {
               formik.setFieldValue('subjects', details.subjects);
+            }
+          } else {
+            if (details?.section?.length > 0) {
+              handleChangeSection(
+                details.section,
+                details.academic_year[0]?.id,
+                details.branch,
+                details.grade
+              );
+              if (details?.subjects?.length > 0) {
+                formik.setFieldValue('subjects', details.subjects);
+              }
             }
           }
         }
@@ -585,45 +667,47 @@ const EditSchoolDetailsForm = ({
             </FormHelperText>
           </FormControl>
         </Grid>
-        <Grid item md={4} xs={12}>
-          <FormControl fullWidth className={classes.margin} variant='outlined'>
-            <Autocomplete
-              id='section'
-              name='section'
-              key={`section_${index}`}
-              onChange={(e, value) => {
-                handleChangeSection(
-                  value,
-                  formik.values.academic_year?.[0]?.id,
-                  formik.values.branch,
-                  formik.values.grade
-                );
-              }}
-              value={formik.values.section || []}
-              options={sections || []}
-              multiple
-              limitTags={2}
-              // filterSelectedOptions
-              className='dropdownIcon'
-              getOptionLabel={(option) => option.section_name || ''}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-              getOptionSelected={(option, value) =>
-                option.section_name == value.section_name
-              }
-              size='small'
-            />
-            <FormHelperText style={{ color: 'red' }}>
-              {formik.errors.section ? formik.errors.section : ''}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
+        {!roleBasedUiConfig.includes(userLevelForEdit?.toString()) ? (
+          <Grid item md={4} xs={12}>
+            <FormControl fullWidth className={classes.margin} variant='outlined'>
+              <Autocomplete
+                id='section'
+                name='section'
+                key={`section_${index}`}
+                onChange={(e, value) => {
+                  handleChangeSection(
+                    value,
+                    formik.values.academic_year?.[0]?.id,
+                    formik.values.branch,
+                    formik.values.grade
+                  );
+                }}
+                value={formik.values.section || []}
+                options={sections || []}
+                multiple
+                limitTags={2}
+                // filterSelectedOptions
+                className='dropdownIcon'
+                getOptionLabel={(option) => option.section_name || ''}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Section'
+                    placeholder='Section'
+                  />
+                )}
+                getOptionSelected={(option, value) =>
+                  option.section_name == value.section_name
+                }
+                size='small'
+              />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.section ? formik.errors.section : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+        ) : null}
         <Grid item md={4} xs={12}>
           <FormControl
             color='secondary'

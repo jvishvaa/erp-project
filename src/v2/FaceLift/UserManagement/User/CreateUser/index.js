@@ -43,6 +43,7 @@ const CreateUser = () => {
   const [selectedSubjectsId, setSelectedSubjectsId] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState();
+  const [selectedAcadId, setSelectedAcadId] = useState();
   const [selectedGrade, setSelectedGrade] = useState();
   const [schoolFormValues, setSchoolFormValues] = useState(null);
   const [studentFormValues, setStudentFormValues] = useState(null);
@@ -65,6 +66,10 @@ const CreateUser = () => {
   const [parentId, setParentId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [roleConfig, setRoleConfig] = useState([]);
+  const [roleBasedUiConfig, setRoleBasedUiConfig] = useState(null);
+  const [userLevelForEdit, setUserLevelForEdit] = useState(null);
+  const [rolesList, setRolesList] = useState(null);
+  const [selectedRoles, setSelectedRoles] = useState(null);
   const [maxSubjectSelection, setMaxSubjectSelection] = useState(null);
   const [editSessionYear, setEditSessionYear] = useState(null);
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
@@ -122,15 +127,105 @@ const CreateUser = () => {
     }
   }, []);
   useEffect(() => {
+    fetchRoleBasedUiConfig({ config_key: 'usrmgmt_admin_access' });
+    getRoles();
+    console.log(params, 'params');
     // if (moduleId) {
     if (params?.id) {
       setEditId(params?.id);
-      fetchUserData({
-        erp_user_id: params?.id,
-      });
+      // fetchUserData({
+      //   erp_user_id: params?.id,
+      // });
+      fetchUserLevel(params?.id);
     }
     // }
   }, []);
+  useEffect(() => {
+    if (userLevelForEdit && params?.id && roleBasedUiConfig) {
+      if (roleBasedUiConfig?.includes(userLevelForEdit?.toString())) {
+        fetchUserDataOwner(params?.id);
+      } else {
+        fetchUserData({
+          erp_user_id: params?.id,
+        });
+      }
+    }
+  }, [userLevelForEdit, params, roleBasedUiConfig]);
+
+  const getRoles = () => {
+    setLoading(true);
+    axiosInstance
+      .get(`/erp_user/roles/`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          setRolesList(response.data.result);
+          console.log(response.data.result, 'response');
+        } else {
+          message.error('Something went wrong!');
+        }
+        // setUserLevelForEdit(response?.data?.level);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message ?? 'Something went wrong!');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const fetchUserDataOwner = (userId) => {
+    setLoading(true);
+    axiosInstance
+      .get(`/erp_user/staff-user/${userId}`)
+      .then((response) => {
+        console.log(response, 'responseeeeee');
+        let data = response.data.result;
+        let converted = Object.keys(data.mapping_bgs)?.map((key) => {
+          return {
+            branch: data.mapping_bgs[key].branches?.map((item) => {
+              let branch_obj = { ...item, branch__branch_name: item.branch_name };
+              delete branch_obj.branch_name;
+              return branch_obj;
+            }),
+            grade: data.mapping_bgs[key].grades?.map((item) => {
+              let grade_obj = { ...item, grade__grade_name: item.grade_name };
+              delete grade_obj.grade_name;
+              return grade_obj;
+            }),
+            session_year: [data.mapping_bgs[key].session_year_data],
+            subjects: data.mapping_bgs[key].subjects?.map((item) => {
+              let subject_obj = { ...item, id: item.subject_id };
+              return subject_obj;
+            }),
+          };
+        });
+        data = { ...data, mapping_bgs: converted };
+        modifyUserData(data);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message ?? 'Something went wrong!');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const fetchUserLevel = (userId) => {
+    if (userId) {
+      axiosInstance
+        .get(`/erp_user/get-user-level/${userId}`)
+        .then((response) => {
+          console.log(response);
+          setUserLevelForEdit(response?.data?.level);
+        })
+        .catch((error) => {
+          message.error(error?.response?.data?.message ?? 'Something went wrong!');
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  };
 
   const fetchRoleConfig = (params = {}) => {
     setLoading(true);
@@ -151,345 +246,15 @@ const CreateUser = () => {
         setLoading(false);
       });
   };
-  const fetchUserData = (parameters = {}) => {
+
+  const fetchRoleBasedUiConfig = (params = {}) => {
     setLoading(true);
     axiosInstance
-      .get(`/erp_user/user-data/`, { params: { ...parameters } })
+      .get(`/assessment/check-sys-config/`, { params: { ...params } })
       .then((response) => {
-        const user = response.data.result;
-        let multipleYears = user?.mapping_bgs?.slice(0, -1) ?? [];
-        let modifiedMultipleYears = [];
-        for (let i = 0; i < multipleYears?.length; i++) {
-          let obj = {
-            id: Math.random(),
-            academic_year: multipleYears[i]?.session_year?.flatMap(
-              (e) => e.session_year_id
-            )[0],
-            branch: multipleYears[i]?.branch?.flatMap((e) => e.branch_id),
-            grade: multipleYears[i]?.grade?.flatMap((e) => e.grade__grade_name),
-            editGrade: multipleYears[i]?.grade?.flatMap((e) => e.grade_id),
-            section: multipleYears[i]?.section?.flatMap((e) => e.section_mapping_id),
-            editSection: multipleYears[i]?.section?.flatMap((e) => e.section_id),
-            subjects: multipleYears[i]?.subjects?.flatMap((e) => e.subject_mapping_id),
-            subjectsId: multipleYears[i]?.subjects?.flatMap((e) => e.id),
-            isEdit: true,
-          };
-          modifiedMultipleYears.push(obj);
+        if (response.data.status_code === 200) {
+          setRoleBasedUiConfig(response.data?.result);
         }
-        setMultipleAcademicYear([...modifiedMultipleYears]);
-        let gender;
-        switch (user.gender) {
-          case 'male':
-            gender = 1;
-            break;
-          case 'female':
-            gender = 2;
-            break;
-          case 'other':
-            gender = 3;
-            break;
-          default:
-            gender = 1;
-            break;
-        }
-
-        setUserLevel(user?.user_level);
-        let parentSelected = [];
-        if (user?.user_level !== 13) {
-          let parentDetails = user?.parent_details;
-          if (parentDetails?.father_first_name && !parentDetails?.guardian_first_name) {
-            setParent(['parent']);
-            parentSelected = ['parent'];
-          } else if (
-            !parentDetails?.father_first_name &&
-            parentDetails?.guardian_first_name
-          ) {
-            setParent(['guardian']);
-            parentSelected = ['guardian'];
-          } else if (
-            parentDetails?.father_first_name &&
-            parentDetails?.guardian_first_name
-          ) {
-            setParent(['guardian', 'parent']);
-            parentSelected = ['guardian', 'parent'];
-          } else {
-            setParent([]);
-          }
-        }
-
-        let transformedUser = {
-          id: user?.id || '',
-          erp_id: user?.erp_id || '',
-          first_name: user?.user?.first_name || '',
-          middle_name: user?.user_middle_name || '',
-          last_name: user?.user?.last_name || '',
-          email: user?.user?.email || '',
-          username: user?.user?.username || '',
-          user_level: user?.user?.user_level_int || '',
-          birth_place: user?.birth_place,
-          medical_info: user?.medical_info,
-          special_needs: user?.special_needs,
-          single_parent: user?.single_parent,
-          old_school_name: user?.old_school_name,
-          mapping_bgs:
-            user?.mapping_bgs?.map((mapping) => ({ ...mapping, is_delete: false })) || [],
-
-          academic_year: user?.mapping_bgs?.map(({ session_year: sessionYear = [] }) =>
-            sessionYear.map(
-              ({
-                session_year = '',
-                session_year_id = '',
-                is_current_session = false,
-              }) => ({
-                id: session_year_id,
-                session_year: session_year,
-                is_default: is_current_session,
-              })
-            )
-          ),
-          branch: user?.mapping_bgs?.map(({ branch: branches = [] }) =>
-            branches.map(({ branch_id = '', branch__branch_name = '' }) => ({
-              id: branch_id,
-              branch_name: branch__branch_name,
-            }))
-          ),
-          grade: user?.mapping_bgs?.map(({ grade: grades = [] }) =>
-            grades.map(
-              ({
-                id = '',
-                grade_id = '',
-                acad_session__branch_id = '',
-                grade__grade_name = '',
-              }) =>
-                ({
-                  id: grade_id,
-                  branch_id: acad_session__branch_id,
-                  grade_name: grade__grade_name,
-                  item_id: id,
-                } || [])
-            )
-          ),
-
-          section: user?.mapping_bgs?.map(({ section: Sections = [] }) =>
-            Sections.map(
-              ({
-                id = '',
-                section_id = '',
-                grade_id = '',
-                acad_session__branch_id = '',
-                section__section_name = '',
-                section_mapping_id = '',
-              }) =>
-                ({
-                  id: section_id,
-                  grade_id: grade_id,
-                  branch_id: acad_session__branch_id,
-                  section_name: section__section_name,
-                  item_id: section_mapping_id,
-                } || [])
-            )
-          ),
-          subjects: user?.mapping_bgs?.map(({ subjects = [] }) =>
-            subjects.map(
-              ({ id = '', subject_name = '', subject_mapping_id = '' }) =>
-                ({
-                  id: id,
-                  item_id: subject_mapping_id,
-                  subject_name: subject_name,
-                } || [])
-            )
-          ),
-          contact: user?.contact || '',
-          date_of_birth: user?.date_of_birth,
-          gender,
-          profile: user?.profile || '',
-          address: user?.address || '',
-          parent: {
-            id: user.parent_details?.id,
-            father_first_name: user?.parent_details?.father_first_name || '',
-            father_last_name: user?.parent_details?.father_last_name || '',
-            mother_first_name: user?.parent_details?.mother_first_name || '',
-            mother_last_name: user?.parent_details?.mother_last_name || '',
-            mother_middle_name: user?.parent_details?.mother_middle_name || '',
-            father_middle_name: user?.parent_details?.father_middle_name || '',
-            father_email: user?.parent_details?.father_email || '',
-            mother_email: user?.parent_details?.mother_email || '',
-            father_mobile: user?.parent_details?.father_mobile?.split('-')[1] || '',
-            father_mobile_code:
-              user?.parent_details?.father_mobile?.split('-')[0] || '+91',
-            mother_mobile: user?.parent_details?.mother_mobile?.split('-')[1] || '',
-            mother_mobile_code:
-              user?.parent_details?.mother_mobile?.split('-')[0] || '+91',
-            mother_photo: user?.parent_details?.mother_photo || '',
-            father_photo: user?.parent_details?.father_photo || '',
-            father_qualification: user?.parent_details?.father_qualification || '',
-            father_aadhaar: user?.parent_details?.father_aadhaar || '',
-            father_age: user?.parent_details?.father_age || '',
-            father_occupation: user?.parent_details?.father_occupation || '',
-            mother_qualification: user?.parent_details?.mother_qualification || '',
-            mother_aadhaar: user?.parent_details?.mother_aadhaar || '',
-            mother_age: user?.parent_details?.mother_age || '',
-            mother_occupation: user?.parent_details?.mother_occupation || '',
-            guardian_qualification: user?.parent_details?.guardian_qualification || '',
-            guardian_aadhaar: user?.parent_details?.guardian_aadhaar || '',
-            guardian_age: user?.parent_details?.guardian_age || '',
-            guardian_occupation: user?.parent_details?.guardian_occupation || '',
-            address: user?.parent_details?.address,
-            pin_code: user?.parent_details?.pin_code,
-            email: user?.parent_details?.email,
-            contact: user?.contact?.split('-')[1] || '',
-            contact_code: user?.contact?.split('-')[0] || '',
-            guardian_first_name: user?.parent_details?.guardian_first_name || '',
-            guardian_middle_name: user?.parent_details?.guardian_middle_name || '',
-            guardian_last_name: user?.parent_details?.guardian_last_name || '',
-            guardian_email: user?.parent_details?.guardian_email || '',
-            guardian_mobile: user?.parent_details?.guardian_mobile?.split('-')[1] || '',
-            guardian_mobile_code:
-              user?.parent_details?.guardian_mobile?.split('-')[0] || '+91',
-            guardian_photo: user?.parent_details?.guardian_photo || '',
-            single: parentSelected,
-            aadhaar: user?.aadhaar,
-          },
-          user_level: user?.user_level,
-          designation: user?.designation,
-          siblings: user?.siblings,
-        };
-        setParentId(user.parent_details?.id);
-        if (
-          user?.parent_details?.email === null ||
-          user?.parent_details?.email === undefined ||
-          user?.parent_details?.email === ''
-        ) {
-          setFatherPrimaryEmail(false);
-          setMotherPrimaryEmail(false);
-          setGuardianPrimaryEmail(false);
-        } else if (user?.parent_details?.email === user?.parent_details?.father_email) {
-          setFatherPrimaryEmail(true);
-          setMotherPrimaryEmail(false);
-          setGuardianPrimaryEmail(false);
-        } else if (user?.parent_details?.email === user?.parent_details?.mother_email) {
-          setFatherPrimaryEmail(false);
-          setMotherPrimaryEmail(true);
-          setGuardianPrimaryEmail(false);
-        } else if (user?.parent_details?.email === user?.parent_details?.guardian_email) {
-          setFatherPrimaryEmail(false);
-          setMotherPrimaryEmail(false);
-          setGuardianPrimaryEmail(true);
-        } else {
-          setFatherPrimaryEmail(false);
-          setMotherPrimaryEmail(false);
-          setGuardianPrimaryEmail(false);
-        }
-        if (
-          user?.contact === null ||
-          user?.contact === undefined ||
-          user?.contact === ''
-        ) {
-          setFatherPrimaryEmail(false);
-          setMotherPrimaryEmail(false);
-          setGuardianPrimaryEmail(false);
-        } else if (user?.contact === user?.parent_details?.father_mobile) {
-          setFatherPrimary(true);
-          setMotherPrimary(false);
-          setGuardianPrimary(false);
-        } else if (user?.contact === user?.parent_details?.mother_mobile) {
-          setFatherPrimary(false);
-          setMotherPrimary(true);
-          setGuardianPrimary(false);
-        } else if (user?.contact === user?.parent_details?.guardian_mobile) {
-          setFatherPrimary(false);
-          setMotherPrimary(false);
-          setGuardianPrimary(true);
-        } else {
-          setFatherPrimary(false);
-          setMotherPrimary(false);
-          setGuardianPrimary(false);
-        }
-        setUserDetails(transformedUser);
-        var transformedSchoolDetails = transformedUser;
-        var gradeObj = transformedSchoolDetails?.grade?.pop();
-        var sectionObj = transformedSchoolDetails?.section?.pop();
-        var subjectObj = transformedSchoolDetails?.subjects?.pop();
-        var academicYearObj = transformedSchoolDetails?.academic_year?.pop();
-        var schoolDetails = {
-          user_level: transformedSchoolDetails?.user_level,
-          designation: transformedSchoolDetails?.designation?.id,
-          academic_year: academicYearObj[0]?.session_year,
-          branch: transformedUser?.branch?.pop()?.map((e) => e.id),
-          grade: gradeObj?.map((e) => e.grade_name),
-          section: sectionObj?.map((e) => e.section_name),
-          subjects: subjectObj?.map((e) => e.item_id),
-        };
-        let editYear = academicYearObj[0]?.id;
-        setEditSessionYear(editYear);
-        setSectionMappingId(sectionObj?.map((e) => e?.item_id));
-        var studentInformation = {
-          first_name: transformedUser?.first_name,
-          middle_name: transformedUser?.middle_name,
-          last_name: transformedUser?.last_name,
-          gender: transformedUser?.gender,
-          date_of_birth: moment(transformedUser?.date_of_birth),
-          age: moment().diff(moment(transformedUser?.date_of_birth), 'years'),
-          birth_place: transformedUser?.birth_place,
-          medical_info: transformedUser?.medical_info,
-          special_needs: transformedUser?.special_needs,
-          single: transformedUser?.single_parent ? true : false,
-          single_parent:
-            transformedUser?.single_parent === 1
-              ? 'mother'
-              : transformedUser?.single_parent === 2
-              ? 'father'
-              : transformedUser?.single_parent === 3
-              ? 'guardian'
-              : null,
-          profile_photo: transformedUser?.profile,
-          old_school_name: transformedUser?.old_school_name,
-          username: user?.user?.username,
-        };
-        setGuardian(studentInformation?.single_parent);
-        setSelectedSubjects(subjectObj?.map((e) => e?.item_id));
-        setSelectedSubjectsId(subjectObj?.map((e) => e?.id));
-        setSingleParent(transformedUser?.single_parent ? true : false);
-        fetchDesignation({ user_level: schoolDetails?.user_level });
-        fetchBranches({
-          // module_id: moduleId,
-          session_year: editYear,
-        });
-        fetchGrades(schoolDetails?.branch, null, editYear);
-        fetchSections(
-          gradeObj?.map((e) => e.id),
-          null,
-          schoolDetails?.branch,
-          editYear
-        );
-        fetchSubjects(
-          sectionObj?.map((e) => e.id),
-          schoolDetails?.branch,
-          gradeObj?.map((e) => e.id),
-          editYear
-        );
-        setSchoolFormValues(schoolDetails);
-        setStudentFormValues(studentInformation);
-        setFamilyFormValues(transformedUser?.parent);
-        let userSibling = transformedUser?.siblings ?? [];
-        for (let i = 0; i < userSibling?.length; i++) {
-          userSibling[i].is_edit = true;
-        }
-        setSiblings(
-          userSibling?.length > 0
-            ? userSibling
-            : [
-                {
-                  id: Math.random(),
-                  name: '',
-                  gender: '',
-                  age: 0,
-                  grade_name: '',
-                  school_name: '',
-                  is_delete: false,
-                },
-              ]
-        );
       })
       .catch((error) => {
         message.error(error?.response?.data?.message ?? 'Something went wrong!');
@@ -497,6 +262,736 @@ const CreateUser = () => {
       .finally(() => {
         setLoading(false);
       });
+  };
+  const fetchUserData = (parameters = {}) => {
+    setLoading(true);
+    axiosInstance
+      .get(`/erp_user/user-data/`, { params: { ...parameters } })
+      .then((response) => {
+        modifyUserData(response.data.result);
+        // const user = response.data.result;
+        // let multipleYears = user?.mapping_bgs?.slice(0, -1) ?? [];
+        // let modifiedMultipleYears = [];
+        // for (let i = 0; i < multipleYears?.length; i++) {
+        //   let obj = {
+        //     id: Math.random(),
+        //     academic_year: multipleYears[i]?.session_year?.flatMap(
+        //       (e) => e.session_year_id
+        //     )[0],
+        //     branch: multipleYears[i]?.branch?.flatMap((e) => e.branch_id),
+        //     grade: multipleYears[i]?.grade?.flatMap((e) => e.grade__grade_name),
+        //     editGrade: multipleYears[i]?.grade?.flatMap((e) => e.grade_id),
+        //     section: multipleYears[i]?.section?.flatMap((e) => e.section_mapping_id),
+        //     editSection: multipleYears[i]?.section?.flatMap((e) => e.section_id),
+        //     subjects: multipleYears[i]?.subjects?.flatMap((e) => e.subject_mapping_id),
+        //     subjectsId: multipleYears[i]?.subjects?.flatMap((e) => e.id),
+        //     isEdit: true,
+        //   };
+        //   modifiedMultipleYears.push(obj);
+        // }
+        // setMultipleAcademicYear([...modifiedMultipleYears]);
+        // let gender;
+        // switch (user.gender) {
+        //   case 'male':
+        //     gender = 1;
+        //     break;
+        //   case 'female':
+        //     gender = 2;
+        //     break;
+        //   case 'other':
+        //     gender = 3;
+        //     break;
+        //   default:
+        //     gender = 1;
+        //     break;
+        // }
+
+        // setUserLevel(user?.user_level);
+        // let parentSelected = [];
+        // if (user?.user_level !== 13) {
+        //   let parentDetails = user?.parent_details;
+        //   if (parentDetails?.father_first_name && !parentDetails?.guardian_first_name) {
+        //     setParent(['parent']);
+        //     parentSelected = ['parent'];
+        //   } else if (
+        //     !parentDetails?.father_first_name &&
+        //     parentDetails?.guardian_first_name
+        //   ) {
+        //     setParent(['guardian']);
+        //     parentSelected = ['guardian'];
+        //   } else if (
+        //     parentDetails?.father_first_name &&
+        //     parentDetails?.guardian_first_name
+        //   ) {
+        //     setParent(['guardian', 'parent']);
+        //     parentSelected = ['guardian', 'parent'];
+        //   } else {
+        //     setParent([]);
+        //   }
+        // }
+
+        // let transformedUser = {
+        //   id: user?.id || '',
+        //   erp_id: user?.erp_id || '',
+        //   first_name: user?.user?.first_name || '',
+        //   middle_name: user?.user_middle_name || '',
+        //   last_name: user?.user?.last_name || '',
+        //   email: user?.user?.email || '',
+        //   username: user?.user?.username || '',
+        //   user_level: user?.user?.user_level_int || '',
+        //   birth_place: user?.birth_place,
+        //   medical_info: user?.medical_info,
+        //   special_needs: user?.special_needs,
+        //   single_parent: user?.single_parent,
+        //   old_school_name: user?.old_school_name,
+        //   mapping_bgs:
+        //     user?.mapping_bgs?.map((mapping) => ({ ...mapping, is_delete: false })) || [],
+
+        //   academic_year: user?.mapping_bgs?.map(({ session_year: sessionYear = [] }) =>
+        //     sessionYear.map(
+        //       ({
+        //         session_year = '',
+        //         session_year_id = '',
+        //         is_current_session = false,
+        //       }) => ({
+        //         id: session_year_id,
+        //         session_year: session_year,
+        //         is_default: is_current_session,
+        //       })
+        //     )
+        //   ),
+        //   branch: user?.mapping_bgs?.map(({ branch: branches = [] }) =>
+        //     branches.map(({ branch_id = '', branch__branch_name = '' }) => ({
+        //       id: branch_id,
+        //       branch_name: branch__branch_name,
+        //     }))
+        //   ),
+        //   grade: user?.mapping_bgs?.map(({ grade: grades = [] }) =>
+        //     grades.map(
+        //       ({
+        //         id = '',
+        //         grade_id = '',
+        //         acad_session__branch_id = '',
+        //         grade__grade_name = '',
+        //       }) =>
+        //         ({
+        //           id: grade_id,
+        //           branch_id: acad_session__branch_id,
+        //           grade_name: grade__grade_name,
+        //           item_id: id,
+        //         } || [])
+        //     )
+        //   ),
+
+        //   section: user?.mapping_bgs?.map(({ section: Sections = [] }) =>
+        //     Sections.map(
+        //       ({
+        //         id = '',
+        //         section_id = '',
+        //         grade_id = '',
+        //         acad_session__branch_id = '',
+        //         section__section_name = '',
+        //         section_mapping_id = '',
+        //       }) =>
+        //         ({
+        //           id: section_id,
+        //           grade_id: grade_id,
+        //           branch_id: acad_session__branch_id,
+        //           section_name: section__section_name,
+        //           item_id: section_mapping_id,
+        //         } || [])
+        //     )
+        //   ),
+        //   subjects: user?.mapping_bgs?.map(({ subjects = [] }) =>
+        //     subjects.map(
+        //       ({ id = '', subject_name = '', subject_mapping_id = '' }) =>
+        //         ({
+        //           id: id,
+        //           item_id: subject_mapping_id,
+        //           subject_name: subject_name,
+        //         } || [])
+        //     )
+        //   ),
+        //   contact: user?.contact || '',
+        //   date_of_birth: user?.date_of_birth,
+        //   gender,
+        //   profile: user?.profile || '',
+        //   address: user?.address || '',
+        //   parent: {
+        //     id: user.parent_details?.id,
+        //     father_first_name: user?.parent_details?.father_first_name || '',
+        //     father_last_name: user?.parent_details?.father_last_name || '',
+        //     mother_first_name: user?.parent_details?.mother_first_name || '',
+        //     mother_last_name: user?.parent_details?.mother_last_name || '',
+        //     mother_middle_name: user?.parent_details?.mother_middle_name || '',
+        //     father_middle_name: user?.parent_details?.father_middle_name || '',
+        //     father_email: user?.parent_details?.father_email || '',
+        //     mother_email: user?.parent_details?.mother_email || '',
+        //     father_mobile: user?.parent_details?.father_mobile?.split('-')[1] || '',
+        //     father_mobile_code:
+        //       user?.parent_details?.father_mobile?.split('-')[0] || '+91',
+        //     mother_mobile: user?.parent_details?.mother_mobile?.split('-')[1] || '',
+        //     mother_mobile_code:
+        //       user?.parent_details?.mother_mobile?.split('-')[0] || '+91',
+        //     mother_photo: user?.parent_details?.mother_photo || '',
+        //     father_photo: user?.parent_details?.father_photo || '',
+        //     father_qualification: user?.parent_details?.father_qualification || '',
+        //     father_aadhaar: user?.parent_details?.father_aadhaar || '',
+        //     father_age: user?.parent_details?.father_age || '',
+        //     father_occupation: user?.parent_details?.father_occupation || '',
+        //     mother_qualification: user?.parent_details?.mother_qualification || '',
+        //     mother_aadhaar: user?.parent_details?.mother_aadhaar || '',
+        //     mother_age: user?.parent_details?.mother_age || '',
+        //     mother_occupation: user?.parent_details?.mother_occupation || '',
+        //     guardian_qualification: user?.parent_details?.guardian_qualification || '',
+        //     guardian_aadhaar: user?.parent_details?.guardian_aadhaar || '',
+        //     guardian_age: user?.parent_details?.guardian_age || '',
+        //     guardian_occupation: user?.parent_details?.guardian_occupation || '',
+        //     address: user?.parent_details?.address,
+        //     pin_code: user?.parent_details?.pin_code,
+        //     email: user?.parent_details?.email,
+        //     contact: user?.contact?.split('-')[1] || '',
+        //     contact_code: user?.contact?.split('-')[0] || '',
+        //     guardian_first_name: user?.parent_details?.guardian_first_name || '',
+        //     guardian_middle_name: user?.parent_details?.guardian_middle_name || '',
+        //     guardian_last_name: user?.parent_details?.guardian_last_name || '',
+        //     guardian_email: user?.parent_details?.guardian_email || '',
+        //     guardian_mobile: user?.parent_details?.guardian_mobile?.split('-')[1] || '',
+        //     guardian_mobile_code:
+        //       user?.parent_details?.guardian_mobile?.split('-')[0] || '+91',
+        //     guardian_photo: user?.parent_details?.guardian_photo || '',
+        //     single: parentSelected,
+        //     aadhaar: user?.aadhaar,
+        //   },
+        //   user_level: user?.user_level,
+        //   designation: user?.designation,
+        //   siblings: user?.siblings,
+        // };
+        // setParentId(user.parent_details?.id);
+        // if (
+        //   user?.parent_details?.email === null ||
+        //   user?.parent_details?.email === undefined ||
+        //   user?.parent_details?.email === ''
+        // ) {
+        //   setFatherPrimaryEmail(false);
+        //   setMotherPrimaryEmail(false);
+        //   setGuardianPrimaryEmail(false);
+        // } else if (user?.parent_details?.email === user?.parent_details?.father_email) {
+        //   setFatherPrimaryEmail(true);
+        //   setMotherPrimaryEmail(false);
+        //   setGuardianPrimaryEmail(false);
+        // } else if (user?.parent_details?.email === user?.parent_details?.mother_email) {
+        //   setFatherPrimaryEmail(false);
+        //   setMotherPrimaryEmail(true);
+        //   setGuardianPrimaryEmail(false);
+        // } else if (user?.parent_details?.email === user?.parent_details?.guardian_email) {
+        //   setFatherPrimaryEmail(false);
+        //   setMotherPrimaryEmail(false);
+        //   setGuardianPrimaryEmail(true);
+        // } else {
+        //   setFatherPrimaryEmail(false);
+        //   setMotherPrimaryEmail(false);
+        //   setGuardianPrimaryEmail(false);
+        // }
+        // if (
+        //   user?.contact === null ||
+        //   user?.contact === undefined ||
+        //   user?.contact === ''
+        // ) {
+        //   setFatherPrimaryEmail(false);
+        //   setMotherPrimaryEmail(false);
+        //   setGuardianPrimaryEmail(false);
+        // } else if (user?.contact === user?.parent_details?.father_mobile) {
+        //   setFatherPrimary(true);
+        //   setMotherPrimary(false);
+        //   setGuardianPrimary(false);
+        // } else if (user?.contact === user?.parent_details?.mother_mobile) {
+        //   setFatherPrimary(false);
+        //   setMotherPrimary(true);
+        //   setGuardianPrimary(false);
+        // } else if (user?.contact === user?.parent_details?.guardian_mobile) {
+        //   setFatherPrimary(false);
+        //   setMotherPrimary(false);
+        //   setGuardianPrimary(true);
+        // } else {
+        //   setFatherPrimary(false);
+        //   setMotherPrimary(false);
+        //   setGuardianPrimary(false);
+        // }
+        // setUserDetails(transformedUser);
+        // var transformedSchoolDetails = transformedUser;
+        // var gradeObj = transformedSchoolDetails?.grade?.pop();
+        // var sectionObj = transformedSchoolDetails?.section?.pop();
+        // var subjectObj = transformedSchoolDetails?.subjects?.pop();
+        // var academicYearObj = transformedSchoolDetails?.academic_year?.pop();
+        // var schoolDetails = {
+        //   user_level: transformedSchoolDetails?.user_level,
+        //   designation: transformedSchoolDetails?.designation?.id,
+        //   academic_year: academicYearObj[0]?.session_year,
+        //   branch: transformedUser?.branch?.pop()?.map((e) => e.id),
+        //   grade: gradeObj?.map((e) => e.grade_name),
+        //   section: sectionObj?.map((e) => e.section_name),
+        //   subjects: subjectObj?.map((e) => e.item_id),
+        // };
+        // let editYear = academicYearObj[0]?.id;
+        // setEditSessionYear(editYear);
+        // setSectionMappingId(sectionObj?.map((e) => e?.item_id));
+        // var studentInformation = {
+        //   first_name: transformedUser?.first_name,
+        //   middle_name: transformedUser?.middle_name,
+        //   last_name: transformedUser?.last_name,
+        //   gender: transformedUser?.gender,
+        //   date_of_birth: moment(transformedUser?.date_of_birth),
+        //   age: moment().diff(moment(transformedUser?.date_of_birth), 'years'),
+        //   birth_place: transformedUser?.birth_place,
+        //   medical_info: transformedUser?.medical_info,
+        //   special_needs: transformedUser?.special_needs,
+        //   single: transformedUser?.single_parent ? true : false,
+        //   single_parent:
+        //     transformedUser?.single_parent === 1
+        //       ? 'mother'
+        //       : transformedUser?.single_parent === 2
+        //       ? 'father'
+        //       : transformedUser?.single_parent === 3
+        //       ? 'guardian'
+        //       : null,
+        //   profile_photo: transformedUser?.profile,
+        //   old_school_name: transformedUser?.old_school_name,
+        //   username: user?.user?.username,
+        // };
+        // setGuardian(studentInformation?.single_parent);
+        // setSelectedSubjects(subjectObj?.map((e) => e?.item_id));
+        // setSelectedSubjectsId(subjectObj?.map((e) => e?.id));
+        // setSingleParent(transformedUser?.single_parent ? true : false);
+        // fetchDesignation({ user_level: schoolDetails?.user_level });
+        // fetchBranches({
+        //   // module_id: moduleId,
+        //   session_year: editYear,
+        // });
+        // fetchGrades(schoolDetails?.branch, null, editYear);
+        // fetchSections(
+        //   gradeObj?.map((e) => e.id),
+        //   null,
+        //   schoolDetails?.branch,
+        //   editYear
+        // );
+        // fetchSubjects(
+        //   sectionObj?.map((e) => e.id),
+        //   schoolDetails?.branch,
+        //   gradeObj?.map((e) => e.id),
+        //   editYear
+        // );
+        // setSchoolFormValues(schoolDetails);
+        // setStudentFormValues(studentInformation);
+        // setFamilyFormValues(transformedUser?.parent);
+        // let userSibling = transformedUser?.siblings ?? [];
+        // for (let i = 0; i < userSibling?.length; i++) {
+        //   userSibling[i].is_edit = true;
+        // }
+        // setSiblings(
+        //   userSibling?.length > 0
+        //     ? userSibling
+        //     : [
+        //         {
+        //           id: Math.random(),
+        //           name: '',
+        //           gender: '',
+        //           age: 0,
+        //           grade_name: '',
+        //           school_name: '',
+        //           is_delete: false,
+        //         },
+        //       ]
+        // );
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message ?? 'Something went wrong!');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const modifyUserData = (response) => {
+    console.log(response, 'modifyUserData');
+    setLoading(true);
+    const user = response;
+    let multipleYears = user?.mapping_bgs?.slice(0, -1) ?? [];
+    let modifiedMultipleYears = [];
+    for (let i = 0; i < multipleYears?.length; i++) {
+      let obj = {
+        id: Math.random(),
+        academic_year: multipleYears[i]?.session_year?.flatMap(
+          (e) => e.session_year_id
+        )[0],
+        branch: multipleYears[i]?.branch?.flatMap((e) => e.branch_id),
+        acadId: multipleYears[i]?.branch?.flatMap((e) => e.acad_id),
+        grade: multipleYears[i]?.grade?.flatMap((e) => e.grade__grade_name),
+        editGrade: multipleYears[i]?.grade?.flatMap((e) => e.grade_id),
+        section: multipleYears[i]?.section?.flatMap((e) => e.section_mapping_id),
+        editSection: multipleYears[i]?.section?.flatMap((e) => e.section_id),
+        subjects: multipleYears[i]?.subjects?.flatMap((e) => e.id),
+        subjectsId: multipleYears[i]?.subjects?.flatMap((e) => e.id),
+        ...(roleBasedUiConfig?.includes(userLevelForEdit?.toString())
+          ? {
+              academicYearObj: multipleYears[i]?.session_year?.map((each) => {
+                return {
+                  id: each?.session_year_id,
+                  session_year: each?.session_year,
+                  is_default: each?.is_current_session,
+                };
+              }),
+              branchObj: multipleYears[i]?.branch?.map((each) => {
+                return {
+                  id: each?.branch_id,
+                  branch_name: each?.branch__branch_name,
+                  acadId: each?.acad_id,
+                };
+              }),
+              gradeObj: multipleYears[i]?.grade?.map((each) => {
+                return {
+                  id: each?.grade_id,
+                  // branch_id: acad_session__branch_id,
+                  grade_name: each?.grade__grade_name,
+                  item_id: each?.grade_id,
+                };
+              }),
+              subjectsObj: multipleYears[i]?.subjects?.map((each) => {
+                return {
+                  id: each?.id,
+                  item_id: each?.subject_id || each?.id,
+                  subject_name: each?.subject_name,
+                };
+              }),
+              isEdit: true,
+            }
+          : {}),
+      };
+      modifiedMultipleYears.push(obj);
+    }
+    setMultipleAcademicYear([...modifiedMultipleYears]);
+    let gender;
+    switch (user.gender) {
+      case 'male':
+        gender = 1;
+        break;
+      case 'female':
+        gender = 2;
+        break;
+      case 'other':
+        gender = 3;
+        break;
+      default:
+        gender = 1;
+        break;
+    }
+
+    setUserLevel(user?.user_level);
+    let parentSelected = [];
+    if (user?.user_level !== 13) {
+      let parentDetails = user?.parent_details;
+      if (parentDetails?.father_first_name && !parentDetails?.guardian_first_name) {
+        setParent(['parent']);
+        parentSelected = ['parent'];
+      } else if (
+        !parentDetails?.father_first_name &&
+        parentDetails?.guardian_first_name
+      ) {
+        setParent(['guardian']);
+        parentSelected = ['guardian'];
+      } else if (parentDetails?.father_first_name && parentDetails?.guardian_first_name) {
+        setParent(['guardian', 'parent']);
+        parentSelected = ['guardian', 'parent'];
+      } else {
+        setParent([]);
+      }
+    }
+
+    let transformedUser = {
+      id: user?.id || '',
+      erp_id: user?.erp_id || '',
+      first_name: user?.user?.first_name || '',
+      middle_name: user?.user_middle_name || '',
+      last_name: user?.user?.last_name || '',
+      email: user?.user?.email || '',
+      username: user?.user?.username || '',
+      user_level: user?.user?.user_level_int || '',
+      birth_place: user?.birth_place,
+      medical_info: user?.medical_info,
+      special_needs: user?.special_needs,
+      single_parent: user?.single_parent,
+      old_school_name: user?.old_school_name,
+      mapping_bgs:
+        user?.mapping_bgs?.map((mapping) => ({ ...mapping, is_delete: false })) || [],
+
+      academic_year: user?.mapping_bgs?.map(({ session_year: sessionYear = [] }) =>
+        sessionYear.map(
+          ({ session_year = '', session_year_id = '', is_current_session = false }) => ({
+            id: session_year_id,
+            session_year: session_year,
+            is_default: is_current_session,
+          })
+        )
+      ),
+      branch: user?.mapping_bgs?.map(({ branch: branches = [] }) =>
+        branches.map(({ branch_id = '', branch__branch_name = '', acad_id = '' }) => ({
+          id: branch_id,
+          branch_name: branch__branch_name,
+          acadId: acad_id,
+        }))
+      ),
+      grade: user?.mapping_bgs?.map(({ grade: grades = [] }) =>
+        grades.map(
+          ({
+            id = '',
+            grade_id = '',
+            acad_session__branch_id = '',
+            grade__grade_name = '',
+          }) =>
+            ({
+              id: grade_id,
+              branch_id: acad_session__branch_id,
+              grade_name: grade__grade_name,
+              item_id: id,
+            } || [])
+        )
+      ),
+
+      section: user?.mapping_bgs?.map(({ section: Sections = [] }) =>
+        Sections.map(
+          ({
+            id = '',
+            section_id = '',
+            grade_id = '',
+            acad_session__branch_id = '',
+            section__section_name = '',
+            section_mapping_id = '',
+          }) =>
+            ({
+              id: section_id,
+              grade_id: grade_id,
+              branch_id: acad_session__branch_id,
+              section_name: section__section_name,
+              item_id: section_mapping_id,
+            } || [])
+        )
+      ),
+      subjects: user?.mapping_bgs?.map(({ subjects = [] }) =>
+        subjects.map(
+          ({ id = '', subject_name = '', subject_mapping_id = '' }) =>
+            ({
+              id: id,
+              item_id: subject_mapping_id || id,
+              subject_name: subject_name,
+            } || [])
+        )
+      ),
+      contact: user?.contact || '',
+      date_of_birth: user?.date_of_birth,
+      gender,
+      profile: user?.profile || '',
+      address: user?.address || '',
+      parent: {
+        id: user.parent_details?.id,
+        father_first_name: user?.parent_details?.father_first_name || '',
+        father_last_name: user?.parent_details?.father_last_name || '',
+        mother_first_name: user?.parent_details?.mother_first_name || '',
+        mother_last_name: user?.parent_details?.mother_last_name || '',
+        mother_middle_name: user?.parent_details?.mother_middle_name || '',
+        father_middle_name: user?.parent_details?.father_middle_name || '',
+        father_email: user?.parent_details?.father_email || '',
+        mother_email: user?.parent_details?.mother_email || '',
+        father_mobile: user?.parent_details?.father_mobile?.split('-')[1] || '',
+        father_mobile_code: user?.parent_details?.father_mobile?.split('-')[0] || '+91',
+        mother_mobile: user?.parent_details?.mother_mobile?.split('-')[1] || '',
+        mother_mobile_code: user?.parent_details?.mother_mobile?.split('-')[0] || '+91',
+        mother_photo: user?.parent_details?.mother_photo || '',
+        father_photo: user?.parent_details?.father_photo || '',
+        father_qualification: user?.parent_details?.father_qualification || '',
+        father_aadhaar: user?.parent_details?.father_aadhaar || '',
+        father_age: user?.parent_details?.father_age || '',
+        father_occupation: user?.parent_details?.father_occupation || '',
+        mother_qualification: user?.parent_details?.mother_qualification || '',
+        mother_aadhaar: user?.parent_details?.mother_aadhaar || '',
+        mother_age: user?.parent_details?.mother_age || '',
+        mother_occupation: user?.parent_details?.mother_occupation || '',
+        guardian_qualification: user?.parent_details?.guardian_qualification || '',
+        guardian_aadhaar: user?.parent_details?.guardian_aadhaar || '',
+        guardian_age: user?.parent_details?.guardian_age || '',
+        guardian_occupation: user?.parent_details?.guardian_occupation || '',
+        address: user?.parent_details?.address,
+        pin_code: user?.parent_details?.pin_code,
+        email: user?.parent_details?.email,
+        contact: user?.contact?.split('-')[1] || '',
+        contact_code: user?.contact?.split('-')[0] || '',
+        guardian_first_name: user?.parent_details?.guardian_first_name || '',
+        guardian_middle_name: user?.parent_details?.guardian_middle_name || '',
+        guardian_last_name: user?.parent_details?.guardian_last_name || '',
+        guardian_email: user?.parent_details?.guardian_email || '',
+        guardian_mobile: user?.parent_details?.guardian_mobile?.split('-')[1] || '',
+        guardian_mobile_code:
+          user?.parent_details?.guardian_mobile?.split('-')[0] || '+91',
+        guardian_photo: user?.parent_details?.guardian_photo || '',
+        single: parentSelected,
+        aadhaar: user?.aadhaar,
+      },
+      user_level: user?.user_level,
+      designation: user?.designation,
+      siblings: user?.siblings,
+    };
+    setParentId(user.parent_details?.id);
+    if (
+      user?.parent_details?.email === null ||
+      user?.parent_details?.email === undefined ||
+      user?.parent_details?.email === ''
+    ) {
+      setFatherPrimaryEmail(false);
+      setMotherPrimaryEmail(false);
+      setGuardianPrimaryEmail(false);
+    } else if (user?.parent_details?.email === user?.parent_details?.father_email) {
+      setFatherPrimaryEmail(true);
+      setMotherPrimaryEmail(false);
+      setGuardianPrimaryEmail(false);
+    } else if (user?.parent_details?.email === user?.parent_details?.mother_email) {
+      setFatherPrimaryEmail(false);
+      setMotherPrimaryEmail(true);
+      setGuardianPrimaryEmail(false);
+    } else if (user?.parent_details?.email === user?.parent_details?.guardian_email) {
+      setFatherPrimaryEmail(false);
+      setMotherPrimaryEmail(false);
+      setGuardianPrimaryEmail(true);
+    } else {
+      setFatherPrimaryEmail(false);
+      setMotherPrimaryEmail(false);
+      setGuardianPrimaryEmail(false);
+    }
+    if (user?.contact === null || user?.contact === undefined || user?.contact === '') {
+      setFatherPrimaryEmail(false);
+      setMotherPrimaryEmail(false);
+      setGuardianPrimaryEmail(false);
+    } else if (user?.contact === user?.parent_details?.father_mobile) {
+      setFatherPrimary(true);
+      setMotherPrimary(false);
+      setGuardianPrimary(false);
+    } else if (user?.contact === user?.parent_details?.mother_mobile) {
+      setFatherPrimary(false);
+      setMotherPrimary(true);
+      setGuardianPrimary(false);
+    } else if (user?.contact === user?.parent_details?.guardian_mobile) {
+      setFatherPrimary(false);
+      setMotherPrimary(false);
+      setGuardianPrimary(true);
+    } else {
+      setFatherPrimary(false);
+      setMotherPrimary(false);
+      setGuardianPrimary(false);
+    }
+    setUserDetails(transformedUser);
+    let transformedSchoolDetails = transformedUser;
+    var gradeObj = transformedSchoolDetails?.grade?.pop();
+    var sectionObj = transformedSchoolDetails?.section?.pop();
+    var subjectObj = transformedSchoolDetails?.subjects?.pop();
+    var academicYearObj = transformedSchoolDetails?.academic_year?.pop();
+    const poppedBranch = transformedUser?.branch?.pop();
+    var schoolDetails = {
+      user_level: transformedSchoolDetails?.user_level,
+      designation: transformedSchoolDetails?.designation?.id,
+      academic_year: academicYearObj[0]?.session_year,
+      branch: poppedBranch?.map((e) => e.id),
+      branchAcadId: poppedBranch?.map((e) => e.acadId),
+      grade: gradeObj?.map((e) => e.grade_name),
+      section: sectionObj?.map((e) => e.section_name),
+      subjects: subjectObj?.map((e) => e.item_id),
+    };
+    let editYear = academicYearObj[0]?.id;
+    setEditSessionYear(editYear);
+    setSectionMappingId(sectionObj?.map((e) => e?.item_id));
+    var studentInformation = {
+      first_name: transformedUser?.first_name,
+      middle_name: transformedUser?.middle_name,
+      last_name: transformedUser?.last_name,
+      gender: transformedUser?.gender,
+      date_of_birth: moment(transformedUser?.date_of_birth),
+      age: moment().diff(moment(transformedUser?.date_of_birth), 'years'),
+      birth_place: transformedUser?.birth_place,
+      medical_info: transformedUser?.medical_info,
+      special_needs: transformedUser?.special_needs,
+      single: transformedUser?.single_parent ? true : false,
+      single_parent:
+        transformedUser?.single_parent === 1
+          ? 'mother'
+          : transformedUser?.single_parent === 2
+          ? 'father'
+          : transformedUser?.single_parent === 3
+          ? 'guardian'
+          : null,
+      profile_photo: transformedUser?.profile,
+      old_school_name: transformedUser?.old_school_name,
+      username: user?.user?.username,
+    };
+    setGuardian(studentInformation?.single_parent);
+    setSelectedSubjects(subjectObj?.map((e) => e?.item_id));
+    setSelectedSubjectsId(subjectObj?.map((e) => e?.id));
+    setSingleParent(transformedUser?.single_parent ? true : false);
+    fetchDesignation({ user_level: schoolDetails?.user_level });
+    fetchBranches({
+      // module_id: moduleId,
+      session_year: editYear,
+    });
+    if (roleBasedUiConfig?.includes(userLevelForEdit?.toString())) {
+      fetchGrades(
+        schoolDetails?.branch,
+        null,
+        editYear,
+        schoolDetails?.branchAcadId,
+        userLevelForEdit?.toString()
+      );
+      fetchSubjects(
+        gradeObj?.map((e) => e.id),
+        null,
+        null,
+        editYear,
+        userLevelForEdit?.toString(),
+        schoolDetails?.branchAcadId
+      );
+    } else {
+      fetchGrades(schoolDetails?.branch, null, editYear);
+      fetchSections(
+        gradeObj?.map((e) => e.id),
+        null,
+        schoolDetails?.branch,
+        editYear
+      );
+      fetchSubjects(
+        sectionObj?.map((e) => e.id),
+        schoolDetails?.branch,
+        gradeObj?.map((e) => e.id),
+        editYear
+      );
+    }
+    setSchoolFormValues(schoolDetails);
+    setStudentFormValues(studentInformation);
+    setFamilyFormValues(transformedUser?.parent);
+    let userSibling = transformedUser?.siblings ?? [];
+    for (let i = 0; i < userSibling?.length; i++) {
+      userSibling[i].is_edit = true;
+    }
+    setSiblings(
+      userSibling?.length > 0
+        ? userSibling
+        : [
+            {
+              id: Math.random(),
+              name: '',
+              gender: '',
+              age: 0,
+              grade_name: '',
+              school_name: '',
+              is_delete: false,
+            },
+          ]
+    );
+    setLoading(false);
   };
 
   const getRoleApi = () => {
@@ -545,6 +1040,7 @@ const CreateUser = () => {
               id: obj.id,
               branch_name: obj.branch_name,
               branch_code: obj.branch_code,
+              acadId: obj.acadId,
             }));
             // if (transformedData?.length > 1) {
             //   transformedData.unshift({
@@ -563,10 +1059,36 @@ const CreateUser = () => {
     }
   };
 
-  const fetchGrades = (branches, branch_code, editYear) => {
+  const fetchGrades = (branches, branch_code, editYear, acadId, user_level) => {
     if (branches?.length > 0) {
-      setBranchCode(branch_code);
+      console.log(roleBasedUiConfig, schoolFormValues, 'schoolFormValues');
       setSelectedBranch(branches);
+      setSelectedAcadId(acadId);
+      if (roleBasedUiConfig?.includes(user_level)) {
+        console.log(branches, 'branches selected');
+        setLoading(true);
+        axiosInstance
+          .get(`/erp_user/grade-list/`, { params: { acad_session: acadId.join(',') } })
+          .then((response) => {
+            if (response.data.status_code === 200) {
+              const transformedData = response.data.result?.map((obj) => ({
+                // item_id: grade?.id,
+                id: obj?.grade_id,
+                grade_name: obj?.grade__grade_name,
+                // branch_id: grade?.acad_session__branch_id,
+              }));
+              setGrades([...transformedData]);
+            }
+          })
+          .catch((error) => {
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+        return;
+      }
+      setBranchCode(branch_code);
       axiosInstance
         // .get(
         //   `${endpoints.academics.grades}?session_year=${
@@ -657,31 +1179,55 @@ const CreateUser = () => {
     }
   };
 
-  const fetchSubjects = (sections, editBranch, editGrade, editYear) => {
+  const fetchSubjects = (
+    sections,
+    editBranch,
+    editGrade,
+    editYear,
+    userLevel,
+    acadId
+  ) => {
     if (sections?.length > 0) {
-      setSelectedSections(sections);
+      if (roleBasedUiConfig?.includes(userLevel)) {
+        setSelectedGrade(sections);
+      } else {
+        setSelectedSections(sections);
+      }
       let newEditGrade = [...new Set(editGrade)];
       let newsec = [...new Set(sections)];
+      if (roleBasedUiConfig?.includes(userLevel)) {
+        setSelectedGrade(sections);
+      }
+      let params1 = {
+        ...(roleBasedUiConfig?.includes(userLevel)
+          ? {
+              // acad_session: selectedYear?.id,
+              acad_session: acadId
+                ? acadId?.join(',')
+                : branches
+                    ?.filter((each) => selectedBranch?.includes(each?.id))
+                    ?.map((each) => each?.acadId)
+                    ?.join(','),
+              grades: sections?.join(','),
+            }
+          : {
+              session_year: params?.id ? editYear : selectedYear?.id,
+              branch: editBranch ? editBranch?.join(',') : selectedBranch?.join(','),
+              grade: editGrade ? newEditGrade?.join(',') : selectedGrade?.join(','),
+              section: sections?.join(','),
+            }),
+      };
       axiosInstance
-        // .get(
-        //   `${endpoints.academics.subjects}?session_year=${
-        //     params?.id ? editYear : selectedYear?.id
-        //   }&branch=${
-        //     editBranch ? editBranch?.toString() : selectedBranch?.toString()
-        //   }&grade=${
-        //     editGrade ? editGrade?.toString() : selectedGrade?.toString()
-        //   }&section=${sections?.toString()}&module_id=${moduleId}`
-        // )
         .get(
-          `${endpoints.academics.subjects}?session_year=${
-            params?.id ? editYear : selectedYear?.id
-          }&branch=${
-            editBranch ? editBranch?.toString() : selectedBranch?.toString()
-          }&grade=${
-            editGrade ? newEditGrade?.toString() : selectedGrade?.toString()
-          }&section=${newsec?.toString()}`
+          `${
+            roleBasedUiConfig?.includes(userLevel)
+              ? '/erp_user/subject-list/'
+              : endpoints.academics.subjects
+          }`,
+          { params: params1 }
         )
         .then((response) => {
+          console.log(response, 'response subject');
           if (response.data.status_code === 200) {
             const transformedData = response?.data?.data
               ? response?.data?.data.map((obj) => ({
@@ -689,15 +1235,14 @@ const CreateUser = () => {
                   item_id: obj.id,
                   subject_name: obj.subject__subject_name,
                 }))
+              : response?.data?.result
+              ? response?.data?.result.map((obj) => ({
+                  id: obj.subject_id,
+                  item_id: obj.subject_id,
+                  subject_name: obj.subject__subject_name,
+                }))
               : [];
             if (transformedData?.length > 0) {
-              //   transformedData.unshift({
-              //     item_id: 'all',
-              //     id: 'all',
-              //     grade_name: 'Select All',
-              //     branch_id: '',
-              //   });
-              // }
               setSubjects([...transformedData]);
             }
           }
@@ -734,6 +1279,7 @@ const CreateUser = () => {
     formData.append('user_level', schoolFormValues?.user_level);
     if (schoolFormValues?.designation)
       formData.append('designation', schoolFormValues?.designation);
+    formData.append('role_id', schoolFormValues?.role);
     // STUDENT INFO
     formData.append('first_name', studentFormValues?.first_name ?? '');
     formData.append('middle_name', studentFormValues?.middle_name ?? '');
@@ -901,26 +1447,102 @@ const CreateUser = () => {
 
       const uniqueSubjectsIds = [...new Set([...selectedSubjectsId, ...newSubjectsIds])];
       const uniqueSubjects = [...new Set([...selectedSubjects, ...newSubjects])];
-      formData.append('branch', [...selectedBranch, ...newBranches]?.toString());
-      formData.append('subjects', uniqueSubjectsIds?.toString());
-      formData.append('subject_section_mapping', uniqueSubjects?.toString());
-      formData.append(
-        'section_mapping',
-        [...sectionMappingId, ...section_mapping]?.toString()
-      );
-      axiosInstance
-        .put('/erp_user/update-user/', formData)
-        .then(() => {
-          message.success('User Updated Successfully!');
-          history.push('/user-management/view-users');
-        })
-        .catch((error) => {
-          setEndProgress(false);
-          message.error(error?.response?.data?.message ?? 'Something went wrong!');
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+
+      if (
+        roleBasedUiConfig?.includes(schoolFormValues?.user_level?.toString()) &&
+        params?.id
+      ) {
+        let branchObj = branches?.filter((each) =>
+          selectedAcadId?.includes(each?.acadId)
+        );
+        let gradeObj = grades?.filter((each) => selectedGrade?.includes(each?.id));
+        let subjectObj = subjects?.filter((each) =>
+          selectedSubjectsId?.includes(each?.id)
+        );
+
+        let mapping_bgs = {
+          [selectedYear?.session_year]: {
+            branches: branchObj.map((each) => {
+              return {
+                acad_id: each?.acadId,
+                branch_id: each?.id,
+                branch_name: each?.branch_name,
+              };
+            }),
+            grades: gradeObj.map((each) => {
+              return { grade_id: each?.id, grade_name: each?.grade_name };
+            }),
+            subjects: subjectObj.map((each) => {
+              return { subject_id: each?.id, subject_name: each?.subject_name };
+            }),
+          },
+          ...multipleAcademicYear.reduce((acc, eachMultipleAcademicYear) => {
+            acc[eachMultipleAcademicYear?.academicYearObj?.children] = {
+              branches: eachMultipleAcademicYear?.branchObj?.map((each) => ({
+                acad_id: each?.acadId,
+                branch_id: each?.id,
+                branch_name: each?.branch_name,
+              })),
+              grades: eachMultipleAcademicYear?.gradeObj?.map((each) => ({
+                grade_id: each?.id,
+                grade_name: each?.grade_name,
+              })),
+              subjects: eachMultipleAcademicYear?.subjectsObj?.map((each) => ({
+                subject_id: each?.id,
+                subject_name: each?.subject_name,
+              })),
+            };
+            return acc;
+          }, {}),
+        };
+
+        console.log(
+          {
+            multipleAcademicYear,
+            selectedYear,
+            filterdata: { branchObj, gradeObj, subjectObj },
+            mapping_bgs,
+          },
+          'multipleAcademicYear'
+        );
+        formData.append('mapping_bgs', JSON.stringify(mapping_bgs));
+        axiosInstance
+          .put(`/erp_user/staff-user/${params?.id}`, formData)
+          .then(() => {
+            message.success('User Updated Successfully!');
+            history.push('/user-management/view-users');
+          })
+          .catch((error) => {
+            setEndProgress(false);
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+        return;
+      } else {
+        formData.append('branch', [...selectedBranch, ...newBranches]?.toString());
+        formData.append('subjects', uniqueSubjectsIds?.toString());
+        formData.append('subject_section_mapping', uniqueSubjects?.toString());
+        formData.append(
+          'section_mapping',
+          [...sectionMappingId, ...section_mapping]?.toString()
+        );
+
+        axiosInstance
+          .put('/erp_user/update-user/', formData)
+          .then(() => {
+            message.success('User Updated Successfully!');
+            history.push('/user-management/view-users');
+          })
+          .catch((error) => {
+            setEndProgress(false);
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
     } else {
       formData.append('academic_year', selectedYear?.id);
       formData.append('academic_year_value', selectedYear?.session_year);
@@ -929,7 +1551,29 @@ const CreateUser = () => {
       formData.append('subjects', selectedSubjectsId?.toString());
       formData.append('subject_section_mapping', selectedSubjects?.toString());
       formData.append('grade', selectedGrade?.toString());
-      formData.append('section', selectedSections?.toString());
+      if (roleBasedUiConfig?.includes(schoolFormValues?.user_level?.toString())) {
+        formData.append('acad_session', selectedAcadId?.toString());
+        formData.append('subject', selectedSubjectsId?.toString());
+      }
+      if (!roleBasedUiConfig?.includes(schoolFormValues?.user_level)) {
+        formData.append('section', selectedSections?.toString());
+      }
+      if (roleBasedUiConfig?.includes(schoolFormValues?.user_level?.toString())) {
+        axiosInstance
+          .post('/erp_user/add-staff-user/', formData)
+          .then(() => {
+            message.success('User Created Successfully!');
+            history.push('/user-management/view-users');
+          })
+          .catch((error) => {
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+            setEndProgress(false);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+        return;
+      }
       axiosInstance
         .post('/erp_user/add_user/', formData)
         .then(() => {
@@ -1088,6 +1732,7 @@ const CreateUser = () => {
                       <>
                         <SchoolInformation
                           roles={roles}
+                          roleBasedUiConfig={roleBasedUiConfig}
                           designations={designations}
                           fetchDesignation={fetchDesignation}
                           branches={branches}
@@ -1111,12 +1756,16 @@ const CreateUser = () => {
                           userLevel={userLevel}
                           setUserLevel={setUserLevel}
                           parent={setParent}
+                          setBranches={setBranches}
                           setGrades={setGrades}
                           setSections={setSections}
                           setSubjects={setSubjects}
                           maxSubjectSelection={maxSubjectSelection}
                           roleConfig={roleConfig}
                           editSessionYear={editSessionYear}
+                          rolesList={rolesList}
+                          selectedRoles={selectedRoles}
+                          setSelectedRoles={setSelectedRoles}
                         />
                       </>
                     )}
@@ -1136,6 +1785,8 @@ const CreateUser = () => {
                     )}
                     {currentStep === 2 && (
                       <FamilyInformation
+                        roleBasedUiConfig={roleBasedUiConfig}
+                        schoolFormValues={schoolFormValues}
                         familyFormValues={familyFormValues}
                         setFamilyFormValues={setFamilyFormValues}
                         singleParent={singleParent}
