@@ -957,7 +957,7 @@ const FamilyInformation = ({
           )}
 
           {/* GUARDIAN DETAILS */}
-          {((userLevel === 13 && singleParent) ||
+          {(userLevel === 13 ||
             (userLevel !== 13 && parent && parent?.includes('guardian'))) && (
             <>
               <Row gutter={24}>

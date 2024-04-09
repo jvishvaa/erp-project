@@ -48,6 +48,7 @@ import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { Progress, Modal, Switch as SwitchAnt } from 'antd';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -97,6 +98,9 @@ const QuestionCard = ({
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   let sessionYear;
   const { token, user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -138,15 +142,7 @@ const QuestionCard = ({
   const [selectedResources, setSelectedResources] = useState([]);
   const isDiaryView = window.location.pathname.includes('/diary/');
 
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
   const handleScroll = (dir) => {
     if (dir === 'left') {
       attachmentsRef.current.scrollLeft -= 150;
@@ -418,7 +414,7 @@ const QuestionCard = ({
 
   useEffect(() => {
     if (selectedVolumeId) {
-      if (!boardFilterArr.includes(window.location.host)) {
+      if (!isOrchids) {
         fetchModuleListData({
           subject_id: subject,
           volume: selectedVolumeId,
@@ -426,6 +422,7 @@ const QuestionCard = ({
           grade_id: grade,
           branch_id: branch,
           board: selectedBoards,
+          acad_session_id: selectedBranch?.id,
         });
       }
     }
@@ -498,7 +495,7 @@ const QuestionCard = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setBoardListData(result?.data?.result);
-          if (!boardFilterArr.includes(window.location.host)) {
+          if (!isOrchids) {
             let data = result?.data?.result?.filter(
               (item) => item?.board_name === 'CBSE'
             )[0];
@@ -565,7 +562,7 @@ const QuestionCard = ({
     if (each) {
       setSelectedVolume(each);
       setSelectedVolumeId(each?.id);
-      if (boardFilterArr.includes(window.location.host)) {
+      if (isOrchids) {
         fetchBoardListData();
       }
     }
@@ -593,6 +590,7 @@ const QuestionCard = ({
         grade_id: grade,
         branch_id: branch,
         board: boardsID,
+        acad_session_id: selectedBranch?.id,
       });
     }
   };
@@ -616,6 +614,7 @@ const QuestionCard = ({
         branch_id: branch,
         board: selectedBoardsID,
         module_id: each?.id,
+        acad_session_id: selectedBranch?.id,
       });
     }
   };
@@ -1174,7 +1173,7 @@ const QuestionCard = ({
                 )}
               />
             </Grid>
-            {boardFilterArr.includes(window.location.host) && (
+            {isOrchids && (
               <Grid item xs={12} sm={4}>
                 <Autocomplete
                   multiple

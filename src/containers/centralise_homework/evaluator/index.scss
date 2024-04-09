@@ -1,102 +1,99 @@
-.evaluator-calendar{
-    border: 1px solid black;
-    border-radius: 10px;
-    margin: 10px;
-.ant-picker-calendar-mode-switch{
+.evaluator-calendar {
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 10px;
+  .ant-picker-calendar-mode-switch {
     display: none;
-}
-td{
+  }
+  td {
     border: 1px solid #eaeaea;
-}
-.ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-today{
+  }
+  .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-today {
     background: #b0b0b0 !important;
-}
+  }
 }
 
-
-.wholetabCentralHW{
-    .th-tabs .ant-tabs-nav-wrap{
-        background: white !important;
+.wholetabCentralHW {
+  .th-tabs .ant-tabs-nav-wrap {
+    background: white !important;
+  }
+  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+    justify-content: end;
+  }
+  .ant-tabs-tab {
+    border-radius: 12px 12px 0 0;
+  }
+  // .attachments-list-outer-container {
+  //   width: 100%;
+  //   display: flex;
+  //   align-items: center;
+  //   .prev-btn,
+  //   .next-btn {
+  //     width: 45px;
+  //   }
+  //   .attachments-list {
+  //     &::-webkit-scrollbar {
+  //       display: none;
+  //     }
+  //     scroll-behavior: smooth;
+  //     flex-grow: 1;
+  //     overflow-x: auto;
+  //     display: flex;
+  //     margin: 1rem 0;
+  //     width: calc(100% - 90px);
+  //     .attachment {
+  //       flex-shrink: 0;
+  //       width: 750px;
+  //     }
+  //   }
+  // }
+  .attachments-container {
+    &.with-margin {
+      width: 95%;
+      margin: 20px auto;
     }
-    .ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
-        justify-content: end;
+    .header {
+      margin: 1rem 0;
+    }
+    .attachments-list-outer-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      .prev-btn,
+      .next-btn {
+        width: 45px;
       }
-      .ant-tabs-tab{
-        border-radius: 12px 12px 0 0;
-      }
-      // .attachments-list-outer-container {
-      //   width: 100%;
-      //   display: flex;
-      //   align-items: center;
-      //   .prev-btn,
-      //   .next-btn {
-      //     width: 45px;
-      //   }
-      //   .attachments-list {
-      //     &::-webkit-scrollbar {
-      //       display: none;
-      //     }
-      //     scroll-behavior: smooth;
-      //     flex-grow: 1;
-      //     overflow-x: auto;
-      //     display: flex;
-      //     margin: 1rem 0;
-      //     width: calc(100% - 90px);
-      //     .attachment {
-      //       flex-shrink: 0;
-      //       width: 750px;
-      //     }
-      //   }
-      // }
-      .attachments-container {
-        &.with-margin {
-          width: 95%;
-          margin: 20px auto;
+      .attachments-list {
+        &::-webkit-scrollbar {
+          display: none;
         }
-        .header {
-          margin: 1rem 0;
-        }
-        .attachments-list-outer-container {
+        scroll-behavior: smooth;
+        flex-grow: 1;
+        overflow-x: auto;
+        display: flex;
+        margin: 1rem 0;
+        width: calc(100% - 90px);
+        .attachment {
+          flex-shrink: 0;
           width: 100%;
-          display: flex;
-          align-items: center;
-          .prev-btn,
-          .next-btn {
-            width: 45px;
-          }
-          .attachments-list {
-            &::-webkit-scrollbar {
-              display: none;
-            }
-            scroll-behavior: smooth;
-            flex-grow: 1;
-            overflow-x: auto;
-            display: flex;
-            margin: 1rem 0;
-            width: calc(100% - 90px);
-            .attachment {
-              flex-shrink: 0;
-              width: 100%;
-              height: 300px;
-            }
-          }
+          height: 300px;
         }
       }
+    }
+  }
 }
 
-
-
-.chatDrawer{
-  .ant-drawer-body{
+.chatDrawer {
+  .ant-drawer-body {
     padding: 0;
   }
-  .userchat{
+  .userchat {
     background: blanchedalmond;
     border-radius: 10px 10px 10px 0;
   }
-  .supchat{
-   background: blue;
-   border-radius: 10px 10px 0 10px;
+  .supchat {
+    background: blue;
+    border-radius: 10px 10px 0 10px;
   }
 }
 
@@ -131,7 +128,7 @@ td{
       }
     }
   }
-  .attachment-file{
+  .attachment-file {
     height: 300px;
   }
 
@@ -142,5 +139,12 @@ td{
   .audio-file {
     padding: 0.5rem;
     width: 100%;
+  }
+}
+.rating-area {
+  .ant-rate {
+    .ant-rate-star {
+      font-size: 30px !important;
+    }
   }
 }

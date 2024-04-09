@@ -142,14 +142,10 @@ const HwUpload = () => {
     setSectionList([]);
     setSubject('');
     setSubjectList([]);
-    setStartDate(null);
-    setEndDate(null);
-    setDate(null);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
       subject: [],
-      date: null,
     });
   };
 
@@ -232,7 +228,6 @@ const HwUpload = () => {
   };
 
   const handleChangeSubject = (each) => {
-    console.log(each, 'subject');
     setPageNo(1);
     if (each) {
       setSubject(each?.value);
@@ -254,11 +249,8 @@ const HwUpload = () => {
 
   const handleClearSubject = () => {
     setSubject('');
-    setStartDate(null);
-    setEndDate(null);
     formRef.current.setFieldsValue({
       subject: [],
-      date: null,
     });
   };
 
@@ -270,10 +262,7 @@ const HwUpload = () => {
     formRef.current.setFieldsValue({
       section: [],
       subject: [],
-      date: null,
     });
-    setStartDate(null);
-    setEndDate(null);
   };
 
   const handleDateChange = (each) => {
@@ -463,7 +452,6 @@ const HwUpload = () => {
             />
           </div>
         ) : (
-          <div className='my-3 col-md-12'>
             <UploadTable
               startDate={startDate}
               endDate={endDate}
@@ -472,7 +460,6 @@ const HwUpload = () => {
               sectionMappingId={sectionMappingId}
               sectionName={sectionName}
             />
-          </div>
         )}
       </div>
       {/* </div>

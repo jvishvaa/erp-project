@@ -2,7 +2,11 @@ const webUrl = window.location.host;
 const hostUrl = webUrl.split('.');
 const chechUrl = hostUrl[0] === 'orchids' || hostUrl[0] === 'orchids-prod' ? true : false;
 
-const isPreprod = window.location.host == 'orchids.prod.letseduvate.com' ? true : false;
+const isPreprod =
+  window.location.host == 'orchids.prod.letseduvate.com' ||
+  window.location.host == 'b2b.prod.letseduvate.com'
+    ? true
+    : false;
 
 const local = {
   s3: {
@@ -91,6 +95,7 @@ const stage = {
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
+    // baseURL: `https://orchids-stage.stage-vm.letseduvate.com/qbox`,
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
     baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
     // baseURLCentral: 'https://mgmt-stage.letseduvate.com/qbox',

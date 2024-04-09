@@ -22,7 +22,7 @@ import {
   Popconfirm,
   Result,
   Select,
-  Table,
+  Tabs,
   message,
   DatePicker,
 } from 'antd';
@@ -50,8 +50,9 @@ import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 
-const EvaluatorHomework = () => {
+const EvaluatorHomework = ({ is_auditor }) => {
   const history = useHistory();
+  const { TabPane } = Tabs;
   const [branches, setBranches] = useState([]);
   const [branch, setBranch] = useState('');
   const [userLevelList, setUserLevelList] = useState([]);
@@ -93,6 +94,33 @@ const EvaluatorHomework = () => {
   const [evaluateData, setEvaluateData] = useState([]);
   const [countData, setCountData] = useState(null);
   const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
+  const [isAuditor, setIsAuditor] = useState(is_auditor);
+  const [rating, setRating] = useState([]);
+  const [showTab, setShowTab] = useState('1');
+  const [evaluatorList, setEvaluatorList] = useState([]);
+  const [selectedEvaluator, setSelectedEvaluator] = useState();
+
+  const onChange = (key) => {
+    setShowTab(key);
+    setPageNo(1);
+    fetchTeacherData({
+      is_assessed: key === '1' ? 'True' : 'False',
+      start_date: startDate,
+      end_date: endDate,
+      sub_sec_mpng: subject,
+      page: 1,
+      evaluator_ids: selectedEvaluator,
+    });
+  };
+
+  useEffect(() => {
+    if (grade && section && subject) {
+      fetchEvaluator({ sub_sec_mpng: subject });
+    } else {
+      setEvaluatorList([]);
+      setSelectedEvaluator(null);
+    }
+  }, [grade, subject, section]);
 
   const handleFilters = () => {
     if (showFilters) {
@@ -115,7 +143,7 @@ const EvaluatorHomework = () => {
   const fetchGrade = async (branch) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}`
+        `${endpoints.communication.grades}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}`
       );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
@@ -150,21 +178,18 @@ const EvaluatorHomework = () => {
     setSectionList([]);
     setSubjectList([]);
     setSubject('');
+    setSelectedEvaluator(null);
     formRef.current.setFieldsValue({
       grade: null,
       section: null,
       subject: null,
-      date: null,
     });
     setEvaluateData([]);
-    setStartDate(null);
-    setEndDate(null);
-    setDates(null);
   };
   const fetchSection = async (grade) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
+        `${endpoints.academics.sections}?session_year=${selectedYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${grade}`
       );
       if (result.data.status_code === 200) {
         setSectionList(result.data.data);
@@ -174,6 +199,57 @@ const EvaluatorHomework = () => {
     } catch (error) {
       message.error(error.message);
     }
+  };
+
+  const fetchRating = async (params = {}) => {
+    console.log({ params });
+    await axiosInstance
+      .get(`${endpoints.centralizedHomework.rating}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setRating(res?.data?.result);
+        } else {
+          message.error(res?.data?.message);
+        }
+        console.log({ res });
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  const fetchEvaluator = async (params = {}) => {
+    console.log({ params });
+    await axiosInstance
+      .get(`${endpoints.centralizedHomework.evaluatorList}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setEvaluatorList(res?.data?.result);
+        } else {
+          message.error(res?.data?.message);
+        }
+        console.log({ res });
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
+  const evaluatorOptions = evaluatorList?.map((each) => {
+    return (
+      <Option key={each?.evaluator_id} value={each.user_id}>
+        {each?.name}
+      </Option>
+    );
+  });
+
+  const handleChangeEvaluator = (each) => {
+    setPageNo(1);
+    setSelectedEvaluator(each ?? each);
   };
 
   const sectionOptions = sectionList?.map((each) => {
@@ -210,7 +286,7 @@ const EvaluatorHomework = () => {
   const fetchSubjectList = async (sectionId) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.centralizedHomework.subjectList}?session_year=${selectedYear.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${sectionId}`,
+        `${endpoints.centralizedHomework.subjectList}?session_year=${selectedYear?.id}&branch=${selectedBranch?.branch?.id}&grade=${grade}&section=${sectionId}`,
         {
           headers: {
             Authorization: `Bearer ${loggedUserData?.token}`,
@@ -258,6 +334,11 @@ const EvaluatorHomework = () => {
       );
       if (result.data.status_code === 200) {
         setEvaluateData(result?.data?.result?.results);
+        if (result?.data?.result?.results?.[0]?.is_audited) {
+          const ratingData = await fetchRating({
+            hw_dist_file: result?.data?.result?.results[0]?.id,
+          });
+        }
         setCountData(result?.data?.result);
         setTotalPage(result?.data?.result?.count);
         setPageLimit(result?.data?.result?.limit);
@@ -293,7 +374,6 @@ const EvaluatorHomework = () => {
     setSubjectList([]);
     formRef.current.setFieldsValue({
       subject: null,
-      date: null,
     });
     setEvaluateData([]);
   };
@@ -308,18 +388,14 @@ const EvaluatorHomework = () => {
 
   const handleChangeSubject = (each) => {
     if (each) {
-      setSubject(each);
       setPageNo(1);
+      setSubject(each);
     } else {
       setSubject('');
       formRef.current.setFieldsValue({
         subject: null,
-        date: null,
       });
       setEvaluateData([]);
-      setStartDate(null);
-      setEndDate(null);
-      setDates(null);
     }
   };
 
@@ -345,9 +421,9 @@ const EvaluatorHomework = () => {
       setPageNo(1);
     } else {
       setEvaluateData([]);
-      formRef.current.setFieldsValue({
-        date: null,
-      });
+      setStartDate(null);
+      setEndDate(null);
+      setDates(null);
     }
   };
 
@@ -376,23 +452,8 @@ const EvaluatorHomework = () => {
 
   return (
     <React.Fragment>
-      {/* <Layout>
-        <div className='row py-3'>
-          <div className='col-md-9' style={{ zIndex: 2 }}>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                Dashboard
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>
-                Evaluate Homework
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-        </div> */}
-
       {loading && <Loader />}
-      {/* <div className='row'>
-        <div className='col-md-12'>*/}
+
       <div className='px-3'>
         <div className='col-md-12 p-0 d-flex justify-content-end'>
           {showFilters ? (
@@ -429,8 +490,14 @@ const EvaluatorHomework = () => {
               style={{ width: '100%' }}
             >
               <div className='row justify-content-between'>
-                <div className='col-xl-7 col-md-6 row'>
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                <div
+                  className={isAuditor ? 'col-xl-12 col-12 row' : 'col-xl-7 col-md-6 row'}
+                >
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
                     <div className='mb-2 text-left'>Grade</div>
 
                     <Form.Item name='grade'>
@@ -460,7 +527,11 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
 
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
                     <div className='mb-2 text-left'>Section</div>
 
                     <Form.Item name='section'>
@@ -490,7 +561,11 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
 
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
                     <div className='mb-2 text-left'>Subject</div>
                     <Form.Item name='subject'>
                       <Select
@@ -516,7 +591,46 @@ const EvaluatorHomework = () => {
                       </Select>
                     </Form.Item>
                   </div>
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
+
+                  {isAuditor && (
+                    <div
+                      className={`${
+                        isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                      }  col-sm-6 col-12 pl-0`}
+                    >
+                      <div className='mb-2 text-left'>Evaluator</div>
+                      <Form.Item name='evaluator'>
+                        <Select
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          maxTagCount={1}
+                          allowClear={true}
+                          suffixIcon={<DownOutlined className='th-grey' />}
+                          className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                          placement='bottomRight'
+                          showArrow={true}
+                          dropdownMatchSelectWidth={false}
+                          onChange={(e) => handleChangeEvaluator(e)}
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          showSearch
+                          placeholder='Select Evaluator'
+                        >
+                          {evaluatorOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                  )}
+
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
                     <Form.Item name='date'>
                       <RangePicker
                         className='th-width-100 th-br-4'
@@ -530,18 +644,23 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
 
-                  <div className='col-xl-4 col-md-4 col-sm-6 col-12 pl-0'>
-                    <Form.Item name='section'>
+                  <div
+                    className={`${
+                      isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                    }  col-sm-6 col-12 pl-0`}
+                  >
+                    <Form.Item name='filter'>
                       <Button
                         className=' th-br-4 w-100  th-select'
                         type='primary'
                         onClick={() => {
                           fetchTeacherData({
-                            // is_assessed: 'False',
+                            is_assessed: showTab === '1' ? 'True' : 'False',
                             start_date: startDate,
                             end_date: endDate,
                             sub_sec_mpng: subject,
                             page: pageNo,
+                            evaluator_ids: selectedEvaluator,
                           });
                         }}
                       >
@@ -550,141 +669,183 @@ const EvaluatorHomework = () => {
                     </Form.Item>
                   </div>
                 </div>
-                <div className='col-md-5 col-xl-3  p-0 row mb-2'>
-                  <div
-                    className='col-md-12 py-2 mt-2'
-                    style={{
-                      boxShadow:
-                        'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
-                      borderRadius: '10px',
-                      marginBottom: '5px',
-                      height: 'fit-content',
-                    }}
-                  >
+                {!isAuditor && (
+                  <div className='col-md-5 col-xl-3  p-0 row mb-2'>
                     <div
-                      className='col-md-12 row justify-content-between th-13'
-                      style={{ marginTop: '6px' }}
+                      className='col-md-12 py-2 mt-2'
+                      style={{
+                        boxShadow:
+                          'rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px',
+                        borderRadius: '10px',
+                        marginBottom: '5px',
+                        height: 'fit-content',
+                      }}
                     >
-                      <div>
-                        <span>
-                          Completed :{' '}
-                          <span style={{ color: 'green' }}>
-                            {countData?.total_assessed ? countData?.total_assessed : '-'}
-                          </span>{' '}
-                        </span>
-                      </div>
                       <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
+                        className='col-md-12 row justify-content-between th-13'
+                        style={{ marginTop: '6px' }}
                       >
-                        <span>Completed </span>
-                        <span
-                          style={{
-                            backgroundColor: 'green',
-                            color: 'white',
-                            height: '15px',
-                            width: '15px',
-                            borderRadius: '5px',
-                            display: 'inline-block',
-                            marginLeft: '20px',
-                          }}
-                        ></span>
-                      </div>
-                    </div>
-                    <div
-                      className='col-md-12 row justify-content-between th-13'
-                      style={{ marginTop: '6px' }}
-                    >
-                      <div>
-                        <span>
-                          Pending :{' '}
-                          <span style={{ color: 'red' }}>
-                            {countData?.total_under_assessed
-                              ? countData?.total_under_assessed
-                              : '-'}
+                        <div>
+                          <span>
+                            Total Assessed :{' '}
+                            <span style={{ color: 'green' }}>
+                              {countData?.total_assessed
+                                ? countData?.total_assessed
+                                : '0'}
+                            </span>{' '}
                           </span>
-                        </span>
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          {/* <span>Completed </span> */}
+                          <span
+                            style={{
+                              backgroundColor: 'green',
+                              color: 'white',
+                              height: '15px',
+                              width: '15px',
+                              borderRadius: '5px',
+                              display: 'inline-block',
+                              marginLeft: '20px',
+                            }}
+                          ></span>
+                        </div>
                       </div>
                       <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
+                        className='col-md-12 row justify-content-between th-13'
+                        style={{ marginTop: '6px' }}
                       >
-                        <span>Pending </span>
-                        <span
+                        <div>
+                          <span>
+                            Total Under Assessed :{' '}
+                            <span style={{ color: 'red' }}>
+                              {countData?.total_under_assessed
+                                ? countData?.total_under_assessed
+                                : '0'}
+                            </span>
+                          </span>
+                        </div>
+                        <div
                           style={{
-                            backgroundColor: 'red',
-                            color: 'white',
-                            height: '15px',
-                            width: '15px',
-                            borderRadius: '5px',
-                            display: 'inline-block',
-                            marginLeft: '20px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}
-                        ></span>
+                        >
+                          {/* <span>Pending </span> */}
+                          <span
+                            style={{
+                              backgroundColor: 'red',
+                              color: 'white',
+                              height: '15px',
+                              width: '15px',
+                              borderRadius: '5px',
+                              display: 'inline-block',
+                              marginLeft: '20px',
+                            }}
+                          ></span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </Form>
           </div>
         )}
 
         <div className='mt-4 '>
-          {evaluateData?.length === 0 ? (
-            <div className='col-12'>
-              <Result
-                status='warning'
-                title={<span className='th-grey'>Please apply filter to view data</span>}
-              />
-            </div>
-          ) : (
-            <div className='mb-3'>
-              <FilesViewEvaluate
-                selectedHomeworkIndex={selectedHomeworkIndex}
-                setSelectedHomeworkIndex={setSelectedHomeworkIndex}
-                evaluateData={evaluateData}
-                selectedGrade={grade}
-                selectedSubSecMap={section}
-                fetchTeacherData={fetchTeacherData}
-                startDate={startDate}
-                endDate={endDate}
-                sub_sec_mpng={subject}
-                sectionMappingId={sectionMappingId}
-                page={pageNo}
-              />
+          <div className='th-tabs th-tabs-hw mt-3 th-bg-white mb-3'>
+            <Tabs type='card' onChange={onChange} defaultActiveKey={showTab}>
+              <TabPane tab='Assessed' key='1'>
+                {evaluateData?.length === 0 ? (
+                  <div className='col-12'>
+                    <Result
+                      status='warning'
+                      title={<span className='th-grey'>No Data Available</span>}
+                    />
+                  </div>
+                ) : (
+                  <FilesViewEvaluate
+                    selectedHomeworkIndex={selectedHomeworkIndex}
+                    setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                    evaluateData={evaluateData}
+                    rating={rating}
+                    selectedGrade={grade}
+                    selectedSubSecMap={section}
+                    fetchTeacherData={fetchTeacherData}
+                    fetchRating={fetchRating}
+                    startDate={startDate}
+                    endDate={endDate}
+                    sub_sec_mpng={subject}
+                    sectionMappingId={sectionMappingId}
+                    page={pageNo}
+                    isAuditor={isAuditor}
+                    activeTab={showTab}
+                    selectedEvaluator={selectedEvaluator}
+                  />
+                )}
+                {/*  */}
+              </TabPane>
+              <TabPane tab='Under Assessed' key='2'>
+                {evaluateData?.length === 0 ? (
+                  <div className='col-12'>
+                    <Result
+                      status='warning'
+                      title={<span className='th-grey'>No Data Available</span>}
+                    />
+                  </div>
+                ) : (
+                  <FilesViewEvaluate
+                    selectedHomeworkIndex={selectedHomeworkIndex}
+                    setSelectedHomeworkIndex={setSelectedHomeworkIndex}
+                    rating={rating}
+                    evaluateData={evaluateData}
+                    selectedGrade={grade}
+                    selectedSubSecMap={section}
+                    fetchTeacherData={fetchTeacherData}
+                    fetchRating={fetchRating}
+                    startDate={startDate}
+                    endDate={endDate}
+                    sub_sec_mpng={subject}
+                    sectionMappingId={sectionMappingId}
+                    page={pageNo}
+                    isAuditor={isAuditor}
+                    activeTab={showTab}
+                    selectedEvaluator={selectedEvaluator}
+                  />
+                )}
+                {/* */}
+              </TabPane>
+            </Tabs>
 
-              <Pagination
-                current={pageNo}
-                total={totalPage}
-                showSizeChanger={false}
-                pageSize={pageLimit}
-                onChange={(current) => {
-                  setPageNo(current);
-                  setSelectedHomeworkIndex(0);
-                  fetchTeacherData({
-                    // is_assessed: 'False',
-                    start_date: startDate,
-                    end_date: endDate,
-                    sub_sec_mpng: subject,
-                    page: current,
-                  });
-                }}
-                className='text-center'
-              />
-            </div>
-          )}
+            <Pagination
+              current={pageNo}
+              total={totalPage}
+              showSizeChanger={false}
+              pageSize={pageLimit}
+              onChange={(current) => {
+                setPageNo(current);
+                setSelectedHomeworkIndex(0);
+                fetchTeacherData({
+                  is_assessed: showTab === '1' ? 'True' : 'False',
+                  start_date: startDate,
+                  end_date: endDate,
+                  sub_sec_mpng: subject,
+                  page: current,
+                  evaluator_ids: selectedEvaluator,
+                });
+              }}
+              className='text-center'
+            />
+          </div>
         </div>
       </div>
-      {/*   </div>
-      </div> */}
-      {/* </Layout> */}
     </React.Fragment>
   );
 };

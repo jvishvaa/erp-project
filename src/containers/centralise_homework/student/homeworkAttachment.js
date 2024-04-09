@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { message } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import BOOKMARKICON from './../../../assets/images/bookmark-icon.png';
 import BOOKMARKEDICON from './../../../assets/images/bookmarked-icon.png';
@@ -6,6 +7,7 @@ import CHATICON from './../../../assets/images/chat-icon.png';
 import NOTEICON from './../../../assets/images/note-icon.png';
 import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
 import endpoints from 'config/endpoints';
+import axiosInstance from 'config/axios';
 
 const HomeworkAttachment = ({ ...props }) => {
   const {
@@ -18,13 +20,41 @@ const HomeworkAttachment = ({ ...props }) => {
     selectedHomeworkIndex,
     setSelectedHomeworkIndex,
     homeworkData,
+    setHomeworkData,
   } = props;
 
   console.log({ props });
-  const [bookmarkAttachment, setBookmarkedAttachment] = useState(false);
 
-  const handleBookmarkAttachment = () => {
-    setBookmarkedAttachment(!bookmarkAttachment);
+  const handleBookmarkAttachment = (id, data) => {
+    const formData = new FormData();
+    formData.append('is_bookmarked', data);
+    axiosInstance
+      .patch(`${endpoints.centralizedHomework.studentView}${id}/`, formData)
+      .then((res) => {
+        console.log('subject res', res);
+        if (res?.data?.status_code === 200) {
+          setSelectedHomework((prevState) => ({
+            ...prevState,
+            is_bookmarked: data === 'True' ? true : false,
+          }));
+          // let hwData = homeworkData;
+          // hwData[selectedHomeworkIndex].is_bookmarked = data === 'True' ? true : false;
+          // console.log({hwData})
+          // setHomeworkData(hwData);
+          setHomeworkData((prevHomeworkData) => {
+            const updatedData = [...prevHomeworkData]; 
+            updatedData[selectedHomeworkIndex] = {
+              ...updatedData[selectedHomeworkIndex],
+              is_bookmarked: data === 'True' ? true : false
+            };
+            console.log({ updatedData });
+            return updatedData;
+          });
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
   };
 
   const handleAttachmentControl = (type, currentIndex) => {
@@ -40,7 +70,7 @@ const HomeworkAttachment = ({ ...props }) => {
   return (
     <React.Fragment>
       <div className='w-100'>
-        <div className='th-bg-white attachment-left-box shadow p-3 w-100 float-left'>
+        <div className='th-bg-white attachment-left-box shadow p-3 w-90 float-left'>
           <div className='position-relative'>
             <button
               className='attachment-control-icon prev btn'
@@ -103,26 +133,31 @@ const HomeworkAttachment = ({ ...props }) => {
             >
               <RightOutlined className='icon' />
             </button>
-            {/* {selectedHomework?.isBookmarked && (
+            {selectedHomework?.is_bookmarked && (
               <div className='bookmarked-icon'>
-                <img src={BOOKMARKEDICON} alt='bookmarked' className='img-fluid' />
+                <img src={BOOKMARKEDICON} alt='bookmarked' className='img-fluid w-75' />
               </div>
-            )} */}
+            )}
           </div>
         </div>
 
         {/* ACTION ATTACHMENT */}
-        {/* <div
+        <div
           className='th-bg-white attachment-right-box float-right'
           style={{ width: '10%' }}
         >
           <div
             className='p-1 p-md-2 p-lg-3 text-center cursor-pointer'
-            onClick={() => handleBookmarkAttachment()}
+            onClick={() =>
+              handleBookmarkAttachment(
+                selectedHomework?.id,
+                selectedHomework?.is_bookmarked ? 'False' : 'True'
+              )
+            }
           >
             <img className='attachment-action-icon' alt='bookmark' src={BOOKMARKICON} />
           </div>
-          <div
+          {/* <div
             className='p-1 p-md-2 p-lg-3 text-center cursor-pointer'
             onClick={() => handleNoteTakerView(true)}
           >
@@ -130,8 +165,8 @@ const HomeworkAttachment = ({ ...props }) => {
           </div>
           <div className='p-1 p-md-2 p-lg-3 text-center cursor-pointer'>
             <img className='attachment-action-icon' alt='Chat' src={CHATICON} />
-          </div>
-        </div> */}
+          </div>  */}
+        </div>
       </div>
     </React.Fragment>
   );

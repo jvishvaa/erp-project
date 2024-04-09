@@ -52,6 +52,9 @@ const EbookCards = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const env = window.location.host;
   const domain = window.location.host.split('.');
@@ -124,6 +127,7 @@ const EbookCards = (props) => {
         page_number: props?.page,
         page_size: '9',
         domain_name: domain_name,
+        acad_session_id: selectedBranch?.id,
       });
     } else {
       props.fetchEbooks({
@@ -134,6 +138,7 @@ const EbookCards = (props) => {
         branch: props?.branchId,
         domain_name: domain_name,
         academic_year: selectedAcademicYear?.id,
+        acad_session_id: selectedBranch?.id,
         session_year: selectedAcademicYear?.session_year,
         page_number: props?.page,
         page_size: '9',

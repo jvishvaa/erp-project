@@ -226,6 +226,9 @@ export default {
     defaultAcademicYear: '/erp_user/default-current-session-year/',
     centralGrades: '/erp_user/v1/grades-list/',
     centralSubjects: '/erp_user/v1/subjects-list/',
+    versionData: `${baseURLCentral}/lesson_plan/version-content/`,
+    branchWiseVersion: `/academic/branch-wise-lesson-plan/`,
+    schoolList: `${baseURLCentral}/lesson_plan/school-mapping/`,
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -246,7 +249,7 @@ export default {
     getCount: '/hw-hub/get_hw_count/',
     hwData: '/hw-hub/hw-files/',
     hwDoctType: '/hw-hub/get_doctype/',
-    hwErp: '/communication/v1/view-users/',
+    hwErp: '/hw-hub/view-users/',
     hwErpUpdate: '/hw-hub/upload_hw_files/',
   },
   homeworkStudent: {
@@ -260,7 +263,10 @@ export default {
   centralizedHomework: {
     docType: 'hw-hub/get_doctype/',
     studentView: 'hw-hub/hw_view/',
-    subjectList : 'hw-hub/user-subject-list/'
+    subjectList: 'hw-hub/user-subject-list/',
+    rating: '/hw-hub/rating/',
+    evaluatorList: '/hw-hub/get_evaluators/',
+    checkEvaluator: '/hw-hub/evaluator-check/',
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',

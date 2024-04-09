@@ -62,6 +62,7 @@ import diaryIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/diaryIcon.png';
 import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
 import { getFileIcon } from 'v2/getFileIcon';
 import { domain_name } from '../../../commonDomain';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -130,17 +131,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   const [assignedDiaryList, setAssignedDiaryList] = useState([]);
 
   let isStudent = window.location.pathname.includes('student-view');
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'localhost:3001',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'test.orchids.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
 
   const showEbookDrawer = () => {
     setOpenEbook(true);
@@ -224,6 +215,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           branch_id: selectedBranch?.branch?.id,
           board: boardId,
           module_id: nextPeriodDetails?.module_id,
+          acad_session_id: selectedBranch?.id,
         });
       } else if (nextPeriodDetails.chapter_id !== chapterId) {
         let chapterName = nextPeriodDetails?.chapter__chapter_name;
@@ -423,6 +415,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       page_size: '10',
       page_number: pageEbook,
       board: boardId,
+      acad_session_id: selectedBranch?.id,
     });
   };
   const fetchEbookCount = (params) => {
@@ -451,6 +444,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       lesson_plan: 'true',
       page_size: '10',
       page_number: pageEbook,
+      acad_session_id: selectedBranch?.id,
     });
     showEbookDrawer();
   };
@@ -467,6 +461,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       page_size: '10',
       page: pageIbook,
       board: boardId,
+      acad_session_id: selectedBranch?.id,
     });
     showIbookDrawer();
   };
@@ -524,6 +519,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       volume: volumeId,
       grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
+      acad_session_id: selectedBranch?.id,
       book_type: '3',
       branch: selectedBranch?.branch?.id,
       domain_name: domain_name,
@@ -542,6 +538,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       volume: volumeId,
       grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
+      acad_session_id: selectedBranch?.id,
       book_type: '4',
       branch: selectedBranch?.branch?.id,
       domain_name: domain_name,
@@ -556,12 +553,14 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
 
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
+    console.log(item, 'item');
     let sectionsCompletedSuccess = [];
     if (completeSections?.length > 0) {
       setShowError(false);
       completeSections.map((section, index) => {
         let payLoad = {
           academic_year: selectedAcademicYear?.session_year,
+          acad_session_id: selectedBranch?.id,
           academic_year_id: resourcesData?.central_academic_year_id,
           volume_id: Number(volumeId),
           volume_name: volumeName,
@@ -655,6 +654,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       })
       .then((result) => {
         if (result?.data?.status === 200) {
+          console.log(result?.data?.data[0], 'access');
           setResourcesData(result?.data?.data[0]);
           setLoadingDrawer(false);
           if (allowAutoAssignDiary) {
@@ -824,6 +824,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
         grade_id: history?.location?.state?.gradeID,
         branch_id: selectedBranch?.branch?.id,
         board: history?.location?.state?.boardID,
+        acad_session_id: selectedBranch?.id,
       });
       setGradeId(history?.location?.state?.gradeID);
       setGradeName(history?.location?.state?.gradeName);
@@ -861,6 +862,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           branch_id: selectedBranch?.branch?.id,
           board: boardId,
           module_id: selectedModuleId,
+          acad_session_id: selectedBranch?.id,
         });
       }
     }
@@ -900,7 +902,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
 
   useEffect(() => {
     if (volumeId) {
-      if (boardFilterArr.includes(window.location.host)) {
+      if (isOrchids) {
         setSelectedModuleId([]);
         fetchModuleListData({
           subject_id: subjectId,
@@ -909,6 +911,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           grade_id: gradeId,
           branch_id: selectedBranch?.branch?.id,
           board: boardId,
+          acad_session_id: selectedBranch?.id,
         });
       } else {
         fetchChapterListData({
@@ -917,6 +920,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
           grade_id: gradeId,
           branch_id: selectedBranch?.branch?.id,
           board: boardId,
+          acad_session_id: selectedBranch?.id,
         });
       }
     }
@@ -1022,7 +1026,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                 </Select>
               </Form.Item>
             </div>
-            {boardFilterArr.includes(window.location.host) && (
+            {isOrchids && (
               <div className='col-md-3 col-6 pl-md-1'>
                 <div className='text-left'>Module</div>
                 <Form.Item name='module'>
@@ -1358,7 +1362,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                     {each?.chapter__chapter_name}
                                   </div>
                                 </div>
-                                {boardFilterArr.includes(window.location.host) && (
+                                {isOrchids && (
                                   <div className='row'>
                                     <div className='col-md-2 col-3 px-0 th-fw-600'>
                                       Module
@@ -1519,7 +1523,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                 </div>
               ) : resourcesData ? (
                 <div>
-                  {boardFilterArr.includes(window.location.host) && (
+                  {isOrchids && (
                     <div className='row mt-1 th-fw-600'>
                       <div className='col-2 th-black-1 px-0'>
                         <div className='d-flex justify-content-between'>
@@ -2600,7 +2604,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                           }}
                         >
                           {nextPeriodDetails?.chapter__chapter_name}
-                          {boardFilterArr.includes(window.location.host)
+                          {isOrchids
                             ? ',' + nextPeriodDetails?.chapter__lt_module__lt_module_name
                             : null}
                         </div>

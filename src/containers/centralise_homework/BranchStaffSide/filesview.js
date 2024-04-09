@@ -329,172 +329,168 @@ const FilesView = ({ evaluateData }) => {
   return (
     <React.Fragment>
       <div className='wholetabCentralHW'>
-        <div className='th-tabs th-tabs-hw mt-3 th-bg-white'>
+        {/* <div className='th-tabs th-tabs-hw mt-3 th-bg-white'>
           <Tabs type='card' onChange={onChange} defaultActiveKey={showTab}>
-            <TabPane tab='Assessed' key='1'>
-              <div className=' row'>
-                <div className='col-md-5 col-xl-4 pl-0'>
-                  {/* <div className=' d-flex justify-content-center'>
+            <TabPane tab='Assessed' key='1'> */}
+        <div className=' row'>
+          <div className='col-md-5 col-xl-4 pl-0'>
+            {/* <div className=' d-flex justify-content-center'>
                       <span className='th-16'>Files</span>
                     </div> */}
-                  <div className='card shadow border-0 th-br-4 w-100'>
-                    <div className='card-body'>
-                      <div>
-                        <p className='text-uppercase'>Homework Files</p>
+            <div className='card shadow border-0 th-br-4 w-100'>
+              <div className='card-body'>
+                <div>
+                  <p className='text-uppercase'>Homework Files</p>
+                </div>
+                <div className='notebook-list mt-3'>
+                  {evaluateData?.map((item, index) => (
+                    <div
+                      className='notebook-list-item'
+                      key={index}
+                      style={{
+                        backgroundColor: `${
+                          selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
+                        }`,
+                      }}
+                    >
+                      <div
+                        className='download-icon cursor-pointer'
+                        onClick={() => {
+                          downloadHomeworkAttachment(
+                            `${endpoints.erpBucket}${item?.file_location}`,
+                            item.file_location
+                          );
+                        }}
+                      >
+                        <img src={DOWNLOADICON} alt='download' className='img-fluid' />
                       </div>
-                      <div className='notebook-list mt-3'>
-                        {evaluateData?.map((item, index) => (
-                          <div
-                            className='notebook-list-item'
-                            key={index}
-                            style={{
-                              backgroundColor: `${
-                                selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
-                              }`,
-                            }}
-                          >
-                            <div
-                              className='download-icon cursor-pointer'
-                              onClick={() => {
-                                downloadHomeworkAttachment(
-                                  `${endpoints.erpBucket}${item?.file_location}`,
-                                  item.file_location
-                                );
-                              }}
-                            >
-                              <img
-                                src={DOWNLOADICON}
-                                alt='download'
-                                className='img-fluid'
-                              />
-                            </div>
-                            <div
-                              className='notebook-content ml-2'
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => handleImageScroll(index)}
-                            >
-                              <Tooltip
-                                title={`${item.student_erp}`}
-                                showArrow={false}
-                                placement='right'
-                                overlayInnerStyle={{
-                                  borderRadius: 4,
-                                  backgroundColor: 'white',
-                                  color: 'black',
-                                  maxHeight: 200,
-                                  overflowY: 'scroll',
-                                  textTransform: 'capitalize',
-                                }}
-                              >
-                                <h5 className='th-14 mb-0'>{item.student_erp}</h5>
-                                {/* <p className='th-12 mb-0 text-muted text-truncate'>
+                      <div
+                        className='notebook-content ml-2'
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleImageScroll(index)}
+                      >
+                        <Tooltip
+                          title={`${item.student_erp}`}
+                          showArrow={false}
+                          placement='right'
+                          overlayInnerStyle={{
+                            borderRadius: 4,
+                            backgroundColor: 'white',
+                            color: 'black',
+                            maxHeight: 200,
+                            overflowY: 'scroll',
+                            textTransform: 'capitalize',
+                          }}
+                        >
+                          <h5 className='th-14 mb-0'>{item.student_erp}</h5>
+                          {/* <p className='th-12 mb-0 text-muted text-truncate'>
                                   <span className='th-fw-600'>Description:</span>
                                   {item.description}
                                 </p> */}
-                              </Tooltip>
-                            </div>
-                          </div>
-                        ))}
+                        </Tooltip>
                       </div>
                     </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='col-md-7 col-xl-8 row'>
+            <div className='col-md-11 p-0'>
+              {/* Image Area */}
+
+              <div className='attachments-container'>
+                <div className='attachments-list-outer-container'>
+                  <div className='prev-btn'>
+                    <IconButton onClick={() => handleScroll('left')}>
+                      <ArrowBackIosIcon />
+                    </IconButton>
+                  </div>
+                  <SimpleReactLightbox>
+                    <div
+                      className='attachments-list'
+                      ref={scrollableContainer}
+                      onScroll={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      {evaluateData.map((url, i) => {
+                        const actions = ['preview', 'download', 'pentool'];
+
+                        return (
+                          <>
+                            <div
+                              className='attachment'
+                              style={{ maxWidth: '100%' }}
+                              ref={attachmentContainer}
+                            >
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={url?.file_location}
+                                fileName={`Attachment-${i + 1}`}
+                                // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
+                                urlPrefix={`${endpoints.erp_googleapi}`}
+                                index={i}
+                                actions={
+                                  url?.file?.includes('.doc')
+                                    ? ['download']
+                                    : ['preview', 'download']
+                                }
+                                onOpenInPenTool={openInPenTool}
+                              />
+                            </div>
+                          </>
+                        );
+                      })}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          width: '0',
+                          height: '0',
+                          visibility: 'hidden',
+                        }}
+                      >
+                        <SRLWrapper>
+                          {evaluateData.map((url, i) => (
+                            <img
+                              //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
+                              src={`${endpoints.erp_googleapi}/${
+                                url?.file_location
+                              }?${escape(new Date().getTime())}`}
+                              onError={(e) => {
+                                e.target.src = placeholder;
+                              }}
+                              alt={`Attachment-${i + 1}`}
+                              style={{ width: '0', height: '0' }}
+                            />
+                          ))}
+                        </SRLWrapper>
+                      </div>
+                    </div>
+                  </SimpleReactLightbox>
+                  <div className='next-btn'>
+                    <IconButton onClick={() => handleScroll('right')}>
+                      <ArrowForwardIosIcon color='primary' />
+                    </IconButton>
                   </div>
                 </div>
-                <div className='col-md-7 col-xl-8 row'>
-                  <div className='col-md-11 p-0'>
-                    {/* Image Area */}
+              </div>
 
-                    <div className='attachments-container'>
-                      <div className='attachments-list-outer-container'>
-                        <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
-                        </div>
-                        <SimpleReactLightbox>
-                          <div
-                            className='attachments-list'
-                            ref={scrollableContainer}
-                            onScroll={(e) => {
-                              e.preventDefault();
-                            }}
-                          >
-                            {evaluateData.map((url, i) => {
-                              const actions = ['preview', 'download', 'pentool'];
+              {penToolOpen && (
+                <DescriptiveTestcorrectionModule
+                  desTestDetails={desTestDetails}
+                  mediaContent={mediaContent}
+                  handleClose={handleCloseCorrectionModal}
+                  alert={undefined}
+                  open={penToolOpen}
+                  callBackOnPageChange={() => {}}
+                  handleSaveFile={handleSaveEvaluatedFile}
+                />
+              )}
 
-                              return (
-                                <>
-                                  <div
-                                    className='attachment'
-                                    style={{ maxWidth: '100%' }}
-                                    ref={attachmentContainer}
-                                  >
-                                    <Attachment
-                                      key={`homework_student_question_attachment_${i}`}
-                                      fileUrl={url?.file_location}
-                                      fileName={`Attachment-${i + 1}`}
-                                      // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                                      urlPrefix={`${endpoints.erp_googleapi}`}
-                                      index={i}
-                                      actions={
-                                        url?.file?.includes('.doc')
-                                          ? ['download']
-                                          : ['preview', 'download']
-                                      }
-                                      onOpenInPenTool={openInPenTool}
-                                    />
-                                  </div>
-                                </>
-                              );
-                            })}
-                            <div
-                              style={{
-                                position: 'absolute',
-                                width: '0',
-                                height: '0',
-                                visibility: 'hidden',
-                              }}
-                            >
-                              <SRLWrapper>
-                                {evaluateData.map((url, i) => (
-                                  <img
-                                    //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                                    src={`${endpoints.erp_googleapi}/${
-                                      url?.file_location
-                                    }?${escape(new Date().getTime())}`}
-                                    onError={(e) => {
-                                      e.target.src = placeholder;
-                                    }}
-                                    alt={`Attachment-${i + 1}`}
-                                    style={{ width: '0', height: '0' }}
-                                  />
-                                ))}
-                              </SRLWrapper>
-                            </div>
-                          </div>
-                        </SimpleReactLightbox>
-                        <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
-                        </div>
-                      </div>
-                    </div>
-
-                    {penToolOpen && (
-                      <DescriptiveTestcorrectionModule
-                        desTestDetails={desTestDetails}
-                        mediaContent={mediaContent}
-                        handleClose={handleCloseCorrectionModal}
-                        alert={undefined}
-                        open={penToolOpen}
-                        callBackOnPageChange={() => {}}
-                        handleSaveFile={handleSaveEvaluatedFile}
-                      />
-                    )}
-
-                    {/* Image Area Ends */}
-                  </div>
-                  {/* <div className='col-md-1 p-0'>
+              {/* Image Area Ends */}
+            </div>
+            {/* <div className='col-md-1 p-0'>
                     <IconButton
                       onClick={showDrawer}
                       style={{ backgroundColor: '#0000000a' }}
@@ -502,48 +498,48 @@ const FilesView = ({ evaluateData }) => {
                       <img src={QuestionPng} width='24px' />
                     </IconButton>
                   </div> */}
-                </div>
-              </div>
-              <Drawer
-                title={drawerTitle()}
-                onClose={onClose}
-                visible={openDrawer}
-                closeIcon={false}
-                className='chatDrawer'
-              >
-                <span className='pb-1'>Subject/Worksheet/Volume_Number</span>
-                <div style={{ maxHeight: '75vh', overflowY: 'scroll' }} ref={chatRef}>
-                  {chatsData?.map((item) => (
-                    <div className='col-md-12'>
-                      {item?.user == 'user' ? (
-                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                          <div className='p-2 col-md-6 userchat my-1'>
-                            <span>{item?.chat}</span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                          <div className='p-2 col-md-6 supchat my-1'>
-                            <span>{item?.chat}</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className='col-md-12'>
-                  <Input
-                    size='large'
-                    placeholder='Send Text'
-                    suffix={suffix}
-                    value={chattext}
-                    onChange={(e) => handlechange(e.target.value)}
-                  />
-                </div>
-              </Drawer>
-            </TabPane>
-          </Tabs>
+          </div>
         </div>
+        <Drawer
+          title={drawerTitle()}
+          onClose={onClose}
+          visible={openDrawer}
+          closeIcon={false}
+          className='chatDrawer'
+        >
+          <span className='pb-1'>Subject/Worksheet/Volume_Number</span>
+          <div style={{ maxHeight: '75vh', overflowY: 'scroll' }} ref={chatRef}>
+            {chatsData?.map((item) => (
+              <div className='col-md-12'>
+                {item?.user == 'user' ? (
+                  <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <div className='p-2 col-md-6 userchat my-1'>
+                      <span>{item?.chat}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <div className='p-2 col-md-6 supchat my-1'>
+                      <span>{item?.chat}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className='col-md-12'>
+            <Input
+              size='large'
+              placeholder='Send Text'
+              suffix={suffix}
+              value={chattext}
+              onChange={(e) => handlechange(e.target.value)}
+            />
+          </div>
+        </Drawer>
+        {/* </TabPane>
+          </Tabs>
+        </div> */}
       </div>
     </React.Fragment>
   );

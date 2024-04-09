@@ -58,6 +58,7 @@ import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
 import moment from 'moment';
 import { getFileIcon } from 'v2/getFileIcon';
 import { domain_name } from '../../../commonDomain';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -134,16 +135,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const onIbookClose = () => {
     setOpenIbook(false);
   };
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'test.ordchids.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
   const showDrawer = () => {
     setDrawerVisible(true);
   };
@@ -243,6 +235,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       page_size: '10',
       page_number: pageEbook,
       board: boardId,
+      acad_session_id: selectedBranch?.id,
     });
   };
   const fetchEbookCount = (params) => {
@@ -272,6 +265,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       page_size: '10',
       page: pageIbook,
       board: boardId,
+      acad_session_id: selectedBranch?.id,
     });
     showIbookDrawer();
   };
@@ -287,6 +281,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       lesson_plan: 'true',
       page_size: '10',
       page_number: pageEbook,
+      acad_session_id: selectedBranch?.id,
     });
     showEbookDrawer();
   };
@@ -350,6 +345,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       lesson_plan: 'true',
       page_size: '10',
       page_number: e,
+      acad_session_id: selectedBranch?.id,
     });
     const element = document.getElementById('ebooktop');
     element.scrollTo({ top: 0, behavior: 'smooth' });
@@ -362,6 +358,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       volume: volumeId,
       grade: gradeId,
       session_year: selectedAcademicYear?.session_year,
+      acad_session_id: selectedBranch?.id,
       book_type: '4',
       branch: selectedBranch?.branch?.id,
       domain_name: domain_name,
@@ -493,6 +490,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       .then((result) => {
         if (result?.data?.status === 200) {
           setResourcesData(result?.data?.data);
+          console.log(result?.data?.data, 'success');
           let index;
           if (!isStudent) {
             index = result?.data?.data.findIndex(
@@ -591,9 +589,10 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
         chapter_id: record.chapter_id,
       });
     }
-
     setExpandedRowKeys(keys);
   };
+
+  console.log(resourcesData, 'volume');
 
   const markPeriodComplete = (item) => {
     if (completeSections?.length > 0) {
@@ -601,6 +600,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       completeSections.map((section, index) => {
         let payLoad = {
           academic_year: selectedAcademicYear?.session_year,
+          acad_session_id: selectedBranch?.id,
           academic_year_id: item.central_academic_year_id,
           volume_id: volumeId,
           volume_name: volumeName,
@@ -1287,7 +1287,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                       }
                       key={i}
                     >
-                      {boardFilterArr.includes(window.location.host) && (
+                      {isOrchids && (
                         <div className='row mt-1 th-fw-600'>
                           <div className='col-2 th-black-1 px-0'>
                             <div className='row justify-content-between'>
@@ -1353,7 +1353,9 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                               )[1];
                               let textIndex = fullName
                                 ?.split('_')
-                                ?.indexOf(fullName?.split('_')?.find((item) => isNaN(item)));
+                                ?.indexOf(
+                                  fullName?.split('_')?.find((item) => isNaN(item))
+                                );
                               let displayName = fullName
                                 ?.split('_')
                                 ?.slice(textIndex)
@@ -2301,7 +2303,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                       }}
                     >
                       {nextPeriodDetails?.chapter__chapter_name}
-                      {boardFilterArr.includes(window.location.host)
+                      {isOrchids
                         ? ',' + nextPeriodDetails?.chapter__lt_module__lt_module_name
                         : null}
                     </div>
