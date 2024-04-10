@@ -8,6 +8,7 @@ import NOTEICON from './../../../assets/images/note-icon.png';
 import DOWNLOADICON from './../../../assets/images/download-icon-blue.png';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
+import { saveAs } from 'file-saver';
 
 const HomeworkAttachment = ({ ...props }) => {
   const {
@@ -42,10 +43,10 @@ const HomeworkAttachment = ({ ...props }) => {
           // console.log({hwData})
           // setHomeworkData(hwData);
           setHomeworkData((prevHomeworkData) => {
-            const updatedData = [...prevHomeworkData]; 
+            const updatedData = [...prevHomeworkData];
             updatedData[selectedHomeworkIndex] = {
               ...updatedData[selectedHomeworkIndex],
-              is_bookmarked: data === 'True' ? true : false
+              is_bookmarked: data === 'True' ? true : false,
             };
             console.log({ updatedData });
             return updatedData;
@@ -58,6 +59,7 @@ const HomeworkAttachment = ({ ...props }) => {
   };
 
   const handleAttachmentControl = (type, currentIndex) => {
+    console.log({ type, currentIndex });
     if (type === 'prev' && currentIndex > 0) {
       setSelectedHomeworkIndex(currentIndex - 1);
       setSelectedHomework(homeworkData[currentIndex - 1]);
@@ -67,9 +69,20 @@ const HomeworkAttachment = ({ ...props }) => {
     }
   };
 
+  const downloadHomeworkAttachment = async (url, filename) => {
+    console.log(url, filename);
+    const res = await fetch(url);
+    const blob = await res.blob();
+    saveAs(blob, filename);
+  };
+
   return (
     <React.Fragment>
       <div className='w-100'>
+        <div className='py-2'>
+          Attachment <span className='th-fw-600'>{selectedHomeworkIndex + 1}</span> of{' '}
+          <span className='th-fw-600'>{homeworkData?.length}</span>
+        </div>
         <div className='th-bg-white attachment-left-box shadow p-3 w-90 float-left'>
           <div className='position-relative'>
             <button
@@ -100,32 +113,37 @@ const HomeworkAttachment = ({ ...props }) => {
               alt={`${endpoints.erpBucket}${selectedHomework?.file_location}`}
               className='w-100'
             /> */}
-            {/* ) : (
-              <>
-                <div
-                  className='download-icon'
-                  style={{
-                    position: 'absolute',
-                    top: 10,
-                    right: 10,
-                  }}
-                >
-                  <img
-                    src={DOWNLOADICON}
-                    alt='download'
-                    className='img-fluid'
-                    title='Download File'
-                  />
-                </div>
-                <div className='zip-container' onClick={() => handleAttachmentView(true)}>
-                  <img
-                    src='https://cdn-icons-png.flaticon.com/128/9496/9496565.png'
-                    className='img-fluid'
-                    alt={selectedHomework?.name}
-                  />
-                </div>
-              </>
-            )} */}
+
+            <>
+              <div
+                className='download-icon'
+                style={{
+                  position: 'absolute',
+                  top: 10,
+                  right: 10,
+                }}
+                onClick={() => {
+                  downloadHomeworkAttachment(
+                    `${endpoints.erpBucket}${selectedHomework?.file_location}`,
+                    selectedHomework.file_location
+                  );
+                }}
+              >
+                <img
+                  src={DOWNLOADICON}
+                  alt='download'
+                  className='img-fluid'
+                  title='Download File'
+                />
+              </div>
+              {/* <div className='zip-container' onClick={() => handleAttachmentView(true)}>
+                <img
+                  src='https://cdn-icons-png.flaticon.com/128/9496/9496565.png'
+                  className='img-fluid'
+                  alt={selectedHomework?.name}
+                />
+              </div> */}
+            </>
             <button
               className='attachment-control-icon next btn'
               onClick={() => handleAttachmentControl('next', selectedHomeworkIndex)}
