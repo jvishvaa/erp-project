@@ -413,6 +413,10 @@ const UploadTable = ({
 
   const saveErp = async (file_location, erpId) => {
     try {
+      if (!updatedErp) {
+        message.error('Please select ERP to update');
+        return;
+      }
       setLoading(true);
       const formData = new FormData();
       formData.append('file_location', file_location);
@@ -511,12 +515,11 @@ const UploadTable = ({
               <TabPane tab='Passed' key='1'>
                 <div className=''>
                   <div className='d-flex justify-content-between align-items-center mb-2'>
-                    <span
-                      style={{ border: '1px solid #d9d9d9', padding : "5px" }}
-                    >
+                    <span style={{ border: '1px solid #d9d9d9', padding: '5px' }}>
                       <InfoCircleTwoTone className='pr-2' />
                       <i className='th-grey th-fw-500 '>
-                        New Uploaded Files Will Take Some Time To Reflect. Please Wait For 10 to 15 Minutes.
+                        New Uploaded Files Will Take Some Time To Reflect. Please Wait For
+                        10 to 15 Minutes.
                       </i>
                     </span>
                     <div>
