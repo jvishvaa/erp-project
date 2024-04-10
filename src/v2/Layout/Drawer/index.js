@@ -6,6 +6,7 @@ import './styles.scss';
 import { TramOutlined } from '@material-ui/icons';
 
 const resolveMenu = (url) => {
+  // this is responsible for main menu open
   if (url.includes('user-management')) return 'User Management';
   if (url.includes('lesson-plan')) return 'Lesson Plan';
   if (url.includes('master-management')) return 'Master Management';
@@ -15,11 +16,11 @@ const resolveMenu = (url) => {
   if (url.includes('classwork')) return 'Online Class';
   if (url.includes('homework')) return 'Homework';
 
-  if (url.includes('communication')) return 'Communication';
+  if (url.includes('announcement')) return 'Communication';
   if (url.includes('homework')) return 'Homework';
-  if (url.includes('blog')) return 'Blogs';
+  // if (url.includes('blog')) return 'Old Blogs';
   if (url.includes('diary')) return 'Diary';
-  if (url.includes('time-table')) return 'Time Table';
+  if (url.includes('timetable')) return 'Time Table';
   if (url.includes('Appointment')) return 'Appointments';
   if (url.includes('role-management')) return 'Role Management';
   if (url.includes('BulkOperation')) return 'Bulk Operations';
@@ -41,7 +42,7 @@ const resolveMenu = (url) => {
   if (url.includes('assesment')) return 'Assessment';
   if (url.includes('question-chapter-wise')) return 'Assessment';
   if (url.includes('orchadio')) return 'Orchadio';
-  if (url.includes('student-strength')) return 'School Strength';
+  if (url.includes('student_count_report')) return 'School Strength';
   if (url.includes('student-strength')) return 'School Strength';
 
   if (url.includes('Store')) return 'Store';
@@ -78,6 +79,21 @@ const resolveMenu = (url) => {
   if (url.includes('student_store')) return 'Finance';
   if (url.includes('ShippingPayment')) return 'Finance';
   if (url.includes('ManagePayments')) return 'Finance';
+  if (url.includes('blog')) return 'Activity Management';
+  if (url.includes('activity-management')) return 'Activity Management';
+  if (url.includes('course-list')) return 'Master Management';
+  if (url.includes('user-level-table')) return 'User Management';
+  if (url.includes('virtual-school')) return 'User Management';
+  if (url.includes('viewgroup')) return 'User Management';
+  if (url.includes('onboarding-report')) return 'User Management';
+  if (url.includes('teacher-attendance-verify')) return 'Attendance';
+  if (url.includes('mark-student-attendance')) return 'Attendance';
+  if (url.includes('mark-staff-attendance')) return 'Attendance';
+  if (url.includes('observation')) return 'Observation';
+  if (url.includes('online-books')) return 'Online Books';
+  if (url.includes('file-category')) return 'File Drive';
+  if (url.includes('studentwallet')) return 'Student Wallet';
+  if (url.includes('curriculum-completion-student-subject')) return 'Lesson Plan';
 
   // if (url.includes('Appointment')) return 'Appointments';
   return null;
