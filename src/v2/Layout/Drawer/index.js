@@ -69,8 +69,8 @@ const resolveMenu = (url) => {
   if (url.includes('BankAndFeeAccounts')) return 'Banks & Fee Accounts';
   if (url.includes('applicationFrom')) return 'Admissions';
   if (url.includes('admission')) return 'Admissions';
-  if (url.includes('student')) return 'student';
-  if (url.includes('Student')) return 'student';
+  // if (url.includes('student')) return 'student';
+  // if (url.includes('Student')) return 'student';
   if (url.includes('Coupon')) return 'Coupons';
   if (url.includes('Ledger')) return 'Expense Management';
   if (url.includes('DepositTab')) return 'Expense Management';
