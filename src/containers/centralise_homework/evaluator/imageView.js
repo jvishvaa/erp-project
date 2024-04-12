@@ -310,6 +310,9 @@ const EvaluatorHomework = ({ is_auditor }) => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
+    setEvaluateData([]);
+    setSelectedHomeworkIndex(0);
+    setPageNo(1);
     if (!subject) {
       return message.error('Please Select Filters !');
     }
@@ -336,7 +339,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
         setEvaluateData(result?.data?.result?.results);
         if (result?.data?.result?.results?.[0]?.homework[0]?.is_audited) {
           const ratingData = await fetchRating({
-            hw_dist_file: result?.data?.result?.results[0]?.id,
+            hw_dist_file: result?.data?.result?.results[0]?.homework[0]?.id,
           });
         }
         setCountData(result?.data?.result);
