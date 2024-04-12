@@ -334,7 +334,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
       );
       if (result.data.status_code === 200) {
         setEvaluateData(result?.data?.result?.results);
-        if (result?.data?.result?.results?.[0]?.is_audited) {
+        if (result?.data?.result?.results?.[0]?.homework[0]?.is_audited) {
           const ratingData = await fetchRating({
             hw_dist_file: result?.data?.result?.results[0]?.id,
           });

@@ -305,7 +305,7 @@ const FilesViewEvaluate = ({
           hw_dist_file:
             evaluateData[evaluatedIndex]?.homework[
               selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
-            ].id,
+            ]?.id,
         });
       }
       // carousel.current.next();
@@ -336,7 +336,7 @@ const FilesViewEvaluate = ({
               selectedHomeworkIndex === evaluateData.length - 1
                 ? evaluateData.length - 1
                 : selectedHomeworkIndex + 1
-            ].id,
+            ]?.id,
         });
       }
       // carousel.current.prev();
@@ -371,6 +371,17 @@ const FilesViewEvaluate = ({
             is_assessed: activeTab === '1' ? 'True' : 'False',
             evaluator_ids: selectedEvaluator,
           });
+          setSelectedHomeworkIndex(
+            selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
+          );
+          setSelectedHomework(
+            evaluateData[evaluatedIndex]?.homework[
+              selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
+            ]
+          );
+          scrollableContainer.current.scrollLeft -=
+            scrollableContainer?.current?.clientWidth;
+
           // setFileList([]);
           // setUploading(false);
         }
