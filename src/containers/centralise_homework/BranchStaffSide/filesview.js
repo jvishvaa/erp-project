@@ -381,7 +381,7 @@ const FilesView = ({
                         e.preventDefault();
                       }}
                     >
-                      {selectedHomework.map((url, i) => {
+                      {selectedHomework?.map((url, i) => {
                         const actions = ['preview', 'download', 'pentool'];
 
                         return (
@@ -418,7 +418,7 @@ const FilesView = ({
                         }}
                       >
                         <SRLWrapper>
-                          {selectedHomework.map((url, i) => (
+                          {selectedHomework?.map((url, i) => (
                             <img
                               //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
                               src={`${endpoints.erp_googleapi}/${
