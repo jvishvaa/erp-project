@@ -81,7 +81,7 @@ const HomeworkAttachment = ({ ...props }) => {
       <div className='w-100'>
         <div className='py-2'>
           Attachment <span className='th-fw-600'>{selectedHomeworkIndex + 1}</span> of
-          <span className='th-fw-600'>{homeworkData?.length}</span>
+          <span className='th-fw-600'> {homeworkData?.length}</span>
         </div>
         <div className='th-bg-white attachment-left-box shadow p-3 w-90 float-left'>
           <div className='position-relative'>
@@ -119,7 +119,7 @@ const HomeworkAttachment = ({ ...props }) => {
                 className='download-icon'
                 style={{
                   position: 'absolute',
-                  top: 10,
+                  top: -5,
                   right: 10,
                 }}
                 onClick={() => {

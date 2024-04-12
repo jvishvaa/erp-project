@@ -590,7 +590,7 @@ const FilesViewEvaluate = ({
                         key={index}
                         style={{
                           backgroundColor: `${
-                            evaluatedIndex === index ? '#f8f8f8' : '#fff'
+                            evaluatedIndex === index ? '#e7e7e7' : '#fff'
                           }`,
                         }}
                         onClick={() => handleImageScroll(index)}

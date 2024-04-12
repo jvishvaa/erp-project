@@ -601,7 +601,7 @@ const CentralizedStudentHw = () => {
                             key={index}
                             style={{
                               backgroundColor: `${
-                                selectedEvaluatedIndex === index ? '#f8f8f8' : '#fff'
+                                selectedEvaluatedIndex === index ? '#e7e7e7' : '#fff'
                               }`,
                             }}
                           >
