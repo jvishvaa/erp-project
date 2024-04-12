@@ -60,6 +60,7 @@ const BranchHomework = () => {
   const [startDate, setStartDate] = useState(defaultStartDate.format('DD-MM-YYYY'));
   const [endDate, setEndDate] = useState(moment().format('DD-MM-YYYY'));
   const [evaluateData, setEvaluateData] = useState([]);
+  const [selectedHomework, setSelectedHomework] = useState();
   const formRef = useRef();
   const [count, setCount] = useState(0);
   const [ListPageData, setListPageData] = useState({
@@ -315,6 +316,8 @@ const BranchHomework = () => {
         if (result?.data?.status_code == 200) {
           message.success('Data Fetched');
           setEvaluateData(result?.data?.result?.results);
+          console.log('ssssssssssssssssssss', result?.data?.result?.results[0]?.homework);
+          setSelectedHomework(result?.data?.result?.results[0]?.homework);
           // setDiaryListData(result?.data?.result?.results);
           setTotalAssesed(result?.data?.result?.total_assessed);
           setTotalunderAssesed(result?.data?.result?.total_under_assessed);
@@ -357,7 +360,7 @@ const BranchHomework = () => {
     return !!tooEarly || !!tooLate;
   };
 
-  console.log({ endDate });
+  console.log({ selectedHomework });
 
   return (
     <React.Fragment>
@@ -531,10 +534,22 @@ const BranchHomework = () => {
                   <div className='th-tabs th-tabs-hw mt-3 th-bg-white'>
                     <Tabs type='card' onChange={onChange} defaultActiveKey={showTab}>
                       <TabPane tab='Assessed' key='1'>
-                        <FilesView evaluateData={evaluateData} activeTab={showTab} />
+                        <FilesView
+                          evaluateData={evaluateData ?? []}
+                          selectedHomework={selectedHomework ?? []}
+                          setSelectedHomework={setSelectedHomework}
+                          setEvaluateData={setEvaluateData}
+                          activeTab={showTab}
+                        />
                       </TabPane>
                       <TabPane tab='Under Assessed' key='2'>
-                        <FilesView evaluateData={evaluateData} activeTab={showTab} />
+                        <FilesView
+                          evaluateData={evaluateData ?? []}
+                          selectedHomework={selectedHomework}
+                          setSelectedHomework={setSelectedHomework}
+                          setEvaluateData={setEvaluateData}
+                          activeTab={showTab}
+                        />
                       </TabPane>
                     </Tabs>
                   </div>

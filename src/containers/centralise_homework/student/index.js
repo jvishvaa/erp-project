@@ -20,6 +20,7 @@ const CentralizedStudentHw = () => {
   const { Option } = Select;
   const { TabPane } = Tabs;
   const [homeworkData, setHomeworkData] = useState([]);
+  const [evaluateData, setEvaluateData] = useState([]);
   const [homework, setHomework] = useState();
   const [subjectSelected, setSubjectSelected] = useState(null);
   const [subjectList, setSubjectList] = useState([]);
@@ -35,6 +36,7 @@ const CentralizedStudentHw = () => {
 
   const [selectedHomework, setSelectedHomework] = useState(null);
   const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
+  const [selectedEvaluatedIndex, setSelectedEvaluatedIndex] = useState(0);
   const [selectedSection, setSelectedSection] = useState(null);
 
   const [showTab, setShowTab] = useState('1');
@@ -145,9 +147,10 @@ const CentralizedStudentHw = () => {
       .then((res) => {
         if (res?.data?.status_code === 200) {
           console.log({ res });
-          setHomeworkData(res?.data.result?.results);
+          setHomeworkData(res?.data?.result?.results[0]?.homework);
+          setEvaluateData(res?.data.result?.results);
           setHomework(res?.data.result);
-          setSelectedHomework(res?.data?.result?.results[0]);
+          setSelectedHomework(res?.data?.result?.results[0]?.homework[0]);
         } else {
           message.error(res?.data?.message);
         }
@@ -189,12 +192,12 @@ const CentralizedStudentHw = () => {
       .catch((error) => {});
   };
 
-  const downloadHomeworkAttachment = async (url, filename) => {
-    console.log(url, filename);
-    const res = await fetch(url);
-    const blob = await res.blob();
-    saveAs(blob, filename);
-  };
+  // const downloadHomeworkAttachment = async (url, filename) => {
+  //   console.log(url, filename);
+  //   const res = await fetch(url);
+  //   const blob = await res.blob();
+  //   saveAs(blob, filename);
+  // };
 
   const handleSubjectFilter = (sub) => {
     setSubjectSelected(sub);
@@ -279,8 +282,10 @@ const CentralizedStudentHw = () => {
   };
 
   const handleAttachment = (index) => {
-    setSelectedHomeworkIndex(index);
-    setSelectedHomework(homeworkData[index]);
+    setSelectedEvaluatedIndex(index);
+    setSelectedHomeworkIndex(0)
+    setHomeworkData(evaluateData[index]?.homework);
+    setSelectedHomework(evaluateData[index]?.homework[0]);
   };
 
   const VolumeOptions = volumeData?.map((each) => {
@@ -388,6 +393,7 @@ const CentralizedStudentHw = () => {
                   }}
                   onClear={handleClearVolume}
                   className='w-100 text-left th-black-1 th-bg-grey th-select'
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {VolumeOptions}
                 </Select>
@@ -406,6 +412,7 @@ const CentralizedStudentHw = () => {
                   }}
                   onClear={handleClearDocType}
                   className='w-100 text-left th-black-1 th-bg-grey th-select mt-2'
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {DocTypeOptions}
                 </Select>
@@ -478,14 +485,14 @@ const CentralizedStudentHw = () => {
                     style={{ color: 'green' }}
                   >
                     <span className='th-fw-600'>Total Assessed</span>
-                    {homeworkData.length && <span>{homework?.total_assessed}</span>}
+                    {<span>{homework?.total_assessed}</span>}
                   </div>
                   <div
                     className='col-md-12 row justify-content-between'
                     style={{ color: 'red' }}
                   >
                     <span className='th-fw-600'>Total Under Assessed</span>
-                    {homeworkData.length && <span>{homework?.total_under_assessed}</span>}
+                    {<span>{homework?.total_under_assessed}</span>}
                   </div>
                 </div>
               </div>
@@ -586,23 +593,23 @@ const CentralizedStudentHw = () => {
                     </div>
 
                     <div className='notebook-list mt-3'>
-                      {Array.isArray(homeworkData) &&
-                        homeworkData?.length > 0 &&
-                        homeworkData?.map((item, index) => (
+                      {Array.isArray(evaluateData) &&
+                        evaluateData?.length > 0 &&
+                        evaluateData?.map((item, index) => (
                           <div
                             className='notebook-list-item'
                             key={index}
                             style={{
                               backgroundColor: `${
-                                selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
+                                selectedEvaluatedIndex === index ? '#f8f8f8' : '#fff'
                               }`,
                             }}
                           >
-                            <div
+                            {/* <div
                               className='download-icon cursor-pointer'
                               onClick={() => {
                                 downloadHomeworkAttachment(
-                                  `${endpoints.erpBucket}${item?.file_location}`,
+                                  `${endpoints.erpBucket}${selectedHomework?.file_location}`,
                                   item.file_location
                                 );
                               }}
@@ -612,14 +619,14 @@ const CentralizedStudentHw = () => {
                                 alt='download'
                                 className='img-fluid'
                               />
-                            </div>
+                            </div> */}
                             <div
                               className='notebook-content ml-2'
                               style={{ cursor: 'pointer' }}
                               onClick={() => handleAttachment(index)}
                             >
                               <Tooltip
-                                title={`${item.file_location}`}
+                                title={`${item.erp} (${item?.date})`}
                                 showArrow={false}
                                 placement='right'
                                 overlayInnerStyle={{
@@ -631,8 +638,9 @@ const CentralizedStudentHw = () => {
                                   textTransform: 'capitalize',
                                 }}
                               >
-                                
-                                <h5 className='th-14 mb-0'>{item.student_erp}</h5>
+                                <h5 className='th-14 mb-0'>
+                                  {item.erp} ({item?.date}){' '}
+                                </h5>
                                 {/* <p className='th-12 mb-0 text-muted text-truncate'>
                                       <span className='th-fw-600'>Description:</span>
                                       {item.description}
@@ -708,6 +716,8 @@ const CentralizedStudentHw = () => {
                 setSelectedHomeworkIndex={setSelectedHomeworkIndex}
                 homeworkData={homeworkData}
                 setHomeworkData={setHomeworkData}
+                evaluateData={evaluateData}
+                setEvaluateData={setEvaluateData}
               />
             </div>
           </div>

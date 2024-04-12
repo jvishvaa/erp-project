@@ -142,7 +142,13 @@ let chatarr = [
   },
 ];
 
-const FilesView = ({ evaluateData }) => {
+const FilesView = ({
+  evaluateData,
+  selectedHomework,
+  setSelectedHomework,
+  setEvaluateData,
+}) => {
+  console.log({ evaluateData });
   const history = useHistory();
   const scrollableContainer = useRef(null);
   const attachmentContainer = useRef(null);
@@ -157,6 +163,9 @@ const FilesView = ({ evaluateData }) => {
   const [chattext, setChatText] = useState('');
   const [chatsData, setChatsData] = useState(chatarr);
   const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
+  const [selectedEvaluatedIndex, setSelectedEvaluatedIndex] = useState(0);
+
+  console.log({ selectedHomework });
 
   const showDrawer = () => {
     setOpenDrawer(true);
@@ -205,63 +214,12 @@ const FilesView = ({ evaluateData }) => {
     } else {
       scrollableContainer.current.scrollLeft += attachmentContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
-        selectedHomeworkIndex === evaluateData.length - 1
-          ? evaluateData.length - 1
+        selectedHomeworkIndex === selectedHomework.length - 1
+          ? selectedHomework.length - 1
           : selectedHomeworkIndex + 1
       );
     }
   };
-
-  let imgarr2 = [
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    '40/38/193/993/2543/homework/1702384133_image_2_.png',
-  ];
-
-  let imgarr = [
-    {
-      name: 'Notebook 1',
-      description:
-        'notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing notebook description testing',
-      isNote: true,
-      isBookmarked: true,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    },
-    {
-      name: 'Notebook 2',
-      description: 'notebook description testing',
-      isNote: false,
-      isBookmarked: false,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    },
-    {
-      name: 'Notebook 3',
-      description: 'notebook description testing',
-      isNote: true,
-      isBookmarked: true,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    },
-    {
-      name: 'Notebook 4',
-      description: 'notebook description testing',
-      isNote: true,
-      isBookmarked: false,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    },
-    {
-      name: 'Notebook 5',
-      description: 'notebook description testing',
-      isNote: true,
-      isBookmarked: true,
-      isDownload: true,
-      file: '40/38/193/993/2543/homework/1702384133_image_2_.png',
-    },
-  ];
 
   const handleSaveEvaluatedFile = async (file) => {
     const fd = new FormData();
@@ -313,10 +271,12 @@ const FilesView = ({ evaluateData }) => {
   };
 
   const handleImageScroll = (index) => {
-    setSelectedHomeworkIndex(index);
+    setSelectedEvaluatedIndex(index);
+    setSelectedHomeworkIndex(0);
     let imgwidth = index * attachmentContainer?.current?.clientWidth;
     console.log(scrollableContainer.current, 'scroll');
     scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
+    setSelectedHomework(evaluateData[index]?.homework);
   };
 
   const downloadHomeworkAttachment = async (url, filename) => {
@@ -349,28 +309,28 @@ const FilesView = ({ evaluateData }) => {
                       key={index}
                       style={{
                         backgroundColor: `${
-                          selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
+                          selectedEvaluatedIndex === index ? '#f8f8f8' : '#fff'
                         }`,
                       }}
                     >
-                      <div
+                      {/* <div
                         className='download-icon cursor-pointer'
                         onClick={() => {
                           downloadHomeworkAttachment(
-                            `${endpoints.erpBucket}${item?.file_location}`,
-                            item.file_location
+                            `${endpoints.erpBucket}${item?.homework[0]?.file_location}`,
+                            item?.homework[0]?.file_location
                           );
                         }}
                       >
                         <img src={DOWNLOADICON} alt='download' className='img-fluid' />
-                      </div>
+                      </div> */}
                       <div
                         className='notebook-content ml-2'
                         style={{ cursor: 'pointer' }}
                         onClick={() => handleImageScroll(index)}
                       >
                         <Tooltip
-                          title={`${item.student_erp}`}
+                          title={`${item?.erp} (${item?.date})`}
                           showArrow={false}
                           placement='right'
                           overlayInnerStyle={{
@@ -382,7 +342,9 @@ const FilesView = ({ evaluateData }) => {
                             textTransform: 'capitalize',
                           }}
                         >
-                          <h5 className='th-14 mb-0'>{item.student_erp}</h5>
+                          <h5 className='th-14 mb-0'>
+                            {item?.erp} ({item?.date})
+                          </h5>
                           {/* <p className='th-12 mb-0 text-muted text-truncate'>
                                   <span className='th-fw-600'>Description:</span>
                                   {item.description}
@@ -400,6 +362,11 @@ const FilesView = ({ evaluateData }) => {
               {/* Image Area */}
 
               <div className='attachments-container'>
+                <div className='py-2'>
+                  Attachment{' '}
+                  <span className='th-fw-600'>{selectedHomeworkIndex + 1}</span> of{' '}
+                  <span className='th-fw-600'>{selectedHomework?.length}</span>
+                </div>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
                     <IconButton onClick={() => handleScroll('left')}>
@@ -414,7 +381,7 @@ const FilesView = ({ evaluateData }) => {
                         e.preventDefault();
                       }}
                     >
-                      {evaluateData.map((url, i) => {
+                      {selectedHomework.map((url, i) => {
                         const actions = ['preview', 'download', 'pentool'];
 
                         return (
@@ -451,7 +418,7 @@ const FilesView = ({ evaluateData }) => {
                         }}
                       >
                         <SRLWrapper>
-                          {evaluateData.map((url, i) => (
+                          {selectedHomework.map((url, i) => (
                             <img
                               //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
                               src={`${endpoints.erp_googleapi}/${
