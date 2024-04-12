@@ -282,8 +282,8 @@ const CentralizedStudentHw = () => {
   };
 
   const handleAttachment = (index) => {
-    console.log({ homeworkData });
     setSelectedEvaluatedIndex(index);
+    setSelectedHomeworkIndex(0)
     setHomeworkData(evaluateData[index]?.homework);
     setSelectedHomework(evaluateData[index]?.homework[0]);
   };

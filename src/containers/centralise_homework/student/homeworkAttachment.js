@@ -80,7 +80,7 @@ const HomeworkAttachment = ({ ...props }) => {
     <React.Fragment>
       <div className='w-100'>
         <div className='py-2'>
-          Attachment <span className='th-fw-600'>{selectedHomeworkIndex + 1}</span> of{' '}
+          Attachment <span className='th-fw-600'>{selectedHomeworkIndex + 1}</span> of
           <span className='th-fw-600'>{homeworkData?.length}</span>
         </div>
         <div className='th-bg-white attachment-left-box shadow p-3 w-90 float-left'>
