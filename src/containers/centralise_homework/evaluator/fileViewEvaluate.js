@@ -312,7 +312,7 @@ const FilesViewEvaluate = ({
     } else {
       scrollableContainer.current.scrollLeft += scrollableContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
-        selectedHomeworkIndex === evaluateData[evaluatedIndex]?.homework.length - 1
+        selectedHomeworkIndex === evaluateData[evaluatedIndex]?.homework?.length - 1
           ? evaluateData[evaluatedIndex]?.homework.length - 1
           : selectedHomeworkIndex + 1
       );
@@ -662,9 +662,18 @@ const FilesViewEvaluate = ({
               <div className='attachments-container'>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
-                    <IconButton onClick={() => handleScroll('left')}>
-                      <ArrowBackIosIcon />
-                    </IconButton>
+                    {selectedHomeworkIndex === 0 ? (
+                      <IconButton>
+                        <ArrowBackIosIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        disabled={selectedHomeworkIndex === 0}
+                        onClick={() => handleScroll('left')}
+                      >
+                        <ArrowBackIosIcon />
+                      </IconButton>
+                    )}
                   </div>
                   <SimpleReactLightbox>
                     <div
@@ -729,9 +738,22 @@ const FilesViewEvaluate = ({
                     </div>
                   </SimpleReactLightbox>
                   <div className='next-btn'>
-                    <IconButton onClick={() => handleScroll('right')}>
-                      <ArrowForwardIosIcon color='primary' />
-                    </IconButton>
+                    {selectedHomeworkIndex ===
+                    evaluateData[evaluatedIndex]?.homework?.length - 1 ? (
+                      <IconButton>
+                        <ArrowForwardIosIcon color='primary' />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        onClick={() => handleScroll('right')}
+                        disabled={
+                          selectedHomeworkIndex ===
+                          evaluateData[evaluatedIndex]?.homework?.length - 1
+                        }
+                      >
+                        <ArrowForwardIosIcon color='primary' />
+                      </IconButton>
+                    )}
                   </div>
                 </div>
               </div>
