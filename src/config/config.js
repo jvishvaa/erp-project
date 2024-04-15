@@ -102,6 +102,7 @@ const stage = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com',
     ERP_BUCKET: 'https://acad-cdn-stage.stage-vm.letseduvate.com/', // ALERT GCP STAGE CDN
+    erp_googleapi: 'https://storage.googleapis.com/erp-academic-stage',
     ERP_BUCKET_2: 'https://acad-cdn-stage.stage-vm.letseduvate.com', // ALERT GCP STAGE CDN
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
     CENTRAL_BUCKET: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
@@ -124,6 +125,7 @@ const stage = {
     msReportsUrl: 'https://api-reports-stage.stage-gke.letseduvate.com',
     crm: 'https://marketing.stage-gke.letseduvate.com',
     cvbox: 'https://cvbox.stage-gke.letseduvate.com',
+    gcloud: 'https://asia-south1-prj-stage-service-k12.cloudfunctions.net',
   },
 };
 
@@ -133,6 +135,7 @@ const prod = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://mgmt-cdn.letseduvate.com',
     ERP_BUCKET: 'https://acad-cdn.letseduvate.com/',
+    erp_googleapi: 'https://storage.googleapis.com/erp-revamp',
     ERP_BUCKET_2: 'https://acad-cdn.letseduvate.com',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
     CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
@@ -163,6 +166,7 @@ const prod = {
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     crm: 'https://marketing.letseduvate.com',
     cvbox: 'https://careerbox.letseduvate.com',
+    gcloud: 'https://asia-south1-prj-prod-service-k12.cloudfunctions.net',
   },
 };
 

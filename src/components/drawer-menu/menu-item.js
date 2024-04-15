@@ -161,6 +161,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Classwork Report', Path: '/classwork/student-report' },
     { name: 'Teacher Homework Report', Path: '/homework-report-teacher-view' },
     { name: 'Student Homework Report', Path: '/homework/student-report' },
+    { name: 'Centralized Homework', Path: '/homework/centralized' },
+    { name: 'Upload Homework', Path: '/centralized-homework/homework-upload-status' },
     // { name: 'Student Homework Report', Path: '/classwork-report-teacher-view' },
     { name: 'Assessment', Path: '/assessment' },
     { name: 'Individual Student Report', Path: '/assessment-student-report' },

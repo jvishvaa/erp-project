@@ -96,6 +96,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
   }));
 
   const menuSelectionArray = [
+      // this is responsible for main menu icon highlight and sub-menu bold
     { name: 'Take Class', Path: '/take-class' },
     { name: 'View Class', Path: '/online-class/view-class' },
     // { name: 'Attend Online Class', Path: '/online-class/attend-class' },
@@ -154,6 +155,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Classwork Report', Path: '/classwork/student-report' },
     { name: 'Teacher Homework Report', Path: '/homework-report-teacher-view' },
     { name: 'Student Homework Report', Path: '/homework/student-report' },
+    { name: 'Centralized Homework', Path: '/homework/centralized' },
+    { name: 'Upload Homework', Path: '/centralized-homework/homework-upload-status' },
     // { name: 'Student Homework Report', Path: '/classwork-report-teacher-view' },
     { name: 'Assessment', Path: '/assessment' },
     { name: 'Individual Student Report', Path: '/assessment-student-report' },
@@ -195,8 +198,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Forum', Path: '/student-forum' },
     { name: 'Assessment Report', Path: '/assessment-reports' },
 
-    { name: 'Student Report', Path: '/assessment-student-report' },
-
+    { name: 'Individual Student Report', Path: '/assessment-student-report' },
+    { name: 'Grading System Config', Path: '/assessment/grading-system' },
     {
       name: 'Weekly Quiz Performance',
       Path: '/assessment-weekly-quiz-performance-report',
@@ -210,7 +213,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Question Bank', Path: '/question-chapter-wise' },
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
-    { name: 'Take Test', Path: '/assessment' },
+    { name: 'Take Test', Path: '/assessment/' },
     { name: 'Student Attendance Report', Path: '/student-attendance-report' },
     { name: 'Student Strength', Path: '/student-strength' },
     { name: 'Griviences Teacher', Path: '/griviences/admin-view' },
@@ -290,6 +293,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'View School Strength',
       Path: '/student-strength',
+    },
+    {
+      name: 'Class Section Wise Strength',
+      Path: '/student_count_report',
     },
     {
       name: 'Concession Settings',
@@ -388,15 +395,15 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/finance/admissions/OnlineAdmission',
     },
     {
-      name: 'Account Login',
+      name: 'Accountant Login',
       Path: '/finance/BulkOperation/AccountantLogin',
     },
     {
-      name: 'Permanent Active/Inactive',
+      name: 'Permanent Active / Inactive',
       Path: '/finance/BulkOperation/BulkActiveInactive',
     },
     {
-      name: 'Temporary Active/Inactive',
+      name: 'Temporary Active / Inactive',
       Path: '/finance/BulkOperation/BulkActiveInactiveParent',
     },
     {
@@ -703,12 +710,29 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name: 'File Category',
-      Path: '/file-category',
+      Path: '/file-category/',
     },
     {
       name: 'Non Academic Staff',
       Path: '/user-management/non-academic-staff',
     },
+    {
+      name: 'Activity Dashboard',
+      Path: '/activity-management-dashboard',
+    },
+    { name: 'Assign User Level', Path: '/user-level-table' },
+    { name: 'Virtual School', Path: '/virtual-school' },
+    { name: 'User Groups', Path: '/viewgroup' },
+    { name: 'OnBoarding Report', Path: '/onboarding-report' },
+    { name: 'Workshop', Path: '/online-class/workshop' },
+    { name: 'Online Books', Path: '/online-books/' },
+    { name: 'Student Wallet', Path: '/finance/studentwallet' },
+    { name: 'Announcement', Path: '/announcement-list' },
+    { name: 'Curriculum Completion', Path: '/curriculum-completion-student-subject/' },
+    { name: 'Teacher View', Path: '/lesson-plan/teacher-view/period-view' },
+    { name: 'Student View', Path: '/lesson-plan/student-view/period-view' },
+    { name: 'Teacher Time Table', Path: '/timetable/teacherview' },
+    { name: 'Student Time Table', Path: '/timetable/studentview' },
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);

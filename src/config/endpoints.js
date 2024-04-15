@@ -14,6 +14,7 @@ const {
     msOriginUrl,
     crm,
     cvbox,
+    gcloud,
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -22,6 +23,7 @@ const {
     UDAAN_BUCKET: s3UDAAN_BUCKET,
     CENTRAL_BUCKET: CENTRAL_BUCKET,
     FINANCE_BUCKET: FINANCE_BUCKET,
+    erp_googleapi,
   },
 } = ENVCONFIG;
 
@@ -241,6 +243,14 @@ export default {
     submitToUnsubmit: '/academic/homework-submitted-unsubmitted/',
     // resourcesS3: 'https://mgmt-cdn-stage.stage-gke.letseduvate.com',
     resourcesFiles: `${CENTRAL_BUCKET}`,
+    uploadZip: `${gcloud}/hw_zip_upload_v1`,
+    teacherData: '/hw-hub/hw_view/',
+    updateImage: '/hw-hub/upload_hw_files/',
+    getCount: '/hw-hub/get_hw_count/',
+    hwData: '/hw-hub/hw-files/',
+    hwDoctType: '/hw-hub/get_doctype/',
+    hwErp: '/hw-hub/view-users/',
+    hwErpUpdate: '/hw-hub/upload_hw_files/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
@@ -249,6 +259,14 @@ export default {
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
     hwupdate: '/academic/',
+  },
+  centralizedHomework: {
+    docType: 'hw-hub/get_doctype/',
+    studentView: 'hw-hub/hw_view/',
+    subjectList: 'hw-hub/user-subject-list/',
+    rating: '/hw-hub/rating/',
+    evaluatorList: '/hw-hub/get_evaluators/',
+    checkEvaluator: '/hw-hub/evaluator-check/',
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',
@@ -928,12 +946,12 @@ export default {
 
   teacherReferral: {
     referred_applicants: `${cvbox}/qbox/apiV2/referral/referral-form/`,
-    referral_position_list : `${cvbox}/qbox/apiV2/recruiter/referral-position-list/`,
-    candidate_refferal : `${cvbox}/qbox/apiV2/referral/referral-form/`,
-    city_list : `${cvbox}/qbox/recruiter/CityListAPIView/`,
-    branch_list : `${cvbox}/qbox/authenticate/branchcity/`,
-    subject_list : `${cvbox}/qbox/apiV2/referral/subject-list/`
-    },
+    referral_position_list: `${cvbox}/qbox/apiV2/referral/referral-position-list/`,
+    candidate_refferal: `${cvbox}/qbox/apiV2/referral/referral-form/`,
+    city_list: `${cvbox}/qbox/recruiter/CityListAPIView/`,
+    branch_list: `${cvbox}/qbox/authenticate/branchcity/`,
+    subject_list: `${cvbox}/qbox/apiV2/referral/subject-list/`,
+  },
 
   period: {
     getDate: '/period/calendar/',
@@ -1065,6 +1083,7 @@ export default {
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,
   erpBucket: ERP_BUCKET,
+  erpBucket2: ERP_BUCKET_2,
   centralBucket: CENTRAL_BUCKET,
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
@@ -1072,4 +1091,5 @@ export default {
   baseURLCentral,
   s3UDAAN_BUCKET: s3UDAAN_BUCKET,
   FINANCE_BUCKET,
+  erp_googleapi,
 };
