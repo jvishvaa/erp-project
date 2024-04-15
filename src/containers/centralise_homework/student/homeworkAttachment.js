@@ -98,9 +98,11 @@ const HomeworkAttachment = ({ ...props }) => {
             ] !== 'zip' ? ( */}
             <div
               style={{
-                backgroundImage: `url(${endpoints.erpBucket}${selectedHomework?.file_location})`,
+                backgroundImage: `url(${endpoints.erp_googleapi}/${
+                  selectedHomework?.file_location
+                }?${escape(new Date().getTime())})`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                // backgroundPosition: 'center',
                 cursor: 'pointer',
                 borderRadius: 4,
                 overflow: 'hidden',
@@ -124,7 +126,9 @@ const HomeworkAttachment = ({ ...props }) => {
                 }}
                 onClick={() => {
                   downloadHomeworkAttachment(
-                    `${endpoints.erpBucket}${selectedHomework?.file_location}`,
+                    `${endpoints.erp_googleapi}/${
+                      selectedHomework?.file_location
+                    }?${escape(new Date().getTime())}`,
                     selectedHomework.file_location
                   );
                 }}
