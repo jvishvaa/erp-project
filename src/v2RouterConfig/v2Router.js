@@ -163,7 +163,7 @@ const V2Router = () => {
                         </Route>
                         <Route path='/dashboard'>
                           {({ match }) => {
-                            switch (JSON.parse(localStorage.getItem('userDetails'))?.user_level) {
+                            switch (userLevel) {
                               case 1:
                                 return <SuperAdmindashboardNew match={match} />;
                               case 2:

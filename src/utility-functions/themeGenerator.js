@@ -61,8 +61,6 @@ const getThemeElements = () => {
     themeDetails.forEach(({ theme_key, theme_value }) => {
       elements['colors'][theme_key || 'primary_color'] = theme_value || '#ff6b6b';
     });
-    elements['colors']['primary_color'] = '#1B4CCB';
-    elements['colors']['second_color'] = '#32334A';
   }
 
   elements['colors']['darkprimary'] = colorLuminance(elements.colors.primary_color, -0.2);
