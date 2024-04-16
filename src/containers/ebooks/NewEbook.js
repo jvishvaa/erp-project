@@ -6,7 +6,7 @@ import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import EbookViewStudent from './ebookViewStudent';
 import Loading from 'components/loader/loader';
 import { useHistory } from 'react-router-dom';
-import axiosInstance from 'config/axios';
+import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 const { TabPane } = Tabs;
 
@@ -15,7 +15,7 @@ const NewEbookView = (props) => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showTab, setShowTab] = useState('1');
   const [changeRecent, setChangeRecent] = useState(false);
-  const [ibookConfig, setIbookConfig] = useState(false);
+  const [ibookConfig, setIbookConfig] = useState();
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     // hit ibook config api and based on api response block ibooks
