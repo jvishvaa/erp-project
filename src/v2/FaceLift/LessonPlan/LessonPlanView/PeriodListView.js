@@ -493,7 +493,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
       .get(`${endpoints.newibook.ibookConfig}`)
       .then((response) => {
         if (response.data.status_code === 200) {
-          // setIbookConfig(response?.data?.result);
+          setIbookConfig(response?.data?.result);
         }
       })
       .catch((error) => {
