@@ -6,7 +6,7 @@ import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import EbookViewStudent from './ebookViewStudent';
 import Loading from 'components/loader/loader';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from 'config/axios';
 import endpoints from 'v2/config/endpoints';
 const { TabPane } = Tabs;
 
@@ -23,7 +23,7 @@ const NewEbookView = (props) => {
   }, []);
   const fetchIbookConfig = () => {
     setLoading(true);
-    axios
+    axiosInstance
       .get(`${endpoints.newibook.ibookConfig}`)
       .then((response) => {
         if (response.data.status_code === 200) {
