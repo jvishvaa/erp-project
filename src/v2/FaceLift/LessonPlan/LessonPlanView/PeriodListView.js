@@ -736,6 +736,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
 
   useEffect(() => {
     fetchVolumeListData();
+    // hit ibook config api and based on api response block ibooks
     fetchIbookConfig();
   }, [window.location.pathname]);
 
@@ -1252,7 +1253,7 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                     </div>
                   )}
 
-                  {ibookCount != null && ibookConfig == "True" && (
+                  {ibookCount != null && ibookConfig == 'True' && (
                     <div className='col-md-3 pl-0 col-12e4l'>
                       <a onClick={getIbook}>
                         <div className=' pl-0 col-12e4l th-primary '>
