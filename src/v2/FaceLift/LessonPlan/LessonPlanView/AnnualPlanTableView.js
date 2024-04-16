@@ -113,7 +113,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const [totalIbook, setTotalIbook] = useState();
   const [ebookCount, setEbookCount] = useState();
   const [ibookCount, setIbookCount] = useState();
-  const [ibookConfig, setIbookConfig] = useState();
+  const [isIbookBlocked, setIsIbookBlocked] = useState();
 
   const [isPeriodView, setIsPeriodView] = useState(true);
   const [questionData, setQuestionData] = useState([]);
@@ -313,7 +313,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       .get(`${endpoints.newibook.ibookConfig}`)
       .then((response) => {
         if (response.data.status_code === 200) {
-          setIbookConfig(response?.data?.result);
+          setIsIbookBlocked(response?.data?.result);
         }
       })
       .catch((error) => {
@@ -1139,7 +1139,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
               </div>
             )}
 
-            {ibookCount != null && ibookConfig == 'True' && (
+            {ibookCount != null && isIbookBlocked == 'False' && (
               <div className='col-md-3 pl-0 col-12e4l'>
                 <a onClick={getIbook}>
                   <div className=' pl-0 col-12e4l th-primary '>

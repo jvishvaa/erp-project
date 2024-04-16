@@ -15,7 +15,7 @@ const NewEbookView = (props) => {
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [showTab, setShowTab] = useState('1');
   const [changeRecent, setChangeRecent] = useState(false);
-  const [ibookConfig, setIbookConfig] = useState();
+  const [isIbookBlocked, setIsIbookBlocked] = useState();
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     // hit ibook config api and based on api response block ibooks
@@ -27,7 +27,7 @@ const NewEbookView = (props) => {
       .get(`${endpoints.newibook.ibookConfig}`)
       .then((response) => {
         if (response.data.status_code === 200) {
-          setIbookConfig(response?.data?.result);
+          setIsIbookBlocked(response?.data?.result);
         }
       })
       .catch((error) => {
@@ -80,7 +80,7 @@ const NewEbookView = (props) => {
                       <EbookView showTab={showTab} changeRecent={changeRecent} />
                     )}
                   </TabPane>
-                  {ibookConfig === "True" && (
+                  {isIbookBlocked === "False" && (
                     <TabPane tab='IBOOK' key='2'>
                       {user_level == 13 ? (
                         <EbookViewStudent showTab={showTab} changeRecent={changeRecent} />
