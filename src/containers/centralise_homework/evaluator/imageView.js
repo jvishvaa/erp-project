@@ -114,15 +114,13 @@ const EvaluatorHomework = ({ is_auditor }) => {
   };
 
   useEffect(() => {
-    fetchEvaluator();
-    // fetchTeacherData({
-    //   is_assessed: showTab === 1 ? 'True' : 'False',
-    //   start_date: '13-03-2024',
-    //   end_date: '19-03-2024',
-    //   sub_sec_mpng: 7485,
-    //   page: 1,
-    // });
-  }, []);
+    if (grade && section && subject) {
+      fetchEvaluator({ sub_sec_mpng: subject });
+    } else {
+      setEvaluatorList([]);
+      setSelectedEvaluator(null);
+    }
+  }, [grade, subject, section]);
 
   const handleFilters = () => {
     if (showFilters) {
@@ -180,6 +178,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
     setSectionList([]);
     setSubjectList([]);
     setSubject('');
+    setSelectedEvaluator(null);
     formRef.current.setFieldsValue({
       grade: null,
       section: null,
@@ -224,7 +223,9 @@ const EvaluatorHomework = ({ is_auditor }) => {
   const fetchEvaluator = async (params = {}) => {
     console.log({ params });
     await axiosInstance
-      .get(`${endpoints.centralizedHomework.evaluatorList}`)
+      .get(`${endpoints.centralizedHomework.evaluatorList}`, {
+        params: { ...params },
+      })
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setEvaluatorList(res?.data?.result);
@@ -309,6 +310,9 @@ const EvaluatorHomework = ({ is_auditor }) => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
+    setEvaluateData([]);
+    setSelectedHomeworkIndex(0);
+    setPageNo(1);
     if (!subject) {
       return message.error('Please Select Filters !');
     }
@@ -333,9 +337,9 @@ const EvaluatorHomework = ({ is_auditor }) => {
       );
       if (result.data.status_code === 200) {
         setEvaluateData(result?.data?.result?.results);
-        if (result?.data?.result?.results?.[0]?.is_audited) {
+        if (result?.data?.result?.results?.[0]?.homework[0]?.is_audited) {
           const ratingData = await fetchRating({
-            hw_dist_file: result?.data?.result?.results[0]?.id,
+            hw_dist_file: result?.data?.result?.results[0]?.homework[0]?.id,
           });
         }
         setCountData(result?.data?.result);

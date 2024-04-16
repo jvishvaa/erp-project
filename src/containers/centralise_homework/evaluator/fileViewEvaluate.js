@@ -199,10 +199,11 @@ const FilesViewEvaluate = ({
   const [openDrawer, setOpenDrawer] = useState(false);
   const [chattext, setChatText] = useState('');
   const [chatsData, setChatsData] = useState(chatarr);
+  const [evaluatedIndex, setEvaluatedIndex] = useState(0);
   const [selectedHomework, setSelectedHomework] = useState(
-    evaluateData[selectedHomeworkIndex]
+    evaluateData[evaluatedIndex]?.homework[selectedHomeworkIndex]
   );
-
+  const [filesIndex, setFilesIndex] = useState(0);
   const [percentValue, setPercentValue] = useState(10);
   const [uploadStart, setUploadStart] = useState(false);
   const [erpList, setErpList] = useState([]);
@@ -291,46 +292,51 @@ const FilesViewEvaluate = ({
         selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
       );
       setSelectedHomework(
-        evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1]
+        evaluateData[evaluatedIndex]?.homework[
+          selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
+        ]
       );
       if (
-        evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1]
-          ?.is_audited
+        evaluateData[evaluatedIndex]?.homework[
+          selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
+        ]?.is_audited
       ) {
         fetchRating({
           hw_dist_file:
-            evaluateData[selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1].id,
+            evaluateData[evaluatedIndex]?.homework[
+              selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
+            ]?.id,
         });
       }
       // carousel.current.next();
     } else {
       scrollableContainer.current.scrollLeft += scrollableContainer?.current?.clientWidth;
       setSelectedHomeworkIndex(
-        selectedHomeworkIndex === evaluateData.length - 1
-          ? evaluateData.length - 1
+        selectedHomeworkIndex === evaluateData[evaluatedIndex]?.homework?.length - 1
+          ? evaluateData[evaluatedIndex]?.homework.length - 1
           : selectedHomeworkIndex + 1
       );
       setSelectedHomework(
-        evaluateData[
-          selectedHomeworkIndex === evaluateData.length - 1
-            ? evaluateData.length - 1
+        evaluateData[evaluatedIndex]?.homework[
+          selectedHomeworkIndex === evaluateData[evaluatedIndex]?.homework.length - 1
+            ? evaluateData[evaluatedIndex]?.homework.length - 1
             : selectedHomeworkIndex + 1
         ]
       );
       if (
-        evaluateData[
-          selectedHomeworkIndex === evaluateData.length - 1
-            ? evaluateData.length - 1
+        evaluateData[evaluatedIndex]?.homework[
+          selectedHomeworkIndex === evaluateData[evaluatedIndex]?.homework.length - 1
+            ? evaluateData[evaluatedIndex]?.homework.length - 1
             : selectedHomeworkIndex + 1
         ]?.is_audited
       ) {
         fetchRating({
           hw_dist_file:
-            evaluateData[
+            evaluateData[evaluatedIndex]?.homework[
               selectedHomeworkIndex === evaluateData.length - 1
                 ? evaluateData.length - 1
                 : selectedHomeworkIndex + 1
-            ].id,
+            ]?.id,
         });
       }
       // carousel.current.prev();
@@ -338,8 +344,14 @@ const FilesViewEvaluate = ({
   };
 
   const handleSaveEvaluatedFile = async (file) => {
-    setUploadStart(true);
-    let path = evaluateData[selectedHomeworkIndex]?.file_location;
+    console.log(
+      evaluateData[evaluatedIndex]?.homework[selectedHomeworkIndex]?.file_location,
+      'file loc',
+      selectedHomework
+    );
+    // setUploadStart(true);
+    let path =
+      evaluateData[evaluatedIndex]?.homework[selectedHomeworkIndex]?.file_location;
     const fd = new FormData();
     fd.append('file', file);
     fd.append('destination_path', path);
@@ -359,6 +371,17 @@ const FilesViewEvaluate = ({
             is_assessed: activeTab === '1' ? 'True' : 'False',
             evaluator_ids: selectedEvaluator,
           });
+          setSelectedHomeworkIndex(
+            selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
+          );
+          setSelectedHomework(
+            evaluateData[evaluatedIndex]?.homework[
+              selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
+            ]
+          );
+          scrollableContainer.current.scrollLeft -=
+            scrollableContainer?.current?.clientWidth;
+
           // setFileList([]);
           // setUploading(false);
         }
@@ -408,18 +431,20 @@ const FilesViewEvaluate = ({
   };
 
   const handleImageScroll = (index) => {
-    setSelectedHomeworkIndex(index);
-    setSelectedHomework(evaluateData[index]);
-    if (evaluateData[index]?.is_audited) {
+    console.log(index);
+    setSelectedHomework(evaluateData[index]?.homework[0]);
+    setSelectedHomeworkIndex(0);
+    setEvaluatedIndex(index);
+    if (evaluateData[index]?.homework[0].is_audited) {
       fetchRating({
-        hw_dist_file: evaluateData[index]?.id,
+        hw_dist_file: evaluateData[index]?.homework[0]?.id,
       });
     }
     // carousel.current.goTo(index);
 
-    let imgwidth = index * scrollableContainer?.current?.clientWidth;
+    // let imgwidth = index * scrollableContainer?.current?.clientWidth;
     // console.log(scrollableContainer.current, 'scroll');
-    scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
+    // scrollableContainer.current.scrollTo({ left: imgwidth, behavior: 'smooth' });
   };
 
   const fetchErp = (params = {}) => {
@@ -454,6 +479,10 @@ const FilesViewEvaluate = ({
   });
 
   const handleSaveErp = async () => {
+    if (!selectedErp) {
+      message.error('Please select ERP to update');
+      return;
+    }
     setUploadBtn(true);
     axiosInstance
       .patch(`${endpointsV1.homework.hwData}${selectedHomework?.id}/`, {
@@ -561,7 +590,7 @@ const FilesViewEvaluate = ({
                         key={index}
                         style={{
                           backgroundColor: `${
-                            selectedHomeworkIndex === index ? '#f8f8f8' : '#fff'
+                            evaluatedIndex === index ? '#e7e7e7' : '#fff'
                           }`,
                         }}
                         onClick={() => handleImageScroll(index)}
@@ -571,7 +600,7 @@ const FilesViewEvaluate = ({
                           style={{ cursor: 'pointer' }}
                         >
                           <Tooltip
-                            title={`${item?.student_erp}`}
+                            title={`${item?.erp}`}
                             showArrow={false}
                             placement='right'
                             overlayInnerStyle={{
@@ -590,7 +619,7 @@ const FilesViewEvaluate = ({
                                 color: item?.is_corrected ? '#006b00' : '#ff3b3c',
                               }}
                             >
-                              {item.student_erp}
+                              {item.erp}
                             </h5>
                             {/* <p className='th-12 mb-0 text-muted text-truncate'>
                               <span className='th-fw-600'>Description:</span>
@@ -601,9 +630,7 @@ const FilesViewEvaluate = ({
                         <div className='col-md-6'>
                           <p className='th-12 mb-0 text-muted text-truncate text-center'>
                             <span className='th-fw-600'>
-                              {item?.hw_date
-                                ? moment(item?.hw_date).format('DD-MM-YYYY')
-                                : ''}
+                              {item?.date ? moment(item?.date).format('DD-MM-YYYY') : ''}
                             </span>
                           </p>
                         </div>
@@ -626,12 +653,27 @@ const FilesViewEvaluate = ({
                   </div>
                 </div>
               )}
+              <div>
+                <span className='th-12'>
+                  Attachment {selectedHomeworkIndex + 1} of{' '}
+                  {evaluateData[evaluatedIndex]?.homework?.length}
+                </span>
+              </div>
               <div className='attachments-container'>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
-                    <IconButton onClick={() => handleScroll('left')}>
-                      <ArrowBackIosIcon />
-                    </IconButton>
+                    {selectedHomeworkIndex === 0 ? (
+                      <IconButton>
+                        <ArrowBackIosIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        disabled={selectedHomeworkIndex === 0}
+                        onClick={() => handleScroll('left')}
+                      >
+                        <ArrowBackIosIcon />
+                      </IconButton>
+                    )}
                   </div>
                   <SimpleReactLightbox>
                     <div
@@ -641,31 +683,33 @@ const FilesViewEvaluate = ({
                         e.preventDefault();
                       }}
                     >
-                      {evaluateData.map((url, i) => {
-                        const actions = ['preview', 'download', 'pentool'];
-                        return (
-                          <div
-                            className='attachment'
-                            style={{ maxWidth: '100%' }}
-                            ref={attachmentContainer}
-                          >
-                            <Attachment
-                              key={`homework_student_question_attachment_${i}`}
-                              fileUrl={url?.file_location}
-                              fileName={`Attachment-${i + 1}`}
-                              // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
-                              urlPrefix={`${endpointsV1.erp_googleapi}`}
-                              index={i}
-                              actions={
-                                url?.file?.includes('.doc')
-                                  ? ['download']
-                                  : ['preview', 'download', 'pentool']
-                              }
-                              onOpenInPenTool={openInPenTool}
-                            />
-                          </div>
-                        );
-                      })}
+                      {console.log({ evaluateData })}
+                      {evaluateData[evaluatedIndex]?.homework?.length &&
+                        evaluateData[evaluatedIndex]?.homework.map((url, i) => {
+                          const actions = ['preview', 'download', 'pentool'];
+                          return (
+                            <div
+                              className='attachment'
+                              style={{ maxWidth: '100%' }}
+                              ref={attachmentContainer}
+                            >
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={url?.file_location}
+                                fileName={`Attachment-${i + 1}`}
+                                // urlPrefix={`${endpoints.academics.erpBucket}/homework`}
+                                urlPrefix={`${endpointsV1.erp_googleapi}`}
+                                index={i}
+                                actions={
+                                  url?.file?.includes('.doc')
+                                    ? ['download']
+                                    : ['preview', 'download', 'pentool']
+                                }
+                                onOpenInPenTool={openInPenTool}
+                              />
+                            </div>
+                          );
+                        })}
                       <div
                         style={{
                           position: 'absolute',
@@ -675,27 +719,41 @@ const FilesViewEvaluate = ({
                         }}
                       >
                         <SRLWrapper>
-                          {evaluateData.map((url, i) => (
-                            <img
-                              //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
-                              src={`${endpointsV1.erp_googleapi}/${
-                                url?.file_location
-                              }?${escape(new Date().getTime())}`}
-                              onError={(e) => {
-                                e.target.src = placeholder;
-                              }}
-                              alt={`Attachment-${i + 1}`}
-                              style={{ width: '0', height: '0' }}
-                            />
-                          ))}
+                          {evaluateData[evaluatedIndex]?.homework?.length &&
+                            evaluateData[evaluatedIndex]?.homework.map((url, i) => (
+                              <img
+                                //   src={`${endpoints.academics.erpBucket}/homework/${url}`}
+                                src={`${endpointsV1.erp_googleapi}/${
+                                  url?.file_location
+                                }?${escape(new Date().getTime())}`}
+                                onError={(e) => {
+                                  e.target.src = placeholder;
+                                }}
+                                alt={`Attachment-${i + 1}`}
+                                style={{ width: '0', height: '0' }}
+                              />
+                            ))}
                         </SRLWrapper>
                       </div>
                     </div>
                   </SimpleReactLightbox>
                   <div className='next-btn'>
-                    <IconButton onClick={() => handleScroll('right')}>
-                      <ArrowForwardIosIcon color='primary' />
-                    </IconButton>
+                    {selectedHomeworkIndex ===
+                    evaluateData[evaluatedIndex]?.homework?.length - 1 ? (
+                      <IconButton>
+                        <ArrowForwardIosIcon color='primary' />
+                      </IconButton>
+                    ) : (
+                      <IconButton
+                        onClick={() => handleScroll('right')}
+                        disabled={
+                          selectedHomeworkIndex ===
+                          evaluateData[evaluatedIndex]?.homework?.length - 1
+                        }
+                      >
+                        <ArrowForwardIosIcon color='primary' />
+                      </IconButton>
+                    )}
                   </div>
                 </div>
               </div>
@@ -713,7 +771,8 @@ const FilesViewEvaluate = ({
               )}
 
               {/* Image Area Ends */}
-              {selectedHomework.is_audited && activeTab === '1' && (
+              {/* {console.log('rating view', rating)} */}
+              {selectedHomework?.is_audited && activeTab === '1' && (
                 <>
                   <div className='rating-area mb-3 pl-5'>
                     <Rate

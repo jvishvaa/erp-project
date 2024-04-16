@@ -37,7 +37,7 @@ const AuditorRating = ({ selectedHomework, setSelectedHomework, fetchRating }) =
         if (res?.data?.status_code === 200) {
           selectedHomework.is_audited = true;
           // setSelectedHomework((prevState) => ({ ...prevState, is_audited: true }));
-          setSelectedHomework({ selectedHomework });
+          setSelectedHomework(selectedHomework);
           fetchRating({
             hw_dist_file: selectedHomework?.id,
           });

@@ -71,9 +71,9 @@
   bottom: 0;
   left: 0;
 }
-.notebook-content {
+/* .notebook-content {
   width: 150px;
-}
+} */
 .notebook-action {
   display: flex;
   margin-left: auto;
