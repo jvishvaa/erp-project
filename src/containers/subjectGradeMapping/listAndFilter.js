@@ -22,10 +22,10 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import './subjectgrademapping.scss';
 import { generateQueryParamSting } from '../../utility-functions';
 import moment from 'moment';
-import { Breadcrumb, Select, Form, Table, Button, Modal } from 'antd';
+import { Breadcrumb, Select, Form, Table, Button, Modal, Input } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { AllInboxOutlined } from '@material-ui/icons';
-import jsPDF from 'jspdf';
+import Loader from 'components/loader/loader';
 
 // const StyledButton = withStyles((theme) => ({
 //   root: {
@@ -43,6 +43,8 @@ const ListandFilter = (props) => {
   const AssignMappingRef = useRef();
   const AssessmentCategoryMappingRef = useRef();
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
+  const [subjectLoading, setSubjectLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
   const [branch, setBranchRes] = useState([]);
   const [gradeRes, setGradeRes] = useState([]);
@@ -80,10 +82,19 @@ const ListandFilter = (props) => {
   ];
   const schooldata = JSON.parse(localStorage.getItem('schoolDetails')) || {};
   const school_id = schooldata.id;
+  const [lessonModel, setlessonModel] = useState('');
+  const [ebookModel, setebookModel] = useState('');
+  const [ibookModel, setibookModel] = useState('');
 
   const [lesson, setlesson] = useState('');
   const [ebook, setebook] = useState('');
   const [ibook, setibook] = useState('');
+
+  const [defaultBranch, setdefaultBranch] = useState('');
+  const [defaultLesson, setdefaultLesson] = useState('');
+  const [defaultEbook, setdefaultEbook] = useState('');
+  const [defaultIbook, setdefaultIbook] = useState('');
+  const [defaultVersion, setdefaultVersion] = useState(null);
 
   const dataIndexToNameMap = {
     lesson_plan_version: 'is_lesson_plan',
@@ -92,6 +103,123 @@ const ListandFilter = (props) => {
   };
 
   const getVersionName = async (value, module, plan) => {
+    if (plan == 'lesson') {
+      setLoading(true);
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        if (response?.data?.status_code === 200) {
+          setLoading(false);
+          const versionList = response.data?.result?.result[0]?.school_versions;
+
+          const schoolWiseVersion = versionList?.filter(
+            (item) => item.is_school_wise === true
+          );
+
+          setdefaultLesson(schoolWiseVersion[0]?.version_name);
+
+          const versionMap = versionList?.reduce((acc, cur) => {
+            acc[cur.academic_year] = cur.version_name;
+            return acc;
+          }, {});
+
+          const versionName = versionMap[value];
+          setlesson(versionName ? versionName : 'Default Version');
+        }
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
+    if (plan == 'ebook') {
+      setLoading(true);
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        if (response?.data?.status_code === 200) {
+          setLoading(false);
+          const versionList = response.data?.result?.result[0]?.school_versions;
+
+          const schoolWiseVersion = versionList?.filter(
+            (item) => item.is_school_wise === true
+          );
+
+          setdefaultEbook(schoolWiseVersion[0]?.version_name);
+
+          const versionMap = versionList.reduce((acc, cur) => {
+            acc[cur.academic_year] = cur.version_name;
+            return acc;
+          }, {});
+
+          const versionName = versionMap[value];
+
+          setebook(versionName ? versionName : 'Default Version');
+        }
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
+    if (plan == 'ibook') {
+      setLoading(true);
+      try {
+        const queryString = generateQueryParamSting({
+          school: school_id,
+          [module]: true,
+        });
+        const response = await axios.get(
+          `${endpoints.masterManagement.versionData}?${queryString}`,
+          {
+            headers: { 'x-api-key': 'vikash@12345#1231' },
+          }
+        );
+
+        if (response?.data?.status_code === 200) {
+          setLoading(false);
+
+          const versionList = response.data?.result?.result[0]?.school_versions;
+
+          const schoolWiseVersion = versionList?.filter(
+            (item) => item.is_school_wise === true
+          );
+
+          setdefaultIbook(schoolWiseVersion[0]?.version_name);
+
+          const versionMap = versionList.reduce((acc, cur) => {
+            acc[cur.academic_year] = cur.version_name;
+            return acc;
+          }, {});
+
+          const versionName = versionMap[value];
+
+          setibook(versionName ? versionName : 'Default Version');
+        }
+      } catch (error) {
+        console.error('Error fetching version:', error);
+        return '-';
+      }
+    }
+  };
+
+  const getVersionNameModel = async (value, module, plan) => {
     if (plan == 'lesson') {
       try {
         const queryString = generateQueryParamSting({
@@ -113,7 +241,7 @@ const ListandFilter = (props) => {
         }, {});
 
         const versionName = versionMap[value];
-        setlesson(versionName ? versionName : '-');
+        setlessonModel(versionName ? versionName : 'Default Version');
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
@@ -141,7 +269,7 @@ const ListandFilter = (props) => {
 
         const versionName = versionMap[value];
 
-        setebook(versionName ? versionName : '-');
+        setebookModel(versionName ? versionName : 'Default Version');
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
@@ -169,13 +297,50 @@ const ListandFilter = (props) => {
 
         const versionName = versionMap[value];
 
-        setibook(versionName ? versionName : '-');
+        setibookModel(versionName ? versionName : 'Default Version');
       } catch (error) {
         console.error('Error fetching version:', error);
         return '-';
       }
     }
   };
+
+  const DefaultData = [{ id: 'Default_row' }];
+
+  const Default_columns = [
+    {
+      title: 'Branch',
+      dataIndex: 'defaultBranch',
+      key: 'defaultBranch',
+      render: () => {
+        return <span>{defaultBranch}</span>;
+      },
+    },
+    {
+      title: 'Lesson Plan',
+      dataIndex: 'lesson_plan_version',
+      key: 'lesson_plan_version',
+      render: () => {
+        return <span>{'Default Version'}</span>;
+      },
+    },
+    {
+      title: 'Ebook',
+      dataIndex: 'ebook_version',
+      key: 'ebook_version',
+      render: () => {
+        return <span>{'Default Version'}</span>;
+      },
+    },
+    {
+      title: 'Ibook',
+      dataIndex: 'ibook_version',
+      key: 'ibook_version',
+      render: () => {
+        return <span>{'Default Version'}</span>;
+      },
+    },
+  ];
 
   const columns = [
     {
@@ -228,7 +393,11 @@ const ListandFilter = (props) => {
 
   const handleCloseModal = () => {
     setModalToggle(false);
+    setVersionList([]);
     AssignMappingRef.current.resetFields();
+    if (defaultVersion) {
+      setdefaultVersion(null);
+    }
   };
 
   const handleOpenCategoryModal = () => {
@@ -328,6 +497,25 @@ const ListandFilter = (props) => {
       });
   };
 
+  const getBranchWiseTableData = async (branch) => {
+    axiosInstance
+      .get(`${endpoints.masterManagement.branchWiseVersion}?acad_session=${branch?.id}`)
+      .then((res) => {
+        if (res?.data?.result) {
+          getVersionNameModel(
+            res?.data?.result[0]?.lesson_plan_version,
+            'is_lesson_plan',
+            'lesson'
+          );
+          getVersionNameModel(res?.data?.result[0]?.ebook_version, 'is_ebook', 'ebook');
+          getVersionNameModel(res?.data?.result[0]?.ibook_version, 'is_ibook', 'ibook');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     axiosInstance
       .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
@@ -342,6 +530,7 @@ const ListandFilter = (props) => {
   }, []);
 
   useEffect(() => {
+    setdefaultBranch(selectedBranch?.branch?.branch_name);
     axiosInstance
       .get(
         `${endpoints.masterManagement.branchWiseVersion}?acad_session=${selectedBranch?.id}`
@@ -388,52 +577,48 @@ const ListandFilter = (props) => {
   }, []);
 
   const handleConfirm = async () => {
-    if (
-      selectedYear === null ||
-      branchValue === null ||
-      selectedModule === null ||
-      versionId === null
-    ) {
-      setAlert('error', 'Please select all the fields');
-      return;
+    if (defaultVersion) {
+      setAlert('error', 'Version already exists! Contact the admin team');
     } else {
-      const { key: moduleKey, value } = selectedModule;
-      let body = {
-        branch: branchValue && branchValue.branch.id,
-        module: moduleKey,
-        [moduleKey]: value,
-        eduvate_sy: versionId?.academic_year,
-        acad_session: branchValue?.id,
-      };
+      if (
+        selectedYear === null ||
+        branchValue === null ||
+        selectedModule === null ||
+        versionId === null
+      ) {
+        setAlert('error', 'Please select all the fields');
+        return;
+      } else {
+        const { key: moduleKey, value } = selectedModule;
+        let body = {
+          branch: branchValue && branchValue.branch.id,
+          module: moduleKey,
+          [moduleKey]: value,
+          eduvate_sy: versionId?.academic_year,
+          acad_session: branchValue?.id,
+        };
 
-      await axiosInstance
-        .post(endpoints.masterManagement.branchWiseVersion, body)
-        .then((res) => {
-          if (res.data.status_code === 200) {
-            setAlert('success', res.data.message);
-          } else {
-            setAlert('warning', res.data.message);
-          }
-        })
-        .catch((err) => {
-          setAlert('error', err.message);
-          console.log(err);
-        });
+        await axiosInstance
+          .post(endpoints.masterManagement.branchWiseVersion, body)
+          .then((res) => {
+            if (res.data.status_code === 200) {
+              setAlert('success', res.data.message);
+            } else {
+              setAlert('warning', res.data.message);
+            }
+          })
+          .catch((err) => {
+            setAlert('error', err.message);
+            console.log(err);
+          });
+      }
+      getBranchWiseTable(branchValue);
+      handleCloseModal();
     }
-    getBranchWiseTable(branchValue);
-    handleCloseModal();
-  };
-
-  let body = {
-    central_category_name:
-      selectedCentralCategory && selectedCentralCategory?.category_name,
-    category_id: selectedERPCategory && selectedERPCategory?.id,
-    central_category_id: selectedCentralCategory && selectedCentralCategory?.id,
   };
 
   const categoryMappingSubmit = () => {
     if (selectedERPCategory && selectedCentralCategory) {
-      //   const { key: moduleKey, value } = selectedModule;
       let body = {
         central_category_name:
           selectedCentralCategory && selectedCentralCategory?.category_name,
@@ -464,6 +649,17 @@ const ListandFilter = (props) => {
   const handleChangeYear = (e, vaule) => {
     setBranchValue(null);
     setSelectedModule(null);
+    if (AssignMappingRef && AssignMappingRef.current) {
+      const formInstance = AssignMappingRef.current;
+      formInstance.setFieldsValue({
+        Branch: undefined,
+        Module: undefined,
+        Version: undefined,
+      });
+    }
+    if (defaultVersion) {
+      setdefaultVersion(null);
+    }
     if (vaule) {
       setSelectedYear(JSON.parse(vaule?.value));
     }
@@ -540,20 +736,40 @@ const ListandFilter = (props) => {
   };
 
   const handleChangeBranch = (e, value) => {
+    if (AssignMappingRef && AssignMappingRef.current) {
+      const formInstance = AssignMappingRef.current;
+      formInstance.setFieldsValue({
+        Module: undefined,
+        Version: undefined,
+      });
+    }
+    if (defaultVersion) {
+      setdefaultVersion(null);
+    }
     if (value) {
       setBranchValue(JSON.parse(value?.value));
       setSelectedModule(null);
-      // getBranchWiseTable(JSON.parse(value?.value));
+      setVersionId(null);
+      getBranchWiseTableData(JSON.parse(value?.value));
     } else {
       setBranchValue(null);
     }
   };
 
   const handleChangeModule = (e, value) => {
+    if (AssignMappingRef && AssignMappingRef.current) {
+      const formInstance = AssignMappingRef.current;
+      formInstance.setFieldsValue({
+        Version: undefined,
+      });
+    }
+    if (defaultVersion) {
+      setdefaultVersion(null);
+    }
     if (value && school_id) {
       setSelectedModule(JSON.parse(value?.value));
       const module = JSON.parse(value?.value);
-      getVersion(module?.key, school_id);
+      getVersion(module?.key, school_id, module);
     } else {
       setSelectedModule(null);
     }
@@ -566,7 +782,6 @@ const ListandFilter = (props) => {
   };
 
   const handleGradeChange = (value) => {
-    //setGradeValue(value);
     if (value) {
       setGradeValue(value);
     } else {
@@ -590,28 +805,15 @@ const ListandFilter = (props) => {
     }
   };
 
-  // const getRoleApi = async () => {
-  //   try {
-  //     const result = await axios.get(endpoints.userManagement.userLevelList, {
-  //       headers: {
-  //         'x-api-key': 'vikash@12345#1231',
-  //       },
-  //     });
-  //     if (result.status === 200) {
-  //       // setRoles(result?.data?.result);
-  //     } else {
-  //       setAlert('error', result?.data?.message);
-  //     }
-  //   } catch (error) {
-  //     setAlert('error', error?.message);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getRoleApi();
-  // }, []);
-
-  const getVersion = async (module, school_id) => {
+  const getVersion = async (module, school_id, value) => {
+    let filterValue = '';
+    if (value?.id == 'lesson-plan') {
+      filterValue = lessonModel;
+    } else if (value?.id == 'ebook') {
+      filterValue = ebookModel;
+    } else if (value?.id == 'ibook') {
+      filterValue = ibookModel;
+    }
     const queryString = generateQueryParamSting({ school: school_id, [module]: true });
     await axios
       .get(`${endpoints.masterManagement.versionData}?${queryString}`, {
@@ -619,6 +821,16 @@ const ListandFilter = (props) => {
       })
       .then((result) => {
         setVersionList(result?.data?.result?.result[0]?.school_versions);
+
+        const filterData = result?.data?.result?.result[0]?.school_versions?.filter(
+          (ele) => ele?.version_name === filterValue
+        );
+
+        if (filterData) {
+          setdefaultVersion(filterData[0]?.version_name);
+        } else {
+          setdefaultVersion(null);
+        }
       })
       .catch((error) => {
         setAlert('error', error.message);
@@ -626,22 +838,51 @@ const ListandFilter = (props) => {
   };
 
   const fetchDetails = async (selectedSchool, moduleKey, version_id) => {
-    const queryString = generateQueryParamSting({
-      school: selectedSchool,
-      version_id: version_id,
-      [moduleKey]: true,
-    });
-    const apiURL = `${endpoints.masterManagement.schoolList}?${queryString}`;
-    await axios
-      .get(apiURL, {
-        headers: { 'x-api-key': 'vikash@12345#1231' },
-      })
-      .then((res) => {
-        setGradeSubjectList(res?.data?.result[0]?.grade_subject_mapping);
-      })
-      .catch((err) => {
-        console.log(err);
+    if (version_id) {
+      setSubjectLoading(true);
+      const queryString = generateQueryParamSting({
+        school: selectedSchool,
+        version_id: version_id,
+        [moduleKey]: true,
       });
+      const apiURL = `${endpoints.masterManagement.schoolList}?${queryString}`;
+      await axios
+        .get(apiURL, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            setSubjectLoading(false);
+            setGradeSubjectList(res?.data?.result[0]?.grade_subject_mapping);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setSubjectLoading(true);
+      const queryString = generateQueryParamSting({
+        school: selectedSchool,
+        [moduleKey]: true,
+      });
+      const apiURL = `${endpoints.masterManagement.schoolList}?${queryString}`;
+      await axios
+        .get(apiURL, {
+          headers: { 'x-api-key': 'vikash@12345#1231' },
+        })
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            setSubjectLoading(false);
+            const filterResult = res?.data?.result?.filter(
+              (item) => item?.is_school_wise === true
+            );
+            setGradeSubjectList(filterResult[0]?.grade_subject_mapping);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   const handleFilter = async () => {
@@ -649,6 +890,7 @@ const ListandFilter = (props) => {
       setAlert('warning', 'Select Branch');
       return false;
     } else {
+      setdefaultBranch(branchFilter?.branch?.branch_name);
       setFilter(true);
       await axiosInstance
         .get(
@@ -700,10 +942,14 @@ const ListandFilter = (props) => {
   };
 
   const handleRowClick = (record, dataIndex) => {
-    // setModuleName(dataIndexToNameMap[dataIndex]);
+    setGradeSubjectList([]);
     fetchDetails(record?.school_id, dataIndexToNameMap[dataIndex], record[dataIndex]);
     setSelectedRow({ record, dataIndex });
-    // setVersionId(record[dataIndex]);
+  };
+
+  const handleDefaultRowClick = (record, dataIndex) => {
+    fetchDetails(school_id, dataIndexToNameMap[dataIndex]);
+    setSelectedRow({ record, dataIndex });
   };
 
   const closeModal = () => {
@@ -801,7 +1047,7 @@ const ListandFilter = (props) => {
                       <div className='col-12'>
                         <Form ref={AssignMappingRef} layout={'vertical'}>
                           <div className='col-md-12 col-sm-10 col-12 mb-4'>
-                            <Form.Item name={'Academic Year'} label='Academic Year'>
+                            <Form.Item name={'AcademicYear'} label='Academic Year'>
                               <Select
                                 mode='single'
                                 getPopupContainer={(trigger) => trigger.parentNode}
@@ -895,31 +1141,41 @@ const ListandFilter = (props) => {
                           {selectedModule?.id !== 'assessment' && (
                             <div className='col-md-12 col-sm-10 col-12 mb-4'>
                               <Form.Item name={'Version'} label='Version'>
-                                <Select
-                                  mode='single'
-                                  getPopupContainer={(trigger) => trigger.parentNode}
-                                  allowClear={true}
-                                  suffixIcon={<DownOutlined className='th-grey' />}
-                                  className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                                  placement='bottomRight'
-                                  showArrow={true}
-                                  dropdownMatchSelectWidth={true}
-                                  filterOption={(input, options) => {
-                                    return (
-                                      options.children
-                                        .toLowerCase()
-                                        .indexOf(input.toLowerCase()) >= 0
-                                    );
-                                  }}
-                                  showSearch
-                                  placeholder='Select Version*'
-                                  onChange={(e, value) => {
-                                    handleChangeVersion(e, value);
-                                  }}
-                                  bordered={false}
-                                >
-                                  {versionOption}
-                                </Select>
+                                {defaultVersion ? (
+                                  <Input
+                                    defaultValue={defaultVersion}
+                                    disabled={defaultVersion ? true : false}
+                                    style={{ borderWidth: '0.1px', color: 'gray' }}
+                                  />
+                                ) : (
+                                  <Form.Item name={'Version'}>
+                                    <Select
+                                      mode='single'
+                                      getPopupContainer={(trigger) => trigger.parentNode}
+                                      allowClear={true}
+                                      suffixIcon={<DownOutlined className='th-grey' />}
+                                      className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                      placement='bottomRight'
+                                      showArrow={true}
+                                      dropdownMatchSelectWidth={true}
+                                      filterOption={(input, options) => {
+                                        return (
+                                          options.children
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
+                                        );
+                                      }}
+                                      showSearch
+                                      placeholder='Select Version*'
+                                      onChange={(e, value) => {
+                                        handleChangeVersion(e, value);
+                                      }}
+                                      bordered={false}
+                                    >
+                                      {versionOption}
+                                    </Select>
+                                  </Form.Item>
+                                )}
                               </Form.Item>
                             </div>
                           )}
@@ -951,12 +1207,12 @@ const ListandFilter = (props) => {
                       <div className='col-12'>
                         <Form ref={AssessmentCategoryMappingRef} layout={'vertical'}>
                           <div className='col-md-12 col-sm-10 col-12 mb-4'>
-                            <Form.Item name={'ERP Category'} label='ERP Category'>
+                            <Form.Item name={'ERP_Category'} label='ERP Category'>
                               <Select
                                 mode='single'
                                 getPopupContainer={(trigger) => trigger.parentNode}
                                 allowClear={true}
-                                defaultValue={selectedERPCategory?.category_name}
+                                // defaultValue={selectedERPCategory?.category_name}
                                 suffixIcon={<DownOutlined className='th-grey' />}
                                 className='th-grey th-bg-grey th-br-4 w-100 text-left'
                                 placement='bottomRight'
@@ -971,9 +1227,6 @@ const ListandFilter = (props) => {
                                 }}
                                 showSearch
                                 placeholder='Select ERP Category*'
-                                // value={
-                                //   selectedERPCategory ? selectedERPCategory?.category_name : null
-                                // }
                                 onChange={(e, val) => {
                                   handleErpCategory(e, val);
                                 }}
@@ -985,7 +1238,7 @@ const ListandFilter = (props) => {
                           </div>
 
                           <div className='col-md-12 col-sm-10 col-12 mb-4'>
-                            <Form.Item name={'Central Category'} label='Central Category'>
+                            <Form.Item name={'Central_Category'} label='Central Category'>
                               <Select
                                 mode='single'
                                 getPopupContainer={(trigger) => trigger.parentNode}
@@ -1006,7 +1259,6 @@ const ListandFilter = (props) => {
                                 placeholder='Select Central Category*'
                                 onChange={(e, value) => {
                                   handleCentralCategory(e, value);
-                                  // setSelectedCentralCategory(e, value);
                                 }}
                                 bordered={false}
                               >
@@ -1025,73 +1277,109 @@ const ListandFilter = (props) => {
         </div>
 
         <div className='convert col-md-12 mt-4'>
-          <Table
-            className='th-table version-table'
-            rowClassName={(record, index) =>
-              index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
-            }
-            // loading={loading}
-            columns={columns.map((col, index) => ({
-              ...col,
-              onCell: (record) => ({
-                onClick: index !== 0 ? () => handleRowClick(record, col.dataIndex) : null,
-              }),
-            }))}
-            rowKey={(record) => record?.id}
-            dataSource={tableData}
-            pagination={false}
-            scroll={{
-              x: window.innerWidth > 400 ? '100%' : 'max-content',
-              y: 350,
-            }}
-          />
-        </div>
-        <Modal
-          title='Content Mapping'
-          visible={selectedRow !== null}
-          onCancel={closeModal}
-          onOk={closeModal}
-          width={'40%'}
-          centered
-        >
-          {selectedRow && (
-            <div className='p-2 mt-3 mb-3'>
-              <div className='ml-3 d-flex justify-content-around'>
-                {/* <div className=''> */}
-                <div className='row'>
-                  <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Branch: </div>
-                  <div>{selectedRow?.record?.academic_year__branch__branch_name}</div>
-                </div>
-                <div className='row'>
-                  <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Module: </div>
-                  <div>
-                    {selectedRow?.dataIndex === 'lesson_plan_version' && 'Lesson Plan'}
-                    {selectedRow?.dataIndex === 'ebook_version' && 'Ebook'}
-                    {selectedRow?.dataIndex === 'ibook_version' && 'Ibook'}
-                  </div>
-                </div>
-                {/* </div> */}
-              </div>
-              <div className='p-2 mt-2'>
-                <Table
-                  className='th-table version-grade-table'
-                  rowClassName={(record, index) =>
-                    index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
-                  }
-                  // loading={loading}
-                  columns={gradeColumns}
-                  rowKey={(record) => record?.id}
-                  dataSource={gradeSubjectList}
-                  pagination={false}
-                  scroll={{
-                    x: window.innerWidth > 400 ? '100%' : 'max-content',
-                    y: 350,
-                  }}
-                />
-              </div>
-            </div>
+          {loading ? <Loader /> : null}
+          {tableData?.length > 0 ? (
+            <Table
+              className='th-table version-table'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
+              }
+              // loading={loading}
+              columns={columns.map((col, index) => ({
+                ...col,
+                onCell: (record) => ({
+                  onClick:
+                    index !== 0 ? () => handleRowClick(record, col.dataIndex) : null,
+                }),
+              }))}
+              rowKey={(record) => record?.id}
+              dataSource={tableData}
+              pagination={false}
+              scroll={{
+                x: window.innerWidth > 400 ? '100%' : 'max-content',
+                y: 350,
+              }}
+            />
+          ) : (
+            <Table
+              className='th-table version-table'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
+              }
+              // loading={loading}
+              columns={Default_columns.map((col, index) => ({
+                ...col,
+                onCell: (record) => ({
+                  onClick:
+                    index !== 0
+                      ? () => handleDefaultRowClick(record, col.dataIndex)
+                      : null,
+                }),
+              }))}
+              rowKey={(record) => record?.id}
+              dataSource={DefaultData}
+              pagination={false}
+              scroll={{
+                x: window.innerWidth > 400 ? '100%' : 'max-content',
+                y: 350,
+              }}
+            />
           )}
-        </Modal>
+        </div>
+        {subjectLoading ? (
+          <Loader />
+        ) : (
+          <Modal
+            title='Content Mapping'
+            visible={selectedRow !== null}
+            onCancel={closeModal}
+            onOk={closeModal}
+            width={'40%'}
+            centered
+          >
+            {selectedRow && (
+              <div className='p-2 mt-3 mb-3'>
+                <div className='ml-3 d-flex justify-content-around'>
+                  {/* <div className=''> */}
+                  <div className='row'>
+                    <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Branch: </div>
+                    {tableData?.length > 0 ? (
+                      <div>{selectedRow?.record?.academic_year__branch__branch_name}</div>
+                    ) : (
+                      <div>{defaultBranch}</div>
+                    )}
+                  </div>
+                  <div className='row'>
+                    <div style={{ fontWeight: 'bold', marginRight: '5px' }}>Module: </div>
+                    <div>
+                      {selectedRow?.dataIndex === 'lesson_plan_version' && 'Lesson Plan'}
+                      {selectedRow?.dataIndex === 'ebook_version' && 'Ebook'}
+                      {selectedRow?.dataIndex === 'ibook_version' && 'Ibook'}
+                    </div>
+                  </div>
+                  {/* </div> */}
+                </div>
+                <div className='p-2 mt-2'>
+                  <Table
+                    className='th-table version-grade-table'
+                    rowClassName={(record, index) =>
+                      index % 2 === 0 ? 'th-bg-grey th-pointer' : 'th-bg-white th-pointer'
+                    }
+                    // loading={loading}
+                    columns={gradeColumns}
+                    rowKey={(record) => record?.id}
+                    dataSource={gradeSubjectList}
+                    pagination={false}
+                    scroll={{
+                      x: window.innerWidth > 400 ? '100%' : 'max-content',
+                      y: 350,
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </Modal>
+        )}
         {/* <Grid container spacing={2} className='mapping-sub-grade-container'>
           <Grid item md={12} xs={12} className='mapping-grade-subject-container'>
             <Subjectcard

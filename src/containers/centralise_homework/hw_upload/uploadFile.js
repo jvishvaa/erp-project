@@ -316,7 +316,7 @@ const UploadHomework = () => {
         .post(`${endpoints.homework.uploadZip}`, formData)
         .then((res) => {
           if (res?.data?.status === 200) {
-            message.success('Attachment Added');
+            message.success("Attachment Added, Uploaded Files Will Take Some Time To Reflect. Please Wait");
             // // props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
             setFileList([]);
             setUploading(false);
@@ -597,6 +597,7 @@ const UploadHomework = () => {
                         >
                           Browse Files
                         </Button>
+                        <p className='pt-2'>Please Upload Zip Files Only</p>
                       </Dragger>
                     </div>
                       {fileTypeError && (

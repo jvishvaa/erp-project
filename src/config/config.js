@@ -3,7 +3,11 @@ const hostUrl = webUrl.split('.');
 
 const chechUrl = hostUrl[0] === 'orchids' || hostUrl[0] === 'orchids-prod' ? true : false;
 
-const isPreprod = window.location.host == 'orchids.prod.letseduvate.com' ? true : false;
+const isPreprod =
+  window.location.host == 'orchids.prod.letseduvate.com' ||
+  window.location.host == 'b2b.prod.letseduvate.com'
+    ? true
+    : false;
 
 const local = {
   s3: {
@@ -131,6 +135,7 @@ const prod = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://mgmt-cdn.letseduvate.com',
     ERP_BUCKET: 'https://acad-cdn.letseduvate.com/',
+    erp_googleapi: 'https://storage.googleapis.com/erp-revamp',
     ERP_BUCKET_2: 'https://acad-cdn.letseduvate.com',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
     CENTRAL_BUCKET: 'https://mgmt-cdn.letseduvate.com', // ALERT!!! QA & DEV in D3 but PROD in D2
@@ -161,6 +166,7 @@ const prod = {
     erpBlogURL: `${window.location.origin}/mb_droid/`,
     crm: 'https://marketing.letseduvate.com',
     cvbox: 'https://careerbox.letseduvate.com',
+    gcloud: 'https://asia-south1-prj-prod-service-k12.cloudfunctions.net',
   },
 };
 

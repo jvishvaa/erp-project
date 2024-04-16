@@ -97,21 +97,8 @@ const CentralAttachment = (props) => {
           src={`${urlPrefix}/${fileUrl}?${escape(new Date().getTime())}`}
           alt='File'
           onError={(e) => {
-            if (!fileUrl.includes('/lesson_plan_file/')) {
-              if (fileUrl.includes('doc')) {
-                e.target.src = PowerPointIcon;
-                setImagePreviewAvailable(true);
-              } else {
-                setImagePreviewAvailable(false);
-                e.target.src = placeholder;
-              }
-            } else {
-              if (fileUrl.includes('pdf')) {
-                e.target.src = PDFIcon;
-              } else if (fileUrl.includes('ppt')) {
-                e.target.src = PowerPointIcon;
-              }
-            }
+            setImagePreviewAvailable(false);
+            e.target.src = placeholder;
           }}
           style={{ width: '100%', padding: '0.5rem' }}
         />

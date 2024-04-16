@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import moment from 'moment';
 import { getSubjectIcon } from 'v2/getSubjectIcon';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const { Option } = Select;
 
 const PeriodView = () => {
@@ -33,16 +34,7 @@ const PeriodView = () => {
   const [subject, setSubject] = useState('');
   let isStudent = window.location.pathname.includes('student-view');
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'localhost:3001',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
   const fetchBoardListData = () => {
     setLoading(true);
     axios
@@ -171,7 +163,7 @@ const PeriodView = () => {
   }, [subject]);
   return (
     <div className='row'>
-      {boardFilterArr.includes(window.location.host) && (
+      {isOrchids && (
         <div className='col-12'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row align-items-center'>

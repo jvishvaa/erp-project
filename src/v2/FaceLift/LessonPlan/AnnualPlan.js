@@ -11,6 +11,7 @@ import { CaretDownOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 import { EyeFilled } from '@ant-design/icons';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 const { Option } = Select;
 
 const AnnualPlan = () => {
@@ -19,17 +20,7 @@ const AnnualPlan = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [moduleId, setModuleId] = useState();
-
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
-
+  const isOrchids = IsOrchidsChecker();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -113,7 +104,7 @@ const AnnualPlan = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setBoardListData(result?.data?.result);
-          // if (!boardFilterArr.includes(window.location.host)) {
+          // if (!isOrchids) {
           let data = result?.data?.result?.filter(
             (item) => item?.board_name === 'CBSE'
           )[0];
@@ -243,7 +234,7 @@ const AnnualPlan = () => {
         <div className='col-12'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row align-items-center'>
-              {boardFilterArr.includes(window.location.host) && (
+              {isOrchids && (
                 <div className='col-md-2 col-6 pl-0'>
                   <div className='mb-2 text-left'>Board</div>
                   <Form.Item name='board'>

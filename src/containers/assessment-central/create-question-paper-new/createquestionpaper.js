@@ -766,9 +766,6 @@ const CreatequestionPaperNew = () => {
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
                 <div className='col-6'>
-                  {/* {boardFilterArr.includes(window.location.host) && ( */}
-                  {/* )} */}
-
                   <div className='th-fw-600'>Grade</div>
                   <Form.Item name='grade'>
                     <Select

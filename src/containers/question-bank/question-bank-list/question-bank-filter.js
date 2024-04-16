@@ -17,6 +17,7 @@ import './question-bank.css';
 import ENVCONFIG from '../../../../src/config/config';
 import { setFilter } from 'redux/actions';
 import { Form, Select } from 'antd';
+import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 
 const {
   apiGateway: { baseURLCentral, xAPIKey },
@@ -164,15 +165,7 @@ const QuestionBankFilters = ({
   //   );
   // });
 
-  let boardFilterArr = [
-    'orchids.letseduvate.com',
-    'localhost:3000',
-    'localhost:3001',
-    'dev.olvorchidnaigaon.letseduvate.com',
-    'qa.olvorchidnaigaon.letseduvate.com',
-    'orchids-stage.stage-vm.letseduvate.com',
-    'orchids-prod.letseduvate.com',
-  ];
+  const isOrchids = IsOrchidsChecker();
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -208,7 +201,7 @@ const QuestionBankFilters = ({
   }, [selectedBranch, filterData?.year?.id, moduleId]);
 
   useEffect(() => {
-    if (!boardFilterArr.includes(window.location.host)) {
+    if (!isOrchids) {
       if (filterData?.subject && boardDropdown.length > 0) {
         let data = boardDropdown?.filter((item) => item?.board_name === 'CBSE');
         handleBoard('', data);
@@ -514,7 +507,7 @@ const QuestionBankFilters = ({
           .then((result) => {
             if (result?.data?.status_code === 200) {
               // setChapterDropdown(result?.data?.result);
-              if (!boardFilterArr.includes(window.location.host)) {
+              if (!isOrchids) {
                 setBoardDropdown(result?.data?.result);
               }
               setBoardDropdown(result?.data?.result);
@@ -758,7 +751,6 @@ const QuestionBankFilters = ({
       <div className='col-12 mt-2 th-bg-white'>
         <Form id='filterForm' ref={formRef} layout={'horizontal'}>
           <div className='row align-items-center'>
-            {/* {boardFilterArr.includes(window.location.host) && ( */}
             <div className='col-md-2 col-6 pl-0'>
               <div className='mb-2 text-left'>Question Level</div>
               <Form.Item name='question_level'>
@@ -965,7 +957,7 @@ const QuestionBankFilters = ({
 
         {filterData?.is_erp_central?.name == 'CENTRAL' ?
           <>
-            {(boardFilterArr.includes(window.location.host)) &&
+            {isOrchids &&
               <Grid
                 item
                 xs={12}
