@@ -27,7 +27,7 @@ const NewEbookView = (props) => {
       .get(`${endpoints.newibook.ibookConfig}`)
       .then((response) => {
         if (response.data.status_code === 200) {
-          setIsIbookBlocked(response?.data?.result);
+          setIsIbookBlocked(response?.data?.result[0]);
         }
       })
       .catch((error) => {
