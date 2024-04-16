@@ -48,6 +48,7 @@ export default {
   newibook: {
     ibookList: '/academic/v1/ibook_school_wise_filter/',
     ibookDefault: '/academic/v1/ibook_school_wise_default/',
+    ibookConfig: '/assessment/check-sys-config/?config_key=is_ibook_blocked',
   },
   academics: {
     subjects: '/erp_user/subject/',
