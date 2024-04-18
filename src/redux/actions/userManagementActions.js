@@ -223,6 +223,7 @@ export const fetchUser =
           },
           user_level: user?.user_level,
           designation: user?.designation,
+          role: user?.role,
         };
         console.log({ transformedUser }, 'userrr');
         dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });

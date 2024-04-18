@@ -56,6 +56,7 @@ class EditUser extends Component {
       hasAddAccess: false,
       userLevel: '',
       designation: '',
+      role: null,
       isOrchids:
         window.location.host.split('.')[0] === 'orchids' ||
         window.location.host.split('.')[0] === 'qa' ||
@@ -187,6 +188,8 @@ class EditUser extends Component {
       this.setState({
         userLevel: details.userLevel,
         designation: details.designation,
+        role: details?.role,
+        userLevelForEdit: details.userLevel,
       });
     }
     const {
@@ -202,6 +205,9 @@ class EditUser extends Component {
       grade: [...collectedGrade, grade],
       section: [...collectedSection, section],
       subjects: [...collectedSubjects, subjects],
+      user_level: details?.userLevel,
+      designation: details.designation,
+      role: details?.role,
     };
     const count = this.state.collectDataCount + 1;
     this.setState({
@@ -215,7 +221,6 @@ class EditUser extends Component {
   };
 
   onSubmitSchoolDetails = (details) => {
-    console.log(details, 'sub');
     const { selectedUser } = this.props;
     this.state.user.mapping_bgs.forEach(({ is_delete }, index) => {
       if (is_delete) {
@@ -285,6 +290,7 @@ class EditUser extends Component {
       parent,
       erp_user,
       mapping_bgs,
+      role,
     } = requestObj;
     const {
       id: parent_id,
@@ -420,6 +426,7 @@ class EditUser extends Component {
     }
     if (this.state.isOrchids == true) {
       requestObj['user_level'] = this.state.userLevel?.id;
+      requestObj['role_id'] = this.state?.role?.id;
       if (this.state.userLevel?.id != 13) {
         requestObj['designation'] = this.state.designation?.id;
       }
@@ -435,8 +442,6 @@ class EditUser extends Component {
       // console.log(mapping_bgs, requestObj.mapping_bgss, 'multipleAcademicYear');
       requestObj.mapping_bgs = JSON.stringify(requestObj?.mapping_bgs);
     }
-
-
 
     const requestObjFormData = jsonToFormData(requestObj);
     console.log({ requestObj }, 'post data');

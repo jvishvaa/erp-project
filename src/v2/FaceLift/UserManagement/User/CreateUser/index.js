@@ -819,9 +819,9 @@ const CreateUser = () => {
         guardian_aadhaar: user?.parent_details?.guardian_aadhaar || '',
         guardian_age: user?.parent_details?.guardian_age || '',
         guardian_occupation: user?.parent_details?.guardian_occupation || '',
-        address: user?.parent_details?.address,
+        address: user?.parent_details?.address || user?.address,
         pin_code: user?.parent_details?.pin_code,
-        email: user?.parent_details?.email,
+        email: user?.parent_details?.email || user?.user?.email,
         contact: user?.contact?.split('-')[1] || '',
         contact_code: user?.contact?.split('-')[0] || '',
         guardian_first_name: user?.parent_details?.guardian_first_name || '',
@@ -836,6 +836,7 @@ const CreateUser = () => {
         aadhaar: user?.aadhaar,
       },
       user_level: user?.user_level,
+      role: user?.role,
       designation: user?.designation,
       siblings: user?.siblings,
     };
@@ -896,6 +897,7 @@ const CreateUser = () => {
     var schoolDetails = {
       user_level: transformedSchoolDetails?.user_level,
       designation: transformedSchoolDetails?.designation?.id,
+      role: transformedSchoolDetails?.role?.id,
       academic_year: academicYearObj[0]?.session_year,
       branch: poppedBranch?.map((e) => e.id),
       branchAcadId: poppedBranch?.map((e) => e.acadId),

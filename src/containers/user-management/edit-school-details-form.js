@@ -58,6 +58,8 @@ const EditSchoolDetailsForm = ({
   const [roles, setRoles] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [designation, setDesignation] = useState('');
+  const [rolesList, setRolesList] = useState(null);
+  const [selectedRoles, setselectedRoles] = useState(null);
   const [selectedDesignation, setSelectedDesignation] = useState('');
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
@@ -65,6 +67,7 @@ const EditSchoolDetailsForm = ({
     window.location.host.split('.')[0] === 'mcollege' ||
     window.location.host.split('.')[0] === 'dps' ||
     window.location.host.split('.')[0] === 'orchids-stage' ||
+    window.location.host.split('.')[0] === 'localhost:3000' ||
     window.location.host.split('.')[0] === 'orchids-prod'
       ? true
       : false;
@@ -95,6 +98,7 @@ const EditSchoolDetailsForm = ({
       subjects: details.subjects,
       designation: details.designation,
       userLevel: details.user_level,
+      role: details?.role,
     },
     // validationSchema,
     onSubmit: (values) => {
@@ -364,6 +368,7 @@ const EditSchoolDetailsForm = ({
 
     fetchAcademicYears();
     getRoleApi();
+    getRoles();
     getDesignation(details.user_level);
     if (details?.academic_year?.length > 0) {
       handleChangeAcademicYear(details.academic_year[0]);
@@ -436,6 +441,24 @@ const EditSchoolDetailsForm = ({
 
   const classes = useStyles();
 
+  const getRoles = () => {
+    axiosInstance
+      .get(`/erp_user/roles/`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          setRolesList(response.data.result);
+          console.log(response.data.result, 'response');
+        } else {
+          message.error('Something went wrong!');
+        }
+        // setUserLevelForEdit(response?.data?.level);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message ?? 'Something went wrong!');
+      })
+      .finally(() => {});
+  };
+
   const getRoleApi = async () => {
     try {
       const result = await axios.get(endpoints.userManagement.userLevelList, {
@@ -506,7 +529,7 @@ const EditSchoolDetailsForm = ({
                 options={roles || []}
                 getOptionLabel={(option) => option?.level_name || ''}
                 disabled={details?.user_level == 13 ? true : false}
-                filterSelectedOptions
+                getOptionSelected={(option, value) => option?.id === value.id}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -534,7 +557,7 @@ const EditSchoolDetailsForm = ({
                   value={formik.values.designation || ''}
                   options={designation || []}
                   getOptionLabel={(option) => option?.designation || ''}
-                  filterSelectedOptions
+                  getOptionSelected={(option, value) => option?.id === value.id}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -546,6 +569,32 @@ const EditSchoolDetailsForm = ({
                 />
               </div>
             )}
+            <div className='col-md-4'>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  console.log(value, 'role');
+                  setselectedRoles(value);
+                  formik.setFieldValue('role', value);
+                }}
+                id='role'
+                className='dropdownIcon'
+                value={formik.values.role || {}}
+                options={rolesList || []}
+                getOptionSelected={(option, value) => option?.id === value.id}
+                getOptionLabel={(option) => option?.role_name || ''}
+                // filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Role'
+                    placeholder='Select Role'
+                  />
+                )}
+              />
+            </div>
           </div>
         ) : (
           ''
