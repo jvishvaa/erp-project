@@ -15,6 +15,7 @@ import {
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import endpoints from 'v2/config/endpoints';
+import endpointsV1 from 'config/endpoints';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
 const { Option } = Select;
@@ -177,7 +178,7 @@ const AcademicYearList = ({
       console.log({ acadId, userLevel, selectedUserLevel }, 'testing');
       if (roleBasedUiConfig?.includes(userLevel?.toString())) {
         axiosInstance
-          .get(`/erp_user/grade-list/`, {
+          .get(`${endpointsV1.userManagement.gradeList}`, {
             params: {
               acad_session: acadId ? acadId?.join(',') : selectedAcadId?.join(','),
             },
@@ -300,7 +301,7 @@ const AcademicYearList = ({
         .get(
           `${
             roleBasedUiConfig?.includes(userLevel?.toString())
-              ? '/erp_user/subject-list/'
+              ? endpointsV1.userManagement.subjectList
               : endpoints.academics.subjects
           }`,
           { params: params1 }

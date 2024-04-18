@@ -12,6 +12,7 @@ import UserDetailsForm from './user-details-form';
 import SchoolDetailsForm from './school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
 import { createUser } from '../../redux/actions';
+import endpointsV1 from 'config/endpoints';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { getSteps, jsonToFormData } from './utils';
 import CustomStepperConnector from '../../components/custom-stepper-connector';
@@ -298,7 +299,7 @@ class CreateUser extends Component {
 
     if (roleBasedUiConfig?.includes(user?.userLevel?.id?.toString())) {
       axiosInstance
-        .post('/erp_user/add-staff-user/', requestObjFormData)
+        .post(`${endpointsV1.userManagement.addStaffUser}`, requestObjFormData)
         .then(() => {
           message.success('User Created Successfully!');
           history.push('/user-management/view-users');

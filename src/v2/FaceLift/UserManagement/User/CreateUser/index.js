@@ -155,7 +155,7 @@ const CreateUser = () => {
   const getRoles = () => {
     setLoading(true);
     axiosInstance
-      .get(`/erp_user/roles/`)
+      .get(`${endpointsV1.communication.roles}`)
       .then((response) => {
         if (response.data.status_code === 200) {
           setRolesList(response.data.result);
@@ -176,9 +176,8 @@ const CreateUser = () => {
   const fetchUserDataOwner = (userId) => {
     setLoading(true);
     axiosInstance
-      .get(`/erp_user/staff-user/${userId}`)
+      .get(`${endpointsV1.userManagement.staffUser}${userId}`)
       .then((response) => {
-        console.log(response, 'responseeeeee');
         let data = response.data.result;
         let converted = Object.keys(data.mapping_bgs)?.map((key) => {
           return {
@@ -213,7 +212,7 @@ const CreateUser = () => {
   const fetchUserLevel = (userId) => {
     if (userId) {
       axiosInstance
-        .get(`/erp_user/get-user-level/${userId}`)
+        .get(`${endpointsV1.userManagement.getUserLevel}${userId}`)
         .then((response) => {
           console.log(response);
           setUserLevelForEdit(response?.data?.level);
@@ -1070,7 +1069,7 @@ const CreateUser = () => {
         console.log(branches, 'branches selected');
         setLoading(true);
         axiosInstance
-          .get(`/erp_user/grade-list/`, { params: { acad_session: acadId.join(',') } })
+          .get(`${endpointsV1.userManagement.gradeList}`, { params: { acad_session: acadId.join(',') } })
           .then((response) => {
             if (response.data.status_code === 200) {
               const transformedData = response.data.result?.map((obj) => ({
@@ -1223,7 +1222,7 @@ const CreateUser = () => {
         .get(
           `${
             roleBasedUiConfig?.includes(userLevel)
-              ? '/erp_user/subject-list/'
+              ? endpointsV1.userManagement.subjectList
               : endpoints.academics.subjects
           }`,
           { params: params1 }
@@ -1497,19 +1496,9 @@ const CreateUser = () => {
             return acc;
           }, {}),
         };
-
-        console.log(
-          {
-            multipleAcademicYear,
-            selectedYear,
-            filterdata: { branchObj, gradeObj, subjectObj },
-            mapping_bgs,
-          },
-          'multipleAcademicYear'
-        );
         formData.append('mapping_bgs', JSON.stringify(mapping_bgs));
         axiosInstance
-          .put(`/erp_user/staff-user/${params?.id}`, formData)
+          .put(`${endpointsV1.userManagement.staffUser}${params?.id}`, formData)
           .then(() => {
             message.success('User Updated Successfully!');
             history.push('/user-management/view-users');
@@ -1562,7 +1551,7 @@ const CreateUser = () => {
       }
       if (roleBasedUiConfig?.includes(schoolFormValues?.user_level?.toString())) {
         axiosInstance
-          .post('/erp_user/add-staff-user/', formData)
+          .post(`${endpointsV1.userManagement.addStaffUser}`, formData)
           .then(() => {
             message.success('User Created Successfully!');
             history.push('/user-management/view-users');

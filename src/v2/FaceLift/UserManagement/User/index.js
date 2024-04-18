@@ -274,7 +274,7 @@ const User = () => {
 
   const getActivityData = (id) => {
     axiosInstance
-      .get(`/erp_user/user-update-history/${id}`)
+      .get(`${endpoints.userManagement.userUpdateHistory}${id}`)
       .then((res) => {
         console.log(res);
         setActivityModal({

@@ -19,6 +19,7 @@ import {
 } from '../../redux/actions';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
+import endpointsV1 from 'config/endpoints';
 import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -79,7 +80,7 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
   let levelObj = {};
   const getRoles = () => {
     axiosInstance
-      .get(`/erp_user/roles/`)
+      .get(`${endpointsV1.communication.roles}`)
       .then((response) => {
         if (response.data.status_code === 200) {
           setRolesList(response.data.result);
@@ -243,7 +244,7 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
       if (roleBasedUiConfig.includes(formik.values.userLevel.id.toString())) {
         // setLoading(true);
         axiosInstance
-          .get(`/erp_user/grade-list/`, {
+          .get(`${endpointsV1.userManagement.gradeList}`, {
             params: { acad_session: values.map((each) => each?.acadId).join(',') },
           })
           .then((response) => {
@@ -306,7 +307,7 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
     if (values?.length > 0) {
       if (roleBasedUiConfig.includes(formik.values.userLevel.id.toString())) {
         axiosInstance
-          .get(`${'/erp_user/subject-list/'}`, {
+          .get(`${endpointsV1.userManagement.subjectList}`, {
             params: {
               acad_session: formik?.values?.branch
                 ?.map((each) => each?.acadId)

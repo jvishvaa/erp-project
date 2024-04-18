@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import DeleteIcon from '@material-ui/icons/Delete';
+import endpointsV1 from 'config/endpoints'
 import {
   Dialog,
   DialogTitle,
@@ -203,7 +204,7 @@ const EditSchoolDetailsForm = ({
       if (roleBasedUiConfig.includes(userLevelForEdit?.toString())) {
         console.log({ values, acadId }, 'values');
         axiosInstance
-          .get(`/erp_user/grade-list/`, {
+          .get(`${endpointsV1.userManagement.gradeList}`, {
             params: { acad_session: values?.map((each) => each?.acadId).join(',') },
           })
           .then((response) => {
@@ -271,7 +272,7 @@ const EditSchoolDetailsForm = ({
       console.log({ values, details }, 'values grade');
       if (roleBasedUiConfig.includes(userLevelForEdit?.toString())) {
         axiosInstance
-          .get(`/erp_user/subject-list/`, {
+          .get(`${endpointsV1.userManagement.subjectList}`, {
             params: {
               acad_session: formik.values?.branch?.map((each) => each?.acadId).join(','),
               grades: values?.map((each) => each?.id)?.join(','),
@@ -443,7 +444,7 @@ const EditSchoolDetailsForm = ({
 
   const getRoles = () => {
     axiosInstance
-      .get(`/erp_user/roles/`)
+      .get(`${endpoints.communication.roles}`)
       .then((response) => {
         if (response.data.status_code === 200) {
           setRolesList(response.data.result);

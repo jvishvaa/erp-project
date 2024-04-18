@@ -25,6 +25,7 @@ import axios from 'v2/config/axios';
 import Loader from 'components/loader/loader';
 import axiosInstance from 'v2/config/axios';
 import { message } from 'antd';
+import endpoints from 'config/endpoints';
 
 const BackButton = withStyles({
   root: {
@@ -140,7 +141,7 @@ class EditUser extends Component {
         loading: true,
       });
       axiosInstance
-        .get(`/erp_user/get-user-level/${userId}`)
+        .get(`${endpoints.userManagement.getUserLevel}${userId}`)
         .then((response) => {
           console.log(response);
           this.setState({ userLevelForEdit: response?.data?.level });

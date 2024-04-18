@@ -1,4 +1,5 @@
 import axios from '../../config/axios';
+import endpointsV1 from '../../config/endpoints';
 
 export const userManagementActions = {
   CREATE_USER_REQUEST: 'CREATE_USER_REQUEST',
@@ -65,7 +66,7 @@ export const fetchUser =
       .get(
         `${
           roleBasedUiConfig
-            ? `/erp_user/staff-user/${id}`
+            ? `${endpointsV1.userManagement.staffUser}${id}`
             : `/erp_user/user-data/?erp_user_id=${id}`
         }`
       )
@@ -256,7 +257,7 @@ export const editUser =
       .put(
         `${
           roleBasedUiConfig && userId
-            ? `/erp_user/staff-user/${userId}`
+            ? `${endpointsV1.userManagement.staffUser}${userId}`
             : '/erp_user/update-user/'
         }`,
         params
