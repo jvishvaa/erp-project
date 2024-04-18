@@ -310,6 +310,9 @@ const EvaluatorHomework = ({ is_auditor }) => {
   ));
 
   const fetchTeacherData = async (params = {}) => {
+    setEvaluateData([]);
+    setSelectedHomeworkIndex(0);
+    setPageNo(1);
     if (!subject) {
       return message.error('Please Select Filters !');
     }
@@ -334,9 +337,9 @@ const EvaluatorHomework = ({ is_auditor }) => {
       );
       if (result.data.status_code === 200) {
         setEvaluateData(result?.data?.result?.results);
-        if (result?.data?.result?.results?.[0]?.is_audited) {
+        if (result?.data?.result?.results?.[0]?.homework[0]?.is_audited) {
           const ratingData = await fetchRating({
-            hw_dist_file: result?.data?.result?.results[0]?.id,
+            hw_dist_file: result?.data?.result?.results[0]?.homework[0]?.id,
           });
         }
         setCountData(result?.data?.result);
@@ -399,20 +402,6 @@ const EvaluatorHomework = ({ is_auditor }) => {
     }
   };
 
-  // const handleDateChange = (each) => {
-  //   if (each) {
-  //     setStartDate(moment(each[0]).format(dateFormat));
-  //     setEndDate(moment(each[1]).format(dateFormat));
-  //     setDate([moment(each[0]), moment(each[1])]);
-  //     setPageNo(1);
-  //   } else {
-  //     setStartDate(null);
-  //     setEndDate(null);
-  //     setDate(null);
-  //     setEvaluateData([]);
-  //   }
-  // };
-
   const handleDateChange = (value) => {
     if (value) {
       setStartDate(moment(value[0]).format('DD-MM-YYYY'));
@@ -448,6 +437,10 @@ const EvaluatorHomework = ({ is_auditor }) => {
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 6;
 
     return !!tooEarly || !!tooLate;
+  };
+
+  const handleEvaluatorReport = () => {
+    history.push('/homework/centralized-eval-reports');
   };
 
   return (
@@ -668,6 +661,23 @@ const EvaluatorHomework = ({ is_auditor }) => {
                       </Button>
                     </Form.Item>
                   </div>
+                  {isAuditor && (
+                    <div
+                      className={`${
+                        isAuditor ? 'col-xl-3 col-md-3' : 'col-xl-4 col-md-4'
+                      }  col-sm-6 col-12 pl-0`}
+                    >
+                      <Form.Item name='filter'>
+                        <Button
+                          className=' th-br-4 w-100  th-select'
+                          type='primary'
+                          onClick={handleEvaluatorReport}
+                        >
+                          Evaluator Report
+                        </Button>
+                      </Form.Item>
+                    </div>
+                  )}
                 </div>
                 {!isAuditor && (
                   <div className='col-md-5 col-xl-3  p-0 row mb-2'>

@@ -90,6 +90,8 @@ import EvaluatorDash from '../containers/centralise_homework/evaluator';
 import EvaluatorHomework from '../containers/centralise_homework/evaluator/imageView';
 
 import CentralizedHome from '../containers/centralise_homework/CentralizedHome';
+import CenralizedHomeworkRoute from '../containers/centralise_homework/centralhw_route';
+import AuditorDashboard from '../containers/centralise_homework/evaluator/Auditor/AuditorDashboard';
 
 const V2Router = () => {
   useEffect(() => {
@@ -399,7 +401,19 @@ const V2Router = () => {
                         </Route>
                         ,
                         <Route path='/homework/centralized'>
+                          {({ match }) => <CenralizedHomeworkRoute match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/homework/centralized-home'>
                           {({ match }) => <CentralizedHome match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/homework/centralized-reports'>
+                          {({ match }) => <EvaluatorDash match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/homework/centralized-eval-reports'>
+                          {({ match }) => <AuditorDashboard match={match} />}
                         </Route>
                         ,
                         <Route path='/centralized-homework/branchstaff'>
@@ -416,10 +430,6 @@ const V2Router = () => {
                         ,
                         <Route path='/centralized-homework/homework-upload'>
                           {({ match }) => <UploadHomework match={match} />}
-                        </Route>
-                        ,
-                        <Route path='/centralized-homework/evaluator-dash'>
-                          {({ match }) => <EvaluatorDash match={match} />}
                         </Route>
                         ,
                         <Route path='/centralized-homework/evaluator-hw'>

@@ -6,10 +6,11 @@ import HwUpload from './hw_upload/hwUpload';
 import { useHistory } from 'react-router-dom';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
+import Loader from '../../components/loader/loader';
 
 const { TabPane } = Tabs;
 
-const CenralizedHome = () => {
+const CenralizedHomeworkRoute = () => {
   const history = useHistory()
   const [showTab, setShowTab] = useState(history?.location?.state?.key || 1);
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
@@ -31,6 +32,11 @@ const CenralizedHome = () => {
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setIsAuditor(!res?.data?.result?.is_evaluator);
+          if(res?.data?.result?.is_evaluator == true){
+            history.push('/homework/centralized-reports')
+          } else {
+            history.push('/homework/centralized-home')
+          }
         } else {
           message.error(res?.data?.message);
         }
@@ -48,40 +54,11 @@ const CenralizedHome = () => {
     <React.Fragment>
       <Layout>
         <div className='row py-3 px-2'>
-          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
-                Dashboard
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>
-                Centralized Homework
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-
-          <div className='row'>
-            <div className='col-12'>
-              <div className='th-tabs th-bg-white'>
-                <Tabs type='card' onChange={onChange} defaultActiveKey={showTab}>
-                  <TabPane tab='HOMEWORK' key='1'>
-                    <CentralizedHomework />
-                  </TabPane>
-                  {userLevel === 34 ||
-                  userLevel === 8 ||
-                  userLevel === 11 ||
-                  userLevel === 10 ? (
-                    <TabPane tab='UPLOAD' key='2'>
-                      <HwUpload />
-                    </TabPane>
-                  ) : null}
-                </Tabs>
-              </div>
-            </div>
-          </div>
+         {loading ? <Loader /> : null}
         </div>
       </Layout>
     </React.Fragment>
   );
 };
 
-export default CenralizedHome;
+export default CenralizedHomeworkRoute;
