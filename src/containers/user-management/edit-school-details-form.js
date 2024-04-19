@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import DeleteIcon from '@material-ui/icons/Delete';
+import endpointsV1 from 'config/endpoints'
 import {
   Dialog,
   DialogTitle,
@@ -28,6 +29,8 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
+import axiosInstance from 'v2/config/axios';
+import { message } from 'antd';
 
 const EditSchoolDetailsForm = ({
   details,
@@ -38,6 +41,8 @@ const EditSchoolDetailsForm = ({
   currentFormLength,
   isAcadDisabled = false,
   isEditable = false,
+  roleBasedUiConfig = null,
+  userLevelForEdit = null,
 }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -54,6 +59,8 @@ const EditSchoolDetailsForm = ({
   const [roles, setRoles] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
   const [designation, setDesignation] = useState('');
+  const [rolesList, setRolesList] = useState(null);
+  const [selectedRoles, setselectedRoles] = useState(null);
   const [selectedDesignation, setSelectedDesignation] = useState('');
   const isOrchids =
     window.location.host.split('.')[0] === 'orchids' ||
@@ -61,6 +68,7 @@ const EditSchoolDetailsForm = ({
     window.location.host.split('.')[0] === 'mcollege' ||
     window.location.host.split('.')[0] === 'dps' ||
     window.location.host.split('.')[0] === 'orchids-stage' ||
+    window.location.host.split('.')[0] === 'localhost:3000' ||
     window.location.host.split('.')[0] === 'orchids-prod'
       ? true
       : false;
@@ -81,7 +89,7 @@ const EditSchoolDetailsForm = ({
   //     });
   //   }
   // }, []);
-  console.log(details, 'details edit');
+  console.log(details, 'values edit');
   const formik = useFormik({
     initialValues: {
       academic_year: details.academic_year,
@@ -91,6 +99,7 @@ const EditSchoolDetailsForm = ({
       subjects: details.subjects,
       designation: details.designation,
       userLevel: details.user_level,
+      role: details?.role,
     },
     // validationSchema,
     onSubmit: (values) => {
@@ -116,16 +125,19 @@ const EditSchoolDetailsForm = ({
   const fetchBranches = (acadId) => {
     // fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
     fetchBranchesForCreateUser(acadId).then((data) => {
+      console.log({ data }, 'values');
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
         branch_code: obj.branch_code,
+        acadId: obj.acadId,
       }));
       if (transformedData?.length > 1) {
         transformedData.unshift({
           id: 'all',
           branch_name: 'Select All',
           branch_code: 'all',
+          acadId: 'all',
         });
       }
       setBranches(transformedData);
@@ -189,6 +201,37 @@ const EditSchoolDetailsForm = ({
           : values;
       formik.setFieldValue('branch', values);
       // fetchGrades(acadId, values, moduleId).then((data) => {
+      if (roleBasedUiConfig.includes(userLevelForEdit?.toString())) {
+        console.log({ values, acadId }, 'values');
+        axiosInstance
+          .get(`${endpointsV1.userManagement.gradeList}`, {
+            params: { acad_session: values?.map((each) => each?.acadId).join(',') },
+          })
+          .then((response) => {
+            if (response.data.status_code === 200) {
+              const transformedData = response.data.result?.map((obj) => ({
+                // item_id: grade?.id,
+                id: obj?.grade_id,
+                grade_name: obj?.grade__grade_name,
+                // branch_id: grade?.acad_session__branch_id,
+              }));
+              if (transformedData?.length > 1) {
+                transformedData.unshift({
+                  // item_id: 'all',
+                  id: 'all',
+                  grade_name: 'Select All',
+                  // branch_id: '',
+                });
+              }
+              setGrades([...transformedData]);
+            }
+          })
+          .catch((error) => {
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          })
+          .finally(() => {});
+        return;
+      }
       fetchGrades(acadId, values).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
@@ -226,6 +269,38 @@ const EditSchoolDetailsForm = ({
       formik.setFieldValue('grade', values);
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch;
       // fetchSections(acadId, branchList, values, moduleId).then((data) => {
+      console.log({ values, details }, 'values grade');
+      if (roleBasedUiConfig.includes(userLevelForEdit?.toString())) {
+        axiosInstance
+          .get(`${endpointsV1.userManagement.subjectList}`, {
+            params: {
+              acad_session: formik.values?.branch?.map((each) => each?.acadId).join(','),
+              grades: values?.map((each) => each?.id)?.join(','),
+            },
+          })
+          .then((response) => {
+            if (response.data.status_code === 200) {
+              const transformedData = response?.data?.result.map((obj) => ({
+                id: obj.subject_id,
+                item_id: obj.subject_id,
+                subject_name: obj.subject__subject_name,
+              }));
+              if (transformedData?.length > 1) {
+                transformedData.unshift({
+                  id: 'all',
+                  item_id: 'all',
+                  subject_name: 'Select All',
+                });
+              }
+              setSubjects([...transformedData]);
+            }
+          })
+          .catch((error) => {
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          })
+          .finally(() => {});
+        return;
+      }
       fetchSections(acadId, branchList, values).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
@@ -285,9 +360,16 @@ const EditSchoolDetailsForm = ({
   };
 
   useEffect(() => {
+    let formi = formik.values;
+    console.log({ details, formi, subjects }, 'values');
+  }, [formik.values, subjects, details]);
+
+  useEffect(() => {
     // if (moduleId) {
+
     fetchAcademicYears();
     getRoleApi();
+    getRoles();
     getDesignation(details.user_level);
     if (details?.academic_year?.length > 0) {
       handleChangeAcademicYear(details.academic_year[0]);
@@ -295,15 +377,21 @@ const EditSchoolDetailsForm = ({
         handleChangeBranch(details.branch, details.academic_year[0]?.id);
         if (details?.grade?.length > 0) {
           handleChangeGrade(details.grade, details.academic_year[0]?.id, details.branch);
-          if (details?.section?.length > 0) {
-            handleChangeSection(
-              details.section,
-              details.academic_year[0]?.id,
-              details.branch,
-              details.grade
-            );
+          if (roleBasedUiConfig.includes(userLevelForEdit?.toString())) {
             if (details?.subjects?.length > 0) {
               formik.setFieldValue('subjects', details.subjects);
+            }
+          } else {
+            if (details?.section?.length > 0) {
+              handleChangeSection(
+                details.section,
+                details.academic_year[0]?.id,
+                details.branch,
+                details.grade
+              );
+              if (details?.subjects?.length > 0) {
+                formik.setFieldValue('subjects', details.subjects);
+              }
             }
           }
         }
@@ -353,6 +441,24 @@ const EditSchoolDetailsForm = ({
   };
 
   const classes = useStyles();
+
+  const getRoles = () => {
+    axiosInstance
+      .get(`${endpoints.communication.roles}`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          setRolesList(response.data.result);
+          console.log(response.data.result, 'response');
+        } else {
+          message.error('Something went wrong!');
+        }
+        // setUserLevelForEdit(response?.data?.level);
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message ?? 'Something went wrong!');
+      })
+      .finally(() => {});
+  };
 
   const getRoleApi = async () => {
     try {
@@ -424,7 +530,7 @@ const EditSchoolDetailsForm = ({
                 options={roles || []}
                 getOptionLabel={(option) => option?.level_name || ''}
                 disabled={details?.user_level == 13 ? true : false}
-                filterSelectedOptions
+                getOptionSelected={(option, value) => option?.id === value.id}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -452,7 +558,7 @@ const EditSchoolDetailsForm = ({
                   value={formik.values.designation || ''}
                   options={designation || []}
                   getOptionLabel={(option) => option?.designation || ''}
-                  filterSelectedOptions
+                  getOptionSelected={(option, value) => option?.id === value.id}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -464,6 +570,32 @@ const EditSchoolDetailsForm = ({
                 />
               </div>
             )}
+            <div className='col-md-4'>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  console.log(value, 'role');
+                  setselectedRoles(value);
+                  formik.setFieldValue('role', value);
+                }}
+                id='role'
+                className='dropdownIcon'
+                value={formik.values.role || {}}
+                options={rolesList || []}
+                getOptionSelected={(option, value) => option?.id === value.id}
+                getOptionLabel={(option) => option?.role_name || ''}
+                // filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Role'
+                    placeholder='Select Role'
+                  />
+                )}
+              />
+            </div>
           </div>
         ) : (
           ''
@@ -585,45 +717,47 @@ const EditSchoolDetailsForm = ({
             </FormHelperText>
           </FormControl>
         </Grid>
-        <Grid item md={4} xs={12}>
-          <FormControl fullWidth className={classes.margin} variant='outlined'>
-            <Autocomplete
-              id='section'
-              name='section'
-              key={`section_${index}`}
-              onChange={(e, value) => {
-                handleChangeSection(
-                  value,
-                  formik.values.academic_year?.[0]?.id,
-                  formik.values.branch,
-                  formik.values.grade
-                );
-              }}
-              value={formik.values.section || []}
-              options={sections || []}
-              multiple
-              limitTags={2}
-              // filterSelectedOptions
-              className='dropdownIcon'
-              getOptionLabel={(option) => option.section_name || ''}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-              getOptionSelected={(option, value) =>
-                option.section_name == value.section_name
-              }
-              size='small'
-            />
-            <FormHelperText style={{ color: 'red' }}>
-              {formik.errors.section ? formik.errors.section : ''}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
+        {!roleBasedUiConfig.includes(userLevelForEdit?.toString()) ? (
+          <Grid item md={4} xs={12}>
+            <FormControl fullWidth className={classes.margin} variant='outlined'>
+              <Autocomplete
+                id='section'
+                name='section'
+                key={`section_${index}`}
+                onChange={(e, value) => {
+                  handleChangeSection(
+                    value,
+                    formik.values.academic_year?.[0]?.id,
+                    formik.values.branch,
+                    formik.values.grade
+                  );
+                }}
+                value={formik.values.section || []}
+                options={sections || []}
+                multiple
+                limitTags={2}
+                // filterSelectedOptions
+                className='dropdownIcon'
+                getOptionLabel={(option) => option.section_name || ''}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Section'
+                    placeholder='Section'
+                  />
+                )}
+                getOptionSelected={(option, value) =>
+                  option.section_name == value.section_name
+                }
+                size='small'
+              />
+              <FormHelperText style={{ color: 'red' }}>
+                {formik.errors.section ? formik.errors.section : ''}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+        ) : null}
         <Grid item md={4} xs={12}>
           <FormControl
             color='secondary'

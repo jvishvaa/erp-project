@@ -26,6 +26,8 @@ import countryList from 'containers/user-management/list';
 import { Profanity } from 'components/file-validation/Profanity';
 
 const FamilyInformation = ({
+  roleBasedUiConfig,
+  schoolFormValues,
   singleParent,
   handleNext,
   handleBack,
@@ -225,24 +227,27 @@ const FamilyInformation = ({
           onFinish={onSubmit}
           layout='vertical'
         >
-          {userLevel !== 13 && (
-            <Row gutter={24}>
-              <Col>
-                <Form.Item
-                  label='Parent / Guardian'
-                  style={{ margin: '0px' }}
-                  name={'single'}
-                >
-                  <Checkbox.Group
-                    options={guardianOption}
-                    onChange={(e) => {
-                      setParent(e);
-                    }}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          )}
+          {!roleBasedUiConfig.includes(
+            schoolFormValues?.user_level?.toString()
+          ) &&
+            userLevel !== 13 && (
+              <Row gutter={24}>
+                <Col>
+                  <Form.Item
+                    label='Parent / Guardian'
+                    style={{ margin: '0px' }}
+                    name={'single'}
+                  >
+                    <Checkbox.Group
+                      options={guardianOption}
+                      onChange={(e) => {
+                        setParent(e);
+                      }}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            )}
           {/* FATHER DETAILS */}
           {(userLevel === 13 ||
             (userLevel !== 13 && parent && parent?.includes('parent'))) && (

@@ -10,10 +10,12 @@ import {
   Radio,
   Row,
   Select,
+  message,
 } from 'antd';
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import endpoints from 'v2/config/endpoints';
+import endpointsV1 from 'config/endpoints';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
 const { Option } = Select;
@@ -29,6 +31,8 @@ const AcademicYearList = ({
   editId,
   userLevel,
   isOrchids,
+  roleBasedUiConfig,
+  selectedUserLevel,
 }) => {
   const acadForm = useRef();
   const [moduleId, setModuleId] = useState('');
@@ -39,12 +43,16 @@ const AcademicYearList = ({
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState();
+  const [selectedAcadId, setSelectedAcadId] = useState();
   const [selectedGrade, setSelectedGrade] = useState();
   const [branchCode, setBranchCode] = useState([]);
   const [academicYears, setAcademicYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState(null);
 
   useEffect(() => {
+    if (userLevel) {
+      
+   
     let NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
     let module = '';
     if (NavData && NavData.length) {
@@ -64,6 +72,10 @@ const AcademicYearList = ({
       });
       fetchAcademicYears();
     }
+    if (currentObj.acadId) {
+      setSelectedAcadId(currentObj.acadId);
+      console.log(currentObj.acadId, 'currentObj.acadId');
+    }
     if (
       currentObj.academic_year ||
       currentObj.branch ||
@@ -79,23 +91,35 @@ const AcademicYearList = ({
         subjects: currentObj?.subjects,
       });
       fetchBranches(currentObj?.academic_year, module);
-      fetchGrades(currentObj?.branch, null, module, currentObj?.academic_year);
-      fetchSections(
-        currentObj?.editGrade,
+      fetchGrades(
+        currentObj?.branch,
         null,
-        currentObj?.branch,
         module,
-        currentObj?.academic_year
+        currentObj?.academic_year,
+        currentObj.acadId
       );
-      fetchSubjects(
-        currentObj?.editSection,
-        currentObj?.branch,
-        currentObj?.editGrade,
-        module,
-        currentObj?.academic_year
-      );
+
+      if (roleBasedUiConfig?.includes(userLevel?.toString())) {
+        fetchSubjects(currentObj?.editGrade, null, null, null, null, currentObj.acadId);
+      } else {
+        fetchSections(
+          currentObj?.editGrade,
+          null,
+          currentObj?.branch,
+          module,
+          currentObj?.academic_year
+        );
+        fetchSubjects(
+          currentObj?.editSection,
+          currentObj?.branch,
+          currentObj?.editGrade,
+          module,
+          currentObj?.academic_year
+        );
+      }
     }
-  }, [module]);
+  }
+  }, [module,userLevel]);
   const fetchAcademicYears = () => {
     let url = '/erp_user/list-academic_year/';
     if (moduleId) url += `?module_id=${moduleId}`;
@@ -128,6 +152,7 @@ const AcademicYearList = ({
             id: obj.id,
             branch_name: obj.branch_name,
             branch_code: obj.branch_code,
+            acadId: obj.acadId,
           }));
           // if (transformedData?.length > 1) {
           //   transformedData.unshift({
@@ -145,10 +170,38 @@ const AcademicYearList = ({
       });
   };
 
-  const fetchGrades = (branches, branch_code, module, session_year) => {
+  const fetchGrades = (branches, branch_code, module, session_year, acadId) => {
     if (branches?.length > 0) {
       setBranchCode(branch_code);
       setSelectedBranch(branches);
+      setSelectedAcadId(acadId);
+      console.log({ acadId, userLevel, selectedUserLevel }, 'testing');
+      if (roleBasedUiConfig?.includes(userLevel?.toString())) {
+        axiosInstance
+          .get(`${endpointsV1.userManagement.gradeList}`, {
+            params: {
+              acad_session: acadId ? acadId?.join(',') : selectedAcadId?.join(','),
+            },
+          })
+          .then((response) => {
+            if (response.data.status_code === 200) {
+              const transformedData = response.data.result?.map((obj) => ({
+                // item_id: grade?.id,
+                id: obj?.grade_id,
+                grade_name: obj?.grade__grade_name,
+                // branch_id: grade?.acad_session__branch_id,
+              }));
+              setGrades([...transformedData]);
+            }
+          })
+          .catch((error) => {
+            message.error(error?.response?.data?.message ?? 'Something went wrong!');
+          })
+          .finally(() => {
+            // setLoading(false);
+          });
+        return;
+      }
       axiosInstance
         .get(
           `${endpoints.academics.grades}?session_year=${
@@ -218,20 +271,40 @@ const AcademicYearList = ({
     }
   };
 
-  const fetchSubjects = (sections, editBranch, editGrade, module, session_year) => {
+  const fetchSubjects = (
+    sections,
+    editBranch,
+    editGrade,
+    module,
+    session_year,
+    acadId
+  ) => {
     if (sections?.length > 0) {
       setSelectedSections(sections);
       let newEditGrade = [...new Set(editGrade)];
       let newsec = [...new Set(sections)];
+      let params1 = {
+        ...(roleBasedUiConfig?.includes(userLevel?.toString())
+          ? {
+              acad_session: acadId ? acadId?.join(',') : selectedAcadId?.join(','),
+              grades: sections?.join(','),
+            }
+          : {
+              session_year: selectedYear ?? session_year,
+              branch: editBranch ? editBranch?.join(',') : selectedBranch?.join(','),
+              grade: editGrade ? newEditGrade?.join(',') : selectedGrade?.join(','),
+              section: newsec?.join(','),
+              module_id: module ?? moduleId,
+            }),
+      };
       axiosInstance
         .get(
-          `${endpoints.academics.subjects}?session_year=${
-            selectedYear ?? session_year
-          }&branch=${
-            editBranch ? editBranch?.toString() : selectedBranch?.toString()
-          }&grade=${
-            editGrade ? newEditGrade?.toString() : selectedGrade?.toString()
-          }&section=${newsec?.toString()}&module_id=${module ?? moduleId}`
+          `${
+            roleBasedUiConfig?.includes(userLevel?.toString())
+              ? endpointsV1.userManagement.subjectList
+              : endpoints.academics.subjects
+          }`,
+          { params: params1 }
         )
         .then((response) => {
           if (response.data.status_code === 200) {
@@ -241,8 +314,16 @@ const AcademicYearList = ({
                   item_id: obj.id,
                   subject_name: obj.subject__subject_name,
                 }))
+              : response?.data?.result
+              ? response?.data?.result.map((obj) => ({
+                  id: obj.subject_id,
+                  item_id: obj.subject_id,
+                  subject_name: obj.subject__subject_name,
+                }))
               : [];
-            setSubjects([...transformedData]);
+            if (transformedData?.length > 0) {
+              setSubjects([...transformedData]);
+            }
           }
         })
         .catch((err) => {
@@ -258,7 +339,12 @@ const AcademicYearList = ({
     </Select.Option>
   ));
   const branchOption = branches?.map((each) => (
-    <Select.Option key={each?.id} value={each?.id} code={each?.branch_code}>
+    <Select.Option
+      key={each?.id}
+      value={each?.id}
+      code={each?.branch_code}
+      acadId={each?.acadId}
+    >
       {each?.branch_name}
     </Select.Option>
   ));
@@ -277,21 +363,32 @@ const AcademicYearList = ({
       {each?.subject_name}
     </Select.Option>
   ));
-  const onChange = (value, name) => {
+  const onChange = (value, name, obj) => {
     let newData = multipleAcademicYear;
     for (let i = 0; i < newData.length; i++) {
       if (newData[i].id === currentObj.id) {
         newData[i][name] = value;
+        if (name === 'branch') {
+          newData[i]['acadId'] = obj.map(each => each?.acadId);
+          newData[i]['branchObj'] = obj;
+        }
+        if (name==='academic_year') {
+          newData[i]['academicYearObj'] = obj;
+        } 
+        if (name==='subjects') {
+          newData[i]['subjectsObj'] = obj;
+        } 
       }
     }
     setMultipleAcademicYear([...newData]);
   };
-  const onChangeGrade = (value, mappinIds) => {
+  const onChangeGrade = (value, mappinIds,obj) => {
     let newData = multipleAcademicYear;
     for (let i = 0; i < newData.length; i++) {
       if (newData[i].id === currentObj.id) {
         newData[i]['grade'] = value;
         newData[i]['editGrade'] = mappinIds;
+        newData[i]['gradeObj'] = obj;
       }
     }
     setMultipleAcademicYear([...newData]);
@@ -327,7 +424,7 @@ const AcademicYearList = ({
                     'section',
                     'subjects',
                   ]);
-                  onChange(e, 'academic_year');
+                  onChange(e, 'academic_year',obj);
                   setBranches([]);
                   setGrades([]);
                   setSections([]);
@@ -373,13 +470,15 @@ const AcademicYearList = ({
                     acadForm.current.setFieldsValue({
                       branch: values,
                     });
+                    let acadId = branches?.map((e) => e?.acadId);
                     let branch_code = branches?.map((i) => i.branch_code);
-                    fetchGrades(values, branch_code);
-                    onChange(values, 'branch');
+                    fetchGrades(values, branch_code, null, null, acadId);
+                    onChange(values, 'branch', branches);
                   } else {
+                    let acadId = obj?.map((e) => e?.acadId);
                     let branch_code = obj?.map((i) => i.code);
-                    fetchGrades(e, branch_code);
-                    onChange(e, 'branch');
+                    fetchGrades(e, branch_code, null, null, acadId);
+                    onChange(e, 'branch', obj);
                   }
                   acadForm.current.resetFields(['grade', 'section', 'subjects']);
                   setGrades([]);
@@ -435,16 +534,26 @@ const AcademicYearList = ({
                     acadForm.current.setFieldsValue({
                       grade: values,
                     });
-                    fetchSections(grades?.map((e) => e?.id));
+                    if (roleBasedUiConfig?.includes(userLevel?.toString())) {
+                      fetchSubjects(grades?.map((e) => e.id));
+                    } else {
+                      fetchSections(grades?.map((e) => e?.id));
+                    }
                     onChangeGrade(
                       values,
-                      grades?.map((e) => e.id)
+                      grades?.map((e) => e.id),
+                      grades
                     );
                   } else {
-                    fetchSections(value?.map((e) => e.id));
+                    if (roleBasedUiConfig?.includes(userLevel?.toString())) {
+                      fetchSubjects(value?.map((e) => e.id));
+                    } else {
+                      fetchSections(value?.map((e) => e.id));
+                    }
                     onChangeGrade(
                       e,
-                      value?.map((e) => e.id)
+                      value?.map((e) => e.id),
+                      value
                     );
                   }
                   acadForm.current.resetFields(['section', 'subjects']);
@@ -468,61 +577,65 @@ const AcademicYearList = ({
               </Select>
             </Form.Item>
           </Col>
-          <Col md={8}>
-            <Form.Item
-              name={'section'}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please select section!',
-                },
-              ]}
-              label='Section'
-            >
-              <Select
-                maxTagCount={3}
-                allowClear
-                value={currentObj?.section}
-                getPopupContainer={(trigger) => trigger.parentNode}
-                listHeight={150}
-                onChange={(e, value) => {
-                  if (e.includes('all')) {
-                    let values = sections?.map((e) => e?.item_id);
-                    acadForm.current.setFieldsValue({
-                      section: values,
-                    });
-                    fetchSubjects(sections?.map((e) => e?.id));
-                    onChangeSection(
-                      values,
-                      sections?.map((e) => e.id)
-                    );
-                  } else {
-                    fetchSubjects(value?.map((e) => e.id));
-                    onChangeSection(
-                      e,
-                      value?.map((e) => e.id)
-                    );
-                  }
-                  acadForm.current.resetFields(['subjects']);
-                  setSubjects([]);
-                }}
-                showSearch
-                filterOption={(input, options) => {
-                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
-                mode='multiple'
-                placeholder='Section'
-                className='w-100'
+          {!roleBasedUiConfig?.includes(userLevel?.toString()) ? (
+            <Col md={8}>
+              <Form.Item
+                name={'section'}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select section!',
+                  },
+                ]}
+                label='Section'
               >
-                {sections?.length > 1 && (
-                  <Select.Option key={'all'} value={'all'}>
-                    Select All
-                  </Select.Option>
-                )}
-                {sectionOption}
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select
+                  maxTagCount={3}
+                  allowClear
+                  value={currentObj?.section}
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  listHeight={150}
+                  onChange={(e, value) => {
+                    if (e.includes('all')) {
+                      let values = sections?.map((e) => e?.item_id);
+                      acadForm.current.setFieldsValue({
+                        section: values,
+                      });
+                      fetchSubjects(sections?.map((e) => e?.id));
+                      onChangeSection(
+                        values,
+                        sections?.map((e) => e.id)
+                      );
+                    } else {
+                      fetchSubjects(value?.map((e) => e.id));
+                      onChangeSection(
+                        e,
+                        value?.map((e) => e.id)
+                      );
+                    }
+                    acadForm.current.resetFields(['subjects']);
+                    setSubjects([]);
+                  }}
+                  showSearch
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  mode='multiple'
+                  placeholder='Section'
+                  className='w-100'
+                >
+                  {sections?.length > 1 && (
+                    <Select.Option key={'all'} value={'all'}>
+                      Select All
+                    </Select.Option>
+                  )}
+                  {sectionOption}
+                </Select>
+              </Form.Item>
+            </Col>
+          ) : null}
           <Col md={8}>
             <Form.Item
               rules={[
@@ -562,13 +675,12 @@ const AcademicYearList = ({
                     acadForm.current.setFieldsValue({
                       subjects: values,
                     });
-                    setSelectedSubjects(subjects?.map((e) => e?.item_id
-                    ));
-                    onChange(values, 'subjects');
+                    setSelectedSubjects(subjects?.map((e) => e?.item_id));
+                    onChange(values, 'subjects',subjects);
                     onChange(valuesId, 'subjectsId');
                   } else {
                     setSelectedSubjects(value?.map((e) => value?.value));
-                    onChange(e, 'subjects');
+                    onChange(e, 'subjects',value);
                     let subjectids = value?.map((e) => e?.id);
                     onChange(subjectids, 'subjectsId');
                   }

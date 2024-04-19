@@ -1,4 +1,5 @@
 import axios from '../../config/axios';
+import endpointsV1 from '../../config/endpoints';
 
 export const userManagementActions = {
   CREATE_USER_REQUEST: 'CREATE_USER_REQUEST',
@@ -57,142 +58,182 @@ export const fetchUsers = () => (dispatch) => {
     });
 };
 
-export const fetchUser = (id) => (dispatch) => {
-  dispatch({ type: FETCH_USER_DETAIL_REQUEST });
-  return axios
-    .get(`/erp_user/user-data/?erp_user_id=${id}`)
-    .then((response) => {
-      const user = response.data.result;
-      let gender;
-      switch (user.gender) {
-        case 'male':
-          gender = 1;
-          break;
-        case 'female':
-          gender = 2;
-          break;
-        case 'other':
-          gender = 3;
-          break;
-        default:
-          gender = 1;
-          break;
-      }
+export const fetchUser =
+  (id, roleBasedUiConfig = null) =>
+  (dispatch) => {
+    dispatch({ type: FETCH_USER_DETAIL_REQUEST });
+    return axios
+      .get(
+        `${
+          roleBasedUiConfig
+            ? `${endpointsV1.userManagement.staffUser}${id}`
+            : `/erp_user/user-data/?erp_user_id=${id}`
+        }`
+      )
+      .then((response) => {
+        let user;
+        if (roleBasedUiConfig) {
+          let data = response.data.result;
+          let converted = Object.keys(data.mapping_bgs)?.map((key) => {
+            return {
+              branch: data.mapping_bgs[key].branches?.map((item) => {
+                let branch_obj = { ...item, branch__branch_name: item.branch_name };
+                delete branch_obj.branch_name;
+                return branch_obj;
+              }),
+              grade: data.mapping_bgs[key].grades?.map((item) => {
+                let grade_obj = { ...item, grade__grade_name: item.grade_name };
+                delete grade_obj.grade_name;
+                return grade_obj;
+              }),
+              session_year: [data.mapping_bgs[key].session_year_data],
+              subjects: data.mapping_bgs[key].subjects?.map((item) => {
+                let subject_obj = { ...item, id: item.subject_id };
+                return subject_obj;
+              }),
+            };
+          });
+          data = { ...data, mapping_bgs: converted };
+          user = { ...data };
+        } else {
+          user = response.data.result;
+        }
+        let gender;
+        switch (user?.gender) {
+          case 'male':
+            gender = 1;
+            break;
+          case 'female':
+            gender = 2;
+            break;
+          case 'other':
+            gender = 3;
+            break;
+          default:
+            gender = 1;
+            break;
+        }
+        console.log(user, 'userrr');
+        const transformedUser = {
+          id: user?.id || '',
+          erp_id: user?.erp_id || '',
+          first_name: user?.user?.first_name || '',
+          middle_name: user?.user_middle_name || '',
+          last_name: user?.user?.last_name || '',
+          email: user?.user?.email || '',
+          username: user?.user?.username || '',
+          user_level: user?.user?.user_level_int || '',
+          userLevel: { id: user?.user?.user_level_int } || '',
+          mapping_bgs:
+            user?.mapping_bgs?.map((mapping) => ({ ...mapping, is_delete: false })) || [],
 
-      const transformedUser = {
-        id: user.id || '',
-        erp_id: user.erp_id || '',
-        first_name: user.user.first_name || '',
-        middle_name: user.user_middle_name || '',
-        last_name: user.user.last_name || '',
-        email: user.user.email || '',
-        username: user.user.username || '',
-        user_level: user?.user?.user_level_int || '', 
-        mapping_bgs:
-          user?.mapping_bgs.map(mapping => ({ ...mapping, is_delete: false })) || [],
-
-        academic_year: user?.mapping_bgs?.map(({ session_year: sessionYear = [] }) =>
-          sessionYear.map(
-            ({
-              session_year = '',
-              session_year_id = '',
-              is_current_session = false,
-            }) => ({
-              id: session_year_id,
-              session_year: session_year,
-              is_default: is_current_session,
-            })
-          )
-        ),
-        branch: user?.mapping_bgs?.map(({ branch: branches = [] }) =>
-          branches.map(({ branch_id = '', branch__branch_name = '' }) => ({
-            id: branch_id,
-            branch_name: branch__branch_name,
-          }))
-        ),
-        grade: user?.mapping_bgs?.map(({ grade: grades = [] }) =>
-          grades.map(
-            ({
-              id = '',
-              grade_id = '',
-              acad_session__branch_id = '',
-              grade__grade_name = '',
-            }) =>
+          academic_year: user?.mapping_bgs?.map(({ session_year: sessionYear = [] }) =>
+            sessionYear?.map(
               ({
-                id: grade_id,
-                branch_id: acad_session__branch_id,
-                grade_name: grade__grade_name,
-                item_id: id,
-              } || [])
-          )
-        ),
-
-        section: user?.mapping_bgs?.map(({ section: Sections = [] }) =>
-          Sections.map(
-            ({
-              id = '',
-              section_id = '',
-              grade_id = '',
-              acad_session__branch_id = '',
-              section__section_name = '',
-              section_mapping_id=''
-            }) =>
+                session_year = '',
+                session_year_id = '',
+                is_current_session = false,
+              }) => ({
+                id: session_year_id,
+                session_year: session_year,
+                is_default: is_current_session,
+              })
+            )
+          ),
+          branch: user?.mapping_bgs?.map(({ branch: branches = [] }) =>
+            branches.map(
+              ({ branch_id = '', branch__branch_name = '', acad_id = '' }) => ({
+                id: branch_id,
+                branch_name: branch__branch_name,
+                acadId: acad_id,
+              })
+            )
+          ),
+          grade: user?.mapping_bgs?.map(({ grade: grades = [] }) =>
+            grades.map(
               ({
-                id: section_id,
-                grade_id: grade_id, 
-                branch_id: acad_session__branch_id, 
-                section_name: section__section_name,
-                item_id: section_mapping_id,
-              } || [])
-          )
-        ),
-        subjects: user?.mapping_bgs?.map(({ subjects = [] }) =>
-          subjects.map(
-            ({ id = '', subject_name = '', subject_mapping_id = '' }) =>
-              ({
-                id: id,
-                item_id: subject_mapping_id,
-                subject_name: subject_name,
-              } || [])
-          )
-        ),
-        contact: user?.contact || '',
-        date_of_birth: user.date_of_birth,
-        gender,
-        profile: user.profile || '',
-        address: user.address || '',
-        parent: {
-          id: user.parent_details.id,
-          father_first_name: user.parent_details.father_first_name || '',
-          father_last_name: user.parent_details.father_last_name || '',
-          mother_first_name: user.parent_details.mother_first_name || '',
-          mother_last_name: user.parent_details.mother_last_name || '',
-          mother_middle_name: user.parent_details.mother_middle_name || '',
-          father_middle_name: user.parent_details.father_middle_name || '',
-          father_email: user.parent_details.father_email || '',
-          mother_email: user.parent_details.mother_email || '',
-          father_mobile: user.parent_details.father_mobile || '',
-          mother_mobile: user.parent_details.mother_mobile || '',
-          mother_photo: user.parent_details.mother_photo || '',
-          father_photo: user.parent_details.father_photo || '',
-          address: user.parent_details.address,
-          guardian_first_name: user.parent_details.guardian_first_name || '',
-          guardian_middle_name: user.parent_details.guardian_middle_name || '',
-          guardian_last_name: user.parent_details.guardian_last_name || '',
-          guardian_email: user.parent_details.guardian_email || '',
-          guardian_mobile: user.parent_details.guardian_mobile || '',
-          guardian_photo: user.parent_details.guardian_photo || '',
-        },
-        user_level: user.user_level,
-        designation: user.designation
-      };
-      dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });
-    })
+                id = '',
+                grade_id = '',
+                acad_session__branch_id = '',
+                grade__grade_name = '',
+              }) =>
+                ({
+                  id: grade_id,
+                  branch_id: acad_session__branch_id,
+                  grade_name: grade__grade_name,
+                  item_id: id,
+                } || [])
+            )
+          ),
 
-    .catch((e) => {
-      dispatch({ type: FETCH_USER_DETAIL_FAILURE });
-    });
-};
+          section: user?.mapping_bgs?.map(({ section: Sections = [] }) =>
+            Sections.map(
+              ({
+                id = '',
+                section_id = '',
+                grade_id = '',
+                acad_session__branch_id = '',
+                section__section_name = '',
+                section_mapping_id = '',
+              }) =>
+                ({
+                  id: section_id,
+                  grade_id: grade_id,
+                  branch_id: acad_session__branch_id,
+                  section_name: section__section_name,
+                  item_id: section_mapping_id,
+                } || [])
+            )
+          ),
+          subjects: user?.mapping_bgs?.map(({ subjects = [] }) =>
+            subjects.map(
+              ({ id = '', subject_name = '', subject_mapping_id = '' }) =>
+                ({
+                  id: id,
+                  item_id: subject_mapping_id || id,
+                  subject_name: subject_name,
+                } || [])
+            )
+          ),
+          contact: user?.contact || '',
+          date_of_birth: user?.date_of_birth,
+          gender,
+          profile: user?.profile || '',
+          address: user?.address || '',
+          parent: {
+            id: user?.parent_details?.id,
+            father_first_name: user?.parent_details?.father_first_name || '',
+            father_last_name: user?.parent_details?.father_last_name || '',
+            mother_first_name: user?.parent_details?.mother_first_name || '',
+            mother_last_name: user?.parent_details?.mother_last_name || '',
+            mother_middle_name: user?.parent_details?.mother_middle_name || '',
+            father_middle_name: user?.parent_details?.father_middle_name || '',
+            father_email: user?.parent_details?.father_email || '',
+            mother_email: user?.parent_details?.mother_email || '',
+            father_mobile: user?.parent_details?.father_mobile || '',
+            mother_mobile: user?.parent_details?.mother_mobile || '',
+            mother_photo: user?.parent_details?.mother_photo || '',
+            father_photo: user?.parent_details?.father_photo || '',
+            address: user?.parent_details?.address,
+            guardian_first_name: user?.parent_details?.guardian_first_name || '',
+            guardian_middle_name: user?.parent_details?.guardian_middle_name || '',
+            guardian_last_name: user?.parent_details?.guardian_last_name || '',
+            guardian_email: user?.parent_details?.guardian_email || '',
+            guardian_mobile: user?.parent_details?.guardian_mobile || '',
+            guardian_photo: user?.parent_details?.guardian_photo || '',
+          },
+          user_level: user?.user_level,
+          designation: user?.designation,
+          role: user?.role,
+        };
+        console.log({ transformedUser }, 'userrr');
+        dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });
+      })
+
+      .catch((e) => {
+        dispatch({ type: FETCH_USER_DETAIL_FAILURE });
+      });
+  };
 
 export const createUser = (params) => (dispatch) => {
   dispatch({ type: CREATE_USER_REQUEST });
@@ -208,38 +249,47 @@ export const createUser = (params) => (dispatch) => {
     });
 };
 
-export const editUser = (params) => (dispatch) => {
-  dispatch({ type: EDIT_USER_REQUEST });
-  return axios
-    .put('/erp_user/update-user/', params)
-    .then(() => {
-      dispatch({ type: EDIT_USER_SUCCESS });
-    })
-    .catch((error) => {
-      dispatch({ type: EDIT_USER_FAILURE });
-      throw error;
-    });
-};
+export const editUser =
+  (params, roleBasedUiConfig = null, userId = null) =>
+  (dispatch) => {
+    dispatch({ type: EDIT_USER_REQUEST });
+    return axios
+      .put(
+        `${
+          roleBasedUiConfig && userId
+            ? `${endpointsV1.userManagement.staffUser}${userId}`
+            : '/erp_user/update-user/'
+        }`,
+        params
+      )
+      .then(() => {
+        dispatch({ type: EDIT_USER_SUCCESS });
+      })
+      .catch((error) => {
+        dispatch({ type: EDIT_USER_FAILURE });
+        throw error;
+      });
+  };
 
 export const fetchBranchesForCreateUser = (acadId) => {
-
-  return axios
-    // .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
-    .get(`/erp_user/branch/?session_year=${acadId}`)
-    .then((response) => {
-      if (response.data.status_code === 200){
-        return response?.data?.data?.results.map((obj) => {
-          let tempArr = obj?.branch
-          tempArr['acadId']=obj?.id
-          return tempArr;
-         });
-      }
-      else {
-      }
-    })
-    .catch((error) => {
-      throw error;
-    });
+  return (
+    axios
+      // .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
+      .get(`/erp_user/branch/?session_year=${acadId}`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          return response?.data?.data?.results.map((obj) => {
+            let tempArr = obj?.branch;
+            tempArr['acadId'] = obj?.id;
+            return tempArr;
+          });
+        } else {
+        }
+      })
+      .catch((error) => {
+        throw error;
+      })
+  );
 };
 
 export const fetchAcademicYears = (moduleId) => {
