@@ -111,7 +111,15 @@ const EvaluatorDash = () => {
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>Evaluator</Breadcrumb.Item>
+              <Breadcrumb.Item
+                className='th-grey th-16'
+                onClick={() => {
+                  history.push('/homework/centralized-home');
+                }}
+              >
+                Centralized
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16'>Report</Breadcrumb.Item>
             </Breadcrumb>
           </div>
         </div>
