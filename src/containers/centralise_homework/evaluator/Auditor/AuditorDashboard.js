@@ -3,6 +3,7 @@ import { DownOutlined } from '@ant-design/icons';
 import endpoints from 'config/endpoints';
 import Layout from 'containers/Layout';
 import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import axiosInstance from 'v2/config/axios';
 import './../../BranchStaffSide/branchside.scss';
 import { Calendar } from 'antd';
@@ -10,6 +11,7 @@ import moment from 'moment';
 import './../index.scss';
 
 const AuditorDashboard = () => {
+  const history = useHistory();
   const { Option } = Select;
   const [selectedDate, setSelectedDate] = useState(moment().format('DD-MM-YYYY'));
   const firstDayOfMonth = moment().startOf('month').format('DD-MM-YYYY');
@@ -143,7 +145,17 @@ const AuditorDashboard = () => {
               <Breadcrumb.Item href='/dashboard' className='th-grey th-16'>
                 Dashboard
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>Evaluator</Breadcrumb.Item>
+              <Breadcrumb.Item
+                className='th-grey th-16'
+                onClick={() => {
+                  history.push('/homework/centralized');
+                }}
+              >
+                Centralized
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16'>
+                Evaluator Report
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
         </div>
