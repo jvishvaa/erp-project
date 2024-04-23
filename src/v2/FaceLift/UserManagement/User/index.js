@@ -1119,7 +1119,7 @@ const User = () => {
           footer={null}
           onCancel={() => activityModalClose()}
           width={'80%'}
-          style={{maxHeight:"90vh"}}
+          style={{ maxHeight: '90vh' }}
         >
           <div className='row px-3 mb-2'>
             <div className='col-md-12'>
@@ -1225,7 +1225,10 @@ const User = () => {
                     </Col>
                   ))
                 ) : (
-                  <Result status='warning' title='No data to show' />
+                  <Col span={24}>
+                    {/* <Result status='warning' title='No data to show' /> */}
+                    <Empty />
+                  </Col>
                 )}
               </Row>
             </div>
@@ -1252,7 +1255,13 @@ const User = () => {
                 }
                 // width={'80%'}
               >
-                <div style={{ borderRadius: '8px',display:"flex",justifyContent:"center" }}>
+                <div
+                  style={{
+                    borderRadius: '8px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
                   <img
                     src={`${activityModal?.activityImagePreviewUrl}`}
                     alt=''

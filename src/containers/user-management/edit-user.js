@@ -190,7 +190,7 @@ class EditUser extends Component {
         userLevel: details.userLevel,
         designation: details.designation,
         role: details?.role,
-        userLevelForEdit: details.userLevel,
+        userLevelForEdit: details.userLevel?.id,
       });
     }
     const {
