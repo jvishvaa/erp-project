@@ -17,7 +17,6 @@ import './index.css';
 import './index.css';
 import FamilyInformation from './FamilyInformation';
 import SchoolInformation from './SchoolInformation';
-import SiblingInformation from './SiblingInformation';
 import StudentInformation from './StudentInformationForm';
 import axios from 'axios';
 import endpoints from 'v2/config/endpoints';
@@ -1069,7 +1068,9 @@ const CreateUser = () => {
         console.log(branches, 'branches selected');
         setLoading(true);
         axiosInstance
-          .get(`${endpointsV1.userManagement.gradeList}`, { params: { acad_session: acadId.join(',') } })
+          .get(`${endpointsV1.userManagement.gradeList}`, {
+            params: { acad_session: acadId.join(',') },
+          })
           .then((response) => {
             if (response.data.status_code === 200) {
               const transformedData = response.data.result?.map((obj) => ({
@@ -1410,33 +1411,8 @@ const CreateUser = () => {
       formData.append('guardian_photo', '');
     }
     // FAMILY INFO
-    let siblingArr = [];
-    for (let i = 0; i < siblings?.length; i++) {
-      if (!siblings[i].is_edit && siblings[i].is_delete) continue;
-      if (
-        !siblings[i].is_edit &&
-        !siblings[i].name &&
-        !siblings[i].age &&
-        !siblings[i].gender &&
-        !siblings[i].grade_name &&
-        !siblings[i].school_name
-      ) {
-        continue;
-      }
-      var obj = {};
-      if (siblings[i].is_edit) {
-        obj.id = siblings[i].id;
-      }
-      obj.name = siblings[i].name;
-      obj.age = siblings[i].age;
-      obj.gender = siblings[i].gender;
-      obj.grade_name = siblings[i].grade_name;
-      obj.school_name = siblings[i].school_name;
-      obj.is_delete = siblings[i].is_delete;
-      siblingArr.push(obj);
-    }
-    //SIBLING INFO
-    formData.append('siblings', JSON.stringify(siblingArr));
+   
+
     if (editId) {
       formData.append('erp_id', userDetails?.erp_id);
       let section_mapping = multipleAcademicYear?.flatMap((each) => each?.section) ?? [];
@@ -1612,7 +1588,8 @@ const CreateUser = () => {
         setPasswordLoading(false);
       });
   };
-  let totalStep = userLevel && userLevel === 13 ? 4 : 3;
+  // let totalStep = userLevel && userLevel === 13 ? 3 : 3;
+  let totalStep = 3;
   return (
     <React.Fragment>
       <>
@@ -1676,7 +1653,7 @@ const CreateUser = () => {
                       title={`${userLevel === 13 ? 'Student' : 'User'} Information`}
                     />
                     <Step key={2} title='Family Information' />
-                    {userLevel === 13 && <Step key={3} title='Sibling Information' />}
+                    {/* {userLevel === 13 && <Step key={3} title='Sibling Information' />} */}
                   </Steps>
                   <Progress
                     strokeColor='#1B4CCB'
@@ -1707,9 +1684,7 @@ const CreateUser = () => {
                     ? userLevel === 13
                       ? 'Student'
                       : 'User'
-                    : currentStep === 2
-                    ? 'Family'
-                    : 'Sibling'}{' '}
+                    : 'Family'}{' '}
                   Information (Step {currentStep + 1}/{totalStep})
                 </div>
                 <Card
@@ -1805,17 +1780,7 @@ const CreateUser = () => {
                         setOpenPasswordModal={setOpenPasswordModal}
                       />
                     )}
-                    {currentStep === 3 && (
-                      <SiblingInformation
-                        siblings={siblings}
-                        setSiblings={setSiblings}
-                        handleBack={handleBack}
-                        handleSubmit={handleSubmit}
-                        loading={loading}
-                        editId={editId}
-                        setOpenPasswordModal={setOpenPasswordModal}
-                      />
-                    )}
+                    
                   </div>
                 </Card>
                 {/* <div
