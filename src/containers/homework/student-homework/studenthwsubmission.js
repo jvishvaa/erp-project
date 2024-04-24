@@ -23,6 +23,7 @@ import {
   // Divider,
   Popover,
   withStyles,
+  LinearProgress,
 } from '@material-ui/core';
 import { FormControl, InputLabel, OutlinedInput } from '@material-ui/core';
 import {
@@ -230,6 +231,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   const [hasOnlineQuestion, setHasOnlineQuestion] = useState(false);
   const [hasOnlyOffileQuestions, setHasOnlyOffileQuestions] = useState(false);
   const [hasBothQuestions, setHasBothQuestions] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadprogressEvent, setUploadProgressEvent] = useState({});
+  const [uploadFileSize, setUploadFileSize] = useState(0);
 
   let idInterval = null;
   useEffect(() => {
@@ -659,6 +663,16 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       });
   };
 
+  let configOfUploadFile = {
+    onUploadProgress: function (uploadprogressEvent) {
+      setUploadProgressEvent(uploadprogressEvent.loaded);
+      let percentCompleted = Math.round(
+        (uploadprogressEvent.loaded * 100) / uploadprogressEvent.total
+      );
+      setUploadProgress(percentCompleted);
+    },
+  };
+
   const uploadFileHandler = (e, index, maxVal, question) => {
     console.log(question, 'ques');
     e.persist();
@@ -690,8 +704,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         setUploadStart(true);
         const formData = new FormData();
         formData.append('file', fil);
+        setUploadFileSize((fil?.size / 1000000).toFixed(1));
         axiosInstance
-          .post(`${endpoints.homeworkStudent.fileUpload}`, formData)
+          .post(`${endpoints.homeworkStudent.fileUpload}`, formData, configOfUploadFile)
           .then((result) => {
             if (result.data.status_code === 200) {
               const list = attachmentDataDisplay.slice();
@@ -1027,7 +1042,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 </span>
               </div>
             ) : null}
-
             <div
               className='row justify-content-between th-br-10 my-2 p-3 col-md-12'
               style={{ background: '#EEF2F8' }}
@@ -1059,7 +1073,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 </div>
               )}
             </div>
-
             {penToolOpen && (
               <DescriptiveTestcorrectionModule
                 desTestDetails={desTestDetails}
@@ -1071,7 +1084,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 handleSaveFile={handleSaveEvaluatedFile}
               />
             )}
-
             {subjectQuestions?.map((question, index) => (
               <>
                 <div
@@ -1115,6 +1127,17 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         {' '}
                         {`Accepted files: .jpeg,.jpg,.mp3,.pdf,.png,${newFormats.toString()}`}
                       </small>
+                      {uploadFileSize && uploadProgress != 100 ? (
+                        <>
+                          <Progress
+                            percent={uploadProgress}
+                            strokeColor={{
+                              '0%': '#1b4ccb',
+                              '100%': '#87d068',
+                            }}
+                          />
+                        </>
+                      ) : null}
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
@@ -1579,6 +1602,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 </div>
               </>
             ))}
+
             {console.log({ hasOnlyOffileQuestions })}
             {homeworkSubmission.status === 1 &&
               !isQuestionWise &&
@@ -1696,7 +1720,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   </div>
                 </div>
               )}
-
             {isBulk && (
               <>
                 {(homeworkSubmission.status === 2 || homeworkSubmission.status === 3) &&
@@ -1790,7 +1813,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                   )}
               </>
             )}
-
             {/* {homeworkSubmission.status === 3 && isQuestionWise && (
                             <>
                                 {console.log(qwiseEvaluated, 'ques3')}
@@ -1966,7 +1988,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 ''
               )}
             </div>
-
             <div className='overallContainer1'>
               {homeworkSubmission.status === 3 ? (
                 <>
@@ -2025,6 +2046,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         type='primary'
                         size='medium'
                         className='mx-2 '
+                        disabled={uploadFileSize && uploadProgress != 100}
                       >
                         {isupdate == true ? 'Update' : 'Submit'}
                       </Button>
@@ -2054,24 +2076,6 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                     </Button>
                   </DialogActions>
                 </Dialog>
-                <Modal
-                  maskClosable={false}
-                  closable={false}
-                  footer={null}
-                  visible={uploadStart}
-                  width={1000}
-                  centered
-                >
-                  <Progress
-                    strokeColor={{
-                      from: '#108ee9',
-                      to: '#87d068',
-                    }}
-                    percent={percentValue}
-                    status='active'
-                    className='p-4'
-                  />
-                </Modal>
               </div>
             </div>
           </div>
