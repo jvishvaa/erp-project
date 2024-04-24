@@ -521,7 +521,6 @@ const EditSchoolDetailsForm = ({
                   setSelectedRole(value);
                   formik.setFieldValue('userLevel', value);
                   getDesignation(value?.id);
-                  formik.setFieldValue('designation', '');
                   console.log(value);
                 }}
                 id='branch_id'

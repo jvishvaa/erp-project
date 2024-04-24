@@ -496,9 +496,9 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
               onChange={(event, value) => {
                 setSelectedRole(value);
                 formik.setFieldValue('userLevel', value);
+                formik.setFieldValue('designation', '');
                 if (value?.id == 13) {
                   setSelectedDesignation('');
-                  formik.setFieldValue('designation', '');
                 }
                 if (value?.id) {
                   getDesignation(value?.id);
