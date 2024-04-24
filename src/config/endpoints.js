@@ -95,7 +95,7 @@ export default {
     academicYear: '/erp_user/list-academic_year/',
     subjectName: '/erp_user/list-academic_year-subjectmapping/',
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
-    getUserLevel: '/erp_user/level_list/',
+    getUserLevelData: '/erp_user/level_list/',
     assignLevel: '/erp_user/level_create/',
     centralUserLevel: '/erp_user/central-user-level/',
     passwordChange: '/erp_user/password-reset/',

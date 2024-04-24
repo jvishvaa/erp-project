@@ -57,7 +57,6 @@ const FamilyInformation = ({
   setGuardianPrimaryEmail,
   setOpenPasswordModal,
 }) => {
-  const [parentContact, setParentContact] = useState('');
   useEffect(() => {
     if (familyFormValues && Object.keys(familyFormValues).length > 0) {
       if (familyFormValues?.father_photo) {
@@ -76,10 +75,20 @@ const FamilyInformation = ({
   const [selectedImageFather, setSelectedImageFather] = useState(null);
   const [selectedImageMother, setSelectedImageMother] = useState(null);
   const [selectedImageGuardian, setSelectedImageGuardian] = useState(null);
+  const [showParentContact, setShowParentContact] = useState();
   const [parentContactCode, setParentContactCode] = useState('+91');
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const is_superuser = userData?.is_superuser;
   const user_level = userData?.user_level;
+
+  useEffect(() => {
+    if (userLevel === 13) {
+      setShowParentContact(false);
+    } else {
+      setShowParentContact(true);
+    }
+  }, []);
+
   const onSubmit = (formValues) => {
     setFamilyFormValues({
       ...formValues,
@@ -252,11 +261,11 @@ const FamilyInformation = ({
         familyRef.current.resetFields();
         message.error(error?.response?.data?.message || 'Something went wrong');
       } finally {
-        setParentContact(true);
+        setShowParentContact(true);
       }
     } else {
       familyRef.current.resetFields();
-      setParentContact(false);
+      setShowParentContact(false);
     }
   };
 
@@ -328,7 +337,7 @@ const FamilyInformation = ({
           onFinish={onSubmit}
           layout='vertical'
         >
-          {parentContact && (
+          {showParentContact && (
             <>
               {!roleBasedUiConfig.includes(schoolFormValues?.user_level?.toString()) &&
                 userLevel !== 13 && (
@@ -1562,7 +1571,7 @@ const FamilyInformation = ({
           )}
         </Form>
       </div>
-      {parentContact && (
+      {showParentContact && (
         <div
           // style={{ position: 'sticky', bottom: '59px' }}
           className='d-flex justify-content-end align-items-center my-4'
