@@ -106,7 +106,7 @@ export default {
     gradeList: '/erp_user/grade-list/',
     subjectList: '/erp_user/subject-list/',
     userUpdateHistory: '/erp_user/user-update-history/',
-
+    getParentData: '/erp_user/fetch-parent-data/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
