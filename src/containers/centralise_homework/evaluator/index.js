@@ -11,8 +11,6 @@ import './index.scss';
 
 const EvaluatorDash = () => {
   const history = useHistory();
-  const [selectedDate, setSelectedDate] = useState(moment().format('DD-MM-YYYY'));
-
   const firstDayOfMonth = moment().startOf('month').format('DD-MM-YYYY');
   const lastDayOfMonth = moment().endOf('month').format('DD-MM-YYYY');
   const [startDate, setStartDate] = useState(firstDayOfMonth);
@@ -35,7 +33,6 @@ const EvaluatorDash = () => {
     const lastDayOfMonth = moment(value).endOf('month').format('DD-MM-YYYY');
     setStartDate(firstDayOfMonth);
     setEndDate(lastDayOfMonth);
-    setSelectedDate(moment(value).format('DD-MM-YYYY'));
     fetchReport({
       start_date: firstDayOfMonth,
       end_date: lastDayOfMonth,
@@ -127,9 +124,6 @@ const EvaluatorDash = () => {
         <div className='row'>
           <div className='col-md-12'>
             <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
-              <div className='col-md-12 d-flex justify-content-center'>
-                <div className='th-25 py-1'>Date : {selectedDate}</div>
-              </div>
               <div className='row col-md-12 justify-content-center'>
                 <div className='th-22'>
                   {moment(startDate, 'DD-MM-YYYY').format('MMMM')}
