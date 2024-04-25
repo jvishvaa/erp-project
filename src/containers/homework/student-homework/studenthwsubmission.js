@@ -194,7 +194,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     dueDate,
     setDeuDate,
   } = props || {};
-  const { isOpen, subjectId, date, subjectName, isEvaluated } = homeworkSubmission || {};
+  const { isOpen, subject_id, date, subjectName, isEvaluated } = homeworkSubmission || {};
   const [isQuestionWise, setIsQuestionWise] = useState(false);
   const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
   const [attachmentData, setAttachmentData] = useState([]);
@@ -597,6 +597,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         setUploadStart(true);
         const formData = new FormData();
         formData.append('file', fil);
+        formData.append('subject_id', subject_id);
         axiosInstance
           .post(`${endpoints.homeworkStudent.fileUpload}`, formData)
           .then((result) => {
@@ -612,7 +613,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 setPercentValue(100);
                 setUploadStart(false);
               } else {
-                list.push(e.target.files[0]);
+                list.push(result.data.data);
                 setBulkDataDisplay(list);
                 bulkData.push(result.data.data);
                 setPercentValue(100);
@@ -706,6 +707,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         setUploadStart(true);
         const formData = new FormData();
         formData.append('file', fil);
+        formData.append('subject_id', subject_id);
         setUploadFileSize((fil?.size / 1000000).toFixed(1));
         axiosInstance
           .post(`${endpoints.homeworkStudent.fileUpload}`, formData, configOfUploadFile)
