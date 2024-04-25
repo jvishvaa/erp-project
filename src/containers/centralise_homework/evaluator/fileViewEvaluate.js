@@ -379,8 +379,8 @@ const FilesViewEvaluate = ({
               selectedHomeworkIndex === 0 ? 0 : selectedHomeworkIndex - 1
             ]
           );
-          scrollableContainer.current.scrollLeft -=
-            scrollableContainer?.current?.clientWidth;
+          // scrollableContainer.current.scrollLeft -=
+          //   scrollableContainer?.current?.clientWidth;
 
           // setFileList([]);
           // setUploading(false);

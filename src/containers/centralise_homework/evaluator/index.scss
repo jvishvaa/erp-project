@@ -9,14 +9,17 @@
     border: 1px solid #d9d9d9;
   }
   .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-today {
-    background: #e6f7ff !important;
+    background: #ddd !important;
+    .ant-picker-calendar-date-value {
+      color: #000000 !important;
+    }
   }
   .ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date {
     border-top: none !important;
   }
   .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
   .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner {
-    background-color: #e6f7ff !important;
+    background-color: #ddd !important;
   }
   .ant-picker-calendar-header .ant-picker-calendar-month-select,
   .ant-picker-calendar-header .ant-picker-calendar-year-select {
