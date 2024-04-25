@@ -44,14 +44,18 @@ const UploadModal = (props) => {
   };
 
   const handleUpload = () => {
-    props.handleClose();
+    if (props?.flashModal) {
+      props.handleFlashClose();
+    } else {
+      props.handleClose();
+    }
     let noOfFiles = uniqueFiles.length;
     uniqueFilesList.forEach((file) => {
       const formData = new FormData();
       formData.append('branch_id', props?.branchId);
 
       formData.append('file', file);
-
+      setUploading(true);
       axios
         .post(`${endpoints.createAnnouncement.uploadFile}`, formData)
         .then((res) => {
@@ -121,38 +125,48 @@ const UploadModal = (props) => {
       {uploading ? <Loading message='Uploading...' /> : null}
       <Modal
         centered
-        visible={props?.show}
+        visible={props?.flashModal ? true : props?.show}
         width={500}
         className='th-upload-modal'
         title='Upload Files'
-        onCancel={props?.handleClose}
+        onCancel={props?.flashModal ? props?.handleFlashClose : props?.handleClose}
         footer={
-          <div className='d-flex justify-content-center'>
-            <Button
-              className='th-br-4 th-black-2'
-              onClick={props?.handleClose}
-              style={{ border: '1px solid #868686' }}
-            >
-              Cancel
-            </Button>
+          <>
+            {' '}
+            <div className='d-flex justify-content-center'>
+              <Button
+                className='th-br-4 th-black-2'
+                onClick={props?.flashModal ? props?.handleFlashClose : props?.handleClose}
+                style={{ border: '1px solid #868686' }}
+              >
+                Cancel
+              </Button>
 
-            <Button
-              className='th-fw-500 th-br-4 th-bg-primary th-white'
-              onClick={() => {
-                if (uniqueFilesList.length > 0) {
-                  setUploading(true);
-                  handleUpload();
+              <Button
+                className='th-fw-500 th-br-4 th-bg-primary th-white'
+                onClick={() => {
+                  if (uniqueFilesList.length > 0) {
+                    handleUpload();
+                  }
+                }}
+                disabled={
+                  uploading ||
+                  uniqueFilesList.length < 1 ||
+                  (props?.flashModal && uniqueFilesList.length > 1)
                 }
-              }}
-              disabled={uploading || uniqueFilesList.length < 1}
-            >
-              Upload
-            </Button>
-          </div>
+              >
+                Upload
+              </Button>
+            </div>
+            {props?.flashModal && uniqueFilesList.length > 1 ? (
+              <div className='text-danger text-center'>You can upload only one file</div>
+            ) : null}
+          </>
         }
       >
         <div className='row px-4 mt-3 th-bg-white th-br-10'>
           <Dragger
+            disabled={true}
             multiple={props?.flashModal ? false : true}
             {...draggerProps}
             className='th-br-4'
@@ -184,7 +198,7 @@ const UploadModal = (props) => {
             </p>
             <p className='pt-2'>
               The maximum size allowed for {props?.flashModal ? 'file' : 'each file'} is
-              50 MB
+              50 MB {props?.flashModal ? 'and You can upload only one file' : ''}
             </p>
           </Dragger>
           {fileTypeError && (

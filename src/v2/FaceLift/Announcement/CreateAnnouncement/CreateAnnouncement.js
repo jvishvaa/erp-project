@@ -24,6 +24,7 @@ import UploadModal from './UploadModal';
 import MembersModal from './MembersModal';
 import { useHistory } from 'react-router-dom';
 import { Profanity } from 'components/file-validation/Profanity.js';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -80,6 +81,9 @@ const CreateAnnouncement = () => {
 
   const handleUploadModalClose = () => {
     setShowUploadModal(false);
+  };
+  const handleUploadFlashModalClose = () => {
+    setFlashModal(false);
   };
 
   const handleMembersModalClose = () => {
@@ -350,7 +354,6 @@ const CreateAnnouncement = () => {
   };
   const handleShowModal = (isFlash) => {
     if (isFlash) {
-      setShowUploadModal(true);
       setFlashModal(true);
     } else {
       if (!branchId) {
@@ -377,6 +380,10 @@ const CreateAnnouncement = () => {
     }
     if (flashEvent && !endDate) {
       message.error('Please Select End Date');
+      return;
+    }
+    if (flashEvent && !uploadedFlashFiles > 0) {
+      message.error('Please upload flash image');
       return;
     }
     if (flashEvent && !(new Date(endDate) >= new Date(startDate))) {
@@ -856,6 +863,9 @@ const CreateAnnouncement = () => {
                         <span className='th-grey th-14'>Start Date*</span>
                         <div>
                           <DatePicker
+                            disabledDate={(current) => {
+                              return current < moment().startOf('day');
+                            }}
                             className='text-left'
                             onChange={(e) => setStartDate(e.format('YYYY-MM-DD'))}
                           />
@@ -866,12 +876,15 @@ const CreateAnnouncement = () => {
                         <span className='th-grey th-14'>End Date*</span>
                         <div>
                           <DatePicker
+                            disabledDate={(current) => {
+                              return current < moment().startOf('day');
+                            }}
                             onChange={(e) => setEndDate(e.format('YYYY-MM-DD'))}
                           />
                         </div>
                       </div>
                       <div className='col-md-3 py-3 py-md-0'>
-                        <span className='th-grey th-14'>Upload Flash Image</span>
+                        <span className='th-grey th-14'>Upload Flash Image*</span>
                         <div
                           className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
                           style={{ border: '1px solid #D9D9D9' }}
@@ -918,7 +931,7 @@ const CreateAnnouncement = () => {
                         </div>
                       </div>
                       <div className='col-md-3'>
-                        <span className='th-grey th-14'>Even Link</span>
+                        <span className='th-grey th-14'>Link</span>
                         <div className='th-editor py-2'>
                           <Input
                             style={{ fontSize: '10px' }}
@@ -1038,6 +1051,7 @@ const CreateAnnouncement = () => {
           setUploadedFiles={handleUploadedFiles}
           setFlashUploadedFiles={handleFlashUploadedFiles}
           flashModal={flashModal}
+          handleFlashClose={handleUploadFlashModalClose}
         />
         <MembersModal show={showMembersModal} handleClose={handleMembersModalClose} />
       </div>
