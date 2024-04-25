@@ -29,6 +29,8 @@ const EventPopup = (props) => {
         <div className='th-event-popup open shadow-md'>
           <Slider {...settings} className='th-slick pt-3'>
             {props?.eventList?.map((each) => {
+              const imageUrl = `${endpoints.erpBucket}announcement/${each?.flash_img}`;
+
               return (
                 <div
                   className='th-br-16 th-bg-white position-relative'
@@ -43,15 +45,15 @@ const EventPopup = (props) => {
                   >
                     <CloseOutlined />
                   </div>
-                  <div>{endpoints.erpBucket + 'announcement/' + each?.flash_img}</div>
+
                   <div
                     className='th-event-img pb-2'
-                    style={{
-                      backgroundImage: `url(${
-                        endpoints.erpBucket + 'announcement/' + each?.flash_img
-                      })`,
-                    }}
-                  ></div>
+                    // style={{
+                    //   backgroundImage: `url(${imageUrl})`,
+                    // }}
+                  >
+                    <img src={imageUrl} style={{ height: '100%', width: '100%' }} />
+                  </div>
                   <div className='px-2 pb-3'>
                     <div className='th-20 th-fw-600 text-center pb-1'>{each?.title}</div>
                     <div
