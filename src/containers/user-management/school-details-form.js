@@ -19,14 +19,10 @@ import {
 } from '../../redux/actions';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
-import endpointsV1 from 'config/endpoints';
 import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
-import { message } from 'antd';
-import axiosInstance from 'v2/config/axios';
-import { each } from 'highcharts';
 
 const BackButton = withStyles({
   root: {
@@ -38,7 +34,7 @@ const BackButton = withStyles({
   },
 })(Button);
 
-const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
+const SchoolDetailsForm = ({ details, onSubmit }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
@@ -52,8 +48,6 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
   const [selectedRole, setSelectedRole] = useState('');
   const [designation, setDesignation] = useState([]);
   const [selectedDesignation, setSelectedDesignation] = useState('');
-  const [rolesList, setRolesList] = useState(null);
-  const [selectedRoles, setSelectedRoles] = useState(null);
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
 
   useEffect(() => {
@@ -73,28 +67,10 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
     //   });
     // }
     getRoleApi();
-    getRoles();
   }, []);
 
   const isOrchids = IsOrchidsChecker();
   let levelObj = {};
-  const getRoles = () => {
-    axiosInstance
-      .get(`${endpointsV1.communication.roles}`)
-      .then((response) => {
-        if (response.data.status_code === 200) {
-          setRolesList(response.data.result);
-          console.log(response.data.result, 'response');
-        } else {
-          message.error('Something went wrong!');
-        }
-        // setUserLevelForEdit(response?.data?.level);
-      })
-      .catch((error) => {
-        message.error(error?.response?.data?.message ?? 'Something went wrong!');
-      })
-      .finally(() => {});
-  };
 
   const getRoleApi = async () => {
     try {
@@ -149,13 +125,11 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
     initialValues: {
       academic_year: selectedYear,
       branch: details.branch,
-      acadId: details.acadId,
       grade: details.grade,
       section: details.section,
       subjects: details.subjects,
       userLevel: details.userLevel,
       designation: details.designation,
-      roles: details.roles,
     },
     validationSchema,
     onSubmit: (values) => {
@@ -181,6 +155,10 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
   //   });
   // };
 
+  // useEffect(() => {
+  //   fetchBranches();
+  // }, [selectedYear , moduleId]);
+
   const fetchBranches = () => {
     if (selectedYear) {
       fetchBranchesForCreateUser(selectedYear?.id).then((data) => {
@@ -188,14 +166,12 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
           id: obj.id,
           branch_name: obj.branch_name,
           branch_code: obj.branch_code,
-          acadId: obj.acadId,
         }));
         if (transformedData?.length > 1) {
           transformedData.unshift({
             id: 'all',
             branch_name: 'Select All',
             branch_code: 'all',
-            acadId: 'all',
           });
         }
         setBranches(transformedData);
@@ -238,42 +214,8 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
         ? [...branches].filter(({ id }) => id !== 'all')
         : values;
     formik.setFieldValue('branch', values);
-    // formik.setFieldValue('acadId', values);
     if (values?.length > 0) {
       // fetchGrades(selectedYear?.id, values, moduleId).then((data) => {
-      if (roleBasedUiConfig.includes(formik.values.userLevel.id.toString())) {
-        // setLoading(true);
-        axiosInstance
-          .get(`${endpointsV1.userManagement.gradeList}`, {
-            params: { acad_session: values.map((each) => each?.acadId).join(',') },
-          })
-          .then((response) => {
-            if (response.data.status_code === 200) {
-              const transformedData = response.data.result?.map((obj) => ({
-                // item_id: grade?.id,
-                id: obj?.grade_id,
-                grade_name: obj?.grade__grade_name,
-                // branch_id: grade?.acad_session__branch_id,
-              }));
-              if (transformedData?.length > 1) {
-                transformedData.unshift({
-                  // item_id: 'all',
-                  id: 'all',
-                  grade_name: 'Select All',
-                  // branch_id: '',
-                });
-              }
-              setGrades([...transformedData]);
-            }
-          })
-          .catch((error) => {
-            message.error(error?.response?.data?.message ?? 'Something went wrong!');
-          })
-          .finally(() => {
-            // setLoading(false);
-          });
-        return;
-      }
       fetchGrades(selectedYear?.id, values).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
@@ -305,42 +247,6 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
         : values;
     formik.setFieldValue('grade', values);
     if (values?.length > 0) {
-      if (roleBasedUiConfig.includes(formik.values.userLevel.id.toString())) {
-        axiosInstance
-          .get(`${endpointsV1.userManagement.subjectList}`, {
-            params: {
-              acad_session: formik?.values?.branch
-                ?.map((each) => each?.acadId)
-                ?.join(','),
-              grades: values?.map((each) => each?.id)?.join(','),
-            },
-          })
-          .then((response) => {
-            if (response.data.status_code === 200) {
-              const transformedData = response?.data?.result
-                ? response?.data?.result.map((obj) => ({
-                    id: obj.subject_id,
-                    item_id: obj.subject_id,
-                    subject_name: obj.subject__subject_name,
-                  }))
-                : [];
-              if (transformedData?.length > 1) {
-                transformedData.unshift({
-                  id: 'all',
-                  item_id: 'all',
-                  subject_name: 'Select All',
-                });
-              }
-              if (transformedData?.length > 0) {
-                setSubjects([...transformedData]);
-              }
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        return;
-      }
       const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
       // fetchSections(selectedYear?.id, branchList, values, moduleId).then((data) => {
       fetchSections(selectedYear?.id, branchList, values).then((data) => {
@@ -457,7 +363,6 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
   }, [selectedYear]);
 
   const handleSubmit = () => {
-    console.log(formik.values,"formikkk");
     if (formik.values.subjects.length === 0) {
       setAlert('error', 'Please select all fields');
     } else if (
@@ -465,8 +370,6 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
       (formik.values.userLevel == null && isOrchids == true)
     ) {
       setAlert('error', 'Please select User Level');
-    } else if (!formik?.values?.roles) {
-      setAlert('error', 'Please select Role');
     } else {
       if (
         (formik.values.userLevel?.id != 13 &&
@@ -496,9 +399,10 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
               onChange={(event, value) => {
                 setSelectedRole(value);
                 formik.setFieldValue('userLevel', value);
-                formik.setFieldValue('designation', '');
+                console.log(value);
                 if (value?.id == 13) {
                   setSelectedDesignation('');
+                  formik.setFieldValue('designation', '');
                 }
                 if (value?.id) {
                   getDesignation(value?.id);
@@ -520,6 +424,7 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
               )}
             />
           </div>
+          {console.log(selectedRole, 'rol')}
           {formik.values.userLevel?.id == 13 ||
           formik.values.userLevel == '' ||
           formik.values.userLevel == null ? (
@@ -550,30 +455,6 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
               />
             </div>
           )}
-          <div className='col-md-4'>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedRole(value);
-                formik.setFieldValue('roles', value);
-              }}
-              id='roles'
-              className='dropdownIcon'
-              value={formik.values.roles || ''}
-              options={rolesList || []}
-              getOptionLabel={(option) => option?.role_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Role'
-                  placeholder='Select Role'
-                />
-              )}
-            />
-          </div>
         </div>
       ) : (
         ''
@@ -602,12 +483,6 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
             id='branch'
             name='branch'
             onChange={(e, value) => {
-              if (!formik.values.userLevel) {
-                message.error('Please select user level for branch selection!');
-                formik.setFieldValue('branch', []);
-                return;
-              }
-              // formik.values.userLevel
               // formik.setFieldValue('branch', [value]);
               // formik.setFieldValue('branch', value);
               formik.setFieldValue('grade', []);
@@ -624,7 +499,7 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
             limitTags={2}
             className='dropdownIcon'
             getOptionLabel={(option) => option.branch_name || ''}
-            getOptionSelected={(option, value) => option?.id == value?.id}
+            getOptionSelected={(option, value) => option.id == value.id}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -669,50 +544,48 @@ const SchoolDetailsForm = ({ details, onSubmit, roleBasedUiConfig }) => {
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
-            {formik?.errors?.grade ? formik?.errors?.grade : ''}
+            {formik.errors.grade ? formik.errors.grade : ''}
           </FormHelperText>
         </FormControl>
       </Grid>
-      {!roleBasedUiConfig.includes(formik?.values?.userLevel?.id?.toString()) ? (
-        <Grid item md={4} xs={12}>
-          <FormControl fullWidth className={classes.margin} variant='outlined'>
-            <Autocomplete
-              id='section'
-              name='section'
-              onChange={(e, value) => {
-                handleChangeSection(
-                  value,
-                  formik.values.academic_year?.id,
-                  formik.values.branch,
-                  formik.values.grade
-                );
-              }}
-              value={formik.values.section || []}
-              options={sections || []}
-              multiple
-              limitTags={2}
-              // filterSelectedOptions
-              className='dropdownIcon'
-              getOptionLabel={(option) => option.section_name || ''}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-              getOptionSelected={(option, value) =>
-                option.section_name == value.section_name
-              }
-              size='small'
-            />
-            <FormHelperText style={{ color: 'red' }}>
-              {formik.errors.section ? formik.errors.section : ''}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
-      ) : null}
+      <Grid item md={4} xs={12}>
+        <FormControl fullWidth className={classes.margin} variant='outlined'>
+          <Autocomplete
+            id='section'
+            name='section'
+            onChange={(e, value) => {
+              handleChangeSection(
+                value,
+                formik.values.academic_year?.id,
+                formik.values.branch,
+                formik.values.grade
+              );
+            }}
+            value={formik.values.section || []}
+            options={sections || []}
+            multiple
+            limitTags={2}
+            // filterSelectedOptions
+            className='dropdownIcon'
+            getOptionLabel={(option) => option.section_name || ''}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Section'
+                placeholder='Section'
+              />
+            )}
+            getOptionSelected={(option, value) =>
+              option.section_name == value.section_name
+            }
+            size='small'
+          />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.section ? formik.errors.section : ''}
+          </FormHelperText>
+        </FormControl>
+      </Grid>
       <Grid item md={4} xs={12}>
         <FormControl
           color='secondary'

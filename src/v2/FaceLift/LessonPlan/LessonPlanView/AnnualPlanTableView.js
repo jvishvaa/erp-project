@@ -113,7 +113,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
   const [totalIbook, setTotalIbook] = useState();
   const [ebookCount, setEbookCount] = useState();
   const [ibookCount, setIbookCount] = useState();
-  const [isIbookBlocked, setIsIbookBlocked] = useState();
 
   const [isPeriodView, setIsPeriodView] = useState(true);
   const [questionData, setQuestionData] = useState([]);
@@ -304,22 +303,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
       })
       .catch((error) => {
         message.error(error.message);
-        setLoading(false);
-      });
-  };
-  const fetchIbookConfig = () => {
-    setLoading(true);
-    axios
-      .get(`${endpoints.newibook.ibookConfig}`)
-      .then((response) => {
-        if (response.data.status_code === 200) {
-          setIsIbookBlocked(response?.data?.result[0]);
-        }
-      })
-      .catch((error) => {
-        message.error('error', error?.message);
-      })
-      .finally(() => {
         setLoading(false);
       });
   };
@@ -681,8 +664,6 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
     // if (moduleId) {
     fetchGradeData();
     fetchVolumeListData();
-    // hit ibook config api and based on api response block ibooks
-    fetchIbookConfig();
     // }
   }, []);
 
@@ -1139,7 +1120,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
               </div>
             )}
 
-            {ibookCount != null && isIbookBlocked !== 'True' && (
+            {ibookCount != null && (
               <div className='col-md-3 pl-0 col-12e4l'>
                 <a onClick={getIbook}>
                   <div className=' pl-0 col-12e4l th-primary '>

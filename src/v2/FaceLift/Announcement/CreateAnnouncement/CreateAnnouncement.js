@@ -1,16 +1,6 @@
 import React, { useState, useEffect, useRef, createRef } from 'react';
 import Layout from 'containers/Layout';
-import {
-  Breadcrumb,
-  Checkbox,
-  Select,
-  Input,
-  Button,
-  message,
-  Form,
-  Spin,
-  DatePicker,
-} from 'antd';
+import { Breadcrumb, Checkbox, Select, Input, Button, message, Form, Spin } from 'antd';
 import axios from 'axios';
 import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -64,12 +54,6 @@ const CreateAnnouncement = () => {
   const [email, setEmail] = useState(false);
   const [sms, setSMS] = useState(false);
   const [whatsapp, setWhatsapp] = useState(false);
-  const [flashEvent, setFlashEvent] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [flashModal, setFlashModal] = useState(false);
-  const [flashLink, setFlashLink] = useState(null);
-  const [uploadedFlashFiles, setUploadedFlashFiles] = useState([]);
   const [allowPublish, setAllowPublish] = useState(true);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -88,9 +72,6 @@ const CreateAnnouncement = () => {
 
   const handleUploadedFiles = (value) => {
     setUploadedFiles(value);
-  };
-  const handleFlashUploadedFiles = (value) => {
-    setUploadedFlashFiles(value);
   };
   const handleRemoveUploadedFile = (index) => {
     const newFileList = uploadedFiles.slice();
@@ -348,17 +329,12 @@ const CreateAnnouncement = () => {
   const handleClearUserLevel = () => {
     setSelectedUserLevels();
   };
-  const handleShowModal = (isFlash) => {
-    if (isFlash) {
-      setShowUploadModal(true);
-      setFlashModal(true);
+  const handleShowModal = () => {
+    if (!branchId) {
+      message.error('Please select branch');
+      return;
     } else {
-      if (!branchId) {
-        message.error('Please select branch');
-        return;
-      } else {
-        setShowUploadModal(true);
-      }
+      setShowUploadModal(true);
     }
   };
 
@@ -371,18 +347,6 @@ const CreateAnnouncement = () => {
   });
 
   const handlePublish = (asDraft) => {
-    if (flashEvent && !startDate) {
-      message.error('Please Select Start Date');
-      return;
-    }
-    if (flashEvent && !endDate) {
-      message.error('Please Select End Date');
-      return;
-    }
-    if (flashEvent && !(new Date(endDate) >= new Date(startDate))) {
-      message.error('End date should be gretaer than Start Date');
-      return;
-    }
     if (!selectedCategory) {
       message.error('Please select type');
       return;
@@ -449,18 +413,6 @@ const CreateAnnouncement = () => {
     }
     if (email == true) {
       payLoad['intimate_via_email'] = true;
-    }
-    if (flashEvent == true) {
-      payLoad['is_flash_event'] = true;
-      payLoad['start_date'] = startDate;
-      payLoad['end_date'] = endDate;
-      if (flashLink) {
-        payLoad['event_link'] = flashLink;
-      }
-
-      if (uploadedFlashFiles?.length > 0) {
-        payLoad['flash_img'] = uploadedFlashFiles.flat(1) || [];
-      }
     }
     if (uploadedFiles?.length > 0) {
       payLoad['attachments'] = uploadedFiles.flat(1) || [];
@@ -607,11 +559,11 @@ const CreateAnnouncement = () => {
                     <Input
                       className='th-br-4 mt-1 th-16'
                       showCount
-                      maxLength='50'
+                      maxLength='30'
                       onChange={(e) => setTitle(e.target.value)}
                     />
                     <div className='text-right'>
-                      <span className='th-red th-12 text-right'>Max. 50 Characters</span>
+                      <span className='th-red th-12 text-right'>Max. 30 Characters</span>
                     </div>
                   </div>
                   <div className='col-md-6'>
@@ -831,7 +783,7 @@ const CreateAnnouncement = () => {
                       </div>
                       <div
                         className='col-md-2 col-3 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'
-                        onClick={() => handleShowModal(false)}
+                        onClick={handleShowModal}
                       >
                         <span className='th-12'>
                           {' '}
@@ -843,91 +795,6 @@ const CreateAnnouncement = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className='row mt-2 align-items-center'>
-                  <div className='col-md-2 py-3 py-md-0'>
-                    <Checkbox onChange={(e) => setFlashEvent(e.target.checked)}>
-                      <span className='th-grey th-14'> Is Flash Event?</span>
-                    </Checkbox>
-                  </div>
-                  {flashEvent ? (
-                    <>
-                      <div className='col-md-2 py-3 py-md-0'>
-                        <span className='th-grey th-14'>Start Date*</span>
-                        <div>
-                          <DatePicker
-                            className='text-left'
-                            onChange={(e) => setStartDate(e.format('YYYY-MM-DD'))}
-                          />
-                        </div>
-                      </div>
-
-                      <div className='col-md-2 py-3 py-md-0'>
-                        <span className='th-grey th-14'>End Date*</span>
-                        <div>
-                          <DatePicker
-                            onChange={(e) => setEndDate(e.format('YYYY-MM-DD'))}
-                          />
-                        </div>
-                      </div>
-                      <div className='col-md-3 py-3 py-md-0'>
-                        <span className='th-grey th-14'>Upload Flash Image</span>
-                        <div
-                          className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
-                          style={{ border: '1px solid #D9D9D9' }}
-                        >
-                          <div className='col-md-8 col-9'>
-                            <div className='row'>
-                              {uploadedFlashFiles?.map((item, index) => {
-                                const fileName2 =
-                                  item[0]?.split('/')[item[0]?.split('/').length - 1];
-
-                                return (
-                                  <div
-                                    title={fileName2}
-                                    className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 mr-1 mb-1 th-bg-grey text-center d-flex align-items-center'
-                                  >
-                                    <span className='th-12 th-black-1 text-truncate'>
-                                      {fileName2}
-                                    </span>
-                                    {/* <span className='th-12 th-black-1 '>.{extension}</span> */}
-
-                                    <span className='ml-md-3 ml-1 th-pointer '>
-                                      <img
-                                        src={smallCloseIcon}
-                                        onClick={() => handleRemoveUploadedFile(index)}
-                                      />
-                                    </span>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                          <div
-                            className='col-md-4 col-3 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'
-                            onClick={() => handleShowModal(true)}
-                          >
-                            <span className='th-12'>
-                              {' '}
-                              <u>Upload</u>
-                            </span>
-                            <span className='ml-3 pb-2'>
-                              <img src={uploadIcon} />
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className='col-md-3'>
-                        <span className='th-grey th-14'>Even Link</span>
-                        <div className='th-editor py-2'>
-                          <Input
-                            style={{ fontSize: '10px' }}
-                            onChange={(e) => setFlashLink(e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </>
-                  ) : null}
                 </div>
                 <div className='row py-2 mt-3'>
                   {/* <div className='col-12'>
@@ -1036,8 +903,6 @@ const CreateAnnouncement = () => {
           branchId={branchId}
           handleClose={handleUploadModalClose}
           setUploadedFiles={handleUploadedFiles}
-          setFlashUploadedFiles={handleFlashUploadedFiles}
-          flashModal={flashModal}
         />
         <MembersModal show={showMembersModal} handleClose={handleMembersModalClose} />
       </div>

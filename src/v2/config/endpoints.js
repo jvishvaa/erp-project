@@ -35,7 +35,6 @@ export default {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
     userDesignation: `${baseURLCentral}/central-admin/user_designation/`,
     downloadUserData: '/communication/erp-user-info-excel-v2/',
-    getParentData: '/erp_user/fetch-parent-data/',
   },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
@@ -49,7 +48,6 @@ export default {
   newibook: {
     ibookList: '/academic/v1/ibook_school_wise_filter/',
     ibookDefault: '/academic/v1/ibook_school_wise_default/',
-    ibookConfig: '/assessment/check-sys-config/?config_key=is_ibook_blocked',
   },
   academics: {
     subjects: '/erp_user/subject/',
@@ -224,7 +222,6 @@ export default {
     rating: '/hw-hub/rating/',
     evaluatorList: '/hw-hub/get_evaluators/',
     checkEvaluator: '/hw-hub/evaluator-check/',
-    evaluatorReport: '/hw-hub/evaluator-report/',
   },
   grievances: {
     grievanceTicket: `${baseFinanceURL}/apiV1/ticket/`,

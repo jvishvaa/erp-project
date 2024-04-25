@@ -59,7 +59,6 @@ const UserDetailsForm = ({
   showParentForm,
   showGuardianForm,
   isSubmitting,
-  roleBasedUiConfig,
 }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -82,8 +81,6 @@ const UserDetailsForm = ({
     setOpenPasswordModal(false);
     setIsPasswordCanceled(true);
   };
-
-  console.log({details,roleBasedUiConfig},"bdhf");
 
   const formik = useFormik({
     initialValues: {
@@ -465,39 +462,37 @@ const UserDetailsForm = ({
           <Grid item xs={12}>
             <Divider />
           </Grid>
-          {!roleBasedUiConfig?.includes(details?.userLevel?.id?.toString()) && (
-            <Grid item xs={12}>
-              <Grid item md={4} xs={12}>
-                <FormControl component='fieldset' fullWidth size='small'>
-                  <FormLabel component='legend'>Parent/Guardian</FormLabel>
-                  <FormGroup row>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={showParentForm}
-                          onChange={toggleParentForm}
-                          name='gilad'
-                          color='primary'
-                        />
-                      }
-                      label='Parent'
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={showGuardianForm}
-                          onChange={toggleGuardianForm}
-                          name='jason'
-                          color='primary'
-                        />
-                      }
-                      label='Guardian'
-                    />
-                  </FormGroup>
-                </FormControl>
-              </Grid>
+          <Grid item xs={12}>
+            <Grid item md={4} xs={12}>
+              <FormControl component='fieldset' fullWidth size='small'>
+                <FormLabel component='legend'>Parent/Guardian</FormLabel>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={showParentForm}
+                        onChange={toggleParentForm}
+                        name='gilad'
+                        color='primary'
+                      />
+                    }
+                    label='Parent'
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={showGuardianForm}
+                        onChange={toggleGuardianForm}
+                        name='jason'
+                        color='primary'
+                      />
+                    }
+                    label='Guardian'
+                  />
+                </FormGroup>
+              </FormControl>
             </Grid>
-          )}
+          </Grid>
           <Grid
             container
             item
