@@ -3,6 +3,7 @@ import {
   DownOutlined,
   EditOutlined,
   HistoryOutlined,
+  InteractionOutlined,
   PlusCircleOutlined,
   SearchOutlined,
   StopOutlined,
@@ -10,12 +11,19 @@ import {
 import {
   Breadcrumb,
   Button,
+  Col,
+  Empty,
   Form,
+  Image,
+  Modal,
   Pagination,
   Popconfirm,
   Result,
+  Row,
   Select,
   Table,
+  Tooltip,
+  Typography,
   message,
 } from 'antd';
 import { Input, Space } from 'antd';
@@ -29,6 +37,7 @@ import { fetchBranchesForCreateUser } from 'redux/actions';
 import axiosInstance from 'v2/config/axios';
 import axios from 'axios';
 import FileSaver from 'file-saver';
+import moment from 'moment';
 
 const User = () => {
   const history = useHistory();
@@ -57,6 +66,12 @@ const User = () => {
   const [searchData, setSearchData] = useState('');
   const [showFilterPage, setShowFilter] = useState(true);
   const [downloadLoading, setDownloadLoading] = useState(false);
+  const [activityModal, setActivityModal] = useState({
+    open: false,
+    data: null,
+    activityImagePreview: false,
+    activityImagePreviewUrl: null,
+  });
 
   const formRef = useRef();
   const searchRef = useRef();
@@ -217,6 +232,11 @@ const User = () => {
                     style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
                   />
                 </Link>
+                <InteractionOutlined
+                  onClick={() => getActivityData(data.id)}
+                  title='Activity'
+                  style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
+                />
               </>
             ) : (
               ''
@@ -249,6 +269,37 @@ const User = () => {
     fetchUserLevel();
     fetchBranches();
   }, []);
+  useEffect(() => {
+    console.log(activityModal, 'activityModal');
+  }, [activityModal]);
+
+  const getActivityData = (id) => {
+    axiosInstance
+      .get(`${endpoints.userManagement.userUpdateHistory}${id}`)
+      .then((res) => {
+        console.log(res);
+        setActivityModal({
+          ...activityModal,
+          open: true,
+          data: res.data.result,
+          activityImagePreview: false,
+          activityImagePreviewUrl: null,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const activityModalClose = () => {
+    setActivityModal({
+      ...activityModal,
+      open: false,
+      data: null,
+      activityImagePreview: false,
+      activityImagePreviewUrl: null,
+    });
+  };
 
   const fetchUserLevel = async () => {
     try {
@@ -1059,7 +1110,168 @@ const User = () => {
             </div>
           </div>
         </div>
-
+        <Modal
+          title='Activity History'
+          className='th-management-modal'
+          visible={activityModal?.open}
+          centered
+          // destroyOnClose
+          maskClosable={true}
+          footer={null}
+          onCancel={() => activityModalClose()}
+          width={'80%'}
+          style={{ maxHeight: '90vh' }}
+        >
+          <div className='row px-3 mb-2'>
+            <div className='col-md-12'>
+              {/* {activityModal.data} */}
+              <Row gutter={[16, 24]}>
+                {activityModal?.data?.length ? (
+                  activityModal?.data?.map((each, index) => (
+                    <Col span={24}>
+                      <Row gutter={[16, 24]} align='middle'>
+                        <Col style={{ textAlign: 'center' }} xs={4}>
+                          <Typography style={{ fontSize: '14px', fontWeight: 'bold' }}>
+                            {moment(each.created_at).format('DD MMM')}
+                          </Typography>
+                          <Typography style={{ fontSize: '12px', fontWeight: 'normal' }}>
+                            {moment(each.created_at).format('hh:mm a')}
+                          </Typography>
+                        </Col>
+                        <Col xs={20}>
+                          <Row gutter={[16, 5]}>
+                            {Object.keys(each?.pre_update_state)?.map(
+                              (eachKey, eachKeyIndex) => {
+                                return (
+                                  <Col xs={24}>
+                                    <Typography>
+                                      Previous{' '}
+                                      {eachKey?.split('__').pop().replace('_', ' ')} :
+                                      {eachKey?.toLowerCase()?.includes('image') &&
+                                      each?.pre_update_state[eachKey] ? (
+                                        <>
+                                          <Button
+                                            type='link'
+                                            style={{
+                                              padding: '0px 8px',
+                                              height: 'min-content',
+                                              lineHeight: 1.1,
+                                            }}
+                                            onClick={() =>
+                                              setActivityModal({
+                                                ...activityModal,
+                                                // open: false,
+                                                activityImagePreview: true,
+                                                activityImagePreviewUrl:
+                                                  each?.pre_update_state[eachKey],
+                                              })
+                                            }
+                                          >
+                                            Click to preview
+                                          </Button>
+                                        </>
+                                      ) : (
+                                        <strong>
+                                          {' '}
+                                          {each?.pre_update_state[eachKey] || 'NA'}
+                                        </strong>
+                                      )}
+                                    </Typography>
+                                    <Typography>
+                                      Updated{' '}
+                                      {eachKey?.split('__').pop().replace('_', ' ')} :
+                                      {eachKey?.toLowerCase()?.includes('image') &&
+                                      each?.post_update_state[eachKey] ? (
+                                        <>
+                                          <Button
+                                            type='link'
+                                            style={{
+                                              padding: '0px 8px',
+                                              height: 'min-content',
+                                              lineHeight: 1.1,
+                                            }}
+                                            onClick={() =>
+                                              setActivityModal({
+                                                ...activityModal,
+                                                // open: false,
+                                                activityImagePreview: true,
+                                                activityImagePreviewUrl:
+                                                  each?.post_update_state[eachKey],
+                                              })
+                                            }
+                                          >
+                                            Click to preview
+                                          </Button>
+                                        </>
+                                      ) : (
+                                        <strong>
+                                          {' '}
+                                          {each?.post_update_state[eachKey] || 'NA'}
+                                        </strong>
+                                      )}
+                                    </Typography>
+                                  </Col>
+                                );
+                              }
+                            )}
+                          </Row>
+                          <Typography style={{ marginTop: 4 }}>
+                            Modified By <strong>{each?.updated_by_user}</strong> on{' '}
+                            <strong>
+                              {moment(each?.created_at)?.format('DD MMM YYYY, h:mm a')}
+                            </strong>
+                          </Typography>
+                        </Col>
+                      </Row>
+                    </Col>
+                  ))
+                ) : (
+                  <Col span={24}>
+                    {/* <Result status='warning' title='No data to show' /> */}
+                    <Empty />
+                  </Col>
+                )}
+              </Row>
+            </div>
+          </div>
+        </Modal>
+        {activityModal?.activityImagePreview &&
+          activityModal?.activityImagePreviewUrl && (
+            <>
+              <Modal
+                // title='Activity History'
+                className='th-management-modal'
+                visible={activityModal?.activityImagePreview}
+                centered
+                // destroyOnClose
+                closable={false}
+                footer={null}
+                onCancel={() =>
+                  setActivityModal({
+                    ...activityModal,
+                    // open: true,
+                    activityImagePreview: false,
+                    activityImagePreviewUrl: null,
+                  })
+                }
+                // width={'80%'}
+              >
+                <div
+                  style={{
+                    borderRadius: '8px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <img
+                    src={`${activityModal?.activityImagePreviewUrl}`}
+                    alt=''
+                    style={{ maxHeight: '80vh', maxWidth: '50vw' }}
+                  />
+                </div>
+              </Modal>
+            </>
+          )}
         {/* </div> */}
       </Layout>
     </React.Fragment>
