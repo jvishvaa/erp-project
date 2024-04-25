@@ -100,6 +100,7 @@ export default {
     centralUserLevel: '/erp_user/central-user-level/',
     passwordChange: '/erp_user/password-reset/',
     onBoardingReport: `${msReportsUrl}/api/reports/v1/onboarding-report/`,
+    userUpdateHistory: '/erp_user/user-update-history/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
