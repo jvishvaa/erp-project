@@ -534,6 +534,7 @@ const StudentHomeworkNew = withRouter(
           subjectName: item?.subject__subject_name,
           status: 1,
           isEvaluated: false,
+          subject_id: item?.subject_id,
         });
       } else {
         setHomeworkSubmission({
@@ -543,6 +544,7 @@ const StudentHomeworkNew = withRouter(
           subjectName: item?.homework__subject__subject_name,
           status: tab == 4 ? 3 : 2,
           isEvaluated: tab == 4 ? true : false,
+          subject_id: item?.subject_id,
         });
       }
     };
