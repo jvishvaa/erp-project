@@ -124,7 +124,7 @@ const BlogWallRedirect = () => {
         setTheaterSubId(theaterActivityData[0]);
       })
       .catch((err) => {
-        message.err(err.message);
+        message.error(err.message);
       })
       .finally(() => {
         setLoading(false);
