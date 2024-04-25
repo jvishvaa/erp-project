@@ -95,7 +95,7 @@ export default {
     academicYear: '/erp_user/list-academic_year/',
     subjectName: '/erp_user/list-academic_year-subjectmapping/',
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
-    getUserLevel: '/erp_user/level_list/',
+    getUserLevelData: '/erp_user/level_list/',
     assignLevel: '/erp_user/level_create/',
     centralUserLevel: '/erp_user/central-user-level/',
     passwordChange: '/erp_user/password-reset/',
@@ -106,7 +106,7 @@ export default {
     gradeList: '/erp_user/grade-list/',
     subjectList: '/erp_user/subject-list/',
     userUpdateHistory: '/erp_user/user-update-history/',
-
+    getParentData: '/erp_user/fetch-parent-data/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
