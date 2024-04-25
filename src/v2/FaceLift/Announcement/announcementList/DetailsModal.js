@@ -454,7 +454,48 @@ const DetailsModal = (props) => {
                         <div className='col-5 text-truncate'>{filename}</div>
                         <div className='col-4 pr-0'>.{extension}</div>
                         <div className='col-2 text-center'>
-                          <a href={`${endpoints.announcementList.s3erp}announcement/${item}`} download>
+                          <a
+                            href={`${endpoints.announcementList.s3erp}announcement/${item}`}
+                            download
+                          >
+                            <ArrowDownOutlined className='th-primary th-pointer' />
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {data?.flash_img.length > 0 && (
+              <div className='row my-3 th-grey'>
+                <div className='col-6 tex-left th-black-2 th-fw-500 pl-0'>
+                  Flash Attachments({data?.flash_img.length}):
+                </div>
+                <div className='col-6 text-right th-primary th-12 pr-0'>
+                  <u
+                    className='th-pointer'
+                    onClick={() => handleDownload(data?.flash_img)}
+                  >
+                    Download All
+                  </u>
+                </div>
+                <div className='row' style={{ height: '150px', overflowY: 'auto' }}>
+                  {data?.flash_img?.map((item) => {
+                    const filename = item.split('/')[2].split('.')[0];
+                    const extension = item.split('.')[item.split('.').length - 1];
+                    return (
+                      <div className='row my-3 align-items-center th-12'>
+                        <div className='col-1 pr-0'>
+                          <img src={getFileIcon(extension)} />
+                        </div>
+                        <div className='col-5 text-truncate'>{filename}</div>
+                        <div className='col-4 pr-0'>.{extension}</div>
+                        <div className='col-2 text-center'>
+                          <a
+                            href={`${endpoints.announcementList.s3erp}announcement/${item}`}
+                            download
+                          >
                             <ArrowDownOutlined className='th-primary th-pointer' />
                           </a>
                         </div>

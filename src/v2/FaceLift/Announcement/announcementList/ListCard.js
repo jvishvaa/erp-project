@@ -2,14 +2,8 @@ import React, { useState } from 'react';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { getCategoryColor } from 'v2/generalAnnouncementFunctions';
 import DetailsModal from './DetailsModal';
-import { EllipsisOutlined, DeleteOutlined, SendOutlined } from '@ant-design/icons';
+import { StarTwoTone } from '@ant-design/icons';
 import { Popover, Tooltip } from 'antd';
-// import emailIcon from 'v2/Assets/dashboardIcons/announcementListIcons/emailIcon.svg';
-// import smsIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smsIcon.svg';
-// import whatsappIcon from 'v2/Assets/dashboardIcons/announcementListIcons/whatsappIcon.svg';
-// import editIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/editIcon.svg';
-import publishIcon from 'v2/Assets/dashboardIcons/announcementListIcons/publishIcon.svg';
-import deleteIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/deleteIcon.svg';
 import moment from 'moment';
 
 const ListCard = (props) => {
@@ -18,6 +12,7 @@ const ListCard = (props) => {
     title,
     content,
     created_time: date,
+    is_flash_event,
   } = props.data;
   const { showTab } = props;
   const [showModal, setShowModal] = useState(false);
@@ -56,7 +51,7 @@ const ListCard = (props) => {
         }}
       >
         <div className='col-md-2 col-4 text-uppercase th-fw-500 text-break pr-0 pr-md-1'>
-          {category}
+          {category} {is_flash_event ? <StarTwoTone twoToneColor='#52c41a' /> : null}
         </div>
         <div
           className='col-md-3 col-5 text-truncate th-pointer'
