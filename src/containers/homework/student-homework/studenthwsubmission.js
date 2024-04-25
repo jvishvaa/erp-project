@@ -234,6 +234,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadprogressEvent, setUploadProgressEvent] = useState({});
   const [uploadFileSize, setUploadFileSize] = useState(0);
+  const [uploadIndex, setUploadIndex] = useState(null);
 
   let idInterval = null;
   useEffect(() => {
@@ -675,6 +676,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
 
   const uploadFileHandler = (e, index, maxVal, question) => {
     console.log(question, 'ques');
+    setUploadIndex(index);
     e.persist();
     if (question?.is_attachment_enable == false) {
       message.error('File Upload Restriction, please contact subject teacher');
@@ -1127,7 +1129,9 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                         {' '}
                         {`Accepted files: .jpeg,.jpg,.mp3,.pdf,.png,${newFormats.toString()}`}
                       </small>
-                      {uploadFileSize && uploadProgress != 100 ? (
+                      {uploadIndex === index &&
+                      uploadFileSize &&
+                      uploadProgress != 100 ? (
                         <>
                           <Progress
                             percent={uploadProgress}
