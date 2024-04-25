@@ -80,7 +80,7 @@ const NewEbookView = (props) => {
                       <EbookView showTab={showTab} changeRecent={changeRecent} />
                     )}
                   </TabPane>
-                  {isIbookBlocked === "False" && (
+                  {isIbookBlocked !== 'True' && (
                     <TabPane tab='IBOOK' key='2'>
                       {user_level == 13 ? (
                         <EbookViewStudent showTab={showTab} changeRecent={changeRecent} />
