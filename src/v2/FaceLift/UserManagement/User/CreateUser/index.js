@@ -1112,7 +1112,7 @@ const CreateUser = () => {
                   branch_id: grade?.acad_session__branch_id,
                 }))
               : [];
-            if (transformedData?.length > 1) {
+            if (transformedData?.length > 0) {
               //   transformedData.unshift({
               //     item_id: 'all',
               //     id: 'all',
@@ -1411,7 +1411,6 @@ const CreateUser = () => {
       formData.append('guardian_photo', '');
     }
     // FAMILY INFO
-   
 
     if (editId) {
       formData.append('erp_id', userDetails?.erp_id);
@@ -1780,7 +1779,6 @@ const CreateUser = () => {
                         setOpenPasswordModal={setOpenPasswordModal}
                       />
                     )}
-                    
                   </div>
                 </Card>
                 {/* <div
