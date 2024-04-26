@@ -5,20 +5,23 @@
   z-index: 1501;
   display: flex;
   flex-direction: column;
-  width: 20vw;
+  width: 25vw;
   /* Add transition for smooth animation */
   transition: transform 0.3s ease;
-  transform: translateY(100%); /* Initially translate down by 100% */
+  transform: translateY(100%); /* Initial state changed to translateY(100%) */
 }
+
 .th-event-popup.open {
   transform: translateY(0); /* Translate to original position */
 }
+
 .th-event-img {
   background-size: cover;
   background-clip: padding-box;
-  height: 36vh;
+  height: 23vh;
   border-radius: 16px 16px 0px 0px;
 }
+
 .th-event-close-icon {
   position: absolute;
   top: 10px;
@@ -36,14 +39,15 @@
 .th-event-popup-closed {
   position: fixed;
   right: 32px;
-  bottom: 10px;
+  bottom: 80px;
   z-index: 1501;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   transition: transform 0.3s ease;
-  transform: translateY(100%); /* Initially translate down by 100% */
+  transform: translateY(0); /* Initial state changed to translateY(0) */
 }
+
 .th-event-popup-closed.eventClose {
-  transform: translateY(0); /* Translate to original position */
+  transform: translateY(100%); /* Translate to original position */
 }

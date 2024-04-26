@@ -517,7 +517,7 @@ function App({ alert, isMsAPI, erpConfig }) {
           ?.id,
         page_number: 1,
         page_size: 10,
-        is_sent: 'True',
+        is_draft: 'False',
         branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
         is_flash_event: true,
         date: moment().format('YYYY-MM-DD'),
@@ -527,10 +527,10 @@ function App({ alert, isMsAPI, erpConfig }) {
 
   const [theme, setTheme] = useState(() => themeGenerator());
   const [expTime, setExpTime] = useState(null);
+  const [eventList, setEventList] = useState([]);
   const [popupData, setPopupData] = useState([]);
   const [popupSetting, setPopupSetting] = useState([]);
   const [financeSessionList, setFinanceSessionList] = useState([]);
-  const [eventList, setEventList] = useState([]);
   const isV2 = IsV2Checker();
 
   const history = useHistory();

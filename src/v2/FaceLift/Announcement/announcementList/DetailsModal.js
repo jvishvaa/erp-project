@@ -336,7 +336,6 @@ const DetailsModal = (props) => {
             <div className='row th-black-1 th-fw-500 th-16 text-uppercase'>
               {data?.title}
             </div>
-
             <div className='row my-1 th-12'>
               <div className='row'>
                 <div className='col-2 px-0'>
@@ -412,10 +411,14 @@ const DetailsModal = (props) => {
                 </>
               )}
             </div>
-
             <div className='row th-grey'>
               Posted &nbsp;{getDuration(data.created_time)}&nbsp; by {data?.created_user}
             </div>
+            {data?.start_date && data?.is_flash_event ? (
+              <div className='row th-grey th-12'>
+                Start Date: {data?.start_date} | End Date: {data?.end_date}
+              </div>
+            ) : null}
             <div className='row mt-1 th-12'>
               {data?.role.map((item) => (
                 <div className='th-br-50 th-bg-grey th-black-2 px-3 py-2 mr-1 mb-1 th-fw-400'>
@@ -424,11 +427,12 @@ const DetailsModal = (props) => {
               ))}
             </div>
             <div
-              className='row mt-4 py-3 th-grey '
+              className='row mt-2 th-grey '
               style={{ overflowY: 'auto', maxHeight: 130 }}
             >
               <p>{extractContent(data?.content)}</p>
             </div>
+
             {data?.attachments.length > 0 && (
               <div className='row my-3 th-grey'>
                 <div className='col-6 tex-left th-black-2 th-fw-500 pl-0'>
@@ -482,8 +486,8 @@ const DetailsModal = (props) => {
                 </div>
                 <div className='row' style={{ height: '150px', overflowY: 'auto' }}>
                   {data?.flash_img?.map((item) => {
-                    const filename = item.split('/')[2].split('.')[0];
-                    const extension = item.split('.')[item.split('.').length - 1];
+                    const filename = item?.split('/')[2]?.split('.')[0];
+                    const extension = item?.split('.')[item.split('.').length - 1];
                     return (
                       <div className='row my-3 align-items-center th-12'>
                         <div className='col-1 pr-0'>
