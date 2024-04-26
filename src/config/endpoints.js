@@ -107,6 +107,8 @@ export default {
     subjectList: '/erp_user/subject-list/',
     userUpdateHistory: '/erp_user/user-update-history/',
     getParentData: '/erp_user/fetch-parent-data/',
+    userHistoryAccessLevelsConfig:
+      '/assessment/check-sys-config/?config_key=user_history_access_levels',
   },
   timeTable: {
     tableData: '/academic/time_table/',
