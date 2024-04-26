@@ -65,7 +65,20 @@ const ListCard = (props) => {
             setShowModal(true);
           }}
         >
-          <b> {extractContent(title)} </b>
+          <b>
+            {extractContent(title).length > 25 ? (
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomLeft'
+                title={extractContent(title)}
+                overlayStyle={{ maxWidth: '40%', minWidth: '20%' }}
+              >
+                {extractContent(title)}
+              </Tooltip>
+            ) : (
+              extractContent(title)
+            )}
+          </b>
         </div>
         <div
           className='col-md-5 col-5 text-truncate th-pointer'

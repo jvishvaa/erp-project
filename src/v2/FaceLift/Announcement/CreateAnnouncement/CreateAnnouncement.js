@@ -559,11 +559,11 @@ const CreateAnnouncement = () => {
                     <Input
                       className='th-br-4 mt-1 th-16'
                       showCount
-                      maxLength='30'
+                      maxLength='50'
                       onChange={(e) => setTitle(e.target.value)}
                     />
                     <div className='text-right'>
-                      <span className='th-red th-12 text-right'>Max. 30 Characters</span>
+                      <span className='th-red th-12 text-right'>Max. 50 Characters</span>
                     </div>
                   </div>
                   <div className='col-md-6'>
