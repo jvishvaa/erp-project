@@ -100,6 +100,7 @@ export default {
     centralUserLevel: '/erp_user/central-user-level/',
     passwordChange: '/erp_user/password-reset/',
     onBoardingReport: `${msReportsUrl}/api/reports/v1/onboarding-report/`,
+    userUpdateHistory: '/erp_user/user-update-history/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
@@ -267,6 +268,7 @@ export default {
     rating: '/hw-hub/rating/',
     evaluatorList: '/hw-hub/get_evaluators/',
     checkEvaluator: '/hw-hub/evaluator-check/',
+    evaluatorReport: '/hw-hub/evaluator-report/',
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',

@@ -497,6 +497,7 @@ import { Modal } from 'antd';
 import TeacherReferForm from './containers/teacherReferral/TeacherRefer.js';
 import TeacherReferSuccess from './containers/teacherReferral/TeacherReferSuccess.js';
 import DuePopup from 'v2/FaceLift/myComponents/DuePopup';
+import EventPopup from 'v2/FaceLift/myComponents/EventPopup';
 import endpointsV2 from 'v2/config/endpoints';
 import _ from 'lodash';
 
@@ -510,6 +511,18 @@ function App({ alert, isMsAPI, erpConfig }) {
     fetchConfigData();
 
     fetchFinanceSession();
+    if (sessionStorage.getItem('selected_branch')) {
+      getEventPopup({
+        session_year: JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
+          ?.id,
+        page_number: 1,
+        page_size: 10,
+        is_sent: 'True',
+        branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
+        is_flash_event: true,
+        date: moment().format('YYYY-MM-DD'),
+      });
+    }
   }, []);
 
   const [theme, setTheme] = useState(() => themeGenerator());
@@ -517,6 +530,7 @@ function App({ alert, isMsAPI, erpConfig }) {
   const [popupData, setPopupData] = useState([]);
   const [popupSetting, setPopupSetting] = useState([]);
   const [financeSessionList, setFinanceSessionList] = useState([]);
+  const [eventList, setEventList] = useState([]);
   const isV2 = IsV2Checker();
 
   const history = useHistory();
@@ -651,6 +665,15 @@ function App({ alert, isMsAPI, erpConfig }) {
               erp_id: userDetails?.erp,
             });
           }
+          getEventPopup({
+            session_year: JSON.parse(sessionStorage.getItem('selected_branch'))
+              ?.session_year?.id,
+            page_number: 1,
+            page_size: 10,
+            is_sent: 'True',
+            branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
+            is_flash_event: true,
+          });
         })
         .catch(() => {});
     } else {
@@ -667,6 +690,15 @@ function App({ alert, isMsAPI, erpConfig }) {
           erp_id: userDetails?.erp,
         });
       }
+      getEventPopup({
+        session_year: JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
+          ?.id,
+        page_number: 1,
+        page_size: 10,
+        is_sent: 'True',
+        branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
+        is_flash_event: true,
+      });
     }
   };
 
@@ -705,6 +737,20 @@ function App({ alert, isMsAPI, erpConfig }) {
       });
   };
 
+  const getEventPopup = (params = {}) => {
+    axiosInstance
+      .get(`${endpoints.announcementNew.inbox}`, {
+        params: { ...params },
+      })
+      .then((response) => {
+        if (response.data.data?.length > 0) {
+          setEventList(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching config data:', error);
+      });
+  };
   return (
     // <ErrorBoundary404 HomeButton={false}>
     <div className='App'>
@@ -717,7 +763,7 @@ function App({ alert, isMsAPI, erpConfig }) {
         popupSetting={popupSetting}
         financeSessionList={financeSessionList}
       />
-
+      {eventList?.length > 0 ? <EventPopup eventList={eventList} /> : null}
       {idleTimeOut && <IdleTieOutComp idleTimeOut={idleTimeOut} />}
       {!isV2 ? (
         <Router>
