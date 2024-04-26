@@ -48,14 +48,16 @@ const EventPopup = (props) => {
 
                   <div
                     className='th-event-img pb-2'
-                    // style={{
-                    //   backgroundImage: `url(${imageUrl})`,
-                    // }}
+                    style={{
+                      backgroundImage: `url("${imageUrl}")`,
+                    }}
                   >
-                    <img src={imageUrl} style={{ height: '100%', width: '100%' }} />
+                    {/* <img src={imageUrl} style={{ height: '100%', width: '100%' }} /> */}
                   </div>
                   <div className='px-2 pb-3'>
-                    <div className='th-20 th-fw-600 text-center pb-1'>{each?.title}</div>
+                    <div className='th-20 th-fw-600 text-center pb-1 pt-2'>
+                      {each?.title}
+                    </div>
                     <div
                       className='th-14 th-fw-400 text-center pb-3'
                       style={{ maxHeight: '100px', overflowY: 'scroll' }}
