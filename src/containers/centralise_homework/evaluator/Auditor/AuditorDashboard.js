@@ -13,7 +13,6 @@ import './../index.scss';
 const AuditorDashboard = () => {
   const history = useHistory();
   const { Option } = Select;
-  const [selectedDate, setSelectedDate] = useState(moment().format('DD-MM-YYYY'));
   const firstDayOfMonth = moment().startOf('month').format('DD-MM-YYYY');
   const lastDayOfMonth = moment().endOf('month').format('DD-MM-YYYY');
   const [startDate, setStartDate] = useState(firstDayOfMonth);
@@ -33,7 +32,6 @@ const AuditorDashboard = () => {
     const lastDayOfMonth = moment(value).endOf('month').format('DD-MM-YYYY');
     setStartDate(firstDayOfMonth);
     setEndDate(lastDayOfMonth);
-    setSelectedDate(moment(value).format('DD-MM-YYYY'));
     fetchReport({
       start_date: firstDayOfMonth,
       end_date: lastDayOfMonth,
@@ -135,6 +133,16 @@ const AuditorDashboard = () => {
     }
   };
 
+  const calculateNearestRating = (number, threshold) => {
+    if (number > threshold && number < threshold + 0.5) {
+      return threshold + 0.5;
+    } else if (number > threshold + 0.5) {
+      return Math.ceil(number);
+    } else {
+      return number;
+    }
+  };
+
   return (
     <React.Fragment>
       <Layout>
@@ -163,10 +171,6 @@ const AuditorDashboard = () => {
         <div className='row'>
           <div className='col-md-12'>
             <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
-              <div className='col-md-12 d-flex justify-content-center'>
-                <div className='th-25 py-1'>Date : {selectedDate}</div>
-              </div>
-
               <div className='row col-md-12 justify-content-center'>
                 <div className='th-22'>
                   {moment(startDate, 'DD-MM-YYYY').format('MMMM')}
@@ -220,7 +224,10 @@ const AuditorDashboard = () => {
                           <p className='mb-0'> Overall Rating</p>
                           <Rate
                             allowHalf
-                            value={overallReport?.average_rating}
+                            value={calculateNearestRating(
+                              overallReport?.average_rating,
+                              parseInt(overallReport?.average_rating)
+                            )}
                             disabled={true}
                           />
                         </div>

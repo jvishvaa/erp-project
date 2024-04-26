@@ -56,7 +56,7 @@ const CenralizedHome = () => {
               <Breadcrumb.Item
                 className='th-grey th-16'
                 onClick={() => {
-                  history.push('/homework/centralized-reports');
+                  history.push('/homework/centralized-eval-reports');
                 }}
               >
                 Centralized Report
