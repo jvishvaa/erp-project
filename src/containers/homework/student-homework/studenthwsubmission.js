@@ -194,7 +194,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
     dueDate,
     setDeuDate,
   } = props || {};
-  const { isOpen, subjectId, date, subjectName, isEvaluated } = homeworkSubmission || {};
+  const { isOpen, subject_id, date, subjectName, isEvaluated } = homeworkSubmission || {};
   const [isQuestionWise, setIsQuestionWise] = useState(false);
   const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
   const [attachmentData, setAttachmentData] = useState([]);
@@ -570,6 +570,17 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       fileUploadInput.current.click();
     }
   };
+
+  let configOfBulkUploadFile = {
+    onUploadProgress: function (uploadprogressEvent) {
+      setUploadProgressEvent(uploadprogressEvent.loaded);
+      let percentCompleted = Math.round(
+        (uploadprogressEvent.loaded * 100) / uploadprogressEvent.total
+      );
+      setUploadProgress(percentCompleted);
+    },
+  };
+
   const handleBulkUpload = (e) => {
     e.persist();
     if (bulkDataDisplay?.length >= maxCount) {
@@ -597,8 +608,14 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         setUploadStart(true);
         const formData = new FormData();
         formData.append('file', fil);
+        formData.append('subject_id', subject_id);
+        setUploadFileSize((fil?.size / 1000000).toFixed(1));
         axiosInstance
-          .post(`${endpoints.homeworkStudent.fileUpload}`, formData)
+          .post(
+            `${endpoints.homeworkStudent.fileUpload}`,
+            formData,
+            configOfBulkUploadFile
+          )
           .then((result) => {
             if (result.data.status_code === 200) {
               const list = bulkDataDisplay?.slice();
@@ -612,7 +629,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                 setPercentValue(100);
                 setUploadStart(false);
               } else {
-                list.push(e.target.files[0]);
+                list.push(result.data.data);
                 setBulkDataDisplay(list);
                 bulkData.push(result.data.data);
                 setPercentValue(100);
@@ -706,6 +723,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
         setUploadStart(true);
         const formData = new FormData();
         formData.append('file', fil);
+        formData.append('subject_id', subject_id);
         setUploadFileSize((fil?.size / 1000000).toFixed(1));
         axiosInstance
           .post(`${endpoints.homeworkStudent.fileUpload}`, formData, configOfUploadFile)
@@ -1646,6 +1664,17 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
                       {`Accepted files: .jpeg,.jpg,.mp3,.pdf,.png,${newFormats.toString()}`}
                     </small>
                   </>
+                  {uploadFileSize && uploadProgress != 100 ? (
+                    <>
+                      <Progress
+                        percent={uploadProgress}
+                        strokeColor={{
+                          '0%': '#1b4ccb',
+                          '100%': '#87d068',
+                        }}
+                      />
+                    </>
+                  ) : null}
                   <div className='bulk_upload_attachments'>
                     {bulkDataDisplay?.map((file, i) => (
                       <FileRow

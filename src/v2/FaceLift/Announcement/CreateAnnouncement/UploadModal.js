@@ -44,20 +44,27 @@ const UploadModal = (props) => {
   };
 
   const handleUpload = () => {
-    props.handleClose();
+    if (props?.flashModal) {
+      props.handleFlashClose();
+    } else {
+      props.handleClose();
+    }
     let noOfFiles = uniqueFiles.length;
     uniqueFilesList.forEach((file) => {
       const formData = new FormData();
       formData.append('branch_id', props?.branchId);
 
       formData.append('file', file);
-
+      setUploading(true);
       axios
         .post(`${endpoints.createAnnouncement.uploadFile}`, formData)
         .then((res) => {
           if (res?.data?.status_code === 200) {
             message.success(res?.data?.message);
-            props.setUploadedFiles((pre) => [...pre, res?.data?.data]);
+            props?.flashModal
+              ? props.setFlashUploadedFiles((pre) => [...pre, res?.data?.data])
+              : props.setUploadedFiles((pre) => [...pre, res?.data?.data]);
+
             setFileList([]);
             noOfFiles = noOfFiles - 1;
             if (noOfFiles == 0) {
@@ -75,8 +82,8 @@ const UploadModal = (props) => {
   const draggerProps = {
     showUploadList: false,
     disabled: false,
-    multiple: true,
-    accept: '.jpeg,.jpg,.png,.pdf,.mp3,.mp4',
+    multiple: props?.flashModal ? false : true,
+    accept: props?.flashModal ? '.jpeg,.jpg,.png' : '.jpeg,.jpg,.png,.pdf,.mp3,.mp4',
     onRemove: (file) => {
       const index = fileList.indexOf(file);
       const newFileList = fileList.slice();
@@ -115,42 +122,52 @@ const UploadModal = (props) => {
 
   return (
     <>
-    {uploading ? <Loading message='Uploading...'/> : null}
+      {uploading ? <Loading message='Uploading...' /> : null}
       <Modal
         centered
-        visible={props?.show}
+        visible={props?.flashModal ? true : props?.show}
         width={500}
         className='th-upload-modal'
         title='Upload Files'
-        onCancel={props?.handleClose}
+        onCancel={props?.flashModal ? props?.handleFlashClose : props?.handleClose}
         footer={
-          <div className='d-flex justify-content-center'>
-            <Button
-              className='th-br-4 th-black-2'
-              onClick={props?.handleClose}
-              style={{ border: '1px solid #868686' }}
-            >
-              Cancel
-            </Button>
+          <>
+            {' '}
+            <div className='d-flex justify-content-center'>
+              <Button
+                className='th-br-4 th-black-2'
+                onClick={props?.flashModal ? props?.handleFlashClose : props?.handleClose}
+                style={{ border: '1px solid #868686' }}
+              >
+                Cancel
+              </Button>
 
-            <Button
-              className='th-fw-500 th-br-4 th-bg-primary th-white'
-              onClick={() => {
-                if (uniqueFilesList.length > 0) {
-                  setUploading(true);
-                  handleUpload();
+              <Button
+                className='th-fw-500 th-br-4 th-bg-primary th-white'
+                onClick={() => {
+                  if (uniqueFilesList.length > 0) {
+                    handleUpload();
+                  }
+                }}
+                disabled={
+                  uploading ||
+                  uniqueFilesList.length < 1 ||
+                  (props?.flashModal && uniqueFilesList.length > 1)
                 }
-              }}
-              disabled={uploading || uniqueFilesList.length < 1}
-            >
-              Upload
-            </Button>
-          </div>
+              >
+                Upload
+              </Button>
+            </div>
+            {props?.flashModal && uniqueFilesList.length > 1 ? (
+              <div className='text-danger text-center'>You can upload only one file</div>
+            ) : null}
+          </>
         }
       >
         <div className='row px-4 mt-3 th-bg-white th-br-10'>
           <Dragger
-            multiple
+            disabled={true}
+            multiple={props?.flashModal ? false : true}
             {...draggerProps}
             className='th-br-4'
             style={{
@@ -166,17 +183,23 @@ const UploadModal = (props) => {
 
             <p className='pt-2'>
               {' '}
-              Drag And Drop Files Here <br /> or
+              Drag And Drop {props?.flashModal ? 'File' : 'Files'} Here <br /> or
             </p>
 
             <Button
               className='th-primary pb-2 mt-0 th-bg-white th-br-4'
               style={{ border: '1px solid #1b4ccb' }}
             >
-              Browse Files
+              Browse {props?.flashModal ? 'File' : 'Files'}
             </Button>
-            <p className='pt-2'>Accepted Files [jpeg,jpg,png,pdf,mp3,mp4]</p>
-            <p className='pt-2'>The maximum size allowed for each file is 50 MB</p>
+            <p className='pt-2'>
+              Accepted {props?.flashModal ? 'File' : 'Files'} [
+              {props?.flashModal ? 'jpeg,jpg,png' : 'jpeg,jpg,png,pdf,mp3,mp4'}]
+            </p>
+            <p className='pt-2'>
+              The maximum size allowed for {props?.flashModal ? 'file' : 'each file'} is
+              50 MB {props?.flashModal ? 'and You can upload only one file' : ''}
+            </p>
           </Dragger>
           {fileTypeError && (
             <div className='row pt-3 justify-content-center th-red'>
@@ -189,7 +212,9 @@ const UploadModal = (props) => {
             </div>
           )}
           {fileList?.length > 0 && (
-            <span className='th-black-1 mt-3'>Selected Files</span>
+            <span className='th-black-1 mt-3'>
+              Selected {props?.flashModal ? 'File' : 'Files'}
+            </span>
           )}
           <div className='row my-2 th-grey' style={{ height: 150, overflowY: 'auto' }}>
             {uniqueFilesList?.map((item) => {
