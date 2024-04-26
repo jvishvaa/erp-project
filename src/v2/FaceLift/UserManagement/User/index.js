@@ -72,6 +72,7 @@ const User = () => {
     activityImagePreview: false,
     activityImagePreviewUrl: null,
   });
+  const [userHistoryAccessLevels, setUserHistoryAccessLevels] = useState([]);
 
   const formRef = useRef();
   const searchRef = useRef();
@@ -232,11 +233,16 @@ const User = () => {
                     style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
                   />
                 </Link>
-                <InteractionOutlined
-                  onClick={() => getActivityData(data.id)}
-                  title='Activity'
-                  style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
-                />
+                {(loggedUserData?.is_superuser ||
+                  userHistoryAccessLevels.includes(
+                    String(loggedUserData?.user_level)
+                  )) && (
+                  <InteractionOutlined
+                    onClick={() => getActivityData(data.id)}
+                    title='Activity'
+                    style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
+                  />
+                )}
               </>
             ) : (
               ''
@@ -268,11 +274,28 @@ const User = () => {
   useEffect(() => {
     fetchUserLevel();
     fetchBranches();
+    fetchUserHistoryAccessLevels();
   }, []);
   useEffect(() => {
     console.log(activityModal, 'activityModal');
   }, [activityModal]);
 
+  const fetchUserHistoryAccessLevels = () => {
+    setLoading(true);
+    axiosInstance
+      .get(`${endpoints.userManagement.userHistoryAccessLevelsConfig}`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          setUserHistoryAccessLevels(response?.data?.result);
+        }
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
   const getActivityData = (id) => {
     axiosInstance
       .get(`${endpoints.userManagement.userUpdateHistory}${id}`)
