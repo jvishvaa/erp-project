@@ -233,7 +233,10 @@ const User = () => {
                     style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
                   />
                 </Link>
-                {userHistoryAccessLevels.includes(String(loggedUserData?.user_level)) && (
+                {(loggedUserData?.is_superuser ||
+                  userHistoryAccessLevels.includes(
+                    String(loggedUserData?.user_level)
+                  )) && (
                   <InteractionOutlined
                     onClick={() => getActivityData(data.id)}
                     title='Activity'
