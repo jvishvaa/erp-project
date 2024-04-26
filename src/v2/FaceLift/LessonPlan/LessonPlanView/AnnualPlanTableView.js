@@ -1139,7 +1139,7 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
               </div>
             )}
 
-            {ibookCount != null && isIbookBlocked == 'False' && (
+            {ibookCount != null && isIbookBlocked !== 'True' && (
               <div className='col-md-3 pl-0 col-12e4l'>
                 <a onClick={getIbook}>
                   <div className=' pl-0 col-12e4l th-primary '>

@@ -98,6 +98,16 @@ const EvaluatorDash = () => {
     history.push('/homework/centralized-home');
   };
 
+  const calculateNearestRating = (number, threshold) => {
+    if (number > threshold && number < threshold + 0.5) {
+      return threshold + 0.5;
+    } else if (number > threshold + 0.5) {
+      return Math.ceil(number);
+    } else {
+      return number;
+    }
+  };
+
   return (
     <React.Fragment>
       <Layout>
@@ -149,7 +159,10 @@ const EvaluatorDash = () => {
                         <p className='mb-0'> Overall Rating</p>
                         <Rate
                           allowHalf
-                          value={overallReport?.average_rating}
+                          value={calculateNearestRating(
+                            overallReport?.average_rating,
+                            parseInt(overallReport?.average_rating)
+                          )}
                           disabled={true}
                         />
                       </div>
