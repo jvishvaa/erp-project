@@ -56,7 +56,11 @@ const CenralizedHome = () => {
               <Breadcrumb.Item
                 className='th-grey th-16'
                 onClick={() => {
-                  history.push('/homework/centralized-eval-reports');
+                  if (isAuditor) {
+                    history.push('/homework/centralized-eval-reports');
+                  } else {
+                    history.push('/homework/centralized-reports');
+                  }
                 }}
               >
                 Centralized Report
