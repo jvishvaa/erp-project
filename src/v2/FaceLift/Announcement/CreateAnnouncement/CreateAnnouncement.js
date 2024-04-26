@@ -382,7 +382,7 @@ const CreateAnnouncement = () => {
       message.error('Please Select End Date');
       return;
     }
-    if (flashEvent && !uploadedFlashFiles > 0) {
+    if (flashEvent && !uploadedFlashFiles?.length > 0) {
       message.error('Please upload flash image');
       return;
     }
