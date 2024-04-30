@@ -789,6 +789,7 @@ const CreateUser = () => {
       gender,
       profile: user?.profile || '',
       address: user?.address || '',
+      pin_code: user?.pin_code || '',
       parent: {
         id: user.parent_details?.id,
         father_first_name: user?.parent_details?.father_first_name || '',
@@ -818,7 +819,7 @@ const CreateUser = () => {
         guardian_age: user?.parent_details?.guardian_age || '',
         guardian_occupation: user?.parent_details?.guardian_occupation || '',
         address: user?.parent_details?.address || user?.address,
-        pin_code: user?.parent_details?.pin_code,
+        pin_code: user?.parent_details?.pin_code || user?.pin_code,
         email: user?.parent_details?.email || user?.user?.email,
         contact: user?.contact?.split('-')[1] || '',
         contact_code: user?.contact?.split('-')[0] || '',
@@ -1269,11 +1270,12 @@ const CreateUser = () => {
     setLoading(true);
     setEndProgress(true);
     let familyValues = {};
-    if (userLevel === 13) {
-      familyValues = familyFormValues;
-    } else {
-      familyValues = formValues;
-    }
+    familyValues = formValues;
+    // if (userLevel === 13) {
+    //   familyValues = familyFormValues;
+    // } else {
+    //   familyValues = formValues;
+    // }
     const formData = new FormData();
     //SCHOOL INFORMATION
 
@@ -1281,7 +1283,9 @@ const CreateUser = () => {
     formData.append('user_level', schoolFormValues?.user_level);
     if (schoolFormValues?.designation)
       formData.append('designation', schoolFormValues?.designation);
-    formData.append('role_id', schoolFormValues?.role);
+    if (schoolFormValues?.role) {
+      formData.append('role_id', schoolFormValues?.role);
+    }
     // STUDENT INFO
     formData.append('first_name', studentFormValues?.first_name ?? '');
     formData.append('middle_name', studentFormValues?.middle_name ?? '');
@@ -1382,7 +1386,10 @@ const CreateUser = () => {
     });
     if (parentId) parentObj.id = parentId;
     parentObj.email = email;
-    formData.append('parent', JSON.stringify(parentObj));
+    if (userLevel === 13) {
+      formData.append('parent', JSON.stringify(parentObj));
+    }
+    formData.append('pin_code', familyValues?.pin_code);
     if (familyValues?.father_photo && typeof familyValues?.father_photo !== 'string') {
       formData.append(
         'father_photo',

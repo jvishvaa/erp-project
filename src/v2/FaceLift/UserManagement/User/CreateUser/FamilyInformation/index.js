@@ -59,6 +59,7 @@ const FamilyInformation = ({
 }) => {
   useEffect(() => {
     if (familyFormValues && Object.keys(familyFormValues).length > 0) {
+      familyRef.current.setFieldsValue(familyFormValues);
       if (familyFormValues?.father_photo) {
         setSelectedImageFather(familyFormValues?.father_photo);
       }
