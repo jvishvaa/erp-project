@@ -350,6 +350,9 @@ export default {
     subjectsList: `/erp_user/v2/mapped-subjects-list/`,
     downloadExcel: `/acad-tt/excel/`,
   },
+  FrequentlyAskedQuestions: {
+    FaqApi : `${baseURL}/erp_user/faq/`
+  },
   finance: {
     storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
     walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
