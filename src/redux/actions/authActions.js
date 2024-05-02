@@ -81,7 +81,12 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
         } else {
           localStorage.setItem('apps', JSON.stringify(response?.data?.result?.apps));
         }
-        if (data?.result?.siblings_data?.length > 0) {
+        if (data?.result?.siblings_data?.length > 0) {          
+          let profileDetails = {
+            is_verified: true,
+            data: data?.result?.siblings_data,
+          };
+          localStorage.setItem('profileDetails', JSON.stringify(profileDetails));
           const result = {
             isLogin: true,
             message: data.message,

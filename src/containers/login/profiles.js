@@ -163,11 +163,7 @@ const UserProfiles = () => {
               justify='center'
               // style={{ maxHeight: 500, overflowY: 'auto' }}
             >
-              {[
-                ...profileData?.profile_data?.data,
-                ...profileData?.profile_data?.data,
-                ...profileData?.profile_data?.data,
-              ]?.map((item, i) => {
+              {profileData?.profile_data?.data?.map((item, i) => {
                 return (
                   <Col
                     xs={24}
