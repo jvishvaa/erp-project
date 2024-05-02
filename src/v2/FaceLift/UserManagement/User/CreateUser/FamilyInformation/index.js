@@ -58,6 +58,9 @@ const FamilyInformation = ({
   setOpenPasswordModal,
 }) => {
   useEffect(() => {
+    if (editId) {
+      setParentFetchedData(familyFormValues);
+    }
     if (familyFormValues && Object.keys(familyFormValues).length > 0) {
       familyRef.current.setFieldsValue(familyFormValues);
       if (familyFormValues?.father_photo) {
@@ -78,12 +81,13 @@ const FamilyInformation = ({
   const [selectedImageGuardian, setSelectedImageGuardian] = useState(null);
   const [showParentContact, setShowParentContact] = useState();
   const [parentContactCode, setParentContactCode] = useState('+91');
+  const [parentFetchedData, setParentFetchedData] = useState();
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const is_superuser = userData?.is_superuser;
   const user_level = userData?.user_level;
 
   useEffect(() => {
-    if (userLevel === 13) {
+    if (userLevel === 13 && !editId) {
       setShowParentContact(false);
     } else {
       setShowParentContact(true);
@@ -231,6 +235,7 @@ const FamilyInformation = ({
 
   const fetchContactDetails = async (code, contact) => {
     if (contact?.length === 10) {
+      setParentFetchedData(null);
       try {
         let contactParams = `${code}-${contact}`;
         const result = await axiosInstance.get(
@@ -238,6 +243,7 @@ const FamilyInformation = ({
         );
 
         if (result?.data?.status_code === 200) {
+          setParentFetchedData(result?.data?.result);
           familyRef.current.setFieldsValue(result?.data?.result);
           familyRef.current.setFieldsValue({
             father_mobile: result?.data?.result?.father_mobile
@@ -282,7 +288,7 @@ const FamilyInformation = ({
         }}
       >
         <Form layout='vertical' ref={parentRef}>
-          {userLevel === 13 && (
+          {userLevel === 13 && !editId && (
             <Row>
               <Col md={8} className=''>
                 <Space align='start'>
@@ -634,7 +640,10 @@ const FamilyInformation = ({
                                 </Space>
                               }
                             >
-                              <Input className='w-100' />
+                              <Input
+                                className='w-100'
+                                disabled={parentFetchedData?.father_mobile}
+                              />
                             </Form.Item>
                           </Space>
                         </Col>
@@ -995,7 +1004,10 @@ const FamilyInformation = ({
                                 </Space>
                               }
                             >
-                              <Input className='w-100' />
+                              <Input
+                                className='w-100'
+                                disabled={parentFetchedData?.mother_mobile}
+                              />
                             </Form.Item>
                           </Space>
                         </Col>
@@ -1349,7 +1361,10 @@ const FamilyInformation = ({
                                 </Space>
                               }
                             >
-                              <Input className='w-100' />
+                              <Input
+                                className='w-100'
+                                disabled={parentFetchedData?.guardian_mobile}
+                              />
                             </Form.Item>
                           </Space>
                         </Col>
