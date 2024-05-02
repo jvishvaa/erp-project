@@ -57,6 +57,7 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
           const result = { isLogin: false, message: data.message };
           return result;
         }
+
         dispatch(selectedVersion(data?.result?.is_v2_enabled));
         localStorage.setItem('isV2', data?.result?.is_v2_enabled);
         dispatch({
@@ -80,8 +81,22 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
         } else {
           localStorage.setItem('apps', JSON.stringify(response?.data?.result?.apps));
         }
-        const result = { isLogin: true, message: actualData.message };
-        return result;
+        if (data?.result?.siblings_data?.length > 0) {          
+          let profileDetails = {
+            is_verified: true,
+            data: data?.result?.siblings_data,
+          };
+          localStorage.setItem('profileDetails', JSON.stringify(profileDetails));
+          const result = {
+            isLogin: true,
+            message: data.message,
+            profile_data: data,
+          };
+          return result;
+        } else {
+          const result = { isLogin: true, message: actualData.message };
+          return result;
+        }
       }
       dispatch({ type: LOGIN_FAILURE });
       const result = { isLogin: false, message: data.message };
@@ -93,16 +108,16 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
 };
 
 export const loginSSo = (payload, isOtpLogin) => (dispatch) => {
-  console.log(payload, isOtpLogin , 'login payload');
+  console.log(payload, isOtpLogin, 'login payload');
   dispatch({ type: LOGIN_REQUEST });
-  const url =  '/erp_user/login/';
+  const url = '/erp_user/login/';
   const config = { timeout: LOGIN_TIMEOUT };
   return axios
-    .post(url, config , {
+    .post(url, config, {
       headers: {
-          'Authorization': `Bearer ${payload}`,
-      }
-  })
+        Authorization: `Bearer ${payload}`,
+      },
+    })
     .then((response) => {
       const data = isOtpLogin ? response.data.login_response : response.data;
       // const data = response.data;

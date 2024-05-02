@@ -39,6 +39,7 @@ export default {
   auth: {
     login: '/auth/login/',
     mobileLogin: '/erp_user/erp-contact-login/',
+    siblingLogin: '/erp_user/erp-sibling-login/',
     crmHcmToken: `${crm}/qbox/hmac_token/`,
     generateLoginToken: `/erp_user/login_token/`,
     generateAccessToken: `${baseURL}/erp_user/access-token/`,
