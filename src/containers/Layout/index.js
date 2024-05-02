@@ -3,11 +3,15 @@
 /* eslint-disable no-use-before-define */
 
 /* eslint-disable react/prop-types */
+import FaqImage from 'assets/images/faq.png';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import { FilePdfOutlined } from '@ant-design/icons';
+import endpointsV2 from 'v2/config/endpoints';
 import React, { useState, useEffect, useRef, createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { withRouter, useLocation } from 'react-router-dom';
+import { withRouter, useLocation, useHistory } from 'react-router-dom';
 import { Box, useMediaQuery, useTheme } from '@material-ui/core';
-import { Result, Spin } from 'antd';
+import { Modal, Result, Spin } from 'antd';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
@@ -29,6 +33,7 @@ import ENVCONFIG from 'config/config';
 import SideBar from './Sidebar';
 import { IsV2Checker } from 'v2/isV2Checker';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import axios from 'axios';
 export const ContainerContext = createContext();
 // const isV2 = localStorage.getItem('isV2');
 
@@ -66,6 +71,13 @@ const Layout = ({ children, history }) => {
   var CryptoJS = require('crypto-js');
 
   var erp_details = CryptoJS.AES.encrypt(JSON.stringify(token), 'erp-details').toString();
+
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
+  const navHistory = useHistory();
+  const module = JSON.parse(localStorage.getItem('child_module_id'));
+  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+  const [modalVisible, setModalVisible] = useState(false);
+  const [moduleData, setModuleData] = useState([]);
 
   const routes = [
     { key: 'Take Class', path: '/take-class' },
@@ -368,8 +380,25 @@ const Layout = ({ children, history }) => {
     const moduleName = routes?.filter((ele)=>ele?.path == `${window?.location?.pathname}`)
     const navData = JSON.parse(localStorage.getItem('navigationData'))
     const moduleId = getChildId(moduleName[0]?.key, navData)
-    localStorage.setItem('child_module_id', JSON.stringify(moduleId))
+    axios
+      .get(
+        `${endpointsV2.FrequentlyAskedQuestions.FaqApi}?child_id=${moduleId}&user_level=${userDetails?.user_level}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails?.token}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (res?.data) {
+          setModuleData(res?.data?.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },[window?.location?.pathname])
+
 
   const classes = useStyles();
   const handleRouting = (name) => {
@@ -1529,6 +1558,28 @@ const Layout = ({ children, history }) => {
             ))}
           <main className={classes.content}>
             <Box className={classes.appBarSpacer} />
+            {
+              moduleData?.length > 0 && <div style={{position : "fixed", top : "76px", right : "80px", zIndex : "5"}}>
+              <div
+              onClick={() => setModalVisible(true)}
+              style={{
+                cursor: 'pointer',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                transition: 'box-shadow 0.3s ease',
+                padding: '3px',
+                borderRadius: '18px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+              }}
+            >
+              <img src={FaqImage} width='24px' />
+            </div>
+          </div>
+            }
             {!isLayoutHidden &&
               (isV2 ? (
                 <TopBar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
@@ -1567,6 +1618,77 @@ const Layout = ({ children, history }) => {
             </ContainerContext.Provider>
           </main>
         </div>
+        <Modal
+        visible={modalVisible}
+        footer={null}
+        className='th-modal'
+        width={'50%'}
+        onCancel={() => setModalVisible(false)}
+      >
+        <p style={{ fontWeight: 'bold', textAlign: 'center', fontSize: '20px' }}>
+          Frequently Asked Questions
+        </p>
+        <div id='Preview-Container' style={{ height: '265px', gap: '20px' }}>
+          <div style={{ width: '100%' }}>
+            <p style={{ fontWeight: 'bold', fontSize: '18px', textAlign: 'center' }}>
+              Demo Video
+            </p>
+            <video
+              src={`${endpoints.assessment.erpBucket}/${moduleData[0]?.video_file}`}
+              controls
+              preload='auto'
+              style={{
+                maxHeight: '165px',
+                width: '100%',
+                objectFit: 'fill',
+              }}
+            />
+            <p
+              onClick={() => {
+                const fileName = moduleData[0]?.pdf_file;
+                let extension = fileName ? fileName[fileName?.length - 1] : '';
+                openPreview({
+                  currentAttachmentIndex: 0,
+                  attachmentsArray: [
+                    {
+                      src: `${endpoints.assessment.erpBucket}/${moduleData[0]?.pdf_file}`,
+
+                      name: fileName,
+                      extension: '.' + extension,
+                    },
+                  ],
+                });
+              }}
+              style={{ color: 'blue', cursor: 'pointer', paddingTop: '8px' }}
+            >
+              Click For User Manual <FilePdfOutlined />
+            </p>
+          </div>
+        </div>
+        {moduleData?.length > 0 && (
+          <div id='Edit-Container'>
+            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
+              Question and Answers
+            </p>
+            {moduleData[0]?.items?.map((ele) => (
+              <div id='Question-Answer-Cont'>
+                <label style={{ fontWeight: 'bold' }}>Question</label>
+
+                <p>{ele?.question}</p>
+                <label style={{ color: 'gray', marginTop: '3px' }}>Answer</label>
+
+                <p>{ele?.answer}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        <div style={{ textAlign: 'center' }}>
+          For Further Assistance Please Mail Us At{' '}
+          <a href='mailto:support@k12technoservices.freshdesk.com'>
+            support@k12technoservices.freshdesk.com
+          </a>
+        </div>
+      </Modal>
       </div>
     </>
   );

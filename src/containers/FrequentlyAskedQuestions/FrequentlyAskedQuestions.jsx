@@ -388,6 +388,20 @@ const FrequentlyAskedQuestions = () => {
         {/* <CustomeBreadCrumbs
           details={[{ name: "FAQ's And Help" }, { name: 'View FAQ' }]}
         /> */}
+        <div className='row pt-3 pb-3'>
+          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item
+                className='th-black-1 th-16 th-grey'
+              >
+                F.A.Q.
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16'>
+                Frequently Asked Questions
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+        </div>
         <div>
           <Form ref={formRef} style={{ width: '100%', display: 'flex' }} direction='row'>
             <div className='col-md-2'>

@@ -353,10 +353,6 @@ export default {
   FrequentlyAskedQuestions: {
     FaqApi : `${baseURL}/erp_user/faq/`
   },
-  finance: {
-    storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
-    walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
-  },
   FINANCE_BUCKET,
   popupSetting: {
     checkDueAmount: `${baseFinanceURL}/apiV1/student-acad-fee-tilldate/`,

@@ -26,7 +26,6 @@ import Layout from 'containers/Layout';
 import axios from 'axios';
 import endpoints from 'v2/config/endpoints';
 import TextArea from 'antd/lib/input/TextArea';
-// import CustomeBreadCrumbs from '../CustomeBreadcrumb/CustomeBreadCrumbs';
 import { useHistory } from 'react-router-dom';
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -411,13 +410,24 @@ const CollapseableComponent = ({ module, items }) => {
   return (
     <>
       <Layout>
-        {/* <CustomeBreadCrumbs
-          details={[
-            { name: "FAQ's And Help" },
-            { name: 'View FAQ', path: '/frequentlyAskedQuestions' },
-            { name: 'Add FAQ' },
-          ]}
-        /> */}
+
+        <div className='row pt-3 pb-3'>
+          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item
+                className='th-black-1 th-16 th-grey'
+              >
+                F.A.Q.
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16' onClick={()=>history.push('/frequentlyAskedQuestions')}>
+                Frequentyly Asked Question
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16' onClick={()=>history.push('/frequentlyAskedQuestions')}>
+                Add F.A.Q.
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+        </div>
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <p style={{ fontWeight: 'bold', fontSize: '30px', paddingTop: '8px' }}>
