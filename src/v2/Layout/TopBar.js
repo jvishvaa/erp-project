@@ -1094,7 +1094,11 @@ const Appbar = ({ children, history, ...props }) => {
                           {walletLoading || storeWalletLoading ? (
                             <Space direction='vertical'>
                               {[1, 2, 3]?.map((el) => (
-                                <Skeleton.Input active block style={{ height: 15 }} />
+                                <Skeleton.Input
+                                  active
+                                  block
+                                  style={{ height: 15, width: 200 }}
+                                />
                               ))}
                             </Space>
                           ) : (
@@ -1103,20 +1107,20 @@ const Appbar = ({ children, history, ...props }) => {
                                 <div>Wallet :</div>
                                 <div className='th-fw-600'>₹ {wallet?.amount ?? 0}</div>
                               </div>
-                              <div className='d-flex justify-content-between py-2'>
+                              <div className='d-flex justify-content-between pb-2'>
                                 <div>Store Wallet :</div>
                                 <div className='th-fw-600'>
                                   ₹ {storeWallet?.store_amount ?? 0}
                                 </div>
                               </div>
                               <div className='d-flex justify-content-center'>
-                                <div className='px-2 py-1 th-br-8 th-bg-grey th-pointer'>
-                                  <span
-                                    onClick={() => {
-                                      handleWalletCLick();
-                                    }}
-                                    className='px-2'
-                                  >
+                                <div
+                                  className='px-2 py-1 th-br-8 th-bg-grey th-pointer th-12'
+                                  onClick={() => {
+                                    handleWalletCLick();
+                                  }}
+                                >
+                                  <span className='px-2'>
                                     <RedoOutlined />
                                   </span>
                                   Refresh
