@@ -1181,7 +1181,9 @@ const Appbar = ({ children, history, ...props }) => {
                                       }
                                     />
                                   }
-                                  title={item?.name}
+                                  title={
+                                    <div className='th-truncate-2'>{item?.name}</div>
+                                  }
                                   description={
                                     <span className='th-12'>{item?.branch_name}</span>
                                   }

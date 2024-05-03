@@ -5,7 +5,7 @@ import axiosInstance from 'config/axios';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import { isMsAPI } from 'utility-functions';
 import './styles.scss';
-import { Row, Col, Card, Avatar } from 'antd';
+import { Row, Col, Card, Avatar, message, Spin } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import LetsEduvateLogo from '../../assets/images/logo.png';
 import axios from 'axios';
@@ -13,7 +13,7 @@ import endpointsV2 from 'v2/config/endpoints';
 
 const UserProfiles = () => {
   const history = useHistory();
-  const { profileData, isERPLogin } = history.location.state;
+  const { profileData, isERPLogin, token } = history.location.state;
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [schoolInfo, setSchoolInfo] = useState();
@@ -57,7 +57,7 @@ const UserProfiles = () => {
       .catch((err) => console.log(err));
   };
 
-  const profileLogin = (item) => {
+  const profileLogin = (item, showMessage = true) => {
     setLoading(true);
     localStorage.setItem('selectProfileDetails', JSON.stringify(item));
     const phone_number = JSON.parse(localStorage?.getItem('profileNumber')) || {};
@@ -67,10 +67,16 @@ const UserProfiles = () => {
         erp_id: item?.erp_id,
         hmac: item?.hmac,
       };
+      let requestHeader = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
       axiosInstance
         .post(
           isERPLogin ? endpoints.auth.siblingLogin : endpoints.auth.mobileLogin,
-          payload
+          payload,
+          token && requestHeader
         )
         .then((result) => {
           if (result.status === 200) {
@@ -88,7 +94,9 @@ const UserProfiles = () => {
               'apps',
               JSON.stringify(result?.data?.login_response?.result?.apps)
             );
-            setAlert('success', result.data.message);
+            {
+              showMessage && setAlert('success', result.data.message);
+            }
             isMsAPI();
             fetchERPSystemConfig(profileData?.isLogin).then((res) => {
               let erpConfig;
@@ -133,6 +141,13 @@ const UserProfiles = () => {
     fetchSchoolDetails();
   }, []);
 
+  useEffect(() => {
+    if (profileData?.profile_data?.data?.length === 1) {
+      message.success('Logging you in, please wait');
+      profileLogin(profileData?.profile_data?.data?.[0], false);
+    }
+  }, [profileData]);
+
   return (
     <>
       <div
@@ -143,78 +158,80 @@ const UserProfiles = () => {
         }}
       >
         <Card className='shadow th-br-24'>
-          <div className='d-flex pb-4 align-items-center flex-column'>
-            <img
-              src={schoolInfo?.school_logo ? schoolInfo?.school_logo : LetsEduvateLogo}
-              alt='image'
-              style={{
-                height: schoolInfo?.school_logo ? 80 : 50,
-                objectFit: 'fill',
-                mixBlendMode: 'darken',
-              }}
-            />
-            <div className='th-black-1 th-fw-600 my-4 th-24 '>
-              Please select the profile to explore account{' '}
-            </div>
-            <Row
-              gutter={[16, 16]}
-              className='w-100'
-              justify='center'
-              // style={{ maxHeight: 500, overflowY: 'auto' }}
-            >
-              {profileData?.profile_data?.data?.map((item, i) => {
-                let imageLink = `${endpoints.profile.Profilestories}${
-                  ['orchids-stage.stage-vm', 'localhost']?.includes(
-                    window.location.hostname
-                  )
-                    ? 'dev'
-                    : 'prod'
-                }/media/${item?.profile}`;
-                return (
-                  <Col
-                    xs={24}
-                    sm={12}
-                    md={6}
-                    className='d-flex justify-content-center mb-2'
-                  >
-                    <div
-                      className='d-flex flex-column justify-content-between th-profile-card'
-                      onClick={() => profileLogin(item)}
-                      style={{ position: 'relative' }}
+          <Spin spinning={loading}>
+            <div className='d-flex pb-4 align-items-center flex-column'>
+              <img
+                src={schoolInfo?.school_logo ? schoolInfo?.school_logo : LetsEduvateLogo}
+                alt='image'
+                style={{
+                  height: schoolInfo?.school_logo ? 80 : 50,
+                  objectFit: 'fill',
+                  mixBlendMode: 'darken',
+                }}
+              />
+              <div className='th-black-1 th-fw-600 my-4 th-24 '>
+                Please select the profile to explore account{' '}
+              </div>
+              <Row
+                gutter={[16, 16]}
+                className='w-100'
+                justify='center'
+                // style={{ maxHeight: 500, overflowY: 'auto' }}
+              >
+                {profileData?.profile_data?.data?.map((item, i) => {
+                  let imageLink = `${endpoints.profile.Profilestories}${
+                    ['orchids-stage.stage-vm', 'localhost']?.includes(
+                      window.location.hostname
+                    )
+                      ? 'dev'
+                      : 'prod'
+                  }/media/${item?.profile}`;
+                  return (
+                    <Col
+                      xs={24}
+                      sm={12}
+                      md={6}
+                      className='d-flex justify-content-center mb-2'
                     >
-                      <div className='d-flex flex-column align-items-center justify-content-around pt-2 h-100'>
-                        <Avatar
-                          size={84}
-                          src={imageLink}
-                          icon={item?.profile === '' ? <UserOutlined /> : null}
-                        />
-                        <div className='th-truncate-2 text-center th-18 th-fw-600'>
-                          {item?.name}
-                        </div>
-                        <div className='th-bg-grey px-2 py-1 th-br-8'>
-                          <span className='th-primary'>{item?.erp_id}</span>
-                        </div>
-                        <div className='th-grey th-18 '>
-                          {item?.grade_name} {item?.section_name}
-                        </div>
-                      </div>
                       <div
-                        className='th-grey th-fw-500 th-16 w-100 p-2 text-center mt-2 th-truncate-2'
-                        style={{ borderTop: '1px solid #d9d9d9', height: 60 }}
+                        className='d-flex flex-column justify-content-between th-profile-card'
+                        onClick={() => profileLogin(item)}
+                        style={{ position: 'relative' }}
                       >
-                        {item?.branch_name}
-                      </div>
-                      {item?.is_my_account && (
-                        <div className='th-bg-primary px-2 py-1 th-profile-card-ribbon'>
-                          {item?.roles__role_name}
+                        <div className='d-flex flex-column align-items-center justify-content-around pt-2 h-100'>
+                          <Avatar
+                            size={84}
+                            src={imageLink}
+                            icon={item?.profile === '' ? <UserOutlined /> : null}
+                          />
+                          <div className='th-truncate-2 text-center th-18 th-fw-600'>
+                            {item?.name}
+                          </div>
+                          <div className='th-bg-grey px-2 py-1 th-br-8'>
+                            <span className='th-primary'>{item?.erp_id}</span>
+                          </div>
+                          <div className='th-grey th-18 '>
+                            {item?.grade_name} {item?.section_name}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  </Col>
-                );
-              })}
-            </Row>
-          </div>
+                        <div
+                          className='th-grey th-fw-500 th-16 w-100 p-2 text-center mt-2 th-truncate-2'
+                          style={{ borderTop: '1px solid #d9d9d9', height: 60 }}
+                        >
+                          {item?.branch_name}
+                        </div>
+                        {item?.is_my_account && (
+                          <div className='th-bg-primary px-2 py-1 th-profile-card-ribbon'>
+                            {item?.roles__role_name}
+                          </div>
+                        )}
+                      </div>
+                    </Col>
+                  );
+                })}
+              </Row>
+            </div>
+          </Spin>
         </Card>
       </div>
     </>
