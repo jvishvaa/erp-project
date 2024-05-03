@@ -4,7 +4,7 @@
 
 /* eslint-disable react/prop-types */
 import Faq from './Faq'
-import {FaqRoutes} from "./Routes"
+import {FaqRoutes} from "./FaqRoutes"
 import axiosInstance from 'config/axios';
 import endpointsV2 from 'v2/config/endpoints';
 import React, { useState, useEffect, useRef, createContext } from 'react';
