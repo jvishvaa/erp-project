@@ -628,7 +628,7 @@ const CreateUser = () => {
         editGrade: multipleYears[i]?.grade?.flatMap((e) => e.grade_id),
         section: multipleYears[i]?.section?.flatMap((e) => e.section_mapping_id),
         editSection: multipleYears[i]?.section?.flatMap((e) => e.section_id),
-        subjects: multipleYears[i]?.subjects?.flatMap((e) => e.id),
+        subjects: multipleYears[i]?.subjects?.flatMap((e) => e.subject_mapping_id),
         subjectsId: multipleYears[i]?.subjects?.flatMap((e) => e.id),
         ...(roleBasedUiConfig?.includes(userLevelForEdit?.toString())
           ? {
