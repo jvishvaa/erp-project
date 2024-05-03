@@ -143,7 +143,7 @@ const UserProfiles = () => {
 
   useEffect(() => {
     if (profileData?.profile_data?.data?.length === 1) {
-      message.success('Loginng you in, please wait');
+      message.success('Logging you in, please wait');
       profileLogin(profileData?.profile_data?.data?.[0], false);
     }
   }, [profileData]);
