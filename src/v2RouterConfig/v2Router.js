@@ -93,6 +93,8 @@ import EvaluatorHomework from '../containers/centralise_homework/evaluator/image
 import CentralizedHome from '../containers/centralise_homework/CentralizedHome';
 import CenralizedHomeworkRoute from '../containers/centralise_homework/centralhw_route';
 import AuditorDashboard from '../containers/centralise_homework/evaluator/Auditor/AuditorDashboard';
+import FrequentlyAskedQuestions from "../containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions"
+import AddFaq from "../containers/FrequentlyAskedQuestions/AddFaq"
 
 const V2Router = () => {
   useEffect(() => {
@@ -451,6 +453,14 @@ const V2Router = () => {
                         ,
                         <Route path='/enterprise-management/enterprises'>
                           {({ match }) => <EnterPrises match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/frequentlyAskedQuestions'>
+                          {({ match }) => <FrequentlyAskedQuestions match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/AddFaq'>
+                          {({ match }) => <AddFaq match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

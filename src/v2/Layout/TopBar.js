@@ -61,6 +61,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { domain_name } from 'v2/commonDomain';
 import CVbox from 'assets/images/cvbox.png';
+import WalletIcon from 'assets/images/wallet.png';
 import { AccessKey } from 'v2/cvboxAccesskey';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
@@ -1094,7 +1095,11 @@ const Appbar = ({ children, history, ...props }) => {
                           {walletLoading || storeWalletLoading ? (
                             <Space direction='vertical'>
                               {[1, 2, 3]?.map((el) => (
-                                <Skeleton.Input active block style={{ height: 15 }} />
+                                <Skeleton.Input
+                                  active
+                                  block
+                                  style={{ height: 15, width: 200 }}
+                                />
                               ))}
                             </Space>
                           ) : (
@@ -1103,20 +1108,20 @@ const Appbar = ({ children, history, ...props }) => {
                                 <div>Wallet :</div>
                                 <div className='th-fw-600'>₹ {wallet?.amount ?? 0}</div>
                               </div>
-                              <div className='d-flex justify-content-between py-2'>
+                              <div className='d-flex justify-content-between pb-2'>
                                 <div>Store Wallet :</div>
                                 <div className='th-fw-600'>
                                   ₹ {storeWallet?.store_amount ?? 0}
                                 </div>
                               </div>
                               <div className='d-flex justify-content-center'>
-                                <div className='px-2 py-1 th-br-8 th-bg-grey th-pointer'>
-                                  <span
-                                    onClick={() => {
-                                      handleWalletCLick();
-                                    }}
-                                    className='px-2'
-                                  >
+                                <div
+                                  className='px-2 py-1 th-br-8 th-bg-grey th-pointer th-12'
+                                  onClick={() => {
+                                    handleWalletCLick();
+                                  }}
+                                >
+                                  <span className='px-2'>
                                     <RedoOutlined />
                                   </span>
                                   Refresh
@@ -1128,14 +1133,15 @@ const Appbar = ({ children, history, ...props }) => {
                       }
                     >
                       <div
-                        className='th-primary d-flex align-items-center th-pointer'
+                        className='th-primary d-flex align-items-center th-pointer px-1'
                         onClick={() => {
                           if (localStorage.getItem('storewalletLocal') === null) {
                             handleWalletCLick();
                           }
                         }}
                       >
-                        <WalletOutlined className='th-20 px-1' />
+                        {/* <WalletOutlined className='th-20 px-1' /> */}
+                        <img width='24px' src={WalletIcon} />
                       </div>
                     </Popover>
                   ) : (
@@ -1150,34 +1156,47 @@ const Appbar = ({ children, history, ...props }) => {
                           style={{ width: 200 }}
                           itemLayout='horizontal'
                           dataSource={profileToShown}
-                          renderItem={(item) => (
-                            <List.Item
-                              onClick={() => {
-                                handleSwitchChange(item);
-                              }}
-                              className='th-pointer'
-                            >
-                              <List.Item.Meta
-                                avatar={
-                                  <Avatar
-                                    size={42}
-                                    src={`${endpoints.profile.Profilestories}prod/media/${item?.profile}`}
-                                    icon={item?.profile === '' ? <UserOutlined /> : null}
-                                  />
-                                }
-                                title={item?.name}
-                                description={
-                                  <span className='th-12'>{item?.branch_name}</span>
-                                }
-                              />
-                            </List.Item>
-                          )}
+                          renderItem={(item) => {
+                            let imageLink = `${endpoints.profile.Profilestories}${
+                              ['orchids-stage.stage-vm', 'localhost']?.includes(
+                                window.location.hostname
+                              )
+                                ? 'dev'
+                                : 'prod'
+                            }/media/${item?.profile}`;
+                            return (
+                              <List.Item
+                                onClick={() => {
+                                  handleSwitchChange(item);
+                                }}
+                                className='th-pointer'
+                              >
+                                <List.Item.Meta
+                                  avatar={
+                                    <Avatar
+                                      size={42}
+                                      src={imageLink}
+                                      icon={
+                                        item?.profile === '' ? <UserOutlined /> : null
+                                      }
+                                    />
+                                  }
+                                  title={item?.name}
+                                  description={
+                                    <span className='th-12'>{item?.branch_name}</span>
+                                  }
+                                />
+                              </List.Item>
+                            );
+                          }}
                         />
                       }
                     >
-                      <div className='th-primary d-flex align-items-center th-pointer px-2'>
-                        {profile}
-                        <UserSwitchOutlined className='px-1 th-20' />
+                      <div className='text-center th-pointer px-2'>
+                        <div className='th-primary'>
+                          <UserSwitchOutlined className='px-1 th-16' />
+                        </div>
+                        <div className='th-10 th-grey'> {profile?.split(' ')[0]}</div>
                       </div>
                     </Popover>
                   )}

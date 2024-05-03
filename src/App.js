@@ -500,6 +500,8 @@ import DuePopup from 'v2/FaceLift/myComponents/DuePopup';
 import EventPopup from 'v2/FaceLift/myComponents/EventPopup';
 import endpointsV2 from 'v2/config/endpoints';
 import _ from 'lodash';
+import FrequentlyAskedQuestions from './containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions.jsx';
+import AddFaq from './containers/FrequentlyAskedQuestions/AddFaq.jsx';
 
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
@@ -2595,6 +2597,15 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/bmi/view'>
                               {({ match }) => <ViewBMI match={match} />}
                             </Route>
+                            ,
+                            <Route path='/frequentlyAskedQuestions'>
+                              {({ match }) => <FrequentlyAskedQuestions match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/AddFaq'>
+                              {({ match }) => <AddFaq match={match} />}
+                            </Route>
+                            ,
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
                             </Route>

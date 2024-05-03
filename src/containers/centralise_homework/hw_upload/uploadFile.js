@@ -316,7 +316,9 @@ const UploadHomework = () => {
         .post(`${endpoints.homework.uploadZip}`, formData)
         .then((res) => {
           if (res?.data?.status === 200) {
-            message.success("Attachment Added, Uploaded Files Will Take Some Time To Reflect. Please Wait");
+            message.success(
+              'Attachment Added, Uploaded Files Will Take Some Time To Reflect. Please Wait'
+            );
             // // props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
             setFileList([]);
             setUploading(false);
@@ -350,7 +352,7 @@ const UploadHomework = () => {
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
       // if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
-      if (['zip'].includes(type)) {
+      if (['zip', 'x-zip-compressed'].includes(type)) {
         setFileList([...file[1]]);
         setFileTypeError(false);
       } else {
@@ -392,13 +394,13 @@ const UploadHomework = () => {
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className='th-black-1 th-16'
-                onClick={()=>
-                history.push({
-                  pathname : "/homework/centralized",
-                  state : {
-                    key : "2"
-                  }
-                })
+                onClick={() =>
+                  history.push({
+                    pathname: '/homework/centralized',
+                    state: {
+                      key: '2',
+                    },
+                  })
                 }
                 style={{ cursor: 'pointer' }}
               >
@@ -600,11 +602,11 @@ const UploadHomework = () => {
                         <p className='pt-2'>Please Upload Zip Files Only</p>
                       </Dragger>
                     </div>
-                      {fileTypeError && (
-                        <div className='row pt-3 justify-content-center align-item-center th-red'>
-                          Please Select Zip Files Only
-                        </div>
-                      )}
+                    {fileTypeError && (
+                      <div className='row pt-3 justify-content-center align-item-center th-red'>
+                        Please Select Zip Files Only
+                      </div>
+                    )}
                     {fileList?.length > 0 && (
                       <span className='th-black-1 mt-3'>Selected Files</span>
                     )}
