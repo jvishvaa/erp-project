@@ -2598,11 +2598,11 @@ function App({ alert, isMsAPI, erpConfig }) {
                               {({ match }) => <ViewBMI match={match} />}
                             </Route>
                             ,
-                            <Route path='/frequentlyAskedQuestions'>
+                            <Route path='/frequently-asked-questions'>
                               {({ match }) => <FrequentlyAskedQuestions match={match} />}
                             </Route>
                             ,
-                            <Route path='/AddFaq'>
+                            <Route path='/add-faq'>
                               {({ match }) => <AddFaq match={match} />}
                             </Route>
                             ,

@@ -495,7 +495,7 @@ const FrequentlyAskedQuestions = () => {
               <Button
                 type='primary'
                 className='Buttons'
-                onClick={() => history.push('/AddFaq')}
+                onClick={() => history.push('/add-faq')}
               >
                 Add FAQ
               </Button>

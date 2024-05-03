@@ -36,6 +36,8 @@ export default {
     userDesignation: `${baseURLCentral}/central-admin/user_designation/`,
     downloadUserData: '/communication/erp-user-info-excel-v2/',
     getParentData: '/erp_user/fetch-parent-data/',
+    serachParent: '/erp_user/search-parent/',
+    addChildToParent: '/erp_user/add-child-to-parent/',
   },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
@@ -349,6 +351,10 @@ export default {
     studentTeacherList: `/acad-tt/stud-teach-list/`,
     subjectsList: `/erp_user/v2/mapped-subjects-list/`,
     downloadExcel: `/acad-tt/excel/`,
+  },
+  finance: {
+    storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
+    walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
   },
   FrequentlyAskedQuestions: {
     FaqApi : `${baseURL}/erp_user/faq/`
