@@ -59,6 +59,7 @@ import {
 } from '@material-ui/icons';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import SchoolOutlinedIcon from '@material-ui/icons/SchoolOutlined';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const menuIcon = (name) => {
   let icon = '';
@@ -299,6 +300,10 @@ const menuIcon = (name) => {
     }
     case 'File Drive': {
       icon = <PermMedia />;
+      break;
+    }
+    case 'FAQ' : {
+      icon = <HelpOutlineIcon />
       break;
     }
 

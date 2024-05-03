@@ -3,11 +3,15 @@
 /* eslint-disable no-use-before-define */
 
 /* eslint-disable react/prop-types */
+import Faq from './Faq'
+import {FaqRoutes} from "./FaqRoutes"
+import axiosInstance from 'config/axios';
+import endpointsV2 from 'v2/config/endpoints';
 import React, { useState, useEffect, useRef, createContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Box, useMediaQuery, useTheme } from '@material-ui/core';
-import { Result, Spin } from 'antd';
+import { Modal, Result, Spin } from 'antd';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
@@ -29,6 +33,7 @@ import ENVCONFIG from 'config/config';
 import SideBar from './Sidebar';
 import { IsV2Checker } from 'v2/isV2Checker';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import axios from 'axios';
 export const ContainerContext = createContext();
 // const isV2 = localStorage.getItem('isV2');
 
@@ -66,6 +71,9 @@ const Layout = ({ children, history }) => {
   var CryptoJS = require('crypto-js');
 
   var erp_details = CryptoJS.AES.encrypt(JSON.stringify(token), 'erp-details').toString();
+
+
+  const [moduleData, setModuleData] = useState([]);
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -107,6 +115,40 @@ const Layout = ({ children, history }) => {
       }
     }
   }, [selectedBranch, window.location.pathname]);
+
+  function getChildId(childName, navigationData) {
+    for (const ele of navigationData) {
+      const name = ele?.child_module?.find((child) => child.child_name === childName);
+      if (name) {
+        return name?.child_id;
+      }
+    }
+    return null;
+  }
+  
+  useEffect(()=>{
+    const moduleName = FaqRoutes?.filter((ele)=>ele?.path == `${window?.location?.pathname}`)
+    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    const navData = JSON.parse(localStorage.getItem('navigationData'))
+    const moduleId = getChildId(moduleName[0]?.key, navData)
+    const params= {
+      child_id : moduleId,
+      user_level : userDetails?.user_level
+    }
+    axiosInstance
+      .get(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res?.data) {
+          setModuleData(res?.data?.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Error fetching Module data:', error);
+      });
+  },[window?.location?.pathname])
+
 
   const classes = useStyles();
   const handleRouting = (name) => {
@@ -1223,6 +1265,10 @@ const Layout = ({ children, history }) => {
         history.push('/activity-management-dashboard');
         break;
       }
+      case 'FAQ': {
+        history.push('/frequentlyAskedQuestions');
+        break;
+      }
 
       default:
         break;
@@ -1262,6 +1308,7 @@ const Layout = ({ children, history }) => {
             ))}
           <main className={classes.content}>
             <Box className={classes.appBarSpacer} />
+            {moduleData.length > 0 && <Faq moduleData={moduleData}/>}
             {!isLayoutHidden &&
               (isV2 ? (
                 <TopBar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />

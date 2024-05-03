@@ -710,6 +710,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Non Academic Staff',
       Path: '/user-management/non-academic-staff',
     },
+    {
+      name : "FAQ",
+      Path : "/frequentlyAskedQuestions"
+    }
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);
