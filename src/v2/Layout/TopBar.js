@@ -1105,7 +1105,7 @@ const Appbar = ({ children, history, ...props }) => {
                           ) : (
                             <>
                               <div className='d-flex justify-content-between'>
-                                <div>Wallet :</div>
+                                <div>Academic Wallet :</div>
                                 <div className='th-fw-600'>₹ {wallet?.amount ?? 0}</div>
                               </div>
                               <div className='d-flex justify-content-between pb-2'>

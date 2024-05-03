@@ -94,7 +94,7 @@ const resolveMenu = (url) => {
   if (url.includes('file-category')) return 'File Drive';
   if (url.includes('studentwallet')) return 'Student Wallet';
   if (url.includes('curriculum-completion-student-subject')) return 'Lesson Plan';
-  if (url.includes('frequentlyAskedQuestions')) return 'FAQ';
+  if (url.includes('frequently-asked-questions')) return 'FAQ';
 
   // if (url.includes('Appointment')) return 'Appointments';
   return null;

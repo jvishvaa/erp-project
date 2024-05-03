@@ -56,6 +56,7 @@ import NonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/nonAcademicStaff'
 import EditNonAcademicStaff from 'v2/FaceLift/UserManagement/Staff/editNonAcademicStaff';
 import ExcelUploadStatus from 'v2/FaceLift/UserManagement/Staff/excelUploadStatus';
 import User from 'v2/FaceLift/UserManagement/User/index';
+import SiblingMapping from '../v2/FaceLift/UserManagement/SiblingMapping';
 import AssignUserLevel from 'v2/FaceLift/UserManagement/AssignUserLevel';
 import AssignUserRole from 'v2/FaceLift/UserManagement/AssignUserRole';
 import SectionSuffle from 'v2/FaceLift/UserManagement/SectionSuffle';
@@ -345,6 +346,10 @@ const V2Router = () => {
                           {({ match }) => <User match={match} />}
                         </Route>
                         ,
+                        <Route path='/user-management/sibling-mapping'>
+                          {({ match }) => <SiblingMapping match={match} />}
+                        </Route>
+                        ,
                         <Route path='/user-level-table'>
                           {({ match }) => <AssignUserLevel match={match} />}
                         </Route>
@@ -450,11 +455,11 @@ const V2Router = () => {
                           {({ match }) => <EnterPrises match={match} />}
                         </Route>
                         ,
-                        <Route path='/frequentlyAskedQuestions'>
+                        <Route path='/frequently-asked-questions'>
                           {({ match }) => <FrequentlyAskedQuestions match={match} />}
                         </Route>
                         ,
-                        <Route path='/AddFaq'>
+                        <Route path='/add-faq'>
                           {({ match }) => <AddFaq match={match} />}
                         </Route>
                         {/* v1 router */}

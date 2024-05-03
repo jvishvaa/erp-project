@@ -392,7 +392,9 @@ body {
 .th-upload-modal-grey-close .ant-modal-close-x {
   color: #868686 !important;
 }
-
+.th-modal .ant-modal-header {
+  border-radius: 10px !important;
+}
 .slick-next:before,
 .slick-prev:before {
   color: #1b4ccb !important;

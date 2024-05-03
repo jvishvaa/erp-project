@@ -110,6 +110,8 @@ export default {
     getParentData: '/erp_user/fetch-parent-data/',
     userHistoryAccessLevelsConfig:
       '/assessment/check-sys-config/?config_key=user_history_access_levels',
+    serachParent: '/erp_user/search-parent/',
+    addChildToParent: '/erp_user/add-child-to-parent/',
   },
   timeTable: {
     tableData: '/academic/time_table/',

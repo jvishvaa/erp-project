@@ -144,6 +144,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Bulk Upload Status', Path: '/user-management/bulk-upload' },
     { name: 'Bulk Status Upload', Path: '/finance/BulkOperation/BulkUploadStatus' },
     { name: 'Assign Role', Path: '/user-management/assign-role' },
+    { name: 'Sibling Mapping', Path: '/user-management/sibling-mapping' },
     { name: 'View Class', Path: '/erp-online-class' },
     { name: 'Section Shuffle', Path: '/user-management/section-shuffling' },
     { name: 'Access-Blocker', Path: '/user-management/access-blocker' },
@@ -712,7 +713,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name : "FAQ",
-      Path : "/frequentlyAskedQuestions"
+      Path : "/frequently-asked-questions"
     }
   ];
 
