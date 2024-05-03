@@ -61,6 +61,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { domain_name } from 'v2/commonDomain';
 import CVbox from 'assets/images/cvbox.png';
+import WalletIcon from 'assets/images/wallet.png';
 import { AccessKey } from 'v2/cvboxAccesskey';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
@@ -1132,14 +1133,15 @@ const Appbar = ({ children, history, ...props }) => {
                       }
                     >
                       <div
-                        className='th-primary d-flex align-items-center th-pointer'
+                        className='th-primary d-flex align-items-center th-pointer px-1'
                         onClick={() => {
                           if (localStorage.getItem('storewalletLocal') === null) {
                             handleWalletCLick();
                           }
                         }}
                       >
-                        <WalletOutlined className='th-20 px-1' />
+                        {/* <WalletOutlined className='th-20 px-1' /> */}
+                        <img width='24px' src={WalletIcon} />
                       </div>
                     </Popover>
                   ) : (
@@ -1179,9 +1181,11 @@ const Appbar = ({ children, history, ...props }) => {
                         />
                       }
                     >
-                      <div className='th-primary d-flex align-items-center th-pointer px-2'>
-                        {profile}
-                        <UserSwitchOutlined className='px-1 th-20' />
+                      <div className='text-center th-pointer px-2'>
+                        <div className='th-primary'>
+                          <UserSwitchOutlined className='px-1 th-16' />
+                        </div>
+                        <div className='th-10 th-grey'> {profile?.split(' ')[0]}</div>
                       </div>
                     </Popover>
                   )}
