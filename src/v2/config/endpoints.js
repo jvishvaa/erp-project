@@ -36,6 +36,8 @@ export default {
     userDesignation: `${baseURLCentral}/central-admin/user_designation/`,
     downloadUserData: '/communication/erp-user-info-excel-v2/',
     getParentData: '/erp_user/fetch-parent-data/',
+    serachParent: '/erp_user/search-parent/',
+    addChildToParent: '/erp_user/add-child-to-parent/',
   },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',

@@ -96,7 +96,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
   }));
 
   const menuSelectionArray = [
-      // this is responsible for main menu icon highlight and sub-menu bold
+    // this is responsible for main menu icon highlight and sub-menu bold
     { name: 'Take Class', Path: '/take-class' },
     { name: 'View Class', Path: '/online-class/view-class' },
     // { name: 'Attend Online Class', Path: '/online-class/attend-class' },
@@ -139,6 +139,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Bulk Upload Status', Path: '/user-management/bulk-upload' },
     { name: 'Bulk Status Upload', Path: '/finance/BulkOperation/BulkUploadStatus' },
     { name: 'Assign Role', Path: '/user-management/assign-role' },
+    { name: 'Sibling Mapping', Path: '/user-management/sibling-mapping' },
     { name: 'View Class', Path: '/erp-online-class' },
     { name: 'Section Shuffle', Path: '/user-management/section-shuffling' },
     { name: 'Access-Blocker', Path: '/user-management/access-blocker' },
