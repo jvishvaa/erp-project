@@ -70,6 +70,7 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
               pathname: `/userprofile`,
               state: {
                 isERPLogin: true,
+                token: response?.token,
                 profileData: {
                   profile_data: { data: response?.profile_data?.result?.siblings_data },
                 },

@@ -54,7 +54,6 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
           const result = { isLogin: false, message: data.message };
           return result;
         }
-
         dispatch(selectedVersion(data?.result?.is_v2_enabled));
         localStorage.setItem('isV2', data?.result?.is_v2_enabled);
         dispatch({
@@ -62,14 +61,6 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
           userDetails: actualData?.result?.user_details,
           navigationData: actualData?.result?.navigation_data,
         });
-        localStorage.setItem(
-          'userDetails',
-          JSON.stringify(actualData?.result?.user_details)
-        );
-        localStorage.setItem(
-          'navigationData',
-          JSON.stringify(actualData?.result?.navigation_data)
-        );
         if (isOtpLogin === true) {
           localStorage.setItem(
             'apps',
@@ -88,9 +79,18 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
             isLogin: true,
             message: data.message,
             profile_data: data,
+            token: data?.result?.user_details?.token,
           };
           return result;
         } else {
+          localStorage.setItem(
+            'userDetails',
+            JSON.stringify(actualData?.result?.user_details)
+          );
+          localStorage.setItem(
+            'navigationData',
+            JSON.stringify(actualData?.result?.navigation_data)
+          );
           const result = { isLogin: true, message: actualData.message };
           return result;
         }
@@ -180,6 +180,8 @@ export const loginMobile = (payload, isOtpMobileLogin) => (dispatch) => {
         };
         return result;
       }
+      dispatch(selectedVersion(true));
+      localStorage.setItem('isV2', true);
       dispatch({
         type: LOGIN_SUCCESS,
       });
@@ -192,7 +194,6 @@ export const loginMobile = (payload, isOtpMobileLogin) => (dispatch) => {
     const result = { isLogin: false, message: data.message };
     return result;
   });
- 
 };
 
 export const handleSendMobileOtp = (payload) => {

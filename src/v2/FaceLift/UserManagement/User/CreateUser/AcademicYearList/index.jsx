@@ -311,7 +311,7 @@ const AcademicYearList = ({
             const transformedData = response?.data?.data
               ? response?.data?.data.map((obj) => ({
                   id: obj.subject__id,
-                  item_id: obj.id,
+                  item_id: obj.subject__id,
                   subject_name: obj.subject__subject_name,
                 }))
               : response?.data?.result
