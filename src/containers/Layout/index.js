@@ -1270,7 +1270,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'FAQ': {
-        history.push('/frequentlyAskedQuestions');
+        history.push('/frequently-asked-questions');
         break;
       }
 

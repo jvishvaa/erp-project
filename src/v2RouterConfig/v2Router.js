@@ -455,11 +455,11 @@ const V2Router = () => {
                           {({ match }) => <EnterPrises match={match} />}
                         </Route>
                         ,
-                        <Route path='/frequentlyAskedQuestions'>
+                        <Route path='/frequently-asked-questions'>
                           {({ match }) => <FrequentlyAskedQuestions match={match} />}
                         </Route>
                         ,
-                        <Route path='/AddFaq'>
+                        <Route path='/add-faq'>
                           {({ match }) => <AddFaq match={match} />}
                         </Route>
                         {/* v1 router */}

@@ -713,7 +713,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name : "FAQ",
-      Path : "/frequentlyAskedQuestions"
+      Path : "/frequently-asked-questions"
     }
   ];
 

@@ -273,7 +273,7 @@ const CollapseableComponent = ({ module, items }) => {
             setBtn(false);
             setUploadStart(false);
             history.push({
-              pathname: '/frequentlyAskedQuestions',
+              pathname: '/frequently-asked-questions',
               state: {
                 moduleId: moduleId,
                 userLevel: userLevel,
@@ -419,10 +419,10 @@ const CollapseableComponent = ({ module, items }) => {
               >
                 F.A.Q.
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16' onClick={()=>history.push('/frequentlyAskedQuestions')}>
+              <Breadcrumb.Item className='th-black-1 th-16' onClick={()=>history.push('/frequently-asked-questions')}>
                 Frequentyly Asked Question
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16' onClick={()=>history.push('/frequentlyAskedQuestions')}>
+              <Breadcrumb.Item className='th-black-1 th-16' onClick={()=>history.push('/frequently-asked-questions')}>
                 Add F.A.Q.
               </Breadcrumb.Item>
             </Breadcrumb>

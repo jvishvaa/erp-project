@@ -322,6 +322,6 @@ export const FaqRoutes = [
     { key: 'File Category', path: '/file-category/' },
     { key: 'Non Academic Staff', path: '/user-management/non-academic-staff' },
     { key: 'Activity Dashboard', path: '/activity-management-dashboard' },
-    { key: 'FAQ', path: '/frequentlyAskedQuestions' },
+    { key: 'FAQ', path: '/frequently-asked-questions' },
   ];
   
