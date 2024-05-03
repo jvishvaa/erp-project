@@ -65,41 +65,29 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
       setDisableLogin(true);
       onLogin(params, true).then((response) => {
         if (response?.isLogin) {
-          if (response?.profile_data) {
-            history.push({
-              pathname: `/userprofile`,
-              state: {
-                isERPLogin: true,
-                profileData: {
-                  profile_data: { data: response?.profile_data?.result?.siblings_data },
-                },
-              },
-            });
-          } else {
-            isMsAPI();
-            fetchERPSystemConfig(response?.isLogin).then((res) => {
-              let erpConfig;
-              let userData = JSON.parse(localStorage.getItem('userDetails'));
-              if (res === true || res.length > 0) {
-                erpConfig = res;
-                if (userData?.user_level === 11 || userData?.user_level === 13) {
-                  history.push('/acad-calendar');
-                  console.log(userData?.user_level, 'level');
-                } else {
-                  history.push('/profile');
-                }
-              } else if (res === false) {
-                erpConfig = res;
-                history.push('/profile');
+          isMsAPI();
+          fetchERPSystemConfig(response?.isLogin).then((res) => {
+            let erpConfig;
+            let userData = JSON.parse(localStorage.getItem('userDetails'));
+            if (res === true || res.length > 0) {
+              erpConfig = res;
+              if (userData?.user_level === 11 || userData?.user_level === 13) {
+                history.push('/acad-calendar');
+                console.log(userData?.user_level, 'level');
               } else {
-                erpConfig = res;
                 history.push('/profile');
               }
-              userData['erp_config'] = erpConfig;
-              localStorage.setItem('userDetails', JSON.stringify(userData));
-              window.location.reload();
-            });
-          }
+            } else if (res === false) {
+              erpConfig = res;
+              history.push('/profile');
+            } else {
+              erpConfig = res;
+              history.push('/profile');
+            }
+            userData['erp_config'] = erpConfig;
+            localStorage.setItem('userDetails', JSON.stringify(userData));
+            window.location.reload();
+          });
         } else {
           setAlert('error', response?.message);
           setDisableLogin(false);
