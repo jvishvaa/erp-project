@@ -1156,28 +1156,39 @@ const Appbar = ({ children, history, ...props }) => {
                           style={{ width: 200 }}
                           itemLayout='horizontal'
                           dataSource={profileToShown}
-                          renderItem={(item) => (
-                            <List.Item
-                              onClick={() => {
-                                handleSwitchChange(item);
-                              }}
-                              className='th-pointer'
-                            >
-                              <List.Item.Meta
-                                avatar={
-                                  <Avatar
-                                    size={42}
-                                    src={`${endpoints.profile.Profilestories}prod/media/${item?.profile}`}
-                                    icon={item?.profile === '' ? <UserOutlined /> : null}
-                                  />
-                                }
-                                title={item?.name}
-                                description={
-                                  <span className='th-12'>{item?.branch_name}</span>
-                                }
-                              />
-                            </List.Item>
-                          )}
+                          renderItem={(item) => {
+                            let imageLink = `${endpoints.profile.Profilestories}${
+                              ['orchids-stage.stage-vm', 'localhost']?.includes(
+                                window.location.hostname
+                              )
+                                ? 'dev'
+                                : 'prod'
+                            }/media/${item?.profile}`;
+                            return (
+                              <List.Item
+                                onClick={() => {
+                                  handleSwitchChange(item);
+                                }}
+                                className='th-pointer'
+                              >
+                                <List.Item.Meta
+                                  avatar={
+                                    <Avatar
+                                      size={42}
+                                      src={imageLink}
+                                      icon={
+                                        item?.profile === '' ? <UserOutlined /> : null
+                                      }
+                                    />
+                                  }
+                                  title={item?.name}
+                                  description={
+                                    <span className='th-12'>{item?.branch_name}</span>
+                                  }
+                                />
+                              </List.Item>
+                            );
+                          }}
                         />
                       }
                     >
