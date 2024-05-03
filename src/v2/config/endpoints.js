@@ -38,6 +38,7 @@ export default {
     getParentData: '/erp_user/fetch-parent-data/',
     serachParent: '/erp_user/search-parent/',
     addChildToParent: '/erp_user/add-child-to-parent/',
+    updateParent: '/erp_user/update-parent',
   },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
@@ -357,7 +358,7 @@ export default {
     walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
   },
   FrequentlyAskedQuestions: {
-    FaqApi : `${baseURL}/erp_user/faq/`
+    FaqApi: `${baseURL}/erp_user/faq/`,
   },
   FINANCE_BUCKET,
   popupSetting: {

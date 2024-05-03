@@ -112,6 +112,7 @@ export default {
       '/assessment/check-sys-config/?config_key=user_history_access_levels',
     serachParent: '/erp_user/search-parent/',
     addChildToParent: '/erp_user/add-child-to-parent/',
+    updateParent: '/erp_user/update-parent',
   },
   timeTable: {
     tableData: '/academic/time_table/',

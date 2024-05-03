@@ -155,7 +155,7 @@ const Appbar = ({ children, history, ...props }) => {
   useEffect(() => {
     if (profileDetails) {
       let unselectedprofiles = profileDetails?.data?.filter(
-        (item) => item.name !== selectedProfileDetails?.name
+        (item) => item.erp_id !== selectedProfileDetails?.erp_id
       );
       setProfileToShown(unselectedprofiles);
     }
