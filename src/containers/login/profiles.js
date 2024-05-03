@@ -37,7 +37,6 @@ const UserProfiles = () => {
             let resData = res?.data?.result[0];
             const selectedId = branch?.map((el) => el?.id);
             let checkData = resData?.some((item) => selectedId.includes(Number(item)));
-            console.log(checkData, 'check');
             return checkData;
           }
         }
@@ -164,6 +163,13 @@ const UserProfiles = () => {
               // style={{ maxHeight: 500, overflowY: 'auto' }}
             >
               {profileData?.profile_data?.data?.map((item, i) => {
+                let imageLink = `${endpoints.profile.Profilestories}${
+                  ['orchids-stage.stage-vm', 'localhost']?.includes(
+                    window.location.hostname
+                  )
+                    ? 'dev'
+                    : 'prod'
+                }/media/${item?.profile}`;
                 return (
                   <Col
                     xs={24}
@@ -174,11 +180,12 @@ const UserProfiles = () => {
                     <div
                       className='d-flex flex-column justify-content-between th-profile-card'
                       onClick={() => profileLogin(item)}
+                      style={{ position: 'relative' }}
                     >
                       <div className='d-flex flex-column align-items-center justify-content-around pt-2 h-100'>
                         <Avatar
                           size={84}
-                          src={`${endpoints.profile.Profilestories}prod/media/${item?.profile}`}
+                          src={imageLink}
                           icon={item?.profile === '' ? <UserOutlined /> : null}
                         />
                         <div className='th-truncate-2 text-center th-18 th-fw-600'>
@@ -197,6 +204,11 @@ const UserProfiles = () => {
                       >
                         {item?.branch_name}
                       </div>
+                      {item?.is_my_account && (
+                        <div className='th-bg-primary px-2 py-1 th-profile-card-ribbon'>
+                          {item?.roles__role_name}
+                        </div>
+                      )}
                     </div>
                   </Col>
                 );

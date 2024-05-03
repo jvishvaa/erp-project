@@ -196,7 +196,7 @@ export const loginMobile = (payload, isOtpMobileLogin) => (dispatch) => {
 };
 
 export const handleSendMobileOtp = (payload) => {
-  const url = '/erp_user/mobile-login/';
+  const url = '/erp_user/v2/mobile-login/';
   return axios
     .post(url, payload)
     .then((response) => {
