@@ -213,18 +213,20 @@ const SiblingMapping = () => {
 
   const updateParent = async (params = {}) => {
     if (params?.type === 'update') {
-      if(params?.contact?.length !== 10){
-        message.error('Please enter valid contact number')
-        return
+      if (params?.contact?.length !== 10) {
+        message.error('Please enter valid contact number');
+        return;
       }
       setUpdatingContact(true);
-
     }
     let contactParams = `${params?.code?.toString()}-${params?.contact?.toString()}`;
-    let formData = {
-      contact: contactParams,
-      child_to_remove: params?.child_to_remove?.toString(),
-    };
+    let formData = {};
+    if (params?.type === 'update') {
+      formData.contact = contactParams;
+    }
+    if (params?.type === 'delete') {
+      formData.child_to_remove = params?.child_to_remove?.toString();
+    }
     try {
       const result = await axiosInstance.put(
         `${endpoints.userManagement.updateParent}/${params?.id}/`,
