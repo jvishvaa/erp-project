@@ -117,10 +117,10 @@ const FamilyInformation = ({
       guardian_photo: selectedImageGuardian,
     });
     if (userLevel === 13) {
-      if (!fatherPrimary && !motherPrimary && !guardianPrimary) {
-        message.error('Select a contact number as primary!');
-        return;
-      }
+      // if (!fatherPrimary && !motherPrimary && !guardianPrimary) {
+      //   message.error('Select a contact number as primary!');
+      //   return;
+      // }
       if (!fatherPrimaryEmail && !motherPrimaryEmail && !guardianPrimaryEmail) {
         message.error('Select an email as primary!');
         return;
@@ -628,7 +628,7 @@ const FamilyInformation = ({
                               name={'father_mobile'}
                               label={
                                 <Space align='end' className='th-primary-contact-check'>
-                                  {userLevel === 13 && (
+                                  {/* {userLevel === 13 && (
                                     <Form.Item
                                       style={{ marginBottom: '0px' }}
                                       className='mb-0 th-primary-contact-checkbox'
@@ -644,7 +644,7 @@ const FamilyInformation = ({
                                         className='w-100 h-100'
                                       />
                                     </Form.Item>
-                                  )}
+                                  )} */}
                                   <div>Contact Number</div>
                                   {userLevel === 13 && (
                                     <Tooltip
