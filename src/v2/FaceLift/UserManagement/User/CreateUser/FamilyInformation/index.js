@@ -95,6 +95,21 @@ const FamilyInformation = ({
   }, []);
 
   const onSubmit = (formValues) => {
+    let primary_contact = parentRef?.current?.getFieldsValue()?.parent_contact;
+    let primary_contact_code =
+      parentRef?.current?.getFieldsValue()?.parent_contact_code ?? '+91';
+    if (userLevel === 13) {
+      if (
+        formValues?.father_mobile?.toString() !== primary_contact?.toString() &&
+        formValues?.mother_mobile?.toString() !== primary_contact?.toString() &&
+        formValues?.guardian_mobile?.toString() !== primary_contact?.toString()
+      ) {
+        message.error(
+          'Either Father, Mother or Guardian number should be primary contact'
+        );
+        return;
+      }
+    }
     setFamilyFormValues({
       ...formValues,
       father_photo: selectedImageFather,
@@ -162,6 +177,7 @@ const FamilyInformation = ({
         father_photo: selectedImageFather,
         mother_photo: selectedImageMother,
         guardian_photo: selectedImageGuardian,
+        contact_details: `${primary_contact_code}-${primary_contact}`,
       });
     } else {
       if (

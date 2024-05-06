@@ -1158,9 +1158,10 @@ const Appbar = ({ children, history, ...props }) => {
                           dataSource={profileToShown}
                           renderItem={(item) => {
                             let imageLink = `${endpoints.profile.Profilestories}${
-                              ['orchids-stage.stage-vm', 'localhost']?.includes(
-                                window.location.hostname
-                              )
+                              [
+                                'orchids-stage.stage-vm.letseduvate.com',
+                                'localhost',
+                              ]?.includes(window.location.hostname)
                                 ? 'dev'
                                 : 'prod'
                             }/media/${item?.profile}`;

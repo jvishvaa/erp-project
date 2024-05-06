@@ -1230,7 +1230,6 @@ const CreateUser = () => {
           { params: params1 }
         )
         .then((response) => {
-          console.log(response, 'response subject');
           if (response.data.status_code === 200) {
             const transformedData = response?.data?.data
               ? response?.data?.data.map((obj) => ({
