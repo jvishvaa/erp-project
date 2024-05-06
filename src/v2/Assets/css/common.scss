@@ -510,3 +510,13 @@ svg {
   color: white;
   font-size: 10px;
 }
+// School wall
+.th-post-card {
+  border-radius: 20px;
+  margin-top: 1rem;
+  .th-post-dp {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+  }
+}
