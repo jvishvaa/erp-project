@@ -168,7 +168,7 @@ const FamilyInformation = ({
         !formValues.guardian_mobile
       ) {
         message.error(
-          `Either of Father's or Mother's or Guardian's Contact is required!`
+          `Either of Father's or Mother's or Guardian's Contact should be same as primary number!`
         );
         return;
       }
@@ -337,7 +337,7 @@ const FamilyInformation = ({
                       },
                     ]}
                     name={'parent_contact'}
-                    label={'Contact Number'}
+                    label={'Primary Contact Number'}
                   >
                     <Input
                       className='w-100'
@@ -997,7 +997,7 @@ const FamilyInformation = ({
                                     className='mb-0 th-primary-contact-checkbox'
                                     name={'mother_primary'}
                                   >
-                                    {userLevel === 13 && (
+                                    {/* {userLevel === 13 && (
                                       <Checkbox
                                         checked={motherPrimary}
                                         onChange={(e) => {
@@ -1007,7 +1007,7 @@ const FamilyInformation = ({
                                         }}
                                         className='w-100 h-100'
                                       />
-                                    )}
+                                    )} */}
                                   </Form.Item>
                                   <div>Contact Number</div>
                                   {userLevel === 13 && (
@@ -1349,7 +1349,7 @@ const FamilyInformation = ({
                               name={'guardian_mobile'}
                               label={
                                 <Space align='end' className='th-primary-contact-check'>
-                                  {userLevel === 13 && (
+                                  {/* {userLevel === 13 && (
                                     <Form.Item
                                       style={{ marginBottom: '0px' }}
                                       className='mb-0 th-primary-contact-checkbox'
@@ -1365,7 +1365,7 @@ const FamilyInformation = ({
                                         className='w-100 h-100'
                                       />
                                     </Form.Item>
-                                  )}
+                                  )} */}
                                   <div>Contact Number</div>
                                   {userLevel === 13 && (
                                     <Tooltip
