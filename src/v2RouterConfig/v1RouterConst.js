@@ -10,7 +10,7 @@ import SendMessage from 'containers/communication/send-message/send-message';
 import MessageLog from 'containers/communication/message-log/message-log';
 import StudentHomework from 'containers/homework/student-homework/student-homework';
 import AssignRole from 'containers/communication/assign-role/assign-role';
-import RoleManagement from 'containers/role-management';
+import RoleManagement from 'v2/FaceLift/RoleManagement/role-management';
 // import store from './redux/store';
 import ChapterTypeTable from 'containers/master-management/chapter-type/chapter-type-table';
 import TopicTable from 'containers/master-management/topic/TopicTable';
@@ -34,7 +34,7 @@ import SubjectMappingTable from 'containers/master-management/subject-mapping/su
 import SubjectTable from 'containers/master-management/subject/subject-table';
 import SectionMappingTable from 'containers/master-management/section-mapping/section-mapping-table';
 import SectionTable from 'containers/master-management/section/section-table';
-import GradeTable from 'containers/master-management/grade/grade-table';
+import GradeTable from 'v2/FaceLift/MasterManagement/Grade/grade-table';
 import AcademicYearTable from 'containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from 'containers/master-management/message-type/message-type-table';
 // import OnlineClassResource from 'containers/online-class/online-class-resources/online-class-resource';
