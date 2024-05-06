@@ -64,7 +64,7 @@ const SiblingMapping = () => {
 
   const ParentColumns = [
     {
-      title: <span className='th-white th-fw-700 '>Name</span>,
+      title: <span className='th-white th-fw-700 '>Parent Name</span>,
       dataIndex: 'name',
       key: 'name',
       width: '30%',
@@ -74,24 +74,24 @@ const SiblingMapping = () => {
         </span>
       ),
     },
-    {
-      title: <span className='th-white th-fw-700'>ERP Id</span>,
-      dataIndex: 'erp_code',
-      key: 'erp_code',
-      width: '25%',
-      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>ERP Id</span>,
+    //   dataIndex: 'erp_code',
+    //   key: 'erp_code',
+    //   width: '25%',
+    //   render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    // },
     {
       title: <span className='th-white th-fw-700'>Contact</span>,
       dataIndex: 'contact_details',
       key: 'contact_details',
-      width: '25%',
+      width: '30%',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Action</span>,
       align: 'center',
-      width: '20%',
+      width: '40%',
       key: 'action',
       render: (data, record) => {
         return (
@@ -156,6 +156,13 @@ const SiblingMapping = () => {
   };
 
   const fetchERPDetails = async (erp) => {
+    let regexPattern = /^\d{10,11}_[A-Z]{3}$/;
+    let validate = regexPattern.test(erp);
+    if (!validate) {
+      message.error('Invalid ERP Id');
+      return;
+    }
+
     setErpVerifying(true);
     try {
       const result = await axiosInstance.get(

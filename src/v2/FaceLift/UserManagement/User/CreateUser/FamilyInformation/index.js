@@ -98,7 +98,7 @@ const FamilyInformation = ({
     let primary_contact = parentRef?.current?.getFieldsValue()?.parent_contact;
     let primary_contact_code =
       parentRef?.current?.getFieldsValue()?.parent_contact_code ?? '+91';
-    if (userLevel === 13) {
+    if (userLevel === 13 && !editId) {
       if (
         formValues?.father_mobile?.toString() !== primary_contact?.toString() &&
         formValues?.mother_mobile?.toString() !== primary_contact?.toString() &&
