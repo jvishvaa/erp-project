@@ -155,7 +155,7 @@ const Appbar = ({ children, history, ...props }) => {
   useEffect(() => {
     if (profileDetails) {
       let unselectedprofiles = profileDetails?.data?.filter(
-        (item) => item.name !== selectedProfileDetails?.name
+        (item) => item.erp_id !== selectedProfileDetails?.erp_id
       );
       setProfileToShown(unselectedprofiles);
     }
@@ -1158,9 +1158,10 @@ const Appbar = ({ children, history, ...props }) => {
                           dataSource={profileToShown}
                           renderItem={(item) => {
                             let imageLink = `${endpoints.profile.Profilestories}${
-                              ['orchids-stage.stage-vm', 'localhost']?.includes(
-                                window.location.hostname
-                              )
+                              [
+                                'orchids-stage.stage-vm.letseduvate.com',
+                                'localhost',
+                              ]?.includes(window.location.hostname)
                                 ? 'dev'
                                 : 'prod'
                             }/media/${item?.profile}`;

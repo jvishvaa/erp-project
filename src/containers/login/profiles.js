@@ -180,7 +180,7 @@ const UserProfiles = () => {
               >
                 {profileData?.profile_data?.data?.map((item, i) => {
                   let imageLink = `${endpoints.profile.Profilestories}${
-                    ['orchids-stage.stage-vm', 'localhost']?.includes(
+                    ['orchids-stage.stage-vm.letseduvate.com', 'localhost']?.includes(
                       window.location.hostname
                     )
                       ? 'dev'

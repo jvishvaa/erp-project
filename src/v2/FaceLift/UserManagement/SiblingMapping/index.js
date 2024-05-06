@@ -24,6 +24,8 @@ import countryList from 'containers/user-management/list';
 const SiblingMapping = () => {
   const siblingFormRef = useRef();
   const searchRef = useRef(null);
+  const contactFormRef = useRef(null);
+
   const [loading, setLoading] = useState(false);
   const [parentData, setParentData] = useState([]);
   const [selectedParent, setSelectedParent] = useState([]);
@@ -34,8 +36,11 @@ const SiblingMapping = () => {
   const [assigning, setAssigning] = useState(false);
   const [parentContactCode, setParentContactCode] = useState('+91');
 
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [selectedContactData, setSelectedContactDta] = useState();
+  const [updatingContact, setUpdatingContact] = useState(false);
+
   const openAssignSiblingModal = (record) => {
-    console.log({ record });
     setSelectedParent(record);
     setIsAssignSiblingModalOpen(true);
   };
@@ -46,9 +51,20 @@ const SiblingMapping = () => {
     setIsAssignSiblingModalOpen(false);
   };
 
+  const openContactModal = (record) => {
+    setSelectedContactDta(record);
+    setSelectedParent(record);
+    setIsContactModalOpen(true);
+  };
+
+  const closeContactModal = () => {
+    contactFormRef.current.resetFields();
+    setIsContactModalOpen(false);
+  };
+
   const ParentColumns = [
     {
-      title: <span className='th-white th-fw-700 '>Name</span>,
+      title: <span className='th-white th-fw-700 '>Parent Name</span>,
       dataIndex: 'name',
       key: 'name',
       width: '30%',
@@ -58,24 +74,24 @@ const SiblingMapping = () => {
         </span>
       ),
     },
-    {
-      title: <span className='th-white th-fw-700'>ERP Id</span>,
-      dataIndex: 'erp_code',
-      key: 'erp_code',
-      width: '25%',
-      render: (data) => <span className='th-black-1 th-14'>{data}</span>,
-    },
+    // {
+    //   title: <span className='th-white th-fw-700'>ERP Id</span>,
+    //   dataIndex: 'erp_code',
+    //   key: 'erp_code',
+    //   width: '25%',
+    //   render: (data) => <span className='th-black-1 th-14'>{data}</span>,
+    // },
     {
       title: <span className='th-white th-fw-700'>Contact</span>,
       dataIndex: 'contact_details',
       key: 'contact_details',
-      width: '25%',
+      width: '30%',
       render: (data) => <span className='th-black-1 th-14'>{data}</span>,
     },
     {
       title: <span className='th-white th-fw-700'>Action</span>,
       align: 'center',
-      width: '20%',
+      width: '40%',
       key: 'action',
       render: (data, record) => {
         return (
@@ -87,6 +103,16 @@ const SiblingMapping = () => {
               onClick={() => openAssignSiblingModal(record)}
             >
               Assign Sibling
+            </Tag>
+
+            <Tag
+              icon={<EditOutlined />}
+              className='mt-2'
+              color='processing'
+              style={{ cursor: 'pointer' }}
+              onClick={() => openContactModal(record)}
+            >
+              Update Contact
             </Tag>
           </>
         );
@@ -109,52 +135,8 @@ const SiblingMapping = () => {
             sibling: children,
             ...rest,
           }));
-
-          // let newParentList = parentlist.map((item) => {
-          //   return {
-          //     key: item?.id,
-          //     id: item?.id,
-          //     erp_code: item?.erp_code,
-          //     contact_details: item?.contact_details,
-          //     aadhar_no: item?.aadhar_no,
-          //     address: item?.address,
-          //     annual_income: item?.annual_income,
-          //     blood_group: item?.blood_group,
-          //     contact_details: item?.contact_details,
-          //     date_of_birth: item?.date_of_birth,
-          //     email: item?.email,
-          //     employee_id: item?.employee_id,
-          //     erp_code: item?.erp_code,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //     employee_id: item?.employee_id,
-          //   };
-          // });
           setParentData(newData);
         }
-        message.success(result?.data?.message);
-        console.log({ result });
       } catch (error) {
         message.error(error?.response?.data?.message || 'Something went wrong');
       } finally {
@@ -168,13 +150,19 @@ const SiblingMapping = () => {
   const onParentExpand = (expanded, record) => {
     const keys = [];
     if (expanded) {
-      console.log({ record });
       keys.push(record.id);
     }
     setParentRowKeys(keys);
   };
 
   const fetchERPDetails = async (erp) => {
+    let regexPattern = /^\d{10,11}_[A-Z]{3}$/;
+    let validate = regexPattern.test(erp);
+    if (!validate) {
+      message.error('Invalid ERP Id');
+      return;
+    }
+
     setErpVerifying(true);
     try {
       const result = await axiosInstance.get(
@@ -199,7 +187,6 @@ const SiblingMapping = () => {
 
   const assignSibling = async () => {
     let filteredData = parentData?.filter((e) => e?.id !== selectedParent?.id);
-    console.log(selectedParent?.id, filteredData, 'filteredData');
     setAssigning(true);
     let formData = {
       children_to_map: erpData?.role_details?.erp_user_id.toString(),
@@ -219,15 +206,56 @@ const SiblingMapping = () => {
         closeAssignSiblingModal();
         setErpData(null);
         searchParent(parentContactCode, searchRef?.current?.getFieldsValue()?.contact);
+        setParentRowKeys([]);
         message.success(result?.data?.message);
       } else {
         message.error(result?.data?.message || 'Something went wrong');
       }
-      console.log({ result });
     } catch (error) {
       message.error(error?.response?.data?.message || 'Something went wrong');
     } finally {
       setAssigning(false);
+    }
+  };
+
+  const updateParent = async (params = {}) => {
+    if (params?.type === 'update') {
+      if (params?.contact?.length !== 10) {
+        message.error('Please enter valid contact number');
+        return;
+      }
+      setUpdatingContact(true);
+    }
+    let contactParams = `${params?.code?.toString()}-${params?.contact?.toString()}`;
+    let formData = {};
+    if (params?.type === 'update') {
+      formData.contact = contactParams;
+    }
+    if (params?.type === 'delete') {
+      formData.child_to_remove = params?.child_to_remove?.toString();
+    }
+    try {
+      const result = await axiosInstance.put(
+        `${endpoints.userManagement.updateParent}/${params?.id}/`,
+        formData
+      );
+      if (result?.data?.status_code === 200) {
+        if (params?.type === 'update') {
+          closeContactModal();
+          contactFormRef.current.resetFields();
+        }
+        setParentRowKeys([]);
+        searchParent(parentContactCode, searchRef?.current?.getFieldsValue()?.contact);
+        message.success(result?.data?.message);
+      } else {
+        message.error(result?.data?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      message.error(error?.response?.data?.message || 'Something went wrong');
+    } finally {
+      if (params?.type === 'update') {
+        setUpdatingContact(false);
+      }
     }
   };
 
@@ -236,9 +264,9 @@ const SiblingMapping = () => {
       {Array.isArray(record?.sibling) &&
         record?.sibling.length > 0 &&
         record?.sibling.map((item, index) => (
-          <div className='th-bg-white th-br-10 py-1 shadow-md  mb-3'>
+          <div className='th-bg-white th-br-10 py-1 shadow-md  mb-3' key={index}>
             <div className='row align-items-center' key={index}>
-              <div className='col-md-12'>
+              <div className='col-md-10'>
                 <div className='row'>
                   <div className='col-md-4'>Name: {item.name}</div>
                   <div className='col-md-4'>ERP ID: {item.erp_id}</div>
@@ -247,10 +275,16 @@ const SiblingMapping = () => {
                   <div className='col-md-4'>Section: {item.section_name}</div>
                 </div>
               </div>
-              {/* <div className='col-md-2'>
+              <div className='col-md-2 text-center'>
                 <Popconfirm
                   title='Are you Sure, Assign this student in other Parent before delete?'
-                  //   onConfirm={(e) => handleDeleteUser(data.id)}
+                  onConfirm={(e) =>
+                    updateParent({
+                      child_to_remove: item?.id,
+                      id: parentRowKeys?.[0],
+                      type: 'delete',
+                    })
+                  }
                 >
                   <Tag
                     icon={<DeleteOutlined />}
@@ -260,7 +294,7 @@ const SiblingMapping = () => {
                     Delete
                   </Tag>
                 </Popconfirm>
-              </div> */}
+              </div>
             </div>
           </div>
         ))}
@@ -455,6 +489,88 @@ const SiblingMapping = () => {
                 </>
               )}
             </div>
+          </Form>
+        </Modal>
+
+        <Modal
+          visible={isContactModalOpen}
+          centered
+          title='Update Contact'
+          onCancel={closeContactModal}
+          footer={false}
+          bodyStyle={{ paddingBottom: '20px !important' }}
+          className='th-modal'
+        >
+          <Form
+            id='contactForm'
+            className='mt-3'
+            layout={'vertical'}
+            ref={contactFormRef}
+            style={{ width: '100%' }}
+          >
+            <Row gutter={[8, 8]} className='justify-content-center'>
+              <Col md={6} className=''>
+                <Form.Item name={'contact_code'} label='Code'>
+                  <Select
+                    showSearch
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    defaultValue={'+91'}
+                    onChange={(e) => {
+                      setParentContactCode(e);
+                    }}
+                  >
+                    {countryCodeOptions}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col md={18} className=''>
+                <Form.Item
+                  rules={[
+                    {
+                      required: false,
+                      pattern: /^[0-9]{10}$/,
+                      message: `Contact Number is invalid!`,
+                    },
+                  ]}
+                  name={'contact'}
+                  label={'Contact Number'}
+                >
+                  <Input
+                    className='w-100'
+                    placeholder='Contact'
+                    maxLength={10}
+                    minLength={10}
+                  />
+                </Form.Item>
+              </Col>
+              <Col md={8}>
+                <Button
+                  className='w-100 th-br-4'
+                  type='primary'
+                  disabled={updatingContact}
+                  onClick={() =>
+                    updateParent({
+                      code: parentContactCode,
+                      contact: contactFormRef?.current?.getFieldValue()?.contact,
+                      id: selectedContactData?.id,
+                      type: 'update',
+                    })
+                  }
+                >
+                  {updatingContact ? (
+                    <>
+                      <Spin /> Updating
+                    </>
+                  ) : (
+                    'Update'
+                  )}
+                </Button>
+              </Col>
+            </Row>
           </Form>
         </Modal>
       </Layout>
