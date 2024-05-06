@@ -9,7 +9,7 @@ const MediaDisplay = ({
   styles = {},
 }) => {
   const getFileExtension = (url) => {
-    return url.split(".").pop();
+    return url?.split(".")?.pop();
   };
   const getMediaTag = (link) => {
     const extension = getFileExtension(link);
@@ -44,7 +44,7 @@ const MediaDisplay = ({
             <img
               src="https://img.freepik.com/free-vector/illustration-data-folder-icon_53876-6329.jpg?w=900&t=st=1698483764~exp=1698484364~hmac=2f391d43a022842ad959f2356ee00a6f73990982d805d142f5493c5834bd9481"
               alt={alt}
-              className={className}
+              className='th-pdf-logo'
               style={{ ...styles }}
             />
           </a>

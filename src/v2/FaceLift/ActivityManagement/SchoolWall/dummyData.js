@@ -88,7 +88,8 @@ export const dummyPostData = [
     media_files: [
       {
         id: 15,
-        media_file: 'social_media/QA ORCHIDS SCHOOL/1714976770_2209150006_OIS.pdf,',
+        media_file: 'social_media/QA ORCHIDS SCHOOL/1714976770_2209150006_OIS.pdf',
+        path: 'https://storage.googleapis.com/orchids_doubtdiscuss_stage/media/uploads/2024-02-08%2017%3A08%3A55.471243solar-system-5611038_1280.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&amp;X-Goog-Credential=sa-app-bucket%40prj-stage-service-k12.iam.gserviceaccount.com%2F20240506%2Fauto%2Fstorage%2Fgoog4_request&amp;X-Goog-Date=20240506T093717Z&amp;X-Goog-Expires=600&amp;X-Goog-SignedHeaders=host&amp;X-Goog-Signature=0656b40f0fe0c63002cd37b7663ff0e825ab7f6c6c071e4b526e0f7e1415b185968f1877c4f944f7bd30ff933141d90cf8453956d5ce25242f07b7f01f67c43aef076fba64d605d678a322ccfe969f086382a604f1a0fd71ec80e12526457b5e3f9539ef345512306d00e1ef0ef0307adcc4c4a3a807afa4519752ee6dd8e02ed4c08857260b4ab155aaeb9b1cfcc558764ab252f54d31c157f1f3885ad14f75b62f434845b25dd137ade004c0147c36e4218fe86d75f918e1f0329511ebb1217aefa8e275936bf366c2a6c60da5eefdd52d2bfe1a2a0633227936f2b8dea30b5a9a409231d5c469e8c829bb70f6ffdd8389e4c99296d020d3005f95c9698d49',
         is_delete: false,
       },
     ],

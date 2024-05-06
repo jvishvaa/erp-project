@@ -16,14 +16,17 @@ const PostCard = (props) => {
     liked,
     media_files: files,
     commentList,
-    postBy,
+    post_by_data,
     acad_session,
     grades,
   } = props?.post;
   const likePost = props?.likePost;
 
-  const Branches = acad_session?.map((item) => item?.branch?.branch_name).toString();
-  const Grades = grades?.map((item) => item?.grade_name).toString();
+  const Branches = acad_session?.map((item) => item?.branch?.branch_name).join(", ");
+  const Grades = grades?.map((item) => item?.grade_name).join(", ");
+  const userImage =
+    post_by_data?.avtar ??
+    'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
 
   console.log({ props });
 
@@ -36,11 +39,15 @@ const PostCard = (props) => {
             <div
               className={`th-bg-img th-post-dp`}
               style={{
-                backgroundImage: `url(${dp})`,
+                backgroundImage: `url(${userImage})`,
               }}
             ></div>
             <div className=''>
-              <h5 className='m-0 th-16'>{user?.first_name + '' + user?.last_name}</h5>
+              <h5 className='m-0 th-16'>
+                {[user?.first_name ?? '', user?.middle_name ?? '', user?.last_name].join(
+                  ' '
+                )}
+              </h5>
               <small className='th-grey'>{dayjs(created_at).format('DD MMM YYYY')}</small>
             </div>
           </div>
@@ -55,7 +62,7 @@ const PostCard = (props) => {
           {files?.length > 0 ? (
             files[0]?.path ? (
               <MediaDisplay
-                mediaName={files[0]?.name}
+                mediaName={files[0]?.media_file}
                 mediaLink={files[0]?.path}
                 alt={description}
                 className='w-100 th-br-20 p-3'
@@ -86,10 +93,14 @@ const PostCard = (props) => {
           <div className='th-grey'>
             <span className='px-2'>
               <span onClick={likePost} className='th-pointer'>
-                {liked ? <StarTwoTone /> : <StarOutlined />}{' '}
+                {liked ? (
+                  <StarTwoTone className='th-20' />
+                ) : (
+                  <StarOutlined className='th-20' />
+                )}{' '}
               </span>
               <span
-                className='ps-2 th-pointer'
+                className='pl-2 th-pointer'
                 onClick={() => {
                   if (likeCount > 0) setShowLikeModal(true);
                 }}
@@ -98,9 +109,9 @@ const PostCard = (props) => {
               </span>
             </span>
             <Link href={`/post/${id}`}>
-              <span className='px-2 th-pointer'>
-                <CommentOutlined />{' '}
-                <span className='ps-2'>
+              <span className='px-2 th-pointer th-grey'>
+                <CommentOutlined className='th-20' />{' '}
+                <span className='pl-2'>
                   {comments} comment{comments > 1 ? 's' : ''}
                 </span>
               </span>
@@ -145,7 +156,7 @@ const PostCard = (props) => {
         })}
 
         <Link href={`/post/${id}`}>
-          <div className='th-14 pt-1 th-grey mb-1'>Add a comment...</div>
+          <div className='th-14 pt-3 th-grey mb-1'>Add a comment...</div>
         </Link>
       </div>
     </>

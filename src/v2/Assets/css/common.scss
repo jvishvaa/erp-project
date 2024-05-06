@@ -518,5 +518,11 @@ svg {
     width: 40px;
     height: 40px;
     border-radius: 20px;
+    margin-right: 10px !important;
+  }
+  .th-pdf-logo {
+    height: 300px !important;
+    object-fit: contain !important;
+    width: 100% !important;
   }
 }
