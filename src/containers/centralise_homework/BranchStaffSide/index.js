@@ -316,7 +316,6 @@ const BranchHomework = () => {
         if (result?.data?.status_code == 200) {
           message.success('Data Fetched');
           setEvaluateData(result?.data?.result?.results);
-          console.log('ssssssssssssssssssss', result?.data?.result?.results[0]?.homework);
           setSelectedHomework(result?.data?.result?.results[0]?.homework);
           // setDiaryListData(result?.data?.result?.results);
           setTotalAssesed(result?.data?.result?.total_assessed);
@@ -360,7 +359,6 @@ const BranchHomework = () => {
     return !!tooEarly || !!tooLate;
   };
 
-  console.log({ selectedHomework });
 
   return (
     <React.Fragment>
@@ -503,14 +501,14 @@ const BranchHomework = () => {
                       style={{ color: 'green' }}
                     >
                       <span className='th-fw-600'>Total Assessed</span>
-                      {evaluateData.length && <span>{totalAssesed}</span>}
+                      <span>{totalAssesed}</span>
                     </div>
                     <div
                       className='col-md-12 row justify-content-between'
                       style={{ color: 'red' }}
                     >
                       <span className='th-fw-600'>Total Under Assessed</span>
-                      {evaluateData.length && <span>{totalunderAssesed}</span>}
+                      <span>{totalunderAssesed}</span>
                     </div>
                   </div>
                 </div>

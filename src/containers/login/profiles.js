@@ -1,28 +1,25 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Card, Image } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import { Avatar } from 'antd';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import { isMsAPI } from 'utility-functions';
 import './styles.scss';
-import { Grid } from '@material-ui/core';
-import Loader from 'components/loader/loader';
-import { green } from '@material-ui/core/colors';
-import ENVCONFIG from 'config/config.js';
+import { Row, Col, Card, Avatar, message, Spin } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import LetsEduvateLogo from '../../assets/images/logo.png';
+import axios from 'axios';
+import endpointsV2 from 'v2/config/endpoints';
 
 const UserProfiles = () => {
   const history = useHistory();
-  const { profileData } = history.location.state;
+  const { profileData, isERPLogin, token } = history.location.state;
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
-  const tabStyle = {
-    width: '100%',
-    margin: '3% auto',
-    borderRadius: '10px 10px 0 0',
-  };
+  const [schoolInfo, setSchoolInfo] = useState();
+
+  var splitedUrlAddress = window.location.origin.split('.');
+  const subDomain = splitedUrlAddress[0]?.split('//')[1];
 
   const fetchERPSystemConfig = async (status) => {
     let data = (await JSON.parse(localStorage.getItem('userDetails'))) || {};
@@ -40,7 +37,6 @@ const UserProfiles = () => {
             let resData = res?.data?.result[0];
             const selectedId = branch?.map((el) => el?.id);
             let checkData = resData?.some((item) => selectedId.includes(Number(item)));
-            console.log(checkData, 'check');
             return checkData;
           }
         }
@@ -48,7 +44,20 @@ const UserProfiles = () => {
     return result;
   };
 
-  const profileLogin = (item) => {
+  const fetchSchoolDetails = () => {
+    axios
+      .get(`${endpointsV2.schoolDetails}?sub_domain=${subDomain}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((response) => {
+        setSchoolInfo(response?.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const profileLogin = (item, showMessage = true) => {
     setLoading(true);
     localStorage.setItem('selectProfileDetails', JSON.stringify(item));
     const phone_number = JSON.parse(localStorage?.getItem('profileNumber')) || {};
@@ -58,8 +67,17 @@ const UserProfiles = () => {
         erp_id: item?.erp_id,
         hmac: item?.hmac,
       };
+      let requestHeader = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
       axiosInstance
-        .post(endpoints.auth.mobileLogin, payload)
+        .post(
+          isERPLogin ? endpoints.auth.siblingLogin : endpoints.auth.mobileLogin,
+          payload,
+          token && requestHeader
+        )
         .then((result) => {
           if (result.status === 200) {
             setLoading(false);
@@ -76,7 +94,9 @@ const UserProfiles = () => {
               'apps',
               JSON.stringify(result?.data?.login_response?.result?.apps)
             );
-            setAlert('success', result.data.message);
+            {
+              showMessage && setAlert('success', result.data.message);
+            }
             isMsAPI();
             fetchERPSystemConfig(profileData?.isLogin).then((res) => {
               let erpConfig;
@@ -117,107 +137,102 @@ const UserProfiles = () => {
     }
   };
 
+  useEffect(() => {
+    fetchSchoolDetails();
+  }, []);
+
+  useEffect(() => {
+    if (profileData?.profile_data?.data?.length === 1) {
+      message.success('Logging you in, please wait');
+      profileLogin(profileData?.profile_data?.data?.[0], false);
+    }
+  }, [profileData]);
+
   return (
     <>
-      <div style={{ margin: '50px' }}>
-        {loading ? (
-          <Loader />
-        ) : (
-          <>
-            <Grid container spacing={2}></Grid>
-            <Grid container spacing={2}>
-              <Grid item md={12} style={{ marginLeft: '25px' }}>
-                <p style={{ fontWeight: '600', fontSize: '30px' }}>Welcome,</p>
-                <p style={{ fontSize: '20px' }}>Select Profile to explore account</p>
-              </Grid>
-
-              <Grid item md={12} className='card_container'>
-                {profileData?.profile_data?.data?.map((item, i) => (
-                  <Card
-                    size='small'
-                    title={item?.branch_name}
-                    headStyle={{ backgroundColor: '#e0e0e0', color: 'black' }}
-                    // style={{
-                    //   width: 400,
-                    //   height: 150,
-                    // }}
-                    className='card_style'
-                    onClick={() => profileLogin(item)}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                      {window.location.href.slice(8, 10) == 'qa' ||
-                      window.location.href.slice(8, 18) == 'ui-revamp1' ||
-                      window.location.href.slice(7, 12) == 'local' ? (
-                        <>
-                          <Avatar
-                            size={64}
-                            src={`${endpoints.profile.Profilestories}dev/media/${item?.profile}`}
-                            icon={item?.profile === '' ? <UserOutlined /> : ''}
-                          />
-                        </>
-                      ) : (
-                        <Avatar
-                          size={64}
-                          src={`${endpoints.profile.Profilestories}prod/media/${item?.profile}`}
-                          icon={item?.profile === '' ? <UserOutlined /> : ''}
-                        />
-                      )}
+      <div
+        style={{
+          padding: window.innerWidth < 576 ? '2%' : '5%',
+          height: '100vh',
+          overflowY: 'auto',
+        }}
+      >
+        <Card className='shadow th-br-24'>
+          <Spin spinning={loading}>
+            <div className='d-flex pb-4 align-items-center flex-column'>
+              <img
+                src={schoolInfo?.school_logo ? schoolInfo?.school_logo : LetsEduvateLogo}
+                alt='image'
+                style={{
+                  height: schoolInfo?.school_logo ? 80 : 50,
+                  objectFit: 'fill',
+                  mixBlendMode: 'darken',
+                }}
+              />
+              <div className='th-black-1 th-fw-600 my-4 th-24 '>
+                Please select the profile to explore account{' '}
+              </div>
+              <Row
+                gutter={[16, 16]}
+                className='w-100'
+                justify='center'
+                // style={{ maxHeight: 500, overflowY: 'auto' }}
+              >
+                {profileData?.profile_data?.data?.map((item, i) => {
+                  let imageLink = `${endpoints.profile.Profilestories}${
+                    ['orchids-stage.stage-vm.letseduvate.com', 'localhost']?.includes(
+                      window.location.hostname
+                    )
+                      ? 'dev'
+                      : 'prod'
+                  }/media/${item?.profile}`;
+                  return (
+                    <Col
+                      xs={24}
+                      sm={12}
+                      md={6}
+                      className='d-flex justify-content-center mb-2'
+                    >
                       <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          margin: 'inherit',
-                        }}
+                        className='d-flex flex-column justify-content-between th-profile-card'
+                        onClick={() => profileLogin(item)}
+                        style={{ position: 'relative' }}
                       >
-                        <p
-                          style={{
-                            marginLeft: '10px',
-                            fontWeight: '800',
-                            fontSize: '18px',
-                            margin: '0px 10px',
-                          }}
-                        >
-                          {item?.name}
-                        </p>
-                        <p
-                          style={{
-                            marginLeft: '10px',
-                            fontSize: '12px',
-                            color: 'green',
-                            fontWeight: 'bolder',
-                            margin: '0px 10px',
-                          }}
-                        >
-                          {item?.erp_id}
-                        </p>
-                        <div
-                          style={{ display: 'flex', color: 'green', margin: '2px 10px' }}
-                        >
-                          <p style={{ fontSize: '12px', fontWeight: 'bolder' }}>
-                            {item?.grade_name}
-                          </p>
-                          <p style={{ fontSize: '12px', marginLeft: '10px' }}> | </p>
-                          <p
-                            style={{
-                              marginLeft: '10px',
-                              fontSize: '12px',
-                              fontWeight: 'bolder',
-                            }}
-                          >
-                            {item?.section_name}
-                          </p>
+                        <div className='d-flex flex-column align-items-center justify-content-around pt-2 h-100'>
+                          <Avatar
+                            size={84}
+                            src={imageLink}
+                            icon={item?.profile === '' ? <UserOutlined /> : null}
+                          />
+                          <div className='th-truncate-2 text-center th-18 th-fw-600'>
+                            {item?.name}
+                          </div>
+                          <div className='th-bg-grey px-2 py-1 th-br-8'>
+                            <span className='th-primary'>{item?.erp_id}</span>
+                          </div>
+                          <div className='th-grey th-18 '>
+                            {item?.grade_name} {item?.section_name}
+                          </div>
                         </div>
+                        <div
+                          className='th-grey th-fw-500 th-16 w-100 p-2 text-center mt-2 th-truncate-2'
+                          style={{ borderTop: '1px solid #d9d9d9', height: 60 }}
+                        >
+                          {item?.branch_name}
+                        </div>
+                        {item?.is_my_account && (
+                          <div className='th-bg-primary px-2 py-1 th-profile-card-ribbon'>
+                            {item?.roles__role_name}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    {/* <p>{item?.grade_name}</p> */}
-                  </Card>
-                ))}
-              </Grid>
-
-              {/* </Grid> */}
-            </Grid>
-          </>
-        )}
+                    </Col>
+                  );
+                })}
+              </Row>
+            </div>
+          </Spin>
+        </Card>
       </div>
     </>
   );

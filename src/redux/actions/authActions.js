@@ -46,9 +46,6 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
     .post(url, payload, config)
     .then((response) => {
       const data = isOtpLogin ? response.data.login_response : response.data;
-      // const data = response.data;
-      // dispatch(selectedVersion(data?.result?.is_v2_enabled));
-      // localStorage.setItem('isV2', data?.result?.is_v2_enabled);
 
       if (data.status_code === 200) {
         const actualData = data;
@@ -64,14 +61,6 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
           userDetails: actualData?.result?.user_details,
           navigationData: actualData?.result?.navigation_data,
         });
-        localStorage.setItem(
-          'userDetails',
-          JSON.stringify(actualData?.result?.user_details)
-        );
-        localStorage.setItem(
-          'navigationData',
-          JSON.stringify(actualData?.result?.navigation_data)
-        );
         if (isOtpLogin === true) {
           localStorage.setItem(
             'apps',
@@ -80,8 +69,31 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
         } else {
           localStorage.setItem('apps', JSON.stringify(response?.data?.result?.apps));
         }
-        const result = { isLogin: true, message: actualData.message };
-        return result;
+        if (data?.result?.siblings_data?.length > 0) {
+          let profileDetails = {
+            is_verified: true,
+            data: data?.result?.siblings_data,
+          };
+          localStorage.setItem('profileDetails', JSON.stringify(profileDetails));
+          const result = {
+            isLogin: true,
+            message: data.message,
+            profile_data: data,
+            token: data?.result?.user_details?.token,
+          };
+          return result;
+        } else {
+          localStorage.setItem(
+            'userDetails',
+            JSON.stringify(actualData?.result?.user_details)
+          );
+          localStorage.setItem(
+            'navigationData',
+            JSON.stringify(actualData?.result?.navigation_data)
+          );
+          const result = { isLogin: true, message: actualData.message };
+          return result;
+        }
       }
       dispatch({ type: LOGIN_FAILURE });
       const result = { isLogin: false, message: data.message };
@@ -93,16 +105,16 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
 };
 
 export const loginSSo = (payload, isOtpLogin) => (dispatch) => {
-  console.log(payload, isOtpLogin , 'login payload');
+  console.log(payload, isOtpLogin, 'login payload');
   dispatch({ type: LOGIN_REQUEST });
-  const url =  '/erp_user/login/';
+  const url = '/erp_user/login/';
   const config = { timeout: LOGIN_TIMEOUT };
   return axios
-    .post(url, config , {
+    .post(url, config, {
       headers: {
-          'Authorization': `Bearer ${payload}`,
-      }
-  })
+        Authorization: `Bearer ${payload}`,
+      },
+    })
     .then((response) => {
       const data = isOtpLogin ? response.data.login_response : response.data;
       // const data = response.data;
@@ -153,10 +165,9 @@ export const loginSSo = (payload, isOtpLogin) => (dispatch) => {
 
 export const loginMobile = (payload, isOtpMobileLogin) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
-  const url = isOtpMobileLogin ? '/erp_user/mobile-verify-otp/' : '/erp_user/login/';
+  const url = isOtpMobileLogin ? '/erp_user/v2/mobile-verify-otp/' : '/erp_user/login/';
   const config = { timeout: LOGIN_TIMEOUT };
   return axios.post(url, payload, config).then((response) => {
-    // const data = isOtpLogin ? response.data.login_response : response.data;
     const data = response.data;
     if (data.status_code === 200) {
       const actualData = data;
@@ -169,20 +180,13 @@ export const loginMobile = (payload, isOtpMobileLogin) => (dispatch) => {
         };
         return result;
       }
+      dispatch(selectedVersion(true));
+      localStorage.setItem('isV2', true);
       dispatch({
         type: LOGIN_SUCCESS,
-        // userDetails: actualData,
-        // navigationData: actualData,
       });
       localStorage.setItem('profileDetails', JSON.stringify(actualData));
-      // localStorage.setItem(
-      //   'navigationData',
-      //   JSON.stringify(actualData?.result.navigation_data)
-      // );
-      // localStorage.setItem(
-      //   'apps',
-      //   JSON.stringify(response?.data?.result?.apps)
-      // );
+
       const result = { isLogin: true, message: actualData.message, profile_data: data };
       return result;
     }
@@ -190,13 +194,10 @@ export const loginMobile = (payload, isOtpMobileLogin) => (dispatch) => {
     const result = { isLogin: false, message: data.message };
     return result;
   });
-  // .catch(() => {
-  //   dispatch({ type: LOGIN_FAILURE });
-  // });
 };
 
 export const handleSendMobileOtp = (payload) => {
-  const url = '/erp_user/mobile-login/';
+  const url = '/erp_user/v2/mobile-login/';
   return axios
     .post(url, payload)
     .then((response) => {

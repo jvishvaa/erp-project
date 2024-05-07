@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import axiosInstance from 'v2/config/axios';
 import {
   Avatar,
   Button,
@@ -24,8 +25,11 @@ import {
 import TextArea from 'antd/lib/input/TextArea';
 import countryList from 'containers/user-management/list';
 import { Profanity } from 'components/file-validation/Profanity';
+import endpoints from '../../../../../config/endpoints';
 
 const FamilyInformation = ({
+  roleBasedUiConfig,
+  schoolFormValues,
   singleParent,
   handleNext,
   handleBack,
@@ -54,6 +58,9 @@ const FamilyInformation = ({
   setOpenPasswordModal,
 }) => {
   useEffect(() => {
+    if (editId) {
+      setParentFetchedData(familyFormValues);
+    }
     if (familyFormValues && Object.keys(familyFormValues).length > 0) {
       familyRef.current.setFieldsValue(familyFormValues);
       if (familyFormValues?.father_photo) {
@@ -68,13 +75,41 @@ const FamilyInformation = ({
     }
   }, []);
   const familyRef = useRef();
+  const parentRef = useRef();
   const [selectedImageFather, setSelectedImageFather] = useState(null);
   const [selectedImageMother, setSelectedImageMother] = useState(null);
   const [selectedImageGuardian, setSelectedImageGuardian] = useState(null);
+  const [showParentContact, setShowParentContact] = useState();
+  const [parentContactCode, setParentContactCode] = useState('+91');
+  const [parentFetchedData, setParentFetchedData] = useState();
   const userData = JSON.parse(localStorage.getItem('userDetails'));
   const is_superuser = userData?.is_superuser;
   const user_level = userData?.user_level;
+
+  useEffect(() => {
+    if (userLevel === 13 && !editId) {
+      setShowParentContact(false);
+    } else {
+      setShowParentContact(true);
+    }
+  }, []);
+
   const onSubmit = (formValues) => {
+    let primary_contact = parentRef?.current?.getFieldsValue()?.parent_contact;
+    let primary_contact_code =
+      parentRef?.current?.getFieldsValue()?.parent_contact_code ?? '+91';
+    if (userLevel === 13 && !editId) {
+      if (
+        formValues?.father_mobile?.toString() !== primary_contact?.toString() &&
+        formValues?.mother_mobile?.toString() !== primary_contact?.toString() &&
+        formValues?.guardian_mobile?.toString() !== primary_contact?.toString()
+      ) {
+        message.error(
+          'Either Father, Mother or Guardian number should be primary contact'
+        );
+        return;
+      }
+    }
     setFamilyFormValues({
       ...formValues,
       father_photo: selectedImageFather,
@@ -82,10 +117,10 @@ const FamilyInformation = ({
       guardian_photo: selectedImageGuardian,
     });
     if (userLevel === 13) {
-      if (!fatherPrimary && !motherPrimary && !guardianPrimary) {
-        message.error('Select a contact number as primary!');
-        return;
-      }
+      // if (!fatherPrimary && !motherPrimary && !guardianPrimary) {
+      //   message.error('Select a contact number as primary!');
+      //   return;
+      // }
       if (!fatherPrimaryEmail && !motherPrimaryEmail && !guardianPrimaryEmail) {
         message.error('Select an email as primary!');
         return;
@@ -133,11 +168,17 @@ const FamilyInformation = ({
         !formValues.guardian_mobile
       ) {
         message.error(
-          `Either of Father's or Mother's or Guardian's Contact is required!`
+          `Either of Father's or Mother's or Guardian's Contact should be same as primary number!`
         );
         return;
       }
-      handleNext();
+      handleSubmit({
+        ...formValues,
+        father_photo: selectedImageFather,
+        mother_photo: selectedImageMother,
+        guardian_photo: selectedImageGuardian,
+        contact_details: `${primary_contact_code}-${primary_contact}`,
+      });
     } else {
       if (
         parent &&
@@ -207,6 +248,50 @@ const FamilyInformation = ({
       {each?.label}
     </Select.Option>
   ));
+
+  const fetchContactDetails = async (code, contact) => {
+    if (contact?.length === 10) {
+      setParentFetchedData(null);
+      try {
+        let contactParams = `${code}-${contact}`;
+        const result = await axiosInstance.get(
+          `${endpoints.userManagement.getParentData}?contact=${contactParams}`
+        );
+
+        if (result?.data?.status_code === 200) {
+          setParentFetchedData(result?.data?.result);
+          familyRef.current.setFieldsValue(result?.data?.result);
+          familyRef.current.setFieldsValue({
+            father_mobile: result?.data?.result?.father_mobile
+              ? result?.data?.result?.father_mobile.split('-')?.[1]
+              : null,
+          });
+          familyRef.current.setFieldsValue({
+            mother_mobile: result?.data?.result?.mother_mobile
+              ? result?.data?.result?.mother_mobile.split('-')?.[1]
+              : null,
+          });
+          familyRef.current.setFieldsValue({
+            guardian_mobile: result?.data?.result?.guardian_mobile
+              ? result?.data?.result?.guardian_mobile.split('-')?.[1]
+              : null,
+          });
+          message.success(result?.data?.message);
+        } else {
+          familyRef.current.resetFields();
+        }
+      } catch (error) {
+        familyRef.current.resetFields();
+        message.error(error?.response?.data?.message || 'Something went wrong');
+      } finally {
+        setShowParentContact(true);
+      }
+    } else {
+      familyRef.current.resetFields();
+      setShowParentContact(false);
+    }
+  };
+
   return (
     <React.Fragment>
       <div
@@ -218,6 +303,56 @@ const FamilyInformation = ({
           background: '#F8F8F8',
         }}
       >
+        <Form layout='vertical' ref={parentRef}>
+          {userLevel === 13 && !editId && (
+            <Row>
+              <Col md={8} className=''>
+                <Space align='start'>
+                  <Form.Item name={'parent_contact_code'} label='Code'>
+                    <Select
+                      showSearch
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                      defaultValue={'+91'}
+                      onChange={(e) => {
+                        setParentContactCode(e);
+                        fetchContactDetails(
+                          e,
+                          parentRef?.current?.getFieldsValue()?.parent_contact
+                        );
+                      }}
+                    >
+                      {countryCodeOptions}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: false,
+                        pattern: /^[0-9]{10}$/,
+                        message: `Contact Number is invalid!`,
+                      },
+                    ]}
+                    name={'parent_contact'}
+                    label={'Primary Contact Number'}
+                  >
+                    <Input
+                      className='w-100'
+                      placeholder='Contact'
+                      onChange={(e) => {
+                        fetchContactDetails(parentContactCode, e.target.value);
+                      }}
+                    />
+                  </Form.Item>
+                </Space>
+              </Col>
+            </Row>
+          )}
+        </Form>
+
         <Form
           scrollToFirstError
           id='familyForm'
@@ -225,323 +360,102 @@ const FamilyInformation = ({
           onFinish={onSubmit}
           layout='vertical'
         >
-          {userLevel !== 13 && (
-            <Row gutter={24}>
-              <Col>
-                <Form.Item
-                  label='Parent / Guardian'
-                  style={{ margin: '0px' }}
-                  name={'single'}
-                >
-                  <Checkbox.Group
-                    options={guardianOption}
-                    onChange={(e) => {
-                      setParent(e);
-                    }}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          )}
-          {/* FATHER DETAILS */}
-          {(userLevel === 13 ||
-            (userLevel !== 13 && parent && parent?.includes('parent'))) && (
+          {showParentContact && (
             <>
-              <Row gutter={24}>
-                <Col className='py-2' md={24}>
-                  <Form.Item
-                    // required={
-                    //   guardian === 'father' ||
-                    //   !singleParent ||
-                    //   (userLevel !== 13 &&(parent && parent?.includes('parent')))
-                    // }
-                    label="Father's Image"
-                  >
-                    <div className='d-flex align-items-end'>
-                      {selectedImageFather ? (
-                        <Avatar
-                          shape='square'
-                          src={
-                            typeof selectedImageFather === 'string'
-                              ? selectedImageFather
-                              : URL.createObjectURL(selectedImageFather)
-                          }
-                          size={80}
-                        />
-                      ) : (
-                        <Avatar shape='square' icon={<UserOutlined />} size={80} />
-                      )}
-                      <div className='pl-3'>
-                        <div className='pb-1'>
-                          {selectedImageFather ? '' : 'No file uploaded'}
-                        </div>
-                        {selectedImageFather ? (
-                          <Button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setSelectedImageFather(null);
-                            }}
-                            type='primary'
-                          >
-                            Remove Image
-                          </Button>
-                        ) : (
-                          <>
-                            <label
-                              htmlFor='fatherPhoto'
-                              className='ant-btn ant-btn-primary'
-                              style={{ marginBottom: '0px' }}
-                            >
-                              Upload Image
-                            </label>
-                            <input
-                              className='d-none'
-                              type='file'
-                              id='fatherPhoto'
-                              accept='image/png, image/jpg, image/jpeg'
-                              onChange={(event) => {
-                                let file = event.target.files[0];
-                                let imgType = event.target?.files[0]?.type;
-                                if (allowedExtension.indexOf(imgType) === -1) {
-                                  message.error(
-                                    'Only image(.jpeg, .jpg, .png) is acceptable!'
-                                  );
-                                  return;
-                                }
-                                setSelectedImageFather(file);
-                              }}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={6}>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'father' ||
-                          !singleParent ||
-                          (userLevel !== 13 && parent && parent?.includes('parent')),
-                        message: `Father's First Name is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (value && value?.trim()?.length === 0) {
-                            return Promise.reject(`Enter atleast one character`);
-                          }
-                          if (value && !/^.{0,30}$/.test(value)) {
-                            return Promise.reject(
-                              `First Name should not exceed 30 characters!`
-                            );
-                          }
-                          if (value && Profanity(value)) {
-                            return Promise.reject(
-                              `First Name Contains Banned Words , Please Check`
-                            );
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name={'father_first_name'}
-                    label="Father's First Name"
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={6}>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'father' ||
-                          !singleParent ||
-                          (userLevel !== 13 && parent && parent?.includes('parent')),
-                        message: `Father's Last Name is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (value && value?.trim()?.length === 0) {
-                            return Promise.reject(`Enter atleast one character`);
-                          }
-                          if (value && !/^.{0,30}$/.test(value)) {
-                            return Promise.reject(
-                              `Last Name should not exceed 30 characters!`
-                            );
-                          }
-                          if (value && Profanity(value)) {
-                            return Promise.reject(
-                              `Last Name Contains Banned Words , Please Check`
-                            );
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name={'father_last_name'}
-                    label="Father's Last Name"
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-
-                <Col md={6} className='py-2'>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'father' ||
-                          (userLevel !== 13 && parent && parent?.includes('parent')),
-                        message: `Father's Email is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (
-                            value &&
-                            !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-                              value
-                            )
-                          ) {
-                            return Promise.reject(`Invalid email!`);
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name='father_email'
-                    label={
-                      <Space align='end' className='th-primary-contact-check'>
-                        {userLevel === 13 && (
-                          <Form.Item
-                            style={{ marginBottom: '0px' }}
-                            className='mb-0 th-primary-contact-checkbox'
-                            name={'father_primary_email'}
-                          >
-                            <Checkbox
-                              checked={fatherPrimaryEmail}
-                              onChange={(e) => {
-                                setFatherPrimaryEmail(e.target.checked);
-                                setMotherPrimaryEmail(false);
-                                setGuardianPrimaryEmail(false);
-                              }}
-                              className='w-100 h-100'
-                            />
-                          </Form.Item>
-                        )}
-                        <div>Father's Email</div>
-                        {userLevel === 13 && (
-                          <Tooltip title={`Make Father's  Email as primary`}>
-                            <InfoCircleFilled />
-                          </Tooltip>
-                        )}
-                      </Space>
-                    }
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2'>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'father' ||
-                          !singleParent ||
-                          (userLevel !== 13 && parent && parent?.includes('parent')),
-                        message: `Father's Age is required!`,
-                      },
-                    ]}
-                    name='father_age'
-                    label="Father's Age"
-                  >
-                    <InputNumber min={0} />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={24}>
+              {!roleBasedUiConfig.includes(schoolFormValues?.user_level?.toString()) &&
+                userLevel !== 13 && (
                   <Row gutter={24}>
-                    <Col md={8} className=''>
-                      <Space align='start'>
-                        <Form.Item name={'father_mobile_code'} label='Code'>
-                          <Select
-                            showSearch
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            defaultValue={'+91'}
-                          >
-                            {countryCodeOptions}
-                          </Select>
-                        </Form.Item>
-                        <Form.Item
-                          rules={[
-                            {
-                              required: false,
-                              pattern: /^[0-9]{10}$/,
-                              message: `Father's Contact Number is invalid!`,
-                            },
-                          ]}
-                          name={'father_mobile'}
-                          label={
-                            <Space align='end' className='th-primary-contact-check'>
-                              {userLevel === 13 && (
-                                <Form.Item
-                                  style={{ marginBottom: '0px' }}
-                                  className='mb-0 th-primary-contact-checkbox'
-                                  name={'father_primary'}
-                                >
-                                  <Checkbox
-                                    checked={fatherPrimary}
-                                    onChange={(e) => {
-                                      setFatherPrimary(e.target.checked);
-                                      setMotherPrimary(false);
-                                      setGuardianPrimary(false);
-                                    }}
-                                    className='w-100 h-100'
-                                  />
-                                </Form.Item>
-                              )}
-                              <div>Contact Number</div>
-                              {userLevel === 13 && (
-                                <Tooltip
-                                  title={`Make Father's contact number as primary`}
-                                >
-                                  <InfoCircleFilled />
-                                </Tooltip>
-                              )}
-                            </Space>
-                          }
-                        >
-                          <Input className='w-100' />
-                        </Form.Item>
-                      </Space>
-                    </Col>
-                    <Col md={6}>
+                    <Col>
                       <Form.Item
-                        rules={[
-                          {
-                            required:
-                              guardian === 'father' ||
-                              !singleParent ||
-                              (userLevel !== 13 && parent && parent?.includes('parent')),
-                            message: `Father's Qualification is required!`,
-                          },
-                        ]}
-                        name='father_qualification'
-                        label="Father's Qualification"
+                        label='Parent / Guardian'
+                        style={{ margin: '0px' }}
+                        name={'single'}
                       >
-                        <Select className='w-100' placeholder='Select Qualification'>
-                          {qualificationOptions}
-                        </Select>
+                        <Checkbox.Group
+                          options={guardianOption}
+                          onChange={(e) => {
+                            setParent(e);
+                          }}
+                        />
                       </Form.Item>
                     </Col>
-                    <Col md={6}>
+                  </Row>
+                )}
+              {/* FATHER DETAILS */}
+              {(userLevel === 13 ||
+                (userLevel !== 13 && parent && parent?.includes('parent'))) && (
+                <>
+                  <Row gutter={24}>
+                    <Col className='py-2' md={24}>
+                      <Form.Item
+                        // required={
+                        //   guardian === 'father' ||
+                        //   !singleParent ||
+                        //   (userLevel !== 13 &&(parent && parent?.includes('parent')))
+                        // }
+                        label="Father's Image"
+                      >
+                        <div className='d-flex align-items-end'>
+                          {selectedImageFather ? (
+                            <Avatar
+                              shape='square'
+                              src={
+                                typeof selectedImageFather === 'string'
+                                  ? selectedImageFather
+                                  : URL.createObjectURL(selectedImageFather)
+                              }
+                              size={80}
+                            />
+                          ) : (
+                            <Avatar shape='square' icon={<UserOutlined />} size={80} />
+                          )}
+                          <div className='pl-3'>
+                            <div className='pb-1'>
+                              {selectedImageFather ? '' : 'No file uploaded'}
+                            </div>
+                            {selectedImageFather ? (
+                              <Button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setSelectedImageFather(null);
+                                }}
+                                type='primary'
+                              >
+                                Remove Image
+                              </Button>
+                            ) : (
+                              <>
+                                <label
+                                  htmlFor='fatherPhoto'
+                                  className='ant-btn ant-btn-primary'
+                                  style={{ marginBottom: '0px' }}
+                                >
+                                  Upload Image
+                                </label>
+                                <input
+                                  className='d-none'
+                                  type='file'
+                                  id='fatherPhoto'
+                                  accept='image/png, image/jpg, image/jpeg'
+                                  onChange={(event) => {
+                                    let file = event.target.files[0];
+                                    let imgType = event.target?.files[0]?.type;
+                                    if (allowedExtension.indexOf(imgType) === -1) {
+                                      message.error(
+                                        'Only image(.jpeg, .jpg, .png) is acceptable!'
+                                      );
+                                      return;
+                                    }
+                                    setSelectedImageFather(file);
+                                  }}
+                                />
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </Form.Item>
+                    </Col>
+                    <Col className='py-2' md={6}>
                       <Form.Item
                         rules={[
                           {
@@ -549,16 +463,369 @@ const FamilyInformation = ({
                               guardian === 'father' ||
                               !singleParent ||
                               (userLevel !== 13 && parent && parent?.includes('parent')),
-                            message: `Father's Occupation is required!`,
+                            message: `Father's First Name is required!`,
                           },
                           {
                             validator: (_, value) => {
                               if (value && value?.trim()?.length === 0) {
                                 return Promise.reject(`Enter atleast one character`);
                               }
+                              if (value && !/^.{0,30}$/.test(value)) {
+                                return Promise.reject(
+                                  `First Name should not exceed 30 characters!`
+                                );
+                              }
                               if (value && Profanity(value)) {
                                 return Promise.reject(
-                                  `Occupation Contains Banned Words , Please Check`
+                                  `First Name Contains Banned Words , Please Check`
+                                );
+                              }
+                              return Promise.resolve();
+                            },
+                          },
+                        ]}
+                        name={'father_first_name'}
+                        label="Father's First Name"
+                      >
+                        <Input className='w-100' />
+                      </Form.Item>
+                    </Col>
+                    <Col className='py-2' md={6}>
+                      <Form.Item
+                        rules={[
+                          {
+                            required:
+                              guardian === 'father' ||
+                              !singleParent ||
+                              (userLevel !== 13 && parent && parent?.includes('parent')),
+                            message: `Father's Last Name is required!`,
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (value && value?.trim()?.length === 0) {
+                                return Promise.reject(`Enter atleast one character`);
+                              }
+                              if (value && !/^.{0,30}$/.test(value)) {
+                                return Promise.reject(
+                                  `Last Name should not exceed 30 characters!`
+                                );
+                              }
+                              if (value && Profanity(value)) {
+                                return Promise.reject(
+                                  `Last Name Contains Banned Words , Please Check`
+                                );
+                              }
+                              return Promise.resolve();
+                            },
+                          },
+                        ]}
+                        name={'father_last_name'}
+                        label="Father's Last Name"
+                      >
+                        <Input className='w-100' />
+                      </Form.Item>
+                    </Col>
+
+                    <Col md={6} className='py-2'>
+                      <Form.Item
+                        rules={[
+                          {
+                            required:
+                              guardian === 'father' ||
+                              (userLevel !== 13 && parent && parent?.includes('parent')),
+                            message: `Father's Email is required!`,
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (
+                                value &&
+                                !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+                                  value
+                                )
+                              ) {
+                                return Promise.reject(`Invalid email!`);
+                              }
+                              return Promise.resolve();
+                            },
+                          },
+                        ]}
+                        name='father_email'
+                        label={
+                          <Space align='end' className='th-primary-contact-check'>
+                            {userLevel === 13 && (
+                              <Form.Item
+                                style={{ marginBottom: '0px' }}
+                                className='mb-0 th-primary-contact-checkbox'
+                                name={'father_primary_email'}
+                              >
+                                <Checkbox
+                                  checked={fatherPrimaryEmail}
+                                  onChange={(e) => {
+                                    setFatherPrimaryEmail(e.target.checked);
+                                    setMotherPrimaryEmail(false);
+                                    setGuardianPrimaryEmail(false);
+                                  }}
+                                  className='w-100 h-100'
+                                />
+                              </Form.Item>
+                            )}
+                            <div>Father's Email</div>
+                            {userLevel === 13 && (
+                              <Tooltip title={`Make Father's  Email as primary`}>
+                                <InfoCircleFilled />
+                              </Tooltip>
+                            )}
+                          </Space>
+                        }
+                      >
+                        <Input className='w-100' />
+                      </Form.Item>
+                    </Col>
+                    <Col className='py-2'>
+                      <Form.Item
+                        rules={[
+                          {
+                            required:
+                              guardian === 'father' ||
+                              !singleParent ||
+                              (userLevel !== 13 && parent && parent?.includes('parent')),
+                            message: `Father's Age is required!`,
+                          },
+                        ]}
+                        name='father_age'
+                        label="Father's Age"
+                      >
+                        <InputNumber min={0} />
+                      </Form.Item>
+                    </Col>
+                    <Col className='py-2' md={24}>
+                      <Row gutter={24}>
+                        <Col md={8} className=''>
+                          <Space align='start'>
+                            <Form.Item name={'father_mobile_code'} label='Code'>
+                              <Select
+                                showSearch
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                defaultValue={'+91'}
+                                disabled={
+                                  editId
+                                    ? parentFetchedData?.father_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.father_mobile ===
+                                      parentFetchedData?.contact_details
+                                }
+                              >
+                                {countryCodeOptions}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item
+                              rules={[
+                                {
+                                  required: false,
+                                  pattern: /^[0-9]{10}$/,
+                                  message: `Father's Contact Number is invalid!`,
+                                },
+                              ]}
+                              name={'father_mobile'}
+                              label={
+                                <Space align='end' className='th-primary-contact-check'>
+                                  <div>Contact Number</div>
+                                </Space>
+                              }
+                            >
+                              <Input
+                                className='w-100'
+                                disabled={
+                                  editId
+                                    ? parentFetchedData?.father_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.father_mobile ===
+                                      parentFetchedData?.contact_details
+                                }
+                              />
+                            </Form.Item>
+                          </Space>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required:
+                                  guardian === 'father' ||
+                                  !singleParent ||
+                                  (userLevel !== 13 &&
+                                    parent &&
+                                    parent?.includes('parent')),
+                                message: `Father's Qualification is required!`,
+                              },
+                            ]}
+                            name='father_qualification'
+                            label="Father's Qualification"
+                          >
+                            <Select className='w-100' placeholder='Select Qualification'>
+                              {qualificationOptions}
+                            </Select>
+                          </Form.Item>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required:
+                                  guardian === 'father' ||
+                                  !singleParent ||
+                                  (userLevel !== 13 &&
+                                    parent &&
+                                    parent?.includes('parent')),
+                                message: `Father's Occupation is required!`,
+                              },
+                              {
+                                validator: (_, value) => {
+                                  if (value && value?.trim()?.length === 0) {
+                                    return Promise.reject(`Enter atleast one character`);
+                                  }
+                                  if (value && Profanity(value)) {
+                                    return Promise.reject(
+                                      `Occupation Contains Banned Words , Please Check`
+                                    );
+                                  }
+
+                                  return Promise.resolve();
+                                },
+                              },
+                            ]}
+                            name='father_occupation'
+                            label="Father's Occupation"
+                          >
+                            <Input className='' />
+                          </Form.Item>
+                        </Col>
+
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required: false,
+                                message: `Invalid Aadhar Number!`,
+                                pattern: /^\d{12}$/,
+                              },
+                            ]}
+                            name='father_aadhaar'
+                            label="Father's Aadhaar Number"
+                          >
+                            <Input className='' />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                  <Divider />
+                </>
+              )}
+
+              {/* MOTHER DETAILS */}
+              {(userLevel === 13 ||
+                (userLevel !== 13 && parent && parent?.includes('parent'))) && (
+                <>
+                  <Row gutter={24}>
+                    <Col className='py-2' md={24}>
+                      <Form.Item
+                        // required={
+                        //   guardian === 'mother' ||
+                        //   !singleParent ||
+                        //   (userLevel !== 13 &&(parent && parent?.includes('parent')))
+                        // }
+                        label="Mother's Image"
+                      >
+                        <div className='d-flex align-items-end'>
+                          {selectedImageMother ? (
+                            <Avatar
+                              shape='square'
+                              src={
+                                typeof selectedImageMother === 'string'
+                                  ? selectedImageMother
+                                  : URL.createObjectURL(selectedImageMother)
+                              }
+                              size={80}
+                            />
+                          ) : (
+                            <Avatar shape='square' icon={<UserOutlined />} size={80} />
+                          )}
+                          <div className='pl-3'>
+                            <div className='pb-1'>
+                              {selectedImageMother ? '' : 'No file uploaded'}
+                            </div>
+                            {selectedImageMother ? (
+                              <Button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setSelectedImageMother(null);
+                                }}
+                                type='primary'
+                              >
+                                Remove Image
+                              </Button>
+                            ) : (
+                              <>
+                                <label
+                                  htmlFor='motherPhoto'
+                                  className='ant-btn ant-btn-primary mb-0'
+                                >
+                                  Upload Image
+                                </label>
+                                <input
+                                  className='d-none'
+                                  type='file'
+                                  id='motherPhoto'
+                                  accept='image/png, image/jpg, image/jpeg'
+                                  onChange={(event) => {
+                                    let files = event.target.files[0];
+                                    let imgType = event.target?.files[0]?.type;
+                                    if (allowedExtension.indexOf(imgType) === -1) {
+                                      message.error(
+                                        'Only image(.jpeg, .jpg, .png) is acceptable!'
+                                      );
+                                      return;
+                                    }
+                                    setSelectedImageMother(files);
+                                  }}
+                                />
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </Form.Item>
+                    </Col>
+
+                    <Col className='py-2' md={6}>
+                      <Form.Item
+                        rules={[
+                          {
+                            required:
+                              guardian === 'mother' ||
+                              !singleParent ||
+                              (userLevel !== 13 && parent && parent?.includes('parent')),
+                            message: `Mother's First Name is required!`,
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (value && value?.trim()?.length === 0) {
+                                return Promise.reject(`Enter atleast one character`);
+                              }
+                              if (value && !/^.{0,30}$/.test(value)) {
+                                return Promise.reject(
+                                  `First Name should not exceed 30 characters!`
+                                );
+                              }
+                              if (value && Profanity(value)) {
+                                return Promise.reject(
+                                  `First Name Contains Banned Words , Please Check`
                                 );
                               }
 
@@ -566,339 +833,107 @@ const FamilyInformation = ({
                             },
                           },
                         ]}
-                        name='father_occupation'
-                        label="Father's Occupation"
+                        name={'mother_first_name'}
+                        label="Mother's First Name"
                       >
-                        <Input className='' />
+                        <Input className='w-100' />
                       </Form.Item>
                     </Col>
-
-                    <Col md={6}>
+                    <Col className='py-2' md={6}>
                       <Form.Item
                         rules={[
                           {
-                            required: false,
-                            message: `Invalid Aadhar Number!`,
-                            pattern: /^\d{12}$/,
+                            required:
+                              guardian === 'mother' ||
+                              !singleParent ||
+                              (userLevel !== 13 && parent && parent?.includes('parent')),
+                            message: `Mother's Last Name is required!`,
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (value && value?.trim()?.length === 0) {
+                                return Promise.reject(`Enter atleast one character`);
+                              }
+
+                              if (value && !/^.{0,30}$/.test(value)) {
+                                return Promise.reject(
+                                  `Last Name should not exceed 30 characters!`
+                                );
+                              }
+                              if (value && Profanity(value)) {
+                                return Promise.reject(
+                                  `Last Name Contains Banned Words , Please Check`
+                                );
+                              }
+                              return Promise.resolve();
+                            },
                           },
                         ]}
-                        name='father_aadhaar'
-                        label="Father's Aadhaar Number"
+                        name={'mother_last_name'}
+                        label="Mother's Last Name"
                       >
-                        <Input className='' />
+                        <Input className='w-100' />
                       </Form.Item>
                     </Col>
-                  </Row>
-                </Col>
-              </Row>
-              <Divider />
-            </>
-          )}
 
-          {/* MOTHER DETAILS */}
-          {(userLevel === 13 ||
-            (userLevel !== 13 && parent && parent?.includes('parent'))) && (
-            <>
-              <Row gutter={24}>
-                <Col className='py-2' md={24}>
-                  <Form.Item
-                    // required={
-                    //   guardian === 'mother' ||
-                    //   !singleParent ||
-                    //   (userLevel !== 13 &&(parent && parent?.includes('parent')))
-                    // }
-                    label="Mother's Image"
-                  >
-                    <div className='d-flex align-items-end'>
-                      {selectedImageMother ? (
-                        <Avatar
-                          shape='square'
-                          src={
-                            typeof selectedImageMother === 'string'
-                              ? selectedImageMother
-                              : URL.createObjectURL(selectedImageMother)
-                          }
-                          size={80}
-                        />
-                      ) : (
-                        <Avatar shape='square' icon={<UserOutlined />} size={80} />
-                      )}
-                      <div className='pl-3'>
-                        <div className='pb-1'>
-                          {selectedImageMother ? '' : 'No file uploaded'}
-                        </div>
-                        {selectedImageMother ? (
-                          <Button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setSelectedImageMother(null);
-                            }}
-                            type='primary'
-                          >
-                            Remove Image
-                          </Button>
-                        ) : (
-                          <>
-                            <label
-                              htmlFor='motherPhoto'
-                              className='ant-btn ant-btn-primary mb-0'
-                            >
-                              Upload Image
-                            </label>
-                            <input
-                              className='d-none'
-                              type='file'
-                              id='motherPhoto'
-                              accept='image/png, image/jpg, image/jpeg'
-                              onChange={(event) => {
-                                let files = event.target.files[0];
-                                let imgType = event.target?.files[0]?.type;
-                                if (allowedExtension.indexOf(imgType) === -1) {
-                                  message.error(
-                                    'Only image(.jpeg, .jpg, .png) is acceptable!'
-                                  );
-                                  return;
-                                }
-                                setSelectedImageMother(files);
-                              }}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </Form.Item>
-                </Col>
-
-                <Col className='py-2' md={6}>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'mother' ||
-                          !singleParent ||
-                          (userLevel !== 13 && parent && parent?.includes('parent')),
-                        message: `Mother's First Name is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (value && value?.trim()?.length === 0) {
-                            return Promise.reject(`Enter atleast one character`);
-                          }
-                          if (value && !/^.{0,30}$/.test(value)) {
-                            return Promise.reject(
-                              `First Name should not exceed 30 characters!`
-                            );
-                          }
-                          if (value && Profanity(value)) {
-                            return Promise.reject(
-                              `First Name Contains Banned Words , Please Check`
-                            );
-                          }
-
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name={'mother_first_name'}
-                    label="Mother's First Name"
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={6}>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'mother' ||
-                          !singleParent ||
-                          (userLevel !== 13 && parent && parent?.includes('parent')),
-                        message: `Mother's Last Name is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (value && value?.trim()?.length === 0) {
-                            return Promise.reject(`Enter atleast one character`);
-                          }
-
-                          if (value && !/^.{0,30}$/.test(value)) {
-                            return Promise.reject(
-                              `Last Name should not exceed 30 characters!`
-                            );
-                          }
-                          if (value && Profanity(value)) {
-                            return Promise.reject(
-                              `Last Name Contains Banned Words , Please Check`
-                            );
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name={'mother_last_name'}
-                    label="Mother's Last Name"
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-
-                <Col md={6} className='py-2'>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'mother' ||
-                          (userLevel !== 13 && parent && parent?.includes('parent')),
-                        message: `Mother's Email is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (
-                            value &&
-                            !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-                              value
-                            )
-                          ) {
-                            return Promise.reject(`Invalid email!`);
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name='mother_email'
-                    label={
-                      <Space align='end' className='th-primary-contact-check'>
-                        {userLevel === 13 && (
-                          <Form.Item
-                            style={{ marginBottom: '0px' }}
-                            className='mb-0 th-primary-contact-checkbox'
-                            name={'mother_primary_email'}
-                          >
-                            {userLevel === 13 && (
-                              <Checkbox
-                                checked={motherPrimaryEmail}
-                                onChange={(e) => {
-                                  setFatherPrimaryEmail(false);
-                                  setMotherPrimaryEmail(e.target.checked);
-                                  setGuardianPrimaryEmail(false);
-                                }}
-                                className='w-100 h-100'
-                              />
-                            )}
-                          </Form.Item>
-                        )}
-                        <div>Mother's Email</div>
-                        {userLevel === 13 && (
-                          <Tooltip title={`Make Mother's  Email as primary`}>
-                            <InfoCircleFilled />
-                          </Tooltip>
-                        )}
-                      </Space>
-                    }
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2'>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'mother' ||
-                          !singleParent ||
-                          (userLevel !== 13 && parent && parent?.includes('parent')),
-                        message: `Mother's Age is required!`,
-                      },
-                    ]}
-                    name='mother_age'
-                    label="Mother's Age"
-                  >
-                    <InputNumber min={0} />
-                  </Form.Item>
-                </Col>
-
-                <Col className='py-2' md={24}>
-                  <Row gutter={24}>
-                    <Col md={8} className=''>
-                      <Space>
-                        <Form.Item name={'mother_mobile_code'} label='Code'>
-                          <Select
-                            showSearch
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            defaultValue={'+91'}
-                          >
-                            {countryCodeOptions}
-                          </Select>
-                        </Form.Item>
-                        <Form.Item
-                          rules={[
-                            {
-                              required: false,
-                              pattern: /^[0-9]{10}$/,
-                              message: `Mother's Contact Number is invalid!`,
+                    <Col md={6} className='py-2'>
+                      <Form.Item
+                        rules={[
+                          {
+                            required:
+                              guardian === 'mother' ||
+                              (userLevel !== 13 && parent && parent?.includes('parent')),
+                            message: `Mother's Email is required!`,
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (
+                                value &&
+                                !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+                                  value
+                                )
+                              ) {
+                                return Promise.reject(`Invalid email!`);
+                              }
+                              return Promise.resolve();
                             },
-                          ]}
-                          name={'mother_mobile'}
-                          label={
-                            <Space align='end' className='th-primary-contact-check'>
+                          },
+                        ]}
+                        name='mother_email'
+                        label={
+                          <Space align='end' className='th-primary-contact-check'>
+                            {userLevel === 13 && (
                               <Form.Item
                                 style={{ marginBottom: '0px' }}
                                 className='mb-0 th-primary-contact-checkbox'
-                                name={'mother_primary'}
+                                name={'mother_primary_email'}
                               >
                                 {userLevel === 13 && (
                                   <Checkbox
-                                    checked={motherPrimary}
+                                    checked={motherPrimaryEmail}
                                     onChange={(e) => {
-                                      setFatherPrimary(false);
-                                      setMotherPrimary(e.target.checked);
-                                      setGuardianPrimary(false);
+                                      setFatherPrimaryEmail(false);
+                                      setMotherPrimaryEmail(e.target.checked);
+                                      setGuardianPrimaryEmail(false);
                                     }}
                                     className='w-100 h-100'
                                   />
                                 )}
                               </Form.Item>
-                              <div>Contact Number</div>
-                              {userLevel === 13 && (
-                                <Tooltip
-                                  title={`Make Mother's contact number as primary`}
-                                >
-                                  <InfoCircleFilled />
-                                </Tooltip>
-                              )}
-                            </Space>
-                          }
-                        >
-                          <Input className='w-100' />
-                        </Form.Item>
-                      </Space>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Item
-                        rules={[
-                          {
-                            required:
-                              guardian === 'mother' ||
-                              !singleParent ||
-                              (userLevel !== 13 && parent && parent?.includes('parent')),
-                            message: `Mother's Qualification is required!`,
-                          },
-                        ]}
-                        name='mother_qualification'
-                        label="Mother's Qualification"
+                            )}
+                            <div>Mother's Email</div>
+                            {userLevel === 13 && (
+                              <Tooltip title={`Make Mother's  Email as primary`}>
+                                <InfoCircleFilled />
+                              </Tooltip>
+                            )}
+                          </Space>
+                        }
                       >
-                        <Select className='w-100' placeholder='Select Qualification'>
-                          {qualificationOptions}
-                        </Select>
+                        <Input className='w-100' />
                       </Form.Item>
                     </Col>
-                    <Col md={6}>
+                    <Col className='py-2'>
                       <Form.Item
                         rules={[
                           {
@@ -906,342 +941,218 @@ const FamilyInformation = ({
                               guardian === 'mother' ||
                               !singleParent ||
                               (userLevel !== 13 && parent && parent?.includes('parent')),
-                            message: `Mother's Occupation is required!`,
+                            message: `Mother's Age is required!`,
                           },
-                          {
-                            validator: (_, value) => {
-                              if (value && value?.trim()?.length === 0) {
-                                return Promise.reject(`Enter atleast one character`);
-                              }
-                              if (value && Profanity(value)) {
-                                return Promise.reject(
-                                  `Occupation Contains Banned Words , Please Check`
-                                );
-                              }
+                        ]}
+                        name='mother_age'
+                        label="Mother's Age"
+                      >
+                        <InputNumber min={0} />
+                      </Form.Item>
+                    </Col>
 
-                              return Promise.resolve();
-                            },
-                          },
-                        ]}
-                        name='mother_occupation'
-                        label="Mother's Occupation"
-                      >
-                        <Input className='' />
-                      </Form.Item>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Item
-                        rules={[
-                          {
-                            required: false,
-                            message: `Invalid Aadhar Number!`,
-                            pattern: /^\d{12}$/,
-                          },
-                        ]}
-                        name='mother_aadhaar'
-                        label="Mother's Aadhaar Number"
-                      >
-                        <Input className='' />
-                      </Form.Item>
+                    <Col className='py-2' md={24}>
+                      <Row gutter={24}>
+                        <Col md={8} className=''>
+                          <Space>
+                            <Form.Item name={'mother_mobile_code'} label='Code'>
+                              <Select
+                                showSearch
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                defaultValue={'+91'}
+                                disabled={
+                                  editId
+                                    ? parentFetchedData?.mother_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.mother_mobile ===
+                                      parentFetchedData?.contact_details
+                                }
+                              >
+                                {countryCodeOptions}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item
+                              rules={[
+                                {
+                                  required: false,
+                                  pattern: /^[0-9]{10}$/,
+                                  message: `Mother's Contact Number is invalid!`,
+                                },
+                              ]}
+                              name={'mother_mobile'}
+                              label={
+                                <Space align='end' className='th-primary-contact-check'>
+                                  <Form.Item
+                                    style={{ marginBottom: '0px' }}
+                                    className='mb-0 th-primary-contact-checkbox'
+                                    name={'mother_primary'}
+                                  ></Form.Item>
+                                  <div>Contact Number</div>
+                                </Space>
+                              }
+                            >
+                              <Input
+                                className='w-100'
+                                disabled={
+                                  editId
+                                    ? parentFetchedData?.mother_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.mother_mobile ===
+                                      parentFetchedData?.contact_details
+                                }
+                              />
+                            </Form.Item>
+                          </Space>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required:
+                                  guardian === 'mother' ||
+                                  !singleParent ||
+                                  (userLevel !== 13 &&
+                                    parent &&
+                                    parent?.includes('parent')),
+                                message: `Mother's Qualification is required!`,
+                              },
+                            ]}
+                            name='mother_qualification'
+                            label="Mother's Qualification"
+                          >
+                            <Select className='w-100' placeholder='Select Qualification'>
+                              {qualificationOptions}
+                            </Select>
+                          </Form.Item>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required:
+                                  guardian === 'mother' ||
+                                  !singleParent ||
+                                  (userLevel !== 13 &&
+                                    parent &&
+                                    parent?.includes('parent')),
+                                message: `Mother's Occupation is required!`,
+                              },
+                              {
+                                validator: (_, value) => {
+                                  if (value && value?.trim()?.length === 0) {
+                                    return Promise.reject(`Enter atleast one character`);
+                                  }
+                                  if (value && Profanity(value)) {
+                                    return Promise.reject(
+                                      `Occupation Contains Banned Words , Please Check`
+                                    );
+                                  }
+
+                                  return Promise.resolve();
+                                },
+                              },
+                            ]}
+                            name='mother_occupation'
+                            label="Mother's Occupation"
+                          >
+                            <Input className='' />
+                          </Form.Item>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required: false,
+                                message: `Invalid Aadhar Number!`,
+                                pattern: /^\d{12}$/,
+                              },
+                            ]}
+                            name='mother_aadhaar'
+                            label="Mother's Aadhaar Number"
+                          >
+                            <Input className='' />
+                          </Form.Item>
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
-                </Col>
-              </Row>
-              <Divider />
-            </>
-          )}
+                  <Divider />
+                </>
+              )}
 
-          {/* GUARDIAN DETAILS */}
-          {(userLevel === 13 ||
-            (userLevel !== 13 && parent && parent?.includes('guardian'))) && (
-            <>
-              <Row gutter={24}>
-                <Col className='py-2' md={24}>
-                  <Form.Item label="Guardian's Image">
-                    <div className='d-flex align-items-end'>
-                      {selectedImageGuardian ? (
-                        <Avatar
-                          shape='square'
-                          src={
-                            typeof selectedImageGuardian === 'string'
-                              ? selectedImageGuardian
-                              : URL.createObjectURL(selectedImageGuardian)
-                          }
-                          size={80}
-                        />
-                      ) : (
-                        <Avatar shape='square' icon={<UserOutlined />} size={80} />
-                      )}
-                      <div className='pl-3'>
-                        <div className='pb-1'>
-                          {selectedImageGuardian ? '' : 'No file uploaded'}
-                        </div>
-                        {selectedImageGuardian ? (
-                          <Button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setSelectedImageGuardian(null);
-                            }}
-                            type='primary'
-                          >
-                            Remove Image
-                          </Button>
-                        ) : (
-                          <>
-                            <label
-                              htmlFor='guardianPhoto'
-                              className='ant-btn ant-btn-primary mb-0'
-                            >
-                              Upload Image
-                            </label>
-                            <input
-                              className='d-none'
-                              type='file'
-                              id='guardianPhoto'
-                              accept='image/png, image/jpg, image/jpeg'
-                              onChange={(event) => {
-                                let files = event.target.files[0];
-                                let imgType = event.target?.files[0]?.type;
-                                if (allowedExtension.indexOf(imgType) === -1) {
-                                  message.error(
-                                    'Only image(.jpeg, .jpg, .png) is acceptable!'
-                                  );
-                                  return;
-                                }
-                                setSelectedImageGuardian(files);
-                              }}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={6}>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'guardian' ||
-                          (userLevel !== 13 && parent && parent?.includes('guardian')),
-                        message: `Guardian's First Name is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (value && value?.trim()?.length === 0) {
-                            return Promise.reject(`Enter atleast one character`);
-                          }
-                          if (value && !/^.{0,30}$/.test(value)) {
-                            return Promise.reject(
-                              `First Name should not exceed 30 characters!`
-                            );
-                          }
-                          if (value && Profanity(value)) {
-                            return Promise.reject(
-                              `First Name Contains Banned Words , Please Check`
-                            );
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name={'guardian_first_name'}
-                    label="Guardian's First Name"
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={6}>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'guardian' ||
-                          (userLevel !== 13 && parent && parent?.includes('guardian')),
-                        message: `Guardian's Last Name is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (value && value?.trim()?.length === 0) {
-                            return Promise.reject(`Enter atleast one character`);
-                          }
-
-                          if (value && !/^.{0,30}$/.test(value)) {
-                            return Promise.reject(
-                              `Last Name should not exceed 30 characters!`
-                            );
-                          }
-
-                          if (value && Profanity(value)) {
-                            return Promise.reject(
-                              `Last Name Contains Banned Words , Please Check`
-                            );
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name={'guardian_last_name'}
-                    label="Guardian's Last Name"
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-
-                <Col md={6} className='py-2'>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'guardian' ||
-                          (userLevel !== 13 && parent && parent?.includes('guardian')),
-                        message: `Guardian's Email is required!`,
-                      },
-                      {
-                        validator: (_, value) => {
-                          if (
-                            value &&
-                            !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-                              value
-                            )
-                          ) {
-                            return Promise.reject(`Invalid email!`);
-                          }
-                          return Promise.resolve();
-                        },
-                      },
-                    ]}
-                    name='guardian_email'
-                    label={
-                      <Space align='end' className='th-primary-contact-check'>
-                        {userLevel === 13 && (
-                          <Form.Item
-                            style={{ marginBottom: '0px' }}
-                            className='mb-0 th-primary-contact-checkbox'
-                            name={'guardian_primary_email'}
-                          >
-                            <Checkbox
-                              checked={guardianPrimaryEmail}
-                              onChange={(e) => {
-                                setFatherPrimaryEmail(false);
-                                setMotherPrimaryEmail(false);
-                                setGuardianPrimaryEmail(e.target.checked);
-                              }}
-                              className='w-100 h-100'
-                            />
-                          </Form.Item>
-                        )}
-                        <div>Guardian's Email</div>
-                        {userLevel === 13 && (
-                          <Tooltip title={`Make Guardian's  Email as primary`}>
-                            <InfoCircleFilled />
-                          </Tooltip>
-                        )}
-                      </Space>
-                    }
-                  >
-                    <Input className='w-100' />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2'>
-                  <Form.Item
-                    rules={[
-                      {
-                        required:
-                          guardian === 'guardian' ||
-                          (userLevel !== 13 && parent && parent?.includes('guardian')),
-                        message: `Guardian's Age is required!`,
-                      },
-                    ]}
-                    name='guardian_age'
-                    label="Guardian's Age"
-                  >
-                    <InputNumber min={0} />
-                  </Form.Item>
-                </Col>
-                <Col className='py-2' md={24}>
+              {/* GUARDIAN DETAILS */}
+              {(userLevel === 13 ||
+                (userLevel !== 13 && parent && parent?.includes('guardian'))) && (
+                <>
                   <Row gutter={24}>
-                    <Col md={8} className=''>
-                      <Space align='start'>
-                        <Form.Item name={'guardian_mobile_code'} label='Code'>
-                          <Select
-                            showSearch
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            defaultValue={'+91'}
-                          >
-                            {countryCodeOptions}
-                          </Select>
-                        </Form.Item>
-                        <Form.Item
-                          rules={[
-                            {
-                              required: false,
-                              pattern: /^[0-9]{10}$/,
-                              message: `Guardian's Contact Number is invalid!`,
-                            },
-                          ]}
-                          name={'guardian_mobile'}
-                          label={
-                            <Space align='end' className='th-primary-contact-check'>
-                              {userLevel === 13 && (
-                                <Form.Item
-                                  style={{ marginBottom: '0px' }}
-                                  className='mb-0 th-primary-contact-checkbox'
-                                  name={'guardian_primary'}
+                    <Col className='py-2' md={24}>
+                      <Form.Item label="Guardian's Image">
+                        <div className='d-flex align-items-end'>
+                          {selectedImageGuardian ? (
+                            <Avatar
+                              shape='square'
+                              src={
+                                typeof selectedImageGuardian === 'string'
+                                  ? selectedImageGuardian
+                                  : URL.createObjectURL(selectedImageGuardian)
+                              }
+                              size={80}
+                            />
+                          ) : (
+                            <Avatar shape='square' icon={<UserOutlined />} size={80} />
+                          )}
+                          <div className='pl-3'>
+                            <div className='pb-1'>
+                              {selectedImageGuardian ? '' : 'No file uploaded'}
+                            </div>
+                            {selectedImageGuardian ? (
+                              <Button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setSelectedImageGuardian(null);
+                                }}
+                                type='primary'
+                              >
+                                Remove Image
+                              </Button>
+                            ) : (
+                              <>
+                                <label
+                                  htmlFor='guardianPhoto'
+                                  className='ant-btn ant-btn-primary mb-0'
                                 >
-                                  <Checkbox
-                                    checked={guardianPrimary}
-                                    onChange={(e) => {
-                                      setFatherPrimary(false);
-                                      setMotherPrimary(false);
-                                      setGuardianPrimary(e.target.checked);
-                                    }}
-                                    className='w-100 h-100'
-                                  />
-                                </Form.Item>
-                              )}
-                              <div>Contact Number</div>
-                              {userLevel === 13 && (
-                                <Tooltip
-                                  title={`Make Guardian's contact number as primary`}
-                                >
-                                  <InfoCircleFilled />
-                                </Tooltip>
-                              )}
-                            </Space>
-                          }
-                        >
-                          <Input className='w-100' />
-                        </Form.Item>
-                      </Space>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Item
-                        rules={[
-                          {
-                            required:
-                              guardian === 'guardian' ||
-                              (userLevel !== 13 &&
-                                parent &&
-                                parent?.includes('guardian')),
-                            message: `Guardian's Qualification is required!`,
-                          },
-                        ]}
-                        name='guardian_qualification'
-                        label="Guardian's Qualification"
-                      >
-                        <Select className='w-100' placeholder='Select Qualification'>
-                          {qualificationOptions}
-                        </Select>
+                                  Upload Image
+                                </label>
+                                <input
+                                  className='d-none'
+                                  type='file'
+                                  id='guardianPhoto'
+                                  accept='image/png, image/jpg, image/jpeg'
+                                  onChange={(event) => {
+                                    let files = event.target.files[0];
+                                    let imgType = event.target?.files[0]?.type;
+                                    if (allowedExtension.indexOf(imgType) === -1) {
+                                      message.error(
+                                        'Only image(.jpeg, .jpg, .png) is acceptable!'
+                                      );
+                                      return;
+                                    }
+                                    setSelectedImageGuardian(files);
+                                  }}
+                                />
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </Form.Item>
                     </Col>
-                    <Col md={6}>
+                    <Col className='py-2' md={6}>
                       <Form.Item
                         rules={[
                           {
@@ -1250,7 +1161,43 @@ const FamilyInformation = ({
                               (userLevel !== 13 &&
                                 parent &&
                                 parent?.includes('guardian')),
-                            message: `Guardian's Occupation is required!`,
+                            message: `Guardian's First Name is required!`,
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (value && value?.trim()?.length === 0) {
+                                return Promise.reject(`Enter atleast one character`);
+                              }
+                              if (value && !/^.{0,30}$/.test(value)) {
+                                return Promise.reject(
+                                  `First Name should not exceed 30 characters!`
+                                );
+                              }
+                              if (value && Profanity(value)) {
+                                return Promise.reject(
+                                  `First Name Contains Banned Words , Please Check`
+                                );
+                              }
+                              return Promise.resolve();
+                            },
+                          },
+                        ]}
+                        name={'guardian_first_name'}
+                        label="Guardian's First Name"
+                      >
+                        <Input className='w-100' />
+                      </Form.Item>
+                    </Col>
+                    <Col className='py-2' md={6}>
+                      <Form.Item
+                        rules={[
+                          {
+                            required:
+                              guardian === 'guardian' ||
+                              (userLevel !== 13 &&
+                                parent &&
+                                parent?.includes('guardian')),
+                            message: `Guardian's Last Name is required!`,
                           },
                           {
                             validator: (_, value) => {
@@ -1258,23 +1205,211 @@ const FamilyInformation = ({
                                 return Promise.reject(`Enter atleast one character`);
                               }
 
-                              if (value && Profanity(value)) {
+                              if (value && !/^.{0,30}$/.test(value)) {
                                 return Promise.reject(
-                                  `Occupation Contains Banned Words , Please Check`
+                                  `Last Name should not exceed 30 characters!`
                                 );
                               }
 
+                              if (value && Profanity(value)) {
+                                return Promise.reject(
+                                  `Last Name Contains Banned Words , Please Check`
+                                );
+                              }
                               return Promise.resolve();
                             },
                           },
                         ]}
-                        name='guardian_occupation'
-                        label="Guardian's Occupation"
+                        name={'guardian_last_name'}
+                        label="Guardian's Last Name"
                       >
-                        <Input className='' />
+                        <Input className='w-100' />
                       </Form.Item>
                     </Col>
-                    {/* 
+
+                    <Col md={6} className='py-2'>
+                      <Form.Item
+                        rules={[
+                          {
+                            required:
+                              guardian === 'guardian' ||
+                              (userLevel !== 13 &&
+                                parent &&
+                                parent?.includes('guardian')),
+                            message: `Guardian's Email is required!`,
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (
+                                value &&
+                                !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+                                  value
+                                )
+                              ) {
+                                return Promise.reject(`Invalid email!`);
+                              }
+                              return Promise.resolve();
+                            },
+                          },
+                        ]}
+                        name='guardian_email'
+                        label={
+                          <Space align='end' className='th-primary-contact-check'>
+                            {userLevel === 13 && (
+                              <Form.Item
+                                style={{ marginBottom: '0px' }}
+                                className='mb-0 th-primary-contact-checkbox'
+                                name={'guardian_primary_email'}
+                              >
+                                <Checkbox
+                                  checked={guardianPrimaryEmail}
+                                  onChange={(e) => {
+                                    setFatherPrimaryEmail(false);
+                                    setMotherPrimaryEmail(false);
+                                    setGuardianPrimaryEmail(e.target.checked);
+                                  }}
+                                  className='w-100 h-100'
+                                />
+                              </Form.Item>
+                            )}
+                            <div>Guardian's Email</div>
+                            {userLevel === 13 && (
+                              <Tooltip title={`Make Guardian's  Email as primary`}>
+                                <InfoCircleFilled />
+                              </Tooltip>
+                            )}
+                          </Space>
+                        }
+                      >
+                        <Input className='w-100' />
+                      </Form.Item>
+                    </Col>
+                    <Col className='py-2'>
+                      <Form.Item
+                        rules={[
+                          {
+                            required:
+                              guardian === 'guardian' ||
+                              (userLevel !== 13 &&
+                                parent &&
+                                parent?.includes('guardian')),
+                            message: `Guardian's Age is required!`,
+                          },
+                        ]}
+                        name='guardian_age'
+                        label="Guardian's Age"
+                      >
+                        <InputNumber min={0} />
+                      </Form.Item>
+                    </Col>
+                    <Col className='py-2' md={24}>
+                      <Row gutter={24}>
+                        <Col md={8} className=''>
+                          <Space align='start'>
+                            <Form.Item name={'guardian_mobile_code'} label='Code'>
+                              <Select
+                                showSearch
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                defaultValue={'+91'}
+                                disabled={
+                                  editId
+                                    ? parentFetchedData?.guardian_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.guardian_mobile ===
+                                      parentFetchedData?.contact_details
+                                }
+                              >
+                                {countryCodeOptions}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item
+                              rules={[
+                                {
+                                  required: false,
+                                  pattern: /^[0-9]{10}$/,
+                                  message: `Guardian's Contact Number is invalid!`,
+                                },
+                              ]}
+                              name={'guardian_mobile'}
+                              label={
+                                <Space align='end' className='th-primary-contact-check'>
+                                  <div>Contact Number</div>
+                                </Space>
+                              }
+                            >
+                              <Input
+                                className='w-100'
+                                disabled={
+                                  editId
+                                    ? parentFetchedData?.guardian_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.guardian_mobile ===
+                                      parentFetchedData?.contact_details
+                                }
+                              />
+                            </Form.Item>
+                          </Space>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required:
+                                  guardian === 'guardian' ||
+                                  (userLevel !== 13 &&
+                                    parent &&
+                                    parent?.includes('guardian')),
+                                message: `Guardian's Qualification is required!`,
+                              },
+                            ]}
+                            name='guardian_qualification'
+                            label="Guardian's Qualification"
+                          >
+                            <Select className='w-100' placeholder='Select Qualification'>
+                              {qualificationOptions}
+                            </Select>
+                          </Form.Item>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required:
+                                  guardian === 'guardian' ||
+                                  (userLevel !== 13 &&
+                                    parent &&
+                                    parent?.includes('guardian')),
+                                message: `Guardian's Occupation is required!`,
+                              },
+                              {
+                                validator: (_, value) => {
+                                  if (value && value?.trim()?.length === 0) {
+                                    return Promise.reject(`Enter atleast one character`);
+                                  }
+
+                                  if (value && Profanity(value)) {
+                                    return Promise.reject(
+                                      `Occupation Contains Banned Words , Please Check`
+                                    );
+                                  }
+
+                                  return Promise.resolve();
+                                },
+                              },
+                            ]}
+                            name='guardian_occupation'
+                            label="Guardian's Occupation"
+                          >
+                            <Input className='' />
+                          </Form.Item>
+                        </Col>
+                        {/* 
                     <Col md={6}>
                       <Form.Item
                         rules={[
@@ -1290,180 +1425,184 @@ const FamilyInformation = ({
                         <Input className='' />
                       </Form.Item>
                     </Col> */}
-                    <Col md={6}>
-                      <Form.Item
-                        rules={[
-                          {
-                            required: false,
-                            message: `Invalid Aadhar Number!`,
-                            pattern: /^\d{12}$/,
-                          },
-                        ]}
-                        name={'guardian_aadhaar'}
-                        label="Guardian's Aadhaar Number"
-                      >
-                        <Input className='' />
-                      </Form.Item>
+                        <Col md={6}>
+                          <Form.Item
+                            rules={[
+                              {
+                                required: false,
+                                message: `Invalid Aadhar Number!`,
+                                pattern: /^\d{12}$/,
+                              },
+                            ]}
+                            name={'guardian_aadhaar'}
+                            label="Guardian's Aadhaar Number"
+                          >
+                            <Input className='' />
+                          </Form.Item>
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
-                </Col>
-              </Row>
-              <Divider />
-            </>
-          )}
-          {/* ADDRESS/PHONE DETAILS  */}
-          <Row className='py-2' gutter={24}>
-            <Col md={8}>
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: 'Address is required!',
-                  },
-                  {
-                    validator: (_, value) => {
-                      if (value && Profanity(value)) {
-                        return Promise.reject(
-                          `Address Contains Banned Words , Please Check`
-                        );
-                      }
-                      return Promise.resolve();
-                    },
-                  },
-                ]}
-                name={'address'}
-                label='Address'
-              >
-                <TextArea rows={4} className='w-100' />
-              </Form.Item>
-            </Col>
-            <Col md={6}>
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: 'Pincode is required!',
-                  },
-                  {
-                    validator: (_, value) => {
-                      if (value && !/^\d{6}$/.test(value)) {
-                        return Promise.reject(`Enter Valid Pincode`);
-                      }
-                      return Promise.resolve();
-                    },
-                  },
-                ]}
-                name={'pin_code'}
-                label='Pincode'
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            {userLevel !== 13 && (
-              <Col md={6}>
-                <Form.Item
-                  rules={[
-                    {
-                      required: true,
-                      pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      message: 'Invalid Email!',
-                    },
-                  ]}
-                  name={'email'}
-                  label='Email Id'
-                >
-                  <Input />
-                </Form.Item>
-              </Col>
-            )}
-          </Row>
-          <Row className='py-2' gutter={24}>
-            {userLevel !== 13 && (
-              <Col md={8} className='py-2'>
-                <Space align='start'>
-                  <Form.Item name={'contact_code'} label='Code'>
-                    <Select
-                      showSearch
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      defaultValue={'+91'}
-                    >
-                      {countryCodeOptions}
-                    </Select>
-                  </Form.Item>
+                  <Divider />
+                </>
+              )}
+              {/* ADDRESS/PHONE DETAILS  */}
+              <Row className='py-2' gutter={24}>
+                <Col md={8}>
                   <Form.Item
                     rules={[
                       {
                         required: true,
-                        pattern: /^[0-9]{10}$/,
-                        message: 'Contact Number is invalid!',
+                        message: 'Address is required!',
+                      },
+                      {
+                        validator: (_, value) => {
+                          if (value && Profanity(value)) {
+                            return Promise.reject(
+                              `Address Contains Banned Words , Please Check`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
-                    name={'contact'}
-                    required
-                    label='Contact Number'
+                    name={'address'}
+                    label='Address'
                   >
-                    <Input className='w-100' />
+                    <TextArea rows={4} className='w-100' />
                   </Form.Item>
-                </Space>
-              </Col>
-            )}
-            {userLevel === 13 && (
-              <Col md={8} className='py-2'>
-                <Form.Item
-                  rules={[
-                    {
-                      required: false,
-                      message: `Invalid Aadhar Number!`,
-                      pattern: /^\d{12}$/,
-                    },
-                  ]}
-                  name={'aadhaar'}
-                  label={'Student Aadhaar'}
-                >
-                  <Input className='w-100' />
-                </Form.Item>
-              </Col>
-            )}
-            {/* <Col md={6}>
+                </Col>
+                <Col md={6}>
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Pincode is required!',
+                      },
+                      {
+                        validator: (_, value) => {
+                          if (value && !/^\d{6}$/.test(value)) {
+                            return Promise.reject(`Enter Valid Pincode`);
+                          }
+                          return Promise.resolve();
+                        },
+                      },
+                    ]}
+                    name={'pin_code'}
+                    label='Pincode'
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                {userLevel !== 13 && (
+                  <Col md={6}>
+                    <Form.Item
+                      rules={[
+                        {
+                          required: true,
+                          pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                          message: 'Invalid Email!',
+                        },
+                      ]}
+                      name={'email'}
+                      label='Email Id'
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                )}
+              </Row>
+              <Row className='py-2' gutter={24}>
+                {userLevel !== 13 && (
+                  <Col md={8} className='py-2'>
+                    <Space align='start'>
+                      <Form.Item name={'contact_code'} label='Code'>
+                        <Select
+                          showSearch
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          defaultValue={'+91'}
+                        >
+                          {countryCodeOptions}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item
+                        rules={[
+                          {
+                            required: true,
+                            pattern: /^[0-9]{10}$/,
+                            message: 'Contact Number is invalid!',
+                          },
+                        ]}
+                        name={'contact'}
+                        required
+                        label='Contact Number'
+                      >
+                        <Input className='w-100' />
+                      </Form.Item>
+                    </Space>
+                  </Col>
+                )}
+                {userLevel === 13 && (
+                  <Col md={8} className='py-2'>
+                    <Form.Item
+                      rules={[
+                        {
+                          required: false,
+                          message: `Invalid Aadhar Number!`,
+                          pattern: /^\d{12}$/,
+                        },
+                      ]}
+                      name={'aadhaar'}
+                      label={'Student Aadhaar'}
+                    >
+                      <Input className='w-100' />
+                    </Form.Item>
+                  </Col>
+                )}
+                {/* <Col md={6}>
               <Form.Item label='Alternative Contact Number'>
                 <Input />
               </Form.Item>
             </Col> */}
-          </Row>
+              </Row>
+            </>
+          )}
         </Form>
       </div>
-      <div
-        // style={{ position: 'sticky', bottom: '59px' }}
-        className='d-flex justify-content-end align-items-center my-4'
-      >
-        <Button
-          onClick={() => {
-            let formValues = familyRef.current.getFieldsValue();
-            setGuardianPrimary(false);
-            setGuardianPrimaryEmail(false);
-            setFatherPrimary(false);
-            setFatherPrimaryEmail(false);
-            setMotherPrimary(false);
-            setMotherPrimaryEmail(false);
-            setFamilyFormValues({
-              ...formValues,
-              father_photo: selectedImageFather,
-              mother_photo: selectedImageMother,
-              guardian_photo: selectedImageGuardian,
-            });
-            handleBack();
-          }}
-          className='ml-3 px-4'
-          // type='primary'
+      {showParentContact && (
+        <div
+          // style={{ position: 'sticky', bottom: '59px' }}
+          className='d-flex justify-content-end align-items-center my-4'
         >
-          Back
-        </Button>
-        {userLevel !== 13
-          ? editId &&
+          <Button
+            onClick={() => {
+              let formValues = familyRef.current.getFieldsValue();
+              setGuardianPrimary(false);
+              setGuardianPrimaryEmail(false);
+              setFatherPrimary(false);
+              setFatherPrimaryEmail(false);
+              setMotherPrimary(false);
+              setMotherPrimaryEmail(false);
+              setFamilyFormValues({
+                ...formValues,
+                father_photo: selectedImageFather,
+                mother_photo: selectedImageMother,
+                guardian_photo: selectedImageGuardian,
+              });
+              handleBack();
+            }}
+            className='ml-3 px-4'
+            // type='primary'
+          >
+            Back
+          </Button>
+          {editId &&
             (is_superuser ||
               user_level === 1 ||
               user_level === 8 ||
@@ -1478,9 +1617,7 @@ const FamilyInformation = ({
               >
                 Change Password
               </Button>
-            )
-          : null}
-        {userLevel !== 13 ? (
+            )}
           <Button
             htmlType='submit'
             form='familyForm'
@@ -1490,17 +1627,8 @@ const FamilyInformation = ({
           >
             {editId ? 'Update' : 'Submit'}
           </Button>
-        ) : (
-          <Button
-            htmlType='submit'
-            form='familyForm'
-            className='ml-3 px-4'
-            type='primary'
-          >
-            Next
-          </Button>
-        )}
-      </div>
+        </div>
+      )}
     </React.Fragment>
   );
 };
