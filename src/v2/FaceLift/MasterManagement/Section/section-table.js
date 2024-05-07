@@ -7,52 +7,36 @@ import {
   message,
   Pagination,
   Empty,
-  Drawer,
   Row,
   Col,
   Spin,
   Form,
   Modal,
+  Popconfirm,
 } from 'antd';
 import {
   PlusCircleOutlined,
   SearchOutlined,
+  DeleteOutlined,
   EditOutlined,
   SyncOutlined,
+  RedoOutlined,
 } from '@ant-design/icons';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 import moment from 'moment';
 import Layout from 'containers/Layout';
 import { useForm } from 'antd/lib/form/Form';
-const GradeTable = () => {
+const SectionTable = () => {
   const [formRef] = useForm();
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
   const [search, setSearch] = useState('');
-  const [openDrawer, setOpenDrawer] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [drawerLoading, setDrawerLoading] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
-  const [drawerTableData, setDrawerTableData] = useState([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [id, setId] = useState();
-  const [drawerWidth, setDrawerWidth] = useState(
-    window.innerWidth <= 768 ? '90%' : '30%'
-  );
-  useEffect(() => {
-    const handleResize = () => {
-      setDrawerWidth(window.innerWidth <= 768 ? '90%' : '40%');
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
+  const [editId, setEditId] = useState();
   useEffect(() => {
     fetchTableData();
   }, [currentPage]);
@@ -78,16 +62,16 @@ const GradeTable = () => {
     if (search?.length > 0) {
       params = {
         ...params,
-        grade_name: search,
+        section_name: search,
       };
     }
     axiosInstance
-      .get(`${endpoints.masterManagement.grades}`, {
+      .get(`${endpoints.masterManagement.sectionsTable}`, {
         params: params,
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          setTableData(response?.data?.result);
+          setTableData(response?.data?.data);
         }
       })
       .catch((error) => {
@@ -99,13 +83,30 @@ const GradeTable = () => {
         setLoading(false);
       });
   };
-  const fetchDrawerTableData = () => {
-    setDrawerLoading(true);
+  const handleCreate = () => {
+    const section_name = formRef?.getFieldsValue()?.section_name;
+    if (!section_name || section_name?.length === 0) {
+      message.error('OOPS! Please enter section name');
+      return;
+    }
+    setModalLoading(true);
+    const params = {
+      section_name: section_name,
+    };
     axiosInstance
-      .get(`${endpoints.masterManagement.centralGrades}`)
+      .post(`${endpoints.masterManagement.createSection}`, params)
       .then((response) => {
-        if (response?.data?.status_code == 200) {
-          setDrawerTableData(response?.data?.result);
+        if (response?.data?.status_code == 201) {
+          message.success('Hurray! Section created successfully');
+          handleCloseModal();
+          if (search?.length > 0) {
+            setSearch('');
+          } else {
+            handleFetchTableData();
+          }
+        } else {
+          message.error('OOPS! This section name is already present');
+          return;
         }
       })
       .catch((error) => {
@@ -114,25 +115,24 @@ const GradeTable = () => {
         );
       })
       .finally(() => {
-        setDrawerLoading(false);
+        setModalLoading(false);
       });
   };
-  const handleModalSubmit = () => {
-    const grade_name = formRef?.getFieldsValue()?.grade_name;
-    if (!grade_name || grade_name?.length === 0) {
-      message.error('OOPS! Please enter grade name');
+  const handleEdit = () => {
+    const section_name = formRef?.getFieldsValue()?.section_name;
+    if (!section_name || section_name?.length === 0) {
+      message.error('OOPS! Please enter section name');
       return;
     }
     setModalLoading(true);
     const params = {
-      grade_id: id,
-      grade_name: grade_name,
+      section_name: section_name,
     };
     axiosInstance
-      .put(`${endpoints.masterManagement.updateGrade}${id}`, params)
+      .put(`${endpoints.masterManagement.updateSection}${editId}`, params)
       .then((response) => {
         if (response?.data?.status_code == 201) {
-          message.success('Hurray! Grade name updated successfully');
+          message.success('Hurray! Section name updated successfully');
           handleCloseModal();
           fetchTableData();
         }
@@ -146,63 +146,55 @@ const GradeTable = () => {
         setModalLoading(false);
       });
   };
-  const handleDrawerSubmit = () => {
-    if (selectedRows?.length === 0) {
-      message.error('OOPS! Please select atleast one grade');
-      return;
-    }
-    setDrawerLoading(true);
-    const grades = [];
-    selectedRows.forEach((item) => {
-      const { id, grade_name } = item;
-      grades.push({
-        grade_name: grade_name,
-        grade_type: grade_name,
-        eduvate_grade_id: id,
-      });
-    });
+  const handleDelete = ({ delId }) => {
+    setLoading(true);
     axiosInstance
-      .post(`${endpoints.masterManagement.createGrade}`, grades)
+      .delete(`${endpoints.masterManagement.updateSection}${delId}`)
       .then((response) => {
-        if (response?.data?.status_code == 201) {
-          message.success('Hurray! Grades added successfully');
-          handleCloseDrawer();
-          if (search?.length > 0) {
-            setSearch('');
-          } else {
-            handleFetchTableData();
-          }
+        if (response?.data?.status_code == 204) {
+          message.success('Hurray! Section deleted successfully');
+          fetchTableData();
         }
       })
       .catch((error) => {
         message.error(
           error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
         );
+        setLoading(false);
       })
-      .finally(() => {
-        setDrawerLoading(false);
-      });
+      .finally(() => {});
   };
-  const handleOpenDrawer = () => {
-    setOpenDrawer(true);
-    fetchDrawerTableData();
+  const handleRestore = ({ restoreId }) => {
+    setLoading(true);
+    axiosInstance
+      .put(`${endpoints.masterManagement.restoreSection}${restoreId}`)
+      .then((response) => {
+        if (response?.data?.status_code == 201) {
+          message.success('Hurray! Section restored successfully');
+          fetchTableData();
+        }
+      })
+      .catch((error) => {
+        message.error(
+          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
+        );
+        setLoading(false);
+      })
+      .finally(() => {});
   };
-  const handleCloseDrawer = () => {
-    setOpenDrawer(false);
-    setDrawerTableData([]);
-    setSelectedRowKeys([]);
-  };
-  const handleOpenModal = ({ id, grade_name }) => {
+  const handleOpenModal = ({ actionKey, editId, section_name }) => {
     setOpenModal(true);
-    formRef.setFieldsValue({
-      grade_name: grade_name,
-    });
-    setId(id);
+    if (actionKey === 'edit') {
+      formRef.setFieldsValue({
+        section_name: section_name,
+      });
+      setEditId(editId);
+    }
   };
   const handleCloseModal = () => {
     setOpenModal(false);
     formRef.resetFields();
-    setId();
+    setEditId();
   };
   const columns = [
     {
@@ -214,32 +206,11 @@ const GradeTable = () => {
       ),
     },
     {
-      title: <span className='th-white th-16 th-fw-700'>School Grade Name</span>,
+      title: <span className='th-white th-16 th-fw-700'>Section Name</span>,
       align: 'center',
       render: (data, row) => (
-        <div className='d-flex justify-content-between'>
-          <span className='th-black-1 th-16'>{row?.grade_name}</span>
-          <EditOutlined
-            title='Edit School Grade Name'
-            style={{
-              fontSize: 20,
-              cursor: 'pointer',
-              color: '#1B4CCB',
-            }}
-            onClick={() =>
-              handleOpenModal({
-                id: row?.id,
-                grade_name: row?.grade_name,
-              })
-            }
-          />
-        </div>
+        <span className='th-black-1 th-16'>{row?.section_name}</span>
       ),
-    },
-    {
-      title: <span className='th-white th-16 th-fw-700'>Eduvate Grade Name</span>,
-      align: 'center',
-      render: (data, row) => <span className='th-black-1 th-16'>{row?.grade_type}</span>,
     },
     {
       title: <span className='th-white th-16 th-fw-700'>Created At</span>,
@@ -255,26 +226,75 @@ const GradeTable = () => {
       align: 'center',
       render: (data, row) => <span className='th-black-1 th-16'>{row?.created_by}</span>,
     },
-  ];
-  const drawerTablecolumns = [
     {
-      title: <span className='th-white th-16 th-fw-700'>Eduvate Grade Name</span>,
+      title: <span className='th-white th-16 th-fw-700'>Action</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 th-16'>{row?.grade_name}</span>,
+      key: 'action',
+      render: (data, row) => {
+        return (
+          <>
+            {row?.is_delete ? (
+              <Popconfirm
+                title='Sure to restore?'
+                onConfirm={() =>
+                  handleRestore({
+                    restoreId: row?.id,
+                  })
+                }
+              >
+                <RedoOutlined
+                  title='Restore'
+                  style={{
+                    fontSize: 20,
+                    margin: 10,
+                    cursor: 'pointer',
+                    color: '#00A000',
+                  }}
+                />
+              </Popconfirm>
+            ) : (
+              <>
+                <EditOutlined
+                  title='Edit'
+                  style={{
+                    fontSize: 20,
+                    margin: 10,
+                    cursor: 'pointer',
+                    color: '#1B4CCB',
+                  }}
+                  onClick={() =>
+                    handleOpenModal({
+                      actionKey: 'edit',
+                      editId: row?.id,
+                      section_name: row?.section_name,
+                    })
+                  }
+                />
+                <Popconfirm
+                  title='Sure to delete?'
+                  onConfirm={() =>
+                    handleDelete({
+                      delId: row?.id,
+                    })
+                  }
+                >
+                  <DeleteOutlined
+                    title='Delete'
+                    style={{
+                      fontSize: 20,
+                      margin: 10,
+                      cursor: 'pointer',
+                      color: '#FF0000',
+                    }}
+                  />
+                </Popconfirm>
+              </>
+            )}
+          </>
+        );
+      },
     },
   ];
-  const onSelectChange = (newSelectedRowKeys, value) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-    setSelectedRows(value);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    getCheckboxProps: (record) => ({
-      disabled: record.is_check === true,
-    }),
-    hideSelectAll: true,
-  };
   const noDataLocale = {
     emptyText: (
       <div className='d-flex justify-content-center mt-5 th-grey'>
@@ -298,7 +318,7 @@ const GradeTable = () => {
               <Breadcrumb.Item className='th-grey th-16'>
                 Master Management
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>Grade List</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16'>Section List</Breadcrumb.Item>
             </Breadcrumb>
           </div>
         </div>
@@ -308,7 +328,7 @@ const GradeTable = () => {
               <div className='row justify-content-between'>
                 <div className='col-lg-4 col-md-6 col-sm-6 col-12 mb-2'>
                   <Input
-                    placeholder='Search Grade'
+                    placeholder='Search Section'
                     suffix={<SearchOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     onChange={(e) => setSearch(e.target.value)}
@@ -320,10 +340,14 @@ const GradeTable = () => {
                   <Button
                     type='primary'
                     icon={<PlusCircleOutlined />}
-                    onClick={() => handleOpenDrawer()}
+                    onClick={() =>
+                      handleOpenModal({
+                        actionKey: 'create',
+                      })
+                    }
                     className='btn-block th-br-4'
                   >
-                    Add Grade
+                    Add Section
                   </Button>
                 </div>
               </div>
@@ -361,62 +385,9 @@ const GradeTable = () => {
             </div>
           </div>
         </div>
-        <Drawer
-          title='Add Grade'
-          visible={openDrawer}
-          onClose={handleCloseDrawer}
-          footer={[
-            <Row justify='space-around'>
-              <Col>
-                <Button type='default' onClick={handleCloseDrawer}>
-                  Cancel
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  type='primary'
-                  icon={drawerLoading ? <SyncOutlined spin /> : <PlusCircleOutlined />}
-                  className='btn-block th-br-4'
-                  onClick={() => handleDrawerSubmit()}
-                >
-                  Add Grade
-                </Button>
-              </Col>
-            </Row>,
-          ]}
-          width={drawerWidth}
-        >
-          <>
-            {drawerLoading ? (
-              <div className='d-flex justify-content-center align-items-center'>
-                <Spin size='large' />
-              </div>
-            ) : (
-              <>
-                <div className='tableSubjectAdd'>
-                  <Table
-                    className='th-table'
-                    rowClassName={(record, index) =>
-                      index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                    }
-                    rowSelection={rowSelection}
-                    loading={loading}
-                    columns={drawerTablecolumns}
-                    rowKey={(record) => record?.id}
-                    dataSource={drawerTableData}
-                    pagination={false}
-                    scroll={{
-                      x: window.innerWidth > 400 ? '100%' : 'max-content',
-                    }}
-                  />
-                </div>
-              </>
-            )}
-          </>
-        </Drawer>
         <Modal
           visible={openModal}
-          title='Edit School Grade Name'
+          title={editId ? 'Edit Section' : 'Create Section'}
           onCancel={handleCloseModal}
           footer={[
             <Row justify='space-around'>
@@ -428,11 +399,19 @@ const GradeTable = () => {
               <Col>
                 <Button
                   type='primary'
-                  icon={modalLoading ? <SyncOutlined spin /> : <EditOutlined />}
+                  icon={
+                    modalLoading ? (
+                      <SyncOutlined spin />
+                    ) : editId ? (
+                      <EditOutlined />
+                    ) : (
+                      <PlusCircleOutlined />
+                    )
+                  }
                   className='btn-block th-br-4'
-                  onClick={() => handleModalSubmit()}
+                  onClick={editId ? handleEdit : handleCreate}
                 >
-                  Edit Grade
+                  {editId ? 'Edit' : 'Add'}
                 </Button>
               </Col>
             </Row>,
@@ -447,16 +426,16 @@ const GradeTable = () => {
               <div className='col-lg-12 col-md-12 col-sm-12 col-12 mt-2'>
                 <Form form={formRef}>
                   <Form.Item
-                    name='grade_name'
+                    name='section_name'
                     rules={[
                       {
                         required: true,
-                        message: 'Please Enter Grade Name',
+                        message: 'Please Enter Section Name',
                       },
                     ]}
                   >
                     <Input
-                      placeholder='Enter Grade Name'
+                      placeholder='Enter Section Name'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
                     />
@@ -471,4 +450,4 @@ const GradeTable = () => {
   );
 };
 
-export default GradeTable;
+export default SectionTable;

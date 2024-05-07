@@ -14,6 +14,7 @@ import {
   Checkbox,
   Card,
   Form,
+  Popconfirm,
 } from 'antd';
 import {
   PlusCircleOutlined,
@@ -44,16 +45,9 @@ const RoleManagement = () => {
   let childModuleIds = [];
   useEffect(() => {
     if (roleSearch?.length > 0) {
-      fetchRoleListOnSearch({
-        role_name: roleSearch,
-        page: currentPage,
-        page_size: pageSize,
-      });
+      fetchRoleListOnSearch();
     } else {
-      fetchRoleList({
-        page: currentPage,
-        page_size: pageSize,
-      });
+      fetchRoleList();
     }
   }, [currentPage]);
   useEffect(() => {
@@ -66,23 +60,20 @@ const RoleManagement = () => {
   const handleFetchRoleList = () => {
     if (currentPage == 1) {
       if (roleSearch?.length > 0) {
-        fetchRoleListOnSearch({
-          role_name: roleSearch,
-          page: currentPage,
-          page_size: pageSize,
-        });
+        fetchRoleListOnSearch();
       } else {
-        fetchRoleList({
-          page: currentPage,
-          page_size: pageSize,
-        });
+        fetchRoleList();
       }
     } else {
       setCurrentPage(1);
     }
   };
-  const fetchRoleList = (params = {}) => {
+  const fetchRoleList = () => {
     setLoading(true);
+    let params = {
+      page: currentPage,
+      page_size: pageSize,
+    };
     axiosInstance
       .get(`${endpoints.roleManagement.roleList}`, {
         params: params,
@@ -101,7 +92,12 @@ const RoleManagement = () => {
         setLoading(false);
       });
   };
-  const fetchRoleListOnSearch = (params = {}) => {
+  const fetchRoleListOnSearch = () => {
+    let params = {
+      role_name: roleSearch,
+      page: currentPage,
+      page_size: pageSize,
+    };
     setLoading(true);
     axiosInstance
       .get(`${endpoints.roleManagement.roleSearch}`, {
@@ -128,13 +124,18 @@ const RoleManagement = () => {
       .then((response) => {
         if (response?.data?.status_code == 200) {
           message.success('Hurray! Role deleted successdully');
-          handleFetchRoleList();
+          if (roleSearch?.length > 0) {
+            fetchRoleListOnSearch();
+          } else {
+            fetchRoleList();
+          }
         }
       })
       .catch((error) => {
         message.error(
           error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
         );
+        setLoading(false);
       })
       .finally(() => {});
   };
@@ -145,13 +146,18 @@ const RoleManagement = () => {
       .then((response) => {
         if (response?.data?.status_code == 200) {
           message.success('Hurray! Role restored successfully');
-          handleFetchRoleList();
+          if (roleSearch?.length > 0) {
+            fetchRoleListOnSearch();
+          } else {
+            fetchRoleList();
+          }
         }
       })
       .catch((error) => {
         message.error(
           error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
         );
+        setLoading(false);
       })
       .finally(() => {});
   };
@@ -236,7 +242,19 @@ const RoleManagement = () => {
               message.success('Hurray! Role created successfully!');
             }
             closeModulesDrawer();
-            handleFetchRoleList();
+            if (roleId) {
+              if (roleSearch?.length > 0) {
+                fetchRoleListOnSearch();
+              } else {
+                fetchRoleList();
+              }
+            } else {
+              if (roleSearch?.length > 0) {
+                setRoleSearch('');
+              } else {
+                handleFetchRoleList();
+              }
+            }
           } else {
             message.error('OOPS! This role name is already present');
             return;
@@ -321,47 +339,61 @@ const RoleManagement = () => {
       render: (data, row) => {
         return (
           <>
-            <EditOutlined
-              title='Edit Role'
-              style={{ fontSize: 20, margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
-              onClick={() =>
-                openModulesDrawer({
-                  actionKey: 'edit',
-                  roleId: row?.id,
-                })
-              }
-            />
-
             {row?.is_delete ? (
-              <RedoOutlined
-                title='Restore Role'
-                style={{
-                  fontSize: 20,
-                  margin: 10,
-                  cursor: 'pointer',
-                  color: '#00A000',
-                }}
-                onClick={(e) =>
+              <Popconfirm
+                title='Sure to restore?'
+                onConfirm={() =>
                   handleRestoreRole({
                     role: row?.id,
                   })
                 }
-              />
+              >
+                <RedoOutlined
+                  title='Restore'
+                  style={{
+                    fontSize: 20,
+                    margin: 10,
+                    cursor: 'pointer',
+                    color: '#00A000',
+                  }}
+                />
+              </Popconfirm>
             ) : (
-              <DeleteOutlined
-                title='Delete Role'
-                style={{
-                  fontSize: 20,
-                  margin: 10,
-                  cursor: 'pointer',
-                  color: '#FF0000',
-                }}
-                onClick={(e) =>
-                  handleDeleteRole({
-                    role: row?.id,
-                  })
-                }
-              />
+              <>
+                <EditOutlined
+                  title='Edit Role'
+                  style={{
+                    fontSize: 20,
+                    margin: 10,
+                    cursor: 'pointer',
+                    color: '#1B4CCB',
+                  }}
+                  onClick={() =>
+                    openModulesDrawer({
+                      actionKey: 'edit',
+                      roleId: row?.id,
+                    })
+                  }
+                />
+                <Popconfirm
+                  title='Sure to delete?'
+                  onConfirm={() =>
+                    handleDeleteRole({
+                      role: row?.id,
+                    })
+                  }
+                >
+                  <DeleteOutlined
+                    title='Delete'
+                    style={{
+                      fontSize: 20,
+                      margin: 10,
+                      cursor: 'pointer',
+                      color: '#FF0000',
+                    }}
+                  />
+                </Popconfirm>
+              </>
             )}
           </>
         );
@@ -484,6 +516,7 @@ const RoleManagement = () => {
                     suffix={<SearchOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
                     className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     onChange={(e) => setRoleSearch(e.target.value)}
+                    value={roleSearch}
                     allowClear
                   />
                 </div>
@@ -594,7 +627,7 @@ const RoleManagement = () => {
                           rules={[
                             {
                               required: true,
-                              message: 'Please enter role name',
+                              message: 'Please Enter Role Name',
                             },
                           ]}
                         >
