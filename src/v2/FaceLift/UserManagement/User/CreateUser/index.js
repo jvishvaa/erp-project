@@ -140,16 +140,22 @@ const CreateUser = () => {
     // }
   }, []);
   useEffect(() => {
-    if (userLevelForEdit && params?.id && roleBasedUiConfig) {
-      if (roleBasedUiConfig?.includes(userLevelForEdit?.toString())) {
-        fetchUserDataOwner(params?.id);
-      } else {
-        fetchUserData({
-          erp_user_id: params?.id,
-        });
-      }
+    // if (userLevelForEdit && params?.id && roleBasedUiConfig) {
+    // if (userLevelForEdit && params?.id) {
+    //   if (roleBasedUiConfig?.includes(userLevelForEdit?.toString())) {
+    //     fetchUserDataOwner(params?.id);
+    //   } else {
+    //     fetchUserData({
+    //       erp_user_id: params?.id,
+    //     });
+    //   }
+    // }
+    if (params?.id) {
+      fetchUserData({
+        erp_user_id: params?.id,
+      });
     }
-  }, [userLevelForEdit, params, roleBasedUiConfig]);
+  }, [params]);
 
   const getRoles = () => {
     setLoading(true);
@@ -251,6 +257,7 @@ const CreateUser = () => {
       .get(`/assessment/check-sys-config/`, { params: { ...params } })
       .then((response) => {
         if (response.data.status_code === 200) {
+          console.log(response.data.result);
           setRoleBasedUiConfig(response.data?.result);
         }
       })
