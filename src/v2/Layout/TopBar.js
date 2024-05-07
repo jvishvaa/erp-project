@@ -1,7 +1,13 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Divider, FormControl, MenuItem, AppBar, Grid } from '@material-ui/core';
-import { DownOutlined } from '@ant-design/icons';
+import {
+  DownOutlined,
+  UserSwitchOutlined,
+  UserOutlined,
+  WalletOutlined,
+  RedoOutlined,
+} from '@ant-design/icons';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -19,6 +25,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
+import endpointsV2 from 'v2/config/endpoints';
 import axiosInstance from '../../config/axios';
 import { logout } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -45,7 +52,7 @@ import NotificationsIcon from 'assets/dashboardIcons/topbarIcons/notifications.s
 import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
 import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
 import LiveHelpIcon from '@material-ui/icons/LiveHelpOutlined';
-import { Button, Select, Switch, Tooltip, message } from 'antd';
+import { Avatar, List, Popover, Select, Skeleton, Space, Tooltip, message } from 'antd';
 import CrmIcon from 'assets/images/crm.png';
 import './styles.scss';
 import { IsV2Checker } from 'v2/isV2Checker';
@@ -54,6 +61,7 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { domain_name } from 'v2/commonDomain';
 import CVbox from 'assets/images/cvbox.png';
+import WalletIcon from 'assets/images/wallet.png';
 import { AccessKey } from 'v2/cvboxAccesskey';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
@@ -107,6 +115,24 @@ const Appbar = ({ children, history, ...props }) => {
   const getCVHmac = localStorage.getItem('CVhmac') || null;
   const cvUsersData = localStorage.getItem('cvusers') || null;
   const [cvboxUserLevel, setCvboxUserLevel] = useState(cvUsersData);
+  const [storeWallet, setStoreWallet] = useState(null);
+  const [wallet, setWallet] = useState(null);
+  const [walletLoading, setWalletLoading] = useState(false);
+  const [storeWalletLoading, setStoreWalletLoading] = useState(false);
+  const [showWalletPopover, setShowWalletPopover] = useState(false);
+
+  const walletPrevData = JSON.parse(localStorage.getItem('walletLocal')) || null;
+  const storewalletPrevData =
+    JSON.parse(localStorage.getItem('storewalletLocal')) || null;
+
+  useEffect(() => {
+    if (walletPrevData?.amount && wallet == null) {
+      setWallet(walletPrevData);
+    }
+    if (storewalletPrevData?.store_amount && storeWallet == null) {
+      setStoreWallet(storewalletPrevData);
+    }
+  }, [walletPrevData, storewalletPrevData]);
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -129,7 +155,7 @@ const Appbar = ({ children, history, ...props }) => {
   useEffect(() => {
     if (profileDetails) {
       let unselectedprofiles = profileDetails?.data?.filter(
-        (item) => item.name !== selectedProfileDetails?.name
+        (item) => item.erp_id !== selectedProfileDetails?.erp_id
       );
       setProfileToShown(unselectedprofiles);
     }
@@ -273,7 +299,10 @@ const Appbar = ({ children, history, ...props }) => {
       '_blank'
     );
   };
-
+  const handleWalletCLick = () => {
+    fetchStoreWalletData();
+    fetchWalletData();
+  };
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
     <Menu
@@ -302,13 +331,13 @@ const Appbar = ({ children, history, ...props }) => {
           <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
-      {profileDetails?.is_verified && (
+      {/* {profileDetails?.is_verified && (
         <>
           <MenuItem onClick={() => setisSwitch(!isSwitch)}>
             <IconButton aria-label='settings' color='inherit'>
               <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
             </IconButton>
-            <Typography color='secondary'>Switch Profile</Typography>
+            <Typography color='secondary'>Switch Profile2</Typography>
             {!isSwitch && <KeyboardArrowDownIcon />}
             {isSwitch && <KeyboardArrowUpIcon />}
           </MenuItem>
@@ -317,12 +346,12 @@ const Appbar = ({ children, history, ...props }) => {
               <MenuItem onClick={() => handleSwitchChange(item)}>
                 {/* <IconButton aria-label='settings' color='inherit'>
             <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
-          </IconButton> */}
+          </IconButton> 
                 <Typography color='secondary'>{item?.name}</Typography>
               </MenuItem>
             ))}
         </>
-      )}
+      )} */}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -410,6 +439,7 @@ const Appbar = ({ children, history, ...props }) => {
       dispatch(fetchBranchList(acdemicCurrentYear?.id));
     }
   }, [acdemicCurrentYear]);
+  console.log({ showWalletPopover });
 
   const handleChange = (event) => {
     setAcademicYear(event);
@@ -514,8 +544,8 @@ const Appbar = ({ children, history, ...props }) => {
     setProfile(item?.name);
     // setProfileName(event?.target?.value.name)
     const phone_number = JSON.parse(localStorage?.getItem('profileNumber')) || {};
-    localStorage.removeItem('userDetails');
-    localStorage.removeItem('navigationData');
+    // localStorage.removeItem('userDetails');
+    // localStorage.removeItem('navigationData');
     if (phone_number && item) {
       let payload = {
         contact: phone_number,
@@ -523,7 +553,12 @@ const Appbar = ({ children, history, ...props }) => {
         hmac: item?.hmac,
       };
       axiosInstance
-        .post(endpoints.auth.mobileLogin, payload)
+        .post(
+          typeof phone_number === 'object'
+            ? endpoints.auth.siblingLogin
+            : endpoints.auth.mobileLogin,
+          payload
+        )
         .then((result) => {
           if (result.status === 200) {
             localStorage.setItem('mobileLoginDetails', JSON.stringify(result));
@@ -573,6 +608,41 @@ const Appbar = ({ children, history, ...props }) => {
     }
   };
 
+  const fetchStoreWalletData = () => {
+    setStoreWalletLoading(true);
+    axiosInstance
+      .get(`${endpointsV2.finance.storeWalletList}?student_id=${erpID?.erp}`)
+      .then((res) => {
+        if (res?.data?.length > 0) {
+          setStoreWallet(res?.data[0]);
+          localStorage.setItem('storewalletLocal', JSON.stringify(res?.data[0]));
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+      })
+      .finally(() => {
+        setStoreWalletLoading(false);
+      });
+  };
+
+  const fetchWalletData = () => {
+    setWalletLoading(true);
+    axiosInstance
+      .get(`${endpointsV2.finance.walletList}?student_id=${erpID?.erp}`)
+      .then((res) => {
+        if (res?.data?.length > 0) {
+          setWallet(res?.data[0]);
+          localStorage.setItem('walletLocal', JSON.stringify(res?.data[0]));
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+      })
+      .finally(() => {
+        setWalletLoading(false);
+      });
+  };
   return (
     <>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
@@ -1008,6 +1078,131 @@ const Appbar = ({ children, history, ...props }) => {
                   </Link>
                 </IconButton>
                 <div className={classes.sectionDesktop}>
+                  {userData?.user_level == 13 ? (
+                    <Popover
+                      trigger={'click'}
+                      visible={showWalletPopover}
+                      onVisibleChange={(open) => {
+                        if (open) {
+                          setShowWalletPopover(true);
+                        } else {
+                          setShowWalletPopover(false);
+                        }
+                      }}
+                      placement='bottomRight'
+                      content={
+                        <div style={{ width: 200 }}>
+                          {walletLoading || storeWalletLoading ? (
+                            <Space direction='vertical'>
+                              {[1, 2, 3]?.map((el) => (
+                                <Skeleton.Input
+                                  active
+                                  block
+                                  style={{ height: 15, width: 200 }}
+                                />
+                              ))}
+                            </Space>
+                          ) : (
+                            <>
+                              <div className='d-flex justify-content-between'>
+                                <div>Academic Wallet :</div>
+                                <div className='th-fw-600'>₹ {wallet?.amount ?? 0}</div>
+                              </div>
+                              <div className='d-flex justify-content-between pb-2'>
+                                <div>Store Wallet :</div>
+                                <div className='th-fw-600'>
+                                  ₹ {storeWallet?.store_amount ?? 0}
+                                </div>
+                              </div>
+                              <div className='d-flex justify-content-center'>
+                                <div
+                                  className='px-2 py-1 th-br-8 th-bg-grey th-pointer th-12'
+                                  onClick={() => {
+                                    handleWalletCLick();
+                                  }}
+                                >
+                                  <span className='px-2'>
+                                    <RedoOutlined />
+                                  </span>
+                                  Refresh
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      }
+                    >
+                      <div
+                        className='th-primary d-flex align-items-center th-pointer px-1'
+                        onClick={() => {
+                          if (localStorage.getItem('storewalletLocal') === null) {
+                            handleWalletCLick();
+                          }
+                        }}
+                      >
+                        {/* <WalletOutlined className='th-20 px-1' /> */}
+                        <img width='24px' src={WalletIcon} />
+                      </div>
+                    </Popover>
+                  ) : (
+                    ''
+                  )}
+                  {profileDetails?.is_verified && (
+                    <Popover
+                      trigger={'click'}
+                      placement='bottomRight'
+                      content={
+                        <List
+                          style={{ width: 200 }}
+                          itemLayout='horizontal'
+                          dataSource={profileToShown}
+                          renderItem={(item) => {
+                            let imageLink = `${endpoints.profile.Profilestories}${
+                              [
+                                'orchids-stage.stage-vm.letseduvate.com',
+                                'localhost',
+                              ]?.includes(window.location.hostname)
+                                ? 'dev'
+                                : 'prod'
+                            }/media/${item?.profile}`;
+                            return (
+                              <List.Item
+                                onClick={() => {
+                                  handleSwitchChange(item);
+                                }}
+                                className='th-pointer'
+                              >
+                                <List.Item.Meta
+                                  avatar={
+                                    <Avatar
+                                      size={42}
+                                      src={imageLink}
+                                      icon={
+                                        item?.profile === '' ? <UserOutlined /> : null
+                                      }
+                                    />
+                                  }
+                                  title={
+                                    <div className='th-truncate-2'>{item?.name}</div>
+                                  }
+                                  description={
+                                    <span className='th-12'>{item?.branch_name}</span>
+                                  }
+                                />
+                              </List.Item>
+                            );
+                          }}
+                        />
+                      }
+                    >
+                      <div className='text-center th-pointer px-2'>
+                        <div className='th-primary'>
+                          <UserSwitchOutlined className='px-1 th-16' />
+                        </div>
+                        <div className='th-10 th-grey'> {profile?.split(' ')[0]}</div>
+                      </div>
+                    </Popover>
+                  )}
                   <IconButton
                     className='py-2 th-icon-no-hover'
                     aria-label='show more'
@@ -1018,22 +1213,20 @@ const Appbar = ({ children, history, ...props }) => {
                   >
                     {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} /> */}
 
-                    {profileDetails?.is_verified ? (
+                    {/* {profileDetails?.is_verified ? (
                       <Typography>
                         {profile}
                         <KeyboardArrowDownIcon />
                       </Typography>
-                    ) : (
-                      <img
-                        width='20px'
-                        height='20px'
-                        src={
-                          roleDetails?.user_profile
-                            ? roleDetails?.user_profile
-                            : StaffIcon
-                        }
-                      />
-                    )}
+                    ) : ( */}
+                    <img
+                      width='20px'
+                      height='20px'
+                      src={
+                        roleDetails?.user_profile ? roleDetails?.user_profile : StaffIcon
+                      }
+                    />
+                    {/* )} */}
                   </IconButton>
                 </div>
               </>

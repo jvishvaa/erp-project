@@ -39,6 +39,7 @@ export default {
   auth: {
     login: '/auth/login/',
     mobileLogin: '/erp_user/erp-contact-login/',
+    siblingLogin: '/erp_user/erp-sibling-login/',
     crmHcmToken: `${crm}/qbox/hmac_token/`,
     generateLoginToken: `/erp_user/login_token/`,
     generateAccessToken: `${baseURL}/erp_user/access-token/`,
@@ -104,6 +105,9 @@ export default {
     getParentData: '/erp_user/fetch-parent-data/',
     userHistoryAccessLevelsConfig:
       '/assessment/check-sys-config/?config_key=user_history_access_levels',
+    serachParent: '/erp_user/search-parent/',
+    addChildToParent: '/erp_user/add-child-to-parent/',
+    updateParent: '/erp_user/update-parent',
   },
   timeTable: {
     tableData: '/academic/time_table/',

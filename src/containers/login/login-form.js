@@ -102,34 +102,47 @@ function LoginForm(props) {
       };
       onLogin(params).then((response) => {
         if (response?.isLogin) {
-          isMsAPI();
-          fetchVersion();
-          fetchERPSystemConfig(response?.isLogin).then((res) => {
-            let erpConfig;
-            let userData = JSON.parse(localStorage.getItem('userDetails'));
-            if (res === true || res.length > 0) {
-              erpConfig = res;
-              let refURL = localStorage.getItem('refURL');
-              if (refURL) {
-                localStorage.removeItem('refURL');
+          if (response?.profile_data) {
+            history.push({
+              pathname: `/userprofile`,
+              state: {
+                isERPLogin: true,
+                token: response?.token,
+                profileData: {
+                  profile_data: { data: response?.profile_data?.result?.siblings_data },
+                },
+              },
+            });
+          } else {
+            isMsAPI();
+            fetchVersion();
+            fetchERPSystemConfig(response?.isLogin).then((res) => {
+              let erpConfig;
+              let userData = JSON.parse(localStorage.getItem('userDetails'));
+              if (res === true || res.length > 0) {
+                erpConfig = res;
+                let refURL = localStorage.getItem('refURL');
+                if (refURL) {
+                  localStorage.removeItem('refURL');
 
-                window.location.href = refURL;
-              } else if (userData?.user_level !== 4) {
-                history.push('/acad-calendar');
+                  window.location.href = refURL;
+                } else if (userData?.user_level !== 4) {
+                  history.push('/acad-calendar');
+                } else {
+                  history.push('/profile');
+                }
+              } else if (res === false) {
+                erpConfig = res;
+                history.push('/profile');
               } else {
+                erpConfig = res;
                 history.push('/profile');
               }
-            } else if (res === false) {
-              erpConfig = res;
-              history.push('/profile');
-            } else {
-              erpConfig = res;
-              history.push('/profile');
-            }
-            userData['erp_config'] = erpConfig;
-            localStorage.setItem('userDetails', JSON.stringify(userData));
-            window.location.reload();
-          });
+              userData['erp_config'] = erpConfig;
+              localStorage.setItem('userDetails', JSON.stringify(userData));
+              window.location.reload();
+            });
+          }
         } else {
           setAlert('error', response?.message);
           setDisableLogin(false);
@@ -177,7 +190,7 @@ function LoginForm(props) {
           autoFocus
           className='passwordField'
           value={username}
-          inputProps={{ maxLength: 40 }}
+          inputProps={{ maxLength: 50 }}
           onChange={(e) => {
             setUsername(e.target.value);
           }}
@@ -194,12 +207,12 @@ function LoginForm(props) {
           className='passwordField'
           autoComplete='current-password'
           value={password}
-          inputProps={{ maxLength: 20 }}
+          inputProps={{ maxLength: 50 }}
           onChange={(e) => {
             setPassword(e.target.value);
           }}
           InputProps={{
-            maxLength: 20,
+            maxLength: 50,
             endAdornment: (
               <IconButton
                 style={{ padding: '0 0 0 2%' }}

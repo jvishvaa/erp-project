@@ -297,6 +297,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/assign-role');
         break;
       }
+      case 'Sibling Mapping': {
+        history.push('/user-management/sibling-mapping');
+        break;
+      }
       case 'Branch': {
         history.push('/master-management/branch-table');
         break;
