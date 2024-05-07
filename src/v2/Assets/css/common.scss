@@ -513,16 +513,33 @@ svg {
 // School wall
 .th-post-card {
   border-radius: 20px;
-  margin-top: 1rem;
+  // margin-bottom: 1rem;
+  width: 100% !important;
   .th-post-dp {
     width: 40px;
     height: 40px;
     border-radius: 20px;
     margin-right: 10px !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
   .th-pdf-logo {
     height: 300px !important;
     object-fit: contain !important;
     width: 100% !important;
+  }
+}
+.th-media-display {
+  video {
+    max-height: 450px;
+  }
+}
+
+.th-post-calendar {
+  position: sticky !important;
+  top: 5%;
+  .ant-picker-calendar-mode-switch {
+    display: none !important;
   }
 }

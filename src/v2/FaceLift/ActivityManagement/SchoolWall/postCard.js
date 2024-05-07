@@ -13,19 +13,21 @@ const PostCard = (props) => {
     likes_count: likeCount,
     description,
     comments_count: comments,
-    liked,
+    is_like: liked,
     media_files: files,
     commentList,
     post_by_data,
-    acad_session,
-    grades,
+    section_mapping,
   } = props?.post;
   const likePost = props?.likePost;
 
-  const Branches = acad_session?.map((item) => item?.branch?.branch_name).join(", ");
-  const Grades = grades?.map((item) => item?.grade_name).join(", ");
+  const Branches = section_mapping
+    ?.map((item) => item?.acad_session?.branch?.branch_name)
+    .join(', ');
+  const Grades = section_mapping?.map((item) => item?.grade?.grade_name).join(', ');
+  const Sections = section_mapping?.map((item) => item?.section?.section_name).join(', ');
   const userImage =
-    post_by_data?.avtar ??
+    user?.profile_img ??
     'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
 
   console.log({ props });
@@ -55,15 +57,15 @@ const PostCard = (props) => {
 
         <div className='mt-3 position-relative'>
           <div className='th-fw-400 th-14 th-grey pb-1'>
-            {Branches} | {Grades}
+            {Branches} | {Grades} | {Sections}
           </div>
-          {description}
+          <div className='th-fw-500 th-14 th-black py-2'>{description}</div>
 
           {files?.length > 0 ? (
-            files[0]?.path ? (
+            files[0]?.media_file ? (
               <MediaDisplay
                 mediaName={files[0]?.media_file}
-                mediaLink={files[0]?.path}
+                mediaLink={files[0]?.media_file}
                 alt={description}
                 className='w-100 th-br-20 p-3'
                 style={{ objectFit: 'contain' }}
@@ -108,7 +110,7 @@ const PostCard = (props) => {
                 {likeCount} Star{likeCount > 1 ? 's' : ''}
               </span>
             </span>
-            <Link href={`/post/${id}`}>
+            <Link to={`/school-wall/${id}`}>
               <span className='px-2 th-pointer th-grey'>
                 <CommentOutlined className='th-20' />{' '}
                 <span className='pl-2'>
@@ -119,44 +121,14 @@ const PostCard = (props) => {
           </div>
         </div>
         {comments > 1 ? (
-          <Link href={`/post/${id}`}>
+          <Link to={`/school-wall/${id}`}>
             <div className='th-14 pt-1 th-grey mb-1'>View all {comments} comments</div>
           </Link>
         ) : null}
-        {commentList?.slice(0, 1)?.map((each) => {
-          return (
-            <Link href={`/post/${id}`}>
-              <div
-                key={each?.id}
-                className='d-flex mb-1 w-100 gap-2 align-items-center mt-2'
-              >
-                <div className='w-100'>
-                  <span className='th-fw-600'>
-                    {(each.reply_to_data?.first_name?.trim()?.length > 0
-                      ? each.reply_to_data?.first_name
-                      : 'Anonymous') + ' :'}
-                  </span>
-                  <span className='th-14 px-2'>{each?.content}</span>
-                  <span className='th-14 px-2'>{each?.path?.length} </span>
-
-                  {each?.path?.length > 0 ? (
-                    <div className='th-transparent-chip th-12 px-1 th-br-5'>
-                      + {each?.path?.length} attachment
-                      {each?.path?.length > 1 ? 's' : ''}
-                    </div>
-                  ) : null}
-
-                  <div className='th-12 text-end th-grey'>
-                    <i>{dayjs(each?.created_at).format('DD MMM YYYY, h:mm:ss a')}</i>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-
-        <Link href={`/post/${id}`}>
-          <div className='th-14 pt-3 th-grey mb-1'>Add a comment...</div>
+        <Link to={`/school-wall/${id}`}>
+          <div className='th-14 py-2 px-3 th-br-12 th-grey mb-1 th-bg-grey m-2'>
+            Add a comment...
+          </div>
         </Link>
       </div>
     </>

@@ -57,7 +57,7 @@ const MediaDisplay = ({
   };
 
   return (
-    <div className="media-display th-br-14 mx-3 my-2">
+    <div className="th-media-display th-br-14 mx-3 my-2">
       {getMediaTag(mediaName)}
     </div>
   );

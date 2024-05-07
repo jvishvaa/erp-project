@@ -366,6 +366,10 @@ export default {
     popupSetting: `${baseFinanceURL}/apiV1/popup-details/`,
     studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
   },
+  schoolWall: {
+    getPosts: '/social-media/social-media-post/',
+    likePost: '/social-media/like/',
+  },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,
 };

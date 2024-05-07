@@ -93,9 +93,10 @@ import EvaluatorHomework from '../containers/centralise_homework/evaluator/image
 import CentralizedHome from '../containers/centralise_homework/CentralizedHome';
 import CenralizedHomeworkRoute from '../containers/centralise_homework/centralhw_route';
 import AuditorDashboard from '../containers/centralise_homework/evaluator/Auditor/AuditorDashboard';
-import FrequentlyAskedQuestions from "../containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions"
-import AddFaq from "../containers/FrequentlyAskedQuestions/AddFaq"
-import SchoolWall from "v2/FaceLift/ActivityManagement/SchoolWall"
+import FrequentlyAskedQuestions from '../containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions';
+import AddFaq from '../containers/FrequentlyAskedQuestions/AddFaq';
+import SchoolWall from 'v2/FaceLift/ActivityManagement/SchoolWall';
+import PostDetails from 'v2/FaceLift/ActivityManagement/SchoolWall/postDetails';
 
 const V2Router = () => {
   useEffect(() => {
@@ -466,6 +467,9 @@ const V2Router = () => {
                         {/* Activity Management */}
                         <Route path='/school-wall'>
                           {({ match }) => <SchoolWall match={match} />}
+                        </Route>
+                        <Route path='/school-wall/:postId'>
+                          {({ match }) => <PostDetails match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {
