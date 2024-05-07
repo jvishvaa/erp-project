@@ -397,7 +397,13 @@ const RoleManagement = () => {
         <div
           key={subIndex}
           className={`${
-            isChildModuleSelected && 'th-bg-blue-2'
+            !isParentModuleSelected && !isChildModuleSelected
+              ? subIndex % 2 === 0
+                ? 'th-bg-grey'
+                : 'th-bg-white'
+              : ''
+          }${
+            !isParentModuleSelected && isChildModuleSelected ? 'th-bg-blue-2' : ''
           } d-flex justify-content-between`}
         >
           <span className='th-black-1 th-14'>{childModule?.module_child_name}</span>
@@ -431,8 +437,8 @@ const RoleManagement = () => {
           key={index}
           size='small'
           title={
-            <div className='d-flex justify-content-between'>
-              <span className='th-black-1 th-16 th-fw-700'>
+            <div className='d-flex justify-content-between px-2 th-bg-primary'>
+              <span className='th-white th-16 th-fw-700'>
                 {parentModule?.module_parent}
               </span>
               <Checkbox
@@ -583,7 +589,15 @@ const RoleManagement = () => {
                   <>
                     <div className='col-lg-3 col-md-6 col-sm-12 col-12 mb-4'>
                       <Form form={formRef}>
-                        <Form.Item name='role_name'>
+                        <Form.Item
+                          name='role_name'
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Please enter role name',
+                            },
+                          ]}
+                        >
                           <Input
                             placeholder='Enter Role Name'
                             className='w-100 text-left th-black-1 th-bg-grey th-br-4'
