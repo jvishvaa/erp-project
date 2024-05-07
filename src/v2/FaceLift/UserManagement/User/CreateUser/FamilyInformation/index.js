@@ -613,6 +613,10 @@ const FamilyInformation = ({
                                   );
                                 }}
                                 defaultValue={'+91'}
+                                disabled={
+                                  parentFetchedData?.father_mobile ===
+                                  parentFetchedData?.contact
+                                }
                               >
                                 {countryCodeOptions}
                               </Select>
@@ -628,37 +632,16 @@ const FamilyInformation = ({
                               name={'father_mobile'}
                               label={
                                 <Space align='end' className='th-primary-contact-check'>
-                                  {/* {userLevel === 13 && (
-                                    <Form.Item
-                                      style={{ marginBottom: '0px' }}
-                                      className='mb-0 th-primary-contact-checkbox'
-                                      name={'father_primary'}
-                                    >
-                                      <Checkbox
-                                        checked={fatherPrimary}
-                                        onChange={(e) => {
-                                          setFatherPrimary(e.target.checked);
-                                          setMotherPrimary(false);
-                                          setGuardianPrimary(false);
-                                        }}
-                                        className='w-100 h-100'
-                                      />
-                                    </Form.Item>
-                                  )} */}
                                   <div>Contact Number</div>
-                                  {userLevel === 13 && (
-                                    <Tooltip
-                                      title={`Make Father's contact number as primary`}
-                                    >
-                                      <InfoCircleFilled />
-                                    </Tooltip>
-                                  )}
                                 </Space>
                               }
                             >
                               <Input
                                 className='w-100'
-                                disabled={parentFetchedData?.father_mobile}
+                                disabled={
+                                  parentFetchedData?.father_mobile ===
+                                  parentFetchedData?.contact
+                                }
                               />
                             </Form.Item>
                           </Space>
@@ -977,6 +960,10 @@ const FamilyInformation = ({
                                   );
                                 }}
                                 defaultValue={'+91'}
+                                disabled={
+                                  parentFetchedData?.mother_mobile ===
+                                  parentFetchedData?.contact
+                                }
                               >
                                 {countryCodeOptions}
                               </Select>
@@ -996,33 +983,17 @@ const FamilyInformation = ({
                                     style={{ marginBottom: '0px' }}
                                     className='mb-0 th-primary-contact-checkbox'
                                     name={'mother_primary'}
-                                  >
-                                    {/* {userLevel === 13 && (
-                                      <Checkbox
-                                        checked={motherPrimary}
-                                        onChange={(e) => {
-                                          setFatherPrimary(false);
-                                          setMotherPrimary(e.target.checked);
-                                          setGuardianPrimary(false);
-                                        }}
-                                        className='w-100 h-100'
-                                      />
-                                    )} */}
-                                  </Form.Item>
+                                  ></Form.Item>
                                   <div>Contact Number</div>
-                                  {userLevel === 13 && (
-                                    <Tooltip
-                                      title={`Make Mother's contact number as primary`}
-                                    >
-                                      <InfoCircleFilled />
-                                    </Tooltip>
-                                  )}
                                 </Space>
                               }
                             >
                               <Input
                                 className='w-100'
-                                disabled={parentFetchedData?.mother_mobile}
+                                disabled={
+                                  parentFetchedData?.mother_mobile ===
+                                  parentFetchedData?.contact
+                                }
                               />
                             </Form.Item>
                           </Space>
@@ -1334,6 +1305,10 @@ const FamilyInformation = ({
                                   );
                                 }}
                                 defaultValue={'+91'}
+                                disabled={
+                                  parentFetchedData?.guardian_mobile ===
+                                  parentFetchedData?.contact
+                                }
                               >
                                 {countryCodeOptions}
                               </Select>
@@ -1349,37 +1324,16 @@ const FamilyInformation = ({
                               name={'guardian_mobile'}
                               label={
                                 <Space align='end' className='th-primary-contact-check'>
-                                  {/* {userLevel === 13 && (
-                                    <Form.Item
-                                      style={{ marginBottom: '0px' }}
-                                      className='mb-0 th-primary-contact-checkbox'
-                                      name={'guardian_primary'}
-                                    >
-                                      <Checkbox
-                                        checked={guardianPrimary}
-                                        onChange={(e) => {
-                                          setFatherPrimary(false);
-                                          setMotherPrimary(false);
-                                          setGuardianPrimary(e.target.checked);
-                                        }}
-                                        className='w-100 h-100'
-                                      />
-                                    </Form.Item>
-                                  )} */}
                                   <div>Contact Number</div>
-                                  {userLevel === 13 && (
-                                    <Tooltip
-                                      title={`Make Guardian's contact number as primary`}
-                                    >
-                                      <InfoCircleFilled />
-                                    </Tooltip>
-                                  )}
                                 </Space>
                               }
                             >
                               <Input
                                 className='w-100'
-                                disabled={parentFetchedData?.guardian_mobile}
+                                disabled={
+                                  parentFetchedData?.guardian_mobile ===
+                                  parentFetchedData?.contact
+                                }
                               />
                             </Form.Item>
                           </Space>
