@@ -614,7 +614,10 @@ const FamilyInformation = ({
                                 }}
                                 defaultValue={'+91'}
                                 disabled={
-                                  editId
+                                  !parentFetchedData?.father_mobile ||
+                                  parentFetchedData?.father_mobile === ''
+                                    ? false
+                                    : editId
                                     ? parentFetchedData?.father_mobile ===
                                       parentFetchedData?.contact
                                     : parentFetchedData?.father_mobile ===
@@ -642,7 +645,10 @@ const FamilyInformation = ({
                               <Input
                                 className='w-100'
                                 disabled={
-                                  editId
+                                  !parentFetchedData?.father_mobile ||
+                                  parentFetchedData?.father_mobile === ''
+                                    ? false
+                                    : editId
                                     ? parentFetchedData?.father_mobile ===
                                       parentFetchedData?.contact
                                     : parentFetchedData?.father_mobile ===
@@ -967,7 +973,10 @@ const FamilyInformation = ({
                                 }}
                                 defaultValue={'+91'}
                                 disabled={
-                                  editId
+                                  !parentFetchedData?.mother_mobile ||
+                                  parentFetchedData?.mother_mobile === ''
+                                    ? false
+                                    : editId
                                     ? parentFetchedData?.mother_mobile ===
                                       parentFetchedData?.contact
                                     : parentFetchedData?.mother_mobile ===
@@ -1000,7 +1009,10 @@ const FamilyInformation = ({
                               <Input
                                 className='w-100'
                                 disabled={
-                                  editId
+                                  !parentFetchedData?.mother_mobile ||
+                                  parentFetchedData?.mother_mobile === ''
+                                    ? false
+                                    : editId
                                     ? parentFetchedData?.mother_mobile ===
                                       parentFetchedData?.contact
                                     : parentFetchedData?.mother_mobile ===
@@ -1318,7 +1330,10 @@ const FamilyInformation = ({
                                 }}
                                 defaultValue={'+91'}
                                 disabled={
-                                  editId
+                                  !parentFetchedData?.guardian_mobile ||
+                                  parentFetchedData?.guardian_mobile === ''
+                                    ? false
+                                    : editId
                                     ? parentFetchedData?.guardian_mobile ===
                                       parentFetchedData?.contact
                                     : parentFetchedData?.guardian_mobile ===
@@ -1346,7 +1361,10 @@ const FamilyInformation = ({
                               <Input
                                 className='w-100'
                                 disabled={
-                                  editId
+                                  !parentFetchedData?.guardian_mobile ||
+                                  parentFetchedData?.guardian_mobile === ''
+                                    ? false
+                                    : editId
                                     ? parentFetchedData?.guardian_mobile ===
                                       parentFetchedData?.contact
                                     : parentFetchedData?.guardian_mobile ===
