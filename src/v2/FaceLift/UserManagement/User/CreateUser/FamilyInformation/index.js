@@ -614,8 +614,11 @@ const FamilyInformation = ({
                                 }}
                                 defaultValue={'+91'}
                                 disabled={
-                                  parentFetchedData?.father_mobile ===
-                                  parentFetchedData?.contact
+                                  editId
+                                    ? parentFetchedData?.father_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.father_mobile ===
+                                      parentFetchedData?.contact_details
                                 }
                               >
                                 {countryCodeOptions}
@@ -639,8 +642,11 @@ const FamilyInformation = ({
                               <Input
                                 className='w-100'
                                 disabled={
-                                  parentFetchedData?.father_mobile ===
-                                  parentFetchedData?.contact
+                                  editId
+                                    ? parentFetchedData?.father_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.father_mobile ===
+                                      parentFetchedData?.contact_details
                                 }
                               />
                             </Form.Item>
@@ -961,8 +967,11 @@ const FamilyInformation = ({
                                 }}
                                 defaultValue={'+91'}
                                 disabled={
-                                  parentFetchedData?.mother_mobile ===
-                                  parentFetchedData?.contact
+                                  editId
+                                    ? parentFetchedData?.mother_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.mother_mobile ===
+                                      parentFetchedData?.contact_details
                                 }
                               >
                                 {countryCodeOptions}
@@ -991,8 +1000,11 @@ const FamilyInformation = ({
                               <Input
                                 className='w-100'
                                 disabled={
-                                  parentFetchedData?.mother_mobile ===
-                                  parentFetchedData?.contact
+                                  editId
+                                    ? parentFetchedData?.mother_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.mother_mobile ===
+                                      parentFetchedData?.contact_details
                                 }
                               />
                             </Form.Item>
@@ -1306,8 +1318,11 @@ const FamilyInformation = ({
                                 }}
                                 defaultValue={'+91'}
                                 disabled={
-                                  parentFetchedData?.guardian_mobile ===
-                                  parentFetchedData?.contact
+                                  editId
+                                    ? parentFetchedData?.guardian_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.guardian_mobile ===
+                                      parentFetchedData?.contact_details
                                 }
                               >
                                 {countryCodeOptions}
@@ -1331,8 +1346,11 @@ const FamilyInformation = ({
                               <Input
                                 className='w-100'
                                 disabled={
-                                  parentFetchedData?.guardian_mobile ===
-                                  parentFetchedData?.contact
+                                  editId
+                                    ? parentFetchedData?.guardian_mobile ===
+                                      parentFetchedData?.contact
+                                    : parentFetchedData?.guardian_mobile ===
+                                      parentFetchedData?.contact_details
                                 }
                               />
                             </Form.Item>
