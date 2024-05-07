@@ -465,12 +465,12 @@ const V2Router = () => {
                           {({ match }) => <AddFaq match={match} />}
                         </Route>
                         {/* Activity Management */}
-                        <Route path='/school-wall'>
-                          {({ match }) => <SchoolWall match={match} />}
-                        </Route>
                         <Route path='/school-wall/:postId'>
                           {({ match }) => <PostDetails match={match} />}
                         </Route>
+                        <Route path='/school-wall'>
+                          {({ match }) => <SchoolWall match={match} />}
+                        </Route>                       
                         {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;

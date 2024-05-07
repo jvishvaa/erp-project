@@ -95,7 +95,7 @@ const SchoolWall = () => {
       <div className='row'>
         <div className='col-md-12'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/school-wall' className='th-black'>
+            <Breadcrumb.Item href='/school-wall' className='th-black-1 th-18 th-fw-500'>
               School Wall
             </Breadcrumb.Item>
           </Breadcrumb>
@@ -108,7 +108,7 @@ const SchoolWall = () => {
             loadMore={loadMore}
             bordered={false}
             dataSource={postList}
-            renderItem={(each,index) => (
+            renderItem={(each, index) => (
               <List.Item>
                 {' '}
                 <PostCard

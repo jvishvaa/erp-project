@@ -7,7 +7,6 @@ import { StarTwoTone, CommentOutlined, StarOutlined } from '@ant-design/icons';
 const PostCard = (props) => {
   const {
     id,
-    dp,
     user,
     created_at,
     likes_count: likeCount,
@@ -15,8 +14,6 @@ const PostCard = (props) => {
     comments_count: comments,
     is_like: liked,
     media_files: files,
-    commentList,
-    post_by_data,
     section_mapping,
   } = props?.post;
   const likePost = props?.likePost;
@@ -30,7 +27,6 @@ const PostCard = (props) => {
     user?.profile_img ??
     'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
 
-  console.log({ props });
 
   const [showLikeModal, setShowLikeModal] = useState(false);
   return (
