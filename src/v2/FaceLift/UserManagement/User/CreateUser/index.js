@@ -722,11 +722,12 @@ const CreateUser = () => {
     setLoading(true);
     setEndProgress(true);
     let familyValues = {};
-    if (userLevel === 13) {
-      familyValues = familyFormValues;
-    } else {
-      familyValues = formValues;
-    }
+    familyValues = formValues;
+    // if (userLevel === 13) {
+    //   familyValues = familyFormValues;
+    // } else {
+    //   familyValues = formValues;
+    // }
     const formData = new FormData();
     //SCHOOL INFORMATION
 
@@ -734,6 +735,9 @@ const CreateUser = () => {
     formData.append('user_level', schoolFormValues?.user_level);
     if (schoolFormValues?.designation)
       formData.append('designation', schoolFormValues?.designation);
+    if (schoolFormValues?.role) {
+      formData.append('role_id', schoolFormValues?.role);
+    }
     // STUDENT INFO
     formData.append('first_name', studentFormValues?.first_name ?? '');
     formData.append('middle_name', studentFormValues?.middle_name ?? '');
@@ -834,7 +838,10 @@ const CreateUser = () => {
     });
     if (parentId) parentObj.id = parentId;
     parentObj.email = email;
-    formData.append('parent', JSON.stringify(parentObj));
+    if (userLevel === 13) {
+      formData.append('parent', JSON.stringify(parentObj));
+    }
+    formData.append('pin_code', familyValues?.pin_code);
     if (familyValues?.father_photo && typeof familyValues?.father_photo !== 'string') {
       formData.append(
         'father_photo',
