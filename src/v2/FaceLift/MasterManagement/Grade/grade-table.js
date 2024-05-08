@@ -38,14 +38,16 @@ const GradeTable = () => {
   const [modalLoading, setModalLoading] = useState(false);
   const [drawerTableData, setDrawerTableData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
   const [id, setId] = useState();
   const [drawerWidth, setDrawerWidth] = useState(
-    window.innerWidth <= 768 ? '90%' : '30%'
+    window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
   );
   useEffect(() => {
     const handleResize = () => {
-      setDrawerWidth(window.innerWidth <= 768 ? '90%' : '40%');
+      setDrawerWidth(
+        window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
+      );
     };
     window.addEventListener('resize', handleResize);
     return () => {
@@ -146,23 +148,32 @@ const GradeTable = () => {
         setModalLoading(false);
       });
   };
-  const handleDrawerSubmit = () => {
-    if (selectedRows?.length === 0) {
-      message.error('OOPS! Please select atleast one grade');
-      return;
-    }
+  const handleDrawerSubmit = (value) => {
+    // if (selectedRows?.length === 0) {
+    //   message.error('OOPS! Please select atleast one grade');
+    //   return;
+    // }
     setDrawerLoading(true);
-    const grades = [];
-    selectedRows.forEach((item) => {
-      const { id, grade_name } = item;
-      grades.push({
-        grade_name: grade_name,
-        grade_type: grade_name,
-        eduvate_grade_id: id,
-      });
-    });
+    const grade = {
+      grade_name: value[0]?.grade_name,
+      grade_type: value[0]?.grade_name,
+      eduvate_grade_id: value[0]?.id,
+      description: '',
+      is_optional: false,
+    };
+    // const grades = [];   // for handling multiple subjects add at one go
+    // selectedRows.forEach((item) => {
+    //   const { id, grade_name } = item;
+    //   grades.push({
+    //     grade_name: grade_name,
+    //     grade_type: grade_name,
+    //     eduvate_grade_id: id,
+    //     description: '',
+    //     is_optional: false,
+    //   });
+    // });
     axiosInstance
-      .post(`${endpoints.masterManagement.createGrade}`, grades)
+      .post(`${endpoints.masterManagement.createGrade}`, grade)
       .then((response) => {
         if (response?.data?.status_code == 201) {
           message.success('Hurray! Grades added successfully');
@@ -215,7 +226,7 @@ const GradeTable = () => {
     },
     {
       title: <span className='th-white th-16 th-fw-700'>School Grade Name</span>,
-      align: 'center',
+      align: 'left',
       render: (data, row) => (
         <div className='d-flex justify-content-between'>
           <span className='th-black-1 th-16'>{row?.grade_name}</span>
@@ -265,7 +276,8 @@ const GradeTable = () => {
   ];
   const onSelectChange = (newSelectedRowKeys, value) => {
     setSelectedRowKeys(newSelectedRowKeys);
-    setSelectedRows(value);
+    handleDrawerSubmit(value);
+    // setSelectedRows(value);
   };
   const rowSelection = {
     selectedRowKeys,
@@ -372,7 +384,7 @@ const GradeTable = () => {
                   Cancel
                 </Button>
               </Col>
-              <Col>
+              {/* <Col>
                 <Button
                   type='primary'
                   icon={drawerLoading ? <SyncOutlined spin /> : <PlusCircleOutlined />}
@@ -381,7 +393,7 @@ const GradeTable = () => {
                 >
                   Add Grade
                 </Button>
-              </Col>
+              </Col> */}
             </Row>,
           ]}
           width={drawerWidth}
@@ -430,7 +442,8 @@ const GradeTable = () => {
                   type='primary'
                   icon={modalLoading ? <SyncOutlined spin /> : <EditOutlined />}
                   className='btn-block th-br-4'
-                  onClick={() => handleModalSubmit()}
+                  form='formRef'
+                  htmlType='submit'
                 >
                   Edit Grade
                 </Button>
@@ -445,7 +458,7 @@ const GradeTable = () => {
           ) : (
             <>
               <div className='col-lg-12 col-md-12 col-sm-12 col-12 mt-2'>
-                <Form form={formRef}>
+                <Form id='formRef' form={formRef} onFinish={handleModalSubmit}>
                   <Form.Item
                     name='grade_name'
                     rules={[

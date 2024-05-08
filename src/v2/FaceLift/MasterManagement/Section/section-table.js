@@ -409,7 +409,8 @@ const SectionTable = () => {
                     )
                   }
                   className='btn-block th-br-4'
-                  onClick={editId ? handleEdit : handleCreate}
+                  form='formRef'
+                  htmlType='submit'
                 >
                   {editId ? 'Edit' : 'Add'}
                 </Button>
@@ -424,7 +425,11 @@ const SectionTable = () => {
           ) : (
             <>
               <div className='col-lg-12 col-md-12 col-sm-12 col-12 mt-2'>
-                <Form form={formRef}>
+                <Form
+                  id='formRef'
+                  form={formRef}
+                  onFinish={editId ? handleEdit : handleCreate}
+                >
                   <Form.Item
                     name='section_name'
                     rules={[

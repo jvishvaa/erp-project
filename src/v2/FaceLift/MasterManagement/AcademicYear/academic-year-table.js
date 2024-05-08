@@ -14,6 +14,7 @@ import {
   Modal,
   Popconfirm,
   Tag,
+  Tooltip,
 } from 'antd';
 import {
   PlusCircleOutlined,
@@ -112,7 +113,7 @@ const AcademicYearTable = () => {
     axiosInstance
       .put(`${endpoints.masterManagement.updateAcademicYear}${editId}`, params)
       .then((response) => {
-        if (response?.data?.status_code == 201) {
+        if (response?.data?.status_code == 200) {
           message.success('Hurray! Academic year updated successfully');
           handleCloseModal();
           fetchTableData();
@@ -278,7 +279,9 @@ const AcademicYearTable = () => {
                   />
                 </Popconfirm>
                 {row?.is_current_session ? (
-                  <Tag>Default Year</Tag>
+                  <Tooltip title='This is a default session year'>
+                    <Tag>Default Year</Tag>
+                  </Tooltip>
                 ) : (
                   <Popconfirm
                     title='Sure to make it default?'
@@ -409,7 +412,8 @@ const AcademicYearTable = () => {
                     )
                   }
                   className='btn-block th-br-4'
-                  onClick={editId ? handleEdit : handleCreate}
+                  form='formRef'
+                  htmlType='submit'
                 >
                   {editId ? 'Edit' : 'Add'}
                 </Button>
@@ -424,13 +428,21 @@ const AcademicYearTable = () => {
           ) : (
             <>
               <div className='col-lg-12 col-md-12 col-sm-12 col-12 mt-2'>
-                <Form form={formRef}>
+                <Form
+                  id='formRef'
+                  form={formRef}
+                  onFinish={editId ? handleEdit : handleCreate}
+                >
                   <Form.Item
                     name='session_year'
                     rules={[
                       {
                         required: true,
                         message: 'Please Enter Academic Year',
+                      },
+                      {
+                        pattern: /^(\d{4})-(\d{2})$/,
+                        message: 'Please enter the academic year in the format YYYY-YY',
                       },
                     ]}
                   >

@@ -220,6 +220,7 @@ export default {
     branchList: '/erp_user/list-all-branch/',
     branchMapping: '/erp_user/create-branch-mapping',
     updateSubject: '/erp_user/update-subject/',
+    restoreSubject: '/erp_user/restore-subject/',
     updateSection: '/erp_user/update-section/',
     restoreSection: '/erp_user/restore-section/',
     updateGrade: '/erp_user/update-grade/',
