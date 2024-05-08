@@ -110,7 +110,8 @@ const stage = {
     FINANCE_BUCKET: 'https://storage.googleapis.com/letseduvate/prod/media',
   },
   apiGateway: {
-    baseURL: `https://orchids-stage.stage-vm.letseduvate.com/qbox`,
+    baseURL: `${window.location.origin}/qbox`,
+    // baseURL: `https://orchids-stage.stage-vm.letseduvate.com/qbox`,
     baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
@@ -150,7 +151,9 @@ const prod = {
     baseURLCentral: isPreprod
       ? 'https://mgmt.prod.letseduvate.com/qbox'
       : 'https://mgmt.letseduvate.com/qbox',
-    baseFinanceURL: chechUrl
+    baseFinanceURL: isPreprod
+      ? 'https://orchids.finance-prod.letseduvate.com/qbox'
+      : chechUrl
       ? 'https://orchids.finance.letseduvate.com/qbox'
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
     xAPIKey: 'vikash@12345#1231',
@@ -159,7 +162,9 @@ const prod = {
       ? 'https://reports.prod.letseduvate.com'
       : 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
-    finance: chechUrl
+    finance: isPreprod
+      ? 'https://orchids.finance-prod.letseduvate.com'
+      : chechUrl
       ? 'https://orchids.finance.letseduvate.com'
       : `https://${hostUrl[0]}.finance.letseduvate.com`,
     newBlogURL: 'https://activities.letseduvate.com',
