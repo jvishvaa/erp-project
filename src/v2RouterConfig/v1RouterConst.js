@@ -28,7 +28,7 @@ import OnlineAttendanceTeacherView from 'containers/online-class/online-attendan
 import ViewClassManagement from 'containers/online-class/view-class/view-class-management/view-class-management';
 import AttendeeList from 'containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
 import ViewClassStudentCollection from 'containers/online-class/view-class/view-class-student/view-class-student-collection';
-import BranchTable from 'containers/master-management/branch/branch-table';
+import BranchTable from 'v2/FaceLift/MasterManagement/Branch/branch-table';
 import BranchAcadTable from 'containers/master-management/branch-acad-mapping/branch-acad-table';
 import SubjectMappingTable from 'containers/master-management/subject-mapping/subject-mapping-table';
 import SubjectTable from 'v2/FaceLift/MasterManagement/Subject/subject-table';

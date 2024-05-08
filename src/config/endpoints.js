@@ -225,6 +225,7 @@ export default {
     restoreSection: '/erp_user/restore-section/',
     updateGrade: '/erp_user/update-grade/',
     updateBranch: '/erp_user/update-branch/',
+    restoreBranch: '/erp_user/restore-branch/',
     gradesDrop: '/erp_user/grade/',
     sections: '/erp_user/sectionmapping/',
     academicYear: '/erp_user/academic-year-list/',
