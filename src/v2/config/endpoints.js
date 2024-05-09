@@ -369,6 +369,7 @@ export default {
   schoolWall: {
     getPosts: '/social-media/social-media-post/',
     likePost: '/social-media/like/',
+    comments: '/social-media/comments/',
   },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,

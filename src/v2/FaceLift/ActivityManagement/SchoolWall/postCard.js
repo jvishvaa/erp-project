@@ -27,7 +27,6 @@ const PostCard = (props) => {
     user?.profile_img ??
     'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
 
-
   const [showLikeModal, setShowLikeModal] = useState(false);
   return (
     <>
@@ -72,19 +71,19 @@ const PostCard = (props) => {
           ) : null}
 
           {files?.length > 1 && (
-            <Link href={`/post/${id}`}>
-              <div
-                className='position-absolute p-1'
-                style={{
-                  bottom: '-20px',
-                  right: '10px',
-                }}
-              >
+            <div
+              className='position-absolute p-1'
+              style={{
+                bottom: '-20px',
+                right: '10px',
+              }}
+            >
+              <Link to={`/school-wall/${id}`}>
                 <div className='th-transparent-chip th-14 px-3 th-br-5'>
                   +{files?.length - 1} More
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
           )}
         </div>
         <div className='d-flex justify-content-between align-items-center  mt-3'>
@@ -118,14 +117,14 @@ const PostCard = (props) => {
         </div>
         {comments > 1 ? (
           <Link to={`/school-wall/${id}`}>
-            <div className='th-14 pt-1 th-grey mb-1'>View all {comments} comments</div>
+            <div className='th-14 pt-1 th-grey mb-1 px-2'>
+              View all {comments} comments
+            </div>
           </Link>
         ) : null}
-        <Link to={`/school-wall/${id}`}>
-          <div className='th-14 py-2 px-3 th-br-12 th-grey mb-1 th-bg-grey m-2'>
-            Add a comment...
-          </div>
-        </Link>
+        <div className='th-14 py-2 px-3 th-br-12 th-grey mb-1 th-bg-grey m-2'>
+          Add a comment...
+        </div>
       </div>
     </>
   );

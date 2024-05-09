@@ -1,22 +1,29 @@
-import React from "react";
-import { Image } from "antd";
+import React from 'react';
+import { Image } from 'antd';
 
 const MediaDisplay = ({
   mediaLink,
   mediaName,
-  alt = "",
-  className = "",
+  alt = '',
+  className = '',
   styles = {},
 }) => {
   const getFileExtension = (url) => {
-    return url?.split(".")?.pop();
+    return url?.split('.')?.pop();
   };
   const getMediaTag = (link) => {
     const extension = getFileExtension(link);
 
     if (extension.match(/(jpg|jpeg|png|gif|avif|webp)/i)) {
       return (
-        <Image style={{ width: "100%", maxHeight: "400px" }} src={mediaLink} />
+        <Image
+          style={{
+            width: '100%',
+            height: '200px',
+            borderRadius: 16,
+          }}
+          src={mediaLink}
+        />
       );
     } else if (extension.match(/(mp4|ogg)/i)) {
       return (
@@ -32,7 +39,7 @@ const MediaDisplay = ({
       );
     } else if (extension.match(/(mp3|webm)/i)) {
       return (
-        <audio controls className={"w-100 th-br-20"}>
+        <audio controls className={'w-100 th-br-20'}>
           <source src={mediaLink} type={`audio/${extension}`} />
           Your browser does not support the audio tag.
         </audio>
@@ -40,9 +47,9 @@ const MediaDisplay = ({
     } else if (extension.match(/pdf/i)) {
       return (
         <div>
-          <a href={mediaLink} target="__blank">
+          <a href={mediaLink} target='__blank'>
             <img
-              src="https://img.freepik.com/free-vector/illustration-data-folder-icon_53876-6329.jpg?w=900&t=st=1698483764~exp=1698484364~hmac=2f391d43a022842ad959f2356ee00a6f73990982d805d142f5493c5834bd9481"
+              src='https://img.freepik.com/free-vector/illustration-data-folder-icon_53876-6329.jpg?w=900&t=st=1698483764~exp=1698484364~hmac=2f391d43a022842ad959f2356ee00a6f73990982d805d142f5493c5834bd9481'
               alt={alt}
               className='th-pdf-logo'
               style={{ ...styles }}
@@ -52,14 +59,12 @@ const MediaDisplay = ({
         </div>
       );
     } else {
-      return <p className="p-3">Unsupported media type</p>;
+      return <p className='p-3'>Unsupported media type</p>;
     }
   };
 
   return (
-    <div className="th-media-display th-br-14 mx-3 my-2">
-      {getMediaTag(mediaName)}
-    </div>
+    <div className='th-media-display text-center th-br-14 mx-3 my-2'>{getMediaTag(mediaName)}</div>
   );
 };
 

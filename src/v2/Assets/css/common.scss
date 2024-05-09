@@ -525,7 +525,7 @@ svg {
     background-repeat: no-repeat;
   }
   .th-pdf-logo {
-    height: 300px !important;
+    height: 200px !important;
     object-fit: contain !important;
     width: 100% !important;
   }
@@ -541,5 +541,19 @@ svg {
   top: 5%;
   .ant-picker-calendar-mode-switch {
     display: none !important;
+  }
+}
+.th-post-details-card {
+  max-height: 70vh !important;
+  overflow-y: auto;
+  overflow-x: hidden !important;
+}
+.th-post-slick {
+  .slick-next {
+    right: 0px !important;
+  }
+  .slick-prev {
+    left: -5px !important;
+    z-index: 1500 !important;
   }
 }
