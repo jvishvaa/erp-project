@@ -30,9 +30,9 @@ import AttendeeList from 'containers/online-class/view-class/view-class-manageme
 import ViewClassStudentCollection from 'containers/online-class/view-class/view-class-student/view-class-student-collection';
 import BranchTable from 'v2/FaceLift/MasterManagement/Branch/branch-table';
 import BranchAcadTable from 'containers/master-management/branch-acad-mapping/branch-acad-table';
-import SubjectMappingTable from 'containers/master-management/subject-mapping/subject-mapping-table';
+import SubjectMappingTable from 'v2/FaceLift/MasterManagement/SubjectMapping/subject-mapping-table';
 import SubjectTable from 'v2/FaceLift/MasterManagement/Subject/subject-table';
-import SectionMappingTable from 'containers/master-management/section-mapping/section-mapping-table';
+import SectionMappingTable from 'v2/FaceLift/MasterManagement/SectionMapping/section-mapping-table';
 import SectionTable from 'v2/FaceLift/MasterManagement/Section/section-table';
 import GradeTable from 'v2/FaceLift/MasterManagement/Grade/grade-table';
 import AcademicYearTable from 'v2/FaceLift/MasterManagement/AcademicYear/academic-year-table';
