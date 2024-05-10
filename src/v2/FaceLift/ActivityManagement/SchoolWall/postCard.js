@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { Form, Input, Avatar, Comment, Tag, Popover, Popconfirm, Space } from 'antd';
 import MediaDisplay from './mediaDisplay';
 import dayjs from 'dayjs';
-import { StarTwoTone, CommentOutlined, StarOutlined } from '@ant-design/icons';
+import {
+  StarTwoTone,
+  CommentOutlined,
+  StarOutlined,
+  SendOutlined,
+  DeleteOutlined,
+  MoreOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
+import Slider from 'react-slick';
+import ReactHtmlParser from 'react-html-parser';
 
 const PostCard = (props) => {
+  const newCommentRef = useRef();
   const {
     id,
     user,
@@ -15,24 +27,70 @@ const PostCard = (props) => {
     is_like: liked,
     media_files: files,
     section_mapping,
+    recent_comment,
   } = props?.post;
   const likePost = props?.likePost;
 
-  const Branches = section_mapping
-    ?.map((item) => item?.acad_session?.branch?.branch_name)
-    .join(', ');
-  const Grades = section_mapping?.map((item) => item?.grade?.grade_name).join(', ');
-  const Sections = section_mapping?.map((item) => item?.section?.section_name).join(', ');
+  const Branches = [
+    ...new Set(section_mapping?.map((item) => item?.acad_session?.branch?.branch_name)),
+  ];
+  const Grades = [
+    ...new Set(
+      section_mapping?.map((item) =>
+        [item?.acad_session?.branch?.branch_name ?? '', item?.grade?.grade_name].join(' ')
+      )
+    ),
+  ];
+  const Sections = section_mapping?.map((item) =>
+    [
+      item?.acad_session?.branch?.branch_name ?? '',
+      item?.grade?.grade_name ?? '',
+      item?.section?.section_name,
+    ].join(' ')
+  );
   const userImage =
     user?.profile_img ??
     'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
 
-  const [showLikeModal, setShowLikeModal] = useState(false);
+  const addComment = async () => {
+    const updatedValues = newCommentRef.current.getFieldsValue();
+    await props.handleAddComment(props?.index, id, updatedValues?.comment);
+    newCommentRef.current.resetFields();
+  };
+
+  const settings = {
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+  };
+
+  const handleLongText = (data) => {
+    return data?.length > 2 ? (
+      <Popover
+        placement='right'
+        content={data?.slice(2)?.map((item) => (
+          <>
+            <i>{item}</i>
+            <br />
+          </>
+        ))}
+      >
+        <span>{data?.slice(0, 2).join(', ')} </span>
+        <span className='th-black'>+ {data?.length - 2} more</span>
+      </Popover>
+    ) : (
+      data?.join(', ')
+    );
+  };
+
   return (
     <>
       <div className={'p-3 bg-white th-post-card'}>
         <div className='d-flex justify-content-between align-items-center'>
-          <div className='d-flex gap-3 align-items-center'>
+          <div className='d-flex align-items-center'>
             <div
               className={`th-bg-img th-post-dp`}
               style={{
@@ -48,26 +106,63 @@ const PostCard = (props) => {
               <small className='th-grey'>{dayjs(created_at).format('DD MMM YYYY')}</small>
             </div>
           </div>
+          <div className='d-flex justify-content-between'>
+            <Popover
+              trigger={'click'}
+              placement='right'
+              content={
+                <div className='d-flex flex-column align-items-center'>
+                  <Tag
+                    color='processing'
+                    icon={<EditOutlined />}
+                    className='th-br-8 th-pointer text-center w-100'
+                  >
+                    Edit
+                  </Tag>
+                  <Popconfirm
+                    className='mt-2'
+                    title='Are you sure to delete this post?'
+                    onConfirm={props.handleDeletePost}
+                    okText='Yes'
+                    cancelText='No'
+                  >
+                    <Tag
+                      color='volcano'
+                      icon={<DeleteOutlined />}
+                      className='th-br-8 th-pointer text-center w-100'
+                    >
+                      Delete
+                    </Tag>
+                  </Popconfirm>
+                </div>
+              }
+            >
+              <MoreOutlined />
+            </Popover>
+          </div>
         </div>
 
         <div className='mt-3 position-relative'>
-          <div className='th-fw-400 th-14 th-grey pb-1'>
-            {Branches} | {Grades} | {Sections}
+          <div className='th-fw-400 th-14 th-grey pb-1 th-truncate-2'>
+            {handleLongText(Branches)} | {handleLongText(Grades)} |{' '}
+            {handleLongText(Sections)}
           </div>
-          <div className='th-fw-500 th-14 th-black py-2'>{description}</div>
+          <div className='th-fw-500 th-14 th-black py-2 w-100'>
+            {ReactHtmlParser(description)}
+          </div>
 
           {files?.length > 0 ? (
-            files[0]?.media_file ? (
-              <MediaDisplay
-                mediaName={files[0]?.media_file}
-                mediaLink={files[0]?.media_file}
-                alt={description}
-                className='w-100 th-br-20 p-3'
-                style={{ objectFit: 'contain' }}
-              />
-            ) : (
-              ' Unsupported File Format'
-            )
+            <Slider {...settings} className='th-slick th-post-slick'>
+              {files?.map((each) => (
+                <MediaDisplay
+                  mediaName={each?.media_file}
+                  mediaLink={each?.media_file}
+                  alt={description}
+                  className='w-100 th-br-20 p-3'
+                  style={{ objectFit: 'contain' }}
+                />
+              ))}
+            </Slider>
           ) : null}
 
           {files?.length > 1 && (
@@ -79,7 +174,7 @@ const PostCard = (props) => {
               }}
             >
               <Link to={`/school-wall/${id}`}>
-                <div className='th-transparent-chip th-14 px-3 th-br-5'>
+                <div className='th-primary th-14 px-3 th-br-5'>
                   +{files?.length - 1} More
                 </div>
               </Link>
@@ -99,7 +194,7 @@ const PostCard = (props) => {
               <span
                 className='pl-2 th-pointer'
                 onClick={() => {
-                  if (likeCount > 0) setShowLikeModal(true);
+                  if (likeCount > 0) props.handleShowLikesModal(id);
                 }}
               >
                 {likeCount} Star{likeCount > 1 ? 's' : ''}
@@ -122,9 +217,55 @@ const PostCard = (props) => {
             </div>
           </Link>
         ) : null}
-        <div className='th-14 py-2 px-3 th-br-12 th-grey mb-1 th-bg-grey m-2'>
+        {/* <div className='th-14 py-2 px-3 th-br-12 th-grey mb-1 th-bg-grey m-2'>
           Add a comment...
-        </div>
+        </div> */}
+        {recent_comment !== '' && (
+          <Comment
+            datetime={
+              <i>{dayjs(recent_comment?.updated_at)?.format('DD MM YYYY, h:mm:ss a')}</i>
+            }
+            avatar={
+              <Avatar
+                src={
+                  recent_comment?.commented_by?.profile_img ??
+                  'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg'
+                }
+                alt='user'
+              />
+            }
+            author={
+              <span className='th-black-1'>
+                {[
+                  recent_comment?.commented_by?.first_name ?? '',
+                  recent_comment?.commented_by?.last_name,
+                ].join(' ')}
+              </span>
+            }
+            content={<>{recent_comment?.description}</>}
+          />
+        )}
+        <Form ref={newCommentRef}>
+          <Form.Item name='comment'>
+            <Input
+              bordered={false}
+              placeholder='Add a comment...'
+              onKeyDown={(e) => {
+                if (e.key == 'Enter') {
+                  addComment();
+                }
+              }}
+              suffix={
+                <SendOutlined
+                  onClick={() => {
+                    addComment();
+                  }}
+                />
+              }
+              className='th-14 py-2 px-3 th-br-12 th-grey mt-3 th-bg-grey '
+            />
+          </Form.Item>
+        </Form>
       </div>
     </>
   );

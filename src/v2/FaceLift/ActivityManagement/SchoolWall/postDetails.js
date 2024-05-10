@@ -8,8 +8,6 @@ import endpoints from 'v2/config/endpoints';
 import MediaDisplay from './mediaDisplay';
 import dayjs from 'dayjs';
 import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import {
   StarTwoTone,
   CommentOutlined,
@@ -19,18 +17,26 @@ import {
   DownloadOutlined,
 } from '@ant-design/icons';
 import Loader from './Loader';
+import { Profanity } from 'components/file-validation/Profanity';
+import ReactHtmlParser from 'react-html-parser';
+import LikesModal from './LikesModal';
 
 const PostDetails = () => {
   let { postId } = useParams();
   const [postDetails, setPostDetails] = useState({});
   const [commentsList, setCommentsList] = useState([]);
-  const [showLikeModal, setShowLikeModal] = useState(false);
+  const [commentsCount, setCommentsCount] = useState();
+  const [showLikesModal, setShowLikeModal] = useState(false);
   const [parentCommentId, setParentCommentId] = useState(null);
   const [allowSubComment, setAllowSubComment] = useState(false);
   const [loading, setLoading] = useState(true);
   const newCommentRef = useRef();
   const subCommentRef = useRef();
   const { user_id, user_level } = JSON.parse(localStorage?.getItem('userDetails'));
+
+  const handleCloseLikesModal = () => {
+    setShowLikeModal(false);
+  };
 
   const fetchPostDetails = (params = {}) => {
     setLoading(true);
@@ -43,6 +49,7 @@ const PostDetails = () => {
       .then((response) => {
         if (response?.data?.status_code === 200) {
           setPostDetails(response?.data?.result?.results[0]);
+          setCommentsCount(response?.data?.result?.results[0]?.comments_count);
         }
       })
       .catch((err) => console.log(err))
@@ -68,6 +75,10 @@ const PostDetails = () => {
   const handleAddComment = (description = '', isChildComment = false) => {
     let formData = new FormData();
     const updatedValues = newCommentRef.current.getFieldsValue();
+    if (Profanity(isChildComment ? description : updatedValues?.comment)) {
+      message.error('Comment contains foul words, please remove them');
+      return;
+    }
     formData.append('post', postId);
     formData.append('description', isChildComment ? description : updatedValues?.comment);
     formData.append('commented_by', user_id);
@@ -78,7 +89,8 @@ const PostDetails = () => {
       .post(`${endpoints?.schoolWall?.comments}`, formData)
       .then((res) => {
         if (res?.data?.status_code == 200) {
-          message.success(res?.data?.message);
+          // message.success(res?.data?.message);
+          setCommentsCount((prevState) => prevState + 1);
           newCommentRef.current.resetFields();
           fetchComments({ post_id: postId });
           if (isChildComment) {
@@ -127,7 +139,6 @@ const PostDetails = () => {
     created_at,
     likes_count: likeCount,
     description,
-    comments_count: comments,
     is_like: liked,
     media_files,
     section_mapping,
@@ -211,7 +222,9 @@ const PostDetails = () => {
                     <div className='th-fw-400 th-14 th-grey pb-1'>
                       {Branches} | {Grades} | {Sections}
                     </div>
-                    <div className='th-fw-500 th-14 th-black py-2'>{description}</div>
+                    <div className='th-fw-500 th-14 th-black py-2'>
+                      {ReactHtmlParser(description)}
+                    </div>
 
                     {media_files?.length > 0 ? (
                       <Slider {...settings} className='th-slick th-post-slick'>
@@ -254,7 +267,8 @@ const PostDetails = () => {
                       <div className='px-2 d-flex align-items-center th-pointer '>
                         <CommentOutlined className='th-20' />{' '}
                         <span className='pl-2'>
-                          {comments} comment{comments > 1 ? 's' : ''}
+                          {commentsCount} comment
+                          {commentsCount > 1 ? 's' : ''}
                         </span>
                       </div>
                     </div>
@@ -431,6 +445,11 @@ const PostDetails = () => {
             </div>
           </>
         )}
+        <LikesModal
+          showLikesModal={showLikesModal}
+          handleCloseLikesModal={handleCloseLikesModal}
+          selectedPostId={postId}
+        />
       </div>
     </Layout>
   );

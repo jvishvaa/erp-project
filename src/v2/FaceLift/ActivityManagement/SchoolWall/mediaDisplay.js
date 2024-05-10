@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image } from 'antd';
+import endpoints from 'v2/config/endpoints';
 
 const MediaDisplay = ({
   mediaLink,
@@ -8,6 +9,8 @@ const MediaDisplay = ({
   className = '',
   styles = {},
 }) => {
+  const CDNLink = `${endpoints?.erp_googleapi}/${mediaLink}`;
+
   const getFileExtension = (url) => {
     return url?.split('.')?.pop();
   };
@@ -22,7 +25,7 @@ const MediaDisplay = ({
             height: '200px',
             borderRadius: 16,
           }}
-          src={mediaLink}
+          src={CDNLink}
         />
       );
     } else if (extension.match(/(mp4|ogg)/i)) {
@@ -33,21 +36,21 @@ const MediaDisplay = ({
           className={className}
           style={{ ...styles }}
         >
-          <source src={mediaLink} type={`video/${extension}`} />
+          <source src={CDNLink} type={`video/${extension}`} />
           Your browser does not support the video tag.
         </video>
       );
     } else if (extension.match(/(mp3|webm)/i)) {
       return (
         <audio controls className={'w-100 th-br-20'}>
-          <source src={mediaLink} type={`audio/${extension}`} />
+          <source src={CDNLink} type={`audio/${extension}`} />
           Your browser does not support the audio tag.
         </audio>
       );
     } else if (extension.match(/pdf/i)) {
       return (
         <div>
-          <a href={mediaLink} target='__blank'>
+          <a href={CDNLink} target='__blank'>
             <img
               src='https://img.freepik.com/free-vector/illustration-data-folder-icon_53876-6329.jpg?w=900&t=st=1698483764~exp=1698484364~hmac=2f391d43a022842ad959f2356ee00a6f73990982d805d142f5493c5834bd9481'
               alt={alt}
@@ -64,7 +67,9 @@ const MediaDisplay = ({
   };
 
   return (
-    <div className='th-media-display text-center th-br-14 mx-3 my-2'>{getMediaTag(mediaName)}</div>
+    <div className='th-media-display text-center th-br-14 mx-3 my-2'>
+      {getMediaTag(mediaName)}
+    </div>
   );
 };
 

@@ -10,16 +10,19 @@ import pdfIcon from 'v2/Assets/images/pdf.png';
 import endpoints from 'v2/config/endpoints';
 import { DeleteOutlined, DownOutlined, EyeFilled } from '@ant-design/icons';
 import { Profanity } from 'components/file-validation/Profanity';
+import MyTinyEditor from 'containers/question-bank/create-question/tinymce-editor';
 
 const { Option } = Select;
+const MAX_FILE_SIZE = 52428800;
+
 const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const fileRef = useRef();
-  const { first_name } = JSON.parse(localStorage?.getItem('userDetails'));
-  const formRef = useRef();
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
+  const { first_name } = JSON.parse(localStorage?.getItem('userDetails'));
+  const fileRef = useRef();
+  const formRef = useRef();
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeData, setGradeData] = useState([]);
   const [gradeID, setGradeID] = useState();
@@ -27,8 +30,16 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
   const [sectionIDs, setSectionIDs] = useState([]);
   const [attachmentList, setAttachmentList] = useState([]);
   const [createLoading, setCreateLoading] = useState(false);
+  const [textEditorContent, setTextEditorContent] = useState('');
 
-  console.log({ branchList });
+  const handleEditorChange = (content) => {
+    setTextEditorContent(content);
+  };
+
+  const convertToMB = (bytes) => {
+    const bytesInMB = 1024 * 1024;
+    return bytes / bytesInMB;
+  };
   const fetchGradeData = (params = {}) => {
     axiosInstance
       .get(`/erp_user/grademapping/`, { params: { ...params } })
@@ -94,7 +105,6 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
         setSelectedBranch(each.map((item) => item.value).join(','));
         branchParam = each.map((item) => item.value).join(',');
       }
-      console.log({ branchParam });
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
         branch_id: branchParam,
@@ -146,38 +156,55 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
   };
 
   const handleFile = (event) => {
-    const file = event.target.files[0];
-    const extension = file.name.split('.').pop();
-    if (file?.size > 5249338) {
-      message.error('Image must be less than 5 MB');
-      return;
-    }
-    if (!extension.match(/(jpg|jpeg|png|gif|avif|webp|mp4|ogg|mp3|webm|avi|3gp|pdf)/i)) {
-      message.error('Please select image, pdf, audio & video files only');
-      return;
-    }
-    let formData = new FormData();
+    console.log('totalfiles', event.target.files);
+    const totalFiles = event.target.files;
 
-    formData.append('file', file);
-    axiosInstance
-      .post(`/social-media/upload-social-media-file/`, formData)
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          message.success('File uploaded successfully');
-          let fileDetails = {
-            name: res?.data?.data,
-            type: res?.data?.file_type,
-            media_path: res?.data?.media_path,
-          };
-          setAttachmentList((prevState) => [...prevState, fileDetails]);
-        }
-      })
-      .catch((err) => {
-        message.error(err.message);
-      })
-      .finally(() => {
-        // setProfileLoading(false);
-      });
+    if (totalFiles?.length + attachmentList?.length > 10) {
+      message.error('Max. 10 attachments allowed');
+      return false;
+    }
+    for (const file of totalFiles) {
+      const extension = file.name.split('.').pop();
+      const isValidSize = file.size <= MAX_FILE_SIZE;
+      const isValidExtension =
+        /(jpg|jpeg|png|gif|avif|webp|mp4|ogg|mp3|webm|avi|3gp|pdf)/i.test(extension);
+
+      if (!isValidSize) {
+        message.error(
+          `File '${file.name}' must be less than ${convertToMB(MAX_FILE_SIZE)} MB`
+        );
+        continue;
+      }
+
+      if (!isValidExtension) {
+        message.error(
+          `File '${file.name}' has an unsupported format. Please select image, pdf, audio, or video files only.`
+        );
+        continue;
+      }
+      let formData = new FormData();
+
+      formData.append('file', file);
+      axiosInstance
+        .post(`/social-media/upload-social-media-file/`, formData)
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            // message.success('File uploaded successfully');
+            let fileDetails = {
+              name: res?.data?.data,
+              type: res?.data?.file_type,
+              media_path: res?.data?.data,
+            };
+            setAttachmentList((prevState) => [...prevState, fileDetails]);
+          }
+        })
+        .catch((err) => {
+          message.error(err.message);
+        })
+        .finally(() => {
+          // setProfileLoading(false);
+        });
+    }
   };
 
   const handleRemoveAttachment = (index) => {
@@ -189,12 +216,16 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
   const handleCreatePost = () => {
     const updatedValues = formRef.current?.getFieldsValue();
     if (Profanity(updatedValues?.description)) {
-      message.error('Description contains foul word, try harder ohh yeahh');
+      message.error('Description contains foul words, please remove them');
+      return;
+    }
+    if (!textEditorContent) {
+      message.error('Please add some content');
       return;
     }
     let payload = {
       section_mapping: sectionIDs,
-      description: updatedValues?.description,
+      description: textEditorContent,
       category: 1,
     };
     if (attachmentList?.length > 0) {
@@ -207,7 +238,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
         if (res?.data?.status_code == 200) {
           message.success(res?.data?.message);
           fetchNewPosts();
-          handleClosePostModal();
+          closeModal();
         }
       })
       .catch((err) => {
@@ -218,12 +249,18 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
       });
   };
 
+  const closeModal = () => {
+    handleClosePostModal();
+    formRef.current.resetFields();
+  };
   return (
     <Modal
       className='th-upload-modal'
       title='Create Post'
       visible={showCreatePostModal}
-      onCancel={handleClosePostModal}
+      onCancel={() => {
+        closeModal();
+      }}
       centered
       width={'75vw'}
       okText='Create'
@@ -252,6 +289,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
                   allowClear
                   placeholder='Select Branch*'
                   showSearch
+                  maxTagCount={1}
                   mode='multiple'
                   required={true}
                   getPopupContainer={(trigger) => trigger.parentNode}
@@ -288,6 +326,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
                   placeholder='Select Grade*'
                   showSearch
                   mode='multiple'
+                  maxTagCount={1}
                   required={true}
                   getPopupContainer={(trigger) => trigger.parentNode}
                   optionFilterProp='children'
@@ -354,19 +393,25 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
               <Form.Item
                 name='description'
                 label=''
-                rules={[{ required: true, message: 'This is required' }]}
+                // rules={[{ required: true, message: 'This is required' }]}
               >
-                <Input.TextArea
-                  rows={4}
+                {/* <Input.TextArea
+                  rows={6}
                   placeholder={`What's on your mind, ${first_name}?`}
-                  className='th-br-16 w-100 mt-3'
+                  className='th-br-16 w-100 mt-3 p-3'
+                /> */}
+                <MyTinyEditor
+                  id='post_description'
+                  content={textEditorContent}
+                  handleEditorChange={handleEditorChange}
+                  placeholder={`What's on your mind, ${first_name}?`}
                 />
               </Form.Item>
             </div>
           </div>
         </Form>
         <div className='my-3 d-flex align-items-center'>
-          <div className='col-md-1 col-sm-2 col-2'>
+          <div className='col-md-1 col-sm-2 col-2 th-pointer'>
             <label>
               <img
                 src={imageIcon}
@@ -405,19 +450,19 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
                           mask: <EyeFilled />,
                           previewText: null,
                         }}
-                        src={item?.media_path}
+                        src={`${endpoints?.erp_googleapi}/${item?.media_path}`}
                         height={80}
                         width={80}
                         style={{ borderRadius: 16, objectFit: 'cover' }}
                       />
                     ) : extension.match(/(mp4|ogg|avi)/i) ? (
-                      <img src={videoIcon} width={40} />
+                      <img src={videoIcon} width={80} />
                     ) : extension.match(/(mp3|webm)/i) ? (
-                      <img src={audioIcon} width={40} />
+                      <img src={audioIcon} width={80} />
                     ) : extension.match(/pdf/i) ? (
-                      <img src={pdfIcon} width={40} />
+                      <img src={pdfIcon} width={80} />
                     ) : (
-                      <img src={fileIcon} width={40} />
+                      <img src={fileIcon} width={80} />
                     )}
                     <Tag
                       color='volcano'

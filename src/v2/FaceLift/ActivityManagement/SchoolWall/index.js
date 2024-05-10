@@ -1,23 +1,48 @@
 import Layout from 'containers/Layout';
 import React, { useEffect, useState } from 'react';
-import { Breadcrumb, Button, List, Skeleton, Card, Calendar, Avatar, Input } from 'antd';
+import {
+  Breadcrumb,
+  Button,
+  List,
+  Skeleton,
+  Card,
+  Calendar,
+  Avatar,
+  Input,
+  message,
+} from 'antd';
 import Loader from './Loader';
 import PostCard from './postCard';
 import { SendOutlined } from '@ant-design/icons';
 import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import CreatePost from './CreatePost';
+import LikesModal from './LikesModal';
+import { Profanity } from 'components/file-validation/Profanity';
 
 const SchoolWall = () => {
-  const [hasMore, setHasMore] = useState(true);
+  const { user_id, first_name, last_name } = JSON.parse(
+    localStorage?.getItem('userDetails')
+  );
+
   const [postList, setPostList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [moreLoading, setMoreLoading] = useState(false);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const [showLikesModal, setShowLikesModal] = useState(false);
+  const [selectedPostID, setSelectedPostID] = useState(false);
   const [pageDetails, setPageDetails] = useState({ current: 1, total: 0 });
 
   const handleClosePostModal = () => {
     setShowCreatePostModal(false);
+  };
+  const handleShowLikesModal = (id) => {
+    setSelectedPostID(id);
+    setShowLikesModal(true);
+  };
+  const handleCloseLikesModal = () => {
+    setShowLikesModal(false);
+    setSelectedPostID(null);
   };
 
   const fetchNewPosts = () => {
@@ -29,10 +54,6 @@ const SchoolWall = () => {
   };
 
   const fetchPosts = (params = {}) => {
-    if (postList?.length > pageDetails?.total && params.page != 1) {
-      setHasMore(false);
-      return;
-    }
     axiosInstance
       .get(`${endpoints?.schoolWall?.getPosts}`, {
         params: {
@@ -57,7 +78,6 @@ const SchoolWall = () => {
         setMoreLoading(false);
       });
   };
-  console.log({ hasMore }, postList?.length);
 
   const fetchMoreData = () => {
     setMoreLoading(true);
@@ -103,6 +123,58 @@ const SchoolWall = () => {
         console.log('Error in post like');
       });
   };
+  const handleAddComment = (index, selectedPostId, description) => {
+    if (Profanity(description)) {
+      message.error('Comment contains foul words, please remove them');
+      return;
+    }
+
+    let formData = new FormData();
+    formData.append('post', selectedPostId);
+    formData.append('description', description);
+    formData.append('commented_by', user_id);
+
+    axiosInstance
+      .post(`${endpoints?.schoolWall?.comments}`, formData)
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          let newList = postList?.slice();
+          newList[index]['comments_count'] += 1;
+          newList[index]['recent_comment'] = {
+            commented_by: {
+              first_name,
+              last_name,
+            },
+            description: res?.data?.result?.description,
+            created_at: res?.data?.result?.created_at,
+          };
+          setPostList(newList);
+        }
+      })
+      .catch((err) => {
+        message.error('Something went wrong !!');
+      });
+  };
+
+  const handleDeletePost = (index, selectedPostID) => {
+    let list = postList.slice();
+    list.splice(index, 1);
+    setPostList(list);
+    const params = {
+      post_id: selectedPostID,
+    };
+    axiosInstance
+      .delete(`${endpoints?.schoolWall?.getPosts}`, { params: { ...params } })
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          message.success(res?.data?.message);
+        }
+      })
+      .catch((err) => {
+        console.log('Error in post like');
+      });
+  };
+
   return (
     <Layout>
       <div className='row'>
@@ -117,7 +189,7 @@ const SchoolWall = () => {
           <Loader />
         ) : (
           <>
-            <div className='col-md-8'>
+            <div className='col-md-8 py-3'>
               <Card className='th-bg-white th-br-20'>
                 <div
                   className='d-flex align-items-center th-pointer justify-content-between'
@@ -133,30 +205,39 @@ const SchoolWall = () => {
                   />
                   <Input
                     bordered={false}
+                    readOnly
                     placeholder='Create your post...'
                     suffix={<SendOutlined />}
                     className='th-14 py-2 mx-3 th-br-12 th-grey mb-1 th-bg-grey '
                   />
                 </div>
               </Card>
-              <List
-                className='demo-loadmore-list'
-                itemLayout='horizontal'
-                loadMore={loadMore}
-                bordered={false}
-                dataSource={postList}
-                renderItem={(each, index) => (
-                  <List.Item>
-                    {' '}
-                    <PostCard
-                      post={each}
-                      likePost={() => {
-                        handleLikePost(index, each?.id);
-                      }}
-                    />
-                  </List.Item>
-                )}
-              />
+              <div className='th-posts-list'>
+                <List
+                  className='demo-loadmore-list '
+                  itemLayout='horizontal'
+                  loadMore={loadMore}
+                  bordered={false}
+                  dataSource={postList}
+                  renderItem={(each, index) => (
+                    <List.Item>
+                      {' '}
+                      <PostCard
+                        index={index}
+                        post={each}
+                        handleShowLikesModal={handleShowLikesModal}
+                        handleAddComment={handleAddComment}
+                        likePost={() => {
+                          handleLikePost(index, each?.id);
+                        }}
+                        handleDeletePost={() => {
+                          handleDeletePost(index, each?.id);
+                        }}
+                      />
+                    </List.Item>
+                  )}
+                />
+              </div>
             </div>
             <div className='col-md-4 py-3'>
               <Card className='th-bg-white th-br-20 th-post-calendar'>
@@ -171,6 +252,11 @@ const SchoolWall = () => {
         showCreatePostModal={showCreatePostModal}
         handleClosePostModal={handleClosePostModal}
         fetchNewPosts={fetchNewPosts}
+      />
+      <LikesModal
+        showLikesModal={showLikesModal}
+        handleCloseLikesModal={handleCloseLikesModal}
+        selectedPostId={selectedPostID}
       />
     </Layout>
   );
