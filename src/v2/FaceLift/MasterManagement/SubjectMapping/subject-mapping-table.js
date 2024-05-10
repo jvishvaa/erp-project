@@ -85,7 +85,7 @@ const SubjectMappingTable = () => {
   };
   const fetchTableData = () => {
     setLoading(true);
-    let url = endpoints.masterManagement.subjectMappingTable;
+    let url = endpoints.masterManagement.subjectMapsAll;
     url += `?page=${currentPage}`;
     url += `&page_size=${pageSize}`;
     if (sessionYear) {
@@ -125,7 +125,7 @@ const SubjectMappingTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        message.error('OOPS! Users are mapped to it or Something went wrong.');
       })
       .finally(() => {
         setLoading(false);

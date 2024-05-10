@@ -100,7 +100,7 @@ const SubjectTable = () => {
       };
     }
     axiosInstance
-      .get(`${endpoints.masterManagement.subjects}`, {
+      .get(`${endpoints.masterManagement.subjectsAll}`, {
         params: params,
       })
       .then((response) => {
@@ -276,8 +276,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
-        setLoading(false);
+        message.error('OOPS! Users are mapped to it or Something went wrong.');
       })
       .finally(() => {
         setLoading(false);
@@ -295,7 +294,6 @@ const SubjectTable = () => {
       })
       .catch((error) => {
         message.error('OOPS! Something went wrong. Please try again');
-        setLoading(false);
       })
       .finally(() => {
         setLoading(false);
@@ -817,7 +815,16 @@ const SubjectTable = () => {
                       maxLength={100}
                     />
                   </Form.Item>
-                  <Form.Item name='description' label='Description (max 100 characters)'>
+                  <Form.Item
+                    name='description'
+                    label='Description (max 100 characters)'
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please Enter Subject Description',
+                      },
+                    ]}
+                  >
                     <TextArea
                       placeholder='Enter Description'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'

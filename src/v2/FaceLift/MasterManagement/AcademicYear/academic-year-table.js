@@ -54,7 +54,7 @@ const AcademicYearTable = () => {
       page_size: pageSize,
     };
     axiosInstance
-      .get(`${endpoints.masterManagement.academicYear}`, {
+      .get(`${endpoints.masterManagement.academicYearsAll}`, {
         params: params,
       })
       .then((response) => {
@@ -135,7 +135,7 @@ const AcademicYearTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        message.error('OOPS! Users are mapped to it or Something went wrong.');
       })
       .finally(() => {
         setLoading(false);
@@ -252,24 +252,26 @@ const AcademicYearTable = () => {
                     })
                   }
                 />
-                <Popconfirm
-                  title='Sure to delete?'
-                  onConfirm={() =>
-                    handleDelete({
-                      delId: row?.id,
-                    })
-                  }
-                >
-                  <DeleteOutlined
-                    title='Delete'
-                    style={{
-                      fontSize: 20,
-                      margin: 10,
-                      cursor: 'pointer',
-                      color: '#FF0000',
-                    }}
-                  />
-                </Popconfirm>
+                {!row?.is_current_session && (
+                  <Popconfirm
+                    title='Sure to delete?'
+                    onConfirm={() =>
+                      handleDelete({
+                        delId: row?.id,
+                      })
+                    }
+                  >
+                    <DeleteOutlined
+                      title='Delete'
+                      style={{
+                        fontSize: 20,
+                        margin: 10,
+                        cursor: 'pointer',
+                        color: '#FF0000',
+                      }}
+                    />
+                  </Popconfirm>
+                )}
                 {row?.is_current_session ? (
                   <Tooltip title='This is a default session year'>
                     <Tag>Default Year</Tag>

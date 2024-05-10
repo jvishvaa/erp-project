@@ -72,7 +72,7 @@ const SectionTable = () => {
       };
     }
     axiosInstance
-      .get(`${endpoints.masterManagement.sectionsTable}`, {
+      .get(`${endpoints.masterManagement.sect}`, {
         params: params,
       })
       .then((response) => {
@@ -157,11 +157,10 @@ const SectionTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
-        setLoading(false);
+        message.error('OOPS! Users are mapped to it or Something went wrong.');
       })
       .finally(() => {
-        setLoading(true);
+        setLoading(false);
       });
   };
   const handleRestore = ({ restoreId }) => {
@@ -176,10 +175,9 @@ const SectionTable = () => {
       })
       .catch((error) => {
         message.error('OOPS! Something went wrong. Please try again');
-        setLoading(false);
       })
       .finally(() => {
-        setLoading(true);
+        setLoading(false);
       });
   };
   const handleOpenModal = ({ actionKey, editId, section_name }) => {

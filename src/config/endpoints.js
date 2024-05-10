@@ -199,6 +199,13 @@ export default {
     gmeetAuth: `${msOriginUrl}/api/oncls/v1/google-oauth/`,
   },
   masterManagement: {
+    sectionsAll: '/erp_user/sections_all/',
+    subjectsAll: '/erp_user/subjects_all/',
+    academicYearsAll: '/erp_user/academic_years_all/',
+    branchesAll: '/erp_user/branches_all/',
+    branchAcadMapsAll: '/erp_user/branch_acad_maps_all/',
+    sectionMapsAll: '/erp_user/section_maps_all/',
+    subjectMapsAll: '/erp_user/subject_maps_all/',
     subjects: '/erp_user/subjects-list/',
     grades: '/erp_user/grades-list/',
     gradeMapping: '/erp_user/grademapping/',

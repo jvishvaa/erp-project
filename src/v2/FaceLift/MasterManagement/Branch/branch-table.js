@@ -92,7 +92,7 @@ const BranchTable = () => {
       };
     }
     axiosInstance
-      .get(`${endpoints.masterManagement.branchList}`, {
+      .get(`${endpoints.masterManagement.branchesAll}`, {
         params: params,
       })
       .then((response) => {
@@ -191,7 +191,7 @@ const BranchTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        message.error('OOPS! Users are mapped to it or Something went wrong.');
       })
       .finally(() => {
         setLoading(false);

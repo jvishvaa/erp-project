@@ -83,7 +83,7 @@ const SectionMappingTable = () => {
     const branch_id = filterForm.getFieldsValue()?.branch_id;
     const grade_id = filterForm.getFieldsValue()?.grade_id;
     setLoading(true);
-    let url = endpoints.masterManagement.sectionMappingTable;
+    let url = endpoints.masterManagement.sectionMapsAll;
     url += `?page=${currentPage}`;
     url += `&page_size=${pageSize}`;
     if (session_year) {
@@ -123,7 +123,7 @@ const SectionMappingTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        message.error('OOPS! Users are mapped to it or Something went wrong.');
       })
       .finally(() => {
         setLoading(false);
