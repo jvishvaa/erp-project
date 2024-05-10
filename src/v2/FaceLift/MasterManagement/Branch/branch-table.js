@@ -101,9 +101,7 @@ const BranchTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -142,9 +140,7 @@ const BranchTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -178,9 +174,7 @@ const BranchTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -197,12 +191,11 @@ const BranchTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
-        setLoading(false);
+        message.error('OOPS! Something went wrong. Please try again');
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleRestore = ({ restoreId }) => {
     setLoading(true);
@@ -215,12 +208,11 @@ const BranchTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
-        setLoading(false);
+        message.error('OOPS! Something went wrong. Please try again');
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleOpenDrawer = ({ actionKey, editId, rowData }) => {
     setOpenDrawer(true);
@@ -283,7 +275,23 @@ const BranchTable = () => {
     {
       title: <span className='th-white th-16 th-fw-700'>Branch Name</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 th-16'>{row?.branch_name}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-16'>
+          {' '}
+          {extractContent(row?.branch_name).length > 15 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomRight'
+              title={extractContent(row?.branch_name)}
+              overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
+            >
+              {extractContent(row?.branch_name).substring(0, 15) + '...'}
+            </Tooltip>
+          ) : (
+            extractContent(row?.branch_name)
+          )}
+        </span>
+      ),
     },
     {
       title: <span className='th-white th-16 th-fw-700'>Branch Logo</span>,
@@ -524,7 +532,7 @@ const BranchTable = () => {
         >
           {drawerLoading ? (
             <div className='d-flex justify-content-center align-items-center'>
-              <Spin size='large' />
+              <Spin tip='Hold on! Great things take time!' size='large' />
             </div>
           ) : (
             <>
@@ -549,6 +557,7 @@ const BranchTable = () => {
                       placeholder='Enter Branch Name'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      maxLength={100}
                     />
                   </Form.Item>
                   <Form.Item
@@ -598,6 +607,7 @@ const BranchTable = () => {
                       placeholder='Enter Legal Name'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      maxLength={100}
                     />
                   </Form.Item>
                   <Form.Item
@@ -632,6 +642,7 @@ const BranchTable = () => {
                       placeholder='Enter Legal Email'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      maxLength={100}
                     />
                   </Form.Item>
                   <Form.Item

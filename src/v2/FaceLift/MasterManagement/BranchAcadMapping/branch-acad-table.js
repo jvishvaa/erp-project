@@ -92,9 +92,7 @@ const BranchAcadTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         // setLoading(false);
@@ -131,9 +129,7 @@ const BranchAcadTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -160,9 +156,7 @@ const BranchAcadTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Seems mapping already exists'
-        );
+        message.error('OOPS! Seems mapping already exists');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -171,7 +165,7 @@ const BranchAcadTable = () => {
   const handleDelete = ({ delId }) => {
     setLoading(true);
     axiosInstance
-      .delete(`${endpoints.masterManagement.deleteBranchMapping}${delId}`)
+      .delete(`${endpoints.masterManagement.deleteBranch}${delId}`)
       .then((response) => {
         if (response?.data?.status_code == 204) {
           message.success('Hurray! Mapping deleted successfully');
@@ -179,12 +173,10 @@ const BranchAcadTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        // setLoading(false);
+        setLoading(false);
       });
   };
   const handleRestore = ({ restoreId }) => {
@@ -198,12 +190,10 @@ const BranchAcadTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        // setLoading(false);
+        setLoading(false);
       });
   };
   const fetchAllBranches = () => {
@@ -216,9 +206,7 @@ const BranchAcadTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);

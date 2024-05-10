@@ -63,9 +63,7 @@ const AcademicYearTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -120,9 +118,7 @@ const AcademicYearTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setModalLoading(false);
@@ -139,12 +135,11 @@ const AcademicYearTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
-        setLoading(false);
+        message.error('OOPS! Something went wrong. Please try again');
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleRestore = ({ restoreId }) => {
     setLoading(true);
@@ -157,12 +152,11 @@ const AcademicYearTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
-        setLoading(false);
+        message.error('OOPS! Something went wrong. Please try again');
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleMakeDefault = ({ defaultId }) => {
     const params = {
@@ -181,9 +175,7 @@ const AcademicYearTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
         setLoading(false);
       })
       .finally(() => {});
@@ -423,7 +415,7 @@ const AcademicYearTable = () => {
         >
           {modalLoading ? (
             <div className='d-flex justify-content-center align-items-center'>
-              <Spin size='large' />
+              <Spin tip='Hold on! Great things take time!' size='large' />
             </div>
           ) : (
             <>

@@ -109,9 +109,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -127,9 +125,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -155,9 +151,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setModalLoading(false);
@@ -199,9 +193,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -236,9 +228,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setModal1Loading(false);
@@ -269,9 +259,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setModal1Loading(false);
@@ -288,12 +276,12 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
         setLoading(false);
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleRestore = ({ restoreId }) => {
     setLoading(true);
@@ -306,12 +294,12 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
         setLoading(false);
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleOpenDrawer = () => {
     setOpenDrawer(true);
@@ -365,7 +353,21 @@ const SubjectTable = () => {
       width: '20%',
       render: (data, row) => (
         <div className='d-flex justify-content-between'>
-          <span className='th-black-1 th-16'>{row?.subject_name}</span>
+          <span className='th-black-1 th-16'>
+            {' '}
+            {extractContent(row?.subject_name).length > 15 ? (
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomLeft'
+                title={extractContent(row?.subject_name)}
+                overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
+              >
+                {extractContent(row?.subject_name).substring(0, 15) + '...'}
+              </Tooltip>
+            ) : (
+              extractContent(row?.subject_name)
+            )}
+          </span>
           <EditOutlined
             title='Edit School Grade Name'
             style={{
@@ -725,7 +727,7 @@ const SubjectTable = () => {
         >
           {modalLoading ? (
             <div className='d-flex justify-content-center align-items-center'>
-              <Spin size='large' />
+              <Spin tip='Hold on! Great things take time!' size='large' />
             </div>
           ) : (
             <>
@@ -744,6 +746,7 @@ const SubjectTable = () => {
                       placeholder='Enter Subject Name'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      maxLength={100}
                     />
                   </Form.Item>
                 </Form>
@@ -786,7 +789,7 @@ const SubjectTable = () => {
         >
           {modal1Loading ? (
             <div className='d-flex justify-content-center align-items-center'>
-              <Spin size='large' />
+              <Spin tip='Hold on! Great things take time!' size='large' />
             </div>
           ) : (
             <>
@@ -811,6 +814,7 @@ const SubjectTable = () => {
                       placeholder='Enter Subject Name*'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      maxLength={100}
                     />
                   </Form.Item>
                   <Form.Item name='description' label='Description (max 100 characters)'>

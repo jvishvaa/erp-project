@@ -13,6 +13,7 @@ import {
   Form,
   Modal,
   Popconfirm,
+  Tooltip,
 } from 'antd';
 import {
   PlusCircleOutlined,
@@ -37,6 +38,11 @@ const SectionTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [editId, setEditId] = useState();
+  const extractContent = (s) => {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  };
   useEffect(() => {
     fetchTableData();
   }, [currentPage]);
@@ -75,9 +81,7 @@ const SectionTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -110,9 +114,7 @@ const SectionTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setModalLoading(false);
@@ -138,9 +140,7 @@ const SectionTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setModalLoading(false);
@@ -157,12 +157,12 @@ const SectionTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
         setLoading(false);
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(true);
+      });
   };
   const handleRestore = ({ restoreId }) => {
     setLoading(true);
@@ -175,12 +175,12 @@ const SectionTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
         setLoading(false);
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(true);
+      });
   };
   const handleOpenModal = ({ actionKey, editId, section_name }) => {
     setOpenModal(true);
@@ -209,7 +209,21 @@ const SectionTable = () => {
       title: <span className='th-white th-16 th-fw-700'>Section Name</span>,
       align: 'center',
       render: (data, row) => (
-        <span className='th-black-1 th-16'>{row?.section_name}</span>
+        <span className='th-black-1 th-16'>
+          {' '}
+          {extractContent(row?.section_name).length > 25 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={extractContent(row?.section_name)}
+              overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
+            >
+              {extractContent(row?.section_name).substring(0, 25) + '...'}
+            </Tooltip>
+          ) : (
+            extractContent(row?.section_name)
+          )}
+        </span>
       ),
     },
     {
@@ -420,7 +434,7 @@ const SectionTable = () => {
         >
           {modalLoading ? (
             <div className='d-flex justify-content-center align-items-center'>
-              <Spin size='large' />
+              <Spin tip='Hold on! Great things take time!' size='large' />
             </div>
           ) : (
             <>
@@ -443,6 +457,7 @@ const SectionTable = () => {
                       placeholder='Enter Section Name'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      maxLength={100}
                     />
                   </Form.Item>
                 </Form>

@@ -15,6 +15,7 @@ import {
   Card,
   Form,
   Popconfirm,
+  Tooltip,
 } from 'antd';
 import {
   PlusCircleOutlined,
@@ -43,6 +44,11 @@ const RoleManagement = () => {
   const [roleId, setRoleId] = useState();
   let parentModuleIds = [];
   let childModuleIds = [];
+  const extractContent = (s) => {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  };
   useEffect(() => {
     if (roleSearch?.length > 0) {
       fetchRoleListOnSearch();
@@ -84,9 +90,7 @@ const RoleManagement = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -109,9 +113,7 @@ const RoleManagement = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -132,12 +134,12 @@ const RoleManagement = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
         setLoading(false);
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleRestoreRole = (params = {}) => {
     setLoading(true);
@@ -154,12 +156,12 @@ const RoleManagement = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
         setLoading(false);
       })
-      .finally(() => {});
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const fetchModuleList = ({ actionKey, roleId }) => {
     setDrawerLoading(true);
@@ -180,9 +182,7 @@ const RoleManagement = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -262,9 +262,7 @@ const RoleManagement = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -316,7 +314,23 @@ const RoleManagement = () => {
     {
       title: <span className='th-white th-16 th-fw-700'>Role Name</span>,
       align: 'left',
-      render: (data, row) => <span className='th-black-1 th-16'>{row?.role_name}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-16'>
+          {' '}
+          {extractContent(row?.role_name).length > 25 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={extractContent(row?.role_name)}
+              overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
+            >
+              {extractContent(row?.role_name).substring(0, 25) + '...'}
+            </Tooltip>
+          ) : (
+            extractContent(row?.role_name)
+          )}
+        </span>
+      ),
     },
     {
       title: <span className='th-white th-16 th-fw-700'>Created At</span>,
@@ -608,7 +622,7 @@ const RoleManagement = () => {
           <>
             {drawerLoading ? (
               <div className='d-flex justify-content-center align-items-center'>
-                <Spin size='large' />
+                <Spin tip='Hold on! Great things take time!' size='large' />
               </div>
             ) : (
               <>
@@ -635,6 +649,7 @@ const RoleManagement = () => {
                             placeholder='Enter Role Name'
                             className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                             allowClear
+                            maxLength={100}
                           />
                         </Form.Item>
                       </Form>

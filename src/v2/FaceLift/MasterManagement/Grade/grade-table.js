@@ -13,6 +13,7 @@ import {
   Spin,
   Form,
   Modal,
+  Tooltip,
 } from 'antd';
 import {
   PlusCircleOutlined,
@@ -43,6 +44,11 @@ const GradeTable = () => {
   const [drawerWidth, setDrawerWidth] = useState(
     window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
   );
+  const extractContent = (s) => {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  };
   useEffect(() => {
     const handleResize = () => {
       setDrawerWidth(
@@ -93,9 +99,7 @@ const GradeTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setLoading(false);
@@ -111,9 +115,7 @@ const GradeTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -140,9 +142,7 @@ const GradeTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setModalLoading(false);
@@ -186,9 +186,7 @@ const GradeTable = () => {
         }
       })
       .catch((error) => {
-        message.error(
-          error?.response?.data?.message ?? 'OOPS! Something went wrong. Please try again'
-        );
+        message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
         setDrawerLoading(false);
@@ -229,7 +227,20 @@ const GradeTable = () => {
       align: 'left',
       render: (data, row) => (
         <div className='d-flex justify-content-between'>
-          <span className='th-black-1 th-16'>{row?.grade_name}</span>
+          <span className='th-black-1 th-16'>
+            {extractContent(row?.grade_name).length > 25 ? (
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomLeft'
+                title={extractContent(row?.grade_name)}
+                overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
+              >
+                {extractContent(row?.grade_name).substring(0, 25) + '...'}
+              </Tooltip>
+            ) : (
+              extractContent(row?.grade_name)
+            )}
+          </span>
           <EditOutlined
             title='Edit School Grade Name'
             style={{
@@ -401,7 +412,7 @@ const GradeTable = () => {
           <>
             {drawerLoading ? (
               <div className='d-flex justify-content-center align-items-center'>
-                <Spin size='large' />
+                <Spin tip='Hold on! Great things take time!' size='large' />
               </div>
             ) : (
               <>
@@ -453,7 +464,7 @@ const GradeTable = () => {
         >
           {modalLoading ? (
             <div className='d-flex justify-content-center align-items-center'>
-              <Spin size='large' />
+              <Spin tip='Hold on! Great things take time!' size='large' />
             </div>
           ) : (
             <>
@@ -472,6 +483,7 @@ const GradeTable = () => {
                       placeholder='Enter Grade Name'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      maxLength={100}
                     />
                   </Form.Item>
                 </Form>
