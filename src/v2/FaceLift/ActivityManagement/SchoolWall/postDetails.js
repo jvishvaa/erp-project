@@ -1,7 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Layout from 'containers/Layout';
 import { saveAs } from 'file-saver';
-import { Breadcrumb, Card, Comment, Input, message, Avatar, Button, Form } from 'antd';
+import {
+  Breadcrumb,
+  Card,
+  Comment,
+  Input,
+  message,
+  Avatar,
+  Button,
+  Form,
+  Popover,
+} from 'antd';
 import { useParams } from 'react-router-dom';
 import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -144,11 +154,24 @@ const PostDetails = () => {
     section_mapping,
   } = postDetails;
 
-  const Branches = section_mapping
-    ?.map((item) => item?.acad_session?.branch?.branch_name)
-    .join(', ');
-  const Grades = section_mapping?.map((item) => item?.grade?.grade_name).join(', ');
-  const Sections = section_mapping?.map((item) => item?.section?.section_name).join(', ');
+  const Branches = [
+    ...new Set(section_mapping?.map((item) => item?.acad_session?.branch?.branch_name)),
+  ];
+  const Grades = [
+    ...new Set(
+      section_mapping?.map((item) =>
+        [item?.acad_session?.branch?.branch_name ?? '', item?.grade?.grade_name].join(' ')
+      )
+    ),
+  ];
+  const Sections = section_mapping?.map((item) =>
+    [
+      item?.acad_session?.branch?.branch_name ?? '',
+      item?.grade?.grade_name ?? '',
+      item?.section?.section_name,
+    ].join(' ')
+  );
+
   const userImage =
     user?.profile_img ??
     'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
@@ -157,7 +180,7 @@ const PostDetails = () => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: 2.4,
     slidesToScroll: 1,
     arrows: true,
   };
@@ -176,6 +199,26 @@ const PostDetails = () => {
     saveAs(blob, fullName);
   };
 
+  const handleLongText = (data) => {
+    const limit = 1;
+    return data?.length > limit ? (
+      <Popover
+        placement='right'
+        content={data?.slice(limit)?.map((item) => (
+          <>
+            <i>{item}</i>
+            <br />
+          </>
+        ))}
+      >
+        <span>{data?.slice(0, limit).join(', ')} </span>
+        <span className='th-black'>+ {data?.length - limit} more</span>
+      </Popover>
+    ) : (
+      data?.join(', ')
+    );
+  };
+
   return (
     <Layout>
       <div className='row'>
@@ -183,9 +226,6 @@ const PostDetails = () => {
           <Breadcrumb separator='>'>
             <Breadcrumb.Item href='/school-wall' className='th-black-1 th-16 th-fw-500'>
               School Wall
-            </Breadcrumb.Item>
-            <Breadcrumb.Item className='th-grey th-16 th-fw-500'>
-              {postId}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -219,8 +259,9 @@ const PostDetails = () => {
                     </div>
                   </div>
                   <div className='mt-3 position-relative'>
-                    <div className='th-fw-400 th-14 th-grey pb-1'>
-                      {Branches} | {Grades} | {Sections}
+                    <div className='th-fw-400 th-14 th-grey pb-1 th-truncate-2'>
+                      {handleLongText(Branches)} | {handleLongText(Grades)} |{' '}
+                      {handleLongText(Sections)}
                     </div>
                     <div className='th-fw-500 th-14 th-black py-2'>
                       {ReactHtmlParser(description)}

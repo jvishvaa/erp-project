@@ -21,9 +21,10 @@ const MediaDisplay = ({
       return (
         <Image
           style={{
-            width: '100%',
+            width: '200px',
             height: '200px',
             borderRadius: 16,
+            objectFit:'cover'
           }}
           src={CDNLink}
         />

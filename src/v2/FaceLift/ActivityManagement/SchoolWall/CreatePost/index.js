@@ -270,7 +270,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
         form: 'filterForm',
       }}
     >
-      <div className='p-3'>
+      <div className='p-3' style={{ maxHeight: '80vh', overflowY: 'auto' }}>
         <Form
           id='filterForm'
           ref={formRef}

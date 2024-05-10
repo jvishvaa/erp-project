@@ -208,7 +208,7 @@ const SchoolWall = () => {
                     readOnly
                     placeholder='Create your post...'
                     suffix={<SendOutlined />}
-                    className='th-14 py-2 mx-3 th-br-12 th-grey mb-1 th-bg-grey '
+                    className='th-14 py-2 ml-3 th-br-12 th-grey mb-1 th-bg-grey '
                   />
                 </div>
               </Card>

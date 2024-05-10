@@ -101,6 +101,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [loading, setLoading] = useState(false);
   const [homeworkMapped, setHomeworkMapped] = useState(false);
   const [questionList, setQuestionList] = useState([]);
+  const [mappingSubjectID, setMappingSubjectID] = useState(null);
   // {
   //   id: cuid(),
   //   question: '',
@@ -575,7 +576,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   //For Subject
   const subjectOptions = subjectDropdown?.map((each) => {
     return (
-      <Option key={each?.subject__id} value={each?.subject__id} id={each?.id}>
+      <Option
+        key={each?.subject__id}
+        value={each?.subject__id}
+        id={each?.id}
+        mappingSubjectID={each?.subject_mapping_id}
+      >
         {each?.subject__subject_name}
       </Option>
     );
@@ -638,6 +644,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setQuestionList([]);
     if (e) {
       setSubjectID(e.value);
+      setMappingSubjectID(e?.mappingSubjectID);
       setSubjectName(e.children.split('_')[e.children.split('_').length - 1]);
       setHwMappingID();
       checkAssignedHomework({
@@ -1175,6 +1182,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         ? sectionMappingID
         : [sectionMappingID],
       subject: subjectID,
+      mapping_subject: [mappingSubjectID],
       date: moment().format('YYYY-MM-DD'),
       last_submission_date: submissionDate,
       questions: questionList.map((q) => {

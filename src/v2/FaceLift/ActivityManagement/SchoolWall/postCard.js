@@ -62,7 +62,7 @@ const PostCard = (props) => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 1,
+    slidesToShow: 3.6,
     slidesToScroll: 1,
     arrows: true,
   };
@@ -108,7 +108,6 @@ const PostCard = (props) => {
           </div>
           <div className='d-flex justify-content-between'>
             <Popover
-              trigger={'click'}
               placement='right'
               content={
                 <div className='d-flex flex-column align-items-center'>
@@ -121,6 +120,7 @@ const PostCard = (props) => {
                   </Tag>
                   <Popconfirm
                     className='mt-2'
+                    placement='bottom'
                     title='Are you sure to delete this post?'
                     onConfirm={props.handleDeletePost}
                     okText='Yes'
@@ -143,10 +143,10 @@ const PostCard = (props) => {
         </div>
 
         <div className='mt-3 position-relative'>
-          <div className='th-fw-400 th-14 th-grey pb-1 th-truncate-2'>
+          <span className='th-fw-400 th-14 th-grey pb-1 th-truncate-2'>
             {handleLongText(Branches)} | {handleLongText(Grades)} |{' '}
             {handleLongText(Sections)}
-          </div>
+          </span>
           <div className='th-fw-500 th-14 th-black py-2 w-100'>
             {ReactHtmlParser(description)}
           </div>
