@@ -10,7 +10,7 @@ import SendMessage from 'containers/communication/send-message/send-message';
 import MessageLog from 'containers/communication/message-log/message-log';
 import StudentHomework from 'containers/homework/student-homework/student-homework';
 import AssignRole from 'containers/communication/assign-role/assign-role';
-import RoleManagement from 'containers/role-management';
+import RoleManagement from 'v2/FaceLift/RoleManagement/role-management';
 // import store from './redux/store';
 import ChapterTypeTable from 'containers/master-management/chapter-type/chapter-type-table';
 import TopicTable from 'containers/master-management/topic/TopicTable';
@@ -28,14 +28,14 @@ import OnlineAttendanceTeacherView from 'containers/online-class/online-attendan
 import ViewClassManagement from 'containers/online-class/view-class/view-class-management/view-class-management';
 import AttendeeList from 'containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
 import ViewClassStudentCollection from 'containers/online-class/view-class/view-class-student/view-class-student-collection';
-import BranchTable from 'containers/master-management/branch/branch-table';
-import BranchAcadTable from 'containers/master-management/branch-acad-mapping/branch-acad-table';
-import SubjectMappingTable from 'containers/master-management/subject-mapping/subject-mapping-table';
-import SubjectTable from 'containers/master-management/subject/subject-table';
-import SectionMappingTable from 'containers/master-management/section-mapping/section-mapping-table';
-import SectionTable from 'containers/master-management/section/section-table';
-import GradeTable from 'containers/master-management/grade/grade-table';
-import AcademicYearTable from 'containers/master-management/academic-year/academic-year-table';
+import BranchTable from 'v2/FaceLift/MasterManagement/Branch/branch-table';
+import BranchAcadTable from 'v2/FaceLift/MasterManagement/BranchAcadMapping/branch-acad-table';
+import SubjectMappingTable from 'v2/FaceLift/MasterManagement/SubjectMapping/subject-mapping-table';
+import SubjectTable from 'v2/FaceLift/MasterManagement/Subject/subject-table';
+import SectionMappingTable from 'v2/FaceLift/MasterManagement/SectionMapping/section-mapping-table';
+import SectionTable from 'v2/FaceLift/MasterManagement/Section/section-table';
+import GradeTable from 'v2/FaceLift/MasterManagement/Grade/grade-table';
+import AcademicYearTable from 'v2/FaceLift/MasterManagement/AcademicYear/academic-year-table';
 import MessageTypeTable from 'containers/master-management/message-type/message-type-table';
 // import OnlineClassResource from 'containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from 'containers/homework/homework-card';
@@ -353,8 +353,8 @@ import WeeklyQuizPerformance from 'containers/assessment-central/assessment-repo
 import HolidayMark from 'containers/attendance/holidaymark';
 import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
-import TeacherReferForm from "containers/teacherReferral/TeacherRefer.js"
-import TeacherReferSuccess from "containers/teacherReferral/TeacherReferSuccess.js"
+import TeacherReferForm from 'containers/teacherReferral/TeacherRefer.js';
+import TeacherReferSuccess from 'containers/teacherReferral/TeacherReferSuccess.js';
 import StudentCountReport from 'containers/student-strength/studentCountReport/index.jsx';
 import TeacherAttendance from 'containers/teacherattendance/teacher';
 import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
@@ -473,7 +473,6 @@ import EventsMarkOld from 'containers/attendance/eventsmarkOld';
 import HolidayMarkOld from 'containers/attendance/holidayMarkOld';
 import StudentHwConfig from 'containers/homework/student-homework/StudentHwConfig';
 
-
 import VisualActivity from 'containers/newBlog/VisualActivity';
 import VisualActivityCreate from 'containers/newBlog/visualActivityCreate';
 import VisualActivityReview from 'containers/newBlog/VisualActivityReview';
@@ -485,7 +484,44 @@ import ErpAdminViewClassv2 from 'v2/FaceLift/OnlineClass/ErpViewClass';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
+import RoleManagementOldView from 'containers/role-management';
+import GradeTableOldView from 'containers/master-management/grade/grade-table';
+import SectionTableOldView from 'containers/master-management/section/section-table';
+import SubjectTableOldView from 'containers/master-management/subject/subject-table';
+import AcademicYearTableOldView from 'containers/master-management/academic-year/academic-year-table';
+import BranchTableOldView from 'containers/master-management/branch/branch-table';
+import BranchAcadTableOldView from 'containers/master-management/branch-acad-mapping/branch-acad-table';
+import SectionMappingTableOldView from 'containers/master-management/section-mapping/section-mapping-table';
+import SubjectMappingTableOldView from 'containers/master-management/subject-mapping/subject-mapping-table';
+
 const V1Router = [
+  <Route path='/role-management-oldview'>
+    {({ match }) => <RoleManagementOldView match={match} />}
+  </Route>,
+  <Route path='/master-management/grade-table-oldview'>
+    {({ match }) => <GradeTableOldView match={match} />}
+  </Route>,
+  <Route path='/master-management/section-table-oldview'>
+    {({ match }) => <SectionTableOldView match={match} />}
+  </Route>,
+  <Route path='/master-management/subject-table-oldview'>
+    {({ match }) => <SubjectTableOldView match={match} />}
+  </Route>,
+  <Route path='/master-management/academic-year-table-oldview'>
+    {({ match }) => <AcademicYearTableOldView match={match} />}
+  </Route>,
+  <Route path='/master-management/branch-table-oldview'>
+    {({ match }) => <BranchTableOldView match={match} />}
+  </Route>,
+  <Route path='/master-management/branch-acad-table-oldview'>
+    {({ match }) => <BranchAcadTableOldView match={match} />}
+  </Route>,
+  <Route path='/master-management/section-mapping-table-oldview'>
+    {({ match }) => <SectionMappingTableOldView match={match} />}
+  </Route>,
+  <Route path='/master-management/subject-mapping-table-oldview'>
+    {({ match }) => <SubjectMappingTableOldView match={match} />}
+  </Route>,
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}

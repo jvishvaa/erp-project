@@ -40,6 +40,15 @@ export default {
     addChildToParent: '/erp_user/add-child-to-parent/',
     updateParent: '/erp_user/update-parent',
   },
+  roleManagement: {
+    roleList: '/erp_user/roles/',
+    roleSearch: '/erp_user/role-search/',
+    deleteRole: '/erp_user/delete_role/',
+    restoreRole: '/erp_user/restore_role/',
+    moduleList: '/erp_user/list_module/',
+    createRole: '/erp_user/create_role/',
+    updateRole: '/erp_user/update_role_module/',
+  },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
     ebookSubject: '/academic/ebook_mapped_subjects/',
