@@ -295,7 +295,7 @@ const SectionMappingTable = () => {
       .get(`${endpoints.masterManagement.fetchSectionMap}`)
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          setAllGradeListDrawer(response?.data?.data);
+          setAllSectionListDrawer(response?.data?.data);
         }
       })
       .catch((error) => {
