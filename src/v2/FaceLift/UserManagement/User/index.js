@@ -546,6 +546,8 @@ const User = () => {
           }
         })
         .catch((error) => {
+          setLoading(false);
+          message.error('Something went wrong!');
           console.log(error);
         });
     } else {
@@ -607,6 +609,11 @@ const User = () => {
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
+        setTotalPage(0);
+        setUserData([]);
+        setPageNo(1);
+        message.error('Something went wrong!');
       });
   };
 
