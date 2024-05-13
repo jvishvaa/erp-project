@@ -15,7 +15,13 @@ import MyTinyEditor from 'containers/question-bank/create-question/tinymce-edito
 const { Option } = Select;
 const MAX_FILE_SIZE = 52428800;
 
-const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }) => {
+const CreatePost = ({
+  showCreatePostModal,
+  handleClosePostModal,
+  fetchNewPosts,
+  selectedPost,
+  handleUpdatedPost,
+}) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -29,6 +35,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
   const [sectionData, setSectionData] = useState([]);
   const [sectionIDs, setSectionIDs] = useState([]);
   const [attachmentList, setAttachmentList] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
   const [createLoading, setCreateLoading] = useState(false);
   const [textEditorContent, setTextEditorContent] = useState('');
 
@@ -54,10 +61,24 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
   };
   const fetchSectionData = (params = {}) => {
     axiosInstance
-      .get(`/erp_user/sectionmapping/`, { params: { ...params } })
+      .get(`/erp_user/v2/sectionmapping-list/`, { params: { ...params } })
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setSectionData(res?.data?.data);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  const fetchCategoryData = (params = {}) => {
+    axiosInstance
+      .get(`/social-media/post-category-list/`, { params: { ...params } })
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setCategoryData(res?.data?.result);
+        } else {
+          setCategoryData([]);
         }
       })
       .catch((error) => {
@@ -74,7 +95,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
   });
   const gradeOptions = gradeData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.grade_id}>
+      <Option key={each?.id} value={each.id}>
         {each?.grade__grade_name}
       </Option>
     );
@@ -83,6 +104,13 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
     return (
       <Option key={each?.id} value={each?.id}>
         {each?.section__section_name}
+      </Option>
+    );
+  });
+  const categoryOptions = categoryData?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id}>
+        {each?.category_name}
       </Option>
     );
   });
@@ -116,6 +144,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
       setSectionIDs([]);
     }
   };
+
   const handleGrade = (each) => {
     formRef.current.setFieldsValue({
       section: [],
@@ -123,11 +152,11 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
     if (each?.length > 0) {
       let gradeParam;
       if (each.some((item) => item.value === 'all')) {
-        const allGrades = [...new Set(gradeData.map((item) => item.grade_id))].join(',');
+        const allGrades = [...new Set(gradeData.map((item) => item.id))].join(',');
         gradeParam = allGrades;
         setGradeID(allGrades);
         formRef.current.setFieldsValue({
-          grade: [...new Set(gradeData.map((item) => item.grade_id))],
+          grade: [...new Set(gradeData.map((item) => item.id))],
         });
       } else {
         setGradeID([...new Set(each.map((item) => item.value))].join(','));
@@ -136,13 +165,14 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch,
-        grade_id: gradeParam,
+        section_mapping_ids: gradeParam,
       });
     } else {
       setSectionData([]);
       setSectionIDs([]);
     }
   };
+
   const handleChangeSection = (each) => {
     if (each.some((item) => item.value === 'all')) {
       const allsections = sectionData.map((item) => item.id);
@@ -156,7 +186,6 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
   };
 
   const handleFile = (event) => {
-    console.log('totalfiles', event.target.files);
     const totalFiles = event.target.files;
 
     if (totalFiles?.length + attachmentList?.length > 10) {
@@ -226,33 +255,105 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
     let payload = {
       section_mapping: sectionIDs,
       description: textEditorContent,
-      category: 1,
+      category: updatedValues?.category,
     };
     if (attachmentList?.length > 0) {
       payload['media_files'] = attachmentList.map((item) => item?.media_path);
     }
     setCreateLoading(true);
-    axiosInstance
-      .post(`${endpoints?.schoolWall?.getPosts}`, payload)
-      .then((res) => {
-        if (res?.data?.status_code == 200) {
-          message.success(res?.data?.message);
-          fetchNewPosts();
-          closeModal();
-        }
-      })
-      .catch((err) => {
-        message.error('Something went wrong !!');
-      })
-      .finally(() => {
-        setCreateLoading(false);
-      });
+    if (selectedPost) {
+      payload['post_id'] = selectedPost?.id;
+      axiosInstance
+        .put(`${endpoints?.schoolWall?.getPosts}`, payload)
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            // message.success(res?.data?.message);
+            closeModal();
+            handleUpdatedPost(res?.data?.result);
+          }
+        })
+        .catch((err) => {
+          console.log({ err });
+          message.error('Something went wrong 23!!');
+        })
+        .finally(() => {
+          setCreateLoading(false);
+        });
+    } else {
+      axiosInstance
+        .post(`${endpoints?.schoolWall?.getPosts}`, payload)
+        .then((res) => {
+          if (res?.data?.status_code == 200) {
+            message.success(res?.data?.message);
+            fetchNewPosts();
+            closeModal();
+          }
+        })
+        .catch((err) => {
+          message.error('Something went wrong !!');
+        })
+        .finally(() => {
+          setCreateLoading(false);
+        });
+    }
   };
 
   const closeModal = () => {
-    handleClosePostModal();
     formRef.current.resetFields();
+    handleClosePostModal();
+    setTextEditorContent('');
+    setGradeData([]);
+    setGradeID([]);
+    setSectionData([]);
+    setSectionIDs([]);
+    setAttachmentList([]);
   };
+
+  useEffect(() => {
+    if (selectedPost) {
+      let branches = selectedPost?.section_mapping?.map(
+        (el) => el?.acad_session?.branch?.id
+      );
+      let grades = selectedPost?.section_mapping?.map((el) => el?.id);
+      let sections = selectedPost?.section_mapping?.map((el) => el?.id);
+      formRef.current.setFieldsValue({
+        branch: branches,
+        grade: grades,
+        section: sections,
+        category: selectedPost?.category,
+      });
+      fetchGradeData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: branches?.join(', '),
+      });
+      fetchSectionData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: branches?.join(', '),
+        section_mapping_ids: grades?.join(', '),
+      });
+      let attachments = selectedPost?.media_files?.map((item) => {
+        let filename = item?.media_file?.split('/').pop();
+        let type = item?.media_file?.split('.').pop();
+        return {
+          name: filename,
+          type: type,
+          media_path: item?.media_file,
+        };
+      });
+      setAttachmentList(attachments);
+      setTimeout(() => {
+        handleEditorChange(selectedPost?.description);
+      }, 1000);
+      setSectionIDs(sections);
+    }
+  }, [selectedPost]);
+
+  useEffect(() => {
+    if (showCreatePostModal) {
+      fetchCategoryData();
+    }
+  }, [showCreatePostModal]);
+
   return (
     <Modal
       className='th-upload-modal'
@@ -262,7 +363,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
         closeModal();
       }}
       centered
-      width={'75vw'}
+      width={'80vw'}
       okText='Create'
       okButtonProps={{
         loading: createLoading,
@@ -278,7 +379,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
           onFinish={handleCreatePost}
         >
           <div className='d-flex py-3 flex-wrap'>
-            <div className='col-4'>
+            <div className='col-3'>
               <Form.Item
                 name='branch'
                 label='Branch'
@@ -292,6 +393,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
                   maxTagCount={1}
                   mode='multiple'
                   required={true}
+                  suffixIcon={<DownOutlined className='th-grey' />}
                   getPopupContainer={(trigger) => trigger.parentNode}
                   optionFilterProp='children'
                   filterOption={(input, options) => {
@@ -315,7 +417,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
                 </Select>
               </Form.Item>
             </div>
-            <div className='col-4'>
+            <div className='col-3'>
               <Form.Item
                 name='grade'
                 label='Grade'
@@ -326,6 +428,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
                   placeholder='Select Grade*'
                   showSearch
                   mode='multiple'
+                  suffixIcon={<DownOutlined className='th-grey' />}
                   maxTagCount={1}
                   required={true}
                   getPopupContainer={(trigger) => trigger.parentNode}
@@ -351,7 +454,7 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
                 </Select>
               </Form.Item>
             </div>
-            <div className='col-4'>
+            <div className='col-3'>
               <Form.Item
                 name='section'
                 label='Sections'
@@ -389,29 +492,54 @@ const CreatePost = ({ showCreatePostModal, handleClosePostModal, fetchNewPosts }
                 </Select>
               </Form.Item>
             </div>
-            <div className='col-12'>
+            <div className='col-3'>
               <Form.Item
+                name='category'
+                label='Category'
+                rules={[{ required: true, message: 'This is required' }]}
+              >
+                <Select
+                  placeholder='Select Category'
+                  showSearch
+                  required={true}
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  optionFilterProp='children'
+                  suffixIcon={<DownOutlined className='th-grey' />}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  allowClear
+                  className='w-100 text-left th-black-1 th-br-4'
+                >
+                  {categoryOptions}
+                </Select>
+              </Form.Item>
+            </div>
+            <div className='col-12'>
+              {/* <Form.Item
                 name='description'
                 label=''
                 // rules={[{ required: true, message: 'This is required' }]}
-              >
-                {/* <Input.TextArea
+              > */}
+              {/* <Input.TextArea
                   rows={6}
                   placeholder={`What's on your mind, ${first_name}?`}
                   className='th-br-16 w-100 mt-3 p-3'
                 /> */}
-                <MyTinyEditor
-                  id='post_description'
-                  content={textEditorContent}
-                  handleEditorChange={handleEditorChange}
-                  placeholder={`What's on your mind, ${first_name}?`}
-                />
-              </Form.Item>
+              <MyTinyEditor
+                id='post_description'
+                content={textEditorContent}
+                handleEditorChange={handleEditorChange}
+                placeholder={`What's on your mind, ${first_name}?`}
+              />
+              {/* </Form.Item> */}
             </div>
           </div>
         </Form>
         <div className='my-3 d-flex align-items-center'>
-          <div className='col-md-1 col-sm-2 col-2 th-pointer'>
+          <div className='col-md-1 col-sm-2 col-2 text-center'>
             <label>
               <img
                 src={imageIcon}

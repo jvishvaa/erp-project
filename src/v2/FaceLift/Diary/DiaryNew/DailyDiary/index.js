@@ -1466,6 +1466,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSectionID(editData?.section_id);
       setSectionMappingID(editData?.section_mapping_id);
       setSubjectID(editSubject?.subject_id);
+      setMappingSubjectID(editSubject?.subject_mappping_id);
       setSubjectName(editSubject?.subject_name);
       if (editData?.periods_data?.length > 0) {
         setClearTodaysTopic(false);

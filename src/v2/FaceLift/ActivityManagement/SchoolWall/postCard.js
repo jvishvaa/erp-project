@@ -17,6 +17,7 @@ import ReactHtmlParser from 'react-html-parser';
 
 const PostCard = (props) => {
   const newCommentRef = useRef();
+  const { user_level, user_id } = JSON.parse(localStorage?.getItem('userDetails'));
   const {
     id,
     user,
@@ -106,50 +107,61 @@ const PostCard = (props) => {
               <small className='th-grey'>{dayjs(created_at).format('DD MMM YYYY')}</small>
             </div>
           </div>
-          <div className='d-flex justify-content-between'>
-            <Popover
-              placement='right'
-              content={
-                <div className='d-flex flex-column align-items-center'>
-                  <Tag
-                    color='processing'
-                    icon={<EditOutlined />}
-                    className='th-br-8 th-pointer text-center w-100'
-                  >
-                    Edit
-                  </Tag>
-                  <Popconfirm
-                    className='mt-2'
-                    placement='bottom'
-                    title='Are you sure to delete this post?'
-                    onConfirm={props.handleDeletePost}
-                    okText='Yes'
-                    cancelText='No'
-                  >
-                    <Tag
-                      color='volcano'
-                      icon={<DeleteOutlined />}
-                      className='th-br-8 th-pointer text-center w-100'
+          {props?.handleAllowDeletePost(props?.post) && (
+            <div className='d-flex justify-content-between'>
+              <Popover
+                placement='right'
+                content={
+                  <div className='d-flex flex-column align-items-center'>
+                    {user_id === user?.id && (
+                      <Tag
+                        color='processing'
+                        icon={<EditOutlined />}
+                        className='th-br-8 th-pointer text-center w-100'
+                        onClick={() => {
+                          props.handleEditPost();
+                        }}
+                      >
+                        Edit
+                      </Tag>
+                    )}
+                    <Popconfirm
+                      className='mt-2'
+                      placement='bottom'
+                      title='Are you sure to delete this post?'
+                      onConfirm={props.handleDeletePost}
+                      okText='Yes'
+                      cancelText='No'
                     >
-                      Delete
-                    </Tag>
-                  </Popconfirm>
-                </div>
-              }
-            >
-              <MoreOutlined />
-            </Popover>
-          </div>
+                      <Tag
+                        color='volcano'
+                        icon={<DeleteOutlined />}
+                        className='th-br-8 th-pointer text-center w-100'
+                      >
+                        Delete
+                      </Tag>
+                    </Popconfirm>
+                  </div>
+                }
+              >
+                <MoreOutlined className='th-pointer th-24' />
+              </Popover>
+            </div>
+          )}
         </div>
 
         <div className='mt-3 position-relative'>
-          <span className='th-fw-400 th-14 th-grey pb-1 th-truncate-2'>
-            {handleLongText(Branches)} | {handleLongText(Grades)} |{' '}
-            {handleLongText(Sections)}
-          </span>
-          <div className='th-fw-500 th-14 th-black py-2 w-100'>
-            {ReactHtmlParser(description)}
-          </div>
+          {user_level !== 13 && (
+            <>
+              <span className='th-fw-400 th-14 th-grey pb-1 th-truncate-2'>
+                {handleLongText(Branches)} | {handleLongText(Grades)} |{' '}
+                {handleLongText(Sections)}
+              </span>
+              <div className='th-fw-500 th-14 th-black py-2 w-100'>
+                {ReactHtmlParser(description)}
+              </div>
+            </>
+          )}
 
           {files?.length > 0 ? (
             <Slider {...settings} className='th-slick th-post-slick'>
@@ -167,7 +179,7 @@ const PostCard = (props) => {
 
           {files?.length > 1 && (
             <div
-              className='position-absolute p-1'
+              className='position-absolute p-1 d-none'
               style={{
                 bottom: '-20px',
                 right: '10px',
@@ -200,27 +212,27 @@ const PostCard = (props) => {
                 {likeCount} Star{likeCount > 1 ? 's' : ''}
               </span>
             </span>
-            <Link to={`/school-wall/${id}`}>
+            {/* <Link to={`/school-wall/${id}`}>
               <span className='px-2 th-pointer th-grey'>
                 <CommentOutlined className='th-20' />{' '}
                 <span className='pl-2'>
                   {comments} comment{comments > 1 ? 's' : ''}
                 </span>
               </span>
-            </Link>
+            </Link> */}
           </div>
         </div>
-        {comments > 1 ? (
+        {/* {comments > 1 ? (
           <Link to={`/school-wall/${id}`}>
             <div className='th-14 pt-1 th-grey mb-1 px-2'>
               View all {comments} comments
             </div>
           </Link>
-        ) : null}
+        ) : null} */}
         {/* <div className='th-14 py-2 px-3 th-br-12 th-grey mb-1 th-bg-grey m-2'>
           Add a comment...
         </div> */}
-        {recent_comment !== '' && (
+        {/* {recent_comment !== '' && (
           <Comment
             datetime={
               <i>{dayjs(recent_comment?.updated_at)?.format('DD MM YYYY, h:mm:ss a')}</i>
@@ -244,8 +256,8 @@ const PostCard = (props) => {
             }
             content={<>{recent_comment?.description}</>}
           />
-        )}
-        <Form ref={newCommentRef}>
+        )} */}
+        {/* <Form ref={newCommentRef}>
           <Form.Item name='comment'>
             <Input
               bordered={false}
@@ -265,7 +277,7 @@ const PostCard = (props) => {
               className='th-14 py-2 px-3 th-br-12 th-grey mt-3 th-bg-grey '
             />
           </Form.Item>
-        </Form>
+        </Form> */}
       </div>
     </>
   );

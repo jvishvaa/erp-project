@@ -536,12 +536,9 @@ svg {
   }
 }
 
-.th-post-calendar {
+.th-post-announcements {
   position: sticky !important;
   top: 5%;
-  .ant-picker-calendar-mode-switch {
-    display: none !important;
-  }
 }
 .th-post-details-card {
   max-height: 70vh !important;
@@ -560,6 +557,6 @@ svg {
 .th-posts-list .ant-list-split .ant-list-item {
   border-bottom: none !important;
 }
-.ant-image-preview-mask{
+.ant-image-preview-mask {
   z-index: 2100 !important;
 }
