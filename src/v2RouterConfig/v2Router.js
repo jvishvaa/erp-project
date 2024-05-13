@@ -375,6 +375,9 @@ const V2Router = () => {
                         <Route path='/create-announcement'>
                           {({ match }) => <CreateAnnouncement match={match} />}
                         </Route>
+                        <Route path='/edit-announcement/:id'>
+                          {({ match }) => <CreateAnnouncement match={match} />}
+                        </Route>
                         <Route path='/diary/teacher'>
                           {({ match }) => <DiaryMain match={match} />}
                         </Route>
