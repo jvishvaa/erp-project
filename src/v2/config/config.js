@@ -111,6 +111,7 @@ const stage = {
     crm: 'https://marketing.stage-gke.letseduvate.com',
     cvbox: 'https://cvbox.stage-gke.letseduvate.com',
     gcloud: 'https://asia-south1-prj-stage-service-k12.cloudfunctions.net',
+    timeTracker: 'https://pagetimetracker.stage-gke.letseduvate.com/api/tracker/',
   },
 };
 
@@ -152,6 +153,7 @@ const prod = {
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
     cvbox: 'https://careerbox.letseduvate.com',
     gcloud: 'https://asia-south1-prj-prod-service-k12.cloudfunctions.net',
+    timeTracker: 'https://pagetimetracker.letseduvate.com/api/tracker/',
   },
 };
 
