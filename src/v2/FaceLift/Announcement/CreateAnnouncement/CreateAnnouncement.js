@@ -358,8 +358,8 @@ const CreateAnnouncement = (props) => {
       setAllowPublish(false);
     }
   }, [branchId, notiConfig]);
+
   const handleBranchChange = (e) => {
-    console.log(e, 'branchidd', notiConfig?.enbl_brnches);
     setBranchId(e);
     formRef.current.setFieldsValue({
       grade: [],
