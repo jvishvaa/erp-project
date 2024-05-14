@@ -93,8 +93,9 @@ import EvaluatorHomework from '../containers/centralise_homework/evaluator/image
 import CentralizedHome from '../containers/centralise_homework/CentralizedHome';
 import CenralizedHomeworkRoute from '../containers/centralise_homework/centralhw_route';
 import AuditorDashboard from '../containers/centralise_homework/evaluator/Auditor/AuditorDashboard';
-import FrequentlyAskedQuestions from "../containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions"
-import AddFaq from "../containers/FrequentlyAskedQuestions/AddFaq"
+import FrequentlyAskedQuestions from '../containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions';
+import AddFaq from '../containers/FrequentlyAskedQuestions/AddFaq';
+import HomeworkDashboard from '../v2/FaceLift/Homework/Dashboard';
 
 const V2Router = () => {
   useEffect(() => {
@@ -405,6 +406,10 @@ const V2Router = () => {
                         ,
                         <Route path='/master-management/signature-upload'>
                           {({ match }) => <SignatureUploadv2 match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/homework/dashboard'>
+                          {({ match }) => <HomeworkDashboard match={match} />}
                         </Route>
                         ,
                         <Route path='/homework/centralized'>

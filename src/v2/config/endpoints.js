@@ -220,6 +220,13 @@ export default {
     uploadZip: `${gcloud}/hw_zip_upload_v1`,
     updateImage: '/hw-hub/upload_hw_files/',
   },
+  homeworkDashboard: {
+    branchWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-branch-view/`,
+    gradeWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-grade-view/`,
+    sectionWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-section-view/`,
+    subjectWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-view/`,
+    subjectDetailsWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-detail-view/`,
+  },
   centralizedHomework: {
     docType: 'hw-hub/get_doctype/',
     studentView: 'hw-hub/hw_view/',
