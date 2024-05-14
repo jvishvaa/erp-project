@@ -105,28 +105,29 @@ const CreateAnnouncement = (props) => {
 
   const handleChange = (value) => {
     setSelectedCategory(value);
-
-    if (value == 11) {
-      setFeeReminderSelected(true);
-      handleUserLevel([13]);
-      formRef.current.setFieldsValue({
-        user_level: [13],
-      });
-      if (sectionIds.length > 0) {
-        fetchMembersCount({
-          role_id: 13,
-          branch_id: branchId?.join(','),
-          is_allowed_for_all: true,
-          section_id: sectionIds.join(','),
-          grade_id: gradeIds.join(','),
+    if (!props?.match?.params?.id) {
+      if (value == 11) {
+        setFeeReminderSelected(true);
+        handleUserLevel([13]);
+        formRef.current.setFieldsValue({
+          user_level: [13],
+        });
+        if (sectionIds.length > 0) {
+          fetchMembersCount({
+            role_id: 13,
+            branch_id: branchId?.join(','),
+            is_allowed_for_all: true,
+            section_id: sectionIds.join(','),
+            grade_id: gradeIds.join(','),
+          });
+        }
+      } else {
+        setFeeReminderSelected(false);
+        handleUserLevel([]);
+        formRef.current.setFieldsValue({
+          user_level: [],
         });
       }
-    } else {
-      setFeeReminderSelected(false);
-      handleUserLevel([]);
-      formRef.current.setFieldsValue({
-        user_level: [],
-      });
     }
   };
 
