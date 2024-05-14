@@ -2,7 +2,9 @@ import ChangeFaq from './ChangeFaq';
 import './Faq.scss';
 import {
   CloseOutlined,
+  EditOutlined,
   EyeFilled,
+  InfoCircleOutlined,
   InfoCircleTwoTone,
   PlayCircleOutlined,
 } from '@ant-design/icons';
@@ -16,9 +18,11 @@ import {
   Drawer,
   Form,
   Modal,
+  Popconfirm,
   Select,
   Table,
   Tooltip,
+  message,
 } from 'antd';
 import { useHistory } from 'react-router-dom';
 import CollapseableComponent from './AddFaq';
@@ -29,16 +33,18 @@ import axios from 'axios';
 // import CustomeBreadCrumbs from '../CustomeBreadcrumb/CustomeBreadCrumbs';
 import OnlineSub from 'assets/images/online.png';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import axiosInstance from 'config/axios';
+import { DeleteOutlineOutlined } from '@material-ui/icons';
+import { getFileIcon } from 'v2/getFileIcon';
 
 const { Panel } = Collapse;
 const { Option } = Select;
 
 const device = [
-  { id: 1, name: 'qbox' },
-  { id: 2, name: 'mb_droid' },
-  { id: 3, name: 'mb_ios' },
-  { id: 4, name: 'vendor' },
-  { id: 5, name: 'mb_web' },
+  { id: 1, name: 'Website' },
+  { id: 2, name: 'Android' },
+  { id: 3, name: 'IOS' },
+  { id: 5, name: 'Mobile Web' },
 ];
 
 const FrequentlyAskedQuestions = () => {
@@ -50,6 +56,7 @@ const FrequentlyAskedQuestions = () => {
   const [tableData, setTableData] = useState([]);
 
   const [childModules, setChildModules] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const [moduleValue, setModuleValue] = useState(null);
   const [userLevel, setUserLevel] = useState(null);
@@ -60,6 +67,8 @@ const FrequentlyAskedQuestions = () => {
   const [VideoPrev, setVideoPrev] = useState('');
 
   const [load, setLoad] = useState(false);
+
+  const [edit, setEdit] = useState(false);
 
   const formRef = createRef();
 
@@ -72,6 +81,14 @@ const FrequentlyAskedQuestions = () => {
   useEffect(() => {
     fetchUserLevel();
   }, []);
+
+  const showPopconfirm = () => {
+    setOpen(true);
+  };
+
+  const handleCancelPopconfirm = () => {
+    setOpen(false);
+  };
 
   const columns = [
     {
@@ -141,10 +158,14 @@ const FrequentlyAskedQuestions = () => {
             />
             View
           </div>
-        ) : null,
+        ) : (
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <InfoCircleOutlined style={{ marginTop: '3px' }} /> <p>No Video</p>
+          </div>
+        ),
     },
     {
-      title: <span className='th-white th-fw-700'>P.D.F Preview</span>,
+      title: <span className='th-white th-fw-700'>PDF Preview</span>,
       key: 'pdf',
       render: (data) =>
         data?.pdf_file?.length > 0 ? (
@@ -159,7 +180,7 @@ const FrequentlyAskedQuestions = () => {
             }}
             onClick={() => {
               const fileName = data?.pdf_file;
-              let extension = fileName ? fileName[fileName?.length - 1] : '';
+              let extension = fileName?.split('.')[fileName?.split('.')?.length - 1]
               openPreview({
                 currentAttachmentIndex: 0,
                 attachmentsArray: [
@@ -176,27 +197,43 @@ const FrequentlyAskedQuestions = () => {
             <EyeFilled style={{ height: '15px', width: '15px', marginRight: '5px' }} />
             View
           </div>
-        ) : null,
+        ) : (
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <InfoCircleOutlined style={{ marginTop: '3px' }} />
+            <p>No PDF</p>
+          </div>
+        ),
     },
     {
       title: <span className='th-white th-fw-700'>Action</span>,
       key: 'action',
       render: (text, record) => (
-        <span>
-          <Button
-            style={{ backgroundColor: 'orange', color: 'white' }}
-            size='small'
-            onClick={() => {
-              showDrawer(record);
+        <span style={{ display: 'flex', gap: '15px' }}>
+          <Tooltip title='Edit' placement='top'>
+            <EditOutlined
+              style={{ color: 'blue', fontSize: '22px' }}
+              onClick={() => {
+                showDrawer(record);
+                setEdit(true);
+              }}
+            />
+          </Tooltip>
+          <Popconfirm
+            title='Delete This ?'
+            open={open}
+            onConfirm={() => {
+              deleteFaq(record?.user_level, record?.module_id);
             }}
+            onCancel={handleCancel}
           >
-            Edit / Delete
-          </Button>
+            <DeleteOutlineOutlined
+              style={{ color: 'red', fontSize: '22px', cursor: 'pointer' }}
+            />
+          </Popconfirm>
         </span>
       ),
     },
   ];
-
   const handleSave = () => {
     setIsModalVisible(false);
   };
@@ -213,12 +250,20 @@ const FrequentlyAskedQuestions = () => {
   const onCloseDrawer = () => {
     setModuleData(null);
     setOpenDrawer(false);
+    setEdit(false);
   };
-
   const handleChangeModule = (value) => {
     if (value) {
       fetchChildModules(value);
       setModuleValue(value);
+    } else {
+      setModuleValue(null);
+      setSubModule(null);
+      formRef.current.setFieldsValue({
+        module: null,
+        child_module: null,
+      });
+      setChildModules([]);
     }
   };
 
@@ -249,24 +294,6 @@ const FrequentlyAskedQuestions = () => {
   const handleVideoPrev = (data) => {
     setVideoPrev(data);
     setVideoPrevModal(true);
-  };
-
-  const handleFilter = () => {
-    const params = {};
-
-    if (userLevel && userLevel.length > 0) {
-      params.user_level = userLevel.join(',');
-    }
-
-    if (subModule) {
-      params.child_id = subModule;
-    }
-
-    if (devices && devices.length > 0) {
-      params.device = devices.join(',');
-    }
-
-    fetchData({ params });
   };
 
   const fetchUserLevel = () => {
@@ -307,11 +334,12 @@ const FrequentlyAskedQuestions = () => {
   ));
 
   const fetchChildModules = (id) => {
-    axios
+    const params = {
+      parent_id: id,
+    };
+    axiosInstance
       .get(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}?parent_id=${id}`, {
-        headers: {
-          Authorization: `Bearer ${userDetails?.token}`,
-        },
+        params: { ...params },
       })
       .then((res) => {
         if (res?.data) {
@@ -319,18 +347,15 @@ const FrequentlyAskedQuestions = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log('Error fetching Module data:', error);
       });
   };
 
   const fetchData = ({ params }) => {
     setLoad(true);
-    axios
+    axiosInstance
       .get(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, {
-        params,
-        headers: {
-          Authorization: `Bearer ${userDetails?.token}`,
-        },
+        params: { ...params },
       })
       .then((res) => {
         if (res?.data) {
@@ -339,7 +364,63 @@ const FrequentlyAskedQuestions = () => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log('Error fetching Module data:', error);
+        if (error) {
+          setTableData([]);
+        }
+        setLoad(false);
+      });
+  };
+
+  useEffect(() => {
+    const params = {};
+
+    if (userLevel && userLevel.length > 0) {
+      params.user_level = userLevel.join(',');
+    }
+
+    if (subModule) {
+      params.child_id = subModule;
+    }
+
+    if (devices && devices.length > 0) {
+      params.device = devices.join(',');
+    }
+
+    fetchData({ params });
+  }, [userLevel, subModule, devices, moduleValue]);
+
+  const deleteFaq = (faq_user_level, module_id) => {
+    setLoad(true);
+    const params = {};
+    if (userLevel && userLevel.length > 0) {
+      params.user_level = userLevel.join(',');
+    }
+
+    if (subModule) {
+      params.child_id = subModule;
+    }
+
+    if (devices && devices.length > 0) {
+      params.device = devices.join(',');
+    }
+    const formData = new FormData();
+    formData.append('user_level', faq_user_level);
+    formData.append('module_id', module_id);
+    formData.append('file_type', 'media');
+    axiosInstance
+      .delete(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, {
+        data: formData,
+      })
+      .then((res) => {
+        if (res?.data) {
+          message.success(`FAQ Deleted Successfully`);
+          setLoad(false);
+          fetchData({ params });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         setLoad(false);
       });
   };
@@ -385,25 +466,19 @@ const FrequentlyAskedQuestions = () => {
   return (
     <div>
       <Layout>
-        {/* <CustomeBreadCrumbs
-          details={[{ name: "FAQ's And Help" }, { name: 'View FAQ' }]}
-        /> */}
         <div className='row pt-3 pb-3'>
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item
-                className='th-black-1 th-16 th-grey'
-              >
-                F.A.Q.
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>
-                Frequently Asked Questions
-              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16 th-grey'>FAQ</Breadcrumb.Item>
             </Breadcrumb>
           </div>
         </div>
         <div>
-          <Form ref={formRef} style={{ width: '100%', display: 'flex' }} direction='row'>
+          <Form
+            ref={formRef}
+            style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}
+            direction='row'
+          >
             <div className='col-md-2'>
               <span className='th-grey th-14'>Modules*</span>
               <Form.Item name='module'>
@@ -419,6 +494,7 @@ const FrequentlyAskedQuestions = () => {
                   }}
                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   onChange={(value) => handleChangeModule(value)}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {moduleOptions}
                 </Select>
@@ -439,6 +515,7 @@ const FrequentlyAskedQuestions = () => {
                   }}
                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   onChange={(e) => handleSubModule(e)}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {childModuleOptions}
                 </Select>
@@ -460,6 +537,7 @@ const FrequentlyAskedQuestions = () => {
                   }}
                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   onChange={(e) => handleUserLevel(e)}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {userLevelListOptions}
                 </Select>
@@ -481,21 +559,18 @@ const FrequentlyAskedQuestions = () => {
                   }}
                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   onChange={(value) => handleDevice(value)}
+                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {deviceOptions}
                 </Select>
               </Form.Item>
             </div>
             <div className='addFaq col-md-2'>
-              <Button type='primary' className='Buttons' onClick={() => handleFilter()}>
-                Filter
-              </Button>
-            </div>
-            <div className='addFaq col-md-2'>
               <Button
                 type='primary'
                 className='Buttons'
                 onClick={() => history.push('/add-faq')}
+                style={{ marginTop: '10px' }}
               >
                 Add FAQ
               </Button>
@@ -520,7 +595,7 @@ const FrequentlyAskedQuestions = () => {
 
         <Drawer
           placement='right'
-          size='large'
+          width={600}
           title={
             <div style={{ textAlign: 'center' }}>
               <span style={{ float: 'center' }}>
@@ -531,14 +606,6 @@ const FrequentlyAskedQuestions = () => {
           }
           onClose={onCloseDrawer}
           visible={openDrawer}
-          footer={
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-              <Button onClick={onCloseDrawer}>Cancel</Button>
-              <Button type='primary' onClick={onCloseDrawer}>
-                OK
-              </Button>
-            </div>
-          }
           closable={null}
         >
           <ChangeFaq
@@ -550,6 +617,7 @@ const FrequentlyAskedQuestions = () => {
             subModule={subModule}
             devices={devices}
             setOpenDrawer={setOpenDrawer}
+            edit={edit}
           />
         </Drawer>
 
