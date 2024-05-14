@@ -313,7 +313,7 @@ const V2Router = () => {
 
   return (
     <Router>
-      <RouteChangeTracker />
+      {window.location.pathname !== '/' ? <RouteChangeTracker /> : null}
       <AlertNotificationProvider>
         <OnlineclassViewProvider>
           <ThemeProvider theme={theme}>
