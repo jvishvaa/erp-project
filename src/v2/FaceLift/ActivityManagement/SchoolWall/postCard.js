@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Input, Avatar, Comment, Tag, Popover, Popconfirm, Space } from 'antd';
+import { Form, Input, Avatar, Comment, Tag, Popover, Popconfirm, Button } from 'antd';
 import MediaDisplay from './mediaDisplay';
 import dayjs from 'dayjs';
 import {
@@ -11,9 +11,12 @@ import {
   DeleteOutlined,
   MoreOutlined,
   EditOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons';
 import Slider from 'react-slick';
 import ReactHtmlParser from 'react-html-parser';
+import { saveAs } from 'file-saver';
+import endpoints from 'v2/config/endpoints';
 
 const PostCard = (props) => {
   const newCommentRef = useRef();
@@ -27,31 +30,15 @@ const PostCard = (props) => {
     comments_count: comments,
     is_like: liked,
     media_files: files,
-    section_mapping,
+    category_name,
     recent_comment,
   } = props?.post;
   const likePost = props?.likePost;
 
-  const Branches = [
-    ...new Set(section_mapping?.map((item) => item?.acad_session?.branch?.branch_name)),
-  ];
-  const Grades = [
-    ...new Set(
-      section_mapping?.map((item) =>
-        [item?.acad_session?.branch?.branch_name ?? '', item?.grade?.grade_name].join(' ')
-      )
-    ),
-  ];
-  const Sections = section_mapping?.map((item) =>
-    [
-      item?.acad_session?.branch?.branch_name ?? '',
-      item?.grade?.grade_name ?? '',
-      item?.section?.section_name,
-    ].join(' ')
-  );
   const userImage =
-    user?.profile_img ??
-    'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
+    user?.profile_img !== ''
+      ? user?.profile_img
+      : 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
 
   const addComment = async () => {
     const updatedValues = newCommentRef.current.getFieldsValue();
@@ -63,28 +50,38 @@ const PostCard = (props) => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 3.6,
+    slidesToShow: 3,
     slidesToScroll: 1,
     arrows: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
-  const handleLongText = (data) => {
-    return data?.length > 2 ? (
-      <Popover
-        placement='right'
-        content={data?.slice(2)?.map((item) => (
-          <>
-            <i>{item}</i>
-            <br />
-          </>
-        ))}
-      >
-        <span>{data?.slice(0, 2).join(', ')} </span>
-        <span className='th-black'>+ {data?.length - 2} more</span>
-      </Popover>
-    ) : (
-      data?.join(', ')
-    );
+  const handleDownloadAll = async (files) => {
+    for (const item of files) {
+      const fullName = item?.media_file?.split('.').pop();
+      await downloadFile(`${endpoints?.erp_googleapi}/${item?.media_file}`, fullName);
+    }
+  };
+
+  const downloadFile = async (url, fullName) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    saveAs(blob, fullName);
   };
 
   return (
@@ -104,7 +101,11 @@ const PostCard = (props) => {
                   ' '
                 )}
               </h5>
-              <small className='th-grey'>{dayjs(created_at).format('DD MMM YYYY')}</small>
+              {
+                <span className='py-1 px-2 th-br-12 mt-1 th-bg-grey mb-1 text-center th-10 '>
+                  {category_name}
+                </span>
+              }
             </div>
           </div>
           {props?.handleAllowDeletePost(props?.post) && (
@@ -151,17 +152,11 @@ const PostCard = (props) => {
         </div>
 
         <div className='mt-3 position-relative'>
-          {user_level !== 13 && (
-            <>
-              <span className='th-fw-400 th-14 th-grey pb-1 th-truncate-2'>
-                {handleLongText(Branches)} | {handleLongText(Grades)} |{' '}
-                {handleLongText(Sections)}
-              </span>
-              <div className='th-fw-500 th-14 th-black py-2 w-100'>
-                {ReactHtmlParser(description)}
-              </div>
-            </>
-          )}
+          <>
+            <div className='th-fw-500 th-14 th-black py-2 w-100 th-post-description'>
+              {ReactHtmlParser(description)}
+            </div>
+          </>
 
           {files?.length > 0 ? (
             <Slider {...settings} className='th-slick th-post-slick'>
@@ -177,19 +172,18 @@ const PostCard = (props) => {
             </Slider>
           ) : null}
 
-          {files?.length > 1 && (
-            <div
-              className='position-absolute p-1 d-none'
-              style={{
-                bottom: '-20px',
-                right: '10px',
-              }}
-            >
-              <Link to={`/school-wall/${id}`}>
-                <div className='th-primary th-14 px-3 th-br-5'>
-                  +{files?.length - 1} More
-                </div>
-              </Link>
+          {files?.length > 0 && (
+            <div className='text-right'>
+              <Button
+                type='link'
+                className='th-10'
+                icon={<DownloadOutlined />}
+                onClick={() => {
+                  handleDownloadAll(files);
+                }}
+              >
+                Download all attachments
+              </Button>
             </div>
           )}
         </div>
@@ -221,14 +215,11 @@ const PostCard = (props) => {
               </span>
             </Link> */}
           </div>
+          <small className='pt-1 th-grey mb-1 px-2'>
+            <i>{dayjs(created_at).format('DD/MM/YYYY, h:mm:ss a')}</i>
+          </small>
         </div>
-        {/* {comments > 1 ? (
-          <Link to={`/school-wall/${id}`}>
-            <div className='th-14 pt-1 th-grey mb-1 px-2'>
-              View all {comments} comments
-            </div>
-          </Link>
-        ) : null} */}
+
         {/* <div className='th-14 py-2 px-3 th-br-12 th-grey mb-1 th-bg-grey m-2'>
           Add a comment...
         </div> */}

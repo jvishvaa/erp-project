@@ -23,6 +23,7 @@ import LikesModal from './LikesModal';
 import { Profanity } from 'components/file-validation/Profanity';
 import { useSelector } from 'react-redux';
 import RecentAnnouncements from '../../TeacherDashboard/components/Announcement';
+import NoDataIcon from 'v2/Assets/images/no_data.gif';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -46,11 +47,16 @@ const SchoolWall = () => {
   const [selectedPostIndex, setSelectedPostIndex] = useState();
   const [pageDetails, setPageDetails] = useState({ current: 1, total: 0 });
   const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedAcadSession, setSelectedAcadSession] = useState([]);
+  const [gradeID, setGradeID] = useState([]);
+  const [uniqueGradeId, setUniqueGradeId] = useState([]);
   const [gradeData, setGradeData] = useState([]);
   const [sectionData, setSectionData] = useState([]);
+  const [sectionID, setSectionID] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [heirarchyConfig, setHeirarchyConfig] = useState();
+  const [heirarchyConfig, setHeirarchyConfig] = useState({});
+  const [category, setCategory] = useState();
 
   const handleClosePostModal = () => {
     setShowCreatePostModal(false);
@@ -85,13 +91,11 @@ const SchoolWall = () => {
   };
 
   const fetchPosts = (params = {}) => {
-    const filterValues = formRef?.current?.getFieldsValue();
     axiosInstance
       .get(`${endpoints?.schoolWall?.getPosts}`, {
         params: {
           ...params,
           page_size: 10,
-          ...(filterValues?.branch ? { acad_session: filterValues?.branch?.join(',') } : {}),
         },
       })
       .then((response) => {
@@ -259,7 +263,7 @@ const SchoolWall = () => {
         if (res?.data?.status_code === 200) {
           setHeirarchyConfig(JSON.parse(res?.data?.result[0].replace(/'/g, '"')));
         } else {
-          setHeirarchyConfig(null);
+          setHeirarchyConfig({});
         }
       })
       .catch((error) => {
@@ -269,14 +273,14 @@ const SchoolWall = () => {
 
   const branchOptions = branchList?.map((each) => {
     return (
-      <Option key={each?.branch?.id} value={each.branch?.id}>
+      <Option key={each?.branch?.id} value={each.branch?.id} acad_session={each?.id}>
         {each?.branch?.branch_name}
       </Option>
     );
   });
   const gradeOptions = gradeData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option key={each?.id} value={each.id} gradeId={each?.grade_id}>
         {each?.grade__grade_name}
       </Option>
     );
@@ -297,63 +301,65 @@ const SchoolWall = () => {
   });
 
   const handleBranch = (each) => {
-    formRef.current.setFieldsValue({
-      grade: [],
-      section: [],
-    });
+    setGradeID([]);
+    setUniqueGradeId([]);
+    setGradeData([]);
+    setSectionData([]);
+    setSectionID([]);
     if (each?.length > 0) {
       let branchParam;
       if (each.some((item) => item.value === 'all')) {
-        const allBranches = branchList.map((item) => item?.branch?.id).join(',');
+        const allBranches = branchList.map((item) => item?.branch?.id);
         branchParam = allBranches;
         setSelectedBranch(allBranches);
-        formRef.current.setFieldsValue({
-          branch: branchList.map((item) => item?.branch?.id),
-        });
+        setSelectedAcadSession(branchList?.map((item) => item?.id));
       } else {
         setSelectedBranch(each.map((item) => item.value).join(','));
+        setSelectedAcadSession(each.map((item) => item.acad_session));
         branchParam = each.map((item) => item.value).join(',');
       }
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
-        branch_id: branchParam,
+        branch_id: branchParam?.join(','),
       });
     } else {
-      setGradeData([]);
-      setSectionData([]);
+      setSelectedAcadSession([]);
+      setSelectedBranch([]);
     }
   };
 
   const handleGrade = (each) => {
-    formRef.current.setFieldsValue({
-      section: [],
-    });
+    setSectionData([]);
+    setSectionID([]);
     if (each?.length > 0) {
       let gradeParam;
       if (each.some((item) => item.value === 'all')) {
-        const allGrades = [...new Set(gradeData.map((item) => item.id))].join(',');
+        const allGrades = [...new Set(gradeData.map((item) => item.id))];
+        const allGradeID = [...new Set(gradeData.map((item) => item.grade_id))];
         gradeParam = allGrades;
-        formRef.current.setFieldsValue({
-          grade: [...new Set(gradeData.map((item) => item.id))],
-        });
+        setGradeID(allGrades);
+        setUniqueGradeId(allGradeID);
       } else {
-        gradeParam = [...new Set(each.map((item) => item.value))].join(',');
+        setUniqueGradeId([...new Set(each.map((item) => item.gradeId))]);
+        setGradeID([...new Set(each.map((item) => item.value))]);
+        gradeParam = [...new Set(each.map((item) => item.value))];
       }
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch,
-        section_mapping_ids: gradeParam,
+        section_mapping_ids: gradeParam?.join(','),
       });
     } else {
-      setSectionData([]);
+      setGradeID([]);
+      setUniqueGradeId([]);
     }
   };
 
   const handleChangeSection = (each) => {
     if (each.some((item) => item.value === 'all')) {
-      formRef.current.setFieldsValue({
-        section: sectionData.map((item) => item.id),
-      });
+      setSectionID(sectionData?.map((item) => item?.id));
+    } else {
+      setSectionID([...new Set(each.map((item) => item.value))]);
     }
   };
 
@@ -376,12 +382,32 @@ const SchoolWall = () => {
       }
     }
   };
+
+  const handleFilteredData = () => {
+    const updatedValues = formRef.current.getFieldsValue();
+    console.log({ gradeID, selectedAcadSession, sectionID, selectedBranch });
+    console.log('asdsadasdasd', updatedValues?.date);
+    let payload = { page: 1, page_size: 10 };
+    if (selectedAcadSession) {
+      payload['acad_session'] = selectedAcadSession?.join(',');
+    }
+    if (gradeID?.length > 0) {
+      payload['grades'] = gradeID?.join(',');
+    }
+    if (sectionID.length > 0) {
+      payload['sections'] = sectionID?.join(',');
+    }
+    if (category) {
+      payload['category'] = category;
+    }
+    fetchPosts(payload);
+  };
   return (
     <Layout>
       <div className='row'>
-        <div className='col-md-12'>
+        <div className='col-md-12 px-md-4'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/school-wall' className='th-black-1 th-18 th-fw-500'>
+            <Breadcrumb.Item href='/school-wall' className='th-black-1 th-16'>
               School Wall
             </Breadcrumb.Item>
           </Breadcrumb>
@@ -390,7 +416,7 @@ const SchoolWall = () => {
           <Loader />
         ) : (
           <>
-            <div className='col-md-8 py-3'>
+            <div className='col-md-8 py-3 px-md-4'>
               {user_level !== 13 && (
                 <Card className='th-bg-white th-br-20'>
                   <div className='d-flex align-items-center th-pointer justify-content-between'>
@@ -419,14 +445,29 @@ const SchoolWall = () => {
                       icon={<FilterOutlined />}
                       onClick={() => {
                         setShowFilters((prevState) => !prevState);
+                        if (branchList.length === 1) {
+                          setSelectedAcadSession([branchList[0]?.id]);
+                          setSelectedBranch(branchList[0]?.branch?.id);
+                          fetchGradeData({
+                            session_year: selectedAcademicYear?.id,
+                            branch_id: branchList[0]?.branch?.id,
+                          });
+                        }
                       }}
                     >
                       {showFilters ? 'Hide' : 'Show'} Filters
                     </Button>
                   </div>
-                  {showFilters && (
-                    <Form id='filterForm' ref={formRef} layout={'vertical'}>
-                      <div className='d-flex py-3 flex-wrap align-items-end'>
+
+                  <Form
+                    className={showFilters ? '' : 'd-none'}
+                    id='filterForm'
+                    ref={formRef}
+                    layout={'vertical'}
+                    onFinish={handleFilteredData}
+                  >
+                    <div className='d-flex py-3 flex-wrap align-items-end'>
+                      {branchList?.length > 1 && (
                         <div className='col-4'>
                           <Form.Item name='branch' label='Branch'>
                             <Select
@@ -436,6 +477,7 @@ const SchoolWall = () => {
                               showSearch
                               maxTagCount={1}
                               mode='multiple'
+                              value={selectedBranch}
                               required={true}
                               suffixIcon={<DownOutlined className='th-grey' />}
                               getPopupContainer={(trigger) => trigger.parentNode}
@@ -463,140 +505,164 @@ const SchoolWall = () => {
                             </Select>
                           </Form.Item>
                         </div>
-                        <div className='col-4'>
-                          <Form.Item name='grade' label='Grade'>
-                            <Select
-                              allowClear
-                              placeholder='Select Grade*'
-                              showSearch
-                              mode='multiple'
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              maxTagCount={1}
-                              required={true}
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              optionFilterProp='children'
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              onChange={(e, value) => {
-                                handleGrade(value);
-                              }}
-                              className='w-100 text-left th-black-1 th-br-4'
-                            >
-                              {gradeData?.length > 1 && (
-                                <>
-                                  <Option key={0} value={'all'}>
-                                    All
-                                  </Option>
-                                </>
-                              )}
-                              {gradeOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className='col-4'>
-                          <Form.Item name='section' label='Sections'>
-                            <Select
-                              placeholder='Select Sections'
-                              showSearch
-                              required={true}
-                              mode='multiple'
-                              maxTagCount={1}
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              optionFilterProp='children'
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              onChange={(e, value) => {
-                                handleChangeSection(value);
-                              }}
-                              allowClear
-                              className='w-100 text-left th-black-1 th-br-4'
-                            >
-                              {sectionsOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className='col-4'>
-                          <Form.Item name='category' label='Category'>
-                            <Select
-                              placeholder='Select Category'
-                              showSearch
-                              required={true}
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              optionFilterProp='children'
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              allowClear
-                              className='w-100 text-left th-black-1 th-br-4'
-                            >
-                              {categoryOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                        <div className='col-4'>
-                          <Form.Item name='date' label='Range'>
-                            <RangePicker />
-                          </Form.Item>
-                        </div>
-                        <div className='col-4'>
-                          <Form.Item name='' label=''>
-                            <Button type='primary' className='th-br-12 w-100'>
-                              Filter
-                            </Button>
-                          </Form.Item>
-                        </div>
+                      )}
+                      <div className='col-4'>
+                        <Form.Item name='grade' label='Grade'>
+                          <Select
+                            allowClear
+                            placeholder='Select Grade*'
+                            showSearch
+                            mode='multiple'
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            maxTagCount={1}
+                            required={true}
+                            value={selectedBranch}
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            optionFilterProp='children'
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            onChange={(e, value) => {
+                              handleGrade(value);
+                            }}
+                            className='w-100 text-left th-black-1 th-br-4'
+                          >
+                            {gradeData?.length > 1 && (
+                              <>
+                                <Option key={0} value={'all'}>
+                                  All
+                                </Option>
+                              </>
+                            )}
+                            {gradeOptions}
+                          </Select>
+                        </Form.Item>
                       </div>
-                    </Form>
-                  )}
+                      <div className='col-4'>
+                        <Form.Item name='section' label='Sections'>
+                          <Select
+                            placeholder='Select Sections'
+                            showSearch
+                            required={true}
+                            mode='multiple'
+                            maxTagCount={1}
+                            value={sectionID}
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            optionFilterProp='children'
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            onChange={(e, value) => {
+                              handleChangeSection(value);
+                            }}
+                            allowClear
+                            className='w-100 text-left th-black-1 th-br-4'
+                          >
+                            {sectionData?.length > 1 && (
+                              <>
+                                <Option key={0} value={'all'}>
+                                  All
+                                </Option>
+                              </>
+                            )}
+                            {sectionsOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-4'>
+                        <Form.Item name='category' label='Category'>
+                          <Select
+                            placeholder='Select Category'
+                            showSearch
+                            required={true}
+                            value={category}
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                            optionFilterProp='children'
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            onChange={(e) => {
+                              setCategory(e);
+                            }}
+                            allowClear
+                            className='w-100 text-left th-black-1 th-br-4'
+                          >
+                            {categoryOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-4'>
+                        <Form.Item name='date' label='Range'>
+                          <RangePicker />
+                        </Form.Item>
+                      </div>
+                      <div className='col-4'>
+                        <Form.Item name='' label=''>
+                          <Button
+                            type='primary'
+                            htmlType='submit'
+                            id='filterForm'
+                            className='th-br-12 w-100'
+                          >
+                            Filter
+                          </Button>
+                        </Form.Item>
+                      </div>
+                    </div>
+                  </Form>
                 </Card>
               )}
               <div className='th-posts-list'>
-                <List
-                  className='demo-loadmore-list '
-                  itemLayout='horizontal'
-                  loadMore={loadMore}
-                  bordered={false}
-                  dataSource={postList}
-                  renderItem={(each, index) => (
-                    <List.Item>
-                      {' '}
-                      <PostCard
-                        index={index}
-                        post={each}
-                        handleAllowDeletePost={handleAllowDeletePost}
-                        handleShowLikesModal={handleShowLikesModal}
-                        handleAddComment={handleAddComment}
-                        likePost={() => {
-                          handleLikePost(index, each?.id);
-                        }}
-                        handleDeletePost={() => {
-                          handleDeletePost(index, each?.id);
-                        }}
-                        handleEditPost={() => handleEditPost(index, each)}
-                      />
-                    </List.Item>
-                  )}
-                />
+                {postList?.length > 0 ? (
+                  <List
+                    className='demo-loadmore-list '
+                    itemLayout='horizontal'
+                    loadMore={loadMore}
+                    bordered={false}
+                    dataSource={postList}
+                    renderItem={(each, index) => (
+                      <List.Item>
+                        {' '}
+                        <PostCard
+                          index={index}
+                          post={each}
+                          handleAllowDeletePost={handleAllowDeletePost}
+                          handleShowLikesModal={handleShowLikesModal}
+                          handleAddComment={handleAddComment}
+                          likePost={() => {
+                            handleLikePost(index, each?.id);
+                          }}
+                          handleDeletePost={() => {
+                            handleDeletePost(index, each?.id);
+                          }}
+                          handleEditPost={() => handleEditPost(index, each)}
+                        />
+                      </List.Item>
+                    )}
+                  />
+                ) : (
+                  <Card className='th-br-20 my-3 text-center py-3'>
+                    <img src={NoDataIcon} alt='no_data' />
+                  </Card>
+                )}
               </div>
             </div>
             <div className='col-lg-4 py-3 pl-lg-0'>
-              <RecentAnnouncements isSchoolWall={true} scrollHeight={'55vh'} />
+              <RecentAnnouncements isSchoolWall={true} scrollHeight={'60vh'} />
             </div>
           </>
         )}

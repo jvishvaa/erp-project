@@ -60,6 +60,9 @@ const PostDetails = () => {
         if (response?.data?.status_code === 200) {
           setPostDetails(response?.data?.result?.results[0]);
           setCommentsCount(response?.data?.result?.results[0]?.comments_count);
+        } else {
+          setPostDetails({});
+          setCommentsCount(0);
         }
       })
       .catch((err) => console.log(err))
@@ -188,7 +191,7 @@ const PostDetails = () => {
   const handleDownloadAll = async (files) => {
     for (const item of files) {
       const fullName =
-        item?.media_file?.split('.')[item?.media_file?.split('_').length - 1];
+        item?.media_file?.split('.')[item?.media_file?.split('_')?.length - 1];
       await downloadFile(item?.media_file, fullName);
     }
   };
@@ -222,9 +225,9 @@ const PostDetails = () => {
   return (
     <Layout>
       <div className='row'>
-        <div className='col-md-12'>
+        <div className='col-md-12 px-md-4'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/school-wall' className='th-black-1 th-16 th-fw-500'>
+            <Breadcrumb.Item href='/school-wall' className='th-black-1 th-16'>
               School Wall
             </Breadcrumb.Item>
           </Breadcrumb>
@@ -233,8 +236,8 @@ const PostDetails = () => {
           <Loader />
         ) : (
           <>
-            <div className='col-md-6 my-3'>
-              <Card className={'bg-white th-post-card'}>
+            <div className='col my-3'>
+              <Card className={'bg-white th-post-card h-100'}>
                 <div className='th-post-details-card th-custom-scrollbar'>
                   <div className='d-flex justify-content-between align-items-center '>
                     <div className='d-flex gap-3 align-items-center'>
@@ -313,7 +316,7 @@ const PostDetails = () => {
                         </span>
                       </div>
                     </div>
-                    {media_files.length > 0 && (
+                    {media_files?.length > 0 && (
                       <div>
                         <Button
                           type='link'
@@ -330,7 +333,7 @@ const PostDetails = () => {
                 </div>
               </Card>
             </div>
-            <div className='col-6 my-3 '>
+            <div className='col my-3 '>
               <Card className={'bg-white th-br-20'}>
                 <div className='d-flex flex-column justify-contnet-between'>
                   <div className='th-black-1 th-fw-600 mb-3'>

@@ -30,10 +30,11 @@ const CreatePost = ({
   const fileRef = useRef();
   const formRef = useRef();
   const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedAcadSession, setSelectedAcadSession] = useState([]);
   const [gradeData, setGradeData] = useState([]);
   const [gradeID, setGradeID] = useState();
   const [sectionData, setSectionData] = useState([]);
-  const [sectionIDs, setSectionIDs] = useState([]);
+  const [sectionIDs, setSectionIDs] = useState();
   const [attachmentList, setAttachmentList] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [createLoading, setCreateLoading] = useState(false);
@@ -88,14 +89,14 @@ const CreatePost = ({
 
   const branchOptions = branchList?.map((each) => {
     return (
-      <Option key={each?.branch?.id} value={each.branch?.id}>
+      <Option key={each?.branch?.id} value={each.branch?.id} acad_session={each?.id}>
         {each?.branch?.branch_name}
       </Option>
     );
   });
   const gradeOptions = gradeData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id}>
+      <Option key={each?.id} value={each.id} gradeId={each?.grade_id}>
         {each?.grade__grade_name}
       </Option>
     );
@@ -124,13 +125,16 @@ const CreatePost = ({
       let branchParam;
       if (each.some((item) => item.value === 'all')) {
         const allBranches = branchList.map((item) => item?.branch?.id).join(',');
+        const allAcadSession = branchList.map((item) => item?.id);
         branchParam = allBranches;
         setSelectedBranch(allBranches);
+        setSelectedAcadSession(allAcadSession);
         formRef.current.setFieldsValue({
           branch: branchList.map((item) => item?.branch?.id),
         });
       } else {
         setSelectedBranch(each.map((item) => item.value).join(','));
+        setSelectedAcadSession(each.map((item) => item.acad_session));
         branchParam = each.map((item) => item.value).join(',');
       }
       fetchGradeData({
@@ -153,13 +157,14 @@ const CreatePost = ({
       let gradeParam;
       if (each.some((item) => item.value === 'all')) {
         const allGrades = [...new Set(gradeData.map((item) => item.id))].join(',');
+        const allGradesId = [...new Set(gradeData.map((item) => item.grade_id))];
         gradeParam = allGrades;
-        setGradeID(allGrades);
+        setGradeID(allGradesId);
         formRef.current.setFieldsValue({
           grade: [...new Set(gradeData.map((item) => item.id))],
         });
       } else {
-        setGradeID([...new Set(each.map((item) => item.value))].join(','));
+        setGradeID([...new Set(each.map((item) => item.gradeId))]);
         gradeParam = [...new Set(each.map((item) => item.value))].join(',');
       }
       fetchSectionData({
@@ -253,10 +258,14 @@ const CreatePost = ({
       return;
     }
     let payload = {
-      section_mapping: sectionIDs,
+      acad_session: selectedAcadSession,
+      grades: gradeID,
       description: textEditorContent,
       category: updatedValues?.category,
     };
+    if (sectionIDs.length > 0) {
+      payload['section_mapping'] = sectionIDs;
+    }
     if (attachmentList?.length > 0) {
       payload['media_files'] = attachmentList.map((item) => item?.media_path);
     }
@@ -267,14 +276,12 @@ const CreatePost = ({
         .put(`${endpoints?.schoolWall?.getPosts}`, payload)
         .then((res) => {
           if (res?.data?.status_code == 200) {
-            // message.success(res?.data?.message);
             closeModal();
             handleUpdatedPost(res?.data?.result);
           }
         })
         .catch((err) => {
-          console.log({ err });
-          message.error('Something went wrong 23!!');
+          message.error(err?.message ?? 'Something went wrong!!');
         })
         .finally(() => {
           setCreateLoading(false);
@@ -311,24 +318,31 @@ const CreatePost = ({
 
   useEffect(() => {
     if (selectedPost) {
-      let branches = selectedPost?.section_mapping?.map(
-        (el) => el?.acad_session?.branch?.id
-      );
-      let grades = selectedPost?.section_mapping?.map((el) => el?.id);
-      let sections = selectedPost?.section_mapping?.map((el) => el?.id);
+      let branches = branchList
+        ?.filter((el) => selectedPost?.acad_session.includes(el?.acad_session?.id))
+        ?.map((item) => item?.branch?.id)
+        .join(',');
+      let acadSessions = selectedPost?.acad_session;
+      setSelectedAcadSession(acadSessions);
+      setSelectedBranch(branches);
       formRef.current.setFieldsValue({
         branch: branches,
+      });
+
+      let grades = selectedPost?.grades;
+      let sections = selectedPost?.section_mapping;
+      formRef.current.setFieldsValue({
         grade: grades,
         section: sections,
         category: selectedPost?.category,
       });
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
-        branch_id: branches?.join(', '),
+        branch_id: branches,
       });
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
-        branch_id: branches?.join(', '),
+        branch_id: branches,
         section_mapping_ids: grades?.join(', '),
       });
       let attachments = selectedPost?.media_files?.map((item) => {
@@ -345,6 +359,7 @@ const CreatePost = ({
         handleEditorChange(selectedPost?.description);
       }, 1000);
       setSectionIDs(sections);
+      setGradeID(grades);
     }
   }, [selectedPost]);
 
@@ -353,6 +368,17 @@ const CreatePost = ({
       fetchCategoryData();
     }
   }, [showCreatePostModal]);
+  useEffect(() => {
+    if (branchList?.length == 1 && !selectedPost) {
+      let branch = branchList[0]?.branch?.id;
+      fetchGradeData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: branch,
+      });
+      setSelectedBranch(branch);
+      setSelectedAcadSession([branchList[0]?.id]);
+    }
+  }, [branchList]);
 
   return (
     <Modal
@@ -363,15 +389,15 @@ const CreatePost = ({
         closeModal();
       }}
       centered
-      width={'80vw'}
-      okText='Create'
+      width={window.innerWidth < 572 ? '100vw' : '80vw'}
+      okText={selectedPost ? 'Update' : 'Create'}
       okButtonProps={{
         loading: createLoading,
         htmlType: 'submit',
         form: 'filterForm',
       }}
     >
-      <div className='p-3' style={{ maxHeight: '80vh', overflowY: 'auto' }}>
+      <div className='p-md-3' style={{ maxHeight: '80vh', overflowY: 'auto' }}>
         <Form
           id='filterForm'
           ref={formRef}
@@ -379,45 +405,46 @@ const CreatePost = ({
           onFinish={handleCreatePost}
         >
           <div className='d-flex py-3 flex-wrap'>
-            <div className='col-3'>
-              <Form.Item
-                name='branch'
-                label='Branch'
-                rules={[{ required: true, message: 'This is required' }]}
-              >
-                <Select
-                  style={{ borderRadius: 16 }}
-                  allowClear
-                  placeholder='Select Branch*'
-                  showSearch
-                  maxTagCount={1}
-                  mode='multiple'
-                  required={true}
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  onChange={(e, value) => {
-                    handleBranch(value);
-                  }}
-                  className='w-100 text-left th-black-1 th-br-16'
+            {branchList?.length > 1 && (
+              <div className='col-md-3 col-6'>
+                <Form.Item
+                  name='branch'
+                  label='Branch'
+                  rules={[{ required: true, message: 'This is required' }]}
                 >
-                  {branchList?.length > 1 && (
-                    <>
-                      <Option key={0} value={'all'}>
-                        All
-                      </Option>
-                    </>
-                  )}
-                  {branchOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-3'>
+                  <Select
+                    allowClear
+                    placeholder='Select Branch*'
+                    showSearch
+                    maxTagCount={1}
+                    mode='multiple'
+                    required={true}
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    onChange={(e, value) => {
+                      handleBranch(value);
+                    }}
+                    className='w-100 text-left th-black-1 th-br-16'
+                  >
+                    {branchList?.length > 1 && (
+                      <>
+                        <Option key={0} value={'all'}>
+                          All
+                        </Option>
+                      </>
+                    )}
+                    {branchOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+            )}
+            <div className='col-md-3 col-6'>
               <Form.Item
                 name='grade'
                 label='Grade'
@@ -454,12 +481,8 @@ const CreatePost = ({
                 </Select>
               </Form.Item>
             </div>
-            <div className='col-3'>
-              <Form.Item
-                name='section'
-                label='Sections'
-                rules={[{ required: true, message: 'This is required' }]}
-              >
+            <div className='col-md-3 col-6'>
+              <Form.Item name='section' label='Sections'>
                 <Select
                   placeholder='Select Sections'
                   showSearch
@@ -492,7 +515,7 @@ const CreatePost = ({
                 </Select>
               </Form.Item>
             </div>
-            <div className='col-3'>
+            <div className='col-md-3 col-6'>
               <Form.Item
                 name='category'
                 label='Category'
@@ -517,17 +540,7 @@ const CreatePost = ({
                 </Select>
               </Form.Item>
             </div>
-            <div className='col-12'>
-              {/* <Form.Item
-                name='description'
-                label=''
-                // rules={[{ required: true, message: 'This is required' }]}
-              > */}
-              {/* <Input.TextArea
-                  rows={6}
-                  placeholder={`What's on your mind, ${first_name}?`}
-                  className='th-br-16 w-100 mt-3 p-3'
-                /> */}
+            <div className='col-12 mt-3'>
               <MyTinyEditor
                 id='post_description'
                 content={textEditorContent}
