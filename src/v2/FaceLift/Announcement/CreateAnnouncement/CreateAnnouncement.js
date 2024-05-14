@@ -46,7 +46,7 @@ const CreateAnnouncement = (props) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [selectedUserLevels, setSelectedUserLevels] = useState();
-  const [branchId, setBranchId] = useState('');
+  const [branchId, setBranchId] = useState([]);
   const [gradeData, setGradeData] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
   const [sectionData, setSectionData] = useState([]);
@@ -207,7 +207,7 @@ const CreateAnnouncement = (props) => {
     ];
     console.log({ dataForEdit, gradesIds, sections, sectionMappingIds }, 'section set');
     setSectionIds(sections);
-    setSectionMappingIds(sectionMappingIds); 
+    setSectionMappingIds(sectionMappingIds);
   };
 
   const fetchConfig = () => {
@@ -342,7 +342,24 @@ const CreateAnnouncement = (props) => {
       </Option>
     );
   });
+
+  useEffect(() => {
+    if (branchId?.length === 1) {
+      if (notiConfig?.enbl_brnches?.length > 0) {
+        if (notiConfig?.enbl_brnches?.includes(branchId[0])) {
+          setAllowPublish(true);
+        } else {
+          setAllowPublish(false);
+        }
+      }
+    } else if (branchId?.length > 1) {
+      setAllowPublish(true);
+    } else {
+      setAllowPublish(false);
+    }
+  }, [branchId, notiConfig]);
   const handleBranchChange = (e) => {
+    console.log(e, 'branchidd', notiConfig?.enbl_brnches);
     setBranchId(e);
     formRef.current.setFieldsValue({
       grade: [],
@@ -351,13 +368,13 @@ const CreateAnnouncement = (props) => {
     setGradeIds([]);
     setSectionIds([]);
     setSectionMappingIds([]);
-    if (notiConfig?.enbl_brnches?.length > 0) {
-      if (notiConfig?.enbl_brnches?.includes(e)) {
-        setAllowPublish(true);
-      } else {
-        setAllowPublish(false);
-      }
-    }
+    // if (notiConfig?.enbl_brnches?.length > 0) {
+    //   if (notiConfig?.enbl_brnches?.includes(e)) {
+    //     setAllowPublish(true);
+    //   } else {
+    //     setAllowPublish(false);
+    //   }
+    // }
     if (e) {
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
@@ -766,6 +783,8 @@ const CreateAnnouncement = (props) => {
                         placement='bottomRight'
                         suffixIcon={<DownOutlined className='th-grey' />}
                         dropdownMatchSelectWidth={false}
+                        maxTagCount={2}
+                        disabled={props?.match?.params?.id}
                         onChange={(e) => handleBranchChange(e)}
                         allowClear={true}
                         onClear={handleClearBranch}
@@ -787,13 +806,13 @@ const CreateAnnouncement = (props) => {
                       <Select
                         mode='multiple'
                         getPopupContainer={(trigger) => trigger.parentNode}
-                        maxTagCount={5}
+                        maxTagCount={2}
                         // allowClear={true}
                         suffixIcon={<DownOutlined className='th-grey' />}
                         className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                         placement='bottomRight'
                         showArrow={true}
-                        disabled={feeReminderSelected}
+                        disabled={feeReminderSelected || props?.match?.params?.id}
                         onChange={(e, value) => handleUserLevel(e)}
                         onClear={handleClearUserLevel}
                         dropdownMatchSelectWidth={false}
@@ -820,8 +839,9 @@ const CreateAnnouncement = (props) => {
                             placement='bottomRight'
                             showArrow={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            maxTagCount={2}
+                            maxTagCount={1}
                             dropdownMatchSelectWidth={false}
+                            disabled={props?.match?.params?.id}
                             onSelect={(e) => {
                               handleSelectGrade(
                                 e,
@@ -855,14 +875,17 @@ const CreateAnnouncement = (props) => {
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
-                            disabled={gradeIds.length > 0 && feeReminderSelected}
+                            disabled={
+                              (gradeIds.length > 0 && feeReminderSelected) ||
+                              props?.match?.params?.id
+                            }
                             value={sectionMappingIds}
                             getPopupContainer={(trigger) => trigger.parentNode}
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                             placement='bottomRight'
                             showArrow={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            maxTagCount={2}
+                            maxTagCount={1}
                             // allowClear={true}
                             dropdownMatchSelectWidth={false}
                             onSelect={(e, value) => {
