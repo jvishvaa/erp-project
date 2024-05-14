@@ -376,7 +376,8 @@ const CreateAnnouncement = (props) => {
     //     setAllowPublish(false);
     //   }
     // }
-    if (e) {
+    if (e?.length) {
+      console.log(e, 'branchhhh');
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
         branch_id: e?.join(','),
