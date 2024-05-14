@@ -44,6 +44,7 @@ const BranchTable = () => {
   const [editId, setEditId] = useState();
   const [file, setFile] = useState();
   const [fileLink, setFileLink] = useState();
+  const [fileError, setFileError] = useState(false);
   const [drawerWidth, setDrawerWidth] = useState(
     window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
   );
@@ -245,14 +246,17 @@ const BranchTable = () => {
       if (!allowedExtensions?.includes(`.${fileExtension}`)) {
         message.error('Only JPG / JPEG / PNG formats are allowed');
         e.target.files = null;
+        setFileError(true);
         return;
       }
       if (e.target.files[0].size > 5242880) {
         message.error('OOPS! File size exceeded the maxmimum limit');
         e.target.files = null;
+        setFileError(true);
         return;
       } else {
         setFile(e.target.files[0]);
+        setFileError(false);
       }
     } else {
       setFile();
@@ -575,6 +579,7 @@ const BranchTable = () => {
                       placeholder='Enter Branch Code'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      disabled={editId}
                     />
                   </Form.Item>
                   <Form.Item
@@ -665,6 +670,13 @@ const BranchTable = () => {
                       onChange={(e) => handleFile(e)}
                       style={{ display: 'none' }}
                     />
+                    <div className='pt-1'>
+                      {fileError && (
+                        <div className='th-red'>
+                          FILE FORMAT ERROR <br /> (max size 5MB, jpg/jpeg/png)
+                        </div>
+                      )}
+                    </div>
                     <div className='pt-1'>
                       {file && (
                         <div className='row'>
