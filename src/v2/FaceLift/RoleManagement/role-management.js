@@ -50,11 +50,7 @@ const RoleManagement = () => {
     return span.textContent || span.innerText;
   };
   useEffect(() => {
-    if (roleSearch?.length > 0) {
-      fetchRoleListOnSearch();
-    } else {
-      fetchRoleList();
-    }
+    fetchRoleList();
   }, [currentPage]);
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -65,11 +61,7 @@ const RoleManagement = () => {
 
   const handleFetchRoleList = () => {
     if (currentPage == 1) {
-      if (roleSearch?.length > 0) {
-        fetchRoleListOnSearch();
-      } else {
-        fetchRoleList();
-      }
+      fetchRoleList();
     } else {
       setCurrentPage(1);
     }
@@ -80,31 +72,14 @@ const RoleManagement = () => {
       page: currentPage,
       page_size: pageSize,
     };
+    if (roleSearch?.length > 0) {
+      params = {
+        ...params,
+        role_name: roleSearch,
+      };
+    }
     axiosInstance
       .get(`${endpoints.roleManagement.roleList}`, {
-        params: params,
-      })
-      .then((response) => {
-        if (response?.data?.status_code == 200) {
-          setRoleList(response?.data);
-        }
-      })
-      .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-  const fetchRoleListOnSearch = () => {
-    let params = {
-      role_name: roleSearch,
-      page: currentPage,
-      page_size: pageSize,
-    };
-    setLoading(true);
-    axiosInstance
-      .get(`${endpoints.roleManagement.roleSearch}`, {
         params: params,
       })
       .then((response) => {
@@ -126,11 +101,7 @@ const RoleManagement = () => {
       .then((response) => {
         if (response?.data?.status_code == 200) {
           message.success('Hurray! Role deleted successdully');
-          if (roleSearch?.length > 0) {
-            fetchRoleListOnSearch();
-          } else {
-            fetchRoleList();
-          }
+          fetchRoleList();
         }
       })
       .catch((error) => {
@@ -148,11 +119,7 @@ const RoleManagement = () => {
       .then((response) => {
         if (response?.data?.status_code == 200) {
           message.success('Hurray! Role restored successfully');
-          if (roleSearch?.length > 0) {
-            fetchRoleListOnSearch();
-          } else {
-            fetchRoleList();
-          }
+          fetchRoleList();
         }
       })
       .catch((error) => {
@@ -243,11 +210,7 @@ const RoleManagement = () => {
             }
             closeModulesDrawer();
             if (roleId) {
-              if (roleSearch?.length > 0) {
-                fetchRoleListOnSearch();
-              } else {
-                fetchRoleList();
-              }
+              fetchRoleList();
             } else {
               if (roleSearch?.length > 0) {
                 setRoleSearch('');

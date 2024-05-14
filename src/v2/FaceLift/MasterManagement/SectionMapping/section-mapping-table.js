@@ -22,6 +22,7 @@ import {
   SyncOutlined,
   RedoOutlined,
   DownOutlined,
+  InfoCircleTwoTone,
 } from '@ant-design/icons';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
@@ -571,6 +572,12 @@ const SectionMappingTable = () => {
                   </Form.Item>
                 </div>
                 <div className='row justify-content-end'>
+                  <span className='th-16 th-br-4'>
+                    <InfoCircleTwoTone className='pr-2' />
+                    <i className='th-grey th-fw-500 '>
+                      Please click on the filter to get data
+                    </i>
+                  </span>
                   <div className='row col-lg-3 col-md-6 col-sm-6 col-12'>
                     <div className='col-lg-6 col-md-6 col-sm-6 col-6'>
                       <Form.Item>

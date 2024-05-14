@@ -228,14 +228,14 @@ const GradeTable = () => {
       render: (data, row) => (
         <div className='d-flex justify-content-between'>
           <span className='th-black-1 th-16'>
-            {extractContent(row?.grade_name).length > 25 ? (
+            {extractContent(row?.grade_name).length > 15 ? (
               <Tooltip
                 autoAdjustOverflow='false'
                 placement='bottomLeft'
                 title={extractContent(row?.grade_name)}
                 overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
               >
-                {extractContent(row?.grade_name).substring(0, 25) + '...'}
+                {extractContent(row?.grade_name).substring(0, 15) + '...'}
               </Tooltip>
             ) : (
               extractContent(row?.grade_name)
