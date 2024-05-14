@@ -94,9 +94,11 @@ export const FaqRoutes = [
     { key: 'homework-teacher', path: '/homework/teacher' },
     {
       key: 'Teacher View',
+      path : `${window.location.pathname == '/lesson-plan/teacher-view/period-view' ? '/lesson-plan/teacher-view/period-view' : '/lesson-plan/teacher-view'}`
     },
     {
       key: 'Student View',
+      path : `${window.location.pathname == '/lesson-plan/student-view/period-view' ? '/lesson-plan/student-view/period-view' : '/lesson-plan/student-view'}`
     },
     { key: 'Assign Transport Fees', path: '/feeType/assign_other_fees' },
     { key: 'App/Reg Fee Type', path: '/feeType/RegistrationFee' },
