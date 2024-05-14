@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getTimeInterval } from 'v2/timeIntervalCalculator';
 import { getCategoryColor } from 'v2/generalAnnouncementFunctions';
 import DetailsModal from './DetailsModal';
-import { StarTwoTone } from '@ant-design/icons';
-import { Popover, Tooltip } from 'antd';
+import { DeleteOutlined, EditOutlined, StarTwoTone } from '@ant-design/icons';
+import { Button, Popconfirm, Popover, Tooltip } from 'antd';
+import { Link } from 'react-router-dom';
+import publishIcon from 'v2/Assets/dashboardIcons/announcementListIcons/publishIcon.svg';
+import deleteIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/deleteIcon.svg';
 import moment from 'moment';
 
 const ListCard = (props) => {
@@ -14,8 +17,11 @@ const ListCard = (props) => {
     created_time: date,
     is_flash_event,
   } = props.data;
-  const { showTab } = props;
+  const { showTab, deleteAnnouncement } = props;
   const [showModal, setShowModal] = useState(false);
+
+  const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const handleCloseModal = () => {
     setShowModal(false);
   };
@@ -54,7 +60,7 @@ const ListCard = (props) => {
           {category} {is_flash_event ? <StarTwoTone twoToneColor='#52c41a' /> : null}
         </div>
         <div
-          className='col-md-3 col-5 text-truncate th-pointer'
+          className='col-md-2 col-5 text-truncate th-pointer'
           style={{ width: '10%' }}
           onClick={() => {
             setShowModal(true);
@@ -76,7 +82,13 @@ const ListCard = (props) => {
           </b>
         </div>
         <div
-          className='col-md-5 col-5 text-truncate th-pointer'
+          className={`${
+            showTab != 2 && (is_superuser || showTab == 3)
+              ? 'col-md-4 '
+              : showTab == 1
+              ? 'col-md-6 '
+              : 'col-md-5 '
+          } col-5 text-truncate th-pointer`}
           style={{ width: '95%' }}
           onClick={() => {
             setShowModal(true);
@@ -95,8 +107,8 @@ const ListCard = (props) => {
             extractContent(content)
           )}
         </div>
-        <div className='col-md-2 col-3 px-2 px-md-4 th-grey text-right'>
-          {showTab == 1 || showTab == 3 ? (
+        {showTab != 2 ? (
+          <div className={`col-md-2 col-3 px-2 px-md-4 th-grey text-right`}>
             <Tooltip
               autoAdjustOverflow='false'
               placement='bottomRight'
@@ -105,56 +117,71 @@ const ListCard = (props) => {
               {' '}
               {getTimeInterval(date)}
             </Tooltip>
-          ) : showTab == 2 ? (
-            // <Popover
-            //   content={
-            //     <>
-            //       {/* <div className='row justify-content-between th-pointer pb-2'>
-            //         <img src={editIcon} className='mr-3 ' />
-            //         <span className='th-black-1 th-16'>Edit</span>
-            //       </div> */}
-            //       <div
-            //         className='row justify-content-center th-pointer'
-            //         onClick={() => {
-            //           setShowModal(true);
-            //         }}
-            //       >
-            //         <img src={publishIcon} className='mr-3 ' />
-            //         <span className='th-green th-16'>Publish</span>
-            //       </div>
-            //       {/* <div className='row justify-content-center th-pointer pt-2'>
-            //         <img src={deleteIcon} className='mr-3' />
-            //         <span className='th-red th-16 '>Delete</span>
-            //       </div> */}
-            //     </>
-            //   }
-            //   trigger='click'
-            //   placement='bottomRight'
-            // >
-            //   <EllipsisOutlined />
-            // </Popover>
-            <div
-              className='d-flex justify-content-end'
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              <div className='th-bg-primary th-white w-75 th-pointer th-br-4 text-center py-1'>
-                {props?.allowedPublishBranches.length > 0 &&
-                !props?.allowedPublishBranches?.includes(props?.data?.branch_id[0])
-                  ? 'Verify'
-                  : 'Publish'}
-              </div>
+          </div>
+        ) : null}
+        {showTab != 1 || is_superuser ? (
+          <div
+            className={`${
+              showTab != 2 ? 'col-md-2 ' : showTab == 2 || is_superuser ? 'col-md-3 ' : ''
+            } col-3 px-2 px-md-4 th-grey text-right`}
+          >
+            <div className='d-flex flex-row justify-content-end'>
+              {showTab == 2 ? (
+                <div
+                  className='th-bg-primary th-white  th-pointer th-br-4 text-center py-1 px-2'
+                  onClick={() => {
+                    setShowModal(true);
+                  }}
+                >
+                  {props?.allowedPublishBranches.length > 0 &&
+                  !props?.allowedPublishBranches?.includes(props?.data?.branch_id[0])
+                    ? 'Verify'
+                    : 'Publish'}
+                </div>
+              ) : null}
+              {is_superuser ? (
+                <>
+                  <Popconfirm
+                    title='Sure to delete?'
+                    onConfirm={(e) => deleteAnnouncement(props?.data?.id)}
+                  >
+                    {/* <DeleteOutlined
+                      title='Delete'
+                      style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
+                    /> */}
+                    <Button
+                      type='primary'
+                      shape='circle'
+                      className='ml-1'
+                      icon={<DeleteOutlined title='Delete' />}
+                    />
+                  </Popconfirm>
+                </>
+              ) : null}
+              {showTab != 1 ? (
+                <>
+                  <Link
+                    to={{
+                      pathname: `/edit-announcement/${props?.data?.id}`,
+                      state: { data: props?.data },
+                    }}
+                  >
+                    {/* <EditOutlined
+                      title='Edit'
+                      style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
+                    /> */}
+                    <Button
+                      type='primary'
+                      shape='circle'
+                      className='ml-1'
+                      icon={<EditOutlined title='Edit' />}
+                    />
+                  </Link>
+                </>
+              ) : null}
             </div>
-          ) : (
-            // <div className='d-flex justify-content-around'>
-            //   <img src={emailIcon} />
-            //   <img src={smsIcon} />
-            //   <img src={whatsappIcon} />
-            // </div>
-            ''
-          )}
-        </div>
+          </div>
+        ) : null}
       </div>
       {showModal && (
         <DetailsModal

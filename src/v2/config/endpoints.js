@@ -173,6 +173,7 @@ export default {
     announcementCategory: `announcement/announcement-category/`,
     publishAnnouncement: `/announcement/create/`,
     updateAnnouncement: 'announcement/v2/announcement-update',
+    retrieveUpdateDeleteAnnouncement:'/announcement/retrieve-update-delete-announcement/'
   },
   acadCalendar: {
     monthly: `/period/calendar-v2/`,
