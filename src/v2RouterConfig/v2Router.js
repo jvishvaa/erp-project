@@ -208,7 +208,11 @@ const V2Router = () => {
       end_time: moment(currentTime).format('HH:mm:ss'),
     };
     console.log('API called', { messageeee, diff });
-    if (trackerContainsCurrentURL && payload.time > 0) {
+    if (
+      trackerContainsCurrentURL &&
+      payload.time > 0 &&
+      window.location.pathname !== '/'
+    ) {
       axios
         .post(`${timeTracker}`, payload, {
           'Content-Type': 'application/json',
