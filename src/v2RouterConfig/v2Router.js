@@ -207,7 +207,7 @@ const V2Router = () => {
       start_time: moment(lastAPICallTime.current).format('HH:mm:ss'),
       end_time: moment(currentTime).format('HH:mm:ss'),
     };
-    // console.log('API called', payload.link, payload.time)
+    console.log('API called', { messageeee, diff });
     if (trackerContainsCurrentURL && payload.time > 0) {
       axios
         .post(`${timeTracker}`, payload, {
@@ -223,7 +223,7 @@ const V2Router = () => {
 
   // Function to start the timer
   const startTimer = () => {
-    timer.current = setInterval(callAPI, 120000); // Call the API every 2 minutes
+    timer.current = setInterval(callAPI('startTimer'), 120000); // Call the API every 2 minutes
   };
 
   // Function to reset the timer
