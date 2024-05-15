@@ -31,10 +31,12 @@ import axiosInstance from 'config/axios';
 import moment from 'moment';
 import Layout from 'containers/Layout';
 import { useForm } from 'antd/lib/form/Form';
+import { UserMappedErrorMsg } from '../UserMappedErrorMsg';
 const BranchTable = () => {
   const { TextArea } = Input;
   const [formRef] = useForm();
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
@@ -81,7 +83,7 @@ const BranchTable = () => {
     }
   };
   const fetchTableData = () => {
-    setLoading(true);
+    setTableLoading(true);
     let params = {
       page: currentPage,
       page_size: pageSize,
@@ -105,7 +107,7 @@ const BranchTable = () => {
         message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        setLoading(false);
+        setTableLoading(false);
       });
   };
   const handleCreate = () => {
@@ -149,7 +151,6 @@ const BranchTable = () => {
   };
   const handleEdit = () => {
     const values = formRef?.getFieldsValue();
-    console.log(values, 'tesstst');
     let legal_name = {
       legalName: values?.legalName,
       legalContact: values?.legalContact,
@@ -192,7 +193,7 @@ const BranchTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Users are mapped to it or Something went wrong.');
+        message.error(`${UserMappedErrorMsg}`);
       })
       .finally(() => {
         setLoading(false);
@@ -370,7 +371,7 @@ const BranchTable = () => {
             ) : (
               <>
                 <EditOutlined
-                  title='Edit'
+                  title='Update'
                   style={{
                     fontSize: 20,
                     margin: 10,
@@ -473,14 +474,14 @@ const BranchTable = () => {
                     rowClassName={(record, index) =>
                       index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                     }
-                    loading={loading}
+                    loading={loading || tableLoading}
                     columns={columns}
                     rowKey={(record) => record?.id}
                     dataSource={tableData?.results}
                     pagination={false}
                     locale={noDataLocale}
                     scroll={{
-                      x: window.innerWidth > 400 ? '100%' : 'max-content',
+                      x: 'max-content',
                       y: '100vh',
                     }}
                   />
@@ -501,7 +502,7 @@ const BranchTable = () => {
           </div>
         </div>
         <Drawer
-          title={editId ? 'Edit Branch' : 'Create Branch'}
+          title={editId ? 'Update Branch' : 'Create Branch'}
           visible={openDrawer}
           onClose={handleCloseDrawer}
           footer={[
@@ -527,7 +528,7 @@ const BranchTable = () => {
                   form='formRef'
                   htmlType='submit'
                 >
-                  {editId ? 'Edit' : 'Add'}
+                  {editId ? 'Update' : 'Add'}
                 </Button>
               </Col>
             </Row>,

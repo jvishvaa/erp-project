@@ -41,7 +41,7 @@ export default {
     updateParent: '/erp_user/update-parent',
   },
   roleManagement: {
-    roleList: '/erp_user/roles/',
+    roleList: '/erp_user/roles_all/',
     roleSearch: '/erp_user/role-search/',
     deleteRole: '/erp_user/delete_role/',
     restoreRole: '/erp_user/restore_role/',
