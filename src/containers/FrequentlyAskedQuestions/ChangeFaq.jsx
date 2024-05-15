@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { text } from './FrequentlyAskedQuestions';
-import { Button, Input, Modal, Select, message } from 'antd';
+import { Button, Input, Modal, Popconfirm, Select, Tooltip, message } from 'antd';
 import './Faq.scss';
 import endpoints from 'config/endpoints';
 import endpointsV2 from 'v2/config/endpoints';
-import { FileTextOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import axios from 'axios';
 import UploadPdf from './UploadPdf';
 import UploadVideo from './UploadVideo';
 import Loader from 'components/loader/loader';
+import { DeleteOutline } from '@material-ui/icons';
+import TextArea from 'antd/lib/input/TextArea';
+import { getFileIcon } from 'v2/getFileIcon';
 
 const { Option } = Select;
 
@@ -22,18 +24,18 @@ const ChangeFaq = ({
   devices,
   fetchData,
   setOpenDrawer,
+  edit,
 }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
 
-  const [editableIndices, setEditableIndices] = useState([]);
-  const [questions, setQuestions] = useState(
-    moduleData?.items.map((item) => item.question) || []
-  );
-  const [answers, setAnswers] = useState(
-    moduleData?.items.map((item) => item.answer) || []
+  const [isEditing, setIsEditing] = useState(edit);
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [isExpanded, setIsExpanded] = useState(
+    Array(moduleData?.items?.length).fill(false)
   );
 
-  const [editingSubModules, setEditingSubModules] = useState(false);
+  const [editingSubModules, setEditingSubModules] = useState(edit);
 
   let navigationData = JSON.parse(localStorage.getItem('navigationData'));
 
@@ -54,37 +56,10 @@ const ChangeFaq = ({
 
   const [load, setLoad] = useState(false);
 
-  const toggleEdit = (index, each, action) => {
-    if (editableIndices.includes(index)) {
-      setEditableIndices(editableIndices.filter((i) => i !== index));
-    } else {
-      setEditableIndices([...editableIndices, index]);
-    }
-    if (action == 'save') {
-      const formData = new FormData();
-      formData.append('data_id', each?.id);
-      formData.append('question', questions[index]);
-      formData.append('answer', answers[index]);
-      axios
-        .patch(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, formData, {
-          headers: {
-            Authorization: `Bearer ${userDetails?.token}`,
-          },
-        })
-        .then((res) => {
-          if (res?.data) {
-            message.success('FAQ Edited Successfully');
-            fetchTableData();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-
-  const isEditable = (index) => {
-    return editableIndices.includes(index);
+  const toggleExpand = (index) => {
+    const expandedCopy = [...isExpanded];
+    expandedCopy[index] = !expandedCopy[index];
+    setIsExpanded(expandedCopy);
   };
 
   const handleQuestionChange = (index, value) => {
@@ -104,14 +79,15 @@ const ChangeFaq = ({
   };
 
   const handleSaveClick = () => {
+    if (editUserLevel.length <= 0) {
+      return;
+    }
     const data_id = moduleData?.items?.map((ele) => ele?.id ?? null);
-
     const formData = new FormData();
     formData.append('data_ids', data_id);
     formData.append('media_id', moduleData?.media_id);
     formData.append('user_level', editUserLevel);
     formData.append('edit_type', 'user_level');
-    setLoad(true);
     axios
       .patch(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, formData, {
         headers: {
@@ -120,9 +96,6 @@ const ChangeFaq = ({
       })
       .then((res) => {
         if (res?.data) {
-          fetchTableData();
-          message.success('FAQ Edited Successfully');
-          setLoad(false);
           setEditingSubModules(false);
         }
       })
@@ -150,7 +123,7 @@ const ChangeFaq = ({
         setShowVideoText(true);
       }
     }
-  }, [openDrawer]);
+  }, [openDrawer, moduleData]);
 
   const handleUploadVideoModalClose = () => {
     setShowUploadVideoModal(false);
@@ -159,17 +132,19 @@ const ChangeFaq = ({
     setShowUploadPdfModal(false);
   };
 
-  const handleShowVideoModal = () => {
-    setShowUploadVideoModal(true);
-  };
-  const handleShowPdfModal = () => {
-    setShowUploadPdfModal(true);
-  };
-
   const handleVideoPrev = (data) => {
     setVideoPrev(data);
     setVideoPrevModal(true);
   };
+
+  useEffect(() => {
+    if (!VideoPrevModal) {
+      const video = document.getElementById('module_video');
+      if (video) {
+        video.pause();
+      }
+    }
+  }, [VideoPrevModal]);
 
   const moduleInfo = navigationData?.find((item) =>
     item?.child_module?.some((module) => module?.child_id === moduleData?.module_id)
@@ -180,13 +155,6 @@ const ChangeFaq = ({
       )?.child_name
     : '';
 
-  const userLevelLookup = {};
-  userLevelList.forEach((item) => {
-    userLevelLookup[item?.id] = item?.level_name;
-  });
-
-  const userLevelNames = editUserLevel?.map((id) => userLevelLookup[id]);
-
   const userLevelListOptions = userLevelList?.map((each) => {
     return (
       <Option key={each?.id} value={each.id}>
@@ -196,21 +164,25 @@ const ChangeFaq = ({
   });
 
   const handleChangeUser = (e) => {
-    const value = e;
+    if (e) {
+      const value = e;
+      const ids = value
+        .map((value) => {
+          if (typeof value === 'string') {
+            const level = userLevelList.find((level) => level.level_name === value);
+            return level ? level.id : null;
+          } else if (typeof value === 'number') {
+            return value;
+          }
+          return null;
+        })
+        .filter((id) => id !== null);
 
-    const ids = value
-      .map((value) => {
-        if (typeof value === 'string') {
-          const level = userLevelList.find((level) => level.level_name === value);
-          return level ? level.id : null;
-        } else if (typeof value === 'number') {
-          return value;
-        }
-        return null;
-      })
-      .filter((id) => id !== null);
-
-    setEditUserLevel(ids);
+      setEditUserLevel(ids);
+    }
+    if (e.length <= 0) {
+      setEditUserLevel([]);
+    }
   };
 
   const handleDeleteVideo = (video_id) => {
@@ -269,6 +241,52 @@ const ChangeFaq = ({
       });
   };
 
+  const toggleEditMode = (action) => {
+    setIsEditing(!isEditing);
+    if (editUserLevel.length <= 0) {
+      return message.error('User Level Cannot Be Empty');
+    }
+    if (action == 'save') {
+      const dataToSave = questions.map((question, index) => {
+        const trimmedQuestion = question.trim();
+        const trimmedAnswer = answers[index].trim();
+
+        return {
+          id: moduleData.items[index]?.id,
+          question: trimmedQuestion,
+          answer: trimmedAnswer,
+        };
+      });
+      dataToSave.forEach((item, index) => {
+        if (!item.question || !item.answer) {
+          return message.error('Question or answer is empty');
+        }
+      });
+
+      setLoad(true);
+      const formData = new FormData();
+      formData.append('edit_question_answer', JSON.stringify(dataToSave));
+      axios
+        .patch(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, formData, {
+          headers: {
+            Authorization: `Bearer ${userDetails?.token}`,
+          },
+        })
+        .then((res) => {
+          if (res?.data) {
+            message.success('FAQ Edited Successfully');
+            fetchTableData();
+            setLoad(false);
+            setOpenDrawer(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoad(false);
+        });
+    }
+  };
+
   const deleteQuestion = (question_id) => {
     setLoad(true);
     const formData = new FormData();
@@ -321,256 +339,358 @@ const ChangeFaq = ({
     setShowUploadPdfModal(true);
   };
 
+  const handleEdit = () => {
+    handleSaveClick();
+    toggleEditMode('save');
+  };
+  const getPopupContainer = (trigger) => trigger.parentNode;
+
   return (
-    <>
-      {load && <Loader />}
-      {moduleData ? (
-        <>
-          <div id='Drawer-Heading'>
-            <div>
-              <p style={{ marginTop: '3px' }}>Sub Module Name :- {moduleName}</p>
+    <div>
+      <>
+        {load && <Loader />}
+        {moduleData ? (
+          <>
+            <div id='Drawer-Heading'>
+              <div>
+                <p style={{ marginTop: '3px' }}>Sub Module Name :- {moduleName}</p>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  marginTop: '10px',
+                  gap: '5px',
+                }}
+              >
+                {edit ? (
+                  <Select
+                    defaultValue={moduleData?.media_user_level}
+                    mode='multiple'
+                    onChange={(e) => handleChangeUser(e)}
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                    style={{ margin: 'auto', width: '90%' }}
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    status={editUserLevel.length <= 0 ? 'error' : ''}
+                  >
+                    {userLevelListOptions}
+                  </Select>
+                ) : (
+                  ''
+                )}
+                {!edit ? (
+                  <Button
+                    style={{ height: '30px', margin: 'auto', width: '15%' }}
+                    onClick={() => handleEditClick(userLevel)}
+                  >
+                    Edit
+                  </Button>
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '10px',
-                gap: '5px',
-              }}
-            >
-              {
-                <div style={{ width: '48%', height: '20px', width: '100%' }}>
-                  {editingSubModules ? (
-                    <Select
-                      defaultValue={userLevelNames}
-                      mode='multiple'
-                      style={{ width: '100%' }}
-                      onChange={(e) => handleChangeUser(e)}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div id='Preview-Container'>
+                {!showVideoText ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-evenly',
+                      alignItems: 'center',
+                      marginRight: '55px',
+                    }}
+                  >
+                    <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo Video</p>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
                       }}
                     >
-                      {userLevelListOptions}
-                    </Select>
-                  ) : (
-                    <p style={{ marginTop: '3px' }}>
-                      User Level :- {userLevelNames.join(',  ')}
-                    </p>
-                  )}
-                </div>
-              }
-              {!editingSubModules ? (
-                <Button
-                  style={{ width: '8%', height: '30px' }}
-                  onClick={() => handleEditClick(userLevel)}
-                >
-                  Edit
-                </Button>
-              ) : (
-                <Button
-                  style={{ width: '8%', height: '30px' }}
-                  onClick={() => handleSaveClick(userLevel)}
-                >
-                  Save
-                </Button>
-              )}
-            </div>
-          </div>
-
-          <div id='Preview-Container'>
-            <div
-              style={{
-                border: '1px solid black',
-                width: '45%',
-                textAlign: 'center',
-                display: 'grid',
-                placeItems: 'center',
-              }}
-            >
-              {!showVideoText ? (
-                <>
-                  <PlayCircleOutlined
-                    onClick={() =>
-                      handleVideoPrev(
-                        `${endpoints.assessment.erpBucket}/${moduleData?.video_file}`
-                      )
-                    }
-                    style={{ fontSize: '150px', marginTop: '10px' }}
-                  />
-                  <p>Click For Preview</p>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <Button
-                      danger
-                      onClick={() => handleDeleteVideo(moduleData?.media_id)}
+                      <PlayCircleOutlined
+                        onClick={() =>
+                          handleVideoPrev(
+                            `${endpoints.assessment.erpBucket}/${moduleData?.video_file}`
+                          )
+                        }
+                        style={{ fontSize: '40px', color: 'blueviolet' }}
+                      />
+                      <p style={{ marginTop: '10px', textAlign: 'center' }}>
+                        Click For Preview
+                      </p>
+                    </div>
+                    <Popconfirm
+                      title='Delete Video?'
+                      onConfirm={() => handleDeleteVideo(moduleData?.media_id)}
+                      okText='Yes'
+                      cancelText='No'
+                      getPopupContainer={getPopupContainer}
                     >
-                      Delete
-                    </Button>
-                    <Button type='primary' onClick={() => handleReplaceVideo()}>
-                      Replace
-                    </Button>
+                      <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+                    </Popconfirm>
                   </div>
-                </>
-              ) : (
-                <>
-                  <p>No Video File Exsists</p>
-                  {moduleData?.media_id && (
-                    <Button type='primary' onClick={() => handleReplaceVideo()}>
-                      Upload
-                    </Button>
-                  )}
-                </>
-              )}
-            </div>
-            <div
-              style={{
-                border: '1px solid black',
-                width: '45%',
-                textAlign: 'center',
-                display: 'grid',
-                placeItems: 'center',
-              }}
-            >
-              {!showPdfText ? (
-                <>
-                  <FileTextOutlined
-                    onClick={() => {
-                      const fileName = moduleData?.pdf_file;
-                      let extension = fileName ? fileName[fileName?.length - 1] : '';
-                      openPreview({
-                        currentAttachmentIndex: 0,
-                        attachmentsArray: [
-                          {
-                            src: `${endpoints.assessment.erpBucket}/${moduleData?.pdf_file}`,
-
-                            name: fileName,
-                            extension: '.' + extension,
-                          },
-                        ],
-                      });
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-evenly',
+                      alignItems: 'center',
                     }}
-                    style={{ fontSize: '150px', marginTop: '10px' }}
-                  />
-                  <p>Click For Preview</p>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <Button danger onClick={() => handleDeletePdf(moduleData?.media_id)}>
-                      Delete
-                    </Button>
-                    <Button type='primary' onClick={() => handleReplacePdf()}>
-                      Replace
-                    </Button>
+                  >
+                    <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo Video</p>
+                    <p style={{ marginTop: '10px' }}>No Video File Exists</p>
+                    {moduleData?.media_id && (
+                      <Button type='primary' onClick={() => handleReplaceVideo()}>
+                        Upload
+                      </Button>
+                    )}
                   </div>
-                </>
-              ) : (
-                <>
-                  <p>No P.D.F. File Exsists</p>
-                  {moduleData?.media_id && (
-                    <Button type='primary' onClick={() => handleReplacePdf()}>
-                      Upload
-                    </Button>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
+                )}
 
-          <div id='Edit-Container'>
-            <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
-              Question and Answers
-            </p>
-            {moduleData?.items?.map((each, index) => (
-              <div key={index} id='Question-Answer-Cont'>
-                <label style={{ fontWeight: 'bold' }}>Question</label>
-                {isEditable(index) ? (
+                {!showPdfText ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-evenly',
+                      alignItems: 'center',
+                      marginRight: '55px',
+                    }}
+                  >
+                    <p style={{ marginTop: '10px', fontWeight: 'bold' }}>User Manual</p>
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <img
+                        src={getFileIcon('pdf')}
+                        onClick={() => {
+                          const fileName = moduleData?.pdf_file;
+                          let extension = fileName ? fileName[fileName?.length - 1] : '';
+                          console.log(extension, 'hello');
+                          openPreview({
+                            currentAttachmentIndex: 0,
+                            attachmentsArray: [
+                              {
+                                src: `${endpoints.assessment.erpBucket}/${moduleData?.pdf_file}`,
+
+                                name: fileName,
+                                extension: '.' + extension,
+                              },
+                            ],
+                          });
+                        }}
+                        style={{ width: '30%', marginLeft: '36px', cursor: 'pointer' }}
+                      />
+                      <p style={{ textAlign: 'center', marginTop: '10px' }}>
+                        Click For Preview
+                      </p>
+                    </div>
+                    <Popconfirm
+                      title='Delete PDF?'
+                      onConfirm={() => handleDeletePdf(moduleData?.media_id)}
+                      okText='Yes'
+                      cancelText='No'
+                      getPopupContainer={getPopupContainer}
+                    >
+                      <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+                    </Popconfirm>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-evenly',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo PDF</p>
+                    <p>No P.D.F. File Exists</p>
+
+                    {moduleData?.media_id && (
+                      <Button type='primary' onClick={() => handleReplacePdf()}>
+                        Upload
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div id='Edit-Container'>
+              <p style={{ fontWeight: 'bold', textAlign: 'center' }}>
+                Question and Answers
+              </p>
+              {moduleData?.items?.map((each, index) => (
+                <div key={index} id='Question-Answer-Cont'>
+                  <div
+                    style={{ display: 'flex', justifyContent: 'flex-end', gap: '15px' }}
+                  >
+                    <Popconfirm
+                      title='Delete?'
+                      onConfirm={() => deleteQuestion(each?.id)}
+                      okText='Yes'
+                      cancelText='No'
+                      getPopupContainer={getPopupContainer}
+                      placement='top'
+                    >
+                      <span
+                        style={{
+                          display: 'flex',
+                          gap: '15px',
+                          width: '18%',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <p>Delete</p>
+                        <DeleteOutlined o style={{ color: 'red', marginTop: '5px' }} />
+                      </span>
+                    </Popconfirm>
+                  </div>
+                  <label style={{ fontWeight: 'bold' }}>Question {index + 1}</label>
                   <Input
-                    disabled={!isEditable(index)}
+                    maxLength={300}
                     value={questions[index]}
                     onChange={(e) => handleQuestionChange(index, e.target.value)}
+                    showCount
+                    status={`${
+                      questions[index] == ''
+                        ? 'error'
+                        : '' || questions[index]?.trim() == ''
+                        ? 'error'
+                        : ''
+                    }`}
                   />
-                ) : (
-                  <p>{questions[index]}</p>
-                )}
-                <label style={{ color: 'gray', marginTop: '3px' }}>Answer</label>
-                {isEditable(index) ? (
-                  <Input
-                    disabled={!isEditable(index)}
-                    value={answers[index]}
-                    onChange={(e) => handleAnswerChange(index, e.target.value)}
-                  />
-                ) : (
-                  <p>{answers[index]}</p>
-                )}
-                <div id='Button-Cont'>
-                  {!isEditable(index) ? (
-                    <Button
-                      style={{ backgroundColor: 'orange', color: 'white' }}
-                      onClick={() => toggleEdit(index)}
-                    >
-                      Edit
-                    </Button>
+                  <label style={{ color: 'gray', marginTop: '3px', fontWeight: 'bold' }}>
+                    Answer
+                  </label>
+                  {edit ? (
+                    <TextArea
+                      showCount
+                      style={{ height: '80px' }}
+                      maxLength={1500}
+                      value={answers[index]}
+                      onChange={(e) => handleAnswerChange(index, e.target.value)}
+                      status={`${
+                        answers[index] == ''
+                          ? 'error'
+                          : '' || answers[index]?.trim() == ''
+                          ? 'error'
+                          : ''
+                      }`}
+                    />
                   ) : (
-                    <Button
-                      style={{ backgroundColor: 'green', color: 'white' }}
-                      onClick={() => toggleEdit(index, each, 'save')}
-                    >
-                      Save
-                    </Button>
+                    <div>
+                      {isExpanded[index] ? (
+                        <div>
+                          <p>{answers[index]}</p>
+                          <a
+                            style={{ color: 'blue' }}
+                            onClick={() => toggleExpand(index)}
+                          >
+                            See less
+                          </a>
+                        </div>
+                      ) : (
+                        <div>
+                          <p>{`${answers[index]?.substring(0, 150)}...`}</p>
+                          <a
+                            onClick={() => toggleExpand(index)}
+                            style={{ color: 'blue' }}
+                          >
+                            See more...
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   )}
-                  <Button type='danger' onClick={() => deleteQuestion(each?.id)}>
-                    Delete
-                  </Button>
                 </div>
+              ))}
+              <div id='Button-Cont'>
+                {!edit ? (
+                  <Button onClick={toggleEditMode}>
+                    <Tooltip title='Edit Question and Answers' placement='top'>
+                      Edit
+                      <EditOutlined style={{ color: 'blue' }} />
+                    </Tooltip>
+                  </Button>
+                ) : (
+                  <Button
+                    style={{ backgroundColor: 'green', color: 'white' }}
+                    onClick={() => handleEdit()}
+                    disabled={
+                      questions.some((item) => item == '') ||
+                      answers.some((item) => item == '') ||
+                      editUserLevel.length <= 0 ||
+                      questions.some((item) => item?.trim() == '') ||
+                      answers.some((item) => item?.trim() == '')
+                    }
+                  >
+                    Save
+                  </Button>
+                )}
               </div>
-            ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <p>No Data Found..</p>
+          </>
+        )}
+
+        <Modal
+          visible={VideoPrevModal}
+          footer={false}
+          className='th-modal'
+          onCancel={() => {
+            setVideoPrev(null);
+            setVideoPrevModal(false);
+          }}
+          width={'60%'}
+        >
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <video
+              id='module_video'
+              src={VideoPrev}
+              controls
+              preload='auto'
+              alt={VideoPrev}
+              style={{
+                maxHeight: '400px',
+                width: '96%',
+                objectFit: 'fill',
+              }}
+            />
           </div>
-        </>
-      ) : (
-        <>
-          <p>No Data Found..</p>
-        </>
-      )}
+        </Modal>
 
-      <Modal
-        visible={VideoPrevModal}
-        footer={false}
-        className='th-modal'
-        onCancel={() => {
-          setVideoPrev(null);
-          setVideoPrevModal(false);
-        }}
-        width={'60%'}
-      >
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <video
-            src={VideoPrev}
-            controls
-            preload='auto'
-            alt={VideoPrev}
-            style={{
-              maxHeight: '400px',
-              width: '96%',
-              objectFit: 'fill',
-            }}
-          />
-        </div>
-      </Modal>
-
-      <UploadPdf
-        show={showUploadPdfModal}
-        handleUploadPdfModalClose={handleUploadPdfModalClose}
-        media_id={moduleData?.media_id}
-        fetchTableData={fetchTableData}
-        setOpenDrawer={setOpenDrawer}
-      />
-      <UploadVideo
-        show={showUploadVideoModal}
-        handleUploadVideoModalClose={handleUploadVideoModalClose}
-        media_id={moduleData?.media_id}
-        fetchTableData={fetchTableData}
-        setOpenDrawer={setOpenDrawer}
-      />
-    </>
+        <UploadPdf
+          show={showUploadPdfModal}
+          handleUploadPdfModalClose={handleUploadPdfModalClose}
+          media_id={moduleData?.media_id}
+          fetchTableData={fetchTableData}
+          setOpenDrawer={setOpenDrawer}
+        />
+        <UploadVideo
+          show={showUploadVideoModal}
+          handleUploadVideoModalClose={handleUploadVideoModalClose}
+          media_id={moduleData?.media_id}
+          fetchTableData={fetchTableData}
+          setOpenDrawer={setOpenDrawer}
+        />
+      </>
+    </div>
   );
 };
 
