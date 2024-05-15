@@ -1181,7 +1181,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'School Wall': {
-        history.push('/blog/wall');
+        history.push('/school-wall');
         break;
       }
       case 'Blog': {
@@ -1313,8 +1313,13 @@ const Layout = ({ children, history }) => {
             ))}
           <main className={classes.content}>
             <Box className={classes.appBarSpacer} />
-            <Draggable bounds={{left: -620, top: -30, right: 620, bottom: 5}} defaultPosition={{x: 600, y: 2}}>
-              <div style={{marginBottom:`${moduleData.length>0 ? "-24px": ""}`}}>{moduleData.length > 0 && <Faq moduleData={moduleData} />}</div>
+            <Draggable
+              bounds={{ left: -620, top: -30, right: 620, bottom: 5 }}
+              defaultPosition={{ x: 600, y: 2 }}
+            >
+              <div style={{ marginBottom: `${moduleData.length > 0 ? '-24px' : ''}` }}>
+                {moduleData.length > 0 && <Faq moduleData={moduleData} />}
+              </div>
             </Draggable>
             {!isLayoutHidden &&
               (isV2 ? (

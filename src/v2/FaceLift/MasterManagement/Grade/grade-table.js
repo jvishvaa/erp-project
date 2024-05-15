@@ -29,6 +29,7 @@ import { useForm } from 'antd/lib/form/Form';
 const GradeTable = () => {
   const [formRef] = useForm();
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
@@ -78,7 +79,7 @@ const GradeTable = () => {
     }
   };
   const fetchTableData = () => {
-    setLoading(true);
+    setTableLoading(true);
     let params = {
       page: currentPage,
       page_size: pageSize,
@@ -102,7 +103,7 @@ const GradeTable = () => {
         message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        setLoading(false);
+        setTableLoading(false);
       });
   };
   const fetchDrawerTableData = () => {
@@ -242,7 +243,7 @@ const GradeTable = () => {
             )}
           </span>
           <EditOutlined
-            title='Edit School Grade Name'
+            title='Update School Grade Name'
             style={{
               fontSize: 20,
               cursor: 'pointer',
@@ -357,14 +358,14 @@ const GradeTable = () => {
                     rowClassName={(record, index) =>
                       index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                     }
-                    loading={loading}
+                    loading={loading || tableLoading}
                     columns={columns}
                     rowKey={(record) => record?.id}
                     dataSource={tableData?.results}
                     pagination={false}
                     locale={noDataLocale}
                     scroll={{
-                      x: window.innerWidth > 400 ? '100%' : 'max-content',
+                      x: 'max-content',
                       y: '100vh',
                     }}
                   />
@@ -439,7 +440,7 @@ const GradeTable = () => {
         </Drawer>
         <Modal
           visible={openModal}
-          title='Edit School Grade Name'
+          title='Update School Grade Name'
           onCancel={handleCloseModal}
           footer={[
             <Row justify='space-around'>
@@ -456,7 +457,7 @@ const GradeTable = () => {
                   form='formRef'
                   htmlType='submit'
                 >
-                  Edit Grade
+                  Update Grade
                 </Button>
               </Col>
             </Row>,

@@ -435,7 +435,7 @@ const AdminViewBlog = () => {
   };
 
   const createPushBlogWall = () => {
-    history.push('/blog/wall');
+    history.push('/school-wall');
   };
 
   const columnsUnassigned = [

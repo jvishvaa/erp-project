@@ -41,7 +41,7 @@ export default {
     updateParent: '/erp_user/update-parent',
   },
   roleManagement: {
-    roleList: '/erp_user/roles/',
+    roleList: '/erp_user/roles_all/',
     roleSearch: '/erp_user/role-search/',
     deleteRole: '/erp_user/delete_role/',
     restoreRole: '/erp_user/restore_role/',
@@ -384,6 +384,11 @@ export default {
     checkDueAmount: `${baseFinanceURL}/apiV1/student-acad-fee-tilldate/`,
     popupSetting: `${baseFinanceURL}/apiV1/popup-details/`,
     studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
+  },
+  schoolWall: {
+    getPosts: '/social-media/social-media-post/',
+    likePost: '/social-media/like/',
+    comments: '/social-media/comments/',
   },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,

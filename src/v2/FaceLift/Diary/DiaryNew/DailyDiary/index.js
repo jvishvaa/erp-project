@@ -101,6 +101,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   const [loading, setLoading] = useState(false);
   const [homeworkMapped, setHomeworkMapped] = useState(false);
   const [questionList, setQuestionList] = useState([]);
+  const [mappingSubjectID, setMappingSubjectID] = useState(null);
   // {
   //   id: cuid(),
   //   question: '',
@@ -210,7 +211,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     } else {
       modifiedForm = { ...form, [field]: value };
     }
-    console.log('handleChange', index, field, value, form, modifiedForm);
     setQuestionList((prevState) => [
       ...prevState.slice(0, index),
       modifiedForm,
@@ -575,7 +575,12 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   //For Subject
   const subjectOptions = subjectDropdown?.map((each) => {
     return (
-      <Option key={each?.subject__id} value={each?.subject__id} id={each?.id}>
+      <Option
+        key={each?.subject__id}
+        value={each?.subject__id}
+        id={each?.id}
+        mappingSubjectID={each?.subject_mapping_id}
+      >
         {each?.subject__subject_name}
       </Option>
     );
@@ -638,6 +643,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setQuestionList([]);
     if (e) {
       setSubjectID(e.value);
+      setMappingSubjectID(e?.mappingSubjectID);
       setSubjectName(e.children.split('_')[e.children.split('_').length - 1]);
       setHwMappingID();
       checkAssignedHomework({
@@ -1054,7 +1060,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     axios
       .get(`${endpoints.doodle.checkDoodle}?config_key=hw_creation_time`)
       .then((response) => {
-        console.log(response, 'res');
         setHwSubTime(response?.data?.result[0] || null);
         // setHwSubTime(null);
         setLoading(false);
@@ -1175,6 +1180,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         ? sectionMappingID
         : [sectionMappingID],
       subject: subjectID,
+      mapping_subject: [mappingSubjectID],
       date: moment().format('YYYY-MM-DD'),
       last_submission_date: submissionDate,
       questions: questionList.map((q) => {
@@ -1255,7 +1261,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          console.log(result?.data?.result?.results, selectedAcademicYear, 'application');
           setCentralAcademicYearID(
             result?.data?.result?.results?.filter(
               (item) => item?.session_year == selectedAcademicYear.session_year
@@ -1267,10 +1272,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         message.error(error?.message);
       });
   };
-  console.log(centralAcademicYearID, 'centralAcademicYearID');
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
-    console.log(item, 'markPeriodComplete');
     if (Array.isArray(sectionMappingID)) {
       sectionMappingID.map((section, index) => {
         let payLoad = {
@@ -1458,6 +1461,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSectionID(editData?.section_id);
       setSectionMappingID(editData?.section_mapping_id);
       setSubjectID(editSubject?.subject_id);
+      setMappingSubjectID(editSubject?.subject_mappping_id);
       setSubjectName(editSubject?.subject_name);
       if (editData?.periods_data?.length > 0) {
         setClearTodaysTopic(false);
@@ -1540,6 +1544,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject: periodData?.subjectName,
         chapter: periodData?.chapterName,
       });
+      fetchMappingSubject({
+        section_mapping: periodData?.sections.map((item) => item?.id)?.join(','),
+        subject_id: periodData?.subjectID,
+      });
       if (periodData?.subjectID) {
         fetchChapterDropdown({
           branch_id: selectedBranch.branch.id,
@@ -1587,6 +1595,21 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       }
     }
   }, []);
+
+  const fetchMappingSubject = (params = {}) => {
+    axios
+      .get(`/erp_user/mapping-subject-list`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setMappingSubjectID(response?.data?.map((item) => item?.id));
+        } else {
+          setMappingSubjectID([]);
+        }
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+      });
+  };
 
   const showAssessmentData = (data) => {
     return data.map((item) => (

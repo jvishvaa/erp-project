@@ -18,13 +18,14 @@ import {
   Drawer,
   Form,
   Modal,
-  Popconfirm,
   Select,
   Table,
   Tooltip,
+  Popconfirm,
   message,
 } from 'antd';
 import { useHistory } from 'react-router-dom';
+import axiosInstance from 'config/axios';
 import CollapseableComponent from './AddFaq';
 import Layout from 'containers/Layout';
 import endpointsV2 from 'v2/config/endpoints';
@@ -33,9 +34,7 @@ import axios from 'axios';
 // import CustomeBreadCrumbs from '../CustomeBreadcrumb/CustomeBreadCrumbs';
 import OnlineSub from 'assets/images/online.png';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
-import axiosInstance from 'config/axios';
 import { DeleteOutlineOutlined } from '@material-ui/icons';
-import { getFileIcon } from 'v2/getFileIcon';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -67,7 +66,6 @@ const FrequentlyAskedQuestions = () => {
   const [VideoPrev, setVideoPrev] = useState('');
 
   const [load, setLoad] = useState(false);
-
   const [edit, setEdit] = useState(false);
 
   const formRef = createRef();
@@ -81,6 +79,14 @@ const FrequentlyAskedQuestions = () => {
   useEffect(() => {
     fetchUserLevel();
   }, []);
+  useEffect(() => {
+    if (!VideoPrevModal) {
+      const video = document.getElementById('module_video');
+      if (video) {
+        video.pause();
+      }
+    }
+  }, [VideoPrevModal]);
 
   const showPopconfirm = () => {
     setOpen(true);
@@ -89,7 +95,6 @@ const FrequentlyAskedQuestions = () => {
   const handleCancelPopconfirm = () => {
     setOpen(false);
   };
-
   const columns = [
     {
       title: <span className='th-white th-fw-700'>Sl No.</span>,
@@ -180,7 +185,7 @@ const FrequentlyAskedQuestions = () => {
             }}
             onClick={() => {
               const fileName = data?.pdf_file;
-              let extension = fileName?.split('.')[fileName?.split('.')?.length - 1]
+              let extension = fileName?.split('.')[fileName?.split('.')?.length - 1];
               openPreview({
                 currentAttachmentIndex: 0,
                 attachmentsArray: [
@@ -234,6 +239,7 @@ const FrequentlyAskedQuestions = () => {
       ),
     },
   ];
+
   const handleSave = () => {
     setIsModalVisible(false);
   };
@@ -252,6 +258,7 @@ const FrequentlyAskedQuestions = () => {
     setOpenDrawer(false);
     setEdit(false);
   };
+
   const handleChangeModule = (value) => {
     if (value) {
       fetchChildModules(value);
@@ -334,6 +341,7 @@ const FrequentlyAskedQuestions = () => {
   ));
 
   const fetchChildModules = (id) => {
+    setLoad(true)
     const params = {
       parent_id: id,
     };
@@ -344,23 +352,7 @@ const FrequentlyAskedQuestions = () => {
       .then((res) => {
         if (res?.data) {
           setChildModules(res?.data?.data);
-        }
-      })
-      .catch((error) => {
-        console.log('Error fetching Module data:', error);
-      });
-  };
-
-  const fetchData = ({ params }) => {
-    setLoad(true);
-    axiosInstance
-      .get(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, {
-        params: { ...params },
-      })
-      .then((res) => {
-        if (res?.data) {
-          setTableData(res?.data?.data);
-          setLoad(false);
+          setLoad(false)
         }
       })
       .catch((error) => {
@@ -421,6 +413,26 @@ const FrequentlyAskedQuestions = () => {
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+
+  const fetchData = ({ params }) => {
+    setLoad(true);
+    axios
+      .get(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${userDetails?.token}`,
+        },
+      })
+      .then((res) => {
+        if (res?.data) {
+          setTableData(res?.data?.data);
+          setLoad(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
         setLoad(false);
       });
   };
@@ -469,12 +481,12 @@ const FrequentlyAskedQuestions = () => {
         <div className='row pt-3 pb-3'>
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
-              <Breadcrumb.Item className='th-black-1 th-16 th-grey'>FAQ</Breadcrumb.Item>
+            <Breadcrumb.Item className='th-black-1 th-16 th-grey'>FAQ</Breadcrumb.Item>
             </Breadcrumb>
           </div>
         </div>
         <div>
-          <Form
+        <Form
             ref={formRef}
             style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}
             direction='row'
@@ -633,6 +645,7 @@ const FrequentlyAskedQuestions = () => {
         >
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <video
+              id='module_video'
               src={VideoPrev}
               controls
               preload='auto'
