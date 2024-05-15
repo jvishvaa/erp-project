@@ -30,11 +30,13 @@ import axiosInstance from 'config/axios';
 import moment from 'moment';
 import Layout from 'containers/Layout';
 import { useForm } from 'antd/lib/form/Form';
+import { UserMappedErrorMsg } from '../UserMappedErrorMsg';
 const SubjectTable = () => {
   const { TextArea } = Input;
   const [formRef] = useForm();
   const [formRef1] = useForm();
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
@@ -88,7 +90,7 @@ const SubjectTable = () => {
     }
   };
   const fetchTableData = () => {
-    setLoading(true);
+    setTableLoading(true);
     let params = {
       page: currentPage,
       page_size: pageSize,
@@ -112,7 +114,7 @@ const SubjectTable = () => {
         message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        setLoading(false);
+        setTableLoading(false);
       });
   };
   const fetchDrawerTableData = () => {
@@ -276,7 +278,7 @@ const SubjectTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Users are mapped to it or Something went wrong.');
+        message.error(`${UserMappedErrorMsg}`);
       })
       .finally(() => {
         setLoading(false);
@@ -367,7 +369,7 @@ const SubjectTable = () => {
             )}
           </span>
           <EditOutlined
-            title='Edit School Grade Name'
+            title='Update School Grade Name'
             style={{
               fontSize: 20,
               cursor: 'pointer',
@@ -470,7 +472,7 @@ const SubjectTable = () => {
                 ) : (
                   <>
                     <EditOutlined
-                      title='Edit'
+                      title='Update'
                       style={{
                         fontSize: 20,
                         margin: 10,
@@ -683,7 +685,7 @@ const SubjectTable = () => {
                       index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                     }
                     rowSelection={rowSelection}
-                    loading={loading}
+                    loading={loading || tableLoading}
                     columns={drawerTablecolumns}
                     rowKey={(record) => record?.id}
                     dataSource={drawerTableData}
@@ -700,7 +702,7 @@ const SubjectTable = () => {
         </Drawer>
         <Modal
           visible={openModal}
-          title='Edit School Subject Name'
+          title='Update School Subject Name'
           onCancel={handleCloseModal}
           footer={[
             <Row justify='space-around'>
@@ -717,7 +719,7 @@ const SubjectTable = () => {
                   form='formRef'
                   htmlType='submit'
                 >
-                  Edit Subject
+                  Update Subject
                 </Button>
               </Col>
             </Row>,
@@ -754,7 +756,7 @@ const SubjectTable = () => {
         </Modal>
         <Modal
           visible={openModal1}
-          title={editId ? 'Edit Subject' : 'Create Subject'}
+          title={editId ? 'Update Subject' : 'Create Subject'}
           onCancel={handleCloseModal1}
           footer={[
             <Row justify='space-around'>
@@ -779,7 +781,7 @@ const SubjectTable = () => {
                   form='formRef1'
                   htmlType='submit'
                 >
-                  {editId ? 'Edit' : 'Add'}
+                  {editId ? 'Update' : 'Add'}
                 </Button>
               </Col>
             </Row>,

@@ -34,6 +34,7 @@ import { useForm } from 'antd/lib/form/Form';
 const RoleManagement = () => {
   const [formRef] = useForm();
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [roleList, setRoleList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
@@ -67,7 +68,7 @@ const RoleManagement = () => {
     }
   };
   const fetchRoleList = () => {
-    setLoading(true);
+    setTableLoading(true);
     let params = {
       page: currentPage,
       page_size: pageSize,
@@ -91,7 +92,7 @@ const RoleManagement = () => {
         message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        setLoading(false);
+        setTableLoading(false);
       });
   };
   const handleDeleteRole = (params = {}) => {
@@ -338,7 +339,7 @@ const RoleManagement = () => {
             ) : (
               <>
                 <EditOutlined
-                  title='Edit Role'
+                  title='Update Role'
                   style={{
                     fontSize: 20,
                     margin: 10,
@@ -519,7 +520,7 @@ const RoleManagement = () => {
                     rowClassName={(record, index) =>
                       index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                     }
-                    loading={loading}
+                    loading={loading || tableLoading}
                     columns={columns}
                     rowKey={(record) => record?.id}
                     dataSource={roleList?.result}
@@ -548,7 +549,7 @@ const RoleManagement = () => {
         <Drawer
           title={
             roleId
-              ? 'Editing the Role'
+              ? 'Updating the Role'
               : 'Creating a Role - Enter Role Name and Select Modules to Access'
           }
           visible={openDrawer}
@@ -575,7 +576,7 @@ const RoleManagement = () => {
                   className='btn-block th-br-4'
                   onClick={() => handleCreateEditRole()}
                 >
-                  {roleId ? 'Edit Role' : 'Add Role'}
+                  {roleId ? 'Update Role' : 'Add Role'}
                 </Button>
               </Col>
             </Row>,
