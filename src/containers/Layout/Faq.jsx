@@ -8,6 +8,7 @@ import { FilePdfOutlined } from '@ant-design/icons';
 const Faq = ({ moduleData }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [modalVisible, setModalVisible] = useState(false);
+
   const [isExpanded, setIsExpanded] = useState(
     Array(moduleData[0]?.items?.length).fill(false)
   );
@@ -60,30 +61,27 @@ const Faq = ({ moduleData }) => {
         <p style={{ fontWeight: 'bold', textAlign: 'center', fontSize: '20px' }}>
           Frequently Asked Questions
         </p>
-        <div
-          id='Preview-Container'
-          style={{padding: '10px' }}
-        >
+        <div id='Preview-Container' style={{ padding: '10px' }}>
           <div style={{ width: '100%' }}>
-            {
-              moduleData[0]?.video_file ? (
-                <div>
-                  <p style={{ fontWeight: 'bold', fontSize: '18px', textAlign: 'center' }}>
-              Demo Video
-            </p>
-            <video
-              src={`${endpoints.assessment.erpBucket}/${moduleData[0]?.video_file}`}
-              controls
-              preload='auto'
-              style={{
-                maxHeight: '150px',
-                width: '100%',
-                objectFit: 'fill',
-              }}
-            />
-                </div>
-              ) : (
-                <div
+            {moduleData[0]?.video_file ? (
+              <div>
+                <p style={{ fontWeight: 'bold', fontSize: '18px', textAlign: 'center' }}>
+                  Demo Video
+                </p>
+                <video  
+                  id='module_video'
+                  src={`${endpoints.assessment.erpBucket}/${moduleData[0]?.video_file}`}
+                  controls
+                  preload='auto'
+                  style={{
+                    maxHeight: '150px',
+                    width: '100%',
+                    objectFit: 'fill',
+                  }}
+                />
+              </div>
+            ) : (
+              <div
                 style={{
                   textAlign: 'center',
                 }}
@@ -113,8 +111,7 @@ const Faq = ({ moduleData }) => {
                   No Video File Uploaded
                 </p>
               </div>
-              )
-            }
+            )}
             {moduleData[0]?.pdf_file ? (
               <p
                 onClick={() => {
@@ -125,7 +122,6 @@ const Faq = ({ moduleData }) => {
                     attachmentsArray: [
                       {
                         src: `${endpoints.assessment.erpBucket}/${moduleData[0]?.pdf_file}`,
-
                         name: fileName,
                         extension: '.' + extension,
                       },
@@ -177,11 +173,10 @@ const Faq = ({ moduleData }) => {
             </p>
             {moduleData[0]?.items?.map((ele, index) => (
               <div id='Question-Answer-Cont'>
-                <label style={{ fontWeight: 'bold' }}>Question</label>
+                <label style={{ fontWeight: 'bold' }}>Question {index+1}</label>
 
                 <p>{ele?.question}</p>
                 <label style={{ color: 'gray', marginTop: '3px' }}>Answer</label>
-
                 {ele?.answer && (
                   <div>
                     {isExpanded[index] || ele.answer.length <= 150 ? (

@@ -2,9 +2,8 @@ import './Faq.scss';
 import {
   DeleteOutlined,
   FileExcelTwoTone,
-  InfoCircleTwoTone,
   PlusOutlined,
-  SettingOutlined,
+  InfoCircleTwoTone,
   UploadOutlined,
 } from '@ant-design/icons';
 import React, { useEffect, useState, createRef } from 'react';
@@ -539,7 +538,7 @@ const CollapseableComponent = ({ module, items }) => {
                         marginTop: '2px',
                       }}
                     >
-                      <small style={{ textAlign: 'left' }}>Only ['.pdf'] allowed.</small>
+                      <small style={{ textAlign: 'left' }}>Only [''.pdf'] allowed.</small>
                       {selectedPdfFile ? (
                         <span
                           style={{
@@ -641,19 +640,19 @@ const CollapseableComponent = ({ module, items }) => {
               }}
             >
               <Form layout='inline' style={{ display: 'flex', alignItems: 'center' }}>
-                <Form.Item label={`Question ${index + 1}`} style={{ flex: 1 }}>
+              <Form.Item label={`Question ${index + 1}`} style={{ flex: 1 }}>
                   <TextArea
                     showCount
                     maxLength={300}
-                    value={item.question}
                     autoSize={{ minRows: 2, maxRows: 6 }}
+                    value={item.question}
                     onChange={(e) => handleChange(index, 'question', e.target.value)}
                     style={{ width: '100%', marginRight: '8px' }}
                     status={`${item.question.length=="" ? "error" : "" || item.question?.trim()=="" ? "error" : ""}`}
                   />
                 </Form.Item>
                 <Form.Item label={`Answer`} style={{ flex: 1 }}>
-                  <TextArea
+                <TextArea
                     maxLength={1500}
                     value={item.answer}
                     onChange={(e) => handleChange(index, 'answer', e.target.value)}
