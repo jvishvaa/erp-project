@@ -211,7 +211,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     } else {
       modifiedForm = { ...form, [field]: value };
     }
-    console.log('handleChange', index, field, value, form, modifiedForm);
     setQuestionList((prevState) => [
       ...prevState.slice(0, index),
       modifiedForm,
@@ -1061,7 +1060,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     axios
       .get(`${endpoints.doodle.checkDoodle}?config_key=hw_creation_time`)
       .then((response) => {
-        console.log(response, 'res');
         setHwSubTime(response?.data?.result[0] || null);
         // setHwSubTime(null);
         setLoading(false);
@@ -1263,7 +1261,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          console.log(result?.data?.result?.results, selectedAcademicYear, 'application');
           setCentralAcademicYearID(
             result?.data?.result?.results?.filter(
               (item) => item?.session_year == selectedAcademicYear.session_year
@@ -1275,10 +1272,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         message.error(error?.message);
       });
   };
-  console.log(centralAcademicYearID, 'centralAcademicYearID');
   const markPeriodComplete = (item) => {
     setLoadingDrawer(true);
-    console.log(item, 'markPeriodComplete');
     if (Array.isArray(sectionMappingID)) {
       sectionMappingID.map((section, index) => {
         let payLoad = {
@@ -1549,6 +1544,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         subject: periodData?.subjectName,
         chapter: periodData?.chapterName,
       });
+      fetchMappingSubject({
+        section_mapping: periodData?.sections.map((item) => item?.id)?.join(','),
+        subject_id: periodData?.subjectID,
+      });
       if (periodData?.subjectID) {
         fetchChapterDropdown({
           branch_id: selectedBranch.branch.id,
@@ -1596,6 +1595,21 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       }
     }
   }, []);
+
+  const fetchMappingSubject = (params = {}) => {
+    axios
+      .get(`/erp_user/mapping-subject-list`, { params: { ...params } })
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setMappingSubjectID(response?.data?.map((item) => item?.id));
+        } else {
+          setMappingSubjectID([]);
+        }
+      })
+      .catch((error) => {
+        message.error('error', error?.message);
+      });
+  };
 
   const showAssessmentData = (data) => {
     return data.map((item) => (
