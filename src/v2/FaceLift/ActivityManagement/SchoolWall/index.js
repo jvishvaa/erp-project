@@ -9,9 +9,11 @@ import {
   Avatar,
   Input,
   message,
-  Form,
+  Row,
+  Col,
   DatePicker,
   Select,
+  Result,
 } from 'antd';
 import Loader from './Loader';
 import PostCard from './postCard';
@@ -22,8 +24,8 @@ import CreatePost from './CreatePost';
 import LikesModal from './LikesModal';
 import { Profanity } from 'components/file-validation/Profanity';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 import RecentAnnouncements from '../../TeacherDashboard/components/Announcement';
-import NoDataIcon from 'v2/Assets/images/no_data.gif';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -57,6 +59,17 @@ const SchoolWall = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [heirarchyConfig, setHeirarchyConfig] = useState({});
   const [category, setCategory] = useState();
+  const [payload, setPayload] = useState({ page: 1, page_size: 10 });
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [filterLoading, setFilterLoading] = useState(false);
+
+  const handleDateChange = (value) => {
+    if (value) {
+      setStartDate(moment(value[0]).format('YYYY-MM-DD'));
+      setEndDate(moment(value[1]).format('YYYY-MM-DD'));
+    }
+  };
 
   const handleClosePostModal = () => {
     setShowCreatePostModal(false);
@@ -84,18 +97,19 @@ const SchoolWall = () => {
   };
   const fetchNewPosts = () => {
     if (pageDetails?.current !== 1) {
+      setPayload((prevState) => ({ ...prevState, page: 1 }));
       setPageDetails((prevState) => ({ ...prevState, current: 1 }));
     } else {
-      fetchPosts({ page: pageDetails?.current });
+      fetchPosts({ ...payload });
     }
   };
 
   const fetchPosts = (params = {}) => {
+    setFilterLoading(true);
     axiosInstance
       .get(`${endpoints?.schoolWall?.getPosts}`, {
         params: {
           ...params,
-          page_size: 10,
         },
       })
       .then((response) => {
@@ -113,17 +127,19 @@ const SchoolWall = () => {
       .finally(() => {
         setLoading(false);
         setMoreLoading(false);
+        setFilterLoading(false);
       });
   };
 
   const fetchMoreData = () => {
     setMoreLoading(true);
     setPageDetails((prev) => ({ ...prev, current: prev?.current + 1 }));
+    setPayload((prevState) => ({ ...prevState, page: prevState?.page + 1 }));
   };
 
   useEffect(() => {
-    fetchPosts({ page: pageDetails?.current });
-  }, [pageDetails?.current]);
+    fetchPosts(payload);
+  }, [payload]);
 
   useEffect(() => {
     fetchCategoryData();
@@ -137,7 +153,7 @@ const SchoolWall = () => {
       </Button>
     </div>
   ) : (
-    <Card className='my-3 th-bg-white'>
+    <Card className='my-3 th-bg-white th-br-20'>
       {[1, 2, 3]?.map((item) => (
         <Skeleton avatar title={false} loading={moreLoading} active></Skeleton>
       ))}
@@ -307,17 +323,18 @@ const SchoolWall = () => {
     setSectionData([]);
     setSectionID([]);
     if (each?.length > 0) {
-      let branchParam;
+      let branchParam = [];
       if (each.some((item) => item.value === 'all')) {
         const allBranches = branchList.map((item) => item?.branch?.id);
         branchParam = allBranches;
         setSelectedBranch(allBranches);
         setSelectedAcadSession(branchList?.map((item) => item?.id));
       } else {
-        setSelectedBranch(each.map((item) => item.value).join(','));
+        setSelectedBranch(each.map((item) => item.value));
         setSelectedAcadSession(each.map((item) => item.acad_session));
-        branchParam = each.map((item) => item.value).join(',');
+        branchParam = each.map((item) => item.value);
       }
+      console.log({ branchParam, each });
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
         branch_id: branchParam?.join(','),
@@ -344,9 +361,10 @@ const SchoolWall = () => {
         setGradeID([...new Set(each.map((item) => item.value))]);
         gradeParam = [...new Set(each.map((item) => item.value))];
       }
+      console.log({ gradeParam, each });
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
-        branch_id: selectedBranch,
+        branch_id: selectedBranch?.join(','),
         section_mapping_ids: gradeParam?.join(','),
       });
     } else {
@@ -384,9 +402,6 @@ const SchoolWall = () => {
   };
 
   const handleFilteredData = () => {
-    const updatedValues = formRef.current.getFieldsValue();
-    console.log({ gradeID, selectedAcadSession, sectionID, selectedBranch });
-    console.log('asdsadasdasd', updatedValues?.date);
     let payload = { page: 1, page_size: 10 };
     if (selectedAcadSession) {
       payload['acad_session'] = selectedAcadSession?.join(',');
@@ -400,7 +415,24 @@ const SchoolWall = () => {
     if (category) {
       payload['category'] = category;
     }
-    fetchPosts(payload);
+    if (startDate && endDate) {
+      payload['start_date '] = moment(startDate).format('YYYY-MM-DD');
+      payload['end_date '] = moment(endDate).format('YYYY-MM-DD');
+    }
+    setPayload(payload);
+  };
+
+  const ClearFilters = () => {
+    setSectionData([]);
+    setSectionID([]);
+    setGradeID([]);
+    setUniqueGradeId([]);
+    setPayload({ page: 1, page_size: 10 });
+    if (branchList.length > 1) {
+      setGradeData([]);
+      setSelectedBranch([]);
+      setSelectedAcadSession([]);
+    }
   };
   return (
     <Layout>
@@ -459,175 +491,184 @@ const SchoolWall = () => {
                     </Button>
                   </div>
 
-                  <Form
-                    className={showFilters ? '' : 'd-none'}
-                    id='filterForm'
-                    ref={formRef}
-                    layout={'vertical'}
-                    onFinish={handleFilteredData}
+                  <Row
+                    gutter={[16, 16]}
+                    className={`${showFilters ? '' : 'd-none'} py-3`}
                   >
-                    <div className='d-flex py-3 flex-wrap align-items-end'>
-                      {branchList?.length > 1 && (
-                        <div className='col-4'>
-                          <Form.Item name='branch' label='Branch'>
-                            <Select
-                              style={{ borderRadius: 16 }}
-                              allowClear
-                              placeholder='Select Branch*'
-                              showSearch
-                              maxTagCount={1}
-                              mode='multiple'
-                              value={selectedBranch}
-                              required={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              optionFilterProp='children'
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              onChange={(e, value) => {
-                                handleBranch(value);
-                              }}
-                              className='w-100 text-left th-black-1 th-br-16'
-                            >
-                              {branchList?.length > 1 && (
-                                <>
-                                  <Option key={0} value={'all'}>
-                                    All
-                                  </Option>
-                                </>
-                              )}
-                              {branchOptions}
-                            </Select>
-                          </Form.Item>
-                        </div>
-                      )}
-                      <div className='col-4'>
-                        <Form.Item name='grade' label='Grade'>
-                          <Select
-                            allowClear
-                            placeholder='Select Grade*'
-                            showSearch
-                            mode='multiple'
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            maxTagCount={1}
-                            required={true}
-                            value={selectedBranch}
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            optionFilterProp='children'
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            onChange={(e, value) => {
-                              handleGrade(value);
-                            }}
-                            className='w-100 text-left th-black-1 th-br-4'
-                          >
-                            {gradeData?.length > 1 && (
-                              <>
-                                <Option key={0} value={'all'}>
-                                  All
-                                </Option>
-                              </>
-                            )}
-                            {gradeOptions}
-                          </Select>
-                        </Form.Item>
+                    {branchList?.length > 1 && (
+                      <Col span={8}>
+                        <Select
+                          style={{ borderRadius: 16 }}
+                          allowClear
+                          placeholder='Select Branch*'
+                          showSearch
+                          maxTagCount={1}
+                          mode='multiple'
+                          value={selectedBranch}
+                          required={true}
+                          suffixIcon={<DownOutlined className='th-grey' />}
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          onChange={(e, value) => {
+                            handleBranch(value);
+                          }}
+                          className='w-100 text-left th-black-1 th-select'
+                        >
+                          {branchList?.length > 1 && (
+                            <>
+                              <Option key={0} value={'all'}>
+                                All
+                              </Option>
+                            </>
+                          )}
+                          {branchOptions}
+                        </Select>
+                      </Col>
+                    )}
+                    <Col span={8}>
+                      <Select
+                        allowClear
+                        placeholder='Select Grade*'
+                        showSearch
+                        mode='multiple'
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        maxTagCount={1}
+                        required={true}
+                        value={gradeID}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e, value) => {
+                          handleGrade(value);
+                        }}
+                        className='w-100 text-left th-black-1 th-select'
+                      >
+                        {gradeData?.length > 1 && (
+                          <>
+                            <Option key={0} value={'all'}>
+                              All
+                            </Option>
+                          </>
+                        )}
+                        {gradeOptions}
+                      </Select>
+                    </Col>
+                    <Col span={8}>
+                      <Select
+                        placeholder='Select Sections'
+                        showSearch
+                        required={true}
+                        mode='multiple'
+                        maxTagCount={1}
+                        value={sectionID}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        optionFilterProp='children'
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e, value) => {
+                          handleChangeSection(value);
+                        }}
+                        allowClear
+                        className='w-100 text-left th-black-1 th-select'
+                      >
+                        {sectionData?.length > 1 && (
+                          <>
+                            <Option key={0} value={'all'}>
+                              All
+                            </Option>
+                          </>
+                        )}
+                        {sectionsOptions}
+                      </Select>
+                    </Col>
+                    <Col span={8}>
+                      <Select
+                        placeholder='Select Category'
+                        showSearch
+                        required={true}
+                        value={category}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        optionFilterProp='children'
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        onChange={(e) => {
+                          setCategory(e);
+                        }}
+                        allowClear
+                        className='w-100 text-left th-black-1 th-br-4 th-select'
+                      >
+                        {categoryOptions}
+                      </Select>
+                    </Col>
+                    <Col span={8}>
+                      <RangePicker
+                        allowClear={false}
+                        placement='bottomRight'
+                        showToday={false}
+                        // suffixIcon={<DownOutlined />}
+                        value={[moment(startDate), moment(endDate)]}
+                        onChange={(value) => handleDateChange(value)}
+                        separator={'to'}
+                        format={'DD/MM/YYYY'}
+                      />
+                    </Col>
+                    <Col span={8}>
+                      <div className='d-flex justify-content-between '>
+                        <Button
+                          type='default'
+                          className='th-br-12 w-50 mr-2'
+                          onClick={ClearFilters}
+                        >
+                          Clear
+                        </Button>
+                        <Button
+                          type='primary'
+                          loading={filterLoading}
+                          onClick={handleFilteredData}
+                          className='th-br-12 w-50'
+                        >
+                          Filter
+                        </Button>
                       </div>
-                      <div className='col-4'>
-                        <Form.Item name='section' label='Sections'>
-                          <Select
-                            placeholder='Select Sections'
-                            showSearch
-                            required={true}
-                            mode='multiple'
-                            maxTagCount={1}
-                            value={sectionID}
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            optionFilterProp='children'
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            onChange={(e, value) => {
-                              handleChangeSection(value);
-                            }}
-                            allowClear
-                            className='w-100 text-left th-black-1 th-br-4'
-                          >
-                            {sectionData?.length > 1 && (
-                              <>
-                                <Option key={0} value={'all'}>
-                                  All
-                                </Option>
-                              </>
-                            )}
-                            {sectionsOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-4'>
-                        <Form.Item name='category' label='Category'>
-                          <Select
-                            placeholder='Select Category'
-                            showSearch
-                            required={true}
-                            value={category}
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            optionFilterProp='children'
-                            suffixIcon={<DownOutlined className='th-grey' />}
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              );
-                            }}
-                            onChange={(e) => {
-                              setCategory(e);
-                            }}
-                            allowClear
-                            className='w-100 text-left th-black-1 th-br-4'
-                          >
-                            {categoryOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-4'>
-                        <Form.Item name='date' label='Range'>
-                          <RangePicker />
-                        </Form.Item>
-                      </div>
-                      <div className='col-4'>
-                        <Form.Item name='' label=''>
-                          <Button
-                            type='primary'
-                            htmlType='submit'
-                            id='filterForm'
-                            className='th-br-12 w-100'
-                          >
-                            Filter
-                          </Button>
-                        </Form.Item>
-                      </div>
-                    </div>
-                  </Form>
+                    </Col>
+                  </Row>
                 </Card>
               )}
               <div className='th-posts-list'>
-                {postList?.length > 0 ? (
+                {filterLoading ? (
+                  <Card className='my-3 th-bg-white th-br-20'>
+                    {[1, 2, 3]?.map((item) => (
+                      <Skeleton
+                        avatar
+                        title={false}
+                        loading={filterLoading}
+                        active
+                      ></Skeleton>
+                    ))}
+                  </Card>
+                ) : postList?.length > 0 ? (
                   <List
                     className='demo-loadmore-list '
                     itemLayout='horizontal'
@@ -656,7 +697,15 @@ const SchoolWall = () => {
                   />
                 ) : (
                   <Card className='th-br-20 my-3 text-center py-3'>
-                    <img src={NoDataIcon} alt='no_data' />
+                    <Result
+                      status='404'
+                      title='No Data'
+                      subTitle={
+                        Object.keys(payload).length > 0
+                          ? 'No posts available, try different filters'
+                          : 'No posts to show at this moment'
+                      }
+                    />
                   </Card>
                 )}
               </div>

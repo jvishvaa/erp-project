@@ -300,7 +300,7 @@ export const FaqRoutes = [
     { key: 'My Blogs', path: '/blog/wall/redirect' },
     { key: 'Blog Activity', path: '/blog/wall/central/redirect' },
     { key: 'Create Activity Type', path: '/blog/createactivitytype' },
-    { key: 'School Wall', path: '/blog/wall' },
+    { key: 'School Wall', path: '/school-wall' },
     { key: 'Blog', path: '/blog/activityreview' },
     { key: 'Create Rating', path: '/blog/createratingtype' },
     { key: 'Class Section Wise Strength', path: '/student_count_report' },

@@ -1103,7 +1103,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'School Wall': {
-        history.push('/blog/wall');
+        history.push('/school-wall');
         break;
       }
       case 'Blog': {

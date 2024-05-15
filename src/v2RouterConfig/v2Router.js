@@ -639,9 +639,9 @@ const V2Router = () => {
                           {({ match }) => <AddFaq match={match} />}
                         </Route>
                         {/* Activity Management */}
-                        <Route path='/school-wall/:postId'>
+                        {/* <Route path='/school-wall/:postId'>
                           {({ match }) => <PostDetails match={match} />}
-                        </Route>
+                        </Route> */}
                         <Route path='/school-wall'>
                           {({ match }) => <SchoolWall match={match} />}
                         </Route>                       

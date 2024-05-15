@@ -395,6 +395,7 @@ const CreatePost = ({
         loading: createLoading,
         htmlType: 'submit',
         form: 'filterForm',
+        style:{borderRadius:12}
       }}
     >
       <div className='p-md-3' style={{ maxHeight: '80vh', overflowY: 'auto' }}>
@@ -430,7 +431,7 @@ const CreatePost = ({
                     onChange={(e, value) => {
                       handleBranch(value);
                     }}
-                    className='w-100 text-left th-black-1 th-br-16'
+                    className='w-100 text-left th-black-1 th-select'
                   >
                     {branchList?.length > 1 && (
                       <>
@@ -468,7 +469,7 @@ const CreatePost = ({
                   onChange={(e, value) => {
                     handleGrade(value);
                   }}
-                  className='w-100 text-left th-black-1 th-br-4'
+                  className='w-100 text-left th-black-1 th-select'
                 >
                   {gradeData?.length > 1 && (
                     <>
@@ -502,7 +503,7 @@ const CreatePost = ({
                     handleChangeSection(value);
                   }}
                   allowClear
-                  className='w-100 text-left th-black-1 th-br-4'
+                  className='w-100 text-left th-black-1 th-select'
                 >
                   {sectionData?.length > 1 && (
                     <>
@@ -534,7 +535,7 @@ const CreatePost = ({
                     );
                   }}
                   allowClear
-                  className='w-100 text-left th-black-1 th-br-4'
+                  className='w-100 text-left th-black-1 th-select'
                 >
                   {categoryOptions}
                 </Select>
@@ -544,6 +545,7 @@ const CreatePost = ({
               <MyTinyEditor
                 id='post_description'
                 content={textEditorContent}
+                hideImageUpload={true}
                 handleEditorChange={handleEditorChange}
                 placeholder={`What's on your mind, ${first_name}?`}
               />
