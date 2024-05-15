@@ -2,7 +2,6 @@ import './Faq.scss';
 import {
   DeleteOutlined,
   FileExcelTwoTone,
-  InfoCircleTwoTone,
   PlusOutlined,
   SettingOutlined,
   UploadOutlined,
@@ -28,15 +27,15 @@ import axios from 'axios';
 import endpoints from 'v2/config/endpoints';
 import TextArea from 'antd/lib/input/TextArea';
 import { useHistory } from 'react-router-dom';
-import axiosInstance from 'config/axios';
 const { Panel } = Collapse;
 const { Option } = Select;
 
 const device = [
-  { id: 1, name: 'Website' },
-  { id: 2, name: 'Android' },
-  { id: 3, name: 'IOS' },
-  { id: 5, name: 'Mobile Web' },
+  { id: 1, name: 'qbox' },
+  { id: 2, name: 'mb_droid' },
+  { id: 3, name: 'mb_ios' },
+  { id: 4, name: 'vendor' },
+  { id: 5, name: 'mb_web' },
 ];
 
 const CollapseableComponent = ({ module, items }) => {
@@ -86,14 +85,9 @@ const CollapseableComponent = ({ module, items }) => {
     if (value) {
       fetchChildModules(value);
       setModuleId(value);
-    } else {
-      setModuleId(null);
-      setSubModule(null);
-      formRef.current.setFieldsValue({
-        module: null,
-        child_module: null,
-      });
-      setChildModules([]);
+    }
+    else{
+      setModuleId(null)
     }
   };
 
@@ -118,12 +112,11 @@ const CollapseableComponent = ({ module, items }) => {
   ));
 
   const fetchChildModules = (id) => {
-    const params = {
-      parent_id: id,
-    };
-    axiosInstance
+    axios
       .get(`${endpoints.FrequentlyAskedQuestions.FaqApi}?parent_id=${id}`, {
-        params: { ...params },
+        headers: {
+          Authorization: `Bearer ${userDetails?.token}`,
+        },
       })
       .then((res) => {
         if (res?.data) {
@@ -131,7 +124,7 @@ const CollapseableComponent = ({ module, items }) => {
         }
       })
       .catch((error) => {
-        console.log('Error fetching Module data:', error);
+        console.log(error);
       });
   };
 
@@ -143,7 +136,7 @@ const CollapseableComponent = ({ module, items }) => {
 
   // To Upload Video and Video Modal Functions
 
-  const MAX_FILE_SIZE_MB = 500;
+  const MAX_FILE_SIZE_MB = 50;
   const allowedFiles = ['.mp3', '.mp4', '.mpeg'];
   const draggerProps = {
     showUploadList: false,
@@ -186,7 +179,7 @@ const CollapseableComponent = ({ module, items }) => {
 
   // To Upload P.D.F and P.D.F. Modal Fucntions
 
-  const MAX_PDFFILE_SIZE_MB = 500;
+  const MAX_PDFFILE_SIZE_MB = 50;
   const allowedPdfFiles = ['.pdf'];
   const draggerPdfProps = {
     showUploadList: false,
@@ -245,7 +238,7 @@ const CollapseableComponent = ({ module, items }) => {
   };
 
   const handleSubmit = () => {
-    if (moduleId == null) {
+    if(moduleId==null){
       return message.error('Please Select Module');
     }
     if (subModule == null) {
@@ -257,14 +250,6 @@ const CollapseableComponent = ({ module, items }) => {
     if (devices?.length == 0) {
       return message.error('Please Select Device');
     }
-    const emptyQuestion = questions.some((q) => q.question.trim() === '');
-    const emptyAnswer = questions.some((q) => q.answer.trim() === '');
-    if (emptyQuestion) {
-      return message.error('Cannot Upload Empty Question');
-    }
-    if (emptyAnswer) {
-      return message.error('Cannot Upload Empty Answer');
-    }
     const questionsJSON = JSON.stringify(questions);
     const formData = new FormData();
     formData.append('module_id', subModule);
@@ -275,62 +260,66 @@ const CollapseableComponent = ({ module, items }) => {
     formData.append('video', selectedVideoFile);
 
     setUploadStart(true);
-    setBtn(true);
-    axios
-      .post(`${endpoints.FrequentlyAskedQuestions.FaqApi}`, formData, {
-        headers: {
-          Authorization: `Bearer ${userDetails?.token}`,
-        },
-      })
-      .then((res) => {
-        if (res?.data?.status_code == 201) {
-          message.success(res?.data?.message);
-          setBtn(false);
-          setUploadStart(false);
-          history.push({
-            pathname: '/frequently-asked-questions',
-            state: {
-              moduleId: moduleId,
-              userLevel: userLevel,
-              subModule: subModule,
-              devices: devices,
-            },
-          });
-        } else {
-          if (res?.data?.status_code == 409) {
-            message.error(res?.data?.developer_msg);
+      setBtn(true);
+      axios
+        .post(`${endpoints.FrequentlyAskedQuestions.FaqApi}`, formData, {
+          headers: {
+            Authorization: `Bearer ${userDetails?.token}`,
+          },
+        })
+        .then((res) => {
+          if (res?.data?.status_code == 201) {
+            message.success(res?.data?.message);
+            setBtn(false);
             setUploadStart(false);
+            history.push({
+              pathname: '/frequently-asked-questions',
+              state: {
+                moduleId: moduleId,
+                userLevel: userLevel,
+                subModule: subModule,
+                devices: devices,
+              },
+            });
           }
-        }
-      })
-      .catch((error) => {
-        setBtn(false);
-        message.error(error);
-        setUploadStart(false);
-      });
+          else{
+            if(res?.data?.status_code==409){
+              message.error(res?.data?.developer_msg);
+              setUploadStart(false)
+            }
+          }
+        })
+        .catch((error) => {
+          setBtn(false);
+          message.error(error);
+          setUploadStart(false);
+        });
   };
 
   const handleSubModule = (e) => {
     if (e) {
       setSubModule(e);
-    } else {
-      setSubModule(null);
+    }
+    else{
+      setSubModule(null)
     }
   };
 
   const handleUserLevel = (e) => {
     if (e) {
       setUserLevel(e);
-    } else {
-      setUserLevel(null);
+    }
+    else{
+      setUserLevel(null)
     }
   };
 
   const handleDevice = (e) => {
     if (e) {
       setDevices(e);
-    } else {
-      setDevices([]);
+    }
+    else{
+      setDevices([])
     }
   };
 
@@ -356,12 +345,15 @@ const CollapseableComponent = ({ module, items }) => {
 
       fetchData({ params });
     }
-  }, [moduleId, subModule, userLevel, devices]);
+  }, [subModule, userLevel, devices]);
 
   const fetchData = ({ params }) => {
-    axiosInstance
+    axios
       .get(`${endpoints.FrequentlyAskedQuestions.FaqApi}`, {
-        params: { ...params },
+        params,
+        headers: {
+          Authorization: `Bearer ${userDetails?.token}`,
+        },
       })
       .then((res) => {
         if (res?.data) {
@@ -374,14 +366,23 @@ const CollapseableComponent = ({ module, items }) => {
             return { ...item, user_level: newUserLevel };
           });
           setData(newData);
+          if (subModule != null && userLevel != null) {
+            if (
+              (newData?.some((item) => item.pdf_file) ||
+                newData?.some((item) => item.video_file))
+            ) {
+              message.error(
+                'File already exists. Please delete it to upload a new file.'
+              );
+            }
+          }
         }
       })
       .catch((error) => {
-        if (error) {
-          setData([]);
-        }
+        console.log(error);
       });
   };
+
 
   let idInterval = null;
   useEffect(() => {
@@ -409,16 +410,21 @@ const CollapseableComponent = ({ module, items }) => {
   return (
     <>
       <Layout>
+
         <div className='row pt-3 pb-3'>
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-black-1 th-16 th-grey'
-                onClick={() => history.push('/frequently-asked-questions')}
               >
-                FAQ
+                F.A.Q.
               </Breadcrumb.Item>
-              <Breadcrumb.Item className='th-black-1 th-16'>Add FAQ</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16' onClick={()=>history.push('/frequently-asked-questions')}>
+                Frequentyly Asked Question
+              </Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16' onClick={()=>history.push('/frequently-asked-questions')}>
+                Add F.A.Q.
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
         </div>
@@ -430,11 +436,7 @@ const CollapseableComponent = ({ module, items }) => {
         </div>
 
         <div>
-          <Form
-            ref={formRef}
-            style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}
-            direction='row'
-          >
+          <Form ref={formRef} style={{ width: '100%', display: 'flex' }} direction='row'>
             <div className='col-md-2'>
               <span className='th-grey th-14'>Select Module*</span>
               <Form.Item name='module'>
@@ -450,7 +452,6 @@ const CollapseableComponent = ({ module, items }) => {
                   }}
                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   onChange={(value) => handleChangeModule(value)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {moduleOptions}
                 </Select>
@@ -471,7 +472,6 @@ const CollapseableComponent = ({ module, items }) => {
                   }}
                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   onChange={(e) => handleSubModule(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {childModuleOptions}
                 </Select>
@@ -493,14 +493,13 @@ const CollapseableComponent = ({ module, items }) => {
                   }}
                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   onChange={(e) => handleUserLevel(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {userLevelListOptions}
                 </Select>
               </Form.Item>
             </div>
             <div className='col-md-2'>
-              <span className='th-grey th-14'>Device*</span>
+              <span className='th-grey th-14'>Device</span>
               <Form.Item name='device'>
                 <Select
                   allowClear
@@ -515,21 +514,20 @@ const CollapseableComponent = ({ module, items }) => {
                   }}
                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
                   onChange={(e) => handleDevice(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
                 >
                   {deviceOptions}
                 </Select>
               </Form.Item>
             </div>
             <div className='col-md-2'>
-              <span className='th-grey th-14'>Upload PDF</span>
-              <div style={{ width: '82%' }}>
+              <span className='th-grey th-14'>Upload P.D.F*</span>
+              <div style={{ width: '60%' }}>
                 {data.some((item) => item.pdf_file) ? (
-                  <p>PDF exists</p>
+                  <p>P.D.F exists</p>
                 ) : (
                   <>
                     <Upload {...draggerPdfProps}>
-                      <Button icon={<UploadOutlined />} style={{ width: '100%' }}>
+                      <Button icon={<UploadOutlined />} style={{ width: '150%' }}>
                         Select File
                       </Button>
                     </Upload>
@@ -539,12 +537,11 @@ const CollapseableComponent = ({ module, items }) => {
                         marginTop: '2px',
                       }}
                     >
-                      <small style={{ textAlign: 'left' }}>Only ['.pdf'] allowed.</small>
                       {selectedPdfFile ? (
                         <span
                           style={{
                             color: 'blue',
-                            width: '90%',
+                            width: '170%',
                             display: 'flex',
                             gap: '5px',
                             alignItems: 'center',
@@ -572,14 +569,14 @@ const CollapseableComponent = ({ module, items }) => {
             </div>
 
             <div className='col-md-2'>
-              <span className='th-grey th-14'>Upload Video</span>
-              <div style={{ width: '82%' }}>
+              <span className='th-grey th-14'>Upload Video*</span>
+              <div style={{ width: '60%' }}>
                 {data.some((item) => item.video_file) ? (
                   <p>Video exists</p>
                 ) : (
                   <>
                     <Upload {...draggerProps}>
-                      <Button icon={<UploadOutlined />} style={{ width: '100%' }}>
+                      <Button icon={<UploadOutlined />} style={{ width: '150%' }}>
                         Select File
                       </Button>
                     </Upload>
@@ -589,14 +586,11 @@ const CollapseableComponent = ({ module, items }) => {
                         marginTop: '2px',
                       }}
                     >
-                      <small style={{ textAlign: 'left' }}>
-                        ['.mp3','.mp4'] allowed.
-                      </small>
                       {selectedVideoFile ? (
                         <span
                           style={{
                             color: 'blue',
-                            width: '90%',
+                            width: '170%',
                             display: 'flex',
                             gap: '5px',
                             alignItems: 'center',
@@ -624,10 +618,6 @@ const CollapseableComponent = ({ module, items }) => {
             </div>
           </Form>
         </div>
-        <span style={{ border: '1px solid #d9d9d9', padding: '5px', marginLeft: '16px' }}>
-          <InfoCircleTwoTone className='pr-2' />
-          <i className='th-grey'>P.D.F. and Video Size Should Be Less Than 500 MB</i>
-        </span>
         <div style={{ display: 'grid', placeItems: 'center', marginTop: '25px' }}>
           {questions.map((item, index) => (
             <div
@@ -641,26 +631,19 @@ const CollapseableComponent = ({ module, items }) => {
               }}
             >
               <Form layout='inline' style={{ display: 'flex', alignItems: 'center' }}>
-                <Form.Item label={`Question ${index + 1}`} style={{ flex: 1 }}>
-                  <TextArea
-                    showCount
-                    maxLength={300}
+                <Form.Item label='Question' style={{ flex: 1 }}>
+                  <Input
                     value={item.question}
-                    autoSize={{ minRows: 2, maxRows: 6 }}
                     onChange={(e) => handleChange(index, 'question', e.target.value)}
                     style={{ width: '100%', marginRight: '8px' }}
-                    status={`${item.question.length=="" ? "error" : "" || item.question?.trim()=="" ? "error" : ""}`}
                   />
                 </Form.Item>
-                <Form.Item label={`Answer`} style={{ flex: 1 }}>
+                <Form.Item label='Answer' style={{ flex: 1 }}>
                   <TextArea
-                    maxLength={1500}
                     value={item.answer}
                     onChange={(e) => handleChange(index, 'answer', e.target.value)}
                     autoSize={{ minRows: 2, maxRows: 6 }}
                     style={{ width: '100%', marginRight: '8px' }}
-                    showCount
-                    status={`${item.answer?.length=="" ? "error" : "" || item.answer?.trim()=="" ? "error" : ""}`}
                   />
                 </Form.Item>
                 {index !== 0 && (
