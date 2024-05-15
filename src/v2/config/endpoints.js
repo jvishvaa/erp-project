@@ -173,7 +173,8 @@ export default {
     announcementCategory: `announcement/announcement-category/`,
     publishAnnouncement: `/announcement/create/`,
     updateAnnouncement: 'announcement/v2/announcement-update',
-    retrieveUpdateDeleteAnnouncement:'/announcement/retrieve-update-delete-announcement/'
+    retrieveUpdateDeleteAnnouncement:
+      '/announcement/retrieve-update-delete-announcement/',
   },
   acadCalendar: {
     monthly: `/period/calendar-v2/`,
@@ -236,6 +237,7 @@ export default {
     sectionWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-section-view/`,
     subjectWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-view/`,
     subjectDetailsWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-detail-view/`,
+    studentDash: `${msReportsUrl}/api/acad_performance/student-dash/`,
   },
   centralizedHomework: {
     docType: 'hw-hub/get_doctype/',

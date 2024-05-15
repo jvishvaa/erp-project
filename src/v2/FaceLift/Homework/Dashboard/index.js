@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Layout from 'containers/Layout';
-import { Breadcrumb, DatePicker, Form, message, Select } from 'antd';
+import { useHistory } from 'react-router-dom';
 import axiosInstance from 'config/axios';
-import { useSelector } from 'react-redux';
-import { DownOutlined } from '@ant-design/icons';
+import { Breadcrumb, DatePicker, Empty, Form, message, Select } from 'antd';
 import moment from 'moment';
 import endpoints from 'config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import { useHistory } from 'react-router-dom';
-import DashboardCard from './Componant/dashboardCard';
+import { useSelector } from 'react-redux';
+import { DownOutlined } from '@ant-design/icons';
+import Layout from 'containers/Layout';
+import DashbaoardCard from './DashboardCard';
 
 const HomeworkDashboard = () => {
   const formRef = useRef();
@@ -26,26 +26,15 @@ const HomeworkDashboard = () => {
   const [startDate, setStartDate] = useState(defaultStartDate.format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [dashboardLevel, setDashboardLevel] = useState(0);
+
   const [branchData, setBranchData] = useState([]);
   const [gradeData, setGradeData] = useState([]);
   const [sectionData, setSectionData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
+  const [studentList, setStudentList] = useState([]);
+  const [studentData, setStudentData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [tableLoading, setTableLoading] = useState(false);
-  const [selectedLevel1Card, setSelectedLevel1Card] = useState({
-    index: null,
-    data: null,
-  });
-  const [selectedLevel2Card, setSelectedLevel2Card] = useState({
-    index: null,
-    data: null,
-  });
-
-  const [level1Data, setLevel1Data] = useState([]);
-  const [level2Data, setLevel2Data] = useState([]);
-  const [level3Data, setLevel3Data] = useState([]);
-  const [level1TableData, setLevel1TableData] = useState([]);
-  const [level2TableData, setLevel2TableData] = useState([]);
+  const [mainData, setMainData] = useState([]);
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -54,14 +43,73 @@ const HomeworkDashboard = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const user_level = userData?.user_level;
+
+  const visibleLevel =
+    user_level === 8 || user_level === 10
+      ? 'branch'
+      : user_level === 11
+      ? 'grade'
+      : user_level === 13
+      ? 'subject'
+      : 'not visible';
+
   useEffect(() => {
-    fetchTeacherList();
-    fetchBranchWise({
-      start_date: startDate,
-      end_date: endDate,
-      session_year_id: selectedAcademicYear?.id,
-    });
+    if (visibleLevel === 'branch') {
+      fetchTeacherList({
+        session_year: selectedAcademicYear?.id,
+        user_level: 11,
+      });
+      fetchBranchWise({
+        start_date: startDate,
+        end_date: endDate,
+        session_year_id: selectedAcademicYear?.id,
+      });
+    } else if (visibleLevel === 'grade') {
+      fetchGradeWise({
+        start_date: startDate,
+        end_date: endDate,
+        acadsession_id: selectedBranch?.id,
+      });
+    } else if (visibleLevel === 'subject') {
+      fetchStudenthWise({
+        start_date: startDate,
+        end_date: endDate,
+        section_mapping: userData?.role_details?.grades?.[0]?.id,
+        acad_session: selectedBranch?.id,
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      if (visibleLevel === 'branch') {
+        fetchTeacherList({
+          session_year: selectedAcademicYear?.id,
+          user_level: 11,
+        });
+        fetchBranchWise({
+          start_date: startDate,
+          end_date: endDate,
+          session_year_id: selectedAcademicYear?.id,
+        });
+      } else if (visibleLevel === 'grade') {
+        fetchGradeWise({
+          start_date: startDate,
+          end_date: endDate,
+          acadsession_id: selectedBranch?.id,
+        });
+      } else if (visibleLevel === 'subject') {
+        fetchStudenthWise({
+          start_date: startDate,
+          end_date: endDate,
+          section_mapping: userData?.role_details?.grades?.[0]?.id,
+          acad_session: selectedBranch?.id,
+        });
+      }
+    }
+  }, [startDate, endDate, teacherId]);
 
   const fetchBranchWise = async (params = {}) => {
     setLoading(true);
@@ -87,11 +135,11 @@ const HomeworkDashboard = () => {
           };
         });
         setBranchData(mappedData);
-        setLevel1Data(mappedData);
-        setSelectedLevel1Card({ index: 0, data: mappedData[0] });
+        if (visibleLevel === 'branch') {
+          setMainData(mappedData);
+        }
       } else {
         setBranchData([]);
-        setLevel1Data([]);
         message.error(result?.message || 'Something went wrong');
       }
     } catch (error) {
@@ -103,7 +151,6 @@ const HomeworkDashboard = () => {
 
   const fetchGradeWise = async (params = {}) => {
     console.log({ params });
-    setTableLoading(true);
     try {
       const result = await axiosInstance.get(
         `${endpoints?.homeworkDashboard?.gradeWise}`,
@@ -125,16 +172,16 @@ const HomeworkDashboard = () => {
             }))
           : [];
         setGradeData(mappedData);
-        setLevel1TableData(mappedData);
+        if (visibleLevel === 'grade') {
+          setMainData(mappedData);
+        }
       } else {
         setGradeData([]);
-        setLevel1TableData([]);
         message.error(result?.message || 'Something went wrong');
       }
     } catch (error) {
       message.error(error?.response?.data?.message ?? 'Something went wrong');
     } finally {
-      setTableLoading(false);
     }
   };
 
@@ -162,11 +209,8 @@ const HomeworkDashboard = () => {
           };
         });
         setSectionData(mappedData);
-        setLevel2Data(mappedData);
-        setSelectedLevel2Card({ index: 0, data: mappedData[0] });
       } else {
         setSectionData([]);
-        setLevel2Data([]);
         message.error(result?.message || 'Something went wrong');
       }
     } catch (error) {
@@ -200,10 +244,48 @@ const HomeworkDashboard = () => {
           sec_map_id: item?.sec_map_id,
         }));
         setSubjectData(mappedData);
-        setLevel2TableData(mappedData);
+        // setLevel2TableData([
+        //   {
+        //     map_sub: 14050,
+        //     id: 3,
+        //     name: 'Hindi',
+        //     numberCounts: {
+        //       assigned: 2,
+        //       submitted: 1,
+        //       pending: 1,
+        //       non_evaluated: 0,
+        //       evaluated: 1,
+        //     },
+        //     percentageCounts: {
+        //       p_assigned: 100,
+        //       p_submitted: 50.0,
+        //       p_pending: 50.0,
+        //       p_non_evaluated: 0.0,
+        //       p_evaluated: 50.0,
+        //     },
+        //   },
+        //   {
+        //     map_sub: 14049,
+        //     id: 6,
+        //     name: 'Maths',
+        //     numberCounts: {
+        //       assigned: 2,
+        //       submitted: 0,
+        //       pending: 2,
+        //       non_evaluated: 0,
+        //       evaluated: 0,
+        //     },
+        //     percentageCounts: {
+        //       p_assigned: 100,
+        //       p_submitted: 0.0,
+        //       p_pending: 100.0,
+        //       p_non_evaluated: 0.0,
+        //       p_evaluated: 0.0,
+        //     },
+        //   },
+        // ]);
       } else {
         setSubjectData([]);
-        setLevel2TableData([]);
         message.error(result?.message || 'Something went wrong');
       }
     } catch (error) {
@@ -214,29 +296,79 @@ const HomeworkDashboard = () => {
     }
   };
 
-  const getLevel1Data = () => {};
-  const getLevel1TableData = (params) => {
-    if (dashboardLevel === 0) {
-      fetchGradeWise(params);
+  const fetchStudentList = async (params = {}) => {
+    console.log({ params });
+    setLoading(true);
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints?.homeworkDashboard?.studentList}`,
+        {
+          params: { ...params },
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      );
+      console.log({ result });
+      if (result?.data?.status_code === 200) {
+        let mappedData = result?.data?.result?.map((item) => {
+          return {
+            id: item?.id,
+            name: item?.name,
+            numberCounts: item?.counts,
+            percentageCounts: item?.percents,
+          };
+        });
+        setStudentList(mappedData);
+      } else {
+        setStudentList([]);
+        message.error(result?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      console.log({ error }, error?.response);
+      message.error(error?.response?.data?.message ?? 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getLevel2Data = (params = {}) => {
-    if (dashboardLevel === 1) {
-      console.log(params, 'data getLevel2Data');
-      fetchSectionWise(params);
+  const fetchStudenthWise = async (params = {}) => {
+    setLoading(true);
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints?.homeworkDashboard?.studentDash}`,
+        {
+          params: { ...params },
+          headers: {
+            'X-DTS-HOST': X_DTS_HOST,
+          },
+        }
+      );
+      console.log({ result });
+      if (result?.data?.status_code === 200) {
+        let mappedData = result?.data?.result?.map((item) => {
+          return {
+            id: item?.subject_id,
+            mapSub: item?.map_sub,
+            name: item?.subject_name,
+            numberCounts: item?.counts,
+            percentageCounts: item?.percents,
+          };
+        });
+        setStudentData(mappedData);
+        if (visibleLevel === 'subject') {
+          setMainData(mappedData);
+        }
+      } else {
+        setStudentData([]);
+        message.error(result?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      message.error(error?.response?.data?.message ?? 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
   };
-
-  const getLevel2TableData = (params) => {
-    if (dashboardLevel === 1) {
-      fetchSubjectWise(params);
-    }
-  };
-
-  // const selectHomework = (index) => {
-  //   setSelectedIndex(index);
-  // };
 
   const fetchTeacherList = () => {
     const params = {
@@ -244,11 +376,10 @@ const HomeworkDashboard = () => {
       branch_id: selectedBranch?.branch?.id,
     };
     axiosInstance
-      .get(`${endpoints.aol.teacherList}`, { params })
+      .get(`${endpoints.communication.viewUser}`, { params })
       .then((result) => {
-        if (result?.data?.status_code == 200) {
-          setTeacherData(result?.data?.data);
-        }
+        console.log({ result });
+        setTeacherData(result?.data?.results);
       })
       .catch((error) => message.error('error', error?.message));
   };
@@ -272,8 +403,8 @@ const HomeworkDashboard = () => {
 
   const handleDateChange = (value) => {
     if (value) {
-      setStartDate(moment(value[0]).format('DD-MM-YYYY'));
-      setEndDate(moment(value[1]).format('DD-MM-YYYY'));
+      setStartDate(moment(value[0]).format('YYYY-MM-DD'));
+      setEndDate(moment(value[1]).format('YYYY-MM-DD'));
       setDates(value);
     } else {
       setStartDate(null);
@@ -308,12 +439,12 @@ const HomeworkDashboard = () => {
   const teacherOptions = teacherData?.map((each) => {
     return (
       <Option
-        key={each?.user__id}
-        value={each?.tutor_id}
-        id={each?.user__id}
+        key={each?.user?.id}
+        value={each?.user?.id}
+        id={each?.user?.id}
         teacherName={each?.name}
       >
-        {each?.name}
+        {each?.user?.first_name} {each?.user?.last_name}
       </Option>
     );
   });
@@ -360,66 +491,77 @@ const HomeworkDashboard = () => {
                     />
                   </Form.Item>
                 </div>
-                <div className={`col-xl-3 col-md-3`}>
-                  <Form.Item name='teacher' label='Teacher'>
-                    <Select
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      allowClear={true}
-                      suffixIcon={<DownOutlined className='th-grey' />}
-                      className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                      placement='bottomRight'
-                      showArrow={true}
-                      onChange={(e, value) => handleTeacher(value)}
-                      onClear={handleClearTeacher}
-                      dropdownMatchSelectWidth={false}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      showSearch
-                      placeholder='Select Teacher'
-                    >
-                      {teacherOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
+                {visibleLevel === 'branch' ? (
+                  <div className={`col-xl-3 col-md-3`}>
+                    <Form.Item name='teacher' label='Teacher'>
+                      <Select
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        allowClear={true}
+                        suffixIcon={<DownOutlined className='th-grey' />}
+                        className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                        placement='bottomRight'
+                        showArrow={true}
+                        onChange={(e, value) => handleTeacher(value)}
+                        onClear={handleClearTeacher}
+                        dropdownMatchSelectWidth={false}
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        showSearch
+                        placeholder='Select Teacher'
+                      >
+                        {teacherOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                ) : null}
               </div>
             </Form>
           </div>
         </div>
-
+        {console.log({ sectionData })}
         <div className='row mt-2'>
           <div className='col-12'>
             <div className='py-2'>
-              <div className='row'>
-                <div className='col-md-7 col-12 pl-0 dashboard-stat'>
-                  {Array.isArray(level1Data) && level1Data?.length > 0
-                    ? level1Data?.map((item, index) => (
-                        <DashboardCard
-                          dashboardLevel={dashboardLevel}
-                          setDashboardLevel={setDashboardLevel}
-                          startDate={startDate}
-                          endDate={endDate}
-                          mainData={item}
-                          index={index}
-                          getLevel2Data={getLevel2Data}
-                          level2Data={level2Data}
-                          getLevel1TableData={getLevel1TableData}
-                          getLevel2TableData={getLevel2TableData}
-                          level1TableData={level1TableData}
-                          level2TableData={level2TableData}
-                          // level3TableData={level3TableData}
-                          tableLoading={tableLoading}
-                          selectedLevel1Card={selectedLevel1Card}
-                          setSelectedLevel1Card={setSelectedLevel1Card}
-                          selectedLevel2Card={selectedLevel2Card}
-                          setSelectedLevel2Card={setSelectedLevel2Card}
-                        />
-                      ))
-                    : null}
-                </div>
-              </div>
+              {mainData?.length > 0 ? (
+                <DashbaoardCard
+                  dashboardLevel={dashboardLevel}
+                  setDashboardLevel={setDashboardLevel}
+                  startDate={startDate}
+                  endDate={endDate}
+                  teacherId={teacherId}
+                  visibleLevel={visibleLevel}
+                  level1Data={mainData}
+                  level2Data={
+                    visibleLevel === 'branch'
+                      ? sectionData
+                      : visibleLevel === 'grade'
+                      ? subjectData
+                      : []
+                  }
+                  level3Data={studentList}
+                  fetchGradeWise={fetchGradeWise}
+                  fetchSectionWise={fetchSectionWise}
+                  fetchSubjectWise={fetchSubjectWise}
+                  fetchStudentList={fetchStudentList}
+                  tableData={
+                    visibleLevel === 'branch' && dashboardLevel === 0
+                      ? gradeData
+                      : visibleLevel === 'branch' && dashboardLevel === 1
+                      ? subjectData
+                      : visibleLevel === 'grade' && dashboardLevel === 0
+                      ? sectionData
+                      : visibleLevel === 'grade' && dashboardLevel === 1
+                      ? studentList
+                      : []
+                  }
+                />
+              ) : (
+                <Empty />
+              )}
             </div>
           </div>
         </div>

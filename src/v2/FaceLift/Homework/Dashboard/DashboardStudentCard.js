@@ -1,166 +1,58 @@
 import React, { useState } from 'react';
+import { Table, Tag } from 'antd';
+import { EyeOutlined, RightCircleOutlined } from '@ant-design/icons';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { EyeOutlined, RightCircleOutlined } from '@ant-design/icons';
-import { Table, Tag } from 'antd';
 
-const DashboardDesign = ({
-  dashboardData,
-  dashboardTableData,
+const DashboardStudentCard = ({
   dashboardLevel,
-  setDashboardLevel,
-  childLoading,
   startDate,
   endDate,
-  apiData,
-  setApiData,
-  isCollapsed,
-  setIsCollapsed,
-  closeDrawer,
-  showDrawer,
+  cardData,
+  setDashboardLevel,
+  index,
+  fetchGradeWise,
+  fetchSectionWise,
+  tableData,
+  fetchSubjectWise,
+  fetchStudentList,
+  acad_session_id,
+  level1Data,
+  level2Data,
+  level3Data,
+  visibleLevel,
 }) => {
-  const [selectedHomeworkIndex, setSelectedHomeworkIndex] = useState(0);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const selectHomework = (index) => {
-    setSelectedHomeworkIndex(index);
+  console.log({ dashboardLevel });
+
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
   };
 
-  const homeworkGraphData = [
-    {
-      name: 'Pending',
-      y: 60,
-      color: '#90ed7d',
-    },
-    {
-      name: 'Submitted',
-      y: 40,
-      color: '#f7a35c',
-    },
-  ];
-  const homeworkGraphOuterData = [
-    {
-      name: 'Pending ',
-      y: 0,
-      color: 'rgb(255,255,255)',
-      // custom: {
-      //   version: '70',
-      // },
-    },
-    {
-      name: 'Pending',
-      y: 0,
-      color: 'rgb(255,255,255)',
-      // custom: {
-      //   version: '30',
-      // },
-    },
-    {
-      name: 'Evaluated',
-      y: 25,
-      color: 'rgb(255,214,143)',
-      // custom: {
-      //   version: '25',
-      // },
-    },
-    {
-      name: 'Non Evaluated',
-      y: 75,
-      color: 'rgb(255,214,143',
-      // custom: {
-      //   version: '75',
-      // },
-    },
-  ];
+  const showDrawer = (data) => {
+    setDrawerVisible(true);
+    setDashboardLevel(parseInt(dashboardLevel) + 1);
+    setIsCollapsed(true);
+  };
 
-  const optionPie = {
-    chart: {
-      type: 'pie',
-    },
-    credits: {
-      enabled: false,
-    },
-    title: {
-      text:
-        dashboardLevel === 0
-          ? 'Branch'
-          : dashboardLevel === 1
-          ? 'Grade'
-          : dashboardLevel === 2
-          ? 'Student'
-          : null,
-      align: 'left',
-    },
-    plotOptions: {
-      pie: {
-        shadow: false,
-        center: ['50%', '50%'],
-      },
-    },
-    tooltip: {
-      valueSuffix: '%',
-    },
-    series: [
-      {
-        name: 'Homework',
-        data: homeworkGraphData,
-        size: '45%',
-        dataLabels: {
-          color: '#ffffff',
-          distance: '-50%',
-        },
-      },
-      {
-        name: 'Evaluations',
-        data: homeworkGraphOuterData,
-        size: '60%',
-        innerSize: '40%',
-        dataLabels: {
-          format: '<b>{point.name}:</b> <span style="opacity: 0.5">{y}%</span>',
-          filter: {
-            property: 'y',
-            operator: '>',
-            value: 1,
-          },
-          style: {
-            fontWeight: 'normal',
-          },
-        },
-        id: 'evaluations',
-      },
-    ],
-    responsive: {
-      rules: [
-        {
-          condition: {
-            maxWidth: 300,
-          },
-          chartOptions: {
-            series: [
-              {},
-              {
-                id: 'evaluations',
-                dataLabels: {
-                  distance: 10,
-                  format: '{point.custom.version}',
-                  filter: {
-                    property: 'percentage',
-                    operator: '>',
-                    value: 2,
-                  },
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
+  const closeDrawer = () => {
+    setDrawerVisible(false);
+    setDashboardLevel(parseInt(dashboardLevel) - 1);
+    setIsCollapsed(true);
+  };
+
+  const [selectedCardIndex, setSelectedCardIndex] = useState(0);
+  const selectCard = (index) => {
+    setSelectedCardIndex(index);
   };
 
   const tableColumns = [
     {
       title: (
         <span className='th-white th-12 th-fw-500 '>
-          {dashboardLevel === 1 ? 'Grade' : dashboardLevel === 2 ? 'Subject' : null}
+          {dashboardLevel === 0 ? 'Grade' : dashboardLevel === 1 ? 'Subject' : null}
         </span>
       ),
       width: '18%',
@@ -205,13 +97,14 @@ const DashboardDesign = ({
         <span
           className='th-12 th-pointer text-primary'
           onClick={() => {
-            let apiObj = {};
-            console.log({ dashboardLevel });
-            if (dashboardLevel === 2) {
-              apiObj.level = 'section';
-              apiObj.id = dashboardData?.[selectedHomeworkIndex]?.acad_session_id;
-              apiObj.grade_id = record?.id;
-              setApiData(apiObj);
+            if (dashboardLevel === 1) {
+              fetchStudentList({
+                start_date: startDate,
+                end_date: endDate,
+                subject: record?.id,
+                section_mapping: level2Data[selectedCardIndex]?.id,
+                acad_session: acad_session_id,
+              });
             }
             showDrawer();
           }}
@@ -222,19 +115,140 @@ const DashboardDesign = ({
     },
   ];
 
+  const chartInnerData = [
+    {
+      name: 'Pending',
+      y: level3Data[selectedCardIndex]?.percentageCounts?.p_pending,
+      color: '#90ed7d',
+    },
+    {
+      name: 'Submitted',
+      y: level3Data[selectedCardIndex]?.percentageCounts?.p_submitted,
+      color: '#f7a35c',
+    },
+  ];
+  const chartOuterData = [
+    {
+      name: 'Pending ',
+      y: 0,
+      color: 'rgb(255,255,255)',
+    },
+    {
+      name: 'Pending',
+      y: 0,
+      color: 'rgb(255,255,255)',
+    },
+    {
+      name: 'Evaluated',
+      y: level3Data[selectedCardIndex]?.percentageCounts?.p_evaluated,
+      color: 'rgb(255,214,143)',
+    },
+    {
+      name: 'Non Evaluated',
+      y: level3Data[selectedCardIndex]?.percentageCounts?.p_non_evaluated,
+      color: 'rgb(255,214,143',
+    },
+  ];
+
+  const optionPie = {
+    chart: {
+      type: 'pie',
+    },
+    credits: {
+      enabled: false,
+    },
+    title: {
+      text:
+        visibleLevel === 'branch' && dashboardLevel === 0
+          ? 'Branch'
+          : visibleLevel === 'branch' && dashboardLevel === 1
+          ? 'Section'
+          : visibleLevel === 'grade' && dashboardLevel === 0
+          ? 'Grade'
+          : visibleLevel === 'grade' && dashboardLevel === 1
+          ? 'Subject'
+          : null,
+      align: 'left',
+    },
+    plotOptions: {
+      pie: {
+        shadow: false,
+        center: ['50%', '50%'],
+      },
+    },
+    tooltip: {
+      valueSuffix: '%',
+    },
+    series: [
+      {
+        name: 'Homework',
+        data: chartInnerData,
+        size: '45%',
+        dataLabels: {
+          color: '#ffffff',
+          distance: '-50%',
+        },
+      },
+      {
+        name: 'Evaluations',
+        data: chartOuterData,
+        size: '60%',
+        innerSize: '40%',
+        dataLabels: {
+          format: '<b>{point.name}:</b> <span style="opacity: 0.5">{y}%</span>',
+          filter: {
+            property: 'y',
+            operator: '>',
+            value: 1,
+          },
+          style: {
+            fontWeight: 'normal',
+          },
+        },
+        id: 'evaluations',
+      },
+    ],
+    responsive: {
+      rules: [
+        {
+          condition: {
+            maxWidth: 300,
+          },
+          chartOptions: {
+            series: [
+              {},
+              {
+                id: 'evaluations',
+                dataLabels: {
+                  distance: 10,
+                  format: '{point.custom.version}',
+                  filter: {
+                    property: 'percentage',
+                    operator: '>',
+                    value: 2,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ],
+    },
+  };
+
   return (
     <React.Fragment>
       <div className='row'>
         <div className='col-md-7 col-12 pl-0 dashboard-stat'>
-          {Array.isArray(dashboardData) && dashboardData?.length > 0
-            ? dashboardData?.map((item, index) => (
+          {Array.isArray(level3Data) && level3Data?.length > 0
+            ? level3Data?.map((item, index) => (
                 <div
                   className='stat-card row th-bg-white py-2 th-br-12 mb-2 align-items-center'
                   key={index}
                   style={{
-                    border: index === selectedHomeworkIndex && '1px solid #1B4CCB',
+                    border: selectedCardIndex === index ? '1px solid #1B4CCB' : '',
                   }}
-                  onClick={() => selectHomework(index)}
+                  onClick={(e) => selectCard(index)}
                 >
                   <div className='col-md-9'>
                     <h4 className='th-20 mb-1 text-primary'>
@@ -267,45 +281,39 @@ const DashboardDesign = ({
                       {item?.numberCounts?.assigned}{' '}
                       <span className='th-grey'>Assigned</span>
                     </h4>
-                    {console.log('adsfghj', dashboardLevel)}
+                    {console.log({ dashboardLevel })}
                     {dashboardLevel <= 1 && (
                       <Tag
                         color='processing'
                         className='th-br-4 float-right mt-2 mr-0 th-pointer'
                         onClick={() => {
-                          let apiObj = {};
-                          if (dashboardLevel === 0) {
-                            apiObj.level = 'grade';
-                            apiObj.id = item?.acad_session_id;
-                            setApiData(apiObj);
-                            setDashboardLevel(prevState =>parseInt(prevState) + 1);
-                          } else if (dashboardLevel === 1) {
-                            // dashboardChildFunc({
-                            //   start_date: startDate,
-                            //   end_date: endDate,
-                            //   section_mapping_id: item?.id,
-                            // });
-                          } else {
-                            // dashboardChildFunc({
-                            //   start_date: startDate,
-                            //   end_date: endDate,
-                            //   section_mapping_id: item?.id,
-                            // });
+                          if (dashboardLevel === 1) {
+                            fetchSubjectWise({
+                              start_date: startDate,
+                              end_date: endDate,
+                              section_mapping_id: item?.id,
+                            });
                           }
-                          setDashboardLevel(parseInt(dashboardLevel) + 1);
-                          setIsCollapsed(!isCollapsed);
+                          // if (dashboardLevel === 1) {
+                          //   getLevel2TableData({
+                          //     start_date: startDate,
+                          //     end_date: endDate,
+                          //     section_mapping_id: cardData?.id,
+                          //   });
+                          // }
+                          toggleCollapse();
                         }}
                       >
-                        {dashboardLevel === 0 || dashboardLevel === 1
+                        {dashboardLevel === 0
                           ? `Grade`
-                          : dashboardLevel === 2 || dashboardLevel === 3
+                          : dashboardLevel === 1
                           ? `Subject`
-                          : null}{' '}
+                          : ``}{' '}
                         <RightCircleOutlined />
                       </Tag>
                     )}
                   </div>
-                  {index === selectedHomeworkIndex && (
+                  {!isCollapsed && selectedCardIndex === index ? (
                     <div
                       className={`dashboard-table-collapse ${
                         isCollapsed ? 'dashboard-content-collapsed' : ''
@@ -317,20 +325,25 @@ const DashboardDesign = ({
                           className='th-table'
                           columns={tableColumns}
                           rowKey={(record) => record?.id}
-                          dataSource={dashboardTableData}
+                          dataSource={
+                            dashboardLevel === 0
+                              ? tableData
+                              : dashboardLevel === 1
+                              ? tableData
+                              : []
+                          }
                           pagination={false}
-                          loading={childLoading}
-                          scroll={{ y: '130px' }}
-                          style={{ minHeight: 130 }}
+                          // loading={tableLoading}
+                          scroll={{ y: '100px' }}
+                          style={{ minHeight: 100 }}
                         />
                       </div>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               ))
             : null}
         </div>
-
         <div className='col-md-5 text-center col-12' style={{ minHeight: '150px' }}>
           <div className='th-bg-white th-br-10 p-3'>
             <HighchartsReact highcharts={Highcharts} options={optionPie} />
@@ -341,4 +354,4 @@ const DashboardDesign = ({
   );
 };
 
-export default DashboardDesign;
+export default DashboardStudentCard;

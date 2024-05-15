@@ -287,6 +287,7 @@ export default {
     subjectWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-view/`,
     subjectDetailsWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-detail-view/`,
     studentList: `${msReportsUrl}/api/acad_performance/student-list-dash/`,
+    studentDash: `${msReportsUrl}/api/acad_performance/student-dash/`,
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
