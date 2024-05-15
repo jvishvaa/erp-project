@@ -28,9 +28,11 @@ import axiosInstance from 'config/axios';
 import moment from 'moment';
 import Layout from 'containers/Layout';
 import { useForm } from 'antd/lib/form/Form';
+import { UserMappedErrorMsg } from '../UserMappedErrorMsg';
 const SectionTable = () => {
   const [formRef] = useForm();
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
@@ -60,7 +62,7 @@ const SectionTable = () => {
     }
   };
   const fetchTableData = () => {
-    setLoading(true);
+    setTableLoading(true);
     let params = {
       page: currentPage,
       page_size: pageSize,
@@ -84,7 +86,7 @@ const SectionTable = () => {
         message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        setLoading(false);
+        setTableLoading(false);
       });
   };
   const handleCreate = () => {
@@ -157,7 +159,7 @@ const SectionTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Users are mapped to it or Something went wrong.');
+        message.error(`${UserMappedErrorMsg}`);
       })
       .finally(() => {
         setLoading(false);
@@ -267,7 +269,7 @@ const SectionTable = () => {
             ) : (
               <>
                 <EditOutlined
-                  title='Edit'
+                  title='Update'
                   style={{
                     fontSize: 20,
                     margin: 10,
@@ -370,14 +372,14 @@ const SectionTable = () => {
                     rowClassName={(record, index) =>
                       index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                     }
-                    loading={loading}
+                    loading={loading || tableLoading}
                     columns={columns}
                     rowKey={(record) => record?.id}
                     dataSource={tableData?.results}
                     pagination={false}
                     locale={noDataLocale}
                     scroll={{
-                      x: window.innerWidth > 400 ? '100%' : 'max-content',
+                      x: 'max-content',
                       y: '100vh',
                     }}
                   />
@@ -399,7 +401,7 @@ const SectionTable = () => {
         </div>
         <Modal
           visible={openModal}
-          title={editId ? 'Edit Section' : 'Create Section'}
+          title={editId ? 'Update Section' : 'Create Section'}
           onCancel={handleCloseModal}
           footer={[
             <Row justify='space-around'>
@@ -424,7 +426,7 @@ const SectionTable = () => {
                   form='formRef'
                   htmlType='submit'
                 >
-                  {editId ? 'Edit' : 'Add'}
+                  {editId ? 'Update' : 'Add'}
                 </Button>
               </Col>
             </Row>,

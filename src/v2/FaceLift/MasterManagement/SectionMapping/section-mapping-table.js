@@ -14,6 +14,8 @@ import {
   Drawer,
   Popconfirm,
   Select,
+  Tag,
+  Tooltip,
 } from 'antd';
 import {
   PlusCircleOutlined,
@@ -28,20 +30,25 @@ import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 import Layout from 'containers/Layout';
 import { useForm } from 'antd/lib/form/Form';
+import { UserMappedErrorMsg } from '../UserMappedErrorMsg';
 const SectionMappingTable = () => {
   const { Option } = Select;
   const [filterForm] = useForm();
   const [formRef] = useForm();
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(15);
+  const [pageSize, setPageSize] = useState(15);
   const [search, setSearch] = useState('');
   const [openDrawer, setOpenDrawer] = useState(false);
   const [drawerLoading, setDrawerLoading] = useState(false);
   const [sessionYearList, setSessionYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [multiActionKey, setMultiActionKey] = useState('');
   // for side drawer
   const [branchListDrawer, setBranchListDrawer] = useState([]);
   const [allGradeListDrawer, setAllGradeListDrawer] = useState([]);
@@ -67,6 +74,9 @@ const SectionMappingTable = () => {
     fetchTableData();
   }, [currentPage]);
   useEffect(() => {
+    handleFetchTableData();
+  }, [pageSize]);
+  useEffect(() => {
     const timeout = setTimeout(() => {
       handleFetchTableData();
     }, 500);
@@ -83,7 +93,10 @@ const SectionMappingTable = () => {
     const session_year = filterForm.getFieldsValue()?.session_year;
     const branch_id = filterForm.getFieldsValue()?.branch_id;
     const grade_id = filterForm.getFieldsValue()?.grade_id;
-    setLoading(true);
+    setTableLoading(true);
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
+    setMultiActionKey('');
     let url = endpoints.masterManagement.sectionMapsAll;
     url += `?page=${currentPage}`;
     url += `&page_size=${pageSize}`;
@@ -110,7 +123,7 @@ const SectionMappingTable = () => {
         message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        setLoading(false);
+        setTableLoading(false);
       });
   };
   const handleDelete = ({ delId }) => {
@@ -124,7 +137,31 @@ const SectionMappingTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Users are mapped to it or Something went wrong.');
+        message.error(`${UserMappedErrorMsg}`);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+  const handleDeleteMultipleMappings = () => {
+    if (selectedRows?.length === 0) {
+      message.error('OOPS! Please select atleast one mapping');
+      return;
+    }
+    setLoading(true);
+    const data = {
+      ids: selectedRows,
+    };
+    axiosInstance
+      .delete(`${endpoints.masterManagement.deleteMultipleSectionMapping}`, { data })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          message.success('Hurray! Mapping(s) deleted successfully');
+          fetchTableData();
+        }
+      })
+      .catch((error) => {
+        message.error(`${UserMappedErrorMsg}`);
       })
       .finally(() => {
         setLoading(false);
@@ -147,8 +184,32 @@ const SectionMappingTable = () => {
         setLoading(false);
       });
   };
+  const handleRestoreMultipleMappings = () => {
+    if (selectedRows?.length === 0) {
+      message.error('OOPS! Please select at least one mapping');
+      return;
+    }
+    setLoading(true);
+    const data = {
+      ids: selectedRows,
+    };
+    axiosInstance
+      .put(`${endpoints.masterManagement.restoreMultipleSectionMapping}`, data)
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          message.success('Hurray! Mapping(s) restored successfully');
+          fetchTableData();
+        }
+      })
+      .catch((error) => {
+        message.error('OOPS! Something went wrong. Please try again');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
   const fetchSessionYearList = () => {
-    // setLoading(true);
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.masterManagement.academicYear}`)
       .then((response) => {
@@ -160,7 +221,7 @@ const SectionMappingTable = () => {
         message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        // setLoading(false);
+        setLoading(false);
       });
   };
   const fetchBranchList = () => {
@@ -206,6 +267,7 @@ const SectionMappingTable = () => {
     const session_year = filterForm.getFieldsValue()?.session_year;
     if (session_year) {
       fetchBranchList();
+      fetchTableData();
     }
     filterForm.setFieldsValue({
       branch_id: null,
@@ -218,6 +280,7 @@ const SectionMappingTable = () => {
     const branch_id = filterForm.getFieldsValue()?.branch_id;
     if (branch_id) {
       fetchGradeList();
+      fetchTableData();
     }
     filterForm.setFieldsValue({
       grade_id: [],
@@ -233,6 +296,9 @@ const SectionMappingTable = () => {
     }
     setBranchList([]);
     setGradeList([]);
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
+    setMultiActionKey('');
   };
   // for side drawer
   const handleOpenDrawer = () => {
@@ -244,6 +310,8 @@ const SectionMappingTable = () => {
     setOpenDrawer(false);
     formRef.resetFields();
     setBranchListDrawer([]);
+    setAllGradeListDrawer([]);
+    setAllSectionListDrawer([]);
   };
   const handleSessionYearChangeDrawer = () => {
     const session_year = formRef.getFieldsValue()?.session_year;
@@ -427,6 +495,21 @@ const SectionMappingTable = () => {
       },
     },
   ];
+  const onSelectChange = (newSelectedRowKeys, value) => {
+    const ids = value.map((each) => each?.id);
+    setSelectedRowKeys(newSelectedRowKeys);
+    setSelectedRows(ids);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    getCheckboxProps: (record) => ({
+      disabled:
+        multiActionKey === 'delete'
+          ? record.is_delete === true
+          : record.is_delete === false,
+    }),
+  };
   const noDataLocale = {
     emptyText: (
       <div className='d-flex justify-content-center mt-5 th-grey'>
@@ -572,12 +655,110 @@ const SectionMappingTable = () => {
                   </Form.Item>
                 </div>
                 <div className='row justify-content-end'>
-                  <span className='th-16 th-br-4'>
-                    <InfoCircleTwoTone className='pr-2' />
-                    <i className='th-grey th-fw-500 '>
-                      Please click on the filter to get data
-                    </i>
-                  </span>
+                  <div className='col-lg-6 col-md-6 col-sm-6 col-12'>
+                    {multiActionKey === 'delete' && (
+                      <Form.Item>
+                        <Popconfirm
+                          title='Sure to delete all?'
+                          onConfirm={() => handleDeleteMultipleMappings()}
+                        >
+                          <Tag
+                            icon={<DeleteOutlined />}
+                            className='th-white th-br-4 th-fw-500'
+                            style={{
+                              backgroundColor: 'rgb(255, 0, 0)',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Delete Mappings
+                          </Tag>
+                        </Popconfirm>
+                        <div className='th-14 th-br-4'>
+                          <InfoCircleTwoTone className='pr-2' />
+                          <i className='th-grey th-fw-500 '>
+                            Please select mappings to delete
+                          </i>
+                        </div>
+                      </Form.Item>
+                    )}
+                    {multiActionKey === 'restore' && (
+                      <Form.Item>
+                        <Popconfirm
+                          title='Sure to restore all?'
+                          onConfirm={() => handleRestoreMultipleMappings()}
+                        >
+                          <Tag
+                            icon={<RedoOutlined />}
+                            className='th-white th-br-4 th-fw-500'
+                            style={{
+                              backgroundColor: '#00A000',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Restore Mappings
+                          </Tag>
+                        </Popconfirm>
+                        <div className='th-14 th-br-4'>
+                          <InfoCircleTwoTone className='pr-2' />
+                          <i className='th-grey th-fw-500 '>
+                            Please select mappings to restore
+                          </i>
+                        </div>
+                      </Form.Item>
+                    )}
+                    {multiActionKey === '' && (
+                      <div className='row'>
+                        <Form.Item>
+                          <Tooltip
+                            autoAdjustOverflow='false'
+                            placement='bottomLeft'
+                            title='Delete Multiple Mappings'
+                            overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
+                          >
+                            <Tag
+                              icon={<DeleteOutlined />}
+                              className='th-white th-br-4 th-fw-500'
+                              style={{
+                                backgroundColor: 'rgb(255, 0, 0)',
+                                cursor: 'pointer',
+                              }}
+                              onClick={() => setMultiActionKey('delete')}
+                            >
+                              Delete Mappings
+                            </Tag>
+                          </Tooltip>
+                        </Form.Item>
+                        <Form.Item>
+                          <Tooltip
+                            autoAdjustOverflow='false'
+                            placement='bottomLeft'
+                            title='Restore Multiple Mappings'
+                            overlayStyle={{ maxWidth: '30%', minWidth: '20%' }}
+                          >
+                            <Tag
+                              icon={<RedoOutlined />}
+                              className='th-white th-br-4 th-fw-500'
+                              style={{
+                                backgroundColor: '#00A000',
+                                cursor: 'pointer',
+                              }}
+                              onClick={() => setMultiActionKey('restore')}
+                            >
+                              Restore Mappings
+                            </Tag>
+                          </Tooltip>
+                        </Form.Item>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className='col-lg-3 col-md-6 col-sm-6 col-12'>
+                    <span className='th-14 th-br-4'>
+                      <InfoCircleTwoTone className='pr-2' />
+                      <i className='th-grey th-fw-500 '>
+                        Please click on the filter to get data
+                      </i>
+                    </span>
+                  </div> */}
                   <div className='row col-lg-3 col-md-6 col-sm-6 col-12'>
                     <div className='col-lg-6 col-md-6 col-sm-6 col-6'>
                       <Form.Item>
@@ -619,18 +800,19 @@ const SectionMappingTable = () => {
               <div className='mt-2'>
                 <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
                   <Table
+                    rowSelection={multiActionKey && rowSelection}
                     className='th-table'
                     rowClassName={(record, index) =>
                       index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                     }
-                    loading={loading}
+                    loading={loading || tableLoading}
                     columns={columns}
                     rowKey={(record) => record?.id}
                     dataSource={tableData?.results}
                     pagination={false}
                     locale={noDataLocale}
                     scroll={{
-                      x: window.innerWidth > 400 ? '100%' : 'max-content',
+                      x: 'max-content',
                       y: '100vh',
                     }}
                   />
@@ -638,12 +820,13 @@ const SectionMappingTable = () => {
                 <div className='d-flex justify-content-center py-2'>
                   <Pagination
                     current={currentPage}
-                    pageSize={15}
-                    showSizeChanger={false}
-                    onChange={(page) => {
+                    pageSize={pageSize}
+                    onChange={(page, pageSize) => {
                       setCurrentPage(page);
+                      setPageSize(pageSize);
                     }}
                     total={tableData?.count}
+                    pageSizeOptions={[15, 25, 50, 75, 100]}
                   />
                 </div>
               </div>

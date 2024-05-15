@@ -29,12 +29,14 @@ import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 import Layout from 'containers/Layout';
 import { useForm } from 'antd/lib/form/Form';
+import { UserMappedErrorMsg } from '../UserMappedErrorMsg';
 const BranchAcadTable = () => {
   const { Option } = Select;
   const [filterForm] = useForm();
   const [formRef] = useForm();
   const session_year = JSON.parse(sessionStorage.getItem('acad_session'));
   const [loading, setLoading] = useState(false);
+  const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
@@ -107,7 +109,7 @@ const BranchAcadTable = () => {
   };
   const fetchTableData = () => {
     const values = filterForm.getFieldsValue();
-    setLoading(true);
+    setTableLoading(true);
     let params = {
       page: currentPage,
       page_size: pageSize,
@@ -132,7 +134,7 @@ const BranchAcadTable = () => {
         message.error('OOPS! Something went wrong. Please try again');
       })
       .finally(() => {
-        setLoading(false);
+        setTableLoading(false);
       });
   };
   const handleAddMapping = () => {
@@ -173,7 +175,7 @@ const BranchAcadTable = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Users are mapped to it or Something went wrong.');
+        message.error(`${UserMappedErrorMsg}`);
       })
       .finally(() => {
         setLoading(false);
@@ -442,14 +444,14 @@ const BranchAcadTable = () => {
                     rowClassName={(record, index) =>
                       index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                     }
-                    loading={loading}
+                    loading={loading || tableLoading}
                     columns={columns}
                     rowKey={(record) => record?.id}
                     dataSource={tableData?.results}
                     pagination={false}
                     locale={noDataLocale}
                     scroll={{
-                      x: window.innerWidth > 400 ? '100%' : 'max-content',
+                      x: 'max-content',
                       y: '100vh',
                     }}
                   />
