@@ -101,6 +101,8 @@ import CenralizedHomeworkRoute from '../containers/centralise_homework/centralhw
 import AuditorDashboard from '../containers/centralise_homework/evaluator/Auditor/AuditorDashboard';
 import FrequentlyAskedQuestions from '../containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions';
 import AddFaq from '../containers/FrequentlyAskedQuestions/AddFaq';
+import SchoolWall from 'v2/FaceLift/ActivityManagement/SchoolWall';
+import PostDetails from 'v2/FaceLift/ActivityManagement/SchoolWall/postDetails';
 import moment from 'moment';
 import ENVCONFIG from 'config/config';
 
@@ -643,6 +645,13 @@ const V2Router = () => {
                         <Route path='/add-faq'>
                           {({ match }) => <AddFaq match={match} />}
                         </Route>
+                        {/* Activity Management */}
+                        {/* <Route path='/school-wall/:postId'>
+                          {({ match }) => <PostDetails match={match} />}
+                        </Route> */}
+                        <Route path='/school-wall'>
+                          {({ match }) => <SchoolWall match={match} />}
+                        </Route>                       
                         {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;

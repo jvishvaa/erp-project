@@ -369,7 +369,7 @@ const StudentSideBlog = () => {
           <div
             style={{ position: 'fixed', bottom: '5%', right: '2%' }}
             className='th-bg-primary th-white th-br-6 px-4 py-3 th-fw-600 th-pointer'
-            onClick={() => history.push('/blog/wall')}
+            onClick={() => history.push('/school-wall')}
           >
             <span className='d-flex align-items-center'>
               <SketchOutlined size='small' className='mr-2' />

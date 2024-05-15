@@ -510,3 +510,61 @@ svg {
   color: white;
   font-size: 10px;
 }
+// School wall
+.th-post-card {
+  border-radius: 20px;
+  // margin-bottom: 1rem;
+  width: 100% !important;
+  .th-post-dp {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin-right: 10px !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .th-pdf-logo {
+    height: 200px !important;
+    object-fit: contain !important;
+    width: 100% !important;
+  }
+}
+.th-media-display {
+  video {
+    max-height: 450px;
+  }
+  audio {
+    height: 130px;
+  }
+}
+
+.th-post-announcements {
+  position: sticky !important;
+  top: 5%;
+}
+.th-post-details-card {
+  max-height: 70vh !important;
+  overflow-y: auto;
+  overflow-x: hidden !important;
+}
+.th-post-slick {
+  .slick-next {
+    right: 0px !important;
+  }
+  .slick-prev {
+    left: -5px !important;
+    z-index: 1500 !important;
+  }
+}
+.th-posts-list .ant-list-split .ant-list-item {
+  border-bottom: none !important;
+}
+.ant-image-preview-mask {
+  z-index: 2100 !important;
+}
+.th-post-description {
+  ul {
+    margin: 0px 20px !important;
+  }
+}
