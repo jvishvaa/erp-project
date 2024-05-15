@@ -1,4 +1,12 @@
-import { Modal, Select, Form, message, Input, Upload, Button, Image, Tag } from 'antd';
+import {
+  Modal,
+  Select,
+  Form,
+  message,
+  Image,
+  Tag,
+  Progress,
+} from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
@@ -39,6 +47,9 @@ const CreatePost = ({
   const [categoryData, setCategoryData] = useState([]);
   const [createLoading, setCreateLoading] = useState(false);
   const [textEditorContent, setTextEditorContent] = useState('');
+  const [fileUploading, setFileUploading] = useState(false);
+  const [individualFileProgress, setIndividualFileProgress] = useState(0);
+  const [individualFileprogressEvent, setIndividualFileprogressEvent] = useState({});
 
   const handleEditorChange = (content) => {
     setTextEditorContent(content);
@@ -190,14 +201,27 @@ const CreatePost = ({
     }
   };
 
-  const handleFile = (event) => {
+  let IndividualFileConfig = {
+    onUploadProgress: function (individualFileprogressEvent) {
+      setIndividualFileprogressEvent(individualFileprogressEvent.loaded);
+      let percentCompleted = Math.round(
+        (individualFileprogressEvent.loaded * 100) / individualFileprogressEvent.total
+      );
+      setIndividualFileProgress(percentCompleted);
+    },
+  };
+
+  const handleFile = async (event) => {
     const totalFiles = event.target.files;
 
     if (totalFiles?.length + attachmentList?.length > 10) {
       message.error('Max. 10 attachments allowed');
       return false;
     }
+    let index = 0;
     for (const file of totalFiles) {
+      const isLast = index === totalFiles.length - 1;
+      setFileUploading(true);
       const extension = file.name.split('.').pop();
       const isValidSize = file.size <= MAX_FILE_SIZE;
       const isValidExtension =
@@ -219,11 +243,12 @@ const CreatePost = ({
       let formData = new FormData();
 
       formData.append('file', file);
-      axiosInstance
-        .post(`/social-media/upload-social-media-file/`, formData)
+      await axiosInstance
+        .post(`/social-media/upload-social-media-file/`, formData, IndividualFileConfig)
         .then((res) => {
           if (res?.data?.status_code === 200) {
             // message.success('File uploaded successfully');
+
             let fileDetails = {
               name: res?.data?.data,
               type: res?.data?.file_type,
@@ -236,8 +261,11 @@ const CreatePost = ({
           message.error(err.message);
         })
         .finally(() => {
-          // setProfileLoading(false);
+          if (isLast) {
+            setFileUploading(false);
+          }
         });
+      index++;
     }
   };
 
@@ -391,11 +419,12 @@ const CreatePost = ({
       centered
       width={window.innerWidth < 572 ? '100vw' : '80vw'}
       okText={selectedPost ? 'Update' : 'Create'}
+      cancelButtonProps={{ style: { borderRadius: 8 } }}
       okButtonProps={{
         loading: createLoading,
         htmlType: 'submit',
         form: 'filterForm',
-        style:{borderRadius:12}
+        style: { borderRadius: 8 },
       }}
     >
       <div className='p-md-3' style={{ maxHeight: '80vh', overflowY: 'auto' }}>
@@ -577,6 +606,10 @@ const CreatePost = ({
             <i> Accepts only image,video,audio and PDF files</i>
           </div>
         </div>
+        {fileUploading && (
+          <Progress percent={individualFileProgress} status='active' className='px-4' />
+        )}
+
         {attachmentList.length > 0 && (
           <div className='th-br-16 th-bg-grey m-3 p-3 '>
             <i>

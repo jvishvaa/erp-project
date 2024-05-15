@@ -1,5 +1,5 @@
 import Layout from 'containers/Layout';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Breadcrumb,
   Button,
@@ -38,7 +38,6 @@ const SchoolWall = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
-  const formRef = useRef();
   const [postList, setPostList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [moreLoading, setMoreLoading] = useState(false);
@@ -76,10 +75,12 @@ const SchoolWall = () => {
     setSelectedPost(null);
     setSelectedPostIndex(null);
   };
+
   const handleShowLikesModal = (id) => {
     setSelectedPostID(id);
     setShowLikesModal(true);
   };
+
   const handleCloseLikesModal = () => {
     setShowLikesModal(false);
     setSelectedPostID(null);
@@ -95,6 +96,7 @@ const SchoolWall = () => {
     newList[selectedPostIndex] = data;
     setPostList(newList);
   };
+
   const fetchNewPosts = () => {
     if (pageDetails?.current !== 1) {
       setPayload((prevState) => ({ ...prevState, page: 1 }));
@@ -105,7 +107,6 @@ const SchoolWall = () => {
   };
 
   const fetchPosts = (params = {}) => {
-    setFilterLoading(true);
     axiosInstance
       .get(`${endpoints?.schoolWall?.getPosts}`, {
         params: {
@@ -123,7 +124,7 @@ const SchoolWall = () => {
           window.dispatchEvent(new Event('resize'));
         }
       })
-      .catch((err) => console.log(err))
+      .catch((err) => message.error(err?.message))
       .finally(() => {
         setLoading(false);
         setMoreLoading(false);
@@ -136,15 +137,6 @@ const SchoolWall = () => {
     setPageDetails((prev) => ({ ...prev, current: prev?.current + 1 }));
     setPayload((prevState) => ({ ...prevState, page: prevState?.page + 1 }));
   };
-
-  useEffect(() => {
-    fetchPosts(payload);
-  }, [payload]);
-
-  useEffect(() => {
-    fetchCategoryData();
-    fetchHeirarchyConfig({ config_key: 'post-edit-permission' });
-  }, []);
 
   const loadMore = loading ? null : !moreLoading && !loading ? (
     <div className='my-3 text-center '>
@@ -159,6 +151,7 @@ const SchoolWall = () => {
       ))}
     </Card>
   );
+
   const handleLikePost = (index, selectedPostID) => {
     let newList = postList?.slice();
     if (newList[index]['is_like']) {
@@ -175,13 +168,13 @@ const SchoolWall = () => {
       .post(`${endpoints?.schoolWall?.likePost}`, formData)
       .then((res) => {
         if (res?.data?.status_code == 200) {
-          console.log('Post Liked');
         }
       })
       .catch((err) => {
         console.log('Error in post like');
       });
   };
+
   const handleAddComment = (index, selectedPostId, description) => {
     if (Profanity(description)) {
       message.error('Comment contains foul words, please remove them');
@@ -230,7 +223,7 @@ const SchoolWall = () => {
         }
       })
       .catch((err) => {
-        console.log('Error in post like');
+        console.log('Error in post delete');
       });
   };
 
@@ -246,6 +239,7 @@ const SchoolWall = () => {
         message.error(error.message);
       });
   };
+
   const fetchSectionData = (params = {}) => {
     axiosInstance
       .get(`/erp_user/v2/sectionmapping-list/`, { params: { ...params } })
@@ -258,6 +252,7 @@ const SchoolWall = () => {
         message.error(error.message);
       });
   };
+
   const fetchCategoryData = (params = {}) => {
     axiosInstance
       .get(`/social-media/post-category-list/`, { params: { ...params } })
@@ -272,6 +267,7 @@ const SchoolWall = () => {
         message.error(error.message);
       });
   };
+
   const fetchHeirarchyConfig = (params = {}) => {
     axiosInstance
       .get(`/assessment/check-sys-config/`, { params: { ...params } })
@@ -334,7 +330,6 @@ const SchoolWall = () => {
         setSelectedAcadSession(each.map((item) => item.acad_session));
         branchParam = each.map((item) => item.value);
       }
-      console.log({ branchParam, each });
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
         branch_id: branchParam?.join(','),
@@ -361,7 +356,6 @@ const SchoolWall = () => {
         setGradeID([...new Set(each.map((item) => item.value))]);
         gradeParam = [...new Set(each.map((item) => item.value))];
       }
-      console.log({ gradeParam, each });
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.join(','),
@@ -378,6 +372,42 @@ const SchoolWall = () => {
       setSectionID(sectionData?.map((item) => item?.id));
     } else {
       setSectionID([...new Set(each.map((item) => item.value))]);
+    }
+  };
+
+  const handleFilteredData = () => {
+    let payload = { page: 1, page_size: 10 };
+    if (selectedAcadSession) {
+      payload['acad_session'] = selectedAcadSession?.join(',');
+    }
+    if (gradeID?.length > 0) {
+      payload['grades'] = gradeID?.join(',');
+    }
+    if (sectionID.length > 0) {
+      payload['sections'] = sectionID?.join(',');
+    }
+    if (category) {
+      payload['category'] = category;
+    }
+    if (startDate && endDate) {
+      payload['start_date '] = moment(startDate).format('YYYY-MM-DD');
+      payload['end_date '] = moment(endDate).format('YYYY-MM-DD');
+    }
+    setFilterLoading(true);
+    setPayload(payload);
+  };
+
+  const ClearFilters = () => {
+    setSectionData([]);
+    setSectionID([]);
+    setGradeID([]);
+    setUniqueGradeId([]);
+    setFilterLoading(true);
+    setPayload({ page: 1, page_size: 10 });
+    if (branchList.length > 1) {
+      setGradeData([]);
+      setSelectedBranch([]);
+      setSelectedAcadSession([]);
     }
   };
 
@@ -401,39 +431,14 @@ const SchoolWall = () => {
     }
   };
 
-  const handleFilteredData = () => {
-    let payload = { page: 1, page_size: 10 };
-    if (selectedAcadSession) {
-      payload['acad_session'] = selectedAcadSession?.join(',');
-    }
-    if (gradeID?.length > 0) {
-      payload['grades'] = gradeID?.join(',');
-    }
-    if (sectionID.length > 0) {
-      payload['sections'] = sectionID?.join(',');
-    }
-    if (category) {
-      payload['category'] = category;
-    }
-    if (startDate && endDate) {
-      payload['start_date '] = moment(startDate).format('YYYY-MM-DD');
-      payload['end_date '] = moment(endDate).format('YYYY-MM-DD');
-    }
-    setPayload(payload);
-  };
+  useEffect(() => {
+    fetchPosts(payload);
+  }, [payload]);
 
-  const ClearFilters = () => {
-    setSectionData([]);
-    setSectionID([]);
-    setGradeID([]);
-    setUniqueGradeId([]);
-    setPayload({ page: 1, page_size: 10 });
-    if (branchList.length > 1) {
-      setGradeData([]);
-      setSelectedBranch([]);
-      setSelectedAcadSession([]);
-    }
-  };
+  useEffect(() => {
+    fetchCategoryData();
+    fetchHeirarchyConfig({ config_key: 'post-edit-permission' });
+  }, []);
   return (
     <Layout>
       <div className='row'>
@@ -638,7 +643,7 @@ const SchoolWall = () => {
                       <div className='d-flex justify-content-between '>
                         <Button
                           type='default'
-                          className='th-br-12 w-50 mr-2'
+                          className='th-br-8 w-50 mr-2'
                           onClick={ClearFilters}
                         >
                           Clear
@@ -647,7 +652,7 @@ const SchoolWall = () => {
                           type='primary'
                           loading={filterLoading}
                           onClick={handleFilteredData}
-                          className='th-br-12 w-50'
+                          className='th-br-8 w-50'
                         >
                           Filter
                         </Button>
@@ -659,7 +664,7 @@ const SchoolWall = () => {
               <div className='th-posts-list'>
                 {filterLoading ? (
                   <Card className='my-3 th-bg-white th-br-20'>
-                    {[1, 2, 3]?.map((item) => (
+                    {[...Array(6)]?.map((item) => (
                       <Skeleton
                         avatar
                         title={false}
@@ -672,7 +677,7 @@ const SchoolWall = () => {
                   <List
                     className='demo-loadmore-list '
                     itemLayout='horizontal'
-                    loadMore={loadMore}
+                    loadMore={postList.length < pageDetails?.total ? loadMore : null}
                     bordered={false}
                     dataSource={postList}
                     renderItem={(each, index) => (
