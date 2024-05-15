@@ -395,7 +395,7 @@ const SchoolWall = () => {
       payload['grades'] = uniqueGradeId?.join(',');
     }
     if (sectionID.length > 0) {
-      payload['sections'] = sectionID?.join(',');
+      payload['section_mapping'] = sectionID?.join(',');
     }
     if (category) {
       payload['category'] = category;

@@ -411,6 +411,7 @@ const CreatePost = ({
 
   return (
     <Modal
+      zIndex={1200}
       className='th-upload-modal'
       title='Create Post'
       visible={showCreatePostModal}
