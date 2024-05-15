@@ -484,44 +484,8 @@ import ErpAdminViewClassv2 from 'v2/FaceLift/OnlineClass/ErpViewClass';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
-import RoleManagementOldView from 'containers/role-management';
-import GradeTableOldView from 'containers/master-management/grade/grade-table';
-import SectionTableOldView from 'containers/master-management/section/section-table';
-import SubjectTableOldView from 'containers/master-management/subject/subject-table';
-import AcademicYearTableOldView from 'containers/master-management/academic-year/academic-year-table';
-import BranchTableOldView from 'containers/master-management/branch/branch-table';
-import BranchAcadTableOldView from 'containers/master-management/branch-acad-mapping/branch-acad-table';
-import SectionMappingTableOldView from 'containers/master-management/section-mapping/section-mapping-table';
-import SubjectMappingTableOldView from 'containers/master-management/subject-mapping/subject-mapping-table';
 
 const V1Router = [
-  <Route path='/role-management-oldview'>
-    {({ match }) => <RoleManagementOldView match={match} />}
-  </Route>,
-  <Route path='/master-management/grade-table-oldview'>
-    {({ match }) => <GradeTableOldView match={match} />}
-  </Route>,
-  <Route path='/master-management/section-table-oldview'>
-    {({ match }) => <SectionTableOldView match={match} />}
-  </Route>,
-  <Route path='/master-management/subject-table-oldview'>
-    {({ match }) => <SubjectTableOldView match={match} />}
-  </Route>,
-  <Route path='/master-management/academic-year-table-oldview'>
-    {({ match }) => <AcademicYearTableOldView match={match} />}
-  </Route>,
-  <Route path='/master-management/branch-table-oldview'>
-    {({ match }) => <BranchTableOldView match={match} />}
-  </Route>,
-  <Route path='/master-management/branch-acad-table-oldview'>
-    {({ match }) => <BranchAcadTableOldView match={match} />}
-  </Route>,
-  <Route path='/master-management/section-mapping-table-oldview'>
-    {({ match }) => <SectionMappingTableOldView match={match} />}
-  </Route>,
-  <Route path='/master-management/subject-mapping-table-oldview'>
-    {({ match }) => <SubjectMappingTableOldView match={match} />}
-  </Route>,
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}

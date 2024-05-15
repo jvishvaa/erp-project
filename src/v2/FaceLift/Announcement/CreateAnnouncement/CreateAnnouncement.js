@@ -34,7 +34,7 @@ const intimationOptions = [
   'Intimate Via Whatsapp',
 ];
 
-const CreateAnnouncement = () => {
+const CreateAnnouncement = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -46,7 +46,7 @@ const CreateAnnouncement = () => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
   const [selectedUserLevels, setSelectedUserLevels] = useState();
-  const [branchId, setBranchId] = useState('');
+  const [branchId, setBranchId] = useState([]);
   const [gradeData, setGradeData] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
   const [sectionData, setSectionData] = useState([]);
@@ -66,8 +66,8 @@ const CreateAnnouncement = () => {
   const [sms, setSMS] = useState(false);
   const [whatsapp, setWhatsapp] = useState(false);
   const [flashEvent, setFlashEvent] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [flashModal, setFlashModal] = useState(false);
   const [flashLink, setFlashLink] = useState(null);
   const [uploadedFlashFiles, setUploadedFlashFiles] = useState([]);
@@ -76,6 +76,7 @@ const CreateAnnouncement = () => {
   const [description, setDescription] = useState('');
   const [notiConfig, setNotiConfig] = useState();
   const [feeReminderSelected, setFeeReminderSelected] = useState();
+  const [dataForEdit, setDataForEdit] = useState(null);
 
   const { TextArea } = Input;
 
@@ -104,34 +105,111 @@ const CreateAnnouncement = () => {
 
   const handleChange = (value) => {
     setSelectedCategory(value);
-
-    if (value == 11) {
-      setFeeReminderSelected(true);
-      handleUserLevel([13]);
-      formRef.current.setFieldsValue({
-        user_level: [13],
-      });
-      if (sectionIds.length > 0) {
-        fetchMembersCount({
-          role_id: 13,
-          branch_id: branchId,
-          is_allowed_for_all: true,
-          section_id: sectionIds.join(','),
-          grade_id: gradeIds.join(','),
+    if (!props?.match?.params?.id) {
+      if (value == 11) {
+        setFeeReminderSelected(true);
+        handleUserLevel([13]);
+        formRef.current.setFieldsValue({
+          user_level: [13],
+        });
+        if (sectionIds.length > 0) {
+          fetchMembersCount({
+            role_id: 13,
+            branch_id: branchId?.join(','),
+            is_allowed_for_all: true,
+            section_id: sectionIds.join(','),
+            grade_id: gradeIds.join(','),
+          });
+        }
+      } else {
+        setFeeReminderSelected(false);
+        handleUserLevel([]);
+        formRef.current.setFieldsValue({
+          user_level: [],
         });
       }
-    } else {
-      setFeeReminderSelected(false);
-      handleUserLevel([]);
-      formRef.current.setFieldsValue({
-        user_level: [],
-      });
     }
   };
 
   useEffect(() => {
     fetchConfig();
+    if (props?.match?.params?.id) {
+      console.log(formRef?.current);
+      getAnnouncementData(props?.match?.params?.id);
+    }
   }, []);
+
+  const getAnnouncementData = (id) => {
+    setLoading(true);
+    axiosInstance
+      .get(`${endpoints.createAnnouncement.retrieveUpdateDeleteAnnouncement}${id}/`)
+      .then((res) => {
+        // setLoading(false);
+        console.log(res.data.data, formRef?.current?.getFieldsValue());
+        const data = res.data.data;
+        console.log('rohan)', data);
+        setDataForEdit(data);
+        setSelectedCategory(data?.category_id);
+        setTitle(data?.title);
+        setDescription(data?.content);
+        setMembersCount(data?.total_members);
+        setUploadedFiles(data?.attachments?.map((item) => [item]));
+        setBranchId(data?.branch_id);
+        setSelectedUserLevels(data?.role?.join(','));
+        setFlashEvent(data?.is_flash_event);
+        if (data?.is_flash_event) {
+          console.log(
+            data.start_date,
+            moment(data.start_date).format('YYYY-MM-DD'),
+            'jwdjw'
+          );
+          setStartDate(data.start_date);
+          setEndDate(data.end_date);
+          setFlashLink(data.event_link);
+          setUploadedFlashFiles(data?.flash_img?.map((item) => [item]));
+        }
+
+        if (data?.role?.includes(13)) {
+          fetchGradeData({
+            session_year: selectedAcademicYear?.id,
+            branch_id: data?.branch_id?.join(','),
+            is_first: true,
+            dataForEdit: data,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (dataForEdit) {
+      formRef.current.setFieldsValue({
+        branch: dataForEdit?.branch_id,
+        user_level: dataForEdit?.role,
+        // grade: [5120],
+        grade: [...new Set(dataForEdit?.bgsm?.map((item) => item?.grade_id))],
+        section: [...new Set(dataForEdit?.bgsm?.map((item) => item?.section_mapping_id))],
+      });
+      setGradeIds([...new Set(dataForEdit?.bgsm?.map((each) => each?.grade_id))]);
+    }
+  }, [dataForEdit]);
+
+  const setFormFieldValue = (grade_data, dataForEdit) => {
+    let gradesIds = [...new Set(dataForEdit?.bgsm?.map((each) => each?.grade_id))];
+    setGradeIds(gradesIds);
+    let sections = [...new Set(dataForEdit?.bgsm?.map((each) => each?.section_id))];
+    let sectionMappingIds = [
+      ...new Set(dataForEdit?.bgsm?.map((each) => each?.section_mapping_id)),
+    ];
+    console.log({ dataForEdit, gradesIds, sections, sectionMappingIds }, 'section set');
+    setSectionIds(sections);
+    setSectionMappingIds(sectionMappingIds);
+  };
 
   const fetchConfig = () => {
     axiosInstance
@@ -201,11 +279,15 @@ const CreateAnnouncement = () => {
   };
 
   const fetchGradeData = (params = {}) => {
+    const { dataForEdit, is_first, ...rest } = params;
     axiosInstance
-      .get(`${endpoints.academics.grades}`, { params: { ...params } })
+      .get(`${endpoints.academics.grades}`, { params: { ...rest } })
       .then((res) => {
         if (res.data.status_code === 200) {
           setGradeData(res.data.data);
+          if (params.is_first) {
+            setFormFieldValue(res.data.data, params.dataForEdit);
+          }
         }
       })
       .catch((error) => {
@@ -235,7 +317,14 @@ const CreateAnnouncement = () => {
   });
   const gradeOptions = gradeData?.map((each) => {
     return (
-      <Option key={each?.grade_id} value={each?.grade_id}>
+      <Option
+        key={each?.grade_id}
+        value={each?.grade_id}
+        grade_id={each?.grade_id}
+        disabled={
+          branchId?.length > 1 && gradeIds?.length && !gradeIds?.includes(each?.grade_id)
+        }
+      >
         {each?.grade__grade_name}
       </Option>
     );
@@ -254,23 +343,44 @@ const CreateAnnouncement = () => {
       </Option>
     );
   });
+
+  useEffect(() => {
+    if (branchId?.length === 1) {
+      if (notiConfig?.enbl_brnches?.length > 0) {
+        if (notiConfig?.enbl_brnches?.includes(branchId[0])) {
+          setAllowPublish(true);
+        } else {
+          setAllowPublish(false);
+        }
+      }
+    } else if (branchId?.length > 1) {
+      setAllowPublish(true);
+    } else {
+      setAllowPublish(false);
+    }
+  }, [branchId, notiConfig]);
+
   const handleBranchChange = (e) => {
     setBranchId(e);
     formRef.current.setFieldsValue({
       grade: [],
       section: [],
     });
-    if (notiConfig?.enbl_brnches?.length > 0) {
-      if (notiConfig?.enbl_brnches?.includes(e)) {
-        setAllowPublish(true);
-      } else {
-        setAllowPublish(false);
-      }
-    }
-    if (e) {
+    setGradeIds([]);
+    setSectionIds([]);
+    setSectionMappingIds([]);
+    // if (notiConfig?.enbl_brnches?.length > 0) {
+    //   if (notiConfig?.enbl_brnches?.includes(e)) {
+    //     setAllowPublish(true);
+    //   } else {
+    //     setAllowPublish(false);
+    //   }
+    // }
+    if (e?.length) {
+      console.log(e, 'branchhhh');
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
-        branch_id: e,
+        branch_id: e?.join(','),
         // module_id: moduleId,
       });
     }
@@ -445,11 +555,16 @@ const CreateAnnouncement = () => {
     if (asDraft) {
       payLoad['is_draft'] = true;
     }
-    if (sms == true) {
-      payLoad['intimate_via_sms'] = true;
-    }
-    if (whatsapp == true) {
-      payLoad['intimate_via_whatsapp'] = true;
+    if (!props?.match?.params?.id) {
+      if (sms == true) {
+        payLoad['intimate_via_sms'] = true;
+      }
+      if (whatsapp == true) {
+        payLoad['intimate_via_whatsapp'] = true;
+      }
+      if (email == true) {
+        payLoad['intimate_via_email'] = true;
+      }
     }
     if (isStudentIncluded) {
       payLoad['section_mapping_id'] = sectionMappingIds.join(',');
@@ -459,8 +574,8 @@ const CreateAnnouncement = () => {
     }
     if (flashEvent == true) {
       payLoad['is_flash_event'] = true;
-      payLoad['start_date'] = startDate;
-      payLoad['end_date'] = endDate;
+      payLoad['start_date'] = moment(startDate).format('YYYY-MM-DD');
+      payLoad['end_date'] = moment(endDate).format('YYYY-MM-DD');
       if (flashLink) {
         payLoad['event_link'] = flashLink;
       }
@@ -472,24 +587,44 @@ const CreateAnnouncement = () => {
     if (uploadedFiles?.length > 0) {
       payLoad['attachments'] = uploadedFiles.flat(1) || [];
     }
-    setLoading(true);
-    axiosInstance
-      .post(`${endpoints.createAnnouncement.publishAnnouncement}`, payLoad)
-      .then((res) => {
-        if (res.data.status_code === 200) {
-          message.success(
-            asDraft
-              ? 'Announcement has saved in Draft'
-              : 'Announcement Published Successfully'
-          );
+    if (!props?.match?.params?.id) {
+      setLoading(true);
+      axiosInstance
+        .post(`${endpoints.createAnnouncement.publishAnnouncement}`, payLoad)
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            message.success(
+              asDraft
+                ? 'Announcement has saved in Draft'
+                : 'Announcement Published Successfully'
+            );
+            setLoading(false);
+            history.push('/announcement-list');
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          history.push('./announcement-list');
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        message.error(error.message);
-      });
+          message.error(error.message);
+        });
+    } else {
+      setLoading(true);
+      axiosInstance
+        .put(
+          `${endpoints.createAnnouncement.retrieveUpdateDeleteAnnouncement}${props?.match?.params?.id}/`,
+          payLoad
+        )
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            message.success('Announcement Updated Successfully');
+            setLoading(false);
+            history.push('/announcement-list');
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          message.error(error.message);
+        });
+    }
   };
 
   useEffect(() => {
@@ -521,7 +656,7 @@ const CreateAnnouncement = () => {
         if (sectionIds.length > 0) {
           fetchMembersCount({
             role_id: selectedUserLevels,
-            branch_id: branchId,
+            branch_id: branchId?.join(','),
             is_allowed_for_all: true,
             section_id: sectionIds.join(','),
             grade_id: gradeIds.join(','),
@@ -532,7 +667,7 @@ const CreateAnnouncement = () => {
       } else {
         fetchMembersCount({
           role_id: selectedUserLevels,
-          branch_id: branchId,
+          branch_id: branchId?.join(','),
           is_allowed_for_all: true,
         });
       }
@@ -541,25 +676,40 @@ const CreateAnnouncement = () => {
 
   useEffect(() => {
     setSectionData([]);
-    if (gradeIds.length > 0) {
+    if (gradeIds.length > 0 && branchId?.length > 0) {
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
-        branch_id: branchId,
+        branch_id: branchId?.join(','),
         // module_id: moduleId,
         grade_id: gradeIds.join(','),
       });
     }
-  }, [gradeIds]);
+  }, [gradeIds, branchId]);
 
   useEffect(() => {
-    if (sectionData.length > 0) {
-      // if (allGradesSelected) {
-      formRef.current.setFieldsValue({
-        section: sectionData?.map((item) => item.id),
-      });
-      setSectionIds(sectionData?.map((item) => item?.section_id));
-      setSectionMappingIds(sectionData?.map((item) => item?.id));
-      // }
+    if (!props?.match?.params?.id) {
+      if (sectionData.length > 0) {
+        // if (allGradesSelected) {
+        formRef.current.setFieldsValue({
+          section: sectionData?.map((item) => item.id),
+        });
+        setSectionIds(sectionData?.map((item) => item?.section_id));
+        setSectionMappingIds(sectionData?.map((item) => item?.id));
+        // }
+      }
+    } else {
+      if (sectionData.length > 0 && sectionIds.length > 0) {
+        setSectionMappingIds(
+          sectionData
+            ?.filter((each) => sectionIds?.includes(each.section_id))
+            ?.map((item) => item?.id)
+        );
+        formRef.current.setFieldsValue({
+          section: sectionData
+            ?.filter((each) => sectionIds?.includes(each.section_id))
+            ?.map((item) => item?.id),
+        });
+      }
     }
   }, [sectionData]);
   return (
@@ -578,14 +728,16 @@ const CreateAnnouncement = () => {
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        {loading ? (
+        {/* {loading ? (
           <div
             className='row justify-content-center align-items-center'
             style={{ height: '20vh' }}
           >
             <Spin size='large' />
           </div>
-        ) : (
+        ) : ( */}
+
+        <Spin spinning={loading} size='large'>
           <div className='col-md-12 mt-3'>
             <div className='row th-bg-white p-2'>
               <div className='row py-2'>
@@ -614,23 +766,27 @@ const CreateAnnouncement = () => {
                     <Input
                       className='th-br-4 mt-1 th-16'
                       showCount
-                      maxLength='50'
+                      maxLength='100'
                       onChange={(e) => setTitle(e.target.value)}
+                      value={title}
                     />
                     <div className='text-right'>
-                      <span className='th-red th-12 text-right'>Max. 50 Characters</span>
+                      <span className='th-red th-12 text-right'>Max. 100 Characters</span>
                     </div>
                   </div>
                   <div className='col-md-6'>
                     <span className='th-grey th-14'>Branch*</span>
                     <Form.Item name='branch'>
                       <Select
+                        mode='multiple'
                         showSearch
                         getPopupContainer={(trigger) => trigger.parentNode}
                         className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                         placement='bottomRight'
                         suffixIcon={<DownOutlined className='th-grey' />}
                         dropdownMatchSelectWidth={false}
+                        maxTagCount={2}
+                        disabled={props?.match?.params?.id}
                         onChange={(e) => handleBranchChange(e)}
                         allowClear={true}
                         onClear={handleClearBranch}
@@ -652,14 +808,14 @@ const CreateAnnouncement = () => {
                       <Select
                         mode='multiple'
                         getPopupContainer={(trigger) => trigger.parentNode}
-                        maxTagCount={5}
+                        maxTagCount={2}
                         // allowClear={true}
                         suffixIcon={<DownOutlined className='th-grey' />}
                         className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                         placement='bottomRight'
                         showArrow={true}
-                        disabled={feeReminderSelected}
-                        onChange={(e, value) => handleUserLevel(e, value)}
+                        disabled={feeReminderSelected || props?.match?.params?.id}
+                        onChange={(e, value) => handleUserLevel(e)}
                         onClear={handleClearUserLevel}
                         dropdownMatchSelectWidth={false}
                         filterOption={(input, options) => {
@@ -685,8 +841,9 @@ const CreateAnnouncement = () => {
                             placement='bottomRight'
                             showArrow={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            maxTagCount={2}
+                            maxTagCount={1}
                             dropdownMatchSelectWidth={false}
+                            disabled={props?.match?.params?.id}
                             onSelect={(e) => {
                               handleSelectGrade(
                                 e,
@@ -704,7 +861,7 @@ const CreateAnnouncement = () => {
                               );
                             }}
                           >
-                            {gradeData.length > 1 && (
+                            {gradeData.length > 1 && branchId?.length === 1 && (
                               <>
                                 <Option key={0} value={'all'}>
                                   All
@@ -720,14 +877,17 @@ const CreateAnnouncement = () => {
                         <Form.Item name='section'>
                           <Select
                             mode='multiple'
-                            disabled={gradeIds.length > 0 && feeReminderSelected}
+                            disabled={
+                              (gradeIds.length > 0 && feeReminderSelected) ||
+                              props?.match?.params?.id
+                            }
                             value={sectionMappingIds}
                             getPopupContainer={(trigger) => trigger.parentNode}
                             className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                             placement='bottomRight'
                             showArrow={true}
                             suffixIcon={<DownOutlined className='th-grey' />}
-                            maxTagCount={2}
+                            maxTagCount={1}
                             // allowClear={true}
                             dropdownMatchSelectWidth={false}
                             onSelect={(e, value) => {
@@ -762,7 +922,11 @@ const CreateAnnouncement = () => {
                 <div className='col-md-6'>
                   <span className='th-grey th-14'>Description*</span>
                   <div className='th-editor py-2'>
-                    <TextArea rows={5} onChange={(e) => setDescription(e.target.value)} />
+                    <TextArea
+                      rows={5}
+                      onChange={(e) => setDescription(e.target.value)}
+                      value={description}
+                    />
                   </div>
                 </div>
               </div>
@@ -853,7 +1017,10 @@ const CreateAnnouncement = () => {
                 </div>
                 <div className='row mt-2 align-items-center'>
                   <div className='col-md-2 py-3 py-md-0'>
-                    <Checkbox onChange={(e) => setFlashEvent(e.target.checked)}>
+                    <Checkbox
+                      onChange={(e) => setFlashEvent(e.target.checked)}
+                      checked={flashEvent}
+                    >
                       <span className='th-grey th-14'> Is Flash Event?</span>
                     </Checkbox>
                   </div>
@@ -868,6 +1035,7 @@ const CreateAnnouncement = () => {
                             }}
                             className='text-left'
                             onChange={(e) => setStartDate(e.format('YYYY-MM-DD'))}
+                            value={moment(startDate)}
                           />
                         </div>
                       </div>
@@ -880,6 +1048,7 @@ const CreateAnnouncement = () => {
                               return current < moment().startOf('day');
                             }}
                             onChange={(e) => setEndDate(e.format('YYYY-MM-DD'))}
+                            value={moment(endDate)}
                           />
                         </div>
                       </div>
@@ -936,6 +1105,7 @@ const CreateAnnouncement = () => {
                           <Input
                             style={{ fontSize: '10px' }}
                             onChange={(e) => setFlashLink(e.target.value)}
+                            value={flashLink}
                           />
                         </div>
                       </div>
@@ -995,47 +1165,63 @@ const CreateAnnouncement = () => {
 
                 <div className='row mt-4 py-2'>
                   <div className='col-md-8 d-flex align-items-center'>
-                    {/* <Checkbox.Group
+                    {!props?.match?.params?.id ? (
+                      <>
+                        {/* <Checkbox.Group
                       options={intimationOptions}
                       onChange={(e) => setIntimation(e)}
                     /> */}
-                    {notiConfig?.is_email == true ? (
-                      <Checkbox onChange={(e) => setEmail(e.target.checked)}>
-                        Intimate Via Email
-                      </Checkbox>
-                    ) : (
-                      ''
-                    )}
-                    {notiConfig?.is_sms == true ? (
-                      <Checkbox onChange={(e) => setSMS(e.target.checked)}>
-                        Intimate Via SMS
-                      </Checkbox>
-                    ) : (
-                      ''
-                    )}
-                    {notiConfig?.is_whatsapp == true ? (
-                      <Checkbox onChange={(e) => setWhatsapp(e.target.checked)}>
-                        Intimate Via Whatsapp
-                      </Checkbox>
-                    ) : (
-                      ''
-                    )}
+                        {notiConfig?.is_email == true ? (
+                          <Checkbox onChange={(e) => setEmail(e.target.checked)}>
+                            Intimate Via Email
+                          </Checkbox>
+                        ) : (
+                          ''
+                        )}
+                        {notiConfig?.is_sms == true ? (
+                          <Checkbox onChange={(e) => setSMS(e.target.checked)}>
+                            Intimate Via SMS
+                          </Checkbox>
+                        ) : (
+                          ''
+                        )}
+                        {notiConfig?.is_whatsapp == true ? (
+                          <Checkbox onChange={(e) => setWhatsapp(e.target.checked)}>
+                            Intimate Via Whatsapp
+                          </Checkbox>
+                        ) : (
+                          ''
+                        )}
+                      </>
+                    ) : null}
                   </div>
                   <div className='col-md-4 d-flex justify-content-md-end py-4 py-md-0'>
-                    <Button
-                      className='th-bg-grey th-black-2 th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5 mr-5 mr-md-2'
-                      style={{ border: '1px solid #D9D9D9' }}
-                      onClick={() => handlePublish(true)}
-                    >
-                      Save as Draft
-                    </Button>
-                    {allowPublish && (
+                    {!props?.match?.params?.id ? (
+                      <>
+                        <Button
+                          className='th-bg-grey th-black-2 th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5 mr-5 mr-md-2'
+                          style={{ border: '1px solid #D9D9D9' }}
+                          onClick={() => handlePublish(true)}
+                        >
+                          Save as Draft
+                        </Button>
+                        {allowPublish && (
+                          <Button
+                            className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5'
+                            onClick={() => handlePublish(false)}
+                            // disabled={!allowPublish}
+                          >
+                            Publish
+                          </Button>
+                        )}
+                      </>
+                    ) : (
                       <Button
-                        className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5'
-                        onClick={() => handlePublish(false)}
-                        // disabled={!allowPublish}
+                        className='th-bg-grey th-black-2 th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5 mr-5 mr-md-2'
+                        style={{ border: '1px solid #D9D9D9' }}
+                        onClick={() => handlePublish()}
                       >
-                        Publish
+                        Update
                       </Button>
                     )}
                   </div>
@@ -1043,7 +1229,8 @@ const CreateAnnouncement = () => {
               </div>
             </div>
           </div>
-        )}
+        </Spin>
+        {/* )} */}
         <UploadModal
           show={showUploadModal}
           branchId={branchId}

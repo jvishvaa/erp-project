@@ -36,7 +36,7 @@
   
   .Buttons {
     border-radius: 5px;
-    width: 50%;
+    width: 100%;
   }
   
   .table {
@@ -47,27 +47,29 @@
     font-weight: bold;
     text-align: center;
     line-height: 80%;
-    width: 90%;
   }
   
   #Preview-Container {
     display: flex;
     justify-content: center;
-    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;  gap: 10px;
-    height: 255px;
-    margin-top: 15px;
-    padding: 10px;
+    flex-direction: column;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;  
+    margin-top: 20px;
+    padding-top: 15px;
+    width: 95%;
   }
   
   #Edit-Container {
     text-align: left;
     margin-top: 15px;
+    position: relative;
   }
   
   #Question-Answer-Cont {
     // border: 1px solid orangered;
     box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;  margin-bottom: 8px;
     padding: 15px;
+    padding-bottom: 25px;
   }
   
   #Button-Cont {
@@ -75,6 +77,7 @@
     justify-content: center;
     gap: 10px;
     margin-top: 5px;
+    width: 100%;
   }
   
   .th-date-picker .ant-picker-input:first-child > input {

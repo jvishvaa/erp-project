@@ -209,8 +209,12 @@ const V2Router = () => {
       start_time: moment(lastAPICallTime.current).format('HH:mm:ss'),
       end_time: moment(currentTime).format('HH:mm:ss'),
     };
-    // console.log('API called', payload.link, payload.time)
-    if (trackerContainsCurrentURL && payload.time > 0) {
+    console.log('API called', { messageeee, diff });
+    if (
+      trackerContainsCurrentURL &&
+      payload.time > 0 &&
+      window.location.pathname !== '/'
+    ) {
       axios
         .post(`${timeTracker}`, payload, {
           'Content-Type': 'application/json',
@@ -225,7 +229,7 @@ const V2Router = () => {
 
   // Function to start the timer
   const startTimer = () => {
-    timer.current = setInterval(callAPI, 120000); // Call the API every 2 minutes
+    timer.current = setInterval(callAPI('startTimer'), 120000); // Call the API every 2 minutes
   };
 
   // Function to reset the timer
@@ -315,7 +319,7 @@ const V2Router = () => {
 
   return (
     <Router>
-      <RouteChangeTracker />
+      {window.location.pathname !== '/' ? <RouteChangeTracker /> : null}
       <AlertNotificationProvider>
         <OnlineclassViewProvider>
           <ThemeProvider theme={theme}>
@@ -375,6 +379,9 @@ const V2Router = () => {
                           {({ match }) => <AnnouncementList match={match} />}
                         </Route>
                         <Route path='/create-announcement'>
+                          {({ match }) => <CreateAnnouncement match={match} />}
+                        </Route>
+                        <Route path='/edit-announcement/:id'>
                           {({ match }) => <CreateAnnouncement match={match} />}
                         </Route>
                         <Route path='/diary/teacher'>

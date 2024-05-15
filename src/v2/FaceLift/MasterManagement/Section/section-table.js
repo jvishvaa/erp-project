@@ -72,7 +72,7 @@ const SectionTable = () => {
       };
     }
     axiosInstance
-      .get(`${endpoints.masterManagement.sect}`, {
+      .get(`${endpoints.masterManagement.sectionsAll}`, {
         params: params,
       })
       .then((response) => {
