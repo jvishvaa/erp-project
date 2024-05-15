@@ -377,19 +377,22 @@ const CreateAnnouncement = (props) => {
     //   }
     // }
     if (e?.length) {
-      console.log(e, 'branchhhh');
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
         branch_id: e?.join(','),
         // module_id: moduleId,
       });
+      setGradeData([])
+      setSectionData([])
     }
   };
   const handleClearBranch = () => {
-    setBranchId('');
+    setBranchId([]);
     setGradeIds([]);
     setSectionIds([]);
     setSectionMappingIds([]);
+    setGradeData([])
+    setSectionData([])
   };
 
   const handleSelectGrade = (value, arr) => {

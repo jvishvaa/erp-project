@@ -21,6 +21,7 @@ const ListCard = (props) => {
   const [showModal, setShowModal] = useState(false);
 
   const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -139,7 +140,7 @@ const ListCard = (props) => {
                     : 'Publish'}
                 </div>
               ) : null}
-              {is_superuser ? (
+              {is_superuser|| [1]?.includes(user_level) ? (
                 <>
                   <Popconfirm
                     title='Sure to delete?'
@@ -158,7 +159,7 @@ const ListCard = (props) => {
                   </Popconfirm>
                 </>
               ) : null}
-              {showTab != 1 ? (
+              {showTab != 1 && (is_superuser||[1,8]?.includes(user_level)) ? (
                 <>
                   <Link
                     to={{
