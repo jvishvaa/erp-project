@@ -49,7 +49,6 @@ const SchoolWall = () => {
   const [pageDetails, setPageDetails] = useState({ current: 1, total: 0 });
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedAcadSession, setSelectedAcadSession] = useState([]);
-  const [gradeID, setGradeID] = useState([]);
   const [uniqueGradeId, setUniqueGradeId] = useState([]);
   const [gradeData, setGradeData] = useState([]);
   const [sectionData, setSectionData] = useState([]);
@@ -59,14 +58,17 @@ const SchoolWall = () => {
   const [heirarchyConfig, setHeirarchyConfig] = useState({});
   const [category, setCategory] = useState();
   const [payload, setPayload] = useState({ page: 1, page_size: 10 });
-  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
   const [filterLoading, setFilterLoading] = useState(false);
 
   const handleDateChange = (value) => {
     if (value) {
       setStartDate(moment(value[0]).format('YYYY-MM-DD'));
       setEndDate(moment(value[1]).format('YYYY-MM-DD'));
+    } else {
+      setStartDate();
+      setEndDate();
     }
   };
 
@@ -199,6 +201,7 @@ const SchoolWall = () => {
             },
             description: res?.data?.result?.description,
             created_at: res?.data?.result?.created_at,
+            updated_at: res?.data?.result?.updated_at,
           };
           setPostList(newList);
         }
@@ -324,7 +327,6 @@ const SchoolWall = () => {
   });
 
   const handleBranch = (each) => {
-    setGradeID([]);
     setUniqueGradeId([]);
     setGradeData([]);
     setSectionData([]);
@@ -357,15 +359,12 @@ const SchoolWall = () => {
     if (each?.length > 0) {
       let gradeParam;
       if (each.some((item) => item.value === 'all')) {
-        const allGrades = [...new Set(gradeData.map((item) => item.id))];
         const allGradeID = [...new Set(gradeData.map((item) => item.grade_id))];
-        gradeParam = allGrades;
-        setGradeID(allGrades);
+        gradeParam = allGradeID;
         setUniqueGradeId(allGradeID);
       } else {
         setUniqueGradeId([...new Set(each.map((item) => item.gradeId))]);
-        setGradeID([...new Set(each.map((item) => item.value))]);
-        gradeParam = [...new Set(each.map((item) => item.value))];
+        gradeParam = [...new Set(each.map((item) => item.gradeId))];
       }
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
@@ -373,7 +372,6 @@ const SchoolWall = () => {
         grade_id: gradeParam?.join(','),
       });
     } else {
-      setGradeID([]);
       setUniqueGradeId([]);
     }
   };
@@ -401,8 +399,8 @@ const SchoolWall = () => {
       payload['category'] = category;
     }
     if (startDate && endDate) {
-      payload['start_date '] = moment(startDate).format('YYYY-MM-DD');
-      payload['end_date '] = moment(endDate).format('YYYY-MM-DD');
+      payload['start_date'] = moment(startDate).format('YYYY-MM-DD');
+      payload['end_date'] = moment(endDate).format('YYYY-MM-DD');
     }
     setFilterLoading(true);
     setPayload(payload);
@@ -411,7 +409,6 @@ const SchoolWall = () => {
   const ClearFilters = () => {
     setSectionData([]);
     setSectionID([]);
-    setGradeID([]);
     setUniqueGradeId([]);
     setFilterLoading(true);
     setPayload({ page: 1, page_size: 10 });
@@ -450,6 +447,11 @@ const SchoolWall = () => {
     fetchCategoryData();
     fetchHeirarchyConfig({ config_key: 'post-edit-permission' });
   }, []);
+
+  const disabledDate = (current) => {
+    return current > moment();
+  };
+
   return (
     <Layout>
       <div className='row'>
@@ -557,7 +559,7 @@ const SchoolWall = () => {
                         suffixIcon={<DownOutlined className='th-grey' />}
                         maxTagCount={1}
                         required={true}
-                        value={gradeID}
+                        value={uniqueGradeId}
                         getPopupContainer={(trigger) => trigger.parentNode}
                         optionFilterProp='children'
                         filterOption={(input, options) => {
@@ -640,11 +642,9 @@ const SchoolWall = () => {
                     </Col>
                     <Col span={8}>
                       <RangePicker
-                        allowClear={false}
-                        placement='bottomRight'
+                        disabledDate={disabledDate}
+                        placement='bottom'
                         showToday={false}
-                        // suffixIcon={<DownOutlined />}
-                        value={[moment(startDate), moment(endDate)]}
                         onChange={(value) => handleDateChange(value)}
                         separator={'to'}
                         format={'DD/MM/YYYY'}
