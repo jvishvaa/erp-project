@@ -250,7 +250,7 @@ const CollapseableComponent = ({ module, items }) => {
     if (subModule == null) {
       return message.error('Please Select Sub Module');
     }
-    if (userLevel == null) {
+    if (userLevel == null || userLevel.length<=0) {
       return message.error('Please Select User Level');
     }
     if (devices?.length == 0) {
@@ -539,7 +539,7 @@ const CollapseableComponent = ({ module, items }) => {
                         marginTop: '2px',
                       }}
                     >
-                      <small style={{ textAlign: 'left' }}>Only ['.pdf'] allowed.</small>
+                      <small style={{ textAlign: 'left' }}>['.pdf']</small>
                       {selectedPdfFile ? (
                         <span
                           style={{
@@ -590,7 +590,7 @@ const CollapseableComponent = ({ module, items }) => {
                       }}
                     >
                       <small style={{ textAlign: 'left' }}>
-                        ['.mp3','.mp4'] allowed.
+                        ['.mp3','.mp4','.mpeg']
                       </small>
                       {selectedVideoFile ? (
                         <span

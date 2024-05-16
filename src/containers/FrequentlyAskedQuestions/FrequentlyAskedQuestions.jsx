@@ -224,12 +224,14 @@ const FrequentlyAskedQuestions = () => {
             />
           </Tooltip>
           <Popconfirm
-            title='Delete This ?'
+            title='Delete?'
             open={open}
             onConfirm={() => {
-              deleteFaq(record?.user_level, record?.module_id);
+              deleteFaq(record?.items?.map((ele)=>ele?.id), record?.media_id);
             }}
             onCancel={handleCancel}
+            getPopupContainer={(trigger) => trigger.parentNode}
+            overlayClassName="custom-popconfirm"
           >
             <DeleteOutlineOutlined
               style={{ color: 'red', fontSize: '22px', cursor: 'pointer' }}
@@ -382,7 +384,8 @@ const FrequentlyAskedQuestions = () => {
     fetchData({ params });
   }, [userLevel, subModule, devices, moduleValue]);
 
-  const deleteFaq = (faq_user_level, module_id) => {
+  const deleteFaq = (faq_data_id, faq_media_id) => {
+    console.log(faq_data_id, faq_media_id, "hello")
     setLoad(true);
     const params = {};
     if (userLevel && userLevel.length > 0) {
@@ -397,8 +400,8 @@ const FrequentlyAskedQuestions = () => {
       params.device = devices.join(',');
     }
     const formData = new FormData();
-    formData.append('user_level', faq_user_level);
-    formData.append('module_id', module_id);
+    formData.append('faq_data_id', faq_data_id);
+    formData.append('faq_media_id', faq_media_id);
     formData.append('file_type', 'media');
     axiosInstance
       .delete(`${endpointsV2.FrequentlyAskedQuestions.FaqApi}`, {

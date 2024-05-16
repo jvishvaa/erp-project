@@ -345,7 +345,7 @@ const ChangeFaq = ({
     handleSaveClick();
     toggleEditMode('save');
   };
-  const getPopupContainer = (trigger) => trigger.parentNode;
+  // const getPopupContainer = ;
 
   return (
     <div>
@@ -394,15 +394,18 @@ const ChangeFaq = ({
                         justifyContent: 'center',
                       }}
                     >
-                      <Tooltip title="Click For Preview" getPopupContainer={getPopupContainer}>
-                      <PlayCircleOutlined
-                        onClick={() =>
-                          handleVideoPrev(
-                            `${endpoints.assessment.erpBucket}/${moduleData?.video_file}`
-                          )
-                        }
-                        style={{ fontSize: '40px', color: 'blueviolet' }}
-                      />
+                      <Tooltip
+                        title='Click For Preview'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      >
+                        <PlayCircleOutlined
+                          onClick={() =>
+                            handleVideoPrev(
+                              `${endpoints.assessment.erpBucket}/${moduleData?.video_file}`
+                            )
+                          }
+                          style={{ fontSize: '40px', color: 'blueviolet' }}
+                        />
                       </Tooltip>
                     </div>
                     <Popconfirm
@@ -410,7 +413,8 @@ const ChangeFaq = ({
                       onConfirm={() => handleDeleteVideo(moduleData?.media_id)}
                       okText='Yes'
                       cancelText='No'
-                      getPopupContainer={getPopupContainer}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      overlayClassName='custom-popconfirm'
                     >
                       <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
                     </Popconfirm>
@@ -426,14 +430,18 @@ const ChangeFaq = ({
                     <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo Video</p>
                     <p style={{ marginTop: '10px' }}>No Video File Exists</p>
                     {moduleData?.media_id && (
-                      <Button style={{marginRight : "7px"}} type='primary' onClick={() => handleReplaceVideo()}>
+                      <Button
+                        style={{ marginRight: '7px' }}
+                        type='primary'
+                        onClick={() => handleReplaceVideo()}
+                      >
                         Upload
                       </Button>
                     )}
                   </div>
                 )}
 
-                { moduleData?.pdf_file ? (
+                {moduleData?.pdf_file ? (
                   <div
                     style={{
                       display: 'flex',
@@ -451,27 +459,32 @@ const ChangeFaq = ({
                         justifyContent: 'center',
                       }}
                     >
-                      <Tooltip title="Click For Preview" getPopupContainer={getPopupContainer}>
-                      <img
-                        src={getFileIcon('pdf')}
-                        onClick={() => {
-                          const fileName = moduleData?.pdf_file;
-                          let extension = fileName ? fileName[fileName?.length - 1] : '';
-                          console.log(extension, 'hello');
-                          openPreview({
-                            currentAttachmentIndex: 0,
-                            attachmentsArray: [
-                              {
-                                src: `${endpoints.assessment.erpBucket}/${moduleData?.pdf_file}`,
+                      <Tooltip
+                        title='Click For Preview'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      >
+                        <img
+                          src={getFileIcon('pdf')}
+                          onClick={() => {
+                            const fileName = moduleData?.pdf_file;
+                            let extension = fileName
+                              ? fileName[fileName?.length - 1]
+                              : '';
+                            console.log(extension, 'hello');
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  src: `${endpoints.assessment.erpBucket}/${moduleData?.pdf_file}`,
 
-                                name: fileName,
-                                extension: '.' + extension,
-                              },
-                            ],
-                          });
-                        }}
-                        style={{cursor: 'pointer' }}
-                      />
+                                  name: fileName,
+                                  extension: '.' + extension,
+                                },
+                              ],
+                            });
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        />
                       </Tooltip>
                     </div>
                     <Popconfirm
@@ -479,7 +492,8 @@ const ChangeFaq = ({
                       onConfirm={() => handleDeletePdf(moduleData?.media_id)}
                       okText='Yes'
                       cancelText='No'
-                      getPopupContainer={getPopupContainer}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      overlayClassName='custom-popconfirm'
                     >
                       <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
                     </Popconfirm>
@@ -519,7 +533,8 @@ const ChangeFaq = ({
                       onConfirm={() => deleteQuestion(each?.id)}
                       okText='Yes'
                       cancelText='No'
-                      getPopupContainer={getPopupContainer}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      overlayClassName='custom-popconfirm'
                       placement='top'
                     >
                       <span
