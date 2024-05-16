@@ -59,8 +59,8 @@ const SchoolWall = () => {
   const [heirarchyConfig, setHeirarchyConfig] = useState({});
   const [category, setCategory] = useState();
   const [payload, setPayload] = useState({ page: 1, page_size: 10 });
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [filterLoading, setFilterLoading] = useState(false);
 
   const handleDateChange = (value) => {
@@ -388,7 +388,7 @@ const SchoolWall = () => {
 
   const handleFilteredData = () => {
     let payload = { page: 1, page_size: 10 };
-    if (selectedAcadSession) {
+    if (selectedAcadSession?.length > 0) {
       payload['acad_session'] = selectedAcadSession?.join(',');
     }
     if (uniqueGradeId?.length > 0) {
