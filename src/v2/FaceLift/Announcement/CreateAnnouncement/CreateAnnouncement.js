@@ -794,10 +794,10 @@ const CreateAnnouncement = (props) => {
                         suffixIcon={<DownOutlined className='th-grey' />}
                         dropdownMatchSelectWidth={false}
                         maxTagCount={2}
-                        disabled={
-                          props?.match?.params?.id &&
-                          !([1, 8].includes(user_level) || is_superuser)
-                        }
+                        // disabled={
+                        //   props?.match?.params?.id &&
+                        //   !([1, 8].includes(user_level) || is_superuser)
+                        // }
                         onChange={(e) => handleBranchChange(e)}
                         allowClear={true}
                         onClear={handleClearBranch}
@@ -826,9 +826,10 @@ const CreateAnnouncement = (props) => {
                         placement='bottomRight'
                         showArrow={true}
                         disabled={
-                          feeReminderSelected ||
-                          (props?.match?.params?.id &&
-                            !([1, 8].includes(user_level) || is_superuser))
+                          feeReminderSelected 
+                          // ||
+                          // (props?.match?.params?.id &&
+                          //   !([1, 8].includes(user_level) || is_superuser))
                         }
                         onChange={(e, value) => handleUserLevel(e)}
                         onClear={handleClearUserLevel}
@@ -858,10 +859,10 @@ const CreateAnnouncement = (props) => {
                             suffixIcon={<DownOutlined className='th-grey' />}
                             maxTagCount={1}
                             dropdownMatchSelectWidth={false}
-                            disabled={
-                              props?.match?.params?.id &&
-                              !([1, 8].includes(user_level) || is_superuser)
-                            }
+                            // disabled={
+                            //   props?.match?.params?.id &&
+                            //   !([1, 8].includes(user_level) || is_superuser)
+                            // }
                             onSelect={(e) => {
                               handleSelectGrade(
                                 e,
@@ -896,9 +897,10 @@ const CreateAnnouncement = (props) => {
                           <Select
                             mode='multiple'
                             disabled={
-                              (gradeIds.length > 0 && feeReminderSelected) ||
-                              (props?.match?.params?.id &&
-                                !([1, 8].includes(user_level) || is_superuser))
+                              (gradeIds.length > 0 && feeReminderSelected) 
+                              // ||
+                              // (props?.match?.params?.id &&
+                              //   !([1, 8].includes(user_level) || is_superuser))
                             }
                             value={sectionMappingIds}
                             getPopupContainer={(trigger) => trigger.parentNode}
