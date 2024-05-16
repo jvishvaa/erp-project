@@ -25,6 +25,7 @@ const PostCard = (props) => {
     id,
     user,
     created_at,
+    updated_at,
     likes_count: likeCount,
     description,
     comments_count: comments,
@@ -216,7 +217,13 @@ const PostCard = (props) => {
             </Link> */}
           </div>
           <small className='pt-1 th-grey mb-1 px-2'>
-            <i>{dayjs(created_at).format('DD/MM/YYYY, h:mm:ss a')}</i>
+            <i>
+              {dayjs(created_at).format('DD/MM/YYYY, h:mm:ss a')}{' '}
+              {dayjs(updated_at).format('DD/MM/YYYY, h:mm:ss a') ===
+              dayjs(created_at).format('DD/MM/YYYY, h:mm:ss a')
+                ? null
+                : ' (edited)'}
+            </i>
           </small>
         </div>
 

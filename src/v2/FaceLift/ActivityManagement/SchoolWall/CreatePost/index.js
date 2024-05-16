@@ -42,6 +42,7 @@ const CreatePost = ({
   const [fileUploading, setFileUploading] = useState(false);
   const [individualFileProgress, setIndividualFileProgress] = useState(0);
   const [individualFileprogressEvent, setIndividualFileprogressEvent] = useState({});
+  const [openEditor, setOpenEditor] = useState(false);
 
   const handleEditorChange = (content) => {
     setTextEditorContent(content);
@@ -347,6 +348,8 @@ const CreatePost = ({
   };
 
   useEffect(() => {
+    setOpenEditor(true);
+    handleEditorChange(selectedPost ? selectedPost?.description : '');
     if (selectedPost) {
       let branches = branchList
         ?.filter((el) => selectedPost?.acad_session.includes(el?.id))
@@ -384,9 +387,6 @@ const CreatePost = ({
         };
       });
       setAttachmentList(attachments);
-      setTimeout(() => {
-        handleEditorChange(selectedPost?.description);
-      }, 1000);
       setSectionIDs(sections);
       setGradeID(grades);
     }
@@ -411,9 +411,9 @@ const CreatePost = ({
 
   return (
     <Modal
-      zIndex={1200}
+      zIndex={1300}
       className='th-upload-modal'
-      title='Create Post'
+      title={`${selectedPost ? 'Update' : 'Create'} Post`}
       visible={showCreatePostModal}
       onCancel={() => {
         closeModal();
@@ -572,13 +572,16 @@ const CreatePost = ({
               </Form.Item>
             </div>
             <div className='col-12 mt-3'>
-              <MyTinyEditor
-                id='post_description'
-                content={textEditorContent}
-                hideImageUpload={true}
-                handleEditorChange={handleEditorChange}
-                placeholder={`What's on your mind, ${first_name}?`}
-              />
+              {openEditor && (
+                <MyTinyEditor
+                  id='post_description'
+                  content={textEditorContent}
+                  setOpenEditor={setOpenEditor}
+                  hideImageUpload={true}
+                  handleEditorChange={handleEditorChange}
+                  placeholder={`What's on your mind, ${first_name}?`}
+                />
+              )}
               {/* </Form.Item> */}
             </div>
           </div>
