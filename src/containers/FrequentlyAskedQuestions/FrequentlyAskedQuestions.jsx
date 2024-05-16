@@ -655,6 +655,7 @@ const FrequentlyAskedQuestions = () => {
                 width: '96%',
                 objectFit: 'fill',
               }}
+              disablePictureInPicture
             />
           </div>
         </Modal>

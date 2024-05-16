@@ -414,6 +414,7 @@ const CollapseableComponent = ({ module, items }) => {
               <Breadcrumb.Item
                 className='th-black-1 th-16 th-grey'
                 onClick={() => history.push('/frequently-asked-questions')}
+                style={{cursor:"pointer"}}
               >
                 FAQ
               </Breadcrumb.Item>

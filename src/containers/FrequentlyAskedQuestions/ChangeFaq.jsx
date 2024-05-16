@@ -227,7 +227,7 @@ const ChangeFaq = ({
       })
       .then((res) => {
         if (res?.data) {
-          message.success(`P.D.F. File Deleted Successfully`);
+          message.success(`PDF File Deleted Successfully`);
           fetchTableData();
           setLoad(false);
           setDeletePdfFile(true);
@@ -355,19 +355,9 @@ const ChangeFaq = ({
               <div>
                 <p style={{ marginTop: '3px' }}>Sub Module Name :- {moduleName}</p>
               </div>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  marginTop: '10px',
-                  gap: '5px',
-                }}
-              >
-                {edit ? (
+              <div style={{display:"flex", justifyContent:"center"}}>
                   <Select
-                    defaultValue={moduleData?.media_user_level}
+                    defaultValue={moduleData?.user_level}
                     mode='multiple'
                     onChange={(e) => handleChangeUser(e)}
                     filterOption={(input, options) => {
@@ -381,19 +371,6 @@ const ChangeFaq = ({
                   >
                     {userLevelListOptions}
                   </Select>
-                ) : (
-                  ''
-                )}
-                {!edit ? (
-                  <Button
-                    style={{ height: '30px', margin: 'auto', width: '15%' }}
-                    onClick={() => handleEditClick(userLevel)}
-                  >
-                    Edit
-                  </Button>
-                ) : (
-                  <></>
-                )}
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -516,7 +493,7 @@ const ChangeFaq = ({
                     }}
                   >
                     <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo PDF</p>
-                    <p>No P.D.F. File Exists</p>
+                    <p>No PDF File Exists</p>
 
                     {moduleData?.media_id && (
                       <Button type='primary' onClick={() => handleReplacePdf()}>
@@ -575,8 +552,7 @@ const ChangeFaq = ({
                   <label style={{ color: 'gray', marginTop: '3px', fontWeight: 'bold' }}>
                     Answer
                   </label>
-                  {edit ? (
-                    <TextArea
+                  <TextArea
                       showCount
                       style={{ height: '80px' }}
                       maxLength={1500}
@@ -590,42 +566,9 @@ const ChangeFaq = ({
                           : ''
                       }`}
                     />
-                  ) : (
-                    <div>
-                      {isExpanded[index] ? (
-                        <div>
-                          <p>{answers[index]}</p>
-                          <a
-                            style={{ color: 'blue' }}
-                            onClick={() => toggleExpand(index)}
-                          >
-                            See less
-                          </a>
-                        </div>
-                      ) : (
-                        <div>
-                          <p>{`${answers[index]?.substring(0, 150)}...`}</p>
-                          <a
-                            onClick={() => toggleExpand(index)}
-                            style={{ color: 'blue' }}
-                          >
-                            See more...
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               ))}
               <div id='Button-Cont'>
-                {!edit ? (
-                  <Button onClick={toggleEditMode}>
-                    <Tooltip title='Edit Question and Answers' placement='top'>
-                      Edit
-                      <EditOutlined style={{ color: 'blue' }} />
-                    </Tooltip>
-                  </Button>
-                ) : (
                   <Button
                     style={{ backgroundColor: 'green', color: 'white' }}
                     onClick={() => handleEdit()}
@@ -639,7 +582,6 @@ const ChangeFaq = ({
                   >
                     Save
                   </Button>
-                )}
               </div>
             </div>
           </>
@@ -671,6 +613,7 @@ const ChangeFaq = ({
                 width: '96%',
                 objectFit: 'fill',
               }}
+              disablePictureInPicture
             />
           </div>
         </Modal>

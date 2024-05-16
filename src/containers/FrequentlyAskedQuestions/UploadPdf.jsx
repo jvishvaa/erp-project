@@ -139,7 +139,7 @@ const UploadPdfFaq = (props) => {
             </p>
             <p className='pt-2'>
               {' '}
-              Drag And Drop Video File Here <br /> or
+              Drag And Drop PDF File Here <br /> or
             </p>
             <Button
               className='th-primary pb-2 mt-0 th-bg-white th-br-4'

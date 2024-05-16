@@ -61,109 +61,114 @@ const Faq = ({ moduleData }) => {
         <p style={{ fontWeight: 'bold', textAlign: 'center', fontSize: '20px' }}>
           Frequently Asked Questions
         </p>
-        <div id='Preview-Container' style={{ padding: '10px' }}>
-          <div style={{ width: '100%' }}>
-            {moduleData[0]?.video_file ? (
-              <div>
-                <p style={{ fontWeight: 'bold', fontSize: '18px', textAlign: 'center' }}>
-                  Demo Video
-                </p>
-                <video  
-                  id='module_video'
-                  src={`${endpoints.assessment.erpBucket}/${moduleData[0]?.video_file}`}
-                  controls
-                  preload='auto'
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div id='Preview-Container' style={{ padding: '10px' }}>
+            <div style={{ width: '100%' }}>
+              {moduleData[0]?.video_file ? (
+                <div>
+                  <p
+                    style={{ fontWeight: 'bold', fontSize: '18px', textAlign: 'center' }}
+                  >
+                    Demo Video
+                  </p>
+                  <video
+                    id='module_video'
+                    src={`${endpoints.assessment.erpBucket}/${moduleData[0]?.video_file}`}
+                    controls
+                    preload='auto'
+                    style={{
+                      maxHeight: '150px',
+                      width: '100%',
+                      objectFit: 'fill',
+                    }}
+                    disablePictureInPicture
+                  />
+                </div>
+              ) : (
+                <div
                   style={{
-                    maxHeight: '150px',
-                    width: '100%',
-                    objectFit: 'fill',
+                    textAlign: 'center',
                   }}
-                />
-              </div>
-            ) : (
-              <div
-                style={{
-                  textAlign: 'center',
-                }}
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='30'
-                  height='30'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='#333'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
                 >
-                  <circle cx='12' cy='12' r='10'></circle>
-                  <line x1='12' y1='16' x2='12' y2='12'></line>
-                  <line x1='12' y1='8' x2='12.01' y2='8'></line>
-                </svg>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='30'
+                    height='30'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='#333'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <circle cx='12' cy='12' r='10'></circle>
+                    <line x1='12' y1='16' x2='12' y2='12'></line>
+                    <line x1='12' y1='8' x2='12.01' y2='8'></line>
+                  </svg>
+                  <p
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: '14px',
+                      color: '#333',
+                    }}
+                  >
+                    No Video File Uploaded
+                  </p>
+                </div>
+              )}
+              {moduleData[0]?.pdf_file ? (
                 <p
+                  onClick={() => {
+                    const fileName = moduleData[0]?.pdf_file;
+                    let extension = fileName ? fileName[fileName?.length - 1] : '';
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: [
+                        {
+                          src: `${endpoints.assessment.erpBucket}/${moduleData[0]?.pdf_file}`,
+                          name: fileName,
+                          extension: '.' + extension,
+                        },
+                      ],
+                    });
+                  }}
+                  style={{ color: 'blue', cursor: 'pointer', paddingTop: '8px' }}
+                >
+                  Click For User Manual <FilePdfOutlined />
+                </p>
+              ) : (
+                <div
                   style={{
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    color: '#333',
+                    textAlign: 'center',
                   }}
                 >
-                  No Video File Uploaded
-                </p>
-              </div>
-            )}
-            {moduleData[0]?.pdf_file ? (
-              <p
-                onClick={() => {
-                  const fileName = moduleData[0]?.pdf_file;
-                  let extension = fileName ? fileName[fileName?.length - 1] : '';
-                  openPreview({
-                    currentAttachmentIndex: 0,
-                    attachmentsArray: [
-                      {
-                        src: `${endpoints.assessment.erpBucket}/${moduleData[0]?.pdf_file}`,
-                        name: fileName,
-                        extension: '.' + extension,
-                      },
-                    ],
-                  });
-                }}
-                style={{ color: 'blue', cursor: 'pointer', paddingTop: '8px' }}
-              >
-                Click For User Manual <FilePdfOutlined />
-              </p>
-            ) : (
-              <div
-                style={{
-                  textAlign: 'center',
-                }}
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='30'
-                  height='30'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='#333'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                >
-                  <circle cx='12' cy='12' r='10'></circle>
-                  <line x1='12' y1='16' x2='12' y2='12'></line>
-                  <line x1='12' y1='8' x2='12.01' y2='8'></line>
-                </svg>
-                <p
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    color: '#333',
-                  }}
-                >
-                  No PDF File Uploaded
-                </p>
-              </div>
-            )}
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='30'
+                    height='30'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='#333'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  >
+                    <circle cx='12' cy='12' r='10'></circle>
+                    <line x1='12' y1='16' x2='12' y2='12'></line>
+                    <line x1='12' y1='8' x2='12.01' y2='8'></line>
+                  </svg>
+                  <p
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: '14px',
+                      color: '#333',
+                    }}
+                  >
+                    No PDF File Uploaded
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {moduleData?.length > 0 && (
@@ -173,7 +178,7 @@ const Faq = ({ moduleData }) => {
             </p>
             {moduleData[0]?.items?.map((ele, index) => (
               <div id='Question-Answer-Cont'>
-                <label style={{ fontWeight: 'bold' }}>Question {index+1}</label>
+                <label style={{ fontWeight: 'bold' }}>Question {index + 1}</label>
 
                 <p>{ele?.question}</p>
                 <label style={{ color: 'gray', marginTop: '3px' }}>Answer</label>
