@@ -59,6 +59,9 @@ const AnnouncementList = () => {
   const history = useHistory();
   const showBranchFilter = [1, 2, 4, 8, 9];
   const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const  is_superuser  = false;
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const  user_level  = 8;
 
   const branchOptions = branchList?.map((each) => {
     return (
@@ -362,11 +365,13 @@ const AnnouncementList = () => {
                 </div>
                 <div
                   className={`${
-                    showTab != 2 && (is_superuser || showTab == 3)
-                      ? 'col-md-4 '
-                      : showTab == 1
-                      ? 'col-md-6 '
-                      : 'col-md-5 '
+                    [1,3].includes(parseInt(showTab))
+                      ? [1, 8].includes(user_level) || is_superuser
+                        ? 'col-md-4'
+                        : 'col-md-6'
+                      : showTab == 2
+                      ? 'col-md-5'
+                      : 'col-md-6'
                   } col-5 text-truncate th-white th-fw-700`}
                 >
                   <b>Description</b>
@@ -376,14 +381,11 @@ const AnnouncementList = () => {
                     <b>Created at</b>
                   </div>
                 ) : null}
-                {showTab != 1 || is_superuser ? (
+                {([1,3].includes(parseInt(showTab)) && ([1, 8].includes(user_level) || is_superuser)) ||
+                showTab == 2 ? (
                   <div
-                    className={`${
-                      showTab != 2
-                        ? 'col-md-2 '
-                        : showTab == 2 || is_superuser
-                        ? 'col-md-3 '
-                        : ''
+                    className={` ${
+                      showTab == 2 ? 'col-md-3' : 'col-md-2'
                     } col-3 px-md-3 text-right th-white th-fw-700`}
                   >
                     <b>Action</b>
