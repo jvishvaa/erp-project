@@ -1,12 +1,4 @@
-import {
-  Modal,
-  Select,
-  Form,
-  message,
-  Image,
-  Tag,
-  Progress,
-} from 'antd';
+import { Modal, Select, Form, message, Image, Tag, Progress } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
@@ -50,6 +42,7 @@ const CreatePost = ({
   const [fileUploading, setFileUploading] = useState(false);
   const [individualFileProgress, setIndividualFileProgress] = useState(0);
   const [individualFileprogressEvent, setIndividualFileprogressEvent] = useState({});
+  const [openEditor, setOpenEditor] = useState(false);
 
   const handleEditorChange = (content) => {
     setTextEditorContent(content);
@@ -64,7 +57,18 @@ const CreatePost = ({
       .get(`/erp_user/grademapping/`, { params: { ...params } })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          setGradeData(res?.data?.data);
+          let data = res?.data?.data;
+          const uniqueGradesMap = new Map();
+          data.forEach((item) => {
+            if (!uniqueGradesMap.has(item.grade_id)) {
+              uniqueGradesMap.set(item.grade_id, {
+                grade_id: item.grade_id,
+                grade_name: item.grade_name,
+              });
+            }
+          });
+          const uniqueGrades = Array.from(uniqueGradesMap.values());
+          setGradeData(uniqueGrades);
         }
       })
       .catch((error) => {
@@ -73,7 +77,7 @@ const CreatePost = ({
   };
   const fetchSectionData = (params = {}) => {
     axiosInstance
-      .get(`/erp_user/v2/sectionmapping-list/`, { params: { ...params } })
+      .get(`/erp_user/sectionmapping/`, { params: { ...params } })
       .then((res) => {
         if (res?.data?.status_code === 200) {
           setSectionData(res?.data?.data);
@@ -107,8 +111,8 @@ const CreatePost = ({
   });
   const gradeOptions = gradeData?.map((each) => {
     return (
-      <Option key={each?.id} value={each.id} gradeId={each?.grade_id}>
-        {each?.grade__grade_name}
+      <Option key={each?.grade_id} value={each.grade_id} gradeId={each?.grade_id}>
+        {each?.grade_name}
       </Option>
     );
   });
@@ -167,21 +171,20 @@ const CreatePost = ({
     if (each?.length > 0) {
       let gradeParam;
       if (each.some((item) => item.value === 'all')) {
-        const allGrades = [...new Set(gradeData.map((item) => item.id))].join(',');
-        const allGradesId = [...new Set(gradeData.map((item) => item.grade_id))];
+        const allGrades = [...new Set(gradeData.map((item) => item.grade_id))];
         gradeParam = allGrades;
-        setGradeID(allGradesId);
+        setGradeID(allGrades);
         formRef.current.setFieldsValue({
-          grade: [...new Set(gradeData.map((item) => item.id))],
+          grade: [...new Set(gradeData.map((item) => item.grade_id))],
         });
       } else {
-        setGradeID([...new Set(each.map((item) => item.gradeId))]);
-        gradeParam = [...new Set(each.map((item) => item.value))].join(',');
+        setGradeID([...new Set(each.map((item) => item.value))]);
+        gradeParam = [...new Set(each.map((item) => item.value))];
       }
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch,
-        section_mapping_ids: gradeParam,
+        grade_id: gradeParam?.join(','),
       });
     } else {
       setSectionData([]);
@@ -291,7 +294,7 @@ const CreatePost = ({
       description: textEditorContent,
       category: updatedValues?.category,
     };
-    if (sectionIDs.length > 0) {
+    if (sectionIDs?.length > 0) {
       payload['section_mapping'] = sectionIDs;
     }
     if (attachmentList?.length > 0) {
@@ -345,11 +348,12 @@ const CreatePost = ({
   };
 
   useEffect(() => {
+    setOpenEditor(true);
+    handleEditorChange(selectedPost ? selectedPost?.description : '');
     if (selectedPost) {
       let branches = branchList
-        ?.filter((el) => selectedPost?.acad_session.includes(el?.acad_session?.id))
-        ?.map((item) => item?.branch?.id)
-        .join(',');
+        ?.filter((el) => selectedPost?.acad_session.includes(el?.id))
+        ?.map((item) => item?.branch?.id);
       let acadSessions = selectedPost?.acad_session;
       setSelectedAcadSession(acadSessions);
       setSelectedBranch(branches);
@@ -366,12 +370,12 @@ const CreatePost = ({
       });
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
-        branch_id: branches,
+        branch_id: branches?.join(','),
       });
       fetchSectionData({
         session_year: selectedAcademicYear?.id,
-        branch_id: branches,
-        section_mapping_ids: grades?.join(', '),
+        branch_id: branches?.join(','),
+        grade_id: grades?.join(', '),
       });
       let attachments = selectedPost?.media_files?.map((item) => {
         let filename = item?.media_file?.split('/').pop();
@@ -383,9 +387,6 @@ const CreatePost = ({
         };
       });
       setAttachmentList(attachments);
-      setTimeout(() => {
-        handleEditorChange(selectedPost?.description);
-      }, 1000);
       setSectionIDs(sections);
       setGradeID(grades);
     }
@@ -410,8 +411,9 @@ const CreatePost = ({
 
   return (
     <Modal
+      zIndex={1300}
       className='th-upload-modal'
-      title='Create Post'
+      title={`${selectedPost ? 'Update' : 'Create'} Post`}
       visible={showCreatePostModal}
       onCancel={() => {
         closeModal();
@@ -516,7 +518,6 @@ const CreatePost = ({
                 <Select
                   placeholder='Select Sections'
                   showSearch
-                  required={true}
                   mode='multiple'
                   maxTagCount={1}
                   value={sectionIDs}
@@ -571,13 +572,16 @@ const CreatePost = ({
               </Form.Item>
             </div>
             <div className='col-12 mt-3'>
-              <MyTinyEditor
-                id='post_description'
-                content={textEditorContent}
-                hideImageUpload={true}
-                handleEditorChange={handleEditorChange}
-                placeholder={`What's on your mind, ${first_name}?`}
-              />
+              {openEditor && (
+                <MyTinyEditor
+                  id='post_description'
+                  content={textEditorContent}
+                  setOpenEditor={setOpenEditor}
+                  hideImageUpload={true}
+                  handleEditorChange={handleEditorChange}
+                  placeholder={`What's on your mind, ${first_name}?`}
+                />
+              )}
               {/* </Form.Item> */}
             </div>
           </div>

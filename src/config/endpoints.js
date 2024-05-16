@@ -284,6 +284,15 @@ export default {
     hwErp: '/hw-hub/view-users/',
     hwErpUpdate: '/hw-hub/upload_hw_files/',
   },
+  homeworkDashboard: {
+    branchWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-branch-view/`,
+    gradeWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-grade-view/`,
+    sectionWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-section-view/`,
+    subjectWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-view/`,
+    subjectDetailsWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-detail-view/`,
+    studentList: `${msReportsUrl}/api/acad_performance/student-list-dash/`,
+    studentDash: `${msReportsUrl}/api/acad_performance/student-dash/`,
+  },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
     getTopPerformer: '/academic/hw-top-performer/',
