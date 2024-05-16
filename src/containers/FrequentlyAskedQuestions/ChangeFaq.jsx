@@ -377,7 +377,7 @@ const ChangeFaq = ({
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <div id='Preview-Container'>
-                {!showVideoText ? (
+                {moduleData?.video_file ? (
                   <div
                     style={{
                       display: 'flex',
@@ -434,7 +434,7 @@ const ChangeFaq = ({
                   </div>
                 )}
 
-                {!showPdfText ? (
+                { moduleData?.pdf_file ? (
                   <div
                     style={{
                       display: 'flex',

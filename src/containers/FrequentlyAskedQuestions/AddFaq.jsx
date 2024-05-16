@@ -539,7 +539,7 @@ const CollapseableComponent = ({ module, items }) => {
                         marginTop: '2px',
                       }}
                     >
-                      <small style={{ textAlign: 'left' }}>Only [''.pdf'] allowed.</small>
+                      <small style={{ textAlign: 'left' }}>Only ['.pdf'] allowed.</small>
                       {selectedPdfFile ? (
                         <span
                           style={{
