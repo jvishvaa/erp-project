@@ -14,7 +14,7 @@ const MyTinyEditor = ({
   placeholder,
   filterDataTop = {},
   filterDataBottom = {},
-  hideImageUpload = false,
+  isSocialMediaEditor = false,
 }) => {
   const { TINYMCE_API_KEY = 'g8mda2t3wiq0cvb9j0vi993og4lm8rrylzof5e6lml5x8wua' } =
     ENVCONFIG || {};
@@ -38,8 +38,11 @@ const MyTinyEditor = ({
               ? ['lists link file paste wordcount']
               : ['lists link file image paste wordcount'],
           content_style: 'body { font-size: 14pt; font-family: Arial; }',
-          toolbar:
-            `fontselect fontsizeselect bold italic alignleft aligncenter alignright underline bullist numlist file ${hideImageUpload ? '':'image'} customInsertButton`,
+          toolbar: `${
+            isSocialMediaEditor ? '' : 'fontselect fontsizeselect'
+          } bold italic alignleft aligncenter alignright underline bullist numlist file ${
+            isSocialMediaEditor ? '' : 'image'
+          } customInsertButton`,
           setup:
             id?.startsWith('questionEditor') &&
             function (editor) {

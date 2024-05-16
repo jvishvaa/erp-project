@@ -411,6 +411,7 @@ const SchoolWall = () => {
     setSectionID([]);
     setUniqueGradeId([]);
     setFilterLoading(true);
+    setCategory();
     setPayload({ page: 1, page_size: 10 });
     if (branchList.length > 1) {
       setGradeData([]);
@@ -466,14 +467,18 @@ const SchoolWall = () => {
           <Loader />
         ) : (
           <>
-            <div className='col-md-8 py-3 px-md-4'>
+            <div className='col-md-8 pb-3 px-md-4'>
               {user_level !== 13 && (
-                <Card className='th-bg-white th-br-20'>
+                <Card className='th-bg-white th-br-20 mt-3'>
                   <div className='d-flex align-items-center th-pointer justify-content-between'>
                     <div
                       className='d-flex w-100 align-items-center'
                       onClick={() => {
-                        setShowCreatePostModal(true);
+                        if (selectedAcademicYear?.is_current_session) {
+                          setShowCreatePostModal(true);
+                        } else {
+                          message.warning('Post creation allowed only for the current session')
+                        }
                       }}
                     >
                       <Avatar
