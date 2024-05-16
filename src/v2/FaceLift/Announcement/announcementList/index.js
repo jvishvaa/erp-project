@@ -365,7 +365,7 @@ const AnnouncementList = () => {
                 </div>
                 <div
                   className={`${
-                    showTab == 1
+                    [1,3].includes(parseInt(showTab))
                       ? [1, 8].includes(user_level) || is_superuser
                         ? 'col-md-4'
                         : 'col-md-6'
@@ -381,7 +381,7 @@ const AnnouncementList = () => {
                     <b>Created at</b>
                   </div>
                 ) : null}
-                {(showTab == 1 && ([1, 8].includes(user_level) || is_superuser)) ||
+                {([1,3].includes(parseInt(showTab)) && ([1, 8].includes(user_level) || is_superuser)) ||
                 showTab == 2 ? (
                   <div
                     className={` ${

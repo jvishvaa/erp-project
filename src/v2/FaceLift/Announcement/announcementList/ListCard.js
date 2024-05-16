@@ -16,6 +16,7 @@ const ListCard = (props) => {
     content,
     created_time: date,
     is_flash_event,
+    created_by_user_level
   } = props.data;
   const { showTab, deleteAnnouncement } = props;
   const [showModal, setShowModal] = useState(false);
@@ -86,7 +87,7 @@ const ListCard = (props) => {
         </div>
         <div
           className={`${
-            showTab == 1
+            [1, 3].includes(parseInt(showTab))
               ? [1, 8].includes(user_level) || is_superuser
                 ? 'col-md-4'
                 : 'col-md-6'
@@ -124,7 +125,8 @@ const ListCard = (props) => {
             </Tooltip>
           </div>
         ) : null}
-        {(showTab == 1 && ([1, 8].includes(user_level) || is_superuser)) ||
+        {([1, 3].includes(parseInt(showTab)) &&
+          ([1, 8].includes(user_level) || is_superuser)) ||
         showTab == 2 ? (
           <div
             className={`${
@@ -146,7 +148,7 @@ const ListCard = (props) => {
                 </div>
               ) : null}
               {showTab == 2 ||
-              (showTab == 1 && (is_superuser || [1].includes(user_level))) ? (
+              ([1, 3].includes(parseInt(showTab)) && (is_superuser || [1].includes(user_level))) ? (
                 <>
                   <Popconfirm
                     title='Sure to delete?'
@@ -166,7 +168,7 @@ const ListCard = (props) => {
                 </>
               ) : null}
               {showTab == 2 ||
-              (showTab == 1 && (is_superuser || [1, 8].includes(user_level))) ? (
+              ([1, 3].includes(parseInt(showTab)) && (is_superuser || [1, 8].includes(user_level))) ? (
                 <>
                   <Link
                     to={{
