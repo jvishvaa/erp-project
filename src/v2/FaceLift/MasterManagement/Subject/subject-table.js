@@ -350,7 +350,6 @@ const SubjectTable = () => {
     {
       title: <span className='th-white th-16 th-fw-700'>School Subject Name</span>,
       align: 'left',
-      width: '20%',
       render: (data, row) => (
         <div className='d-flex justify-content-between'>
           <span className='th-black-1 th-16'>
@@ -388,33 +387,29 @@ const SubjectTable = () => {
     {
       title: <span className='th-white th-16 th-fw-700'>Eduvate Subject Name</span>,
       align: 'center',
-      width: '20%',
       render: (data, row) => (
         <span className='th-black-1 th-16'>
           {row?.eduvate_subject_id ? row?.subject_slag : '-'}
         </span>
       ),
     },
-    {
-      title: <span className='th-white th-16 th-fw-700'>Created At</span>,
-      align: 'center',
-      width: '15%',
-      render: (data, row) => (
-        <span className='th-black-1 th-16'>
-          {row?.created_at ? moment(row.created_at).format('DD-MM-YYYY') : ' '}
-        </span>
-      ),
-    },
-    {
-      title: <span className='th-white th-16 th-fw-700'>Created By</span>,
-      align: 'center',
-      width: '15%',
-      render: (data, row) => <span className='th-black-1 th-16'>{row?.created_by}</span>,
-    },
+    // {
+    //   title: <span className='th-white th-16 th-fw-700'>Created At</span>,
+    //   align: 'center',
+    //   render: (data, row) => (
+    //     <span className='th-black-1 th-16'>
+    //       {row?.created_at ? moment(row.created_at).format('DD-MM-YYYY') : ' '}
+    //     </span>
+    //   ),
+    // },
+    // {
+    //   title: <span className='th-white th-16 th-fw-700'>Created By</span>,
+    //   align: 'center',
+    //   render: (data, row) => <span className='th-black-1 th-16'>{row?.created_by}</span>,
+    // },
     {
       title: <span className='th-white th-16 th-fw-700'>Description</span>,
       align: 'center',
-      width: '10%',
       render: (data, row) => (
         <span className='th-black-1 th-16'>
           {extractContent(row?.subject_description).length > 20 ? (
@@ -444,7 +439,6 @@ const SubjectTable = () => {
       title: <span className='th-white th-16 th-fw-700'>Action</span>,
       align: 'center',
       key: 'action',
-      width: '10%',
       render: (data, row) => {
         return (
           <>
@@ -605,7 +599,7 @@ const SubjectTable = () => {
                       type='primary'
                       icon={<PlusCircleOutlined />}
                       onClick={() => handleOpenDrawer()}
-                      className='btn-block th-br-4'
+                      className='btn-block th-br-4 px-0'
                     >
                       Add Eduvate Subject
                     </Button>
