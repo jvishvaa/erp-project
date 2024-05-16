@@ -111,12 +111,14 @@ const ChangeFaq = ({
       setQuestions(moduleData?.items.map((item) => item.question) || []);
       setAnswers(moduleData?.items.map((item) => item.answer) || []);
     }
-    if (deletePdfFile == false || deleteVideoFile == false) {
+    if (deletePdfFile == false) {
       if (moduleData?.pdf_file) {
         setShowPdfText(false);
       } else {
         setShowPdfText(true);
       }
+    }
+    if (deleteVideoFile == false) {
       if (moduleData?.video_file) {
         setShowVideoText(false);
       } else {
@@ -355,22 +357,22 @@ const ChangeFaq = ({
               <div>
                 <p style={{ marginTop: '3px' }}>Sub Module Name :- {moduleName}</p>
               </div>
-              <div style={{display:"flex", justifyContent:"center"}}>
-                  <Select
-                    defaultValue={moduleData?.user_level}
-                    mode='multiple'
-                    onChange={(e) => handleChangeUser(e)}
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    style={{ margin: 'auto', width: '90%' }}
-                    getPopupContainer={(trigger) => trigger.parentNode}
-                    status={editUserLevel.length <= 0 ? 'error' : ''}
-                  >
-                    {userLevelListOptions}
-                  </Select>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Select
+                  defaultValue={moduleData?.user_level}
+                  mode='multiple'
+                  onChange={(e) => handleChangeUser(e)}
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  style={{ margin: 'auto', width: '90%' }}
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  status={editUserLevel.length <= 0 ? 'error' : ''}
+                >
+                  {userLevelListOptions}
+                </Select>
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -425,7 +427,7 @@ const ChangeFaq = ({
                     <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo Video</p>
                     <p style={{ marginTop: '10px' }}>No Video File Exists</p>
                     {moduleData?.media_id && (
-                      <Button type='primary' onClick={() => handleReplaceVideo()}>
+                      <Button style={{marginRight : "7px"}} type='primary' onClick={() => handleReplaceVideo()}>
                         Upload
                       </Button>
                     )}
@@ -553,35 +555,35 @@ const ChangeFaq = ({
                     Answer
                   </label>
                   <TextArea
-                      showCount
-                      style={{ height: '80px' }}
-                      maxLength={1500}
-                      value={answers[index]}
-                      onChange={(e) => handleAnswerChange(index, e.target.value)}
-                      status={`${
-                        answers[index] == ''
-                          ? 'error'
-                          : '' || answers[index]?.trim() == ''
-                          ? 'error'
-                          : ''
-                      }`}
-                    />
+                    showCount
+                    style={{ height: '80px' }}
+                    maxLength={1500}
+                    value={answers[index]}
+                    onChange={(e) => handleAnswerChange(index, e.target.value)}
+                    status={`${
+                      answers[index] == ''
+                        ? 'error'
+                        : '' || answers[index]?.trim() == ''
+                        ? 'error'
+                        : ''
+                    }`}
+                  />
                 </div>
               ))}
               <div id='Button-Cont'>
-                  <Button
-                    style={{ backgroundColor: 'green', color: 'white' }}
-                    onClick={() => handleEdit()}
-                    disabled={
-                      questions.some((item) => item == '') ||
-                      answers.some((item) => item == '') ||
-                      editUserLevel.length <= 0 ||
-                      questions.some((item) => item?.trim() == '') ||
-                      answers.some((item) => item?.trim() == '')
-                    }
-                  >
-                    Save
-                  </Button>
+                <Button
+                  style={{ backgroundColor: 'green', color: 'white' }}
+                  onClick={() => handleEdit()}
+                  disabled={
+                    questions.some((item) => item == '') ||
+                    answers.some((item) => item == '') ||
+                    editUserLevel.length <= 0 ||
+                    questions.some((item) => item?.trim() == '') ||
+                    answers.some((item) => item?.trim() == '')
+                  }
+                >
+                  Save
+                </Button>
               </div>
             </div>
           </>
