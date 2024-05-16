@@ -273,7 +273,7 @@ const BranchTable = () => {
     //   ),
     // },
     {
-      title: <span className='th-white th-16 th-fw-700'>Branch Code</span>,
+      title: <span className='th-white th-16 th-fw-700'>Code</span>,
       align: 'center',
       render: (data, row) => <span className='th-black-1 th-16'>{row?.branch_code}</span>,
     },
@@ -299,7 +299,7 @@ const BranchTable = () => {
       ),
     },
     {
-      title: <span className='th-white th-16 th-fw-700'>Branch Logo</span>,
+      title: <span className='th-white th-16 th-fw-700'>Logo</span>,
       align: 'center',
       render: (data, row) => (
         <span className='th-black-1 th-16'>
@@ -597,6 +597,7 @@ const BranchTable = () => {
                       placeholder='Enter Branch Address'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
+                      maxLength={500}
                     />
                   </Form.Item>
                   <Form.Item

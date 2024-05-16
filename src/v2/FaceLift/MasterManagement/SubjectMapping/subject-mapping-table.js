@@ -35,6 +35,7 @@ const SubjectMappingTable = () => {
   const { Option } = Select;
   const [filterForm] = useForm();
   const [formRef] = useForm();
+  const sessionYearList = JSON.parse(sessionStorage.getItem('acad_session_list'));
   const [loading, setLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -43,7 +44,6 @@ const SubjectMappingTable = () => {
   const [search, setSearch] = useState('');
   const [openDrawer, setOpenDrawer] = useState(false);
   const [drawerLoading, setDrawerLoading] = useState(false);
-  const [sessionYearList, setSessionYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -71,9 +71,6 @@ const SubjectMappingTable = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
-  useEffect(() => {
-    fetchSessionYearList();
   }, []);
   useEffect(() => {
     fetchTableData();
@@ -217,22 +214,6 @@ const SubjectMappingTable = () => {
         if (response?.data?.status_code == 200) {
           message.success('Hurray! Mapping(s) restored successfully');
           fetchTableData();
-        }
-      })
-      .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-  const fetchSessionYearList = () => {
-    setLoading(true);
-    axiosInstance
-      .get(`${endpoints.masterManagement.academicYear}`)
-      .then((response) => {
-        if (response?.data?.status_code == 200) {
-          setSessionYearList(response?.data?.result?.results);
         }
       })
       .catch((error) => {
