@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Form, Input, Avatar, Comment, Tag, Popover, Popconfirm, Button } from 'antd';
 import MediaDisplay from './mediaDisplay';
 import dayjs from 'dayjs';
@@ -21,6 +21,9 @@ import endpoints from 'v2/config/endpoints';
 const PostCard = (props) => {
   const newCommentRef = useRef();
   const { user_level, user_id } = JSON.parse(localStorage?.getItem('userDetails'));
+  const academicYearList = useSelector(
+    (state) => state.commonFilterReducer?.academicYearList
+  );
   const {
     id,
     user,
@@ -33,6 +36,7 @@ const PostCard = (props) => {
     media_files: files,
     category_name,
     recent_comment,
+    session_year,
   } = props?.post;
   const likePost = props?.likePost;
 
@@ -45,6 +49,14 @@ const PostCard = (props) => {
     const updatedValues = newCommentRef.current.getFieldsValue();
     await props.handleAddComment(props?.index, id, updatedValues?.comment);
     newCommentRef.current.resetFields();
+  };
+
+  const CheckCurrentSession = (creationYear) => {
+    const isCreatedInCurrentSession = academicYearList?.filter(
+      (el) => el?.session_year == creationYear
+    )?.[0]?.is_current_session;
+
+    return isCreatedInCurrentSession;
   };
 
   const settings = {
@@ -115,11 +127,11 @@ const PostCard = (props) => {
                 placement='right'
                 content={
                   <div className='d-flex flex-column align-items-center'>
-                    {user_id === user?.id && (
+                    {user_id === user?.id && CheckCurrentSession(session_year) && (
                       <Tag
                         color='processing'
                         icon={<EditOutlined />}
-                        className='th-br-8 th-pointer text-center w-100'
+                        className='th-br-8 th-pointer text-center w-100 mb-2'
                         onClick={() => {
                           props.handleEditPost();
                         }}
@@ -128,7 +140,6 @@ const PostCard = (props) => {
                       </Tag>
                     )}
                     <Popconfirm
-                      className='mt-2'
                       placement='bottom'
                       title='Are you sure to delete this post?'
                       onConfirm={props.handleDeletePost}
