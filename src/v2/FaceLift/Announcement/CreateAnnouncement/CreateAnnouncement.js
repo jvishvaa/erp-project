@@ -326,9 +326,9 @@ const CreateAnnouncement = (props) => {
         key={each?.grade_id}
         value={each?.grade_id}
         grade_id={each?.grade_id}
-        disabled={
-          branchId?.length > 1 && gradeIds?.length && !gradeIds?.includes(each?.grade_id)
-        }
+        // disabled={
+        //   branchId?.length > 1 && gradeIds?.length && !gradeIds?.includes(each?.grade_id)
+        // }
       >
         {each?.grade__grade_name}
       </Option>
@@ -880,7 +880,7 @@ const CreateAnnouncement = (props) => {
                               );
                             }}
                           >
-                            {gradeData.length > 1 && branchId?.length === 1 && (
+                            {gradeData.length > 1  && (
                               <>
                                 <Option key={0} value={'all'}>
                                   All
