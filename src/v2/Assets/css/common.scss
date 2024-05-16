@@ -528,11 +528,12 @@ svg {
     height: 200px !important;
     object-fit: contain !important;
     width: 100% !important;
+    margin-bottom: 10px !important;
   }
 }
 .th-media-display {
   video {
-    max-height: 450px;
+    height: 200px;
   }
   audio {
     height: 130px;
