@@ -394,6 +394,7 @@ const ChangeFaq = ({
                         justifyContent: 'center',
                       }}
                     >
+                      <Tooltip title="Click For Preview" getPopupContainer={getPopupContainer}>
                       <PlayCircleOutlined
                         onClick={() =>
                           handleVideoPrev(
@@ -402,9 +403,7 @@ const ChangeFaq = ({
                         }
                         style={{ fontSize: '40px', color: 'blueviolet' }}
                       />
-                      <p style={{ marginTop: '10px', textAlign: 'center' }}>
-                        Click For Preview
-                      </p>
+                      </Tooltip>
                     </div>
                     <Popconfirm
                       title='Delete Video?'
@@ -452,6 +451,7 @@ const ChangeFaq = ({
                         justifyContent: 'center',
                       }}
                     >
+                      <Tooltip title="Click For Preview" getPopupContainer={getPopupContainer}>
                       <img
                         src={getFileIcon('pdf')}
                         onClick={() => {
@@ -470,11 +470,9 @@ const ChangeFaq = ({
                             ],
                           });
                         }}
-                        style={{ width: '30%', marginLeft: '36px', cursor: 'pointer' }}
+                        style={{cursor: 'pointer' }}
                       />
-                      <p style={{ textAlign: 'center', marginTop: '10px' }}>
-                        Click For Preview
-                      </p>
+                      </Tooltip>
                     </div>
                     <Popconfirm
                       title='Delete PDF?'
