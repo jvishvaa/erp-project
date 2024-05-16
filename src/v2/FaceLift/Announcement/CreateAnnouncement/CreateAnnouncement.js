@@ -78,6 +78,11 @@ const CreateAnnouncement = (props) => {
   const [feeReminderSelected, setFeeReminderSelected] = useState();
   const [dataForEdit, setDataForEdit] = useState(null);
 
+  const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const is_superuser = true;
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const user_level = 14;
+
   const { TextArea } = Input;
 
   const handleUploadModalClose = () => {
@@ -382,8 +387,8 @@ const CreateAnnouncement = (props) => {
         branch_id: e?.join(','),
         // module_id: moduleId,
       });
-      setGradeData([])
-      setSectionData([])
+      setGradeData([]);
+      setSectionData([]);
     }
   };
   const handleClearBranch = () => {
@@ -391,8 +396,8 @@ const CreateAnnouncement = (props) => {
     setGradeIds([]);
     setSectionIds([]);
     setSectionMappingIds([]);
-    setGradeData([])
-    setSectionData([])
+    setGradeData([]);
+    setSectionData([]);
   };
 
   const handleSelectGrade = (value, arr) => {
@@ -727,7 +732,7 @@ const CreateAnnouncement = (props) => {
               Announcements
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1'>
-              Create New Announcement
+              {props?.match?.params?.id?'Edit Announcement':'Create New Announcement'}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -789,7 +794,10 @@ const CreateAnnouncement = (props) => {
                         suffixIcon={<DownOutlined className='th-grey' />}
                         dropdownMatchSelectWidth={false}
                         maxTagCount={2}
-                        disabled={props?.match?.params?.id}
+                        disabled={
+                          props?.match?.params?.id &&
+                          !([1, 8].includes(user_level) || is_superuser)
+                        }
                         onChange={(e) => handleBranchChange(e)}
                         allowClear={true}
                         onClear={handleClearBranch}
@@ -817,7 +825,11 @@ const CreateAnnouncement = (props) => {
                         className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                         placement='bottomRight'
                         showArrow={true}
-                        disabled={feeReminderSelected || props?.match?.params?.id}
+                        disabled={
+                          feeReminderSelected ||
+                          (props?.match?.params?.id &&
+                            !([1, 8].includes(user_level) || is_superuser))
+                        }
                         onChange={(e, value) => handleUserLevel(e)}
                         onClear={handleClearUserLevel}
                         dropdownMatchSelectWidth={false}
@@ -846,7 +858,10 @@ const CreateAnnouncement = (props) => {
                             suffixIcon={<DownOutlined className='th-grey' />}
                             maxTagCount={1}
                             dropdownMatchSelectWidth={false}
-                            disabled={props?.match?.params?.id}
+                            disabled={
+                              props?.match?.params?.id &&
+                              !([1, 8].includes(user_level) || is_superuser)
+                            }
                             onSelect={(e) => {
                               handleSelectGrade(
                                 e,
@@ -882,7 +897,8 @@ const CreateAnnouncement = (props) => {
                             mode='multiple'
                             disabled={
                               (gradeIds.length > 0 && feeReminderSelected) ||
-                              props?.match?.params?.id
+                              (props?.match?.params?.id &&
+                                !([1, 8].includes(user_level) || is_superuser))
                             }
                             value={sectionMappingIds}
                             getPopupContainer={(trigger) => trigger.parentNode}
@@ -1101,6 +1117,7 @@ const CreateAnnouncement = (props) => {
                             </span>
                           </div>
                         </div>
+                        <span className='th-grey th-12'>Dimensions: 600*300</span>
                       </div>
                       <div className='col-md-3'>
                         <span className='th-grey th-14'>Link</span>
@@ -1109,6 +1126,7 @@ const CreateAnnouncement = (props) => {
                             style={{ fontSize: '10px' }}
                             onChange={(e) => setFlashLink(e.target.value)}
                             value={flashLink}
+                            placeholder='dimentions'
                           />
                         </div>
                       </div>
