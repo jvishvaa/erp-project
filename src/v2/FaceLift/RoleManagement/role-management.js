@@ -446,8 +446,9 @@ const RoleManagement = () => {
         <Card
           key={index}
           size='small'
+          headStyle={{ background: '#1b4ccb', borderRadius: '10px 10px 0 0' }}
           title={
-            <div className='d-flex justify-content-between px-2 th-bg-primary'>
+            <div className='d-flex justify-content-between'>
               <span className='th-white th-16 th-fw-700'>
                 {parentModule?.module_parent}
               </span>
@@ -461,6 +462,11 @@ const RoleManagement = () => {
           className={`${
             isParentModuleSelected ? 'th-bg-blue-2' : 'bg-light'
           } th-br-10 mb-4 shadow`}
+          bodyStyle={{
+            maxHeight: '200px',
+            overflowY: 'auto',
+            scrollbarWidth: 'thin'
+          }}
         >
           {parentModule?.module_child.map((childModule, subIndex) => (
             <ChildModulesDivComponents

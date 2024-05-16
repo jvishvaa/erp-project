@@ -16,12 +16,15 @@ const ListCard = (props) => {
     content,
     created_time: date,
     is_flash_event,
+    created_by_user_level
   } = props.data;
   const { showTab, deleteAnnouncement } = props;
   const [showModal, setShowModal] = useState(false);
 
   const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const is_superuser = false;
   const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const user_level = 8;
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -84,11 +87,13 @@ const ListCard = (props) => {
         </div>
         <div
           className={`${
-            showTab != 2 && (is_superuser || showTab == 3)
-              ? 'col-md-4 '
-              : showTab == 1
-              ? 'col-md-6 '
-              : 'col-md-5 '
+            [1, 3].includes(parseInt(showTab))
+              ? [1, 8].includes(user_level) || is_superuser
+                ? 'col-md-4'
+                : 'col-md-6'
+              : showTab == 2
+              ? 'col-md-5'
+              : 'col-md-6'
           } col-5 text-truncate th-pointer`}
           style={{ width: '95%' }}
           onClick={() => {
@@ -120,10 +125,12 @@ const ListCard = (props) => {
             </Tooltip>
           </div>
         ) : null}
-        {showTab != 1 || is_superuser ? (
+        {([1, 3].includes(parseInt(showTab)) &&
+          ([1, 8].includes(user_level) || is_superuser)) ||
+        showTab == 2 ? (
           <div
             className={`${
-              showTab != 2 ? 'col-md-2 ' : showTab == 2 || is_superuser ? 'col-md-3 ' : ''
+              showTab == 2 ? 'col-md-3' : 'col-md-2'
             } col-3 px-2 px-md-4 th-grey text-right`}
           >
             <div className='d-flex flex-row justify-content-end'>
@@ -140,7 +147,8 @@ const ListCard = (props) => {
                     : 'Publish'}
                 </div>
               ) : null}
-              {is_superuser|| [1]?.includes(user_level) ? (
+              {showTab == 2 ||
+              ([1, 3].includes(parseInt(showTab)) && (is_superuser || [1].includes(user_level))) ? (
                 <>
                   <Popconfirm
                     title='Sure to delete?'
@@ -159,7 +167,8 @@ const ListCard = (props) => {
                   </Popconfirm>
                 </>
               ) : null}
-              {showTab != 1 && (is_superuser||[1,8]?.includes(user_level)) ? (
+              {showTab == 2 ||
+              ([1, 3].includes(parseInt(showTab)) && (is_superuser || [1, 8].includes(user_level))) ? (
                 <>
                   <Link
                     to={{

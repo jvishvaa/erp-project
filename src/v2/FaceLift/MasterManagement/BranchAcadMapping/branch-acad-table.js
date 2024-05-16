@@ -35,6 +35,7 @@ const BranchAcadTable = () => {
   const [filterForm] = useForm();
   const [formRef] = useForm();
   const session_year = JSON.parse(sessionStorage.getItem('acad_session'));
+  const sessionYearList = JSON.parse(sessionStorage.getItem('acad_session_list'));
   const [loading, setLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -43,7 +44,6 @@ const BranchAcadTable = () => {
   const [search, setSearch] = useState('');
   const [openDrawer, setOpenDrawer] = useState(false);
   const [drawerLoading, setDrawerLoading] = useState(false);
-  const [sessionYearList, setSessionYearList] = useState([]);
   const [allBranchList, setAllBranchList] = useState([]);
   const [drawerWidth, setDrawerWidth] = useState(
     window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
@@ -65,7 +65,6 @@ const BranchAcadTable = () => {
     };
   }, []);
   useEffect(() => {
-    fetchSessionYearList();
     filterForm.setFieldsValue({
       session_year: session_year?.id,
     });
@@ -84,22 +83,6 @@ const BranchAcadTable = () => {
     }, 500);
     return () => clearTimeout(timeout);
   }, [search]);
-  const fetchSessionYearList = () => {
-    // setLoading(true);
-    axiosInstance
-      .get(`${endpoints.masterManagement.academicYear}`)
-      .then((response) => {
-        if (response?.data?.status_code == 200) {
-          setSessionYearList(response?.data?.result?.results);
-        }
-      })
-      .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
-      })
-      .finally(() => {
-        // setLoading(false);
-      });
-  };
   const handleFetchTableData = () => {
     if (currentPage == 1) {
       fetchTableData();
@@ -246,7 +229,7 @@ const BranchAcadTable = () => {
       ),
     },
     {
-      title: <span className='th-white th-16 th-fw-700'>Branch Code</span>,
+      title: <span className='th-white th-16 th-fw-700'>Code</span>,
       align: 'center',
       render: (data, row) => (
         <span className='th-black-1 th-16'>{row?.branch?.branch_code}</span>
@@ -260,7 +243,7 @@ const BranchAcadTable = () => {
       ),
     },
     {
-      title: <span className='th-white th-16 th-fw-700'>Branch Logo</span>,
+      title: <span className='th-white th-16 th-fw-700'>Logo</span>,
       align: 'center',
       render: (data, row) => (
         <span className='th-black-1 th-16'>

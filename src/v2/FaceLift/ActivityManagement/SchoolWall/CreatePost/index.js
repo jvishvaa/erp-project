@@ -42,6 +42,7 @@ const CreatePost = ({
   const [fileUploading, setFileUploading] = useState(false);
   const [individualFileProgress, setIndividualFileProgress] = useState(0);
   const [individualFileprogressEvent, setIndividualFileprogressEvent] = useState({});
+  const [openEditor, setOpenEditor] = useState(false);
 
   const handleEditorChange = (content) => {
     setTextEditorContent(content);
@@ -221,6 +222,13 @@ const CreatePost = ({
       return false;
     }
     let index = 0;
+    const attachmentEnd = document.getElementById('attachments-end');
+    attachmentEnd.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest',
+      alignToTop: 'true',
+    });
     for (const file of totalFiles) {
       const isLast = index === totalFiles.length - 1;
       setFileUploading(true);
@@ -347,6 +355,8 @@ const CreatePost = ({
   };
 
   useEffect(() => {
+    setOpenEditor(true);
+    handleEditorChange(selectedPost ? selectedPost?.description : '');
     if (selectedPost) {
       let branches = branchList
         ?.filter((el) => selectedPost?.acad_session.includes(el?.id))
@@ -384,9 +394,6 @@ const CreatePost = ({
         };
       });
       setAttachmentList(attachments);
-      setTimeout(() => {
-        handleEditorChange(selectedPost?.description);
-      }, 1000);
       setSectionIDs(sections);
       setGradeID(grades);
     }
@@ -411,9 +418,9 @@ const CreatePost = ({
 
   return (
     <Modal
-      zIndex={1200}
+      // zIndex={1300}
       className='th-upload-modal'
-      title='Create Post'
+      title={`${selectedPost ? 'Update' : 'Create'} Post`}
       visible={showCreatePostModal}
       onCancel={() => {
         closeModal();
@@ -572,13 +579,16 @@ const CreatePost = ({
               </Form.Item>
             </div>
             <div className='col-12 mt-3'>
-              <MyTinyEditor
-                id='post_description'
-                content={textEditorContent}
-                hideImageUpload={true}
-                handleEditorChange={handleEditorChange}
-                placeholder={`What's on your mind, ${first_name}?`}
-              />
+              {openEditor && (
+                <MyTinyEditor
+                  id='post_description'
+                  content={textEditorContent}
+                  setOpenEditor={setOpenEditor}
+                  isSocialMediaEditor={true}
+                  handleEditorChange={handleEditorChange}
+                  placeholder={`What's on your mind, ${first_name}?`}
+                />
+              )}
               {/* </Form.Item> */}
             </div>
           </div>
@@ -612,49 +622,52 @@ const CreatePost = ({
         )}
 
         {attachmentList.length > 0 && (
-          <div className='th-br-16 th-bg-grey m-3 p-3 '>
-            <i>
-              {attachmentList.length} attachment{attachmentList.length > 1 ? 's' : ''}
-            </i>
-            <div className='d-flex flex-wrap py-2'>
-              {attachmentList?.map((item, index) => {
-                const extension = item?.media_path?.split('.').pop();
-                return (
-                  <div className='px-2 d-flex flex-column align-items-center' title=''>
-                    {extension.match(/(jpg|jpeg|png|gif|avif|webp)/i) ? (
-                      <Image
-                        preview={{
-                          mask: <EyeFilled />,
-                          previewText: null,
-                        }}
-                        src={`${endpoints?.erp_googleapi}/${item?.media_path}`}
-                        height={80}
-                        width={80}
-                        style={{ borderRadius: 16, objectFit: 'cover' }}
-                      />
-                    ) : extension.match(/(mp4|ogg|avi)/i) ? (
-                      <img src={videoIcon} width={80} />
-                    ) : extension.match(/(mp3|webm)/i) ? (
-                      <img src={audioIcon} width={80} />
-                    ) : extension.match(/pdf/i) ? (
-                      <img src={pdfIcon} width={80} />
-                    ) : (
-                      <img src={fileIcon} width={80} />
-                    )}
-                    <Tag
-                      color='volcano'
-                      icon={<DeleteOutlined />}
-                      className='th-pointer mt-2 th-br-8 th-12'
-                      onClick={() => handleRemoveAttachment(index)}
-                    >
-                      Remove
-                    </Tag>
-                  </div>
-                );
-              })}
+          <>
+            <div className='th-br-16 th-bg-grey m-3 p-3 '>
+              <i>
+                {attachmentList.length} attachment{attachmentList.length > 1 ? 's' : ''}
+              </i>
+              <div className='d-flex flex-wrap py-2'>
+                {attachmentList?.map((item, index) => {
+                  const extension = item?.media_path?.split('.').pop();
+                  return (
+                    <div className='px-2 d-flex flex-column align-items-center' title=''>
+                      {extension.match(/(jpg|jpeg|png|gif|avif|webp)/i) ? (
+                        <Image
+                          preview={{
+                            mask: <EyeFilled />,
+                            previewText: null,
+                          }}
+                          src={`${endpoints?.erp_googleapi}/${item?.media_path}`}
+                          height={80}
+                          width={80}
+                          style={{ borderRadius: 16, objectFit: 'cover' }}
+                        />
+                      ) : extension.match(/(mp4|ogg|avi)/i) ? (
+                        <img src={videoIcon} width={80} />
+                      ) : extension.match(/(mp3|webm)/i) ? (
+                        <img src={audioIcon} width={80} />
+                      ) : extension.match(/pdf/i) ? (
+                        <img src={pdfIcon} width={80} />
+                      ) : (
+                        <img src={fileIcon} width={80} />
+                      )}
+                      <Tag
+                        color='volcano'
+                        icon={<DeleteOutlined />}
+                        className='th-pointer mt-2 th-br-8 th-12'
+                        onClick={() => handleRemoveAttachment(index)}
+                      >
+                        Remove
+                      </Tag>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </>
         )}
+        <div id='attachments-end' />
       </div>
     </Modal>
   );
