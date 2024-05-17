@@ -24,10 +24,12 @@ const DashboardChildCard = ({
   showAbsolute,
   loading,
   tableLoading,
+  subjectId,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [evaluationChart, setEvaluationChart] = useState(false);
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -301,6 +303,7 @@ const DashboardChildCard = ({
                               start_date: startDate,
                               end_date: endDate,
                               section_mapping_id: item?.id,
+                              subject_id: subjectId,
                             });
                           } else if (visibleLevel === 'grade' && dashboardLevel === 1) {
                             fetchStudentList({
@@ -309,6 +312,8 @@ const DashboardChildCard = ({
                               subject: item?.id,
                               section_mapping: secMapId,
                               acad_session: selectedBranch?.id,
+                              teacher_id: visibleLevel === 'grade' && userData?.user_id,
+                              subject_id: subjectId,
                             });
                           }
                           toggleCollapse();
