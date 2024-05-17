@@ -426,7 +426,7 @@ const CollapseableComponent = ({ module, items }) => {
         <div className='row'>
           <div className='col-md-12'>
             <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
-              <div className='row'>
+              <div className='row' style={{marginTop:"-15px"}}>
                 <Form
                   className='mt-3'
                   layout={'vertical'}
