@@ -355,12 +355,13 @@ const DashboardChildCard = ({
         </div>
         <div className='col-md-5 text-center col-12' style={{ minHeight: '150px' }}>
           <div className='th-bg-white th-br-10 p-3'>
-            <div className='row'>
-              <div className='col-12'>
+            <div className='row mt-2'>
+              <div className='col-8 text-left'>{level2Data[selectedCardIndex]?.name}</div>
+              <div className='col-4'>
                 <Switch
                   checkedChildren='Evaluation'
                   unCheckedChildren='Submission'
-                  className='mt-3 float-right'
+                  className='float-right'
                   defaultChecked={evaluationChart}
                   onChange={() => setEvaluationChart(!evaluationChart)}
                 />
