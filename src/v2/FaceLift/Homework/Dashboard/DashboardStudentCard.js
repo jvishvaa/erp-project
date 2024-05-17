@@ -40,7 +40,7 @@ const DashboardStudentCard = ({
           : null,
       y: 18,
     },
-    colors: ['#05B187', '#16BCC7', '#FEC90F'],
+    colors: ['#065471', '#FFC045', '#0A91AB'],
     credits: {
       enabled: false,
     },
