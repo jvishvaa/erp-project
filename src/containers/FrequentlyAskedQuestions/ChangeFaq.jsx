@@ -585,7 +585,7 @@ const ChangeFaq = ({
               ))}
               <div id='Button-Cont'>
                 <Button
-                  style={{ backgroundColor: 'green', color: 'white' }}
+                  type='primary'
                   onClick={() => handleEdit()}
                   disabled={
                     questions.some((item) => item == '') ||
