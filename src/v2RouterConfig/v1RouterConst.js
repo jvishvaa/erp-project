@@ -11,6 +11,7 @@ import MessageLog from 'containers/communication/message-log/message-log';
 import StudentHomework from 'containers/homework/student-homework/student-homework';
 import AssignRole from 'containers/communication/assign-role/assign-role';
 import RoleManagement from 'v2/FaceLift/RoleManagement/role-management';
+import ModuleManagement from '../v2/FaceLift/RoleManagement/module-management';
 // import store from './redux/store';
 import ChapterTypeTable from 'containers/master-management/chapter-type/chapter-type-table';
 import TopicTable from 'containers/master-management/topic/TopicTable';
@@ -490,6 +491,9 @@ const V1Router = [
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
   </Route>,
+  <Route path='/module-management'>
+   {({ match }) => <ModuleManagement match={match} />}
+ </Route>,
   <Route path='/post-activity-view'>
     {({ match }) => <PostActivityView match={match} />}
   </Route>,
