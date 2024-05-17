@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   Button,
@@ -32,6 +33,7 @@ import Layout from 'containers/Layout';
 import { useForm } from 'antd/lib/form/Form';
 
 const RoleManagement = () => {
+  const history = useHistory();
   const [formRef] = useForm();
   const [loading, setLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -135,7 +137,7 @@ const RoleManagement = () => {
     setDrawerLoading(true);
     let url;
     if (actionKey === 'create') {
-      url = `${endpoints.roleManagement.moduleList}`;
+      url = `${endpoints.moduleManagement.moduleList}?is_delete=False`;
     } else if (actionKey === 'edit') {
       url = `${endpoints.roleManagement.roleList}?role=${roleId}`;
     }
@@ -465,7 +467,7 @@ const RoleManagement = () => {
           bodyStyle={{
             maxHeight: '200px',
             overflowY: 'auto',
-            scrollbarWidth: 'thin'
+            scrollbarWidth: 'thin',
           }}
         >
           {parentModule?.module_child.map((childModule, subIndex) => (
@@ -504,19 +506,30 @@ const RoleManagement = () => {
                     allowClear
                   />
                 </div>
-                <div className='col-lg-2 col-md-3 col-sm-3 col-12'>
-                  <Button
-                    type='primary'
-                    icon={<PlusCircleOutlined />}
-                    onClick={() =>
-                      openModulesDrawer({
-                        actionKey: 'create',
-                      })
-                    }
-                    className='btn-block th-br-4'
-                  >
-                    Add Role
-                  </Button>
+                <div className='row col-lg-8 col-md-6 col-sm-6 col-12 justify-content-end'>
+                  <div className='col-lg-3 col-md-3 col-sm-3 col-12 mt-2'>
+                    <Button
+                      type='primary'
+                      onClick={() => history.push('/module-management')}
+                      className='btn-block th-br-4'
+                    >
+                      Manage Modules
+                    </Button>
+                  </div>
+                  <div className='col-lg-2 col-md-3 col-sm-3 col-12 mt-2'>
+                    <Button
+                      type='primary'
+                      icon={<PlusCircleOutlined />}
+                      onClick={() =>
+                        openModulesDrawer({
+                          actionKey: 'create',
+                        })
+                      }
+                      className='btn-block th-br-4'
+                    >
+                      Add Role
+                    </Button>
+                  </div>
                 </div>
               </div>
               <div className='mt-2'>
@@ -626,13 +639,19 @@ const RoleManagement = () => {
                     </div>
                     <div className='row'>
                       {moduleList.map((parentModule, index) => (
-                        <div className='col-lg-3 col-md-6 col-sm-12 col-12'>
-                          <ParentModuleCardComponent
-                            key={index}
-                            parentModule={parentModule}
-                            index={index}
-                          />
-                        </div>
+                        <>
+                          {parentModule?.module_child?.length > 0 && (
+                            <div
+                              className='col-lg-3 col-md-6 col-sm-12 col-12'
+                              key={index}
+                            >
+                              <ParentModuleCardComponent
+                                parentModule={parentModule}
+                                index={index}
+                              />
+                            </div>
+                          )}
+                        </>
                       ))}
                     </div>
                   </>
