@@ -230,7 +230,7 @@ const V2Router = () => {
 
   // Function to start the timer
   const startTimer = () => {
-    timer.current = setInterval(callAPI('startTimer'), 120000); // Call the API every 2 minutes
+    timer.current = setInterval(callAPI, 120000); // Call the API every 2 minutes
   };
 
   // Function to reset the timer

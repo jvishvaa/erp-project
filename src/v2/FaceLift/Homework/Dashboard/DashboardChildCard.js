@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DashboardChildDrawer from './DashboardChildDrawer';
-import { Table, Tag } from 'antd';
+import { Switch, Table, Tag } from 'antd';
 import { EyeOutlined, RightCircleOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import Highcharts from 'highcharts';
@@ -10,12 +10,8 @@ const DashboardChildCard = ({
   dashboardLevel,
   startDate,
   endDate,
-  teacherId,
   cardData,
   setDashboardLevel,
-  index,
-  fetchGradeWise,
-  fetchSectionWise,
   tableData,
   fetchSubjectWise,
   fetchStudentList,
@@ -25,9 +21,16 @@ const DashboardChildCard = ({
   level3Data,
   visibleLevel,
   secMapId,
+  showAbsolute,
+  loading,
+  tableLoading,
+  subjectId,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [evaluationChart, setEvaluationChart] = useState(false);
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
@@ -71,48 +74,79 @@ const DashboardChildCard = ({
         </span>
       ),
       width: '18%',
-      align: 'center',
+      align: 'left',
       dataIndex: 'name',
-      render: (data) => <span className='th-black-1 th-12'>{data}</span>,
+      render: (data) => <span className='th-black-1 th-10'>{data}</span>,
     },
     {
-      title: <span className='th-white th-12 th-fw-500'>Pending (%)</span>,
+      title: (
+        <span className='th-white th-10 th-fw-500'>
+          Pending {showAbsolute ? '' : '(%)'}
+        </span>
+      ),
       width: '18%',
       align: 'center',
       dataIndex: 'percentageCounts',
-      render: (data) => <span className='th-black-1 th-12'>{data?.p_pending}</span>,
+      render: (data, record) => (
+        <span className='th-black-1 th-10'>
+          {showAbsolute
+            ? record?.numberCounts?.pending
+            : record?.percentageCounts?.p_pending}
+        </span>
+      ),
     },
 
     {
-      title: <span className='th-white th-12 th-fw-500'>Submitted (%)</span>,
+      title: (
+        <span className='th-white th-10 th-fw-500'>
+          Submitted {showAbsolute ? '' : '(%)'}
+        </span>
+      ),
       width: '18%',
       align: 'center',
       dataIndex: 'percentageCounts',
-      render: (data) => <span className='th-black-1 th-12'>{data?.p_submitted}</span>,
+      render: (data, record) => (
+        <span className='th-black-1 th-10'>
+          {showAbsolute
+            ? record?.numberCounts?.submitted
+            : record?.percentageCounts?.p_submitted}
+        </span>
+      ),
     },
     {
-      title: <span className='th-white th-12 th-fw-500'>Evaluated (%)</span>,
+      title: (
+        <span className='th-white th-10 th-fw-500'>
+          Evaluated {showAbsolute ? '' : '(%)'}
+        </span>
+      ),
       width: '18%',
       align: 'center',
       dataIndex: 'percentageCounts',
-      render: (data) => <span className='th-black-1 th-12'>{data?.p_evaluated}</span>,
+      render: (data, record) => (
+        <span className='th-black-1 th-10'>
+          {showAbsolute
+            ? record?.numberCounts?.evaluated
+            : record?.percentageCounts?.p_evaluated}
+        </span>
+      ),
     },
     {
-      title: <span className='th-white th-12 th-fw-500'>Total</span>,
+      title: <span className='th-white th-10 th-fw-500'>Total</span>,
       width: '18%',
       align: 'center',
       dataIndex: 'numberCounts',
-      render: (data) => <span className='th-black-1 th-12'>{data?.assigned}</span>,
+      render: (data) => <span className='th-black-1 th-10'>{data?.assigned}</span>,
     },
     {
-      title: <span className='th-white th-12 th-fw-500'>Action</span>,
+      title: <span className='th-white th-10 th-fw-500'>Action</span>,
       width: '10%',
       align: 'center',
+      hidden: visibleLevel !== 'branch',
       render: (data, record) => (
         <>
           {visibleLevel === 'branch' ? (
             <span
-              className='th-12 th-pointer text-primary'
+              className='th-10 th-pointer text-primary'
               onClick={() => {
                 if (dashboardLevel === 1) {
                   fetchStudentList({
@@ -134,51 +168,16 @@ const DashboardChildCard = ({
         </>
       ),
     },
-  ];
-
-  const chartInnerData = [
-    {
-      name: 'Pending',
-      y: level2Data[selectedCardIndex]?.percentageCounts?.p_pending,
-      color: '#90ed7d',
-    },
-    {
-      name: 'Submitted',
-      y: level2Data[selectedCardIndex]?.percentageCounts?.p_submitted,
-      color: '#f7a35c',
-    },
-  ];
-  const chartOuterData = [
-    {
-      name: 'Pending ',
-      y: 0,
-      color: 'rgb(255,255,255)',
-    },
-    {
-      name: 'Pending',
-      y: 0,
-      color: 'rgb(255,255,255)',
-    },
-    {
-      name: 'Evaluated',
-      y: level2Data[selectedCardIndex]?.percentageCounts?.p_evaluated,
-      color: 'rgb(255,214,143)',
-    },
-    {
-      name: 'Non Evaluated',
-      y: level2Data[selectedCardIndex]?.percentageCounts?.p_non_evaluated,
-      color: 'rgb(255,214,143',
-    },
-  ];
+  ].filter((e) => !e?.hidden);
 
   const optionPie = {
     chart: {
       type: 'pie',
     },
-    credits: {
-      enabled: false,
-    },
+
     title: {
+      verticalAlign: 'middle',
+      floating: true,
       text:
         visibleLevel === 'branch' && dashboardLevel === 0
           ? 'Branch'
@@ -186,77 +185,69 @@ const DashboardChildCard = ({
           ? 'Section'
           : visibleLevel === 'grade' && dashboardLevel === 0
           ? 'Grade'
-          : visibleLevel === 'grade' && dashboardLevel === 1
+          : visibleLevel === 'subject' && dashboardLevel === 1
           ? 'Subject'
           : null,
-      align: 'left',
+      y: 18,
     },
+    colors: ['#065471', '#FFC045', '#0A91AB'],
+    credits: {
+      enabled: false,
+    },
+
     plotOptions: {
       pie: {
         shadow: false,
-        center: ['50%', '50%'],
       },
     },
     tooltip: {
-      valueSuffix: '%',
+      formatter: function () {
+        return (
+          '<b>' + this.point.name + '</b>: ' + this.y + `${!showAbsolute ? ' %' : ''}`
+        );
+      },
     },
     series: [
       {
-        name: 'Homework',
-        data: chartInnerData,
-        size: '45%',
+        data: evaluationChart
+          ? [
+              [
+                'Evaluated',
+                showAbsolute
+                  ? level2Data[selectedCardIndex]?.numberCounts?.evaluated
+                  : level2Data[selectedCardIndex]?.percentageCounts?.p_eval_sub,
+              ],
+              [
+                'Non Evaluated',
+                showAbsolute
+                  ? level2Data[selectedCardIndex]?.numberCounts?.non_evaluated
+                  : level2Data[selectedCardIndex]?.percentageCounts?.p_non_eval_sub,
+              ],
+            ]
+          : [
+              [
+                'Pending',
+                showAbsolute
+                  ? level2Data[selectedCardIndex]?.numberCounts?.pending
+                  : level2Data[selectedCardIndex]?.percentageCounts?.p_pending,
+              ],
+              [
+                'submitted',
+                showAbsolute
+                  ? level2Data[selectedCardIndex]?.numberCounts?.submitted
+                  : level2Data[selectedCardIndex]?.percentageCounts?.p_submitted,
+              ],
+            ],
+        size: '80%',
+        innerSize: '50%',
+        showInLegend: false,
         dataLabels: {
-          color: '#ffffff',
-          distance: '-50%',
+          enabled: false,
         },
-      },
-      {
-        name: 'Evaluations',
-        data: chartOuterData,
-        size: '60%',
-        innerSize: '40%',
-        dataLabels: {
-          format: '<b>{point.name}:</b> <span style="opacity: 0.5">{y}%</span>',
-          filter: {
-            property: 'y',
-            operator: '>',
-            value: 1,
-          },
-          style: {
-            fontWeight: 'normal',
-          },
-        },
-        id: 'evaluations',
       },
     ],
-    responsive: {
-      rules: [
-        {
-          condition: {
-            maxWidth: 300,
-          },
-          chartOptions: {
-            series: [
-              {},
-              {
-                id: 'evaluations',
-                dataLabels: {
-                  distance: 10,
-                  format: '{point.custom.version}',
-                  filter: {
-                    property: 'percentage',
-                    operator: '>',
-                    value: 2,
-                  },
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
   };
-  
+
   return (
     <React.Fragment>
       <div className='row'>
@@ -272,27 +263,26 @@ const DashboardChildCard = ({
                   onClick={(e) => selectCard(index)}
                 >
                   <div className='col-md-9'>
-                    <h4 className='th-20 mb-1 text-primary'>
-                      {/* {dashboardLevel === 0
-                        ? 'Branch'
-                        : dashboardLevel === 1
-                        ? 'Section'
-                        : dashboardLevel === 2
-                        ? 'Student'
-                        : null}
-                      {index + 1} */}
-                      {item?.name}
-                    </h4>
+                    <h4 className='th-20 mb-1 text-primary'>{item?.name}</h4>
                     <div className='stat-count th-bg-grey th-br-6'>
                       <div className='d-flex justify-content-between px-3 py-2 align-items-center'>
                         <div className='th-10 th-grey'>
-                          {item?.percentageCounts?.p_pending}% Pending
+                          {showAbsolute
+                            ? `${item?.numberCounts?.pending} `
+                            : `${item?.percentageCounts?.p_pending}% `}
+                          Pending
                         </div>
                         <div className='th-10 th-grey'>
-                          {item?.percentageCounts?.p_submitted}% Submitted
+                          {showAbsolute
+                            ? `${item?.numberCounts?.submitted} `
+                            : `${item?.percentageCounts?.p_submitted}% `}
+                          Submitted
                         </div>
                         <div className='th-10 th-grey'>
-                          {item?.percentageCounts?.p_evaluated}% Evaluated
+                          {showAbsolute
+                            ? `${item?.numberCounts?.evaluated} `
+                            : `${item?.percentageCounts?.p_evaluated}% `}
+                          Evaluated
                         </div>
                       </div>
                     </div>
@@ -313,6 +303,7 @@ const DashboardChildCard = ({
                               start_date: startDate,
                               end_date: endDate,
                               section_mapping_id: item?.id,
+                              subject_id: subjectId,
                             });
                           } else if (visibleLevel === 'grade' && dashboardLevel === 1) {
                             fetchStudentList({
@@ -321,6 +312,8 @@ const DashboardChildCard = ({
                               subject: item?.id,
                               section_mapping: secMapId,
                               acad_session: selectedBranch?.id,
+                              teacher_id: visibleLevel === 'grade' && userData?.user_id,
+                              subject_id: subjectId,
                             });
                           }
                           toggleCollapse();
@@ -349,7 +342,7 @@ const DashboardChildCard = ({
                           rowKey={(record) => record?.id}
                           dataSource={tableData}
                           pagination={false}
-                          // loading={tableLoading}
+                          loading={tableLoading}
                           scroll={{ y: '100px' }}
                           style={{ minHeight: 100 }}
                         />
@@ -362,7 +355,22 @@ const DashboardChildCard = ({
         </div>
         <div className='col-md-5 text-center col-12' style={{ minHeight: '150px' }}>
           <div className='th-bg-white th-br-10 p-3'>
-            <HighchartsReact highcharts={Highcharts} options={optionPie} />
+            <div className='row'>
+              <div className='col-12'>
+                <Switch
+                  checkedChildren='Evaluation'
+                  unCheckedChildren='Submission'
+                  className='mt-3 float-right'
+                  defaultChecked={evaluationChart}
+                  onChange={() => setEvaluationChart(!evaluationChart)}
+                />
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-12'>
+                <HighchartsReact highcharts={Highcharts} options={optionPie} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -381,6 +389,7 @@ const DashboardChildCard = ({
         tableData={tableData}
         acad_session_id={acad_session_id}
         visibleLevel={visibleLevel}
+        loading={loading}
       />
     </React.Fragment>
   );
