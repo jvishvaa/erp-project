@@ -47,7 +47,7 @@
     font-weight: bold;
     text-align: center;
     line-height: 80%;
-    width: 90%;
+    width: 100%;
   }
   
   #Preview-Container {
@@ -56,8 +56,10 @@
     flex-direction: column;
     box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;  
     margin-top: 20px;
-    padding-top: 15px;
+    padding-top: 10px;
     width: 95%;
+    gap: 25px;
+    padding-bottom: 10px;
   }
   
   #Edit-Container {
@@ -103,4 +105,28 @@
   }
   .carasouel-class .ant-carousel{
     margin-top: 35% !important;
+  }
+
+  .custom-popconfirm .ant-popover-inner-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+  }
+  
+  .custom-popconfirm .ant-popover-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .custom-popconfirm .ant-btn {
+    margin: 0 8px; 
+  }
+
+  .customSizedUpload .ant-upload {
+    width: 100%;
+  }  
+  
+  .full-width-button{
+    width: 100% !important;
   }

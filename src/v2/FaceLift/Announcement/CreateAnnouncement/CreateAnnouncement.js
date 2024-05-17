@@ -289,9 +289,15 @@ const CreateAnnouncement = (props) => {
       .get(`${endpoints.academics.grades}`, { params: { ...rest } })
       .then((res) => {
         if (res.data.status_code === 200) {
-          setGradeData(res.data.data);
+          const uniqueGrades = Array.from(
+            res.data.data
+              .reduce((map, obj) => map.set(obj.grade_id, obj), new Map())
+              .values()
+          );
+          // setGradeData(res.data.data);
+          setGradeData(uniqueGrades);
           if (params.is_first) {
-            setFormFieldValue(res.data.data, params.dataForEdit);
+            setFormFieldValue(uniqueGrades, params.dataForEdit);
           }
         }
       })
@@ -330,7 +336,7 @@ const CreateAnnouncement = (props) => {
         //   branchId?.length > 1 && gradeIds?.length && !gradeIds?.includes(each?.grade_id)
         // }
       >
-        {each?.grade__grade_name}
+        {each?.grade_name}
       </Option>
     );
   });
@@ -732,7 +738,7 @@ const CreateAnnouncement = (props) => {
               Announcements
             </Breadcrumb.Item>
             <Breadcrumb.Item className='th-black-1'>
-              {props?.match?.params?.id?'Edit Announcement':'Create New Announcement'}
+              {props?.match?.params?.id ? 'Edit Announcement' : 'Create New Announcement'}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -826,7 +832,7 @@ const CreateAnnouncement = (props) => {
                         placement='bottomRight'
                         showArrow={true}
                         disabled={
-                          feeReminderSelected 
+                          feeReminderSelected
                           // ||
                           // (props?.match?.params?.id &&
                           //   !([1, 8].includes(user_level) || is_superuser))
@@ -880,7 +886,7 @@ const CreateAnnouncement = (props) => {
                               );
                             }}
                           >
-                            {gradeData.length > 1  && (
+                            {gradeData.length > 1 && (
                               <>
                                 <Option key={0} value={'all'}>
                                   All
@@ -897,7 +903,7 @@ const CreateAnnouncement = (props) => {
                           <Select
                             mode='multiple'
                             disabled={
-                              (gradeIds.length > 0 && feeReminderSelected) 
+                              gradeIds.length > 0 && feeReminderSelected
                               // ||
                               // (props?.match?.params?.id &&
                               //   !([1, 8].includes(user_level) || is_superuser))

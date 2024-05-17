@@ -85,6 +85,7 @@ const CollapseableComponent = ({ module, items }) => {
     if (value) {
       fetchChildModules(value);
       setModuleId(value);
+      setSubModule(null)
     } else {
       setModuleId(null);
       setSubModule(null);
@@ -250,7 +251,7 @@ const CollapseableComponent = ({ module, items }) => {
     if (subModule == null) {
       return message.error('Please Select Sub Module');
     }
-    if (userLevel == null) {
+    if (userLevel == null || userLevel.length <= 0) {
       return message.error('Please Select User Level');
     }
     if (devices?.length == 0) {
@@ -414,6 +415,7 @@ const CollapseableComponent = ({ module, items }) => {
               <Breadcrumb.Item
                 className='th-black-1 th-16 th-grey'
                 onClick={() => history.push('/frequently-asked-questions')}
+                style={{ cursor: 'pointer' }}
               >
                 FAQ
               </Breadcrumb.Item>
@@ -421,272 +423,319 @@ const CollapseableComponent = ({ module, items }) => {
             </Breadcrumb>
           </div>
         </div>
+        <div className='row'>
+          <div className='col-md-12'>
+            <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
+              <div className='row' style={{marginTop:"-15px"}}>
+                <Form
+                  className='mt-3'
+                  layout={'vertical'}
+                  ref={formRef}
+                  style={{ width: '100%' }}
+                >
+                  <div className='row'>
+                    <div className='col-md-4 col-sm-6 col-12'>
+                      <Form.Item name='module'>
+                        <span className='th-grey th-14'>Select Module*</span>
+                        <Select
+                          allowClear
+                          placeholder='Select Module'
+                          showSearch
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                          onChange={(value) => handleChangeModule(value)}
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                        >
+                          {moduleOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                    <div className='col-md-4 col-sm-6 col-12'>
+                      <Form.Item name='child_module'>
+                        <span className='th-grey th-14'>Select Sub Module*</span>
+                        <Select
+                          allowClear
+                          placeholder='Select Sub Module'
+                          showSearch
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                          onChange={(e) => handleSubModule(e)}
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          value={subModule}
+                        >
+                          {childModuleOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                    <div className='col-md-4 col-sm-6 col-12'>
+                      <Form.Item name='user_level'>
+                        <span className='th-grey th-14'>Select User Level*</span>
+                        <Select
+                          allowClear
+                          placeholder='Select User Level'
+                          showSearch
+                          optionFilterProp='children'
+                          mode='multiple'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                          onChange={(e) => handleUserLevel(e)}
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                        >
+                          {userLevelListOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                    <div className='col-md-4 col-sm-6 col-12'>
+                      <Form>
+                        <span className='th-grey th-14'>Device*</span>
+                        <Form.Item name='device'>
+                          <Select
+                            allowClear
+                            placeholder='Select Device'
+                            showSearch
+                            optionFilterProp='children'
+                            mode='multiple'
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                            className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                            onChange={(e) => handleDevice(e)}
+                            getPopupContainer={(trigger) => trigger.parentNode}
+                          >
+                            {deviceOptions}
+                          </Select>
+                        </Form.Item>
+                      </Form>
+                    </div>
+                    <div className='col-md-4 col-sm-6 col-12 mb-3'>
+                      <span className='th-grey th-14'>Upload PDF</span>
+                      <div>
+                        {data.some((item) => item.pdf_file) ? (
+                          <div>
+                            <p>PDF exists</p>
+                          </div>
+                        ) : (
+                          <div className='upload'>
+                            <Upload {...draggerPdfProps} className='customSizedUpload'>
+                              <Button
+                                icon={<UploadOutlined />}
+                                className='full-width-button'
+                              >
+                                Select File
+                              </Button>
+                            </Upload>
+                            <div style={{ marginTop: '2px' }}>
+                              <small style={{ textAlign: 'left' }}>Only ['.pdf'] Files Allowed</small>
+                              {selectedPdfFile ? (
+                                <span
+                                  style={{
+                                    color: 'blue',
+                                    width: '90%',
+                                    display: 'flex',
+                                    gap: '5px',
+                                    alignItems: 'center',
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  <FileExcelTwoTone />
+                                  <span
+                                    style={{
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                  >
+                                    {selectedPdfFile?.name}
+                                  </span>
+                                </span>
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <p style={{ fontWeight: 'bold', fontSize: '30px', paddingTop: '8px' }}>
-            Add Frequently Asked Questions
-          </p>
-        </div>
+                    <div className='col-md-4 col-sm-6 col-12 mb-3'>
+                      <span className='th-grey th-14'>Upload Video</span>
+                      <div>
+                        {data.some((item) => item.video_file) ? (
+                          <p>Video exists</p>
+                        ) : (
+                          <>
+                            <Upload {...draggerProps} className='customSizedUpload'>
+                              <Button
+                                icon={<UploadOutlined />}
+                                className='full-width-button'
+                              >
+                                Select File
+                              </Button>
+                            </Upload>
 
-        <div>
-          <Form
-            ref={formRef}
-            style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}
-            direction='row'
-          >
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Select Module*</span>
-              <Form.Item name='module'>
-                <Select
-                  allowClear
-                  placeholder='Select Module'
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(value) => handleChangeModule(value)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  {moduleOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Select Sub Module*</span>
-              <Form.Item name='child_module'>
-                <Select
-                  allowClear
-                  placeholder='Select Sub Module'
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(e) => handleSubModule(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  {childModuleOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Select User Level*</span>
-              <Form.Item name='user_level'>
-                <Select
-                  allowClear
-                  placeholder='Select User Level'
-                  showSearch
-                  optionFilterProp='children'
-                  mode='multiple'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(e) => handleUserLevel(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  {userLevelListOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Device*</span>
-              <Form.Item name='device'>
-                <Select
-                  allowClear
-                  placeholder='Select Device'
-                  showSearch
-                  optionFilterProp='children'
-                  mode='multiple'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(e) => handleDevice(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  {deviceOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Upload PDF</span>
-              <div style={{ width: '82%' }}>
-                {data.some((item) => item.pdf_file) ? (
-                  <p>PDF exists</p>
-                ) : (
-                  <>
-                    <Upload {...draggerPdfProps}>
-                      <Button icon={<UploadOutlined />} style={{ width: '100%' }}>
-                        Select File
-                      </Button>
-                    </Upload>
+                            <div
+                              style={{
+                                marginTop: '2px',
+                              }}
+                            >
+                              <small style={{ textAlign: 'left' }}>
+                                Only ['.mp3','.mp4','.mpeg'] Files Allowed
+                              </small>
+                              {selectedVideoFile ? (
+                                <span
+                                  style={{
+                                    color: 'blue',
+                                    width: '90%',
+                                    display: 'flex',
+                                    gap: '5px',
+                                    alignItems: 'center',
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  <FileExcelTwoTone />
+                                  <span
+                                    style={{
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                  >
+                                    {selectedVideoFile?.name}
+                                  </span>
+                                </span>
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Form>
+              </div>
 
+              <span
+                style={{
+                  border: '1px solid #d9d9d9',
+                  padding: '5px',
+                  marginLeft: '16px',
+                }}
+              >
+                <InfoCircleTwoTone className='pr-2' />
+                <i className='th-grey'>
+                  P.D.F. and Video Size Should Be Less Than 500 MB
+                </i>
+              </span>
+              <div className='d-flex justify-content-center align-items-center row mt-4'>
+                <div style={{ width: '98%' }}>
+                  {questions.map((item, index) => (
                     <div
+                      key={index}
                       style={{
-                        marginTop: '2px',
+                        border: '1px solid #ddd',
+                        padding: '16px',
+                        borderRadius: '4px',
+                        width: '98%',
+                        marginBottom: '25px',
                       }}
                     >
-                      <small style={{ textAlign: 'left' }}>Only [''.pdf'] allowed.</small>
-                      {selectedPdfFile ? (
-                        <span
-                          style={{
-                            color: 'blue',
-                            width: '90%',
-                            display: 'flex',
-                            gap: '5px',
-                            alignItems: 'center',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          <FileExcelTwoTone />
-                          <span
-                            style={{
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {selectedPdfFile?.name}
-                          </span>
-                        </span>
-                      ) : (
-                        ''
-                      )}
+                      <Form
+                        layout='inline'
+                        style={{ display: 'flex', alignItems: 'center' }}
+                      >
+                        <Form.Item label={`Question ${index + 1}`} style={{ flex: 1 }}>
+                          <TextArea
+                            showCount
+                            maxLength={300}
+                            autoSize={{ minRows: 2, maxRows: 6 }}
+                            value={item.question}
+                            onChange={(e) =>
+                              handleChange(index, 'question', e.target.value)
+                            }
+                            style={{ width: '100%', marginRight: '8px' }}
+                            status={`${
+                              item.question.length == ''
+                                ? 'error'
+                                : '' || item.question?.trim() == ''
+                                ? 'error'
+                                : ''
+                            }`}
+                          />
+                        </Form.Item>
+                        <Form.Item label={`Answer`} style={{ flex: 1 }}>
+                          <TextArea
+                            maxLength={1500}
+                            value={item.answer}
+                            onChange={(e) =>
+                              handleChange(index, 'answer', e.target.value)
+                            }
+                            autoSize={{ minRows: 2, maxRows: 6 }}
+                            style={{ width: '100%', marginRight: '8px' }}
+                            showCount
+                            status={`${
+                              item.answer?.length == ''
+                                ? 'error'
+                                : '' || item.answer?.trim() == ''
+                                ? 'error'
+                                : ''
+                            }`}
+                          />
+                        </Form.Item>
+                        {index !== 0 && (
+                          <Button
+                            type='danger'
+                            onClick={() => handleDelete(index)}
+                            icon={<DeleteOutlined />}
+                            style={{ marginBottom: '30px' }}
+                          />
+                        )}
+                      </Form>
                     </div>
-                  </>
-                )}
+                  ))}
+                  <Space
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      gap: '50px',
+                      marginTop: '20px',
+                    }}
+                  >
+                    <Button onClick={handleAdd} icon={<PlusOutlined />} type='secondary'>
+                      Add Question
+                    </Button>
+                    <Button type='primary' onClick={handleSubmit}>
+                      Submit
+                    </Button>
+                  </Space>
+                </div>
               </div>
             </div>
-
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Upload Video</span>
-              <div style={{ width: '82%' }}>
-                {data.some((item) => item.video_file) ? (
-                  <p>Video exists</p>
-                ) : (
-                  <>
-                    <Upload {...draggerProps}>
-                      <Button icon={<UploadOutlined />} style={{ width: '100%' }}>
-                        Select File
-                      </Button>
-                    </Upload>
-
-                    <div
-                      style={{
-                        marginTop: '2px',
-                      }}
-                    >
-                      <small style={{ textAlign: 'left' }}>
-                        ['.mp3','.mp4'] allowed.
-                      </small>
-                      {selectedVideoFile ? (
-                        <span
-                          style={{
-                            color: 'blue',
-                            width: '90%',
-                            display: 'flex',
-                            gap: '5px',
-                            alignItems: 'center',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          <FileExcelTwoTone />
-                          <span
-                            style={{
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {selectedVideoFile?.name}
-                          </span>
-                        </span>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </Form>
-        </div>
-        <span style={{ border: '1px solid #d9d9d9', padding: '5px', marginLeft: '16px' }}>
-          <InfoCircleTwoTone className='pr-2' />
-          <i className='th-grey'>P.D.F. and Video Size Should Be Less Than 500 MB</i>
-        </span>
-        <div style={{ display: 'grid', placeItems: 'center', marginTop: '25px' }}>
-          {questions.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                marginBottom: '16px',
-                border: '1px solid #ddd',
-                padding: '16px',
-                borderRadius: '4px',
-                width: '98%',
-              }}
-            >
-              <Form layout='inline' style={{ display: 'flex', alignItems: 'center' }}>
-              <Form.Item label={`Question ${index + 1}`} style={{ flex: 1 }}>
-                  <TextArea
-                    showCount
-                    maxLength={300}
-                    autoSize={{ minRows: 2, maxRows: 6 }}
-                    value={item.question}
-                    onChange={(e) => handleChange(index, 'question', e.target.value)}
-                    style={{ width: '100%', marginRight: '8px' }}
-                    status={`${item.question.length=="" ? "error" : "" || item.question?.trim()=="" ? "error" : ""}`}
-                  />
-                </Form.Item>
-                <Form.Item label={`Answer`} style={{ flex: 1 }}>
-                <TextArea
-                    maxLength={1500}
-                    value={item.answer}
-                    onChange={(e) => handleChange(index, 'answer', e.target.value)}
-                    autoSize={{ minRows: 2, maxRows: 6 }}
-                    style={{ width: '100%', marginRight: '8px' }}
-                    showCount
-                    status={`${item.answer?.length=="" ? "error" : "" || item.answer?.trim()=="" ? "error" : ""}`}
-                  />
-                </Form.Item>
-                {index !== 0 && (
-                  <Button
-                    type='danger'
-                    onClick={() => handleDelete(index)}
-                    icon={<DeleteOutlined />}
-                  />
-                )}
-              </Form>
-            </div>
-          ))}
-          <Space>
-            <Button
-              onClick={handleAdd}
-              icon={<PlusOutlined />}
-              style={{ backgroundColor: 'orange', color: 'white' }}
-            >
-              Add Question
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              style={{ backgroundColor: 'green', color: 'white' }}
-            >
-              Submit
-            </Button>
-          </Space>
+          </div>
         </div>
 
         <Modal
