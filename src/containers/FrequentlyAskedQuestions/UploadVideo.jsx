@@ -30,15 +30,16 @@ const UploadVideoFaq = (props) => {
       .then((res) => {
         if (res?.data) {
           message.success(`New Video Uploaded Successfully`);
+          props.setVideoPreviewLink(res?.data?.result?.video_path);
           props.fetchTableData();
           setUploading(false);
           props.handleUploadVideoModalClose();
           setFileList([]);
-          props.setOpenDrawer(false);
+          props.setShowVideoText(false);
         }
       });
   };
-
+  const MAX_FILE_SIZE_MB = 500;
   const { Dragger } = Upload;
   const draggerProps = {
     showUploadList: false,
@@ -50,11 +51,21 @@ const UploadVideoFaq = (props) => {
     },
     beforeUpload: (file) => {
       const type = file.type.split('/')[1];
-      if (['mp4', 'mpeg', 'mp3'].includes(type)) {
+      const isValidType = ['mp4', 'mpeg', 'mp3'].includes(type);
+      const isValidSize = file.size / 1024 / 1024 <= MAX_FILE_SIZE_MB; // Convert bytes to MB
+
+      if (isValidType && isValidSize) {
         setFileList([file]);
         setFileTypeError(false);
+        setFileSizeError(false);
       } else {
-        setFileTypeError(true);
+        if (!isValidType) {
+          setFileTypeError(true);
+        }
+        if (!isValidSize) {
+          setFileSizeError(true);
+          message.error("File size must be less than 500 MB!")
+        }
         setFileList([]);
       }
       return false;

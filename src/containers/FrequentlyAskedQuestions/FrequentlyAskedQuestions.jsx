@@ -227,15 +227,20 @@ const FrequentlyAskedQuestions = () => {
             title='Delete?'
             open={open}
             onConfirm={() => {
-              deleteFaq(record?.items?.map((ele)=>ele?.id), record?.media_id);
+              deleteFaq(
+                record?.items?.map((ele) => ele?.id),
+                record?.media_id
+              );
             }}
             onCancel={handleCancel}
             getPopupContainer={(trigger) => trigger.parentNode}
-            overlayClassName="custom-popconfirm"
+            overlayClassName='custom-popconfirm'
           >
-            <DeleteOutlineOutlined
-              style={{ color: 'red', fontSize: '22px', cursor: 'pointer' }}
-            />
+            <Tooltip title='Delete' placement='top'>
+              <DeleteOutlineOutlined
+                style={{ color: 'red', fontSize: '22px', cursor: 'pointer' }}
+              />
+            </Tooltip>
           </Popconfirm>
         </span>
       ),
@@ -343,7 +348,7 @@ const FrequentlyAskedQuestions = () => {
   ));
 
   const fetchChildModules = (id) => {
-    setLoad(true)
+    setLoad(true);
     const params = {
       parent_id: id,
     };
@@ -354,7 +359,7 @@ const FrequentlyAskedQuestions = () => {
       .then((res) => {
         if (res?.data) {
           setChildModules(res?.data?.data);
-          setLoad(false)
+          setLoad(false);
         }
       })
       .catch((error) => {
@@ -385,7 +390,6 @@ const FrequentlyAskedQuestions = () => {
   }, [userLevel, subModule, devices, moduleValue]);
 
   const deleteFaq = (faq_data_id, faq_media_id) => {
-    console.log(faq_data_id, faq_media_id, "hello")
     setLoad(true);
     const params = {};
     if (userLevel && userLevel.length > 0) {
@@ -484,12 +488,12 @@ const FrequentlyAskedQuestions = () => {
         <div className='row pt-3 pb-3'>
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
-            <Breadcrumb.Item className='th-black-1 th-16 th-grey'>FAQ</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16 th-grey'>FAQ</Breadcrumb.Item>
             </Breadcrumb>
           </div>
         </div>
         <div>
-        <Form
+          <Form
             ref={formRef}
             style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}
             direction='row'
@@ -601,7 +605,7 @@ const FrequentlyAskedQuestions = () => {
           <Table
             dataSource={tableData}
             columns={columns}
-            pagination={false}
+            pagination={{position:['bottomCenter']}}
             style={{ textAlign: 'center', marginTop: '10px' }}
           />
         </div>
@@ -646,7 +650,7 @@ const FrequentlyAskedQuestions = () => {
           }}
           width={'60%'}
         >
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
             <video
               id='module_video'
               src={VideoPrev}
