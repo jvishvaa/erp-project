@@ -11,6 +11,7 @@ const DashboardDrawer = ({
   startDate,
   endDate,
   teacherId,
+  subjectId,
   index,
   fetchSubjectWise,
   tableData,
@@ -88,6 +89,7 @@ const DashboardDrawer = ({
                       startDate={startDate}
                       endDate={endDate}
                       teacherId={teacherId}
+                      subjectId={subjectId}
                       index={index}
                       level1Data={level1Data}
                       level2Data={level2Data}

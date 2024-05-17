@@ -22,6 +22,7 @@ const DashboardCard = ({
   fetchSubjectWise,
   fetchStudentList,
   teacherId,
+  subjectId,
   showAbsolute,
   loading,
   tableLoading,
@@ -32,6 +33,7 @@ const DashboardCard = ({
   const [selectedCardIndex, setSelectedCardIndex] = useState(0);
   const [secMapId, setSecMapId] = useState();
   const [evaluationChart, setEvaluationChart] = useState(false);
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
 
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -151,12 +153,15 @@ const DashboardCard = ({
                 grade_id: record?.id,
                 acadsession_id: level1Data?.[selectedCardIndex]?.acad_session_id,
                 teacher_id: teacherId,
+                subject_id: subjectId,
               });
             } else if (visibleLevel === 'grade') {
               fetchSubjectWise({
                 start_date: startDate,
                 end_date: endDate,
                 section_mapping_id: record?.id,
+                teacher_id: visibleLevel === 'grade' && userData?.user_id,
+                subject_id: subjectId,
               });
               setSecMapId(record?.id);
             }
@@ -312,6 +317,7 @@ const DashboardCard = ({
                               start_date: startDate,
                               end_date: endDate,
                               acadsession_id: item?.acad_session_id,
+                              subject_id: subjectId,
                             });
                           } else if (visibleLevel === 'grade') {
                             fetchSectionWise({
@@ -319,7 +325,8 @@ const DashboardCard = ({
                               end_date: endDate,
                               grade_id: item?.id,
                               acadsession_id: selectedBranch?.id,
-                              teacher_id: teacherId,
+                              teacher_id: visibleLevel === 'grade' && userData?.user_id,
+                              subject_id: subjectId,
                             });
                           }
                           toggleCollapse();
@@ -402,6 +409,7 @@ const DashboardCard = ({
         startDate={startDate}
         endDate={endDate}
         teacherId={teacherId}
+        subjectId={subjectId}
         dashboardLevel={dashboardLevel}
         setDashboardLevel={setDashboardLevel}
         fetchSubjectWise={fetchSubjectWise}

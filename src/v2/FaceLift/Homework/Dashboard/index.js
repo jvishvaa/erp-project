@@ -33,6 +33,8 @@ const HomeworkDashboard = () => {
   const [sectionData, setSectionData] = useState([]);
   const [subjectData, setSubjectData] = useState([]);
   const [studentList, setStudentList] = useState([]);
+  const [subjectList, setSubjectList] = useState([]);
+  const [selectedSubjectId, setSelectedSubjectId] = useState(null);
   const [studentData, setStudentData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
@@ -60,6 +62,7 @@ const HomeworkDashboard = () => {
 
   useEffect(() => {
     if (visibleLevel === 'branch') {
+      fetchSubjectList();
       fetchTeacherList({
         session_year: selectedAcademicYear?.id,
         user_level: 11,
@@ -68,12 +71,16 @@ const HomeworkDashboard = () => {
         start_date: startDate,
         end_date: endDate,
         session_year_id: selectedAcademicYear?.id,
+        teacher_id: visibleLevel === 'branch' && teacherId,
+        subject_id: selectedSubjectId,
       });
     } else if (visibleLevel === 'grade') {
       fetchGradeWise({
         start_date: startDate,
         end_date: endDate,
         acadsession_id: selectedBranch?.id,
+        teacher_id: visibleLevel === 'grade' && userData?.user_id,
+        subject_id: selectedSubjectId,
       });
     } else if (visibleLevel === 'subject') {
       fetchStudenthWise({
@@ -86,7 +93,12 @@ const HomeworkDashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (startDate && endDate) {
+    if (
+      startDate &&
+      endDate &&
+      startDate !== 'Invalid date' &&
+      endDate !== 'Invalid date'
+    ) {
       if (visibleLevel === 'branch') {
         fetchTeacherList({
           session_year: selectedAcademicYear?.id,
@@ -96,12 +108,16 @@ const HomeworkDashboard = () => {
           start_date: startDate,
           end_date: endDate,
           session_year_id: selectedAcademicYear?.id,
+          teacher_id: visibleLevel === 'branch' && teacherId,
+          subject_id: selectedSubjectId,
         });
       } else if (visibleLevel === 'grade') {
         fetchGradeWise({
           start_date: startDate,
           end_date: endDate,
           acadsession_id: selectedBranch?.id,
+          teacher_id: visibleLevel === 'grade' && userData?.user_id,
+          subject_id: selectedSubjectId,
         });
       } else if (visibleLevel === 'subject') {
         fetchStudenthWise({
@@ -112,7 +128,7 @@ const HomeworkDashboard = () => {
         });
       }
     }
-  }, [startDate, endDate, teacherId]);
+  }, [startDate, endDate, teacherId, selectedSubjectId]);
 
   const fetchBranchWise = async (params = {}) => {
     setLoading(true);
@@ -404,6 +420,24 @@ const HomeworkDashboard = () => {
     }
   };
 
+  const fetchSubjectList = async (params = {}) => {
+    try {
+      const result = await axiosInstance.get(`${endpoints?.masterManagement?.subjects}`, {
+        params: { ...params },
+      });
+      console.log({ result });
+      if (result?.data?.status_code === 200) {
+        setSubjectList(result?.data?.data?.results);
+      } else {
+        setSubjectList([]);
+        message.error(result?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      console.log({ error }, error?.response);
+      message.error(error?.response?.data?.message ?? 'Something went wrong');
+    }
+  };
+
   const fetchTeacherList = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
@@ -432,6 +466,19 @@ const HomeworkDashboard = () => {
     setTeacherErp(null);
     formRef.current.setFieldsValue({
       teacher: null,
+    });
+  };
+
+  const handleSubject = (e) => {
+    if (e) {
+      setSelectedSubjectId(e?.value);
+    }
+  };
+
+  const handleClearSubject = () => {
+    setSelectedSubjectId(null);
+    formRef.current.setFieldsValue({
+      subject: null,
     });
   };
 
@@ -469,6 +516,14 @@ const HomeworkDashboard = () => {
 
     return !!tooEarly || !!tooLate;
   };
+
+  const subjectOptions = subjectList?.map((each) => {
+    return (
+      <Option key={each?.id} value={each?.id} id={each?.id}>
+        {each?.subject_name}
+      </Option>
+    );
+  });
 
   const teacherOptions = teacherData?.map((each) => {
     return (
@@ -529,6 +584,34 @@ const HomeworkDashboard = () => {
                           />
                         </Form.Item>
                       </div>
+                      {visibleLevel === 'branch' || visibleLevel === 'grade' ? (
+                        <div className={`col-xl-3 col-md-3`}>
+                          <Form.Item name='subject' label='Subject'>
+                            <Select
+                              getPopupContainer={(trigger) => trigger.parentNode}
+                              allowClear={true}
+                              suffixIcon={<DownOutlined className='th-grey' />}
+                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
+                              placement='bottomRight'
+                              showArrow={true}
+                              onChange={(e, value) => handleSubject(value)}
+                              onClear={handleClearSubject}
+                              dropdownMatchSelectWidth={false}
+                              filterOption={(input, options) => {
+                                return (
+                                  options.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                              showSearch
+                              placeholder='Select Subject'
+                            >
+                              {subjectOptions}
+                            </Select>
+                          </Form.Item>
+                        </div>
+                      ) : null}
                       {visibleLevel === 'branch' ? (
                         <div className={`col-xl-3 col-md-3`}>
                           <Form.Item name='teacher' label='Teacher'>
@@ -556,19 +639,27 @@ const HomeworkDashboard = () => {
                             </Select>
                           </Form.Item>
                         </div>
-                      ) : (
-                        <div className={`col-xl-3 col-md-3`}></div>
-                      )}
+                      ) : null}
 
-                      <div className='col-md-6'>
-                        <Switch
-                          checkedChildren='Absolute'
-                          unCheckedChildren='Percentage'
-                          className='mt-3 float-right'
-                          defaultChecked={showAbsolute}
-                          onChange={() => setShowAbsolute(!showAbsolute)}
-                        />
-                      </div>
+                      {mainData?.length > 0 && (
+                        <div
+                          className={`${
+                            visibleLevel === 'branch'
+                              ? 'col-md-3'
+                              : visibleLevel === 'grade'
+                              ? 'col-md-6'
+                              : 'col-md-6'
+                          }`}
+                        >
+                          <Switch
+                            checkedChildren='Absolute'
+                            unCheckedChildren='Percentage'
+                            className='mt-3 float-right'
+                            defaultChecked={showAbsolute}
+                            onChange={() => setShowAbsolute(!showAbsolute)}
+                          />
+                        </div>
+                      )}
                     </div>
                   </Form>
                 </div>
@@ -598,6 +689,7 @@ const HomeworkDashboard = () => {
                           startDate={startDate}
                           endDate={endDate}
                           teacherId={teacherId}
+                          subjectId={selectedSubjectId}
                           visibleLevel={visibleLevel}
                           level1Data={mainData}
                           level2Data={
