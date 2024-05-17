@@ -154,6 +154,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Teacher View Attendance', Path: '/online-class/attendance-teacher-view' },
     { name: 'Create Class', Path: '/online-class/create-class' },
     { name: 'Online Class', Path: '/online-class/attend-class' },
+    { name: 'Homework Dashboard', Path: '/homework/dashboard' },
     { name: 'Management View', Path: '/homework/coordinator' },
     { name: 'Configuration', Path: '/homework/admin' },
     { name: 'Student Homework', Path: '/homework/student' },
@@ -712,9 +713,9 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/user-management/non-academic-staff',
     },
     {
-      name : "FAQ",
-      Path : "/frequently-asked-questions"
-    }
+      name: 'FAQ',
+      Path: '/frequently-asked-questions',
+    },
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);
