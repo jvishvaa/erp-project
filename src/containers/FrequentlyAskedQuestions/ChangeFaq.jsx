@@ -209,7 +209,6 @@ const ChangeFaq = ({
       });
   };
 
-  console.log(showVideoText, 'hello');
 
   const handleDeletePdf = (pdf_id) => {
     setLoad(true);
