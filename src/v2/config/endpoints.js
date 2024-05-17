@@ -49,6 +49,11 @@ export default {
     createRole: '/erp_user/create_role/',
     updateRole: '/erp_user/update_role_module/',
   },
+  moduleManagement: {
+    moduleList: '/erp_user/modules_all/',
+    deleteModules : '/erp_user/delete_modules/',
+    restoreModules : '/erp_user/restore_modules/',
+  },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
     ebookSubject: '/academic/ebook_mapped_subjects/',
