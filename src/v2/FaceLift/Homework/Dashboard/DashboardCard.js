@@ -194,7 +194,8 @@ const DashboardCard = ({
           : null,
       y: 18,
     },
-    colors: ['#05B187', '#16BCC7', '#FEC90F'],
+    colors: ['#065471', '#FFC045', '#0A91AB'],
+    // colors: ['#05B187', '#16BCC7', '#FEC90F'],
     credits: {
       enabled: false,
     },

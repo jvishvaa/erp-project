@@ -21,8 +21,6 @@ const HomeworkDashboard = () => {
 
   const [teacherData, setTeacherData] = useState([]);
   const [teacherId, setTeacherId] = useState();
-  const [teacherName, setTeacherName] = useState();
-  const [teacherErp, setTeacherErp] = useState();
   const [dates, setDates] = useState(null);
   const [startDate, setStartDate] = useState(defaultStartDate.format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
@@ -63,10 +61,6 @@ const HomeworkDashboard = () => {
   useEffect(() => {
     if (visibleLevel === 'branch') {
       fetchSubjectList();
-      fetchTeacherList({
-        session_year: selectedAcademicYear?.id,
-        user_level: 11,
-      });
       fetchBranchWise({
         start_date: startDate,
         end_date: endDate,
@@ -75,6 +69,7 @@ const HomeworkDashboard = () => {
         subject_id: selectedSubjectId,
       });
     } else if (visibleLevel === 'grade') {
+      fetchSubjectList();
       fetchGradeWise({
         start_date: startDate,
         end_date: endDate,
@@ -100,10 +95,6 @@ const HomeworkDashboard = () => {
       endDate !== 'Invalid date'
     ) {
       if (visibleLevel === 'branch') {
-        fetchTeacherList({
-          session_year: selectedAcademicYear?.id,
-          user_level: 11,
-        });
         fetchBranchWise({
           start_date: startDate,
           end_date: endDate,
@@ -142,7 +133,6 @@ const HomeworkDashboard = () => {
           },
         }
       );
-      console.log({ result });
       if (result?.data?.status_code === 200) {
         let mappedData = result?.data?.result?.map((item) => {
           return {
@@ -184,7 +174,6 @@ const HomeworkDashboard = () => {
           },
         }
       );
-      console.log({ result });
       if (result?.data?.status_code === 200) {
         let mappedData = Array.isArray(result?.data?.result)
           ? result?.data?.result?.map((item) => ({
@@ -229,7 +218,6 @@ const HomeworkDashboard = () => {
           },
         }
       );
-      console.log({ result });
       if (result?.data?.status_code === 200) {
         let mappedData = result?.data?.result?.map((item) => {
           return {
@@ -271,7 +259,6 @@ const HomeworkDashboard = () => {
           },
         }
       );
-      console.log({ result });
       if (result?.data?.status_code === 200) {
         let mappedData = result?.data?.result?.map((item) => ({
           map_sub: item?.map_sub,
@@ -327,7 +314,6 @@ const HomeworkDashboard = () => {
         message.error(result?.message || 'Something went wrong');
       }
     } catch (error) {
-      console.log({ error }, error?.response);
       message.error(error?.response?.data?.message ?? 'Something went wrong');
     } finally {
       if (visibleLevel === 'branch' && dashboardLevel === 1) {
@@ -339,7 +325,6 @@ const HomeworkDashboard = () => {
   };
 
   const fetchStudentList = async (params = {}) => {
-    console.log({ dashboardLevel, visibleLevel });
     if (visibleLevel === 'branch') {
       setLoading(true);
     } else if (visibleLevel === 'grade') {
@@ -355,7 +340,6 @@ const HomeworkDashboard = () => {
           },
         }
       );
-      console.log({ result });
       if (result?.data?.status_code === 200) {
         let mappedData = result?.data?.result?.map((item) => {
           return {
@@ -371,7 +355,6 @@ const HomeworkDashboard = () => {
         message.error(result?.message || 'Something went wrong');
       }
     } catch (error) {
-      console.log({ error }, error?.response);
       message.error(error?.response?.data?.message ?? 'Something went wrong');
     } finally {
       if (visibleLevel === 'branch') {
@@ -394,7 +377,6 @@ const HomeworkDashboard = () => {
           },
         }
       );
-      console.log({ result });
       if (result?.data?.status_code === 200) {
         let mappedData = result?.data?.result?.map((item) => {
           return {
@@ -425,7 +407,6 @@ const HomeworkDashboard = () => {
       const result = await axiosInstance.get(`${endpoints?.masterManagement?.subjects}`, {
         params: { ...params },
       });
-      console.log({ result });
       if (result?.data?.status_code === 200) {
         setSubjectList(result?.data?.data?.results);
       } else {
@@ -433,41 +414,56 @@ const HomeworkDashboard = () => {
         message.error(result?.message || 'Something went wrong');
       }
     } catch (error) {
-      console.log({ error }, error?.response);
       message.error(error?.response?.data?.message ?? 'Something went wrong');
     }
   };
 
-  const fetchTeacherList = () => {
-    const params = {
-      session_year: selectedAcademicYear?.id,
-      user_level: 11,
+  const fetchTeacherData = (value, callback) => {
+    let timeout;
+    let currentValue;
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+    currentValue = value;
+    const fake = () => {
+      axiosInstance
+        .get(
+          `${endpoints.communication.viewUser}?user_level=11&search=${value}&session_year=${selectedAcademicYear?.id}`
+        )
+        .then((result) => {
+          setTeacherData(result?.data?.results);
+          if (currentValue === value) {
+            const newData = result?.data?.results;
+            const data = newData.map((item) => ({
+              value: item?.user?.id,
+              text: item?.user?.first_name,
+            }));
+            callback(data);
+          }
+        })
+        .catch((error) => message.error('error', error?.message));
     };
-    axiosInstance
-      .get(`${endpoints.communication.viewUser}`, { params })
-      .then((result) => {
-        console.log({ result });
-        setTeacherData(result?.data?.results);
-      })
-      .catch((error) => message.error('error', error?.message));
+    timeout = setTimeout(fake, 300);
   };
 
-  const handleTeacher = (e) => {
-    if (e) {
-      setTeacherId(e.value);
-      setTeacherName(e.teacherName?.split('(')[0]);
-      setTeacherErp(e.teacherName?.split('(')[1]?.split(')')[0]);
+  const handleTeacher = (newValue) => {
+    if (newValue) {
+      setTeacherId(newValue);
+    }
+  };
+  const handleTeacherSearch = (newValue) => {
+    if (newValue) {
+      fetchTeacherData(newValue, setTeacherData);
+    } else {
+      setTeacherData([]);
     }
   };
 
-  const handleClearTeacher = () => {
-    setTeacherId(null);
-    setTeacherName(null);
-    setTeacherErp(null);
-    formRef.current.setFieldsValue({
-      teacher: null,
-    });
-  };
+  const handleClearTeacher =() => {
+    setTeacherData([]);
+    setTeacherId(null)
+  }
 
   const handleSubject = (e) => {
     if (e) {
@@ -615,7 +611,7 @@ const HomeworkDashboard = () => {
                       {visibleLevel === 'branch' ? (
                         <div className={`col-xl-3 col-md-3`}>
                           <Form.Item name='teacher' label='Teacher'>
-                            <Select
+                            {/* <Select
                               getPopupContainer={(trigger) => trigger.parentNode}
                               allowClear={true}
                               suffixIcon={<DownOutlined className='th-grey' />}
@@ -636,7 +632,24 @@ const HomeworkDashboard = () => {
                               placeholder='Select Teacher'
                             >
                               {teacherOptions}
-                            </Select>
+                            </Select> */}
+                            <Select
+                              showSearch
+                              allowClear={true}
+                              value={teacherId}
+                              placeholder={'Teacher name or ERP'}
+                              defaultActiveFirstOption={false}
+                              showArrow={false}
+                              filterOption={false}
+                              onSearch={handleTeacherSearch}
+                              onChange={handleTeacher}
+                              onClear={handleClearTeacher}
+                              notFoundContent={null}
+                              options={(teacherData || []).map((d) => ({
+                                value: d.value,
+                                label: d.text,
+                              }))}
+                            />
                           </Form.Item>
                         </div>
                       ) : null}
