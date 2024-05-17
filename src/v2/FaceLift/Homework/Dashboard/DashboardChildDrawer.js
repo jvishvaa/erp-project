@@ -102,7 +102,7 @@ const DashboardChildDrawer = ({
                       loading={loading}
                     />
                   ) : (
-                    <Empty />
+                    <Empty description='No results found for the chosen filters.' />
                   )}
                 </div>
               </div>

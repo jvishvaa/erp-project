@@ -118,6 +118,8 @@ const HomeworkDashboard = () => {
           acad_session: selectedBranch?.id,
         });
       }
+    } else {
+      setMainData([]);
     }
   }, [startDate, endDate, teacherId, selectedSubjectId]);
 
@@ -437,7 +439,7 @@ const HomeworkDashboard = () => {
             const newData = result?.data?.results;
             const data = newData.map((item) => ({
               value: item?.user?.id,
-              text: item?.user?.first_name,
+              text: `${item?.user?.first_name} ${item?.user?.last_name}`,
             }));
             callback(data);
           }
@@ -460,10 +462,10 @@ const HomeworkDashboard = () => {
     }
   };
 
-  const handleClearTeacher =() => {
+  const handleClearTeacher = () => {
     setTeacherData([]);
-    setTeacherId(null)
-  }
+    setTeacherId(null);
+  };
 
   const handleSubject = (e) => {
     if (e) {
@@ -504,12 +506,18 @@ const HomeworkDashboard = () => {
   };
 
   const disabledDate = (current) => {
+    console.log(
+      { current },
+      dates,
+      startDate,
+      endDate,
+      moment().diff(dates?.[0], 'days')
+    );
     if (!dates) {
       return false;
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 30;
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30;
-
     return !!tooEarly || !!tooLate;
   };
 
@@ -517,19 +525,6 @@ const HomeworkDashboard = () => {
     return (
       <Option key={each?.id} value={each?.id} id={each?.id}>
         {each?.subject_name}
-      </Option>
-    );
-  });
-
-  const teacherOptions = teacherData?.map((each) => {
-    return (
-      <Option
-        key={each?.user?.id}
-        value={each?.user?.id}
-        id={each?.user?.id}
-        teacherName={each?.name}
-      >
-        {each?.user?.first_name} {each?.user?.last_name}
       </Option>
     );
   });
@@ -611,28 +606,6 @@ const HomeworkDashboard = () => {
                       {visibleLevel === 'branch' ? (
                         <div className={`col-xl-3 col-md-3`}>
                           <Form.Item name='teacher' label='Teacher'>
-                            {/* <Select
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              allowClear={true}
-                              suffixIcon={<DownOutlined className='th-grey' />}
-                              className='th-grey th-bg-grey th-br-4 w-100 text-left th-select'
-                              placement='bottomRight'
-                              showArrow={true}
-                              onChange={(e, value) => handleTeacher(value)}
-                              onClear={handleClearTeacher}
-                              dropdownMatchSelectWidth={false}
-                              filterOption={(input, options) => {
-                                return (
-                                  options.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                );
-                              }}
-                              showSearch
-                              placeholder='Select Teacher'
-                            >
-                              {teacherOptions}
-                            </Select> */}
                             <Select
                               showSearch
                               allowClear={true}
@@ -733,7 +706,7 @@ const HomeworkDashboard = () => {
                           tableLoading={tableLoading}
                         />
                       ) : (
-                        <Empty />
+                        <Empty description='No results found for the chosen filters.' />
                       )}
                     </div>
                   </div>
