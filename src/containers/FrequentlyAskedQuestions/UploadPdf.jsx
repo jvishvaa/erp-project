@@ -30,11 +30,12 @@ const UploadPdfFaq = (props) => {
       .then((res) => {
         if (res?.data) {
           message.success(`New P.D.F. Uploaded Successfully`);
+          props.setPdfPreviewLink(res?.data?.result?.pdf_file)
           props.fetchTableData();
           setUploading(false);
-          props.handleUploadPdfModalClose();
+          props.setShowPdfText(false)          
           setFileList([]);
-          props.setOpenDrawer(false);
+          props.handleUploadPdfModalClose();
         }
       })
       .catch((err) => {
@@ -42,23 +43,33 @@ const UploadPdfFaq = (props) => {
         message.error(err);
       });
   };
-
+  const MAX_FILE_SIZE_MB = 500;
   const { Dragger } = Upload;
   const draggerProps = {
     showUploadList: false,
     disabled: false,
-    multiple: false, // Allow only single file upload
+    multiple: false, 
     accept: '.pdf',
     onRemove: () => {
       setFileList([]);
     },
     beforeUpload: (file) => {
       const type = file.type.split('/')[1];
-      if (['pdf'].includes(type)) {
+      const isValidType = ['pdf'].includes(type);
+      const isValidSize = file.size / 1024 / 1024 <= MAX_FILE_SIZE_MB; // Convert bytes to MB
+
+      if (isValidType && isValidSize) {
         setFileList([file]);
         setFileTypeError(false);
+        setFileSizeError(false);
       } else {
-        setFileTypeError(true);
+        if (!isValidType) {
+          setFileTypeError(true);
+        }
+        if (!isValidSize) {
+          setFileSizeError(true);
+          message.error("File size must be less than 500 MB!")
+        }
         setFileList([]);
       }
       return false;

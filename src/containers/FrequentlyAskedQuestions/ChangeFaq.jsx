@@ -54,6 +54,9 @@ const ChangeFaq = ({
   const [showUploadVideoModal, setShowUploadVideoModal] = useState(false);
   const [showUploadPdfModal, setShowUploadPdfModal] = useState(false);
 
+  const [videoPreviewLink, setVideoPreviewLink] = useState(null);
+  const [pdfPreviewLink, setPdfPreviewLink] = useState(null);
+
   const [load, setLoad] = useState(false);
 
   const toggleExpand = (index) => {
@@ -107,24 +110,14 @@ const ChangeFaq = ({
     if (!openDrawer) {
       setQuestions([]);
       setAnswers([]);
+      setVideoPreviewLink(null)
+      setPdfPreviewLink(null)
     } else {
       setQuestions(moduleData?.items.map((item) => item.question) || []);
       setAnswers(moduleData?.items.map((item) => item.answer) || []);
     }
-    if (deletePdfFile == false) {
-      if (moduleData?.pdf_file) {
-        setShowPdfText(false);
-      } else {
-        setShowPdfText(true);
-      }
-    }
-    if (deleteVideoFile == false) {
-      if (moduleData?.video_file) {
-        setShowVideoText(false);
-      } else {
-        setShowVideoText(true);
-      }
-    }
+    moduleData?.video_file != null ? setShowVideoText(false) : setShowVideoText(true);
+    moduleData?.pdf_file != null ? setShowPdfText(false) : setShowPdfText(true);
   }, [openDrawer, moduleData]);
 
   const handleUploadVideoModalClose = () => {
@@ -141,7 +134,7 @@ const ChangeFaq = ({
 
   useEffect(() => {
     if (!VideoPrevModal) {
-      const video = document.getElementById('module_video');
+      const video = document.getElementById('change_faq_module_video');
       if (video) {
         video.pause();
       }
@@ -206,14 +199,16 @@ const ChangeFaq = ({
           setLoad(false);
           setDeleteVideoFile(true);
           setShowVideoText(true);
-          setOpenDrawer(false);
+          setVideoPreviewLink(null);
         }
       })
       .catch((error) => {
         setDeleteVideoFile(false);
+        setShowVideoText(false);
         setLoad(false);
       });
   };
+
 
   const handleDeletePdf = (pdf_id) => {
     setLoad(true);
@@ -234,12 +229,13 @@ const ChangeFaq = ({
           setLoad(false);
           setDeletePdfFile(true);
           setShowPdfText(true);
-          setOpenDrawer(false);
+          setPdfPreviewLink(null);
         }
       })
       .catch((error) => {
         setLoad(false);
         setDeletePdfFile(false);
+        setShowPdfText(false);
       });
   };
 
@@ -306,8 +302,6 @@ const ChangeFaq = ({
           fetchTableData();
           setLoad(false);
           setDeletePdfFile(true);
-          setShowPdfText(true);
-          setOpenDrawer(false);
         }
       })
       .catch((error) => {
@@ -377,7 +371,7 @@ const ChangeFaq = ({
             </div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <div id='Preview-Container'>
-                {moduleData?.video_file ? (
+                {moduleData?.media_id ? (
                   <div
                     style={{
                       display: 'flex',
@@ -387,49 +381,45 @@ const ChangeFaq = ({
                     }}
                   >
                     <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo Video</p>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Tooltip
-                        title='Click For Preview'
-                        getPopupContainer={(trigger) => trigger.parentNode}
+                    {showVideoText == false ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                        }}
                       >
-                        <PlayCircleOutlined
-                          onClick={() =>
-                            handleVideoPrev(
-                              `${endpoints.assessment.erpBucket}/${moduleData?.video_file}`
-                            )
-                          }
-                          style={{ fontSize: '40px', color: 'blueviolet' }}
-                        />
-                      </Tooltip>
-                    </div>
-                    <Popconfirm
-                      title='Delete Video?'
-                      onConfirm={() => handleDeleteVideo(moduleData?.media_id)}
-                      okText='Yes'
-                      cancelText='No'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      overlayClassName='custom-popconfirm'
-                    >
-                      <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
-                    </Popconfirm>
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-evenly',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo Video</p>
-                    <p style={{ marginTop: '10px' }}>No Video File Exists</p>
-                    {moduleData?.media_id && (
+                        <Tooltip
+                          title='Click For Preview'
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                        >
+                          <PlayCircleOutlined
+                            onClick={() =>
+                              handleVideoPrev(
+                                videoPreviewLink
+                                  ? `${endpoints.assessment.erpBucket}/${videoPreviewLink}`
+                                  : `${endpoints.assessment.erpBucket}/${moduleData?.video_file}`
+                              )
+                            }
+                            style={{ fontSize: '40px', color: 'blueviolet' }}
+                          />
+                        </Tooltip>
+                      </div>
+                    ) : (
+                      <p style={{ marginTop: '10px' }}>No Video File Exists</p>
+                    )}
+                    {showVideoText == false ? (
+                      <Popconfirm
+                        title='Delete Video?'
+                        onConfirm={() => handleDeleteVideo(moduleData?.media_id)}
+                        okText='Yes'
+                        cancelText='No'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        overlayClassName='custom-popconfirm'
+                      >
+                        <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+                      </Popconfirm>
+                    ) : (
                       <Button
                         style={{ marginRight: '7px' }}
                         type='primary'
@@ -439,9 +429,11 @@ const ChangeFaq = ({
                       </Button>
                     )}
                   </div>
+                ) : (
+                  <div></div>
                 )}
 
-                {moduleData?.pdf_file ? (
+                {moduleData?.media_id ? (
                   <div
                     style={{
                       display: 'flex',
@@ -452,69 +444,69 @@ const ChangeFaq = ({
                   >
                     <p style={{ marginTop: '10px', fontWeight: 'bold' }}>User Manual</p>
 
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Tooltip
-                        title='Click For Preview'
-                        getPopupContainer={(trigger) => trigger.parentNode}
+                    {showPdfText == false ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                        }}
                       >
-                        <img
-                          src={getFileIcon('pdf')}
-                          onClick={() => {
-                            const fileName = moduleData?.pdf_file;
-                            let extension = fileName
-                              ? fileName[fileName?.length - 1]
-                              : '';
-                            console.log(extension, 'hello');
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: [
-                                {
-                                  src: `${endpoints.assessment.erpBucket}/${moduleData?.pdf_file}`,
+                        <Tooltip
+                          title='Click For Preview'
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                        >
+                          <img
+                            src={getFileIcon('pdf')}
+                            onClick={() => {
+                              const fileName = pdfPreviewLink
+                                ? pdfPreviewLink
+                                : moduleData?.pdf_file;
+                              let extension = fileName
+                                ? fileName[fileName?.length - 1]
+                                : '';
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    src: `${endpoints.assessment.erpBucket}/${
+                                      pdfPreviewLink
+                                        ? pdfPreviewLink
+                                        : moduleData?.pdf_file
+                                    }`,
 
-                                  name: fileName,
-                                  extension: '.' + extension,
-                                },
-                              ],
-                            });
-                          }}
-                          style={{ cursor: 'pointer' }}
-                        />
-                      </Tooltip>
-                    </div>
-                    <Popconfirm
-                      title='Delete PDF?'
-                      onConfirm={() => handleDeletePdf(moduleData?.media_id)}
-                      okText='Yes'
-                      cancelText='No'
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      overlayClassName='custom-popconfirm'
-                    >
-                      <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
-                    </Popconfirm>
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-evenly',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo PDF</p>
-                    <p>No PDF File Exists</p>
-
-                    {moduleData?.media_id && (
+                                    name: fileName,
+                                    extension: '.' + extension,
+                                  },
+                                ],
+                              });
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          />
+                        </Tooltip>
+                      </div>
+                    ) : (
+                      <p>No PDF File Exists</p>
+                    )}
+                    {showPdfText == false ? (
+                      <Popconfirm
+                        title='Delete PDF?'
+                        onConfirm={() => handleDeletePdf(moduleData?.media_id)}
+                        okText='Yes'
+                        cancelText='No'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        overlayClassName='custom-popconfirm'
+                      >
+                        <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+                      </Popconfirm>
+                    ) : (
                       <Button type='primary' onClick={() => handleReplacePdf()}>
                         Upload
                       </Button>
                     )}
                   </div>
+                ) : (
+                  <div></div>
                 )}
               </div>
             </div>
@@ -595,7 +587,7 @@ const ChangeFaq = ({
                     answers.some((item) => item?.trim() == '')
                   }
                 >
-                  Save
+                  Update
                 </Button>
               </div>
             </div>
@@ -616,9 +608,9 @@ const ChangeFaq = ({
           }}
           width={'60%'}
         >
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
             <video
-              id='module_video'
+              id='change_faq_module_video'
               src={VideoPrev}
               controls
               preload='auto'
@@ -639,6 +631,8 @@ const ChangeFaq = ({
           media_id={moduleData?.media_id}
           fetchTableData={fetchTableData}
           setOpenDrawer={setOpenDrawer}
+          setShowPdfText={setShowPdfText}
+          setPdfPreviewLink={setPdfPreviewLink}
         />
         <UploadVideo
           show={showUploadVideoModal}
@@ -646,6 +640,8 @@ const ChangeFaq = ({
           media_id={moduleData?.media_id}
           fetchTableData={fetchTableData}
           setOpenDrawer={setOpenDrawer}
+          setShowVideoText={setShowVideoText}
+          setVideoPreviewLink={setVideoPreviewLink}
         />
       </>
     </div>
