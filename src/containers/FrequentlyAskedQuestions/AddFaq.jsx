@@ -5,6 +5,7 @@ import {
   PlusOutlined,
   InfoCircleTwoTone,
   UploadOutlined,
+  CloseCircleOutlined,
 } from '@ant-design/icons';
 import React, { useEffect, useState, createRef } from 'react';
 import {
@@ -85,7 +86,7 @@ const CollapseableComponent = ({ module, items }) => {
     if (value) {
       fetchChildModules(value);
       setModuleId(value);
-      setSubModule(null)
+      setSubModule(null);
     } else {
       setModuleId(null);
       setSubModule(null);
@@ -426,7 +427,7 @@ const CollapseableComponent = ({ module, items }) => {
         <div className='row'>
           <div className='col-md-12'>
             <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
-              <div className='row' style={{marginTop:"-15px"}}>
+              <div className='row' style={{ marginTop: '-15px' }}>
                 <Form
                   className='mt-3'
                   layout={'vertical'}
@@ -549,7 +550,9 @@ const CollapseableComponent = ({ module, items }) => {
                               </Button>
                             </Upload>
                             <div style={{ marginTop: '2px' }}>
-                              <small style={{ textAlign: 'left' }}>Only ['.pdf'] Files Allowed</small>
+                              <small style={{ textAlign: 'left' }}>
+                                Only ['.pdf'] Files Allowed
+                              </small>
                               {selectedPdfFile ? (
                                 <span
                                   style={{
@@ -571,6 +574,13 @@ const CollapseableComponent = ({ module, items }) => {
                                   >
                                     {selectedPdfFile?.name}
                                   </span>
+                                  <div className='col-2'>
+                                    <CloseCircleOutlined
+                                      onClick={() => {
+                                        draggerPdfProps.onRemove();
+                                      }}
+                                    />
+                                  </div>
                                 </span>
                               ) : (
                                 ''
@@ -626,6 +636,13 @@ const CollapseableComponent = ({ module, items }) => {
                                   >
                                     {selectedVideoFile?.name}
                                   </span>
+                                  <div className='col-2'>
+                                    <CloseCircleOutlined
+                                      onClick={() => {
+                                        draggerProps.onRemove();
+                                      }}
+                                    />
+                                  </div>
                                 </span>
                               ) : (
                                 ''

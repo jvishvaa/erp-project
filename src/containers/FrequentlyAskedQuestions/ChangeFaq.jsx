@@ -376,16 +376,17 @@ const ChangeFaq = ({
                       display: 'flex',
                       justifyContent: 'space-evenly',
                       alignItems: 'center',
-                      marginRight: '55px',
+                      marginRight : `${showPdfText ? "66px" : ""}`
                     }}
                   >
-                    <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Demo Video</p>
+                    <p style={{ marginTop: '10px', fontWeight: 'bold', marginRight : `${showPdfText ? "20px" : ""}` }}>Demo Video</p>
                     {showVideoText == false ? (
                       <div
                         style={{
                           display: 'flex',
                           flexDirection: 'column',
                           justifyContent: 'center',
+                          marginRight : `${showPdfText ? "28px" : ""}`
                         }}
                       >
                         <Tooltip
@@ -405,7 +406,7 @@ const ChangeFaq = ({
                         </Tooltip>
                       </div>
                     ) : (
-                      <p style={{ marginTop: '10px' }}>No Video File Exists</p>
+                      <p style={{ marginTop: '10px' }}>No Video</p>
                     )}
                     {showVideoText == false ? (
                       <Tooltip
@@ -420,7 +421,7 @@ const ChangeFaq = ({
                           getPopupContainer={(trigger) => trigger.parentNode}
                           overlayClassName='custom-popconfirm'
                         >
-                          <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+                          <DeleteOutline style={{ color: 'red', cursor: 'pointer', marginRight : `${showPdfText ? "-15px" : ""}` }} />
                         </Popconfirm>
                       </Tooltip>
                     ) : (
@@ -443,10 +444,10 @@ const ChangeFaq = ({
                       display: 'flex',
                       justifyContent: 'space-evenly',
                       alignItems: 'center',
-                      marginRight: '55px',
+                      marginRight : `${showVideoText ? "66px" : ""}`
                     }}
                   >
-                    <p style={{ marginTop: '10px', fontWeight: 'bold' }}>User Manual</p>
+                    <p style={{ marginTop: '10px', fontWeight: 'bold', marginRight : `${showVideoText ? "20px" : ""}` }}>User Manual</p>
 
                     {showPdfText == false ? (
                       <div
@@ -454,6 +455,7 @@ const ChangeFaq = ({
                           display: 'flex',
                           flexDirection: 'column',
                           justifyContent: 'center',
+                          marginRight : `${showVideoText ? "25px" : ""}`
                         }}
                       >
                         <Tooltip
@@ -490,7 +492,7 @@ const ChangeFaq = ({
                         </Tooltip>
                       </div>
                     ) : (
-                      <p>No PDF File Exists</p>
+                      <p>No PDF</p>
                     )}
                     {showPdfText == false ? (
                       <Tooltip
@@ -505,7 +507,7 @@ const ChangeFaq = ({
                           getPopupContainer={(trigger) => trigger.parentNode}
                           overlayClassName='custom-popconfirm'
                         >
-                          <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+                          <DeleteOutline style={{ color: 'red', cursor: 'pointer', marginRight : `${showVideoText ? "-15px" : ""}` }} />
                         </Popconfirm>
                       </Tooltip>
                     ) : (
