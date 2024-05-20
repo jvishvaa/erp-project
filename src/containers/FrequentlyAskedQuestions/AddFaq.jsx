@@ -5,6 +5,7 @@ import {
   PlusOutlined,
   InfoCircleTwoTone,
   UploadOutlined,
+  CloseCircleOutlined,
 } from '@ant-design/icons';
 import React, { useEffect, useState, createRef } from 'react';
 import {
@@ -85,7 +86,7 @@ const CollapseableComponent = ({ module, items }) => {
     if (value) {
       fetchChildModules(value);
       setModuleId(value);
-      setSubModule(null)
+      setSubModule(null);
     } else {
       setModuleId(null);
       setSubModule(null);
@@ -144,7 +145,7 @@ const CollapseableComponent = ({ module, items }) => {
   // To Upload Video and Video Modal Functions
 
   const MAX_FILE_SIZE_MB = 500;
-  const allowedFiles = ['.mp3', '.mp4', '.mpeg'];
+  const allowedFiles = ['.mp3', '.mp4'];
   const draggerProps = {
     showUploadList: false,
     disabled: false,
@@ -160,7 +161,7 @@ const CollapseableComponent = ({ module, items }) => {
       if (allowedFiles.includes(type)) {
         setSelectedVideoFile(...file);
       } else {
-        message.error('Only [.mp3, .mp4, .mpeg] files are allowed!');
+        message.error('Only [.mp3, .mp4] files are allowed!');
       }
 
       return false;
@@ -171,7 +172,7 @@ const CollapseableComponent = ({ module, items }) => {
       const isSizeValid = file.size / 1024 / 1024 <= MAX_FILE_SIZE_MB;
 
       if (!isAllowedType) {
-        message.error('Only [.mp3, .mp4, .mpeg] files are allowed!');
+        message.error('Only [.mp3, .mp4] files are allowed!');
       } else if (!isSizeValid) {
         message.error(`File size must be less than ${MAX_FILE_SIZE_MB} MB!`);
       } else {
@@ -426,7 +427,7 @@ const CollapseableComponent = ({ module, items }) => {
         <div className='row'>
           <div className='col-md-12'>
             <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
-              <div className='row' style={{marginTop:"-15px"}}>
+              <div className='row' style={{ marginTop: '-15px' }}>
                 <Form
                   className='mt-3'
                   layout={'vertical'}
@@ -549,7 +550,9 @@ const CollapseableComponent = ({ module, items }) => {
                               </Button>
                             </Upload>
                             <div style={{ marginTop: '2px' }}>
-                              <small style={{ textAlign: 'left' }}>Only ['.pdf'] Files Allowed</small>
+                              <small style={{ textAlign: 'left' }}>
+                                Only ['.pdf'] Files Allowed
+                              </small>
                               {selectedPdfFile ? (
                                 <span
                                   style={{
@@ -571,6 +574,13 @@ const CollapseableComponent = ({ module, items }) => {
                                   >
                                     {selectedPdfFile?.name}
                                   </span>
+                                  <div className='col-2'>
+                                    <CloseCircleOutlined
+                                      onClick={() => {
+                                        draggerPdfProps.onRemove();
+                                      }}
+                                    />
+                                  </div>
                                 </span>
                               ) : (
                                 ''
@@ -603,7 +613,7 @@ const CollapseableComponent = ({ module, items }) => {
                               }}
                             >
                               <small style={{ textAlign: 'left' }}>
-                                Only ['.mp3','.mp4','.mpeg'] Files Allowed
+                                Only ['.mp3','.mp4',] Files Allowed
                               </small>
                               {selectedVideoFile ? (
                                 <span
@@ -626,6 +636,13 @@ const CollapseableComponent = ({ module, items }) => {
                                   >
                                     {selectedVideoFile?.name}
                                   </span>
+                                  <div className='col-2'>
+                                    <CloseCircleOutlined
+                                      onClick={() => {
+                                        draggerProps.onRemove();
+                                      }}
+                                    />
+                                  </div>
                                 </span>
                               ) : (
                                 ''

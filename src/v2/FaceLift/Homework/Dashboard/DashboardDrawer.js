@@ -25,7 +25,6 @@ const DashboardDrawer = ({
   loading,
   tableLoading,
 }) => {
-  console.log({ tableData });
   const [showAbsolute, setShowAbsolute] = useState(false);
 
   return (
@@ -105,7 +104,7 @@ const DashboardDrawer = ({
                       tableLoading={tableLoading}
                     />
                   ) : (
-                    <Empty />
+                    <Empty description='No results found for the chosen filters.' />
                   )}
                 </div>
               </div>
