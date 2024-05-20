@@ -110,8 +110,8 @@ const ChangeFaq = ({
     if (!openDrawer) {
       setQuestions([]);
       setAnswers([]);
-      setVideoPreviewLink(null)
-      setPdfPreviewLink(null)
+      setVideoPreviewLink(null);
+      setPdfPreviewLink(null);
     } else {
       setQuestions(moduleData?.items.map((item) => item.question) || []);
       setAnswers(moduleData?.items.map((item) => item.answer) || []);
@@ -208,7 +208,6 @@ const ChangeFaq = ({
         setLoad(false);
       });
   };
-
 
   const handleDeletePdf = (pdf_id) => {
     setLoad(true);
@@ -409,16 +408,21 @@ const ChangeFaq = ({
                       <p style={{ marginTop: '10px' }}>No Video File Exists</p>
                     )}
                     {showVideoText == false ? (
-                      <Popconfirm
-                        title='Delete Video?'
-                        onConfirm={() => handleDeleteVideo(moduleData?.media_id)}
-                        okText='Yes'
-                        cancelText='No'
+                      <Tooltip
+                        title='Delete'
                         getPopupContainer={(trigger) => trigger.parentNode}
-                        overlayClassName='custom-popconfirm'
                       >
-                        <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
-                      </Popconfirm>
+                        <Popconfirm
+                          title='Delete Video?'
+                          onConfirm={() => handleDeleteVideo(moduleData?.media_id)}
+                          okText='Yes'
+                          cancelText='No'
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          overlayClassName='custom-popconfirm'
+                        >
+                          <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+                        </Popconfirm>
+                      </Tooltip>
                     ) : (
                       <Button
                         style={{ marginRight: '7px' }}
@@ -489,16 +493,21 @@ const ChangeFaq = ({
                       <p>No PDF File Exists</p>
                     )}
                     {showPdfText == false ? (
-                      <Popconfirm
-                        title='Delete PDF?'
-                        onConfirm={() => handleDeletePdf(moduleData?.media_id)}
-                        okText='Yes'
-                        cancelText='No'
+                      <Tooltip
+                        title='Delete'
                         getPopupContainer={(trigger) => trigger.parentNode}
-                        overlayClassName='custom-popconfirm'
                       >
-                        <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
-                      </Popconfirm>
+                        <Popconfirm
+                          title='Delete PDF?'
+                          onConfirm={() => handleDeletePdf(moduleData?.media_id)}
+                          okText='Yes'
+                          cancelText='No'
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          overlayClassName='custom-popconfirm'
+                        >
+                          <DeleteOutline style={{ color: 'red', cursor: 'pointer' }} />
+                        </Popconfirm>
+                      </Tooltip>
                     ) : (
                       <Button type='primary' onClick={() => handleReplacePdf()}>
                         Upload
@@ -520,27 +529,32 @@ const ChangeFaq = ({
                   <div
                     style={{ display: 'flex', justifyContent: 'flex-end', gap: '15px' }}
                   >
-                    <Popconfirm
-                      title='Delete?'
-                      onConfirm={() => deleteQuestion(each?.id)}
-                      okText='Yes'
-                      cancelText='No'
+                    <Tooltip
+                      title='Delete'
                       getPopupContainer={(trigger) => trigger.parentNode}
-                      overlayClassName='custom-popconfirm'
-                      placement='top'
                     >
-                      <span
-                        style={{
-                          display: 'flex',
-                          gap: '15px',
-                          width: '18%',
-                          cursor: 'pointer',
-                        }}
+                      <Popconfirm
+                        title='Delete?'
+                        onConfirm={() => deleteQuestion(each?.id)}
+                        okText='Yes'
+                        cancelText='No'
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                        overlayClassName='custom-popconfirm'
+                        placement='top'
                       >
-                        <p>Delete</p>
-                        <DeleteOutlined o style={{ color: 'red', marginTop: '5px' }} />
-                      </span>
-                    </Popconfirm>
+                        <span
+                          style={{
+                            display: 'flex',
+                            gap: '15px',
+                            width: '18%',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <p>Delete</p>
+                          <DeleteOutlined o style={{ color: 'red', marginTop: '5px' }} />
+                        </span>
+                      </Popconfirm>
+                    </Tooltip>
                   </div>
                   <label style={{ fontWeight: 'bold' }}>Question {index + 1}</label>
                   <Input

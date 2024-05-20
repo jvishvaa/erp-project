@@ -68,6 +68,16 @@ const FrequentlyAskedQuestions = () => {
   const [load, setLoad] = useState(false);
   const [edit, setEdit] = useState(false);
 
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+  });
+
+  const handleTableChange = (pagination) => {
+    console.log(pagination)
+    setPagination(pagination);
+  };
+
   const formRef = createRef();
 
   const history = useHistory();
@@ -100,7 +110,9 @@ const FrequentlyAskedQuestions = () => {
       title: <span className='th-white th-fw-700'>Sl No.</span>,
       dataIndex: 'slNo',
       key: 'slNo',
-      render: (text, record, index) => index + 1,
+      render: (text, record, index) => {
+        return (pagination.current - 1) * pagination.pageSize + index + 1;
+      },
     },
     {
       title: <span className='th-white th-fw-700'>Sub Modules</span>,
@@ -492,124 +504,140 @@ const FrequentlyAskedQuestions = () => {
             </Breadcrumb>
           </div>
         </div>
-        <div>
-          <Form
-            ref={formRef}
-            style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}
-            direction='row'
-          >
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Modules*</span>
-              <Form.Item name='module'>
-                <Select
-                  allowClear
-                  placeholder='Select Module'
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(value) => handleChangeModule(value)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
+        <div className='row'>
+          <div className='col-md-12'>
+            <div className='th-bg-white th-br-5 py-3 shadow-sm'>
+              <div>
+                <Form
+                  ref={formRef}
+                  style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}
+                  direction='row'
                 >
-                  {moduleOptions}
-                </Select>
-              </Form.Item>
+                  <div className='col-md-2'>
+                    <span className='th-grey th-14'>Modules*</span>
+                    <Form.Item name='module'>
+                      <Select
+                        allowClear
+                        placeholder='Select Module'
+                        showSearch
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                        onChange={(value) => handleChangeModule(value)}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      >
+                        {moduleOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-2'>
+                    <span className='th-grey th-14'>Sub Modules</span>
+                    <Form.Item name='child_module'>
+                      <Select
+                        allowClear
+                        placeholder='Select Sub Module'
+                        showSearch
+                        optionFilterProp='children'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                        onChange={(e) => handleSubModule(e)}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      >
+                        {childModuleOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-2'>
+                    <span className='th-grey th-14'>User Level</span>
+                    <Form.Item name='user_level'>
+                      <Select
+                        allowClear
+                        placeholder='Select User Level'
+                        showSearch
+                        optionFilterProp='children'
+                        mode='multiple'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                        onChange={(e) => handleUserLevel(e)}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      >
+                        {userLevelListOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-2'>
+                    <span className='th-grey th-14'>Device</span>
+                    <Form.Item name='device'>
+                      <Select
+                        allowClear
+                        placeholder='Select Device'
+                        showSearch
+                        optionFilterProp='children'
+                        mode='multiple'
+                        filterOption={(input, options) => {
+                          return (
+                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                            0
+                          );
+                        }}
+                        className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                        onChange={(value) => handleDevice(value)}
+                        getPopupContainer={(trigger) => trigger.parentNode}
+                      >
+                        {deviceOptions}
+                      </Select>
+                    </Form.Item>
+                  </div>
+                  <div className='addFaq col-md-2'>
+                    <Button
+                      type='primary'
+                      className='Buttons'
+                      onClick={() => history.push('/add-faq')}
+                      style={{ marginTop: '10px' }}
+                    >
+                      Add FAQ
+                    </Button>
+                  </div>
+                </Form>
+                <div className='table'>
+                  <span style={{ border: '1px solid #d9d9d9', padding: '5px' }}>
+                    <InfoCircleTwoTone className='pr-2' />
+                    <i className='th-grey'>
+                      Please Select Module For Viewing Sub Modules
+                    </i>
+                  </span>
+                  <Table
+                    dataSource={tableData}
+                    columns={columns}
+                    pagination={{
+                      position: ['bottomCenter'],
+                      current: pagination.current,
+                      pageSize: pagination.pageSize,
+                      onChange: (page, pageSize) =>
+                        handleTableChange({ current: page, pageSize }),
+                    }}
+                    style={{ textAlign: 'center', marginTop: '10px' }}
+                  />
+                </div>
+              </div>
             </div>
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Sub Modules</span>
-              <Form.Item name='child_module'>
-                <Select
-                  allowClear
-                  placeholder='Select Sub Module'
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(e) => handleSubModule(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  {childModuleOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>User Level</span>
-              <Form.Item name='user_level'>
-                <Select
-                  allowClear
-                  placeholder='Select User Level'
-                  showSearch
-                  optionFilterProp='children'
-                  mode='multiple'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(e) => handleUserLevel(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  {userLevelListOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-md-2'>
-              <span className='th-grey th-14'>Device</span>
-              <Form.Item name='device'>
-                <Select
-                  allowClear
-                  placeholder='Select Device'
-                  showSearch
-                  optionFilterProp='children'
-                  mode='multiple'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(value) => handleDevice(value)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  {deviceOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='addFaq col-md-2'>
-              <Button
-                type='primary'
-                className='Buttons'
-                onClick={() => history.push('/add-faq')}
-                style={{ marginTop: '10px' }}
-              >
-                Add FAQ
-              </Button>
-            </div>
-          </Form>
+          </div>
         </div>
-
-        <div className='table'>
-          <span style={{ border: '1px solid #d9d9d9', padding: '5px' }}>
-            <InfoCircleTwoTone className='pr-2' />
-            <i className='th-grey'>Please Select Module For Viewing Sub Modules</i>
-          </span>
-          <Table
-            dataSource={tableData}
-            columns={columns}
-            pagination={{position:['bottomCenter']}}
-            style={{ textAlign: 'center', marginTop: '10px' }}
-          />
-        </div>
-
         {load && <Loader />}
 
         <Drawer
