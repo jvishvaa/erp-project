@@ -144,7 +144,7 @@ const CollapseableComponent = ({ module, items }) => {
   // To Upload Video and Video Modal Functions
 
   const MAX_FILE_SIZE_MB = 500;
-  const allowedFiles = ['.mp3', '.mp4', '.mpeg'];
+  const allowedFiles = ['.mp3', '.mp4'];
   const draggerProps = {
     showUploadList: false,
     disabled: false,
@@ -160,7 +160,7 @@ const CollapseableComponent = ({ module, items }) => {
       if (allowedFiles.includes(type)) {
         setSelectedVideoFile(...file);
       } else {
-        message.error('Only [.mp3, .mp4, .mpeg] files are allowed!');
+        message.error('Only [.mp3, .mp4] files are allowed!');
       }
 
       return false;
@@ -171,7 +171,7 @@ const CollapseableComponent = ({ module, items }) => {
       const isSizeValid = file.size / 1024 / 1024 <= MAX_FILE_SIZE_MB;
 
       if (!isAllowedType) {
-        message.error('Only [.mp3, .mp4, .mpeg] files are allowed!');
+        message.error('Only [.mp3, .mp4] files are allowed!');
       } else if (!isSizeValid) {
         message.error(`File size must be less than ${MAX_FILE_SIZE_MB} MB!`);
       } else {
@@ -603,7 +603,7 @@ const CollapseableComponent = ({ module, items }) => {
                               }}
                             >
                               <small style={{ textAlign: 'left' }}>
-                                Only ['.mp3','.mp4','.mpeg'] Files Allowed
+                                Only ['.mp3','.mp4',] Files Allowed
                               </small>
                               {selectedVideoFile ? (
                                 <span
