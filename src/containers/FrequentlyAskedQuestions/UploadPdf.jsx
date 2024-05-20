@@ -165,8 +165,9 @@ const UploadPdfFaq = (props) => {
               Only P.D.F File Is Allowed
             </div>
           )}
+          <div style={{display:"flex", flexDirection:"column", width:"100%"}}>
           {fileList?.length > 0 && (
-            <span className='th-black-1 mt-3'>Selected Files</span>
+            <span className='th-black-1 mt-3' style={{textAlign:"center"}}>Selected Files</span>
           )}
           <div className='row my-2 th-grey' style={{ height: 150, overflowY: 'auto' }}>
             {fileList.map((item) => (
@@ -187,6 +188,7 @@ const UploadPdfFaq = (props) => {
                 </div>
               </div>
             ))}
+          </div>
           </div>
         </div>
 

@@ -45,13 +45,13 @@ const UploadVideoFaq = (props) => {
     showUploadList: false,
     disabled: false,
     multiple: false, // Allow only single file upload
-    accept: '.mp3,.mp4,.mpeg', // Allow only mp3, mp4, and mpeg files
+    accept: '.mp3,.mp4', // Allow only mp3, mp4, and mpeg files
     onRemove: () => {
       setFileList([]);
     },
     beforeUpload: (file) => {
       const type = file.type.split('/')[1];
-      const isValidType = ['mp4', 'mpeg', 'mp3'].includes(type);
+      const isValidType = ['mp4', 'mp3'].includes(type);
       const isValidSize = file.size / 1024 / 1024 <= MAX_FILE_SIZE_MB; // Convert bytes to MB
 
       if (isValidType && isValidSize) {
@@ -156,15 +156,16 @@ const UploadVideoFaq = (props) => {
             >
               Browse Files
             </Button>
-            <p className='pt-2'>Accepted Files [mp3, mp4, mpeg]</p>
+            <p className='pt-2'>Accepted Files [mp3, mp4]</p>
           </Dragger>
           {fileTypeError && (
             <div className='row pt-3 justify-content-center th-red'>
               Only Video File Is Allowed
             </div>
           )}
+          <div style={{display:"flex", flexDirection:"column", width:"100%"}}>
           {fileList?.length > 0 && (
-            <span className='th-black-1 mt-3'>Selected Files</span>
+            <span className='th-black-1 mt-3' style={{textAlign:"center"}}>Selected Files</span>
           )}
           <div className='row my-2 th-grey' style={{ height: 150, overflowY: 'auto' }}>
             {fileList?.map((item) => (
@@ -172,9 +173,7 @@ const UploadVideoFaq = (props) => {
                 key={item.uid}
                 className='row mb-1 align-items-center th-12 th-bg-grey py-2'
               >
-                <div className='col-1 pr-0'>{/* Display file icon here */}</div>
                 <div className='col-5 text-truncate'>{item.name}</div>
-                {/* <div className='col-2 px-0'>{getSize(item.size)}</div> */}
                 <div className='col-2 pr-0'>.{item.type.split('/')[1]}</div>
                 <div className='col-2'>
                   <CloseCircleOutlined
@@ -185,6 +184,7 @@ const UploadVideoFaq = (props) => {
                 </div>
               </div>
             ))}
+          </div>
           </div>
         </div>
 
