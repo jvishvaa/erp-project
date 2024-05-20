@@ -271,46 +271,6 @@ const HomeworkDashboard = () => {
           sec_map_id: item?.sec_map_id,
         }));
         setSubjectData(mappedData);
-        // setLevel2TableData([
-        //   {
-        //     map_sub: 14050,
-        //     id: 3,
-        //     name: 'Hindi',
-        //     numberCounts: {
-        //       assigned: 2,
-        //       submitted: 1,
-        //       pending: 1,
-        //       non_evaluated: 0,
-        //       evaluated: 1,
-        //     },
-        //     percentageCounts: {
-        //       p_assigned: 100,
-        //       p_submitted: 50.0,
-        //       p_pending: 50.0,
-        //       p_non_evaluated: 0.0,
-        //       p_evaluated: 50.0,
-        //     },
-        //   },
-        //   {
-        //     map_sub: 14049,
-        //     id: 6,
-        //     name: 'Maths',
-        //     numberCounts: {
-        //       assigned: 2,
-        //       submitted: 0,
-        //       pending: 2,
-        //       non_evaluated: 0,
-        //       evaluated: 0,
-        //     },
-        //     percentageCounts: {
-        //       p_assigned: 100,
-        //       p_submitted: 0.0,
-        //       p_pending: 100.0,
-        //       p_non_evaluated: 0.0,
-        //       p_evaluated: 0.0,
-        //     },
-        //   },
-        // ]);
       } else {
         setSubjectData([]);
         message.error(result?.message || 'Something went wrong');
