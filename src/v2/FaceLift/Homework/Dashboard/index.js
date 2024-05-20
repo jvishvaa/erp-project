@@ -594,6 +594,8 @@ const HomeworkDashboard = () => {
                               ? 'col-md-3'
                               : visibleLevel === 'grade'
                               ? 'col-md-6'
+                              : visibleLevel === 'subject'
+                              ? 'col-md-9'
                               : 'col-md-6'
                           }`}
                         >

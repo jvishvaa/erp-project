@@ -45,12 +45,11 @@ const LikesModal = ({ showLikesModal, handleCloseLikesModal, selectedPostId }) =
           className='demo-loadmore-list'
           itemLayout='horizontal'
           loading={loading}
-          //   loadMore={loadMore}
           bordered={false}
           dataSource={likesList}
           renderItem={(each, index) => {
             const userImage =
-              each?.reacted_by?.profile_img ??
+              each?.reacted_by?.profile_img !== '' ? each?.reacted_by?.profile_img:
               'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?size=626&ext=jpg';
             return (
               <List.Item>
