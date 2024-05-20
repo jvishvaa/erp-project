@@ -643,7 +643,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     setQuestionList([]);
     if (e) {
       setSubjectID(e.value);
-      setMappingSubjectID(e?.mappingSubjectID);
+      setMappingSubjectID([e?.mappingSubjectID]);
       setSubjectName(e.children.split('_')[e.children.split('_').length - 1]);
       setHwMappingID();
       checkAssignedHomework({
@@ -1180,7 +1180,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         ? sectionMappingID
         : [sectionMappingID],
       subject: subjectID,
-      mapping_subject: [mappingSubjectID],
+      mapping_subject: mappingSubjectID,
       date: moment().format('YYYY-MM-DD'),
       last_submission_date: submissionDate,
       questions: questionList.map((q) => {
@@ -1399,6 +1399,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSectionMappingID(editData?.section_mapping_id);
       setComingFromTimeTable(true);
       setSubjectID(editSubject?.subject_id);
+      setMappingSubjectID([editSubject?.subject_mappping_id]);
       setSubjectName(editSubject?.subject_name);
       const params = {
         session_year: selectedAcademicYear?.id,
@@ -1461,7 +1462,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
       setSectionID(editData?.section_id);
       setSectionMappingID(editData?.section_mapping_id);
       setSubjectID(editSubject?.subject_id);
-      setMappingSubjectID(editSubject?.subject_mappping_id);
+      setMappingSubjectID([editSubject?.subject_mappping_id]);
       setSubjectName(editSubject?.subject_name);
       if (editData?.periods_data?.length > 0) {
         setClearTodaysTopic(false);
@@ -1598,10 +1599,10 @@ const DailyDiary = ({ isSubstituteDiary }) => {
 
   const fetchMappingSubject = (params = {}) => {
     axios
-      .get(`/erp_user/mapping-subject-list`, { params: { ...params } })
+      .get(`/erp_user/mapping-subject-list/`, { params: { ...params } })
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          setMappingSubjectID(response?.data?.map((item) => item?.id));
+          setMappingSubjectID(response?.data?.data?.map((item) => item?.id));
         } else {
           setMappingSubjectID([]);
         }
