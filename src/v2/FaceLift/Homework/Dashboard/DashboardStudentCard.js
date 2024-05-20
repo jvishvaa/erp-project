@@ -130,7 +130,7 @@ const DashboardStudentCard = ({
                         <div className='th-10 th-grey'>
                           {showAbsolute
                             ? `${item?.numberCounts?.evaluated} `
-                            : `${item?.percentageCounts?.p_evaluated}% `}
+                            : `${item?.percentageCounts?.p_eval_sub}% `}
                           Evaluated
                         </div>
                       </div>

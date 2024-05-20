@@ -125,7 +125,7 @@ const DashboardCard = ({
         <span className='th-black-1 th-12'>
           {showAbsolute
             ? record?.numberCounts?.evaluated
-            : record?.percentageCounts?.p_evaluated}
+            : record?.percentageCounts?.p_eval_sub}
         </span>
       ),
     },
@@ -296,7 +296,7 @@ const DashboardCard = ({
                         <div className='th-10 th-grey'>
                           {showAbsolute
                             ? `${item?.numberCounts?.evaluated} `
-                            : `${item?.percentageCounts?.p_evaluated}% `}
+                            : `${item?.percentageCounts?.p_eval_sub}% `}
                           Evaluated
                         </div>
                       </div>
