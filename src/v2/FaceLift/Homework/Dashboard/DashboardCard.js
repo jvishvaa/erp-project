@@ -245,7 +245,7 @@ const DashboardCard = ({
             ],
         size: '80%',
         innerSize: '50%',
-        showInLegend: false,
+        showInLegend: true,
         dataLabels: {
           enabled: false,
         },
@@ -256,47 +256,45 @@ const DashboardCard = ({
   return (
     <React.Fragment>
       <div className='row'>
-        <div className='col-md-7 col-12 pl-0 dashboard-stat'>
+        <div className='col-md-7 col-12 pl-0 dashboard-stat p-1'>
           {Array.isArray(level1Data) && level1Data?.length > 0
             ? level1Data?.map((item, index) => (
                 <div
                   className='stat-card row th-bg-white py-2 th-br-12 mb-2 align-items-center'
                   key={index}
                   style={{
-                    border: selectedCardIndex === index ? '1px solid #1B4CCB' : '',
+                    outline: selectedCardIndex === index ? '1px solid #1B4CCB' : '',
                   }}
                   onClick={(e) => selectCard(index)}
                 >
                   <div className='col-md-9'>
                     <h4 className='th-20 mb-1 text-primary'>
-                      {/* {dashboardLevel === 0
-                        ? 'Branch'
-                        : dashboardLevel === 1
-                        ? 'Section'
-                        : dashboardLevel === 2
-                        ? 'Student'
-                        : null}
-                      {index + 1} */}
                       {item?.name}
                     </h4>
                     <div className='stat-count th-bg-grey th-br-6'>
                       <div className='d-flex justify-content-between px-3 py-2 align-items-center'>
-                        <div className='th-10 th-grey'>
-                          {showAbsolute
-                            ? `${item?.numberCounts?.pending} `
-                            : `${item?.percentageCounts?.p_pending}% `}
+                        <div className='th-12 th-grey'>
+                          <span className='th-fw-600'>
+                            {showAbsolute
+                              ? `${item?.numberCounts?.pending} `
+                              : `${item?.percentageCounts?.p_pending}% `}
+                          </span>
                           Pending
                         </div>
-                        <div className='th-10 th-grey'>
-                          {showAbsolute
-                            ? `${item?.numberCounts?.submitted} `
-                            : `${item?.percentageCounts?.p_submitted}% `}
+                        <div className='th-12 th-grey'>
+                          <span className='th-fw-600'>
+                            {showAbsolute
+                              ? `${item?.numberCounts?.submitted} `
+                              : `${item?.percentageCounts?.p_submitted}% `}
+                          </span>
                           Submitted
                         </div>
-                        <div className='th-10 th-grey'>
-                          {showAbsolute
-                            ? `${item?.numberCounts?.evaluated} `
-                            : `${item?.percentageCounts?.p_eval_sub}% `}
+                        <div className='th-12 th-grey'>
+                          <span className='th-fw-600'>
+                            {showAbsolute
+                              ? `${item?.numberCounts?.evaluated} `
+                              : `${item?.percentageCounts?.p_eval_sub}% `}
+                          </span>
                           Evaluated
                         </div>
                       </div>
