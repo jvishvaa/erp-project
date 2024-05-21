@@ -58,6 +58,11 @@ const AnnouncementList = () => {
   const [selectedBranches, setSelectedBranches] = useState([]);
   const history = useHistory();
   const showBranchFilter = [1, 2, 4, 8, 9];
+  const { is_superuser } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const  is_superuser  = false;
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const  user_level  = 8;
+
   const branchOptions = branchList?.map((each) => {
     return (
       <Option value={each?.branch?.id} key={each?.branch?.id}>
@@ -176,6 +181,20 @@ const AnnouncementList = () => {
       </Option>
     );
   });
+
+  const deleteAnnouncement = (id) => {
+    if (id) {
+      axios
+        .delete(`${endpoints.createAnnouncement.retrieveUpdateDeleteAnnouncement}${id}/`)
+        .then((res) => {
+          setPageNumber(1);
+          setFlag(!flag);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
 
   useEffect(() => {
     if (showTab == 1) {
@@ -341,21 +360,37 @@ const AnnouncementList = () => {
                 <div className='col-md-2 col-4 th-white th-fw-700'>
                   <b>Type</b>
                 </div>
-                <div className='col-md-3 col-5 text-truncate th-white th-fw-700'>
+                <div className='col-md-2 col-5 text-truncate th-white th-fw-700'>
                   <b>Title</b>
                 </div>
-                <div className='col-md-5 col-5 text-truncate th-white th-fw-700'>
+                <div
+                  className={`${
+                    [1,3].includes(parseInt(showTab))
+                      ? [1, 8].includes(user_level) || is_superuser
+                        ? 'col-md-4'
+                        : 'col-md-6'
+                      : showTab == 2
+                      ? 'col-md-5'
+                      : 'col-md-6'
+                  } col-5 text-truncate th-white th-fw-700`}
+                >
                   <b>Description</b>
                 </div>
                 {showTab != 2 ? (
-                  <div className='col-md-2 col-3 px-md-3 text-right th-white th-fw-700'>
+                  <div className={`col-md-2 col-3 px-md-3 text-right th-white th-fw-700`}>
                     <b>Created at</b>
                   </div>
-                ) : (
-                  <div className='col-md-2 col-3 pl-5 pr-1 text-center th-white th-fw-700'>
+                ) : null}
+                {([1,3].includes(parseInt(showTab)) && ([1, 8].includes(user_level) || is_superuser)) ||
+                showTab == 2 ? (
+                  <div
+                    className={` ${
+                      showTab == 2 ? 'col-md-3' : 'col-md-2'
+                    } col-3 px-md-3 text-right th-white th-fw-700`}
+                  >
                     <b>Action</b>
                   </div>
-                )}
+                ) : null}
               </div>
             </div>
           </div>
@@ -375,6 +410,7 @@ const AnnouncementList = () => {
                     showTab={showTab}
                     setTab={onChange}
                     allowedPublishBranches={allowedPublishBranches}
+                    deleteAnnouncement={deleteAnnouncement}
                   />
                 ))}
               </div>

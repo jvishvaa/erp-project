@@ -40,6 +40,20 @@ export default {
     addChildToParent: '/erp_user/add-child-to-parent/',
     updateParent: '/erp_user/update-parent',
   },
+  roleManagement: {
+    roleList: '/erp_user/roles_all/',
+    roleSearch: '/erp_user/role-search/',
+    deleteRole: '/erp_user/delete_role/',
+    restoreRole: '/erp_user/restore_role/',
+    moduleList: '/erp_user/list_module/',
+    createRole: '/erp_user/create_role/',
+    updateRole: '/erp_user/update_role_module/',
+  },
+  moduleManagement: {
+    moduleList: '/erp_user/modules_all/',
+    deleteModules : '/erp_user/delete_modules/',
+    restoreModules : '/erp_user/restore_modules/',
+  },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
     ebookSubject: '/academic/ebook_mapped_subjects/',
@@ -164,6 +178,8 @@ export default {
     announcementCategory: `announcement/announcement-category/`,
     publishAnnouncement: `/announcement/create/`,
     updateAnnouncement: 'announcement/v2/announcement-update',
+    retrieveUpdateDeleteAnnouncement:
+      '/announcement/retrieve-update-delete-announcement/',
   },
   acadCalendar: {
     monthly: `/period/calendar-v2/`,
@@ -219,6 +235,14 @@ export default {
     resourcesFiles: `${CENTRAL_BUCKET}`,
     uploadZip: `${gcloud}/hw_zip_upload_v1`,
     updateImage: '/hw-hub/upload_hw_files/',
+  },
+  homeworkDashboard: {
+    branchWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-branch-view/`,
+    gradeWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-grade-view/`,
+    sectionWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-section-view/`,
+    subjectWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-view/`,
+    subjectDetailsWise: `${msReportsUrl}/api/acad_performance/teacher-hw-dash-subject-detail-view/`,
+    studentDash: `${msReportsUrl}/api/acad_performance/student-dash/`,
   },
   centralizedHomework: {
     docType: 'hw-hub/get_doctype/',
@@ -357,11 +381,19 @@ export default {
     storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
     walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
   },
+  FrequentlyAskedQuestions: {
+    FaqApi: `${baseURL}/erp_user/faq/`,
+  },
   FINANCE_BUCKET,
   popupSetting: {
     checkDueAmount: `${baseFinanceURL}/apiV1/student-acad-fee-tilldate/`,
     popupSetting:`${baseFinanceURL}/apiV1/popup-details/`,
     studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
+  },
+  schoolWall: {
+    getPosts: '/social-media/social-media-post/',
+    likePost: '/social-media/like/',
+    comments: '/social-media/comments/',
   },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,

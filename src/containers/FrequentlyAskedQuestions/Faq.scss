@@ -1,0 +1,132 @@
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.85);
+    line-height: 1.5715;
+    cursor: pointer;
+    transition: all 0.3s, visibility 0s;
+  }
+  
+  .faqmodal {
+    padding: 18px;
+  }
+  
+  .saveButton {
+    background-color: green;
+    color: white;
+  }
+  
+  .editButton {
+    background-color: orange;
+    color: white;
+  }
+  
+  .deleteButton {
+    background-color: red;
+    color: white;
+  }
+  
+  .addFaq {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Buttons {
+    border-radius: 5px;
+    width: 100%;
+  }
+  
+  .table {
+    padding: 15px;
+  }
+  
+  #Drawer-Heading {
+    font-weight: bold;
+    text-align: center;
+    line-height: 80%;
+    width: 100%;
+  }
+  
+  #Preview-Container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;  
+    margin-top: 20px;
+    padding-top: 10px;
+    width: 95%;
+    gap: 25px;
+    padding-bottom: 10px;
+  }
+  
+  #Edit-Container {
+    text-align: left;
+    margin-top: 15px;
+    position: relative;
+  }
+  
+  #Question-Answer-Cont {
+    // border: 1px solid orangered;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;  margin-bottom: 8px;
+    padding: 15px;
+    padding-bottom: 25px;
+  }
+  
+  #Button-Cont {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 5px;
+    width: 100%;
+  }
+  
+  .th-date-picker .ant-picker-input:first-child > input {
+    text-align: center !important;
+  }
+  
+  .th-input .ant-input {
+    border-right-width: 0px !important;
+  }
+  .th-editor .tox .tox-toolbar--scrolling {
+    background-color: #f8f8f8 !important;
+    border-radius: 4px 4px 0px 0px;
+  }
+  
+  .th-editor .tox-tinymce {
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 4px;
+  }
+  .list_tooltip .ant-tooltip-inner {
+    height: 150px !important;
+    overflow-y: scroll;
+  }
+  .carasouel-class .ant-carousel{
+    margin-top: 35% !important;
+  }
+
+  .custom-popconfirm .ant-popover-inner-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+  }
+  
+  .custom-popconfirm .ant-popover-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .custom-popconfirm .ant-btn {
+    margin: 0 8px; 
+  }
+
+  .customSizedUpload .ant-upload {
+    width: 100%;
+  }  
+  
+  .full-width-button{
+    width: 100% !important;
+  }

@@ -302,7 +302,10 @@ const StudentHomeworkNew = withRouter(
           },
         })
         .then((res) => {
-          setSubjectList(res.data.result);
+          let data = res?.data?.result?.map((item) => {
+            return { ...item, id: item?.subject_ids };
+          });
+          setSubjectList(data);
         })
         .catch((error) => {
           message.error(error.message);

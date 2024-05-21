@@ -500,6 +500,8 @@ import DuePopup from 'v2/FaceLift/myComponents/DuePopup';
 import EventPopup from 'v2/FaceLift/myComponents/EventPopup';
 import endpointsV2 from 'v2/config/endpoints';
 import _ from 'lodash';
+import FrequentlyAskedQuestions from './containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions.jsx';
+import AddFaq from './containers/FrequentlyAskedQuestions/AddFaq.jsx';
 
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
@@ -532,8 +534,6 @@ function App({ alert, isMsAPI, erpConfig }) {
   const [popupSetting, setPopupSetting] = useState([]);
   const [financeSessionList, setFinanceSessionList] = useState([]);
   const isV2 = IsV2Checker();
-
-  const history = useHistory();
 
   // IDLE TIMEOUT - LOGOUT AFTER 5 HOURS IF USER IS IN STATIC MODE
   const [idleTimeOut, setIdleTimeOut] = useState(null);
@@ -569,26 +569,12 @@ function App({ alert, isMsAPI, erpConfig }) {
       ? JSON.parse(localStorage?.getItem('userDetails'))?.token
       : null;
 
-    // const forceUpdate = localStorage?.getItem('userDetails')
-    //   ? JSON.parse(localStorage?.getItem('userDetails'))?.force_update
-    //   : null;
-
-    // if (forceUpdate == 'true' || forceUpdate == 'True' || forceUpdate == true) {
-    //   console.log(window.location.pathname == '/change-password', 'redirect');
-    //   if (window.location.pathname != '/change-password') {
-    //     window.location.href = '/change-password';
-    //   }
-    //   // history.push('/change-password');
-    // }
-
     if (accessToken) {
       isJwtExpired(accessToken);
     }
-    console.log('checking running');
   };
 
   function isJwtExpired(token) {
-    console.log(token, 'get token');
     const tokenParts = token.split('.');
     if (tokenParts.length !== 3) {
       throw new Error('Invalid JWT format');
@@ -606,8 +592,6 @@ function App({ alert, isMsAPI, erpConfig }) {
           generateAccessToken(userDetails?.refresh_token);
         }
       }
-      console.log(duration?.get('minutes'), 'getmin');
-      console.log(duration?.get('seconds'), 'getsec');
     }
   }
 
@@ -617,10 +601,7 @@ function App({ alert, isMsAPI, erpConfig }) {
         refresh: refreshToken,
       })
       .then((response) => {
-        console.log(response);
         if (response.status == 200) {
-          console.log('Generate token');
-          // userDetails.token = response?.data?.access_token;
           let ud = {
             ...userDetails,
             token: response?.data?.data,
@@ -2595,6 +2576,15 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/bmi/view'>
                               {({ match }) => <ViewBMI match={match} />}
                             </Route>
+                            ,
+                            <Route path='/frequently-asked-questions'>
+                              {({ match }) => <FrequentlyAskedQuestions match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/add-faq'>
+                              {({ match }) => <AddFaq match={match} />}
+                            </Route>
+                            ,
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
                             </Route>

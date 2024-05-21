@@ -56,6 +56,7 @@ import {
   Store,
 } from '@material-ui/icons';
 import AssessmentIcon from '@material-ui/icons/Assessment';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const menuIcon = (name) => {
   let icon = '';
@@ -292,6 +293,10 @@ const menuIcon = (name) => {
     }
     case 'Teacher Attendance': {
       icon = <EventNoteIcon />;
+      break;
+    }
+    case 'FAQ' : {
+      icon = <HelpOutlineIcon />
       break;
     }
 

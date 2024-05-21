@@ -152,6 +152,10 @@ const Layout = ({ children, history }) => {
         history.push('/homework/admin');
         break;
       }
+      case 'Homework Dashboard': {
+        history.push('/homework/dashboard');
+        break;
+      }
       case 'Management View': {
         history.push('/homework/coordinator');
         break;
@@ -1103,7 +1107,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'School Wall': {
-        history.push('/blog/wall');
+        history.push('/school-wall');
         break;
       }
       case 'Blog': {

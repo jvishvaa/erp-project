@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import AlertNotificationProvider from 'context-api/alert-context/alert-state';
 import OnlineclassViewProvider from 'containers/online-class/online-class-context/online-class-state';
@@ -93,13 +93,19 @@ import EvaluatorHomework from '../containers/centralise_homework/evaluator/image
 import CentralizedHome from '../containers/centralise_homework/CentralizedHome';
 import CenralizedHomeworkRoute from '../containers/centralise_homework/centralhw_route';
 import AuditorDashboard from '../containers/centralise_homework/evaluator/Auditor/AuditorDashboard';
+import FrequentlyAskedQuestions from '../containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions';
+import AddFaq from '../containers/FrequentlyAskedQuestions/AddFaq';
+import HomeworkDashboard from '../v2/FaceLift/Homework/Dashboard';
+import SchoolWall from 'v2/FaceLift/ActivityManagement/SchoolWall';
 
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
     erpConfig();
   }, []);
+
   const [theme, setTheme] = useState(() => themeGenerator());
+
   let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
   const { erp, username, erp_config } =
@@ -129,12 +135,6 @@ const V2Router = () => {
       });
     }
   }, []);
-  // const isOrchids =
-  //   window.location.host.split('.')[0] === 'orchids' ||
-  //   window.location.host.split('.')[0] === 'qa'
-  //     ? true
-  //     : false;
-  const isOrchids = IsOrchidsChecker();
 
   return (
     <Router>
@@ -197,6 +197,9 @@ const V2Router = () => {
                           {({ match }) => <AnnouncementList match={match} />}
                         </Route>
                         <Route path='/create-announcement'>
+                          {({ match }) => <CreateAnnouncement match={match} />}
+                        </Route>
+                        <Route path='/edit-announcement/:id'>
                           {({ match }) => <CreateAnnouncement match={match} />}
                         </Route>
                         <Route path='/diary/teacher'>
@@ -405,6 +408,10 @@ const V2Router = () => {
                           {({ match }) => <SignatureUploadv2 match={match} />}
                         </Route>
                         ,
+                        <Route path='/homework/dashboard'>
+                          {({ match }) => <HomeworkDashboard match={match} />}
+                        </Route>
+                        ,
                         <Route path='/homework/centralized'>
                           {({ match }) => <CenralizedHomeworkRoute match={match} />}
                         </Route>
@@ -451,6 +458,21 @@ const V2Router = () => {
                         ,
                         <Route path='/enterprise-management/enterprises'>
                           {({ match }) => <EnterPrises match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/frequently-asked-questions'>
+                          {({ match }) => <FrequentlyAskedQuestions match={match} />}
+                        </Route>
+                        ,
+                        <Route path='/add-faq'>
+                          {({ match }) => <AddFaq match={match} />}
+                        </Route>
+                        {/* Activity Management */}
+                        {/* <Route path='/school-wall/:postId'>
+                          {({ match }) => <PostDetails match={match} />}
+                        </Route> */}
+                        <Route path='/school-wall'>
+                          {({ match }) => <SchoolWall match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

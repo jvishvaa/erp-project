@@ -510,3 +510,73 @@ svg {
   color: white;
   font-size: 10px;
 }
+// School wall
+.th-post-card {
+  border-radius: 20px;
+  // margin-bottom: 1rem;
+  width: 100% !important;
+  .th-post-dp {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin-right: 10px !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .th-pdf-logo {
+    height: 200px !important;
+    object-fit: contain !important;
+    width: 100% !important;
+    margin-bottom: 10px !important;
+  }
+}
+.th-media-display {
+  video {
+    height: 200px;
+  }
+  audio {
+    height: 130px;
+  }
+}
+
+.th-post-announcements {
+  position: sticky !important;
+  top: 5%;
+}
+.th-post-details-card {
+  max-height: 70vh !important;
+  overflow-y: auto;
+  overflow-x: hidden !important;
+}
+.th-post-slick {
+  .slick-next {
+    right: 0px !important;
+  }
+  .slick-prev {
+    left: -5px !important;
+    z-index: 1500 !important;
+  }
+}
+.th-posts-list .ant-list-split .ant-list-item {
+  border-bottom: none !important;
+}
+.ant-image-preview-mask {
+  z-index: 2100 !important;
+}
+
+.th-post-content > * {
+  -webkit-line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.th-post-description ul {
+  padding: 0px 20px !important;
+}
+.th-post-description p {
+  margin: 0px !important;
+}
+.ant-image-preview-mask {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
