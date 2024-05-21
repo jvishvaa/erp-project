@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Form, Input, Avatar, Comment, Tag, Popover, Popconfirm, Button } from 'antd';
 import MediaDisplay from './mediaDisplay';
@@ -12,6 +12,8 @@ import {
   MoreOutlined,
   EditOutlined,
   DownloadOutlined,
+  DownOutlined,
+  UpOutlined,
 } from '@ant-design/icons';
 import Slider from 'react-slick';
 import ReactHtmlParser from 'react-html-parser';
@@ -20,6 +22,9 @@ import endpoints from 'v2/config/endpoints';
 
 const PostCard = (props) => {
   const newCommentRef = useRef();
+  const contentRef = useRef();
+  const [hasLargeText, setLargeText] = useState(false);
+  const [showFullText, setShowFullText] = useState(false);
   const { user_level, user_id } = JSON.parse(localStorage?.getItem('userDetails'));
   const academicYearList = useSelector(
     (state) => state.commonFilterReducer?.academicYearList
@@ -97,6 +102,13 @@ const PostCard = (props) => {
     saveAs(blob, fullName);
   };
 
+  useEffect(() => {
+    if (contentRef.current) {
+      if (contentRef.current.clientHeight > 200) {
+        setLargeText(true);
+      }
+    }
+  }, [contentRef?.current]);
   return (
     <>
       <div className={'p-3 bg-white th-post-card'}>
@@ -162,11 +174,27 @@ const PostCard = (props) => {
             </div>
           )}
         </div>
-
         <div className='mt-3 position-relative'>
           <>
-            <div className='th-fw-500 th-14 th-black py-2 w-100 th-post-description'>
-              {ReactHtmlParser(description)}
+            <div
+              className={`th-fw-500 th-14 th-black py-2 w-100 th-post-description d-flex align-items-end ${
+                !showFullText && hasLargeText ? 'th-post-content' : ''
+              }`}
+              ref={contentRef}
+            >
+              <div className='text-justify' style={{ width: '98%' }}>
+                {ReactHtmlParser(description)}
+              </div>
+              {hasLargeText && (
+                <span
+                  className='th-pointer th-grey text-italic'
+                  onClick={() => {
+                    setShowFullText((prev) => !prev);
+                  }}
+                >
+                  {!showFullText ? <DownOutlined /> : <UpOutlined />}
+                </span>
+              )}
             </div>
           </>
 

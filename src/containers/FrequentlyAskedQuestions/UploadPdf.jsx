@@ -30,11 +30,12 @@ const UploadPdfFaq = (props) => {
       .then((res) => {
         if (res?.data) {
           message.success(`New P.D.F. Uploaded Successfully`);
+          props.setPdfPreviewLink(res?.data?.result?.pdf_file)
           props.fetchTableData();
           setUploading(false);
-          props.handleUploadPdfModalClose();
+          props.setShowPdfText(false)          
           setFileList([]);
-          props.setOpenDrawer(false);
+          props.handleUploadPdfModalClose();
         }
       })
       .catch((err) => {
@@ -42,23 +43,33 @@ const UploadPdfFaq = (props) => {
         message.error(err);
       });
   };
-
+  const MAX_FILE_SIZE_MB = 500;
   const { Dragger } = Upload;
   const draggerProps = {
     showUploadList: false,
     disabled: false,
-    multiple: false, // Allow only single file upload
+    multiple: false, 
     accept: '.pdf',
     onRemove: () => {
       setFileList([]);
     },
     beforeUpload: (file) => {
       const type = file.type.split('/')[1];
-      if (['pdf'].includes(type)) {
+      const isValidType = ['pdf'].includes(type);
+      const isValidSize = file.size / 1024 / 1024 <= MAX_FILE_SIZE_MB; // Convert bytes to MB
+
+      if (isValidType && isValidSize) {
         setFileList([file]);
         setFileTypeError(false);
+        setFileSizeError(false);
       } else {
-        setFileTypeError(true);
+        if (!isValidType) {
+          setFileTypeError(true);
+        }
+        if (!isValidSize) {
+          setFileSizeError(true);
+          message.error("File size must be less than 500 MB!")
+        }
         setFileList([]);
       }
       return false;
@@ -154,8 +165,9 @@ const UploadPdfFaq = (props) => {
               Only P.D.F File Is Allowed
             </div>
           )}
+          <div style={{display:"flex", flexDirection:"column", width:"100%"}}>
           {fileList?.length > 0 && (
-            <span className='th-black-1 mt-3'>Selected Files</span>
+            <span className='th-black-1 mt-3' style={{textAlign:"center"}}>Selected Files</span>
           )}
           <div className='row my-2 th-grey' style={{ height: 150, overflowY: 'auto' }}>
             {fileList.map((item) => (
@@ -176,6 +188,7 @@ const UploadPdfFaq = (props) => {
                 </div>
               </div>
             ))}
+          </div>
           </div>
         </div>
 

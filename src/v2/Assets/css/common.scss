@@ -564,8 +564,19 @@ svg {
 .ant-image-preview-mask {
   z-index: 2100 !important;
 }
-.th-post-description {
-  ul {
-    margin: 0px 20px !important;
-  }
+
+.th-post-content > * {
+  -webkit-line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.th-post-description ul {
+  padding: 0px 20px !important;
+}
+.th-post-description p {
+  margin: 0px !important;
+}
+.ant-image-preview-mask {
+  background-color: rgba(0, 0, 0, 0.8) !important;
 }

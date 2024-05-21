@@ -340,7 +340,9 @@ const TeacherTimeTableNewView = withRouter(
                                                 },
                                                 subject:{
                                                   subject_id: eachPeriod?.subject[0]?.subject_id,
-                                                  subject_name: eachPeriod?.subject[0]?.subject_name}
+                                                  subject_name: eachPeriod?.subject[0]?.subject_name,
+                                                  subject_mappping_id: eachPeriod?.subject[0]?.id
+                                                }
                                               },
                                             });
                                           }
