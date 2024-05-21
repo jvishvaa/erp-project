@@ -287,7 +287,7 @@ const SchoolWall = () => {
       .get(`/assessment/check-sys-config/`, { params: { ...params } })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          setHeirarchyConfig(JSON.parse(res?.data?.result[0].replace(/'/g, '"')));
+          setHeirarchyConfig(JSON.parse(res?.data?.result[0]?.replace(/'/g, '"')));
         } else {
           setHeirarchyConfig({});
         }

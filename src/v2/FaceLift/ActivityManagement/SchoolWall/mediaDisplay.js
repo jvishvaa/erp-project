@@ -30,7 +30,7 @@ const MediaDisplay = ({
           src={CDNLink}
         />
       );
-    } else if (extension.match(/(mp4|ogg)/i)) {
+    } else if (extension.match(/(mp4|ogg|avi)/i)) {
       return (
         <video
           // autoPlay={true}
