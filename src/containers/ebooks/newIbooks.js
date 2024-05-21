@@ -168,17 +168,7 @@ const NewIbook = (props) => {
     setModuleId(moduleId);
     setChapter(chapter);
     setKeyConcept(keyConcept);
-    getEbook(
-      selectedBranch?.id,
-      branch,
-      grade,
-      sub,
-      vol,
-      board,
-      moduleId,
-      chapter,
-      keyConcept
-    );
+    getEbook(acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept);
   };
 
   const getEbook = (
@@ -193,7 +183,7 @@ const NewIbook = (props) => {
     keyConcept
   ) => {
     const filterAcad = `${
-      selectedBranch ? `&acad_session_id=${selectedBranch?.id}` : ''
+      acad ? `&acad_session_id=${acad}` : `&acad_session_id=${selectedBranch?.id}`
     }`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;

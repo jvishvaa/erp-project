@@ -182,7 +182,7 @@ const AllBooksPage = () => {
     keyConcept
   ) => {
     const filterAcad = `${
-      selectedBranch ? `&acad_session_id=${selectedBranch?.id}` : ''
+      acad ? `&acad_session_id=${acad}` : `&acad_session_id=${selectedBranch?.id}`
     }`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;

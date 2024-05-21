@@ -282,7 +282,9 @@ class ViewEbook extends Component {
     const domainTobeSent = subDomain;
 
     const filterAcad = `${
-      this.props.selectedBranch ? `&acad_session_id=${this.props.selectedBranch?.id}` : ''
+      acad
+        ? `&acad_session_id=${acad}`
+        : `&acad_session_id=${this.props.selectedBranch?.id}`
     }`;
     const filterAcadYear = `${acad ? `&session_year=${acad?.session_year}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;

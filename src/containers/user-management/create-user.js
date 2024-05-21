@@ -12,6 +12,7 @@ import UserDetailsForm from './user-details-form';
 import SchoolDetailsForm from './school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
 import { createUser } from '../../redux/actions';
+import endpointsV1 from 'config/endpoints';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { getSteps, jsonToFormData } from './utils';
 import CustomStepperConnector from '../../components/custom-stepper-connector';
@@ -22,11 +23,14 @@ import BulkUpload from '../../components/bulk-upload';
 import { Typography } from '@material-ui/core';
 import Loader from 'components/loader/loader';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import { message } from 'antd';
+import axiosInstance from 'v2/config/axios';
 class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
       bulkUpload: false,
+      roleBasedUiConfig: [],
       activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
@@ -51,6 +55,7 @@ class CreateUser extends Component {
         address: '',
         userLevel: '',
         designation: '',
+        roles: null,
         // erp_user:'',
         branch_code: '',
         parent: {
@@ -78,6 +83,26 @@ class CreateUser extends Component {
       },
     };
   }
+
+  componentDidMount() {
+    this.fetchRoleBasedUiConfig({ config_key: 'usrmgmt_admin_access' });
+  }
+  fetchRoleBasedUiConfig = (params = {}) => {
+    this.setState({ loading: true });
+    axiosInstance
+      .get(`/assessment/check-sys-config/`, { params: { ...params } })
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          this.setState({ roleBasedUiConfig: response.data?.result });
+        }
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message ?? 'Something went wrong!');
+      })
+      .finally(() => {
+        this.setState({ loading: false });
+      });
+  };
 
   toggleParentForm = (e) => {
     this.setState({ showParentForm: e.target.checked });
@@ -138,7 +163,7 @@ class CreateUser extends Component {
     this.setState({
       loading: true,
     });
-    const { user } = this.state;
+    const { user, roleBasedUiConfig } = this.state;
     const { createUser, history } = this.props;
     let requestObj = user;
     const {
@@ -164,6 +189,7 @@ class CreateUser extends Component {
       parent,
       userLevel,
       designation,
+      roles,
     } = requestObj;
 
     const {
@@ -246,9 +272,10 @@ class CreateUser extends Component {
       // user_level: userLevel?.id,
       // designation: designation?.id
     };
-    
+
     if (this.state.isOrchids == true) {
       requestObj['user_level'] = userLevel?.id;
+      requestObj['role_id'] = roles?.id;
       if (userLevel?.id != 13) {
         requestObj['designation'] = designation?.id;
       }
@@ -261,8 +288,32 @@ class CreateUser extends Component {
       delete requestObj.guardian_photo;
     }
     const { setAlert } = this.context;
+    if (roleBasedUiConfig?.includes(user?.userLevel?.id?.toString())) {
+      requestObj = {
+        ...requestObj,
+        subject: requestObj.subjects,
+        acad_session: branch.map(({ acadId }) => acadId).join(),
+      };
+    }
     const requestObjFormData = jsonToFormData(requestObj);
 
+    if (roleBasedUiConfig?.includes(user?.userLevel?.id?.toString())) {
+      axiosInstance
+        .post(`${endpointsV1.userManagement.addStaffUser}`, requestObjFormData)
+        .then(() => {
+          message.success('User Created Successfully!');
+          history.push('/user-management/view-users');
+        })
+        .catch((error) => {
+          setAlert('error', error?.response?.data?.message);
+        })
+        .finally(() => {
+          this.setState({
+            loading: false,
+          });
+        });
+      return;
+    }
     createUser(requestObjFormData)
       .then(() => {
         this.setState({ loading: false });
@@ -346,6 +397,7 @@ class CreateUser extends Component {
                     onSubmit={this.onSubmitSchoolDetails}
                     details={user}
                     isEdit={false}
+                    roleBasedUiConfig={this.state.roleBasedUiConfig}
                   />
                 )}
                 {activeStep === 1 && (
@@ -359,6 +411,7 @@ class CreateUser extends Component {
                     showParentForm={showParentForm}
                     showGuardianForm={showGuardianForm}
                     isSubmitting={creatingUser}
+                    roleBasedUiConfig={this.state.roleBasedUiConfig}
                   />
                 )}
                 {activeStep === 2 && (
