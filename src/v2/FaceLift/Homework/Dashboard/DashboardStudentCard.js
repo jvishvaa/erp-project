@@ -30,7 +30,7 @@ const DashboardStudentCard = ({
           : visibleLevel === 'branch' && dashboardLevel === 1
           ? 'Section'
           : visibleLevel === 'branch' && dashboardLevel === 2
-          ? 'Section'
+          ? 'Student'
           : visibleLevel === 'grade' && dashboardLevel === 0
           ? 'Grade'
           : visibleLevel === 'grade' && dashboardLevel === 1
@@ -38,7 +38,7 @@ const DashboardStudentCard = ({
           : visibleLevel === 'subject' && dashboardLevel === 0
           ? 'Subject'
           : null,
-      y: 18,
+      y: 0,
     },
     colors: ['#065471', '#FFC045', '#0A91AB'],
     credits: {
