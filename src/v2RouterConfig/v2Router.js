@@ -1,11 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useHistory,
-  useLocation,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import AlertNotificationProvider from 'context-api/alert-context/alert-state';
 import OnlineclassViewProvider from 'containers/online-class/online-class-context/online-class-state';
@@ -103,29 +97,14 @@ import FrequentlyAskedQuestions from '../containers/FrequentlyAskedQuestions/Fre
 import AddFaq from '../containers/FrequentlyAskedQuestions/AddFaq';
 import HomeworkDashboard from '../v2/FaceLift/Homework/Dashboard';
 import SchoolWall from 'v2/FaceLift/ActivityManagement/SchoolWall';
-import PostDetails from 'v2/FaceLift/ActivityManagement/SchoolWall/postDetails';
-import moment from 'moment';
-import ENVCONFIG from 'config/config';
 
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
     erpConfig();
   }, []);
-  const userDetails = localStorage?.getItem('userDetails')
-    ? JSON.parse(localStorage?.getItem('userDetails'))
-    : {};
-  const {
-    apiGateway: { timeTracker },
-  } = ENVCONFIG;
 
   const [theme, setTheme] = useState(() => themeGenerator());
-  const [pageTrackerList, setPageTrackerList] = useState([
-    {
-      page: 'all',
-      active: true,
-    },
-  ]);
 
   let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
@@ -157,170 +136,8 @@ const V2Router = () => {
     }
   }, []);
 
-  const RouteChangeTracker = () => {
-    const location = useLocation();
-
-    useEffect(() => {
-      // Track route changes here
-      handleLocationChange();
-    }, [location.pathname]);
-
-    return null;
-  };
-
-  const listRef = useRef(pageTrackerList);
-  const prevLocation = useRef(window.location.href);
-  const idleTimer = useRef();
-  const timer = useRef();
-  const lastAPICallTime = useRef(new Date());
-  useEffect(() => {
-    listRef.current = pageTrackerList;
-  }, [pageTrackerList]);
-
-  // Function to call API
-  const callAPI = (messageeee) => {
-    const currentTime = new Date(); // Get current time in milliseconds
-    // Your API calling function goes here
-    let url = prevLocation.current?.split('#')[1];
-    let trackerContainsCurrentURL = false;
-    let arr = [];
-    if (listRef.current?.filter((e) => e.page == 'all')?.length > 0) {
-      trackerContainsCurrentURL = true;
-    } else {
-      arr = listRef.current?.filter((each) => each.active === true);
-      trackerContainsCurrentURL =
-        listRef.current?.filter((each) => each.page == url && each.active)?.length > 0;
-    }
-    let diff = currentTime - lastAPICallTime.current;
-    diff /= 1000;
-    let branchName = localStorage.getItem('app.settings.branch_name');
-    let payload = {
-      erp_id: userDetails?.erp,
-      name: `${userDetails?.first_name} ${userDetails?.last_name}`,
-      time: diff > 120 ? 120 : Math.round(diff),
-      user_level: userDetails?.user_level,
-      school_name: window.location.hostname.split('.')?.[0],
-      branch_id: String(
-        JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id
-      ),
-      branch_name: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch
-        ?.branch_name,
-      link: prevLocation?.current,
-      user_level_name: userDetails?.role_details?.user_role,
-      start_time: moment(lastAPICallTime.current).format('HH:mm:ss'),
-      end_time: moment(currentTime).format('HH:mm:ss'),
-    };
-    console.log('API called', { messageeee, diff });
-    if (
-      trackerContainsCurrentURL &&
-      payload.time > 0 &&
-      window.location.pathname !== '/'
-    ) {
-      axios
-        .post(`${timeTracker}`, payload, {
-          'Content-Type': 'application/json',
-        })
-        .then((res) => {})
-        .catch((error) => console.error('API error:', error));
-    }
-    // Update last API call time
-    lastAPICallTime.current = new Date();
-    prevLocation.current = window.location.href;
-  };
-
-  // Function to start the timer
-  const startTimer = () => {
-    timer.current = setInterval(callAPI, 120000); // Call the API every 2 minutes
-  };
-
-  // Function to reset the timer
-  const resetTimer = () => {
-    clearInterval(timer.current); // Clear the previous interval
-    startTimer(); // Restart the timer
-  };
-
-  // Function to handle location change
-  const handleLocationChange = () => {
-    resetTimer(); // Reset timer on location change
-    clearInterval(idleTimer.current);
-    idleTimer.current = setInterval(() => {
-      // console.log('API CALLING STOPPED')
-      clearInterval(timer.current); // Stop the timer on idle
-      timer.current = null;
-    }, 120001);
-    callAPI('location'); // Call API immediately on location change
-  };
-
-  // Function to handle mouse activity
-  const handleMouseActivity = () => {
-    clearInterval(idleTimer.current); // Clear previous idle timer
-    idleTimer.current = null;
-    idleTimer.current = setInterval(() => {
-      // console.log('API CALLING STOPPED')
-      lastAPICallTime.current = new Date();
-      clearInterval(timer.current); // Stop the timer on idle
-      timer.current = null;
-    }, 120001); // Stop timer after 2 minutes of inactivity
-    if (!timer.current) {
-      lastAPICallTime.current = new Date();
-      startTimer(); // Restart the timer on activity
-    }
-  };
-
-  // Function to handle tab visibility change
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      // console.log('API TAB CLOSE')
-      callAPI('visibility');
-      // If the tab is hidden or minimized
-      clearInterval(timer.current); // Stop the timer when tab is hidden
-      timer.current = null;
-      clearInterval(idleTimer.current);
-      idleTimer.current = null;
-    } else {
-      lastAPICallTime.current = new Date();
-      // If the tab becomes visible again
-      startTimer(); // Restart the timer
-      idleTimer.current = setInterval(() => {
-        // console.log('API CALLING STOPPED')
-        clearInterval(timer.current); // Stop the timer on idle
-        timer.current = null;
-      }, 120001);
-    }
-  };
-
-  useEffect(() => {
-    startTimer(); // Start the initial timer
-    // Listen for mouse movement or activity
-    window.addEventListener('mousemove', handleMouseActivity);
-    window.addEventListener('mousedown', handleMouseActivity);
-    window.addEventListener('keypress', handleMouseActivity);
-    window.addEventListener('touchstart', handleMouseActivity);
-    window.addEventListener('keydown', handleMouseActivity);
-    window.addEventListener('scroll', handleMouseActivity);
-    window.addEventListener('load', handleMouseActivity);
-    window.addEventListener('touchmove', handleMouseActivity);
-    window.addEventListener('click', handleMouseActivity);
-    // Listen for visibility change events
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => {
-      // Clean up event listeners when component unmounts
-      window.removeEventListener('mousemove', handleMouseActivity);
-      window.removeEventListener('mousedown', handleMouseActivity);
-      window.removeEventListener('keypress', handleMouseActivity);
-      window.removeEventListener('touchstart', handleMouseActivity);
-      window.removeEventListener('keydown', handleMouseActivity);
-      window.removeEventListener('scroll', handleMouseActivity);
-      window.removeEventListener('load', handleMouseActivity);
-      window.removeEventListener('touchmove', handleMouseActivity);
-      window.removeEventListener('click', handleMouseActivity);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, []); // Empty dependency array ensures the effect runs only once
-
   return (
     <Router>
-      {window.location.pathname !== '/' ? <RouteChangeTracker /> : null}
       <AlertNotificationProvider>
         <OnlineclassViewProvider>
           <ThemeProvider theme={theme}>
@@ -656,7 +473,7 @@ const V2Router = () => {
                         </Route> */}
                         <Route path='/school-wall'>
                           {({ match }) => <SchoolWall match={match} />}
-                        </Route>                       
+                        </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
