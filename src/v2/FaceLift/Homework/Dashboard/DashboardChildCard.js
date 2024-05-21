@@ -25,6 +25,7 @@ const DashboardChildCard = ({
   loading,
   tableLoading,
   subjectId,
+  teacherId,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -155,6 +156,7 @@ const DashboardChildCard = ({
                     subject: record?.id,
                     section_mapping: level2Data[selectedCardIndex]?.id,
                     acad_session: acad_session_id,
+                    teacher_id: visibleLevel === 'branch' && teacherId,
                   });
                 }
                 showDrawer();
@@ -185,10 +187,12 @@ const DashboardChildCard = ({
           ? 'Section'
           : visibleLevel === 'grade' && dashboardLevel === 0
           ? 'Grade'
-          : visibleLevel === 'subject' && dashboardLevel === 1
+          : visibleLevel === 'grade' && dashboardLevel === 1
+          ? 'Subject'
+          : visibleLevel === 'subject' && dashboardLevel === 0
           ? 'Subject'
           : null,
-      y: 18,
+      y: 0,
     },
     colors: ['#065471', '#FFC045', '#0A91AB'],
     credits: {
@@ -310,6 +314,7 @@ const DashboardChildCard = ({
                               end_date: endDate,
                               section_mapping_id: item?.id,
                               subject_id: subjectId,
+                              teacher_id: visibleLevel === 'branch' && teacherId,
                             });
                           } else if (visibleLevel === 'grade' && dashboardLevel === 1) {
                             fetchStudentList({
@@ -326,10 +331,10 @@ const DashboardChildCard = ({
                         }}
                       >
                         {visibleLevel === 'branch'
-                          ? `Subject`
+                          ? `Subject `
                           : visibleLevel === 'grade'
-                          ? `Student`
-                          : ``}{' '}
+                          ? `Student `
+                          : ``}
                         <RightCircleOutlined />
                       </Tag>
                     )}

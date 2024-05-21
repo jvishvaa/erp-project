@@ -189,10 +189,12 @@ const DashboardCard = ({
           ? 'Section'
           : visibleLevel === 'grade' && dashboardLevel === 0
           ? 'Grade'
-          : visibleLevel === 'subject' && dashboardLevel === 1
+          : visibleLevel === 'grade' && dashboardLevel === 1
+          ? 'Subject'
+          : visibleLevel === 'subject' && dashboardLevel === 0
           ? 'Subject'
           : null,
-      y: 18,
+      y: 0,
     },
     colors: ['#065471', '#FFC045', '#0A91AB'],
     // colors: ['#05B187', '#16BCC7', '#FEC90F'],
@@ -268,9 +270,7 @@ const DashboardCard = ({
                   onClick={(e) => selectCard(index)}
                 >
                   <div className='col-md-9'>
-                    <h4 className='th-20 mb-1 text-primary'>
-                      {item?.name}
-                    </h4>
+                    <h4 className='th-20 mb-1 text-primary'>{item?.name}</h4>
                     <div className='stat-count th-bg-grey th-br-6'>
                       <div className='d-flex justify-content-between px-3 py-2 align-items-center'>
                         <div className='th-12 th-grey'>
@@ -317,6 +317,7 @@ const DashboardCard = ({
                               end_date: endDate,
                               acadsession_id: item?.acad_session_id,
                               subject_id: subjectId,
+                              teacher_id: visibleLevel === 'branch' && teacherId,
                             });
                           } else if (visibleLevel === 'grade') {
                             fetchSectionWise({
@@ -332,11 +333,10 @@ const DashboardCard = ({
                         }}
                       >
                         {visibleLevel === 'branch'
-                          ? 'Grade'
+                          ? 'Grade '
                           : visibleLevel === 'grade'
-                          ? 'Section'
+                          ? 'Section '
                           : null}
-
                         <RightCircleOutlined />
                       </Tag>
                     )}
