@@ -201,11 +201,11 @@ const V2Router = () => {
       user_level: userDetails?.user_level,
       school_name: window.location.hostname.split('.')?.[0],
       branch_id:
-        sessionStorage.getItem('selected_branch') !== null ??
-        String(JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id),
+        sessionStorage.getItem('selected_branch') ?
+        String(JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id) : '',
       branch_name:
-        sessionStorage.getItem('selected_branch') !== null ??
-        JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.branch_name,
+        sessionStorage.getItem('selected_branch') ?
+        JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.branch_name : '',
       link: prevLocation?.current,
       user_level_name: userDetails?.role_details?.user_role,
       start_time: moment(lastAPICallTime.current).format('HH:mm:ss'),
