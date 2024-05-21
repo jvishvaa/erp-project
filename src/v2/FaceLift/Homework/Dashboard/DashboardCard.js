@@ -268,9 +268,7 @@ const DashboardCard = ({
                   onClick={(e) => selectCard(index)}
                 >
                   <div className='col-md-9'>
-                    <h4 className='th-20 mb-1 text-primary'>
-                      {item?.name}
-                    </h4>
+                    <h4 className='th-20 mb-1 text-primary'>{item?.name}</h4>
                     <div className='stat-count th-bg-grey th-br-6'>
                       <div className='d-flex justify-content-between px-3 py-2 align-items-center'>
                         <div className='th-12 th-grey'>
@@ -317,6 +315,7 @@ const DashboardCard = ({
                               end_date: endDate,
                               acadsession_id: item?.acad_session_id,
                               subject_id: subjectId,
+                              teacher_id: visibleLevel === 'branch' && teacherId,
                             });
                           } else if (visibleLevel === 'grade') {
                             fetchSectionWise({

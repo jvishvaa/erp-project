@@ -25,6 +25,7 @@ const DashboardChildCard = ({
   loading,
   tableLoading,
   subjectId,
+  teacherId,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -155,6 +156,7 @@ const DashboardChildCard = ({
                     subject: record?.id,
                     section_mapping: level2Data[selectedCardIndex]?.id,
                     acad_session: acad_session_id,
+                    teacher_id: visibleLevel === 'branch' && teacherId,
                   });
                 }
                 showDrawer();
@@ -310,6 +312,7 @@ const DashboardChildCard = ({
                               end_date: endDate,
                               section_mapping_id: item?.id,
                               subject_id: subjectId,
+                              teacher_id: visibleLevel === 'branch' && teacherId,
                             });
                           } else if (visibleLevel === 'grade' && dashboardLevel === 1) {
                             fetchStudentList({
