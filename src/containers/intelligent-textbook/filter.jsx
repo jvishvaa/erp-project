@@ -627,7 +627,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter, setFiltered }) => {
                 fullWidth
                 onClick={() =>
                   handleFilter(
-                    selectedBranch?.id,
+                    selectedAcad,
                     selectedBranch?.branch?.id,
                     selectedGrade,
                     selectedSubject,

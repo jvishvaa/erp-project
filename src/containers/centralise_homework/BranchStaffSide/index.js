@@ -359,8 +359,6 @@ const BranchHomework = () => {
     return !!tooEarly || !!tooLate;
   };
 
-  console.log({ selectedHomework });
-  console.log({ totalAssesed, totalunderAssesed });
 
   return (
     <React.Fragment>

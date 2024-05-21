@@ -189,7 +189,7 @@ const isOrchids = IsOrchidsChecker();
   const displayUsersList = async () => {
     setLoading(true)
     setSelectAll(false)
-    let getUserListUrl = `${endpoints.userManagement.getUserLevelData}?page_num=${pageno}&page_size=15`;
+    let getUserListUrl = `${endpoints.userManagement.getUserLevel}?page_num=${pageno}&page_size=15`;
     if (searchText) {
       getUserListUrl += `&search=${searchText}`;
     }

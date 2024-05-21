@@ -19,7 +19,6 @@ import AcademicYearList from '../AcademicYearList';
 import { useParams } from 'react-router-dom';
 const SchoolInformation = ({
   roles,
-  roleBasedUiConfig,
   designations,
   fetchDesignation,
   branches,
@@ -43,16 +42,12 @@ const SchoolInformation = ({
   setUserLevel,
   setParent,
   userLevel,
-  setBranches,
   setGrades,
   setSections,
   setSubjects,
   maxSubjectSelection,
   roleConfig,
   editSessionYear,
-  rolesList,
-  selectedRoles,
-  setSelectedRoles,
 }) => {
   const schoolForm = useRef();
   const [loading, setLoading] = useState(false);
@@ -80,28 +75,16 @@ const SchoolInformation = ({
       {each?.designation}
     </Select.Option>
   ));
-  const rolesOption=rolesList?.map((each) => (
-    <Select.Option key={each?.id} value={each?.id}>
-      {each?.role_name}
-    </Select.Option>
-  ));
   const branchOption = branches?.map((each) => (
-    <Select.Option
-      key={each?.id}
-      value={each?.id}
-      code={each?.branch_code}
-      acadId={each?.acadId}
-    >
+    <Select.Option key={each?.id} value={each?.id} code={each?.branch_code}>
       {each?.branch_name}
     </Select.Option>
   ));
-  const gradeOption =
-    grades &&
-    grades?.map((each) => (
-      <Select.Option key={each?.item_id} value={each?.grade_name} id={each?.id}>
-        {each?.grade_name}
-      </Select.Option>
-    ));
+  const gradeOption = grades?.map((each) => (
+    <Select.Option key={each?.item_id} value={each?.grade_name} id={each?.id}>
+      {each?.grade_name}
+    </Select.Option>
+  ));
   const sectionOption = sections?.map((each) => (
     <Select.Option
       key={each?.item_id}
@@ -124,7 +107,6 @@ const SchoolInformation = ({
   ));
   const handleSubmit = (formValues) => {
     if (editId) {
-      console.log({ multipleAcademicYear }, 'multipleAcademicYear');
       let validateMultipeAcadFields = multipleAcademicYear?.filter(
         (each) =>
           !each?.academic_year ||
@@ -148,15 +130,9 @@ const SchoolInformation = ({
           message.error('Grade,Section and Subject are  a required field!');
           return;
         }
-        if (
-          !roleBasedUiConfig?.includes(
-            schoolForm.current.getFieldsValue()?.user_level?.toString()
-          )
-        ) {
-          if (validateMultipeAcadFields[0]?.section?.length < 1) {
-            message.error('Section and Subject are  a required field!');
-            return;
-          }
+        if (validateMultipeAcadFields[0]?.section?.length < 1) {
+          message.error('Section and Subject are  a required field!');
+          return;
         }
         if (validateMultipeAcadFields[0]?.subjects?.length < 1) {
           message.error('Subject is a required field!');
@@ -208,18 +184,7 @@ const SchoolInformation = ({
                   onChange={(e) => {
                     fetchDesignation({ user_level: e });
                     setUserLevel(e);
-                    schoolForm.current.resetFields([
-                      'designation',
-                      'branch',
-                      'grade',
-                      'section',
-                      'subjects',
-                    ]);
-                    schoolForm.current.resetFields(['grade', 'section', 'subjects']);
-                    // setBranches([])
-                    setGrades([]);
-                    setSections([]);
-                    setSubjects([]);
+                    schoolForm.current.resetFields(['designation']);
                   }}
                   placeholder='User Level'
                   className='w-100'
@@ -261,31 +226,6 @@ const SchoolInformation = ({
                 </Form.Item>
               </Col>
             )}
-            <Col md={8}>
-                <Form.Item
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: 'Please select Role!',
-                  //   },
-                  // ]}
-                  name={'role'}
-                  label='Role'
-                >
-                  <Select
-                    showSearch
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                    placeholder='Role'
-                    className='w-100'
-                  >
-                    {rolesOption}
-                  </Select>
-                </Form.Item>
-              </Col>
           </Row>
           <Divider className='my-1' />
           <Row className='py-2 ' gutter={24}>
@@ -322,37 +262,16 @@ const SchoolInformation = ({
                   getPopupContainer={(trigger) => trigger.parentNode}
                   listHeight={150}
                   onChange={(e, obj) => {
-                    if (!schoolForm.current?.getFieldsValue()?.user_level) {
-                      message.error('Please select user level for branch selection!');
-                      schoolForm.current.setFieldsValue({
-                        branch: [],
-                      });
-                      return;
-                    }
                     if (e.includes('all')) {
                       let values = branches?.map((e) => e?.id);
                       schoolForm.current.setFieldsValue({
                         branch: values,
                       });
-                      let acadId = branches?.map((e) => e?.acadId);
                       let branch_code = branches?.map((i) => i.branch_code);
-                      fetchGrades(
-                        values,
-                        branch_code,
-                        editSessionYear,
-                        acadId,
-                        schoolForm.current.getFieldsValue()?.user_level?.toString()
-                      );
+                      fetchGrades(values, branch_code, editSessionYear);
                     } else {
                       let branch_code = obj?.map((i) => i.code);
-                      let acadId = obj?.map((e) => e?.acadId);
-                      fetchGrades(
-                        e,
-                        branch_code,
-                        editSessionYear,
-                        acadId,
-                        schoolForm.current.getFieldsValue()?.user_level?.toString()
-                      );
+                      fetchGrades(e, branch_code, editSessionYear);
                     }
 
                     schoolForm.current.resetFields(['grade', 'section', 'subjects']);
@@ -409,47 +328,19 @@ const SchoolInformation = ({
                       schoolForm.current.setFieldsValue({
                         grade: values,
                       });
-                      if (
-                        !roleBasedUiConfig?.includes(
-                          schoolForm.current.getFieldsValue()?.user_level?.toString()
-                        )
-                      ) {
-                        fetchSections(
-                          grades?.map((e) => e?.id),
-                          null,
-                          null,
-                          editSessionYear
-                        );
-                      } else {
-                        fetchSubjects(
-                          grades?.map((e) => e?.id),
-                          null,
-                          null,
-                          editSessionYear,
-                          schoolForm.current.getFieldsValue()?.user_level?.toString()
-                        );
-                      }
+                      fetchSections(
+                        grades?.map((e) => e?.id),
+                        null,
+                        null,
+                        editSessionYear
+                      );
                     } else {
-                      if (
-                        !roleBasedUiConfig?.includes(
-                          schoolForm.current.getFieldsValue()?.user_level?.toString()
-                        )
-                      ) {
-                        fetchSections(
-                          value?.map((e) => e.id),
-                          null,
-                          null,
-                          editSessionYear
-                        );
-                      } else {
-                        fetchSubjects(
-                          value?.map((e) => e.id),
-                          null,
-                          null,
-                          editSessionYear,
-                          schoolForm.current.getFieldsValue()?.user_level?.toString()
-                        );
-                      }
+                      fetchSections(
+                        value?.map((e) => e.id),
+                        null,
+                        null,
+                        editSessionYear
+                      );
                     }
                     schoolForm.current.resetFields(['section', 'subjects']);
 
@@ -466,7 +357,7 @@ const SchoolInformation = ({
                   placeholder='Grade'
                   className='w-100'
                 >
-                  {grades && grades?.length > 1 && (
+                  {grades?.length > 1 && (
                     <Select.Option key={'all'} value={'all'}>
                       Select All
                     </Select.Option>
@@ -475,70 +366,66 @@ const SchoolInformation = ({
                 </Select>
               </Form.Item>
             </Col>
-            {!roleBasedUiConfig?.includes(userLevel?.toString()) ? (
-              <>
-                <Col md={8}>
-                  <Form.Item
-                    name={'section'}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please select section!',
-                      },
-                    ]}
-                    label='Section'
-                  >
-                    <Select
-                      maxTagCount={3}
-                      allowClear
-                      getPopupContainer={(trigger) => trigger.parentNode}
-                      listHeight={150}
-                      onChange={(e, value) => {
-                        if (e.includes('all')) {
-                          let values = sections?.map((e) => e?.section_name);
-                          schoolForm.current.setFieldsValue({
-                            section: values,
-                          });
-                          fetchSubjects(
-                            sections?.map((e) => e?.id),
-                            null,
-                            null,
-                            editSessionYear
-                          );
-                          setSectionMappingId(sections?.map((e) => e?.item_id));
-                        } else {
-                          setSectionMappingId(value?.map((e) => e?.mapping_id));
-                          fetchSubjects(
-                            value?.map((e) => e.id),
-                            null,
-                            null,
-                            editSessionYear
-                          );
-                        }
-                        schoolForm.current.resetFields(['subjects']);
-                        setSubjects([]);
-                      }}
-                      showSearch
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                      mode='multiple'
-                      placeholder='Section'
-                      className='w-100'
-                    >
-                      {sections?.length > 1 && (
-                        <Select.Option key={'all'} value={'all'}>
-                          Select All
-                        </Select.Option>
-                      )}
-                      {sectionOption}
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </>
-            ) : null}
+            <Col md={8}>
+              <Form.Item
+                name={'section'}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select section!',
+                  },
+                ]}
+                label='Section'
+              >
+                <Select
+                  maxTagCount={3}
+                  allowClear
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  listHeight={150}
+                  onChange={(e, value) => {
+                    if (e.includes('all')) {
+                      let values = sections?.map((e) => e?.section_name);
+                      schoolForm.current.setFieldsValue({
+                        section: values,
+                      });
+                      fetchSubjects(
+                        sections?.map((e) => e?.id),
+                        null,
+                        null,
+                        editSessionYear
+                      );
+                      setSectionMappingId(sections?.map((e) => e?.item_id));
+                    } else {
+                      setSectionMappingId(value?.map((e) => e?.mapping_id));
+                      fetchSubjects(
+                        value?.map((e) => e.id),
+                        null,
+                        null,
+                        editSessionYear
+                      );
+                    }
+                    schoolForm.current.resetFields(['subjects']);
+                    setSubjects([]);
+                  }}
+                  showSearch
+                  filterOption={(input, options) => {
+                    return (
+                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    );
+                  }}
+                  mode='multiple'
+                  placeholder='Section'
+                  className='w-100'
+                >
+                  {sections?.length > 1 && (
+                    <Select.Option key={'all'} value={'all'}>
+                      Select All
+                    </Select.Option>
+                  )}
+                  {sectionOption}
+                </Select>
+              </Form.Item>
+            </Col>
             <Col md={8}>
               <Form.Item
                 rules={[
@@ -612,25 +499,21 @@ const SchoolInformation = ({
         </Form>
         {editId && (
           <>
-            {multipleAcademicYear?.map((each, index) => {
-              return (
-                <AcademicYearList
-                  roleBasedUiConfig={roleBasedUiConfig}
-                  selectedUserLevel={schoolForm.current?.getFieldsValue()?.user_level}
-                  key={each?.id}
-                  currentObj={each}
-                  multipleAcademicYear={multipleAcademicYear}
-                  setMultipleAcademicYear={setMultipleAcademicYear}
-                  maxSubjectSelection={maxSubjectSelection}
-                  roleConfig={roleConfig}
-                  user_level={user_level}
-                  is_superuser={is_superuser}
-                  editId={editId}
-                  userLevel={userLevel}
-                  isOrchids={isOrchids}
-                />
-              );
-            })}
+            {multipleAcademicYear?.map((each) => (
+              <AcademicYearList
+                key={each?.id}
+                currentObj={each}
+                multipleAcademicYear={multipleAcademicYear}
+                setMultipleAcademicYear={setMultipleAcademicYear}
+                maxSubjectSelection={maxSubjectSelection}
+                roleConfig={roleConfig}
+                user_level={user_level}
+                is_superuser={is_superuser}
+                editId={editId}
+                userLevel={userLevel}
+                isOrchids={isOrchids}
+              />
+            ))}
             <div className='d-flex justify-content-end align-items-center my-4 '>
               <Button
                 onClick={() => {
