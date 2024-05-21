@@ -114,7 +114,7 @@ const AssignUserLevel = () => {
     setShowFilter(false);
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.userManagement.getUserLevel}${params}`)
+      .get(`${endpoints.userManagement.getUserLevelData}${params}`)
       .then((res) => {
         if (res?.status === 200) {
           setLoading(false);

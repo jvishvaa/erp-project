@@ -135,7 +135,7 @@ const CreateUser = () => {
       // fetchUserData({
       //   erp_user_id: params?.id,
       // });
-      // fetchUserLevel(params?.id);
+      fetchUserLevel(params?.id);
     }
     // }
   }, []);

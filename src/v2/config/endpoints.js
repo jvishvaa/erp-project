@@ -387,7 +387,7 @@ export default {
   FINANCE_BUCKET,
   popupSetting: {
     checkDueAmount: `${baseFinanceURL}/apiV1/student-acad-fee-tilldate/`,
-    popupSetting:`${baseFinanceURL}/apiV1/popup-details/`,
+    popupSetting: `${baseFinanceURL}/apiV1/popup-details/`,
     studentPaymentLink: `${baseFinanceURL}/apiV1/generate-multifee-payment-link/`,
   },
   schoolWall: {

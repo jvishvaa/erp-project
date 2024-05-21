@@ -23,6 +23,9 @@ import './styles.scss';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import axios from 'v2/config/axios';
 import Loader from 'components/loader/loader';
+import axiosInstance from 'v2/config/axios';
+import { message } from 'antd';
+import endpoints from 'config/endpoints';
 
 const BackButton = withStyles({
   root: {
@@ -54,6 +57,7 @@ class EditUser extends Component {
       hasAddAccess: false,
       userLevel: '',
       designation: '',
+      role: null,
       isOrchids:
         window.location.host.split('.')[0] === 'orchids' ||
         window.location.host.split('.')[0] === 'qa' ||
@@ -62,16 +66,22 @@ class EditUser extends Component {
         window.location.host.split('.')[0] === 'dps'
           ? true
           : false,
+      roleBasedUiConfig: null,
+      userLevelForEdit: null,
     };
   }
 
   componentDidMount() {
-    this.fetchUserDetails();
+    const { fetchUser, match } = this.props;
+    this.fetchRoleBasedUiConfig({ config_key: 'usrmgmt_admin_access' });
+    this.fetchUserLevel(match.params.id);
+    // this.fetchUserDetails();
     this.fetchEditAccessLevels();
   }
 
-  componentDidUpdate(prevProps) {
-    const { selectedUser } = this.props;
+  componentDidUpdate(prevProps, prevState) {
+    const { selectedUser, match } = this.props;
+    const { user, roleBasedUiConfig, userLevelForEdit } = this.state;
     if (prevProps.selectedUser !== selectedUser && selectedUser) {
       let details = JSON.parse(localStorage.getItem('userDetails'));
       if (!details?.is_superuser) {
@@ -93,7 +103,59 @@ class EditUser extends Component {
         curentmappingBgsLength: selectedUser.mapping_bgs?.length,
       });
     }
+    if (
+      roleBasedUiConfig &&
+      userLevelForEdit &&
+      (prevState.roleBasedUiConfig !== roleBasedUiConfig ||
+        prevState.userLevelForEdit !== userLevelForEdit) &&
+      match.params.id
+    ) {
+      this.fetchUserDetails();
+    }
   }
+
+  fetchRoleBasedUiConfig = (params = {}) => {
+    this.setState({
+      loading: true,
+    });
+    axiosInstance
+      .get(`/assessment/check-sys-config/`, { params: { ...params } })
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          this.setState({ roleBasedUiConfig: response.data?.result });
+        }
+      })
+      .catch((error) => {
+        message.error(error?.response?.data?.message ?? 'Something went wrong!');
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
+      });
+  };
+
+  fetchUserLevel = (userId) => {
+    if (userId) {
+      this.setState({
+        loading: true,
+      });
+      axiosInstance
+        .get(`${endpoints.userManagement.getUserLevel}${userId}`)
+        .then((response) => {
+          console.log(response);
+          this.setState({ userLevelForEdit: response?.data?.level });
+        })
+        .catch((error) => {
+          message.error(error?.response?.data?.message ?? 'Something went wrong!');
+        })
+        .finally(() => {
+          this.setState({
+            loading: false,
+          });
+        });
+    }
+  };
 
   toggleParentForm = (e) => {
     this.setState({ showParentForm: e.target.checked });
@@ -127,6 +189,8 @@ class EditUser extends Component {
       this.setState({
         userLevel: details.userLevel,
         designation: details.designation,
+        role: details?.role,
+        userLevelForEdit: details.userLevel?.id,
       });
     }
     const {
@@ -142,6 +206,9 @@ class EditUser extends Component {
       grade: [...collectedGrade, grade],
       section: [...collectedSection, section],
       subjects: [...collectedSubjects, subjects],
+      user_level: details?.userLevel,
+      designation: details.designation,
+      role: details?.role,
     };
     const count = this.state.collectDataCount + 1;
     this.setState({
@@ -155,7 +222,6 @@ class EditUser extends Component {
   };
 
   onSubmitSchoolDetails = (details) => {
-    console.log(details, 'sub');
     const { selectedUser } = this.props;
     this.state.user.mapping_bgs.forEach(({ is_delete }, index) => {
       if (is_delete) {
@@ -203,8 +269,8 @@ class EditUser extends Component {
     this.setState({
       loading: true,
     });
-    const { user } = this.state;
-    const { editUser, history, selectedUser } = this.props;
+    const { user, roleBasedUiConfig, userLevelForEdit } = this.state;
+    const { editUser, history, selectedUser, match } = this.props;
     let requestObj = user;
     const {
       academic_year,
@@ -224,6 +290,8 @@ class EditUser extends Component {
       profile,
       parent,
       erp_user,
+      mapping_bgs,
+      role,
     } = requestObj;
     const {
       id: parent_id,
@@ -250,7 +318,6 @@ class EditUser extends Component {
       guardian_mobile,
       guardian_photo,
     } = parent;
-
     const parentDetail = {};
     if (guardian_first_name) {
       Object.assign(parentDetail, {
@@ -281,27 +348,51 @@ class EditUser extends Component {
 
     requestObj = {
       erp_id: selectedUser.erp_id,
-      branch: branch
-        .reduce((acc, subArr) => [...acc, ...subArr], [])
-        .map(({ id }) => id)
-        .filter((id, index, self) => self.indexOf(id) === index)
-        .join(),
-      section_mapping: section
-        .reduce((acc, subArr) => [...acc, ...subArr], [])
-        .map(({ item_id = '' }) => item_id)
-        .filter(Boolean)
-        .filter((id, index, self) => self.indexOf(id) === index)
-        .join(),
-      subjects: subjects
-        .reduce((acc, subArr) => [...acc, ...subArr], [])
-        .map(({ id = '' }) => id)
-        .filter((id, index, self) => self.indexOf(id) === index)
-        .join(),
-      subject_section_mapping: subjects
-        .reduce((acc, subArr) => [...acc, ...subArr], [])
-        .map(({ item_id = '' }) => item_id)
-        .filter((item_id, index, self) => self.indexOf(item_id) === index)
-        .join(),
+      ...(!roleBasedUiConfig?.includes(userLevelForEdit?.toString())
+        ? {
+            branch: branch
+              .reduce((acc, subArr) => [...acc, ...subArr], [])
+              .map(({ id }) => id)
+              .filter((id, index, self) => self.indexOf(id) === index)
+              .join(),
+            section_mapping: section
+              .reduce((acc, subArr) => [...acc, ...subArr], [])
+              .map(({ item_id = '' }) => item_id)
+              .filter(Boolean)
+              .filter((id, index, self) => self.indexOf(id) === index)
+              .join(),
+            subjects: subjects
+              .reduce((acc, subArr) => [...acc, ...subArr], [])
+              .map(({ id = '' }) => id)
+              .filter((id, index, self) => self.indexOf(id) === index)
+              .join(),
+            subject_section_mapping: subjects
+              .reduce((acc, subArr) => [...acc, ...subArr], [])
+              .map(({ item_id = '' }) => item_id)
+              .filter((item_id, index, self) => self.indexOf(item_id) === index)
+              .join(),
+          }
+        : {
+            mapping_bgs: mapping_bgs.reduce((acc, eachMultipleAcademicYear) => {
+              acc[eachMultipleAcademicYear?.session_year[0]?.session_year] = {
+                branches: eachMultipleAcademicYear?.branch?.map((each) => ({
+                  acad_id: each?.acad_id,
+                  branch_id: each?.branch_id,
+                  branch_name: each?.branch__branch_name,
+                })),
+                grades: eachMultipleAcademicYear?.grade?.map((each) => ({
+                  grade_id: each?.grade_id,
+                  grade_name: each?.grade__grade_name,
+                })),
+                subjects: eachMultipleAcademicYear?.subjects?.map((each) => ({
+                  id: each?.id,
+                  subject_id: each?.subject_id,
+                  subject_name: each?.subject_name,
+                })),
+              };
+              return acc;
+            }, {}),
+          }),
       first_name,
       middle_name,
       last_name,
@@ -336,6 +427,7 @@ class EditUser extends Component {
     }
     if (this.state.isOrchids == true) {
       requestObj['user_level'] = this.state.userLevel?.id;
+      requestObj['role_id'] = this.state?.role?.id;
       if (this.state.userLevel?.id != 13) {
         requestObj['designation'] = this.state.designation?.id;
       }
@@ -347,8 +439,20 @@ class EditUser extends Component {
       delete requestObj.guardian_photo;
     }
     const { setAlert } = this.context;
+    if (roleBasedUiConfig?.includes(userLevelForEdit?.toString())) {
+      // console.log(mapping_bgs, requestObj.mapping_bgss, 'multipleAcademicYear');
+      requestObj.mapping_bgs = JSON.stringify(requestObj?.mapping_bgs);
+    }
+
     const requestObjFormData = jsonToFormData(requestObj);
-    editUser(requestObjFormData)
+    console.log({ requestObj }, 'post data');
+    editUser(
+      requestObjFormData,
+      roleBasedUiConfig?.includes(userLevelForEdit?.toString())
+        ? roleBasedUiConfig
+        : null,
+      roleBasedUiConfig?.includes(userLevelForEdit?.toString()) ? match?.params?.id : null
+    )
       .then(() => {
         this.setState({ loading: false });
         history.push('/user-management/view-users');
@@ -358,6 +462,7 @@ class EditUser extends Component {
         this.setState({ loading: false });
         setAlert('error', 'User update failed');
       });
+    return;
   };
 
   onSubmitForm = (details) => {
@@ -366,6 +471,11 @@ class EditUser extends Component {
 
   fetchUserDetails() {
     const { fetchUser, match } = this.props;
+    const { roleBasedUiConfig, userLevelForEdit } = this.state;
+    if (roleBasedUiConfig?.includes(userLevelForEdit?.toString())) {
+      fetchUser(match.params.id, roleBasedUiConfig);
+      return;
+    }
     fetchUser(match.params.id);
   }
   fetchEditAccessLevels() {
@@ -438,7 +548,14 @@ class EditUser extends Component {
   }
 
   render() {
-    const { activeStep, user, showParentForm, showGuardianForm } = this.state;
+    const {
+      activeStep,
+      user,
+      showParentForm,
+      showGuardianForm,
+      roleBasedUiConfig,
+      userLevelForEdit,
+    } = this.state;
     const showParentOrGuardianForm = showParentForm || showGuardianForm;
     const steps = getSteps(showParentOrGuardianForm);
     const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
@@ -490,6 +607,8 @@ class EditUser extends Component {
                               handleDelete={() => this.handleDeleteMappingObject(index)}
                               isEditable={this.state.isEditable}
                               currentFormLength={this.state.curentmappingBgsLength}
+                              roleBasedUiConfig={roleBasedUiConfig}
+                              userLevelForEdit={userLevelForEdit}
                               // selectedYearIds={this.state.selectedYearIds}
                             />
                           )
@@ -557,6 +676,7 @@ class EditUser extends Component {
                     showParentForm={showParentForm}
                     showGuardianForm={showGuardianForm}
                     isSubmitting={creatingUser}
+                    roleBasedUiConfig={roleBasedUiConfig}
                   />
                 )}
                 {activeStep === 2 && selectedUser && (
@@ -572,9 +692,9 @@ class EditUser extends Component {
               </div>
             </>
           ) : fetchingUserDetails ? (
-            'Loading'
+            'Loading 2'
           ) : (
-            'Loading'
+            'Loading 3'
           )}
         </div>
       </Layout>
@@ -591,11 +711,11 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchUser: (params) => {
-    return dispatch(fetchUser(params));
+  fetchUser: (params, roleBasedUiConfig = null) => {
+    return dispatch(fetchUser(params, roleBasedUiConfig));
   },
-  editUser: (params) => {
-    return dispatch(editUser(params));
+  editUser: (params, roleBasedUiConfig = null, userId = null) => {
+    return dispatch(editUser(params, roleBasedUiConfig, userId));
   },
 });
 
