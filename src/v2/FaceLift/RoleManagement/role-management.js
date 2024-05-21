@@ -269,7 +269,9 @@ const RoleManagement = () => {
       title: <span className='th-white th-16 th-fw-700'>Sl No.</span>,
       align: 'center',
       render: (data, row, index) => (
-        <span className='th-black-1 th-16'>{index + 1}.</span>
+        <span className='th-black-1 th-16'>
+          {(currentPage - 1) * pageSize + index + 1}.
+        </span>
       ),
     },
     {

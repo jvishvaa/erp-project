@@ -582,6 +582,7 @@ const HomeworkDashboard = () => {
                                 value: d.value,
                                 label: d.text,
                               }))}
+                              className='th-grey th-bg-grey  w-100 text-left th-select'
                             />
                           </Form.Item>
                         </div>
