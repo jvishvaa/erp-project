@@ -306,6 +306,8 @@ const CreatePost = ({
     }
     if (attachmentList?.length > 0) {
       payload['media_files'] = attachmentList.map((item) => item?.media_path);
+    } else {
+      payload['media_files'] = [];
     }
     setCreateLoading(true);
     if (selectedPost) {
