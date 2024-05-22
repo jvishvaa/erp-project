@@ -476,7 +476,8 @@ const HomeworkDashboard = () => {
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 30;
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30;
-    return !!tooEarly || !!tooLate;
+    const futureDay = current && current > moment().endOf('day');
+    return !!tooEarly || !!tooLate || futureDay;
   };
 
   const subjectOptions = subjectList?.map((each) => {
