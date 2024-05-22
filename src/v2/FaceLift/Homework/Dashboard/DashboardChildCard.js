@@ -187,10 +187,12 @@ const DashboardChildCard = ({
           ? 'Section'
           : visibleLevel === 'grade' && dashboardLevel === 0
           ? 'Grade'
-          : visibleLevel === 'subject' && dashboardLevel === 1
+          : visibleLevel === 'grade' && dashboardLevel === 1
+          ? 'Subject'
+          : visibleLevel === 'subject' && dashboardLevel === 0
           ? 'Subject'
           : null,
-      y: 18,
+      y: 0,
     },
     colors: ['#065471', '#FFC045', '#0A91AB'],
     credits: {
@@ -329,10 +331,10 @@ const DashboardChildCard = ({
                         }}
                       >
                         {visibleLevel === 'branch'
-                          ? `Subject`
+                          ? `Subject `
                           : visibleLevel === 'grade'
-                          ? `Student`
-                          : ``}{' '}
+                          ? `Student `
+                          : ``}
                         <RightCircleOutlined />
                       </Tag>
                     )}
