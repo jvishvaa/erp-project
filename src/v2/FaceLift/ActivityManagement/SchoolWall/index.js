@@ -94,9 +94,11 @@ const SchoolWall = () => {
     setShowCreatePostModal(true);
   };
   const handleUpdatedPost = (data) => {
+    setLoading(true);
     let newList = postList?.slice();
     newList[selectedPostIndex] = data;
     setPostList(newList);
+    setLoading(false);
   };
 
   const fetchNewPosts = () => {
@@ -477,7 +479,9 @@ const SchoolWall = () => {
                         if (selectedAcademicYear?.is_current_session) {
                           setShowCreatePostModal(true);
                         } else {
-                          message.warning('Post creation allowed only for the current session')
+                          message.warning(
+                            'Post creation allowed only for the current session'
+                          );
                         }
                       }}
                     >
