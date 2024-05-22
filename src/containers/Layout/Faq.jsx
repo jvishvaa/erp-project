@@ -71,18 +71,20 @@ const Faq = ({ moduleData }) => {
                   >
                     Demo Video
                   </p>
+                  <div style={{display:"flex", justifyContent:"center"}}>
                   <video
                     id='module_video'
                     src={`${endpoints.assessment.erpBucket}/${moduleData[0]?.video_file}`}
                     controls
                     preload='auto'
                     style={{
-                      maxHeight: '150px',
-                      width: '100%',
+                      maxHeight: '280px',
+                      width: '90%',
                       objectFit: 'fill',
                     }}
                     disablePictureInPicture
                   />
+                  </div>
                 </div>
               ) : (
                 <div
@@ -132,7 +134,7 @@ const Faq = ({ moduleData }) => {
                       ],
                     });
                   }}
-                  style={{ color: 'blue', cursor: 'pointer', paddingTop: '8px' }}
+                  style={{ color: 'blue', cursor: 'pointer', paddingTop: '8px', marginLeft:"28px" }}
                 >
                   Click For User Manual <FilePdfOutlined />
                 </p>
