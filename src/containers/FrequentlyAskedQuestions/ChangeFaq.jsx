@@ -300,12 +300,11 @@ const ChangeFaq = ({
           message.success(`Question Deleted Successfully`);
           fetchTableData();
           setLoad(false);
-          setDeletePdfFile(true);
+          setOpenDrawer(false);
         }
       })
       .catch((error) => {
         setLoad(false);
-        setDeletePdfFile(false);
       });
   };
 
@@ -376,17 +375,25 @@ const ChangeFaq = ({
                       display: 'flex',
                       justifyContent: 'space-evenly',
                       alignItems: 'center',
-                      marginRight : `${showPdfText ? "66px" : ""}`
+                      marginRight: `${showPdfText ? '66px' : ''}`,
                     }}
                   >
-                    <p style={{ marginTop: '10px', fontWeight: 'bold', marginRight : `${showPdfText ? "20px" : ""}` }}>Demo Video</p>
+                    <p
+                      style={{
+                        marginTop: '10px',
+                        fontWeight: 'bold',
+                        marginRight: `${showPdfText ? '20px' : ''}`,
+                      }}
+                    >
+                      Demo Video
+                    </p>
                     {showVideoText == false ? (
                       <div
                         style={{
                           display: 'flex',
                           flexDirection: 'column',
                           justifyContent: 'center',
-                          marginRight : `${showPdfText ? "28px" : ""}`
+                          marginRight: `${showPdfText ? '28px' : ''}`,
                         }}
                       >
                         <Tooltip
@@ -421,7 +428,13 @@ const ChangeFaq = ({
                           getPopupContainer={(trigger) => trigger.parentNode}
                           overlayClassName='custom-popconfirm'
                         >
-                          <DeleteOutline style={{ color: 'red', cursor: 'pointer', marginRight : `${showPdfText ? "-15px" : ""}` }} />
+                          <DeleteOutline
+                            style={{
+                              color: 'red',
+                              cursor: 'pointer',
+                              marginRight: `${showPdfText ? '-15px' : ''}`,
+                            }}
+                          />
                         </Popconfirm>
                       </Tooltip>
                     ) : (
@@ -444,10 +457,18 @@ const ChangeFaq = ({
                       display: 'flex',
                       justifyContent: 'space-evenly',
                       alignItems: 'center',
-                      marginRight : `${showVideoText ? "66px" : ""}`
+                      marginRight: `${showVideoText ? '66px' : ''}`,
                     }}
                   >
-                    <p style={{ marginTop: '10px', fontWeight: 'bold', marginRight : `${showVideoText ? "20px" : ""}` }}>User Manual</p>
+                    <p
+                      style={{
+                        marginTop: '10px',
+                        fontWeight: 'bold',
+                        marginRight: `${showVideoText ? '20px' : ''}`,
+                      }}
+                    >
+                      User Manual
+                    </p>
 
                     {showPdfText == false ? (
                       <div
@@ -455,7 +476,7 @@ const ChangeFaq = ({
                           display: 'flex',
                           flexDirection: 'column',
                           justifyContent: 'center',
-                          marginRight : `${showVideoText ? "25px" : ""}`
+                          marginRight: `${showVideoText ? '25px' : ''}`,
                         }}
                       >
                         <Tooltip
@@ -507,7 +528,13 @@ const ChangeFaq = ({
                           getPopupContainer={(trigger) => trigger.parentNode}
                           overlayClassName='custom-popconfirm'
                         >
-                          <DeleteOutline style={{ color: 'red', cursor: 'pointer', marginRight : `${showVideoText ? "-15px" : ""}` }} />
+                          <DeleteOutline
+                            style={{
+                              color: 'red',
+                              cursor: 'pointer',
+                              marginRight: `${showVideoText ? '-15px' : ''}`,
+                            }}
+                          />
                         </Popconfirm>
                       </Tooltip>
                     ) : (
