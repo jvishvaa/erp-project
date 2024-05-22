@@ -16,7 +16,6 @@ import {
   UpOutlined,
 } from '@ant-design/icons';
 import Slider from 'react-slick';
-import ReactHtmlParser from 'react-html-parser';
 import { saveAs } from 'file-saver';
 import endpoints from 'v2/config/endpoints';
 
@@ -183,7 +182,7 @@ const PostCard = (props) => {
               ref={contentRef}
             >
               <div className='text-justify' style={{ width: '98%' }}>
-                {ReactHtmlParser(description)}
+                {description}
               </div>
               {hasLargeText && (
                 <span
