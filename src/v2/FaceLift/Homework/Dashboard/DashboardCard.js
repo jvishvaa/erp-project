@@ -59,6 +59,7 @@ const DashboardCard = ({
 
   const selectCard = (index) => {
     setSelectedCardIndex(index);
+    setIsCollapsed(!isCollapsed ? true : false);
   };
 
   const tableColumns = [
