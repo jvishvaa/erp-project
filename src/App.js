@@ -666,18 +666,23 @@ function App({ alert, isMsAPI, erpConfig }) {
       if (localStorage.getItem('duePopup') === null) {
         getStudentDueData({
           branch_id: branchId,
-          session_year: JSON.parse(sessionStorage.getItem('selected_branch'))
-            ?.session_year?.session_year,
+          session_year: sessionStorage.getItem('selected_branch')
+            ? JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
+                ?.session_year
+            : '',
           erp_id: userDetails?.erp,
         });
       }
       getEventPopup({
-        session_year: JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
-          ?.id,
+        session_year: sessionStorage.getItem('selected_branch')
+          ? JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year?.id
+          : '',
         page_number: 1,
         page_size: 10,
         is_sent: 'True',
-        branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
+        branch_id: sessionStorage.getItem('selected_branch')
+          ? JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id
+          : '',
         is_flash_event: true,
       });
     }
