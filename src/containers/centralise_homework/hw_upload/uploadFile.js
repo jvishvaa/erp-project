@@ -340,7 +340,7 @@ const UploadHomework = () => {
     showUploadList: false,
     disabled: false,
     // accept: '.jpeg,.jpg,.png,.pdf ',
-    accept: '.zip',
+    accept: '.zip, .pdf',
     multiple: false,
     maxCount: 1,
     onRemove: (file) => {
@@ -352,7 +352,7 @@ const UploadHomework = () => {
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
       // if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
-      if (['zip', 'x-zip-compressed'].includes(type)) {
+      if (['zip', 'x-zip-compressed', 'pdf'].includes(type)) {
         setFileList([...file[1]]);
         setFileTypeError(false);
       } else {
@@ -599,12 +599,12 @@ const UploadHomework = () => {
                         >
                           Browse Files
                         </Button>
-                        <p className='pt-2'>Please Upload Zip Files Only</p>
+                        <p className='pt-2'>Please Upload Zip or Pdf Files Only</p>
                       </Dragger>
                     </div>
                     {fileTypeError && (
                       <div className='row pt-3 justify-content-center align-item-center th-red'>
-                        Please Select Zip Files Only
+                        Please Select Zip or Pdf Files Only
                       </div>
                     )}
                     {fileList?.length > 0 && (
