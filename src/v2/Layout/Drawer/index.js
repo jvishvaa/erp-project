@@ -81,6 +81,7 @@ const resolveMenu = (url) => {
   if (url.includes('ManagePayments')) return 'Finance';
   if (url.includes('blog')) return 'Activity Management';
   if (url.includes('activity-management')) return 'Activity Management';
+  if (url.includes('create-subject-wise-rating')) return 'Activity Management';
   if (url.includes('course-list')) return 'Master Management';
   if (url.includes('user-level-table')) return 'User Management';
   if (url.includes('virtual-school')) return 'User Management';
