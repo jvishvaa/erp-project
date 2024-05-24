@@ -43,6 +43,7 @@ const BranchTable = () => {
   const [search, setSearch] = useState('');
   const [openDrawer, setOpenDrawer] = useState(false);
   const [drawerLoading, setDrawerLoading] = useState(false);
+  const [branchCode, setBranchCode] = useState(null);
   const [editId, setEditId] = useState();
   const [file, setFile] = useState();
   const [fileLink, setFileLink] = useState();
@@ -228,6 +229,7 @@ const BranchTable = () => {
         legalContact: rowData?.legal_name?.legalContact,
         legalEmail: rowData?.legal_name?.legalEmail,
       });
+      setBranchCode(rowData?.branch_code);
       setEditId(editId);
       setFileLink(rowData?.logo);
     }
@@ -235,6 +237,7 @@ const BranchTable = () => {
   const handleCloseDrawer = () => {
     setOpenDrawer(false);
     formRef.resetFields();
+    setBranchCode(null);
     setEditId();
     setFileLink();
     setFile();
@@ -580,7 +583,7 @@ const BranchTable = () => {
                       placeholder='Enter Branch Code'
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       allowClear
-                      disabled={editId}
+                      disabled={branchCode!==null}
                     />
                   </Form.Item>
                   <Form.Item
