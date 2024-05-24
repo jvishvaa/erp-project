@@ -650,9 +650,13 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Blog',
       Path: '/blog/activityreview',
     },
+    // {
+    //   name: 'Create Rating',
+    //   Path: '/blog/createratingtype',
+    // },
     {
       name: 'Create Rating',
-      Path: '/blog/createratingtype',
+      Path: '/create-subject-wise-rating',
     },
     {
       name: 'Assign Trainee',

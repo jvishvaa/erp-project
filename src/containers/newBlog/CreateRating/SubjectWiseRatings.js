@@ -218,7 +218,7 @@ const SubjectWiseRatings = () => {
       dataIndex: 'erp_id',
       key: 'erp_id',
       align: 'center',
-      render: (text, row) => <span>{JSON.parse(row?.scheme_criteria)?.name}</span>,
+      render: (text, row) => <span>{row?.scheme_criteria?.name}</span>,
     },
 
     {
@@ -285,31 +285,26 @@ const SubjectWiseRatings = () => {
 
     let payload = {
       user_id: activityUserId,
-      scheme_criteria: [
-        {
-          name: currentRating?.title,
-          content: currentRating?.questions?.map((item) => ({
-            criterion: item?.title,
-            levels: currentRating?.levels,
-          })),
-        },
-      ],
+      scheme_criteria: {
+        name: currentRating?.title,
+        content: currentRating?.questions?.map((item) => ({
+          criterion: item?.title,
+          levels: currentRating?.levels,
+        })),
+      },
+      name: currentRating?.title,
     };
     if (editID) {
       payload['scheme_id'] = editID;
     } else {
       payload['subject_id'] = selectedSubject?.value;
-      payload['grade_ids'] = selectedGrade.toString();
-      payload['subject_name'] = selectedSubject?.children;
+      payload['grade_id'] = selectedGrade;
+      payload['name'] = selectedSubject?.children;
     }
     setRequestSent(true);
     if (editID) {
       axios
-        .post(`${endpoints.newBlog.updateSubjectWiseRatingSchemas}`, payload, {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
+        .put(`${endpoints.ratingApis.subjectWiseRatingSchemasApi}${editID}/`, payload)
         .then((res) => {
           if (res?.data?.status_code == 200) {
             message.success('Rating updated successfully !');
@@ -326,17 +321,13 @@ const SubjectWiseRatings = () => {
         });
     } else {
       axios
-        .post(`${endpoints.newBlog.createSubjectWiseRatingSchemas}`, payload, {
-          headers: {
-            'X-DTS-HOST': X_DTS_HOST,
-          },
-        })
+        .post(`${endpoints.ratingApis.subjectWiseRatingSchemasApi}`, payload)
         .then((res) => {
-          if (res?.data?.status_code == 200) {
+          if (res?.data?.status_code == 201) {
             message.success('Rating created successfully !');
             handleCloseCreateRatingModal();
             fetchSubjectWiseRatingsList({ page: 1 });
-          } else if (res?.data?.status_code == 400) {
+          } else if (res?.data?.status_code == 409) {
             message.error(res?.data?.message);
           } else {
             message.error('Rating creation failed !');
@@ -351,11 +342,7 @@ const SubjectWiseRatings = () => {
 
   const handleDeleteScheme = (id) => {
     axios
-      .delete(`${endpoints.newBlog.deleteSubjectWiseRatingSchemas}${id}/`, {
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
-      })
+      .delete(`${endpoints.ratingApis.subjectWiseRatingSchemasApi}${id}/`)
       .then((res) => {
         if (res?.data?.status_code === 200) {
           fetchSubjectWiseRatingsList({ page: pageDetails?.current });
@@ -371,8 +358,8 @@ const SubjectWiseRatings = () => {
       value: record?.subject_id,
       children: record?.subject_name,
     });
-    let schemeData = JSON.parse(record?.scheme_criteria);
-    var currentData = _.cloneDeep(schemeData);
+    let schemeData = record?.scheme_criteria;
+    var currentData = schemeData;
     console.log({ currentData });
     setCurrentRating({
       title: currentData?.name,
@@ -429,19 +416,16 @@ const SubjectWiseRatings = () => {
   const fetchSubjectWiseRatingsList = async (params = {}) => {
     setLoading(true);
     await axios
-      .get(`${endpoints.newBlog.subjectWiseRatingSchemas}`, {
+      .get(`${endpoints.ratingApis.subjectWiseRatingSchemasApi}`, {
         params: {
           ...params,
           ...(filteredGrade !== null ? { grade_id: filteredGrade } : {}),
         },
-        headers: {
-          'X-DTS-HOST': X_DTS_HOST,
-        },
       })
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          setSubjectWiseRatingsList(res?.data?.result);
-          setPageDetails({ ...pageDetails, total: res.data?.count });
+          setSubjectWiseRatingsList(res?.data?.result?.results);
+          setPageDetails({ ...pageDetails, total: res.data?.result?.count });
         }
       })
       .catch((err) => message.error(err?.message))
@@ -513,22 +497,11 @@ const SubjectWiseRatings = () => {
       <div className='row px-2'>
         <div className='col-md-8' style={{ zIndex: 2 }}>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item
-              href='/blog/wall/central/redirect'
-              className='th-grey th-16 th-pointer'
-            >
+            <Breadcrumb.Item className='th-grey th-16 th-pointer'>
               Activity Management
             </Breadcrumb.Item>
-            <Breadcrumb.Item
-              onClick={() => {
-                history.goBack();
-              }}
-              className='th-grey th-16 th-pointer'
-            >
+            <Breadcrumb.Item className='th-black th-16 th-pointer'>
               Create rating
-            </Breadcrumb.Item>
-            <Breadcrumb.Item className='th-black th-16'>
-              Subject Wise Ratings
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -601,7 +574,10 @@ const SubjectWiseRatings = () => {
                   },
                   limit: 20,
                 }}
-                scroll={{ y: '50vh' }}
+                scroll={{
+                  x: 'max-content',
+                  y: '100vh',
+                }}
                 loading={loading}
                 columns={columns}
                 dataSource={subjectWiseRatingList}

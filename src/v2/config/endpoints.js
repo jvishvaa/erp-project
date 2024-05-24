@@ -257,6 +257,9 @@ export default {
     grievanceTicket: `${baseFinanceURL}/apiV1/ticket/`,
   },
 
+  ratingApis : {
+    subjectWiseRatingSchemasApi: `/activity-mgmt/schemes/`,
+  },
   newBlog: {
     activityCreate: `${newBlogURL}/api/activity_detail_create/`,
     activityWebLogin: `${newBlogURL}/api/web_login/`,
