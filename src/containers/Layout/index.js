@@ -1192,8 +1192,12 @@ const Layout = ({ children, history }) => {
         history.push('/blog/activityreview');
         break;
       }
+      // case 'Create Rating': {
+      //   history.push('/blog/createratingtype');
+      //   break;
+      // }
       case 'Create Rating': {
-        history.push('/blog/createratingtype');
+        history.push('/create-subject-wise-rating');
         break;
       }
 
