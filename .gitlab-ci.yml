@@ -166,8 +166,8 @@ deploy_stage_gcp:
       - sudo chown -R gitlab-runner:gitlab-runner /home/gitlab-runner/builds/
       - forever stop erp-frontend-stage || true
       - forever start -v --uid "erp-frontend-stage" -a -l /var/log/frontend/forever.log -o /var/log/frontend/out_test.log -e /var/log/frontend/err_test.log $(which serve) -s /home/ubuntu/build_test/ -l 4000 
-      - sudo gsutil rm -r gs://erp-academic-stage/mig-config/build
-      - sudo gsutil rsync -r /home/ubuntu/build_test gs://erp-academic-stage/mig-config/build/
+      # - sudo gsutil rm -r gs://erp-academic-stage/mig-config/build
+      # - sudo gsutil rsync -r /home/ubuntu/build_test gs://erp-academic-stage/mig-config/build/
     environment:
       name: stage
       url: 
