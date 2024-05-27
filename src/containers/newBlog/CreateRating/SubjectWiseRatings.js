@@ -164,7 +164,7 @@ const SubjectWiseRatings = () => {
         session_year: selectedAcademicYear?.id,
         branch_id: selectedBranch?.branch?.id,
         module_id: moduleId,
-        grade: e,
+        grade: e?.grade_id,
       });
     }
   };
@@ -292,14 +292,14 @@ const SubjectWiseRatings = () => {
           levels: currentRating?.levels,
         })),
       },
-      name: currentRating?.title,
+      // name: currentRating?.title,
     };
     if (editID) {
       payload['scheme_id'] = editID;
     } else {
       payload['subject_id'] = selectedSubject?.value;
-      payload['grade_id'] = selectedGrade;
-      payload['name'] = selectedSubject?.children;
+      payload['grade_id'] = selectedGrade?.value;
+      payload['name'] = selectedGrade?.children + '_' + selectedSubject?.children;
     }
     setRequestSent(true);
     if (editID) {
@@ -353,7 +353,11 @@ const SubjectWiseRatings = () => {
       });
   };
   const handleEditScheme = (record) => {
-    setSelectedGrade(record?.grade_id);
+    // setSelectedGrade(record?.grade_id);
+    setSelectedGrade({
+      value: record?.grade_id,
+      children: record?.grade_name,
+    });
     setSelectedSubject({
       value: record?.subject_id,
       children: record?.subject_name,
@@ -619,8 +623,8 @@ const SubjectWiseRatings = () => {
                             0
                           );
                         }}
-                        onChange={(e) => {
-                          handleGrade(e);
+                        onChange={(e, value) => {
+                          handleGrade(value);
                         }}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       >
