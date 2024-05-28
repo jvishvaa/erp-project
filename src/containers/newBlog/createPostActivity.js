@@ -231,7 +231,7 @@ const CreatePostActivity = () => {
           setActivityId('');
           setDescription('');
           setTitle('');
-          history.push('/blog/wall');
+          history.push('/school-wall');
           setLoading(false);
         });
     }
