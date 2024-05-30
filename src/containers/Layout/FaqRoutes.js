@@ -331,4 +331,5 @@ export const FaqRoutes = [
   { key: 'Non Academic Staff', path: '/user-management/non-academic-staff' },
   { key: 'Activity Dashboard', path: '/activity-management-dashboard' },
   { key: 'FAQ', path: '/frequently-asked-questions' },
+  {key : 'Assign Video Observation', path : '/assign-video-observation'}
 ];

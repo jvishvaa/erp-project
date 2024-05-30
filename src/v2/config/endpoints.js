@@ -398,6 +398,9 @@ export default {
     likePost: '/social-media/like/',
     comments: '/social-media/comments/',
   },
+  assignVideoObservation : {
+    videoReview : '/erp_user/video-review/'
+  },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,
 };
