@@ -88,60 +88,6 @@ const settings = {
 };
 
 const EventsDashboardAdmin = () => {
-  const eventData1 = [
-    {
-      title: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-      highlight:
-        '<p><strong>The Evolution and Impact of Technology on Modern Society</strong></p><p><em><u>Introduction</u></em></p><ul><li>Technology has profoundly shaped human civilization, influencing various aspects of life, from communication to healthcare, transportation, and beyond. This essay delves into the historical evolution of technology, its current impact on society, and its potential future trajectories.</li><li>The Historical Evolution of Technology</li><li>Early Innovations</li></ul><p><br></p><ol><li>Stone Tools: The earliest known use of tools dates back to approximately 2.6 million years ago. Early humans used simple stone tools to hunt and gather food, marking the beginning of technological development.</li><li>Agricultural Revolution: Around 10,000 BCE, the Agricultural Revolution began. Humans transitioned from nomadic lifestyles to settled agricultural communities. This period saw the invention of tools like the plow and irrigation systems, which significantly boosted food production.</li></ol><p>The Industrial Revolution</p><p><br></p><p><em>Mechanization: The 18th century Industrial Revolution introduced machinery that transformed manufacturing processes. Key inventions included the steam engine, spinning jenny, and power loom, which dramatically increased production capacity.</em></p><p><em>Urbanization: Industrialization led to mass migration from rural areas to cities, as people sought employment in factories. This period also saw the development of railways and telegraph systems, enhancing transportation and communication.</em></p><p><em>The Information Age</em></p><p><br></p><p>C<u>omputers: The mid-20th century marked the advent of computers, revolutionizing how information is processed and stored. The first programmable computer, the ENIAC, was developed in 1945.</u></p><p><u>Internet: The creation of the internet in the late 20th century further accelerated technological progress. It transformed communication, commerce, and entertainment, making information readily accessible to a global audience.</u></p><p><u>The Current Impact of Technology on Soc</u>iety</p><p>Communication</p><p><br></p><ul><li>Instant Messaging: Platforms like WhatsApp, Telegram, and Signal enable instant communication across vast distances, making it easier to stay connected with family, friends, and colleagues.</li><li>Social Media: Websites like Facebook, Twitter, and Instagram have reshaped social interactions, providing platforms for sharing experiences, opinions, and news.</li><li>Healthcare</li><li><br></li><li>Medical Devices: Innovations like MRI machines, pacemakers, and robotic surgical systems have significantly improved diagnostic and treatment capabilities.</li><li>Telemedicine: The rise of telemedicine has made healthcare more accessible, allowing patients to consult with doctors remotely through video calls and online chat systems.</li><li>Education</li><li><br></li><li>E-Learning: Online platforms like Coursera, Udemy, and Khan Academy offer a vast array of courses, making education more accessible to people worldwide.</li><li>Digital Classrooms: Tools like Zoom, Google Classroom, and Microsoft Teams have enabled remote learning, especially significant during the COVID-19 pandemic.</li></ul><p>Economy</p><p><br></p><p><strong>E-Commerce: Online marketplaces like Amazon, eBay, and Alibaba have</strong></p>',
-      description:
-        '<p><strong>The Evolution and Impact of Technology on Modern Society</strong></p><p><em><u>Introduction</u></em></p><ul><li>Technology has profoundly shaped human civilization, influencing various aspects of life, from communication to healthcare, transportation, and beyond. This essay delves into the historical evolution of technology, its current impact on society, and its potential future trajectories.</li><li>The Historical Evolution of Technology</li><li>Early Innovations</li></ul><p><br></p><ol><li>Stone Tools: The earliest known use of tools dates back to approximately 2.6 million years ago. Early humans used simple stone tools to hunt and gather food, marking the beginning of technological development.</li><li>Agricultural Revolution: Around 10,000 BCE, the Agricultural Revolution began. Humans transitioned from nomadic lifestyles to settled agricultural communities. This period saw the invention of tools like the plow and irrigation systems, which significantly boosted food production.</li></ol><p>The Industrial Revolution</p><p><br></p><p><em>Mechanization: The 18th century Industrial Revolution introduced machinery that transformed manufacturing processes. Key inventions included the steam engine, spinning jenny, and power loom, which dramatically increased production capacity.</em></p><p><em>Urbanization: Industrialization led to mass migration from rural areas to cities, as people sought employment in factories. This period also saw the development of railways and telegraph systems, enhancing transportation and communication.</em></p><p><em>The Information Age</em></p><p><br></p><p>C<u>omputers: The mid-20th century marked the advent of computers, revolutionizing how information is processed and stored. The first programmable computer, the ENIAC, was developed in 1945.</u></p><p><u>Internet: The creation of the internet in the late 20th century further accelerated technological progress. It transformed communication, commerce, and entertainment, making information readily accessible to a global audience.</u></p><p><u>The Current Impact of Technology on Soc</u>iety</p><p>Communication</p><p><br></p><ul><li>Instant Messaging: Platforms like WhatsApp, Telegram, and Signal enable instant communication across vast distances, making it easier to stay connected with family, friends, and colleagues.</li><li>Social Media: Websites like Facebook, Twitter, and Instagram have reshaped social interactions, providing platforms for sharing experiences, opinions, and news.</li><li>Healthcare</li><li><br></li><li>Medical Devices: Innovations like MRI machines, pacemakers, and robotic surgical systems have significantly improved diagnostic and treatment capabilities.</li><li>Telemedicine: The rise of telemedicine has made healthcare more accessible, allowing patients to consult with doctors remotely through video calls and online chat systems.</li><li>Education</li><li><br></li><li>E-Learning: Online platforms like Coursera, Udemy, and Khan Academy offer a vast array of courses, making education more accessible to people worldwide.</li><li>Digital Classrooms: Tools like Zoom, Google Classroom, and Microsoft Teams have enabled remote learning, especially significant during the COVID-19 pandemic.</li></ul><p>Economy</p><p><br></p><p><strong>E-Commerce: Online marketplaces like Amazon, eBay, and Alibaba have</strong></p>',
-
-      event_date: '2030-07-19',
-      reg_start: '2024-06-19',
-      reg_end: '2024-06-22',
-      event_price: 1000,
-      refundable: true,
-      acad_session: [1167],
-      grades: [475],
-      attachments: [
-        'https://storage.googleapis.com/erp-academic-stage/social_media/QA ORCHIDS SCHOOL/1716454116_007c1a2f-15a2-4c89-a5ce-380fad3e2544897992928990733919.mp4',
-        'https://storage.googleapis.com/erp-academic-stage/social_media/QA ORCHIDS SCHOOL/1716454080_5d832e19-95ee-409e-acf3-7b00e983d083264880289815280921.jpg',
-        'https://storage.googleapis.com/erp-academic-stage/social_media/QA ORCHIDS SCHOOL/1716453965_1716355804_a72629b8-4bd7-4fab-bc3f-e00949a623e85134508219723903403.mp4',
-        'https://storage.googleapis.com/erp-academic-stage/social_media/QA ORCHIDS SCHOOL/1716453976_1716355928_VID_20240331_164706.mp4',
-        'https://storage.googleapis.com/erp-academic-stage/social_media/QA ORCHIDS SCHOOL/1716453982_1716193988_jpg (2).jpg',
-        'https://storage.googleapis.com/erp-academic-stage/social_media/QA ORCHIDS SCHOOL/1716453972_1716193989_jpg (3).jpg',
-        'https://storage.googleapis.com/erp-academic-stage/social_media/QA ORCHIDS SCHOOL/1716453977_1716194020_big_buck_bunny_720p_1mb.mp4',
-        'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-      ],
-      image: [
-        'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-        'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-        'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-        'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-      ],
-      video: [
-        'https://storage.googleapis.com/erp-academic-stage/dev/observation/video-record/12058_202[…]3%2017%3A21%3A51.084155_tic-observation-1716465074235.mp4',
-        'https://storage.googleapis.com/erp-academic-stage/dev/observation/video-record/12058_202[…]3%2017%3A21%3A51.084155_tic-observation-1716465074235.mp4',
-
-        'https://storage.googleapis.com/erp-academic-stage/dev/observation/video-record/12058_202[…]3%2017%3A21%3A51.084155_tic-observation-1716465074235.mp4',
-
-        'https://storage.googleapis.com/erp-academic-stage/dev/observation/video-record/12058_202[…]3%2017%3A21%3A51.084155_tic-observation-1716465074235.mp4',
-      ],
-      policy: {
-        12: '30',
-        8: '20',
-      },
-      approval_status: 1,
-      students_count: 0,
-      policy_dates: {
-        '2030-07-07': 300.0,
-        '2030-07-11': 200.0,
-      },
-      id: 756,
-    },
-  ];
-  let viewEvent = eventData1[0];
-  const event = eventData1[0];
   const notificationDuration = 3;
   const { Option } = Select;
   const { RangePicker } = DatePicker;
@@ -167,7 +113,35 @@ const EventsDashboardAdmin = () => {
 
   const is_central_user = [1, 2].includes(user_level) || is_superuser ? true : false;
   const [loading, setLoading] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState({
+    results: [
+      {
+        id: 3908,
+        title: 'event title',
+        event_name: 'event title',
+        highlight: '<p>event</p>',
+        description: '<p>event</p>',
+        event_date: '2024-05-30',
+        reg_start: '2024-05-30',
+        reg_end: '2024-05-30',
+        event_price: 1000,
+        refundable: true,
+        is_subscription_needed: true,
+        acad_session: [1165],
+        grades: [475],
+        attachments: [],
+        policy: {
+          20: '20',
+        },
+        approval_status: 1,
+        students_count: 0,
+        policy_dates: {
+          '2024-05-10': 200,
+        },
+        subscription: '',
+      },
+    ],
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
 
@@ -188,11 +162,12 @@ const EventsDashboardAdmin = () => {
   const [eventLoading, setEventLoading] = useState(false);
   const [eventData, setEventData] = useState([]);
 
+  const [acadSessionIds, setAcadSessionIds] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [eventHighlights, setEventHighlights] = useState('');
   const [eventDescription, setEventDescription] = useState('');
   const [subscriptionStatus, setSubscriptionStatus] = useState(1);
-  const [refundPolicy, setRefundPolicy] = useState(2);
+  const [refundPolicy, setRefundPolicy] = useState(1);
   const [refundPolicyData, setRefundPolicyData] = useState([
     {
       days: '',
@@ -209,7 +184,7 @@ const EventsDashboardAdmin = () => {
   const [previewFile, setPreviewFile] = useState(null);
 
   const [viewEventModalOpen, setViewEventModalOpen] = useState(false);
-  // const [viewEvent, setViewEvent] = useState();
+  const [viewEvent, setViewEvent] = useState();
 
   useEffect(() => {
     const handleResize = () => {
@@ -255,7 +230,6 @@ const EventsDashboardAdmin = () => {
     } else {
       acad_session = branch?.id;
     }
-    console.log(acad_session, 'test');
     setLoading(true);
     let params = {
       page: currentPage,
@@ -275,7 +249,7 @@ const EventsDashboardAdmin = () => {
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          setTableData(response?.data?.result);
+          // setTableData(response?.data?.result);
         }
       })
       .catch((error) => {
@@ -289,26 +263,6 @@ const EventsDashboardAdmin = () => {
         setLoading(false);
       });
   };
-  const fetchGradeList = () => {
-    const branch_ids = eventForm.getFieldsValue()?.branch_ids;
-    axiosInstance
-      .get(
-        `${endpoints.eventsDashboard.gradeListApi}?session_year=${session_year}&branch_id=${branch_ids}`
-      )
-      .then((response) => {
-        if (response?.data?.status_code == 200) {
-          setGradeList(response?.data?.data);
-        }
-      })
-      .catch((error) => {
-        notification['error']({
-          message: 'OOPS! Something went wrong. Please try again',
-          duration: notificationDuration,
-          className: 'notification-container',
-        });
-      })
-      .finally(() => {});
-  };
   const createEvent = () => {
     const values = eventForm.getFieldsValue();
     console.log(values?.event_name, 'test');
@@ -320,12 +274,32 @@ const EventsDashboardAdmin = () => {
     console.log(values?.reg_dates[0].format('YYYY-MM-DD'), 'test');
     console.log(values?.reg_dates[1].format('YYYY-MM-DD'), 'test');
     console.log(values?.event_date.format('YYYY-MM-DD'), 'test');
-    console.log(values?.subscription, 'test');
+    console.log(values?.is_subscription_needed, 'test');
     console.log(values?.event_price, 'test');
     console.log(values?.refundable, 'test');
     console.log(refundPolicyData, 'test');
     console.log(selectedFiles, 'test');
     const formData = new FormData();
+    formData.append('event_name', values?.event_name);
+    formData.append('acad_session', values?.acad_session?.join(','));
+    formData.append('grades', values?.grade_ids?.join(','));
+    formData.append('highlight', eventHighlights);
+    formData.append('description', eventDescription);
+    formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
+    formData.append('reg_end', values?.reg_dates[0].format('YYYY-MM-DD'));
+    formData.append('event_date', values?.event_date.format('YYYY-MM-DD'));
+    // formData.append('is_subscription_needed', values?.is_subscription_needed);
+    if (values?.is_subscription_needed) {
+      formData.append('event_price', values?.event_price);
+      formData.append('refundable', values?.refundable);
+      if (values?.refundable) {
+        let formatted_policy = refundPolicyData
+          .map((policy) => `${policy.days}:${policy.percent}`)
+          .join(',');
+        formData.append('policies', formatted_policy);
+      }
+    }
+    formData.append('attachments', selectedFiles);
     setEventLoading(true);
     axiosInstance
       .post(`${endpoints.eventsDashboard.eventApi}`, formData)
@@ -362,7 +336,7 @@ const EventsDashboardAdmin = () => {
     console.log(values?.reg_dates[0].format('YYYY-MM-DD'), 'test');
     console.log(values?.reg_dates[1].format('YYYY-MM-DD'), 'test');
     console.log(values?.event_date.format('YYYY-MM-DD'), 'test');
-    console.log(values?.subscription, 'test');
+    console.log(values?.is_subscription_needed, 'test');
     console.log(values?.event_price, 'test');
     console.log(values?.refundable, 'test');
     console.log(refundPolicyData, 'test');
@@ -370,7 +344,7 @@ const EventsDashboardAdmin = () => {
     const formData = new FormData();
     setEventLoading(true);
     axiosInstance
-      .put(`${endpoints.eventsDashboard.eventApi}`, formData)
+      .patch(`${endpoints.eventsDashboard.eventApi}`, formData)
       .then((response) => {
         if (response?.data?.status_code == 204) {
           notification['success']({
@@ -393,15 +367,13 @@ const EventsDashboardAdmin = () => {
         setEventLoading(false);
       });
   };
-  const approveEvent = ({ eventId }) => {
+  const approveEvent = ({ approveId }) => {
     setLoading(true);
-    let params = {
+    let payload = {
       approval_status: 4,
     };
     axiosInstance
-      .put(`${endpoints.eventsDashboard.eventsListApi}${eventId}/`, {
-        params: params,
-      })
+      .patch(`/academic/${approveId}/event-manage/`, payload)
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
@@ -425,15 +397,12 @@ const EventsDashboardAdmin = () => {
   };
   const rejectEvent = () => {
     const remarks = feedBackModalForm?.getFieldsValue()?.remarks;
-    setLoading(true);
-    let params = {
+    let payload = {
       approval_status: 2,
       remarks: remarks,
     };
     axiosInstance
-      .put(`${endpoints.eventsDashboard.eventsListApi}${id}/`, {
-        params: params,
-      })
+      .patch(`/academic/${id}/event-manage/`, payload)
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
@@ -459,14 +428,12 @@ const EventsDashboardAdmin = () => {
   const cancelEvent = () => {
     const remarks = feedBackModalForm?.getFieldsValue()?.remarks;
     setLoading(true);
-    let params = {
-      approval_status: 2,
+    let payload = {
+      approval_status: 3,
       remarks: remarks,
     };
     axiosInstance
-      .put(`${endpoints.eventsDashboard.eventsListApi}${id}/`, {
-        params: params,
-      })
+      .patch(`/academic/${id}/event-manage/`, payload)
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
@@ -537,19 +504,44 @@ const EventsDashboardAdmin = () => {
     const blob = await response.blob();
     saveAs(blob, fullName);
   };
-  const handleBranchChange = () => {
-    const branch_ids = eventForm.getFieldsValue()?.branch_ids;
-    if (branch_ids?.length) {
-      if (branch_ids.includes('all')) {
-        const allIds = branchList.map((each) => each?.branch?.id);
-        eventForm.setFieldsValue({
-          branch_ids: allIds,
+  const fetchGradeList = ({ branchIds }) => {
+    axiosInstance
+      .get(
+        `${endpoints.eventsDashboard.gradeListApi}?session_year=${session_year}&branch_id=${branchIds}`
+      )
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setGradeList(response?.data?.data);
+        }
+      })
+      .catch((error) => {
+        notification['error']({
+          message: 'OOPS! Something went wrong. Please try again',
+          duration: notificationDuration,
+          className: 'notification-container',
         });
+      })
+      .finally(() => {});
+  };
+  const handleBranchChange = () => {
+    const acad_session = eventForm.getFieldsValue()?.acad_session;
+    if (acad_session?.length) {
+      let branchIds;
+      if (acad_session.includes('all')) {
+        const allIds = branchList.map((each) => each?.id);
+        eventForm.setFieldsValue({
+          acad_session: allIds,
+        });
+        branchIds = branchList.map((each) => each?.branch?.id);
+      } else {
+        branchIds = branchList
+          .filter((each) => acad_session.includes(each?.id))
+          .map((each) => each?.branch?.id);
       }
-      fetchGradeList();
+      fetchGradeList({ branchIds });
     } else {
       eventForm.setFieldsValue({
-        branch_ids: [],
+        acad_session: [],
       });
     }
     eventForm.setFieldsValue({
@@ -606,30 +598,67 @@ const EventsDashboardAdmin = () => {
   const openEventDrawer = ({ key, rowData }) => {
     if (key === 'create') {
       eventForm.setFieldsValue({
-        subscription: 1,
-        refundable: 2,
+        is_subscription_needed: true,
+        refundable: true,
       });
       setEventDrawerOpen(true);
     } else {
-      // setform with rowData
+      let branchIds = branchList
+        .filter((each) => rowData?.acad_session.includes(each?.id))
+        .map((each) => each?.branch?.id);
+      // fetchGradeList(branchIds);
+      eventForm.setFieldsValue({
+        event_name: rowData?.event_name,
+        acad_session: rowData?.acad_session,
+        grade_ids: rowData?.grades,
+        // reg_dates: [rowData?.reg_start, rowData?.reg_end],
+        // event_date: rowData?.event_date,
+        is_subscription_needed: rowData?.is_subscription_needed,
+        event_price: rowData?.event_price,
+        refundable: rowData?.refundable,
+      });
+      setEventHighlights(rowData?.highlight);
+      setEventDescription(rowData?.description);
+      setSubscriptionStatus(rowData?.is_subscription_needed);
+      setRefundPolicy(rowData?.refundable);
+      // const policyArray = Object.entries(rowData?.policy).map(([days, percent]) => {
+      //   return { days: days, percent: percent, amount: '' };
+      // });
+      // setRefundPolicyData(policyArray);
+      setSelectedFiles(rowData?.attachments);
       setEventId(rowData?.id);
       setEventDrawerOpen(true);
     }
   };
   const closeEventDrawer = () => {
     setEventDrawerOpen(false);
-    setEventData([]);
     eventForm.resetFields();
     setGradeList([]);
+    setEventHighlights('');
+    setEventDescription();
+    setSubscriptionStatus(1);
+    setRefundPolicy(1);
+    setRefundPolicyData([
+      {
+        days: '',
+        percent: '',
+        amount: '',
+      },
+    ]);
+    setSelectedFiles([]);
+    // for edit
+    setEventData([]);
     setTimeout(() => {
       setEventId(null);
     }, 1000);
   };
   const openViewEventModal = (row) => {
     setViewEventModalOpen(true);
+    setViewEvent(row);
   };
   const closeViewEventModal = () => {
     setViewEventModalOpen(false);
+    setViewEvent();
   };
 
   const handleReject = () => {};
@@ -637,7 +666,7 @@ const EventsDashboardAdmin = () => {
     setSubscriptionStatus(val);
   };
   const handleRefundPolicyChange = (val) => {
-    if (val === 2) {
+    if (val) {
       setRefundPolicyData([
         {
           days: '',
@@ -688,7 +717,6 @@ const EventsDashboardAdmin = () => {
   const maxFileCount = 10;
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
-
     const validFiles = files.filter((file) => {
       const fileExtension = file.name.split('.').pop().toLowerCase();
       if (file.size > maxSize) {
@@ -714,9 +742,7 @@ const EventsDashboardAdmin = () => {
       }
       return true;
     });
-
     const combinedFiles = [...selectedFiles, ...validFiles];
-
     if (combinedFiles.length > maxFileCount) {
       notification.error({
         message: 'File Count Error',
@@ -771,10 +797,12 @@ const EventsDashboardAdmin = () => {
           onClick={() => openViewEventModal(row)}
           color='geekblue'
           style={{ cursor: 'pointer' }}
-          className='tag-hover th-br-4'
+          className='tag-hover th-br-4 shadow'
         >
-          <span className='th-black-1 cl-12 shadow'>
-            {row?.title.length > 15 ? row?.title.substring(0, 15) + '...' : row?.title}
+          <span className='th-black-1 cl-12'>
+            {row?.title && row?.title.length > 15
+              ? row?.title.substring(0, 15) + '...'
+              : row?.title}
           </span>
         </Tag>
       ),
@@ -798,6 +826,7 @@ const EventsDashboardAdmin = () => {
       render: (data, row) => (
         <Tag
           color='geekblue'
+          style={{ cursor: 'pointer' }}
           className='tag-hover th-br-4 shadow'
           icon={<FileExcelOutlined className='cl-12' />}
         >
@@ -864,13 +893,6 @@ const EventsDashboardAdmin = () => {
         return (
           <>
             <Popover placement='topRight' content='View Event'>
-              {/* <EyeOutlined
-                onClick={() => openViewEventModal(row)}
-                className='icon-hover'
-                style={{
-                  color: '#007ACC',
-                }}
-              /> */}
               <Button
                 shape='circle'
                 size='small'
@@ -879,24 +901,8 @@ const EventsDashboardAdmin = () => {
                 className='icon-hover cl-view shadow'
               />
             </Popover>
-            {/* <Popover placement='topRight' title='TimeLine'>
-              <RiseOutlined
-                onClick={() => openTimeLineDrawer()}
-                className='icon-hover'
-                style={{
-                  color: '#F08080',
-                }}
-              />
-            </Popover> */}
             {row?.approval_status === 1 && (
               <Popover placement='topRight' content='Edit Event'>
-                {/* <EditOutlined
-                  onClick={() => openEventDrawer({ key: 'edit', rowData: row })}
-                  className='icon-hover'
-                  style={{
-                    color: '#00BCD4',
-                  }}
-                /> */}
                 <Button
                   shape='circle'
                   size='small'
@@ -910,10 +916,6 @@ const EventsDashboardAdmin = () => {
               <>
                 {row?.approval_status === 4 && (
                   <Popover placement='topRight' content='Cancel Event'>
-                    {/* <CloseCircleOutlined
-                      onClick={() => openFeedBackModal({ key: 'cancel' })}
-                      className='icon-hover color-cancelled'
-                    /> */}
                     <Button
                       shape='circle'
                       size='small'
@@ -928,9 +930,9 @@ const EventsDashboardAdmin = () => {
                     <Popconfirm
                       placement='bottomRight'
                       title='Are you sure to Approve the Event ?'
+                      onConfirm={() => approveEvent({ approveId: row?.id })}
                     >
                       <Popover placement='topRight' content='Approve Event'>
-                        {/* <CheckCircleOutlined className='icon-hover color-approved' /> */}
                         <Button
                           shape='circle'
                           size='small'
@@ -940,10 +942,6 @@ const EventsDashboardAdmin = () => {
                       </Popover>
                     </Popconfirm>
                     <Popover placement='topRight' content='Reject Event'>
-                      {/* <CloseCircleOutlined
-                        onClick={() => openFeedBackModal({ key: 'reject' })}
-                        className='icon-hover color-rejected'
-                      /> */}
                       <Button
                         shape='circle'
                         size='small'
@@ -1228,7 +1226,7 @@ const EventsDashboardAdmin = () => {
               id='feedBackModalForm'
               form={feedBackModalForm}
               layout='vertical'
-              onFinish={handleReject}
+              onFinish={feedBackFlag === 'reject' ? rejectEvent : cancelEvent}
             >
               <Row align='middle' gutter={24}>
                 <Col span={24}>
@@ -1372,7 +1370,7 @@ const EventsDashboardAdmin = () => {
       >
         <>
           {eventLoading ? (
-            <div className='d-flex justify-content-center align-items-center'>
+            <div className='center-screen'>
               <Spin tip='Hold on! Great things take time!' size='large' />
             </div>
           ) : (
@@ -1418,7 +1416,7 @@ const EventsDashboardAdmin = () => {
                   </div>
                   <div className='col-lg-3 col-md-6 col-sm-12 col-12 mb-2'>
                     <Form.Item
-                      name='branch_ids'
+                      name='acad_session'
                       label='Branch'
                       rules={[
                         {
@@ -1513,7 +1511,7 @@ const EventsDashboardAdmin = () => {
                     >
                       <ReactQuill
                         ref={quillRef1}
-                        value={eventHighlights}
+                        defaultValue={eventHighlights}
                         onChange={handleChangeEventHighlights}
                         modules={modules}
                         formats={formats}
@@ -1589,7 +1587,7 @@ const EventsDashboardAdmin = () => {
                   </div>
                   <div className='col-lg-3 col-md-6 col-sm-6 col-6 mb-2'>
                     <Form.Item
-                      name='subscription'
+                      name='is_subscription_needed'
                       label='Is subscription needed ?'
                       rules={[
                         {
@@ -1602,16 +1600,16 @@ const EventsDashboardAdmin = () => {
                         onChange={(e) => handleSubscriptionStatusChange(e.target.value)}
                         defaultValue={subscriptionStatus}
                       >
-                        <Radio className='th-br-4 shadow' value={1}>
+                        <Radio className='th-br-4 shadow' value={true}>
                           Yes
                         </Radio>
-                        <Radio className='th-br-4 shadow' value={2}>
+                        <Radio className='th-br-4 shadow' value={false}>
                           No
                         </Radio>
                       </Radio.Group>
                     </Form.Item>
                   </div>
-                  {subscriptionStatus === 1 && (
+                  {subscriptionStatus && (
                     <>
                       <div className='col-lg-3 col-md-6 col-sm-6 col-6 mb-2'>
                         <Form.Item
@@ -1650,15 +1648,15 @@ const EventsDashboardAdmin = () => {
                             onChange={(e) => handleRefundPolicyChange(e.target.value)}
                             defaultValue={refundPolicy}
                           >
-                            <Radio className='th-br-4 shadow mb-2' value={1}>
+                            <Radio className='th-br-4 shadow mb-2' value={false}>
                               No Refund will be provided once subscribed
                             </Radio>
-                            <Radio className='th-br-4 shadow' value={2}>
+                            <Radio className='th-br-4 shadow' value={true}>
                               Refund based on remaining days
                             </Radio>
                           </Radio.Group>
                         </Form.Item>
-                        {refundPolicy === 2 && (
+                        {refundPolicy && (
                           <>
                             <div className='row'>
                               <div className='col-12 text-right'>
@@ -1916,19 +1914,19 @@ const EventsDashboardAdmin = () => {
                 null}
 
                 {/* {viewEvent?.attachments?.length > 0 && (
-                  <div className='text-right'>
-                    <Button
-                      type='link'
-                      className='th-10'
-                      icon={<DownloadOutlined />}
-                      onClick={() => {
-                        handleDownloadAll(viewEvent?.attachments);
-                      }}
-                    >
-                      Download all attachments
-                    </Button>
-                  </div>
-                )} */}
+                 <div className='text-right'>
+                   <Button
+                     type='link'
+                     className='th-10'
+                     icon={<DownloadOutlined />}
+                     onClick={() => {
+                       handleDownloadAll(viewEvent?.attachments);
+                     }}
+                   >
+                     Download all attachments
+                   </Button>
+                 </div>
+               )} */}
               </div>
               <div className='col-lg-4 col-md-5 col-sm-12 col-12'>
                 <List
@@ -1936,10 +1934,10 @@ const EventsDashboardAdmin = () => {
                   className='cl-list shadow'
                   header={<div className='cl-list-header'>Event Details</div>}
                   dataSource={[
-                    { title: 'Reg Start Date', content: viewEvent.reg_start },
-                    { title: 'Reg End Date', content: viewEvent.reg_end },
-                    { title: 'Event Date', content: viewEvent.event_date },
-                    { title: 'Amount', content: `Rs. ${viewEvent.event_price}` },
+                    { title: 'Reg Start Date', content: viewEvent?.reg_start },
+                    { title: 'Reg End Date', content: viewEvent?.reg_end },
+                    { title: 'Event Date', content: viewEvent?.event_date },
+                    { title: 'Amount', content: `Rs. ${viewEvent?.event_price}` },
                   ]}
                   renderItem={(item) => (
                     <List.Item className='cl-list-item'>
