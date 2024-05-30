@@ -551,7 +551,7 @@ const AddVideoObservation = () => {
     <div>
       <Layout>
         <div className='row pb-3'>
-          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+          <div className='col-md-12 th-bg-grey'>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
                 className='th-black-1 th-16 th-grey cursor-pointer'
@@ -565,336 +565,380 @@ const AddVideoObservation = () => {
             </Breadcrumb>
           </div>
         </div>
-
-        <div className='d-flex justify-content-center px-3' style={{ gap: '20px' }}>
-          <div
-            className='row th-br-15 th-bg-white py-3 align-items-between'
-            style={{ maxHeight: '79vh' }}
-          >
-            <div className='col-md-12'>
-              <div className='d-flex flex-column'>
-              <div className='th-fw-600 text-center'>OBSERVER</div>
-              <Form ref={formRef}>
-                {formFields.map((field, index) => (
-                  <Card className='mb-3 th-br-12' bodyStyle={{ padding: '16px' }}>
-                    {/* <div
+        <div className='col-12 pb-3'>
+          <div className='row justify-content-between'>
+            <div className='col-6 pl-0'>
+              <div
+                className='p-3 th-bg-white th-br-12'
+                style={{ maxHeight: '80vh', overflowY: 'auto' }}
+              >
+                <div
+                  className='d-flex flex-column justify-content-between '
+                  style={{ height: '100%' }}
+                >
+                  <div
+                    className='d-flex flex-column justify-content-start'
+                    style={{ gap: 20 }}
+                  >
+                    <div className='th-fw-600 text-center'>OBSERVER</div>
+                    <Form ref={formRef}>
+                      {formFields.map((field, index) => (
+                        <Card
+                          className={`th-br-12 th-bg-grey mb-3`}
+                          bodyStyle={{ padding: '8px' }}
+                        >
+                          {/* <div
                     key={field.id}
                     className='th-bg-white th-br-5 py-3 shadow-sm th-hl-30'
                   > */}
-                    <div class='d-flex justify-content-between'>
-                      <p class='th-fw-600 mx-3'>Observer {index + 1}</p>
-                      {index > 0 && (
-                        <Popconfirm
-                          title='Delete?'
-                          open={open}
-                          onConfirm={() => removeFormField(index)}
-                          onCancel={() => setOpen(false)}
-                          getPopupContainer={(trigger) => trigger.parentNode}
-                          overlayClassName='custom-popconfirm'
-                        >
-                          <Tooltip title='Delete' placement='top'>
-                            <DeleteOutlineOutlined
-                              className='text-danger th-fw-22 cursor-pointer mx-3'
-                              style={{
-                                fontSize: 20,
-                                margin: 10,
-                                cursor: 'pointer',
-                                color: '#FF0000',
-                              }}
-                            />
-                          </Tooltip>
-                        </Popconfirm>
-                      )}
+                          <div class='row align-items-center justify-content-between mb-2'>
+                            <div class='th-fw-600 mx-3'>Observer {index + 1}</div>
+                            {formFields?.length > 1 && (
+                              <Popconfirm
+                                title='Delete?'
+                                open={open}
+                                onConfirm={() => removeFormField(index)}
+                                onCancel={() => setOpen(false)}
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                overlayClassName='custom-popconfirm'
+                              >
+                                <DeleteOutlineOutlined
+                                  className='text-danger th-22 th-pointer mx-3'
+                                  // style={{
+                                  //   fontSize: 20,
+                                  //   margin: 10,
+                                  //   cursor: 'pointer',
+                                  //   color: '#FF0000',
+                                  // }}
+                                />
+                              </Popconfirm>
+                            )}
+                          </div>
+                          <div className='row'>
+                            <div className='col-md-4 col-sm-6 col-12'>
+                              {/* <span className='th-grey th-14'>Branch*</span> */}
+                              <Form.Item                              
+                                name={`branch_${field.id}`}
+                                rules={[
+                                  { required: true, message: 'Please select a branch!' },
+                                ]}
+                              >
+                                <Select
+                                  allowClear
+                                  placeholder='Select branch'
+                                  showSearch
+                                  optionFilterProp='children'
+                                  filterOption={(input, option) =>
+                                    option.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  }
+                                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                  getPopupContainer={(trigger) => trigger.parentNode}
+                                  onChange={(value, option) => {
+                                    if (history?.location?.state?.record) {
+                                      handleFieldChange(
+                                        option?.acad_sess,
+                                        index,
+                                        'branch',
+                                        'prefill'
+                                      );
+                                    } else {
+                                      handleFieldChange(value, index, 'branch');
+                                    }
+                                  }}
+                                >
+                                  {history?.location?.state?.record
+                                    ? editBranchListOption
+                                    : BranchListOptions}
+                                </Select>
+                              </Form.Item>
+                            </div>
+                            <div className='col-md-4 col-sm-6 col-12'>
+                              {/* <span className='th-grey th-14'>Role*</span> */}
+                              <Form.Item
+                                name={`role_${field.id}`}
+                                rules={[
+                                  { required: true, message: 'Please select a role!' },
+                                ]}
+                              >
+                                <Select
+                                  allowClear
+                                  placeholder='Select user role'
+                                  showSearch
+                                  optionFilterProp='children'
+                                  filterOption={(input, option) =>
+                                    option.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  }
+                                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                  getPopupContainer={(trigger) => trigger.parentNode}
+                                  onChange={(value) =>
+                                    handleFieldChange(value, index, 'role')
+                                  }
+                                >
+                                  {userLevelListOptions}
+                                </Select>
+                              </Form.Item>
+                            </div>
+                            <div className='col-md-4 col-sm-6 col-12'>
+                              {/* <span className='th-grey th-14'>User Name</span> */}
+                              <Form.Item
+                                name={`user_name_${field.id}`}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: 'Please select a user name!',
+                                  },
+                                ]}
+                              >
+                                <Select
+                                  allowClear
+                                  placeholder='Select User Name'
+                                  showSearch
+                                  optionFilterProp='children'
+                                  filterOption={(input, option) =>
+                                    option?.children
+                                      ?.toLowerCase()
+                                      ?.indexOf(input?.toLowerCase()) >= 0
+                                  }
+                                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                  getPopupContainer={(trigger) => trigger.parentNode}
+                                  onChange={(value) =>
+                                    handleFieldChange(value, index, 'user_name')
+                                  }
+                                >
+                                  {field?.userNameList?.map((user) => (
+                                    <Select.Option key={user?.id} value={user?.id}>
+                                      {user?.name}
+                                    </Select.Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            </div>
+                          </div>
+                          {/* </div> */}
+                        </Card>
+                      ))}
+                    </Form>
+                  </div>
+                  {!history?.location?.state?.record && formFields.length < 3 ? (
+                    <div className='d-flex justify-content-center'>
+                      <Button
+                        className='th-br-6'
+                        type='primary'
+                        onClick={addFormField}
+                        icon={<PlusOutlined />}
+                      >
+                        Add Observer
+                      </Button>
                     </div>
-                    <div className='row'>
-                      <div className='col-md-4 col-sm-6 col-12'>
-                        <span className='th-grey th-14'>Branch*</span>
-                        <Form.Item
-                          name={`branch_${field.id}`}
-                          rules={[{ required: true, message: 'Please select a branch!' }]}
-                        >
-                          <Select
-                            allowClear
-                            placeholder='Select Branch'
-                            showSearch
-                            optionFilterProp='children'
-                            filterOption={(input, option) =>
-                              option.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            }
-                            className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            onChange={(value, option) => {
-                              if (history?.location?.state?.record) {
-                                handleFieldChange(
-                                  option?.acad_sess,
-                                  index,
-                                  'branch',
-                                  'prefill'
-                                );
-                              } else {
-                                handleFieldChange(value, index, 'branch');
-                              }
-                            }}
-                          >
-                            {history?.location?.state?.record
-                              ? editBranchListOption
-                              : BranchListOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-4 col-sm-6 col-12'>
-                        <span className='th-grey th-14'>Role*</span>
-                        <Form.Item
-                          name={`role_${field.id}`}
-                          rules={[{ required: true, message: 'Please select a role!' }]}
-                        >
-                          <Select
-                            allowClear
-                            placeholder='Select User Role'
-                            showSearch
-                            optionFilterProp='children'
-                            filterOption={(input, option) =>
-                              option.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            }
-                            className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            onChange={(value) => handleFieldChange(value, index, 'role')}
-                          >
-                            {userLevelListOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-4 col-sm-6 col-12'>
-                        <span className='th-grey th-14'>User Name</span>
-                        <Form.Item
-                          name={`user_name_${field.id}`}
-                          rules={[
-                            { required: true, message: 'Please select a user name!' },
-                          ]}
-                        >
-                          <Select
-                            allowClear
-                            placeholder='Select User Name'
-                            showSearch
-                            optionFilterProp='children'
-                            filterOption={(input, option) =>
-                              option?.children
-                                ?.toLowerCase()
-                                ?.indexOf(input?.toLowerCase()) >= 0
-                            }
-                            className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            onChange={(value) =>
-                              handleFieldChange(value, index, 'user_name')
-                            }
-                          >
-                            {field?.userNameList?.map((user) => (
-                              <Select.Option key={user?.id} value={user?.id}>
-                                {user?.name}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                    </div>
-                    {/* </div> */}
-                  </Card>
-                ))}
-              </Form>
+                  ) : null}
+                </div>
               </div>
             </div>
-            {!history?.location?.state?.record && formFields.length < 3 ? (
-              <div className='col-md-12 text-center'>
-                <Button
-                  className='th-br-6'
-                  type='primary'
-                  onClick={addFormField}
-                  icon={<PlusOutlined />}
+            <div className='col-6 pr-0'>
+              <div
+                className='p-3 th-bg-white th-br-12'
+                style={{ maxHeight: '80vh', overflowY: 'auto' }}
+              >
+                <div
+                  className='d-flex flex-column justify-content-between '
+                  style={{ height: '100%' }}
                 >
-                  Add Observer
-                </Button>
-              </div>
-            ) : null}
-          </div>
-          <div
-            className='row th-br-15 tp-2'
-            style={{
-              maxHeight: '79vh',
-              overflow: 'auto',
-              height: 'fit-content',
-            }}
-          >
-            <div className='th-bg-white col-md-12'>
-              <p className='th-fw-600 text-center mt-2'>OBSERVED EMPLOYEE</p>
-              {forms.map((form, index) => (
-                <Form ref={editFormRef} key={form.id}>
-                  <div className='th-bg-white th-br-5 py-3 shadow-sm mb-4'>
-                    <div className='d-flex justify-content-center'>
-                      <div className='d-flex justify-content-between th-width-98'>
-                        <p className='th-fw-600 mx-2'>Observed Employee {index + 1}</p>
-                        {forms.length > 1 && index > 0 && (
-                          <Tooltip title='Delete' placement='top'>
-                            <Popconfirm
-                              title='Delete?'
-                              open={open}
-                              onConfirm={() => {
-                                handleRemoveForm(form?.id);
-                              }}
-                              onCancel={() => setOpen(false)}
-                              getPopupContainer={(trigger) => trigger.parentNode}
-                              overlayClassName='custom-popconfirm'
-                            >
-                              <DeleteOutlineOutlined
-                                className='text-danger fs-5 cursor-pointer mx-2'
-                                style={{
-                                  fontSize: 20,
-                                  margin: 10,
-                                  cursor: 'pointer',
-                                  color: '#FF0000',
-                                }}
-                              />
-                            </Popconfirm>
-                          </Tooltip>
-                        )}
-                      </div>
-                    </div>
-                    <div className='row'>
-                      <div className='col-md-12 col-sm-6 col-12'>
-                        <span className='th-grey th-14'>Video Link*</span>
-                        <Form.Item
-                          name={`edit_video_${form.id}`}
-                          rules={[
-                            { required: true, message: 'Please Provide Video Link' },
-                          ]}
-                        >
-                          <Input
-                            className='w-100'
-                            allowClear={true}
-                            placeholder='Video Link'
-                            value={form.videoLink}
-                            onChange={(e) =>
-                              handleInputChange(form.id, 'videoLink', e.target.value)
-                            }
-                            required={true}
-                            autoComplete='off'
-                            maxLength={200}
-                          />
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-4 col-sm-6 col-12'>
-                        <span className='th-grey th-14'>Branch*</span>
-                        <Form.Item
-                          name={`edit_branch_${form.id}`}
-                          rules={[{ required: true, message: 'Please select a branch!' }]}
-                        >
-                          <Select
-                            allowClear
-                            placeholder='Select Branch'
-                            showSearch
-                            optionFilterProp='children'
-                            filterOption={(input, option) =>
-                              option.children.toLowerCase().includes(input.toLowerCase())
-                            }
-                            className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                            value={form.branch}
-                            onChange={(value, option) => {
-                              if (history?.location?.state?.record) {
-                                handleInputChange(
-                                  form.id,
-                                  'branch',
-                                  option?.acad_sess,
-                                  'prefill'
-                                );
-                              } else {
-                                handleInputChange(form.id, 'branch', value);
-                              }
-                            }}
+                  <div
+                    className='d-flex flex-column justify-content-start'
+                    style={{ gap: 20 }}
+                  >
+                    <div className='th-fw-600 text-center'>OBSERVED EMPLOYEE</div>
+                    <div
+                      className='pb-3'
+                      style={{ maxHeight: '60vh', overflowY: 'auto' }}
+                    >
+                      {forms.map((form, index) => (
+                        <Form ref={editFormRef} key={form.id}>
+                          <Card
+                            className={`th-br-12 th-bg-grey mb-3`}
+                            bodyStyle={{ padding: '8px' }}
                           >
-                            {history?.location?.state?.record
-                              ? editBranchListOption
-                              : BranchListOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-4 col-sm-6 col-12'>
-                        <span className='th-grey th-14'>Role*</span>
-                        <Form.Item
-                          name={`edit_role_${form.id}`}
-                          rules={[{ required: true, message: 'Please select a Role!' }]}
-                        >
-                          <Select
-                            allowClear
-                            placeholder='Select User Role'
-                            showSearch
-                            optionFilterProp='children'
-                            filterOption={(input, option) =>
-                              option.children.toLowerCase().includes(input.toLowerCase())
-                            }
-                            className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                            value={form.role}
-                            onChange={(value) => {
-                              handleInputChange(form.id, 'role', value);
-                            }}
-                          >
-                            {userLevelListOptions}
-                          </Select>
-                        </Form.Item>
-                      </div>
-                      <div className='col-md-4 col-sm-6 col-12'>
-                        <span className='th-grey th-14'>Name*</span>
-                        <Form.Item
-                          name={`edit_name_${form.id}`}
-                          rules={[{ required: true, message: 'Please select a Name!' }]}
-                        >
-                          <Select
-                            allowClear
-                            placeholder='Select User Name'
-                            showSearch
-                            optionFilterProp='children'
-                            filterOption={(input, options) => {
-                              return (
-                                options.children
-                                  ?.toLowerCase()
-                                  ?.indexOf(input?.toLowerCase()) >= 0
-                              );
-                            }}
-                            className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                            onChange={(value) => {
-                              handleInputChange(form.id, 'name', value);
-                            }}
-                          >
-                            {form?.usernameListOptions?.map((user) => (
-                              <Select.Option key={user?.id} value={user?.id}>
-                                {user?.name}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-                      </div>
+                            <div className='row align-items-center justify-content-between mb-2'>
+                              <span className='th-fw-600 pl-3'>
+                                Observed Employee {index + 1}
+                              </span>
+                              {forms.length > 1 && (
+                                <Popconfirm
+                                  title='Delete?'
+                                  open={open}
+                                  onConfirm={() => {
+                                    handleRemoveForm(form?.id);
+                                  }}
+                                  onCancel={() => setOpen(false)}
+                                  getPopupContainer={(trigger) => trigger.parentNode}
+                                  overlayClassName='custom-popconfirm'
+                                >
+                                  <DeleteOutlineOutlined className='text-danger th-22 th-pointer mr-3' />
+                                </Popconfirm>
+                              )}
+                            </div>
+                            <div className='row'>
+                              <div className='col-md-4 col-sm-6 '>
+                                <Form.Item
+                                  name={`edit_branch_${form.id}`}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: 'Please select branch!',
+                                    },
+                                  ]}
+                                >
+                                  <Select
+                                    allowClear
+                                    placeholder='Select branch'
+                                    showSearch
+                                    optionFilterProp='children'
+                                    filterOption={(input, option) =>
+                                      option.children
+                                        .toLowerCase()
+                                        .includes(input.toLowerCase())
+                                    }
+                                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                    value={form.branch}
+                                    onChange={(value, option) => {
+                                      if (history?.location?.state?.record) {
+                                        handleInputChange(
+                                          form.id,
+                                          'branch',
+                                          option?.acad_sess,
+                                          'prefill'
+                                        );
+                                      } else {
+                                        handleInputChange(form.id, 'branch', value);
+                                      }
+                                    }}
+                                  >
+                                    {history?.location?.state?.record
+                                      ? editBranchListOption
+                                      : BranchListOptions}
+                                  </Select>
+                                </Form.Item>
+                              </div>
+                              <div className='col-md-4 col-sm-6 '>
+                                <Form.Item
+                                  name={`edit_role_${form.id}`}
+                                  rules={[
+                                    { required: true, message: 'Please select role!' },
+                                  ]}
+                                >
+                                  <Select
+                                    allowClear
+                                    placeholder='Select user tole'
+                                    showSearch
+                                    optionFilterProp='children'
+                                    filterOption={(input, option) =>
+                                      option.children
+                                        .toLowerCase()
+                                        .includes(input.toLowerCase())
+                                    }
+                                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                    value={form.role}
+                                    onChange={(value) => {
+                                      handleInputChange(form.id, 'role', value);
+                                    }}
+                                  >
+                                    {userLevelListOptions}
+                                  </Select>
+                                </Form.Item>
+                              </div>
+                              <div className='col-md-4 col-sm-6 '>
+                                <Form.Item
+                                  name={`edit_name_${form.id}`}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: 'Please select user name!',
+                                    },
+                                  ]}
+                                >
+                                  <Select
+                                    allowClear
+                                    placeholder='Select user name'
+                                    showSearch
+                                    optionFilterProp='children'
+                                    filterOption={(input, options) => {
+                                      return (
+                                        options.children
+                                          ?.toLowerCase()
+                                          ?.indexOf(input?.toLowerCase()) >= 0
+                                      );
+                                    }}
+                                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                                    getPopupContainer={(trigger) => trigger.parentNode}
+                                    onChange={(value) => {
+                                      handleInputChange(form.id, 'name', value);
+                                    }}
+                                  >
+                                    {form?.usernameListOptions?.map((user) => (
+                                      <Select.Option key={user?.id} value={user?.id}>
+                                        {user?.name}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
+                                </Form.Item>
+                              </div>
+                              <div className='col-md-12 col-sm-6 '>
+                                <Form.Item
+                                  name={`edit_video_${form.id}`}
+                                  rules={[
+                                    {
+                                      required: true,
+                                      message: 'Please Provide Video Link',
+                                    },
+                                  ]}
+                                >
+                                  <Input
+                                    className='w-100'
+                                    allowClear={true}
+                                    placeholder='Video Link'
+                                    value={form.videoLink}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        form.id,
+                                        'videoLink',
+                                        e.target.value
+                                      )
+                                    }
+                                    required={true}
+                                    autoComplete='off'
+                                    maxLength={200}
+                                  />
+                                </Form.Item>
+                              </div>
+                            </div>
+                          </Card>
+                        </Form>
+                      ))}
                     </div>
                   </div>
-                </Form>
-              ))}
-              {!history?.location?.state?.record && forms?.length < 25 ? (
-                <Button
-                  className='mx-auto d-block mb-2'
-                  onClick={handleAddForm}
-                  icon={<PlusOutlined />}
-                  type='secondary'
-                >
-                  Add Observed Employee
-                </Button>
-              ) : null}
+                  {!history?.location?.state?.record && forms?.length < 25 ? (
+                    <div className='d-flex justify-content-center'>
+                      <Button
+                        className='th-br-6'
+                        onClick={handleAddForm}
+                        icon={<PlusOutlined />}
+                        type='primary'
+                      >
+                        Add Observed Employee
+                      </Button>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className='d-flex justify-content-center mb-4 mt-4'>
+        {/* <div className='d-flex justify-content-center mb-4 mt-4'>
           {history?.location?.state?.record ? (
             <Button type='primary' onClick={() => handleEditSubmit()}>
               Submit
@@ -906,7 +950,7 @@ const AddVideoObservation = () => {
               </Button>
             </div>
           )}
-        </div>
+        </div> */}
         {load && <Loader />}
         {error && (
           <div className='text-danger mt-4 mb-4 d-flex justify-content-center th-fw-600'>
