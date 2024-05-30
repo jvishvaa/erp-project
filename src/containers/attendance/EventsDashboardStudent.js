@@ -3,10 +3,9 @@ import {
   Button,
   Input,
   Table,
+  Form,
   Pagination,
   Empty,
-  Row,
-  Col,
   Popconfirm,
   Popover,
   Tag,
@@ -15,6 +14,7 @@ import {
   DatePicker,
   Modal,
   List,
+  notification,
 } from 'antd';
 import {
   EyeOutlined,
@@ -31,6 +31,7 @@ import { useForm } from 'antd/lib/form/Form';
 import './eventsDashboard.css';
 import Slider from 'react-slick';
 import MediaDisplay from './mediaDisplayEvents';
+
 import { saveAs } from 'file-saver';
 
 const EventsDashboardAdmin = () => {
@@ -87,258 +88,131 @@ const EventsDashboardAdmin = () => {
   let viewEvent = eventData1[0];
   const event = eventData1[0];
   const notificationDuration = 3;
-  const { Option } = Select;
+  const [filterForm] = useForm();
   const { RangePicker } = DatePicker;
-  const { TextArea } = Input;
-  const [feedBackModalForm] = useForm();
-  const [eventForm] = useForm();
-  const user_level = localStorage.getItem('userDetails')
-    ? JSON.parse(localStorage.getItem('userDetails')).user_level
-    : '';
-  const is_superuser = localStorage.getItem('userDetails')
-    ? JSON.parse(localStorage.getItem('userDetails'))?.is_superuser
-    : '';
-  const branchList = sessionStorage.getItem('branch_list')
-    ? JSON.parse(sessionStorage.getItem('branch_list'))
-    : '';
-  const session_year = sessionStorage.getItem('acad_session')
-    ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
-    : '';
-
   const [loading, setLoading] = useState(false);
-  const [tableData, setTableData] = useState({
-    counts: {
-      total: 512,
-      live: 123,
-      rejected: 178,
-      pending: 512,
-      cancelled: 23,
-      approved: 345,
-    },
-    results: [
-      {
-        title:
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-        highlight: null,
-        description:
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-        event_date: '2030-07-19',
-        reg_start: '2024-06-19',
-        reg_end: '2024-06-22',
-        event_price: 1000,
-        refundable: true,
-        acad_session: [1167],
-        grades: [475],
-        attachments: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787895_12058_2024_05_27_11_01_35.531278_Screenshot_20230705_151602_01.jpg',
-        ],
-        pdf: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.344057_Screenshot_20230705_151643_01.jpg',
-        ],
-        image: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-        ],
-        video: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.969321_Screenshot_20230705_151924.jpg',
-        ],
-        policy: {
-          12: '30',
-          8: '20',
-        },
-        approval_status: 1,
-        students_count: 0,
-        policy_dates: {
-          '2030-07-07': 300.0,
-          '2030-07-11': 200.0,
-        },
-        id: 756,
-        subscription: 'pending',
-      },
-      {
-        title:
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-        highlight: null,
-        description:
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-        event_date: '2030-07-19',
-        reg_start: '2024-06-19',
-        reg_end: '2024-06-22',
-        event_price: 1000,
-        refundable: true,
-        acad_session: [1167],
-        grades: [475],
-        attachments: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787895_12058_2024_05_27_11_01_35.531278_Screenshot_20230705_151602_01.jpg',
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.344057_Screenshot_20230705_151643_01.jpg',
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.344057_Screenshot_20230705_151643_01.jpg',
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.344057_Screenshot_20230705_151643_01.jpg',
-        ],
-        policy: {
-          12: '30',
-          8: '20',
-        },
-        approval_status: 1,
-        students_count: 0,
-        policy_dates: {
-          '2030-07-07': 300.0,
-          '2030-07-11': 200.0,
-        },
-        id: 756,
-        subscription: 'subscribed',
-      },
-      {
-        title: 'Go Cosmos',
-        highlight: null,
-        description:
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-        event_date: '2030-07-17',
-        reg_start: '2024-06-19',
-        reg_end: '2024-06-22',
-        event_price: 1000,
-        refundable: true,
-        acad_session: [1167],
-        grades: [475],
-        attachments: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787895_12058_2024_05_27_11_01_35.531278_Screenshot_20230705_151602_01.jpg',
-        ],
-        pdf: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.344057_Screenshot_20230705_151643_01.jpg',
-        ],
-        image: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-        ],
-        video: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.969321_Screenshot_20230705_151924.jpg',
-        ],
-        policy: {
-          12: '30',
-          8: '20',
-        },
-        approval_status: 2,
-        students_count: 0,
-        policy_dates: {
-          '2030-07-07': 300.0,
-          '2030-07-11': 200.0,
-        },
-        remarks: 'Some data is missing',
-        subscription: 'unsubscribed',
-      },
-      {
-        title: 'Go Cosmos',
-        highlight: null,
-        description:
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-        event_date: '2030-07-18',
-        reg_start: '2024-06-19',
-        reg_end: '2024-06-22',
-        event_price: 1000,
-        refundable: true,
-        acad_session: [1167],
-        grades: [475],
-        attachments: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787895_12058_2024_05_27_11_01_35.531278_Screenshot_20230705_151602_01.jpg',
-        ],
-        pdf: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.344057_Screenshot_20230705_151643_01.jpg',
-        ],
-        image: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-        ],
-        video: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.969321_Screenshot_20230705_151924.jpg',
-        ],
-        policy: {
-          12: '30',
-          8: '20',
-        },
-        approval_status: 3,
-        students_count: 0,
-        policy_dates: {
-          '2030-07-07': 300.0,
-          '2030-07-11': 200.0,
-        },
-        remarks: 'Some data is missing',
-        subscription: 'subscribed',
-      },
-      {
-        title: 'Go Cosmos',
-        highlight: null,
-        description:
-          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-        event_date: '2030-07-20',
-        reg_start: '2024-06-19',
-        reg_end: '2024-06-22',
-        event_price: 1000,
-        refundable: true,
-        acad_session: [1167],
-        grades: [475],
-        attachments: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787895_12058_2024_05_27_11_01_35.531278_Screenshot_20230705_151602_01.jpg',
-        ],
-        pdf: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.344057_Screenshot_20230705_151643_01.jpg',
-        ],
-        image: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787897_12058_2024_05_27_11_01_37.828236_Screenshot_20230705_151911.jpg',
-        ],
-        video: [
-          'https://storage.googleapis.com/erp-academic-stage/dev/events/1716787896_12058_2024_05_27_11_01_36.969321_Screenshot_20230705_151924.jpg',
-        ],
-        policy: {
-          12: '30',
-          8: '20',
-        },
-        approval_status: 4,
-        students_count: 0,
-        policy_dates: {
-          '2030-07-07': 300.0,
-          '2030-07-11': 200.0,
-        },
-        subscription: 'pending',
-      },
-    ],
-  });
+  const [tableData, setTableData] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
-  const [selectedTag, setSelectedTag] = useState();
   const [selectedDays, setSelectedDays] = useState();
-
-  const [feedBackModalOpen, setFeedBackModalOpen] = useState(false);
-  const [feedBackLoading, setFeedBackLoading] = useState(false);
-  const [feedBackFlag, setFeedBackFlag] = useState('');
-
-  const [timeLineDrawerOpen, setTimeLineDrawerOpen] = useState(false);
-  const [timelineLoading, setTimeLineLoading] = useState(false);
-  const [timeLineData, setTimeLineData] = useState([]);
-
-  const [eventId, setEventId] = useState(null);
-  const [eventDrawerOpen, setEventDrawerOpen] = useState(false);
-  const [eventLoading, setEventLoading] = useState(false);
-  const [eventData, setEventData] = useState([]);
-
-  const [gradeList, setGradeList] = useState([]);
-  const [subscriptionStatus, setSubscriptionStatus] = useState(1);
-  const [refundPolicy, setRefundPolicy] = useState(2);
-  const [refundPolicyData, setRefundPolicyData] = useState([
-    {
-      days: '',
-      percent: '',
-      amount: '',
-    },
-  ]);
-
-  const [drawerWidth, setDrawerWidth] = useState(
-    window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
-  );
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [previewVisible, setPreviewVisible] = useState(false);
-  const [previewFile, setPreviewFile] = useState(null);
-
   const [viewEventModalOpen, setViewEventModalOpen] = useState(false);
   // const [viewEvent, setViewEvent] = useState();
 
-  const handleClearAll = () => {
-    setSelectedDays();
+  useEffect(() => {
+    fetchTableData();
+  }, [currentPage]);
+  useEffect(() => {
+    if (selectedDays) {
+      filterForm.setFieldsValue({
+        date_filter: [moment(), moment().add(selectedDays, 'days')],
+      });
+    } else {
+      filterForm.setFieldsValue({
+        date_filter: [moment(), moment().add(10, 'days')],
+      });
+    }
+    handleFetchTableData();
+  }, [selectedDays]);
+
+  const handleFetchTableData = () => {
+    if (currentPage == 1) {
+      fetchTableData();
+    } else {
+      setCurrentPage(1);
+    }
+  };
+  const fetchTableData = () => {
+    const values = filterForm.getFieldsValue();
+    setLoading(true);
+    let params = {
+      page: currentPage,
+      pageSize: pageSize,
+      start_date: values?.date_filter?.length
+        ? values?.date_filter[0].format('YYYY-MM-DD')
+        : moment().format('YYYY-MM-DD'),
+      end_date: values?.date_filter?.length
+        ? values?.date_filter[1].format('YYYY-MM-DD')
+        : moment().add(10, 'days').format('YYYY-MM-DD'),
+    };
+    axiosInstance
+      .get(`${endpoints.eventsDashboard.eventsListApi}`, {
+        params: params,
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setTableData(response?.data?.result);
+        }
+      })
+      .catch((error) => {
+        notification['error']({
+          message: 'OOPS! Something went wrong. Please try again',
+          duration: notificationDuration,
+          className: 'notification-container',
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+  const subscribeEvent = ({ eventId }) => {
+    setLoading(true);
+    let params = {
+      subscription: 'subscribed',
+    };
+    axiosInstance
+      .put(`${endpoints.eventsDashboard.eventsListApi}${eventId}/`, {
+        params: params,
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          notification['success']({
+            message: 'Hurray! Subscribed Successfully',
+            duration: notificationDuration,
+            className: 'notification-container',
+          });
+        }
+        fetchTableData();
+      })
+      .catch((error) => {
+        notification['error']({
+          message: 'OOPS! Something went wrong. Please try again',
+          duration: notificationDuration,
+          className: 'notification-container',
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+  const unSubscribeEvent = ({ eventId }) => {
+    setLoading(true);
+    let params = {
+      subscription: 'unsubscribed',
+    };
+    axiosInstance
+      .put(`${endpoints.eventsDashboard.eventsListApi}${eventId}/`, {
+        params: params,
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          notification['success']({
+            message: 'Hurray! Un Subscribed Successfully',
+            duration: notificationDuration,
+            className: 'notification-container',
+          });
+          fetchTableData();
+        }
+      })
+      .catch((error) => {
+        notification['error']({
+          message: 'OOPS! Something went wrong. Please try again',
+          duration: notificationDuration,
+          className: 'notification-container',
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const openViewEventModal = (row) => {
@@ -465,6 +339,11 @@ const EventsDashboardAdmin = () => {
                   <Popconfirm
                     placement='bottomRight'
                     title='Are you sure to Subscribe for the Event ?'
+                    onConfirm={() =>
+                      subscribeEvent({
+                        eventId: row?.id,
+                      })
+                    }
                   >
                     <Popover placement='topRight' content='Subscribe Event'>
                       <Tag
@@ -483,6 +362,11 @@ const EventsDashboardAdmin = () => {
                   <Popconfirm
                     placement='bottomRight'
                     title='If you unsubscribe, you cannot subscribe again. Are you sure you want to unsubscribe from this event?'
+                    onConfirm={() =>
+                      unSubscribeEvent({
+                        eventId: row?.id,
+                      })
+                    }
                   >
                     <Popover placement='topRight' content='Un Subscribe Event'>
                       <Tag
@@ -521,49 +405,67 @@ const EventsDashboardAdmin = () => {
   return (
     <>
       <div className='row mb-2'>
-        <div className='col-lg-3 col-md-4 col-sm-12 col-12 mb-2'>
-          <RangePicker
-            format='MM/DD/YYYY'
-            className='w-100 text-left th-black-1 th-br-4 shadow'
-            allowClear={true}
-          />
-        </div>
-        <div className='col-lg-7 col-md-6 col-sm-12 col-12 d-flex align-items-center'>
-          <Button
-            size='small'
-            className={`custom-tag th-br-4 ${
-              selectedDays === 7 ? 'cl-days-active' : 'cl-days'
-            }`}
-            onClick={() => (selectedDays === 7 ? setSelectedDays() : setSelectedDays(7))}
-            icon={<ClockCircleOutlined />}
-          >
-            Last 7 Days
-          </Button>
-          <Button
-            size='small'
-            className={`custom-tag th-br-4 ${
-              selectedDays === 15 ? 'cl-days-active' : 'cl-days'
-            }`}
-            onClick={() =>
-              selectedDays === 15 ? setSelectedDays() : setSelectedDays(15)
-            }
-            icon={<ClockCircleOutlined />}
-          >
-            15 Days
-          </Button>
-          <Button
-            size='small'
-            className={`custom-tag th-br-4 ${
-              selectedDays === 30 ? 'cl-days-active' : 'cl-days'
-            }`}
-            onClick={() =>
-              selectedDays === 30 ? setSelectedDays() : setSelectedDays(30)
-            }
-            icon={<ClockCircleOutlined />}
-          >
-            30 Days
-          </Button>
-        </div>
+        <Form id='filterForm' form={filterForm} className='row col-12'>
+          <div className='col-lg-3 col-md-6 col-sm-12 col-12'>
+            <Popover placement='bottomLeft' content='Select Event Date Filter'>
+              <Form.Item name='date_filter'>
+                <RangePicker
+                  format='DD/MM/YYYY'
+                  className='w-100 text-left th-black-1 th-br-4 shadow'
+                  defaultValue={filterForm?.getFieldsValue()?.date_filter}
+                  allowClear={false}
+                  disabled={selectedDays}
+                  onChange={() => handleFetchTableData()}
+                />
+              </Form.Item>
+            </Popover>
+          </div>
+
+          <div className='col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-around mt-1 mb-2'>
+            <Popover placement='bottomLeft' content='Next 07 days Events'>
+              <Button
+                size='small'
+                className={`custom-tag th-br-4 ${
+                  selectedDays === 7 ? 'cl-days-active' : 'cl-days'
+                }`}
+                onClick={() =>
+                  selectedDays === 7 ? setSelectedDays() : setSelectedDays(7)
+                }
+                icon={<ClockCircleOutlined />}
+              >
+                7 Days
+              </Button>
+            </Popover>
+            <Popover placement='bottomLeft' content='Next 15 days Events'>
+              <Button
+                size='small'
+                className={`custom-tag th-br-4 ${
+                  selectedDays === 15 ? 'cl-days-active' : 'cl-days'
+                }`}
+                onClick={() =>
+                  selectedDays === 15 ? setSelectedDays() : setSelectedDays(15)
+                }
+                icon={<ClockCircleOutlined />}
+              >
+                15 Days
+              </Button>
+            </Popover>
+            <Popover placement='bottomLeft' content='Next 30 days Events'>
+              <Button
+                size='small'
+                className={`custom-tag th-br-4 ${
+                  selectedDays === 30 ? 'cl-days-active' : 'cl-days'
+                }`}
+                onClick={() =>
+                  selectedDays === 30 ? setSelectedDays() : setSelectedDays(30)
+                }
+                icon={<ClockCircleOutlined />}
+              >
+                30 Days
+              </Button>
+            </Popover>
+          </div>
+        </Form>
       </div>
       <div className='mt-2'>
         <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
