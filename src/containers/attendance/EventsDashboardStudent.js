@@ -90,6 +90,9 @@ const EventsDashboardAdmin = () => {
   const notificationDuration = 3;
   const [filterForm] = useForm();
   const { RangePicker } = DatePicker;
+  const branch = sessionStorage.getItem('selected_branch')
+  ? JSON.parse(sessionStorage.getItem('selected_branch'))
+  : '';
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -127,6 +130,7 @@ const EventsDashboardAdmin = () => {
     let params = {
       page: currentPage,
       pageSize: pageSize,
+      acad_session: branch?.id,
       start_date: values?.date_filter?.length
         ? values?.date_filter[0].format('YYYY-MM-DD')
         : moment().format('YYYY-MM-DD'),
@@ -240,7 +244,7 @@ const EventsDashboardAdmin = () => {
           onClick={() => openViewEventModal(row)}
           color='geekblue'
           style={{ cursor: 'pointer' }}
-          className='tag-hover'
+          className='tag-hover th-br-4 shadow'
         >
           <span className='th-black-1 th-16'>
             {row?.title.length > 15 ? row?.title.substring(0, 15) + '...' : row?.title}
