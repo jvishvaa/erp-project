@@ -141,7 +141,7 @@ const VideoObservation = () => {
           </Tooltip>
           {!record?.evaluated && (
             <Popconfirm
-              title='Delete?'
+              title='Sure to Delete ?'
               open={open}
               onConfirm={() => {
                 handleDelete(record?.id);
@@ -398,7 +398,7 @@ const VideoObservation = () => {
   }, [refferListPageData.currentPage]);
 
   return (
-    <div>
+    <div className='row py-3 px-2'>
       <Layout>
         <div className='row pt-3 pb-3'>
           <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>

@@ -13,10 +13,8 @@ import {
 } from 'antd';
 import Layout from 'containers/Layout';
 import React, { createRef, useEffect, useState } from 'react';
-import { AccessKey } from '../../v2/cvboxAccesskey';
 import axios from 'axios';
 import { PlusOutlined } from '@ant-design/icons';
-import endpoints from 'config/endpoints';
 import endpointsV2 from 'v2/config/endpoints';
 import Loader from 'components/loader/loader';
 import axiosInstance from 'config/axios';
@@ -34,7 +32,7 @@ const AddVideoObservation = () => {
   const [open, setOpen] = useState(false);
   const formRef = createRef();
   const editFormRef = createRef();
-
+  const [formRefs, setFormRefs] = useState([]);
   const [branch, setBranch] = useState(null);
   const [userName, setUserName] = useState(
     history?.location?.state?.record?.assigned_obs
@@ -547,8 +545,26 @@ const AddVideoObservation = () => {
       });
     }
   }, [history?.location?.state, branch, editObservedBranch]);
+
+  // For Scrollable behaviour of the observed employee field
+
+  useEffect(() => {
+    if (formRefs.length > 0) {
+      const lastFormRef = formRefs[formRefs.length - 1];
+      if (lastFormRef) {
+        lastFormRef.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [formRefs]);
+
+  const addFormRef = (ref) => {
+    if (ref && !formRefs.includes(ref)) {
+      setFormRefs((prevRefs) => [...prevRefs, ref]);
+    }
+  };
+
   return (
-    <div>
+    <div className='row py-3 px-2'>
       <Layout>
         <div className='row pb-3'>
           <div className='col-md-12 th-bg-grey'>
@@ -587,37 +603,23 @@ const AddVideoObservation = () => {
                           className={`th-br-12 th-bg-grey mb-3`}
                           bodyStyle={{ padding: '8px' }}
                         >
-                          {/* <div
-                    key={field.id}
-                    className='th-bg-white th-br-5 py-3 shadow-sm th-hl-30'
-                  > */}
                           <div class='row align-items-center justify-content-between mb-2'>
                             <div class='th-fw-600 mx-3'>Observer {index + 1}</div>
                             {formFields?.length > 1 && (
                               <Popconfirm
-                                title='Delete?'
+                                title='Sure to delete?'
                                 open={open}
                                 onConfirm={() => removeFormField(index)}
                                 onCancel={() => setOpen(false)}
-                                getPopupContainer={(trigger) => trigger.parentNode}
                                 overlayClassName='custom-popconfirm'
                               >
-                                <DeleteOutlineOutlined
-                                  className='text-danger th-22 th-pointer mx-3'
-                                  // style={{
-                                  //   fontSize: 20,
-                                  //   margin: 10,
-                                  //   cursor: 'pointer',
-                                  //   color: '#FF0000',
-                                  // }}
-                                />
+                                <DeleteOutlineOutlined className='text-danger th-22 th-pointer mx-3' />
                               </Popconfirm>
                             )}
                           </div>
                           <div className='row'>
                             <div className='col-md-4 col-sm-6 col-12'>
-                              {/* <span className='th-grey th-14'>Branch*</span> */}
-                              <Form.Item                              
+                              <Form.Item
                                 name={`branch_${field.id}`}
                                 rules={[
                                   { required: true, message: 'Please select a branch!' },
@@ -625,7 +627,7 @@ const AddVideoObservation = () => {
                               >
                                 <Select
                                   allowClear
-                                  placeholder='Select branch'
+                                  placeholder='Select branch*'
                                   showSearch
                                   optionFilterProp='children'
                                   filterOption={(input, option) =>
@@ -634,7 +636,6 @@ const AddVideoObservation = () => {
                                       .indexOf(input.toLowerCase()) >= 0
                                   }
                                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                  getPopupContainer={(trigger) => trigger.parentNode}
                                   onChange={(value, option) => {
                                     if (history?.location?.state?.record) {
                                       handleFieldChange(
@@ -655,7 +656,6 @@ const AddVideoObservation = () => {
                               </Form.Item>
                             </div>
                             <div className='col-md-4 col-sm-6 col-12'>
-                              {/* <span className='th-grey th-14'>Role*</span> */}
                               <Form.Item
                                 name={`role_${field.id}`}
                                 rules={[
@@ -664,7 +664,7 @@ const AddVideoObservation = () => {
                               >
                                 <Select
                                   allowClear
-                                  placeholder='Select user role'
+                                  placeholder='Select user role*'
                                   showSearch
                                   optionFilterProp='children'
                                   filterOption={(input, option) =>
@@ -673,7 +673,6 @@ const AddVideoObservation = () => {
                                       .indexOf(input.toLowerCase()) >= 0
                                   }
                                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                  getPopupContainer={(trigger) => trigger.parentNode}
                                   onChange={(value) =>
                                     handleFieldChange(value, index, 'role')
                                   }
@@ -683,7 +682,6 @@ const AddVideoObservation = () => {
                               </Form.Item>
                             </div>
                             <div className='col-md-4 col-sm-6 col-12'>
-                              {/* <span className='th-grey th-14'>User Name</span> */}
                               <Form.Item
                                 name={`user_name_${field.id}`}
                                 rules={[
@@ -695,7 +693,7 @@ const AddVideoObservation = () => {
                               >
                                 <Select
                                   allowClear
-                                  placeholder='Select User Name'
+                                  placeholder='User name*'
                                   showSearch
                                   optionFilterProp='children'
                                   filterOption={(input, option) =>
@@ -704,7 +702,6 @@ const AddVideoObservation = () => {
                                       ?.indexOf(input?.toLowerCase()) >= 0
                                   }
                                   className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                  getPopupContainer={(trigger) => trigger.parentNode}
                                   onChange={(value) =>
                                     handleFieldChange(value, index, 'user_name')
                                   }
@@ -761,6 +758,7 @@ const AddVideoObservation = () => {
                           <Card
                             className={`th-br-12 th-bg-grey mb-3`}
                             bodyStyle={{ padding: '8px' }}
+                            ref={addFormRef}
                           >
                             <div className='row align-items-center justify-content-between mb-2'>
                               <span className='th-fw-600 pl-3'>
@@ -768,13 +766,12 @@ const AddVideoObservation = () => {
                               </span>
                               {forms.length > 1 && (
                                 <Popconfirm
-                                  title='Delete?'
+                                  title='Sure to delete ?'
                                   open={open}
                                   onConfirm={() => {
                                     handleRemoveForm(form?.id);
                                   }}
                                   onCancel={() => setOpen(false)}
-                                  getPopupContainer={(trigger) => trigger.parentNode}
                                   overlayClassName='custom-popconfirm'
                                 >
                                   <DeleteOutlineOutlined className='text-danger th-22 th-pointer mr-3' />
@@ -794,7 +791,7 @@ const AddVideoObservation = () => {
                                 >
                                   <Select
                                     allowClear
-                                    placeholder='Select branch'
+                                    placeholder='Select branch*'
                                     showSearch
                                     optionFilterProp='children'
                                     filterOption={(input, option) =>
@@ -832,7 +829,7 @@ const AddVideoObservation = () => {
                                 >
                                   <Select
                                     allowClear
-                                    placeholder='Select user tole'
+                                    placeholder='Select user role*'
                                     showSearch
                                     optionFilterProp='children'
                                     filterOption={(input, option) =>
@@ -862,7 +859,7 @@ const AddVideoObservation = () => {
                                 >
                                   <Select
                                     allowClear
-                                    placeholder='Select user name'
+                                    placeholder='User name*'
                                     showSearch
                                     optionFilterProp='children'
                                     filterOption={(input, options) => {
@@ -873,7 +870,6 @@ const AddVideoObservation = () => {
                                       );
                                     }}
                                     className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                    getPopupContainer={(trigger) => trigger.parentNode}
                                     onChange={(value) => {
                                       handleInputChange(form.id, 'name', value);
                                     }}
@@ -899,7 +895,7 @@ const AddVideoObservation = () => {
                                   <Input
                                     className='w-100'
                                     allowClear={true}
-                                    placeholder='Video Link'
+                                    placeholder='Video link*'
                                     value={form.videoLink}
                                     onChange={(e) =>
                                       handleInputChange(
@@ -937,23 +933,26 @@ const AddVideoObservation = () => {
             </div>
           </div>
         </div>
-
-        {/* <div className='d-flex justify-content-center mb-4 mt-4'>
-          {history?.location?.state?.record ? (
-            <Button type='primary' onClick={() => handleEditSubmit()}>
-              Submit
+        <div className='d-flex justify-content-center mb-4 mt-4'>
+          <div className='d-flex justify-content-center w-100'>
+            <Button
+              type='primary'
+              className='th-br-6'
+              onClick={() => {
+                if (history?.location?.state?.record) {
+                  handleEditSubmit();
+                } else {
+                  handleSubmitForm();
+                }
+              }}
+            >
+              {history?.location?.state?.record ? 'Update' : 'Submit'}
             </Button>
-          ) : (
-            <div className='d-flex justify-content-center w-100 mb-4 mt-3'>
-              <Button type='primary' onClick={handleSubmitForm}>
-                Submit
-              </Button>
-            </div>
-          )}
-        </div> */}
+          </div>
+        </div>
         {load && <Loader />}
         {error && (
-          <div className='text-danger mt-4 mb-4 d-flex justify-content-center th-fw-600'>
+          <div className='text-danger mt-2 d-flex justify-content-center th-fw-600'>
             {error}
           </div>
         )}
