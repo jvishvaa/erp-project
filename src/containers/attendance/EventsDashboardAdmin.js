@@ -43,6 +43,7 @@ import {
   ReloadOutlined,
   CheckOutlined,
   CloseOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -95,6 +96,7 @@ const EventsDashboardAdmin = () => {
   const [filterForm] = useForm();
   const [feedBackModalForm] = useForm();
   const [eventForm] = useForm();
+  const [studentListForm] = useForm();
   const user_level = localStorage.getItem('userDetails')
     ? JSON.parse(localStorage.getItem('userDetails')).user_level
     : '';
@@ -113,35 +115,7 @@ const EventsDashboardAdmin = () => {
 
   const is_central_user = [1, 2].includes(user_level) || is_superuser ? true : false;
   const [loading, setLoading] = useState(false);
-  const [tableData, setTableData] = useState({
-    results: [
-      {
-        id: 3908,
-        title: 'event title',
-        event_name: 'event title',
-        highlight: '<p>event</p>',
-        description: '<p>event</p>',
-        event_date: '2024-05-30',
-        reg_start: '2024-05-30',
-        reg_end: '2024-05-30',
-        event_price: 1000,
-        refundable: true,
-        is_subscription_needed: true,
-        acad_session: [1165],
-        grades: [475],
-        attachments: [],
-        policy: {
-          20: '20',
-        },
-        approval_status: 1,
-        students_count: 0,
-        policy_dates: {
-          '2024-05-10': 200,
-        },
-        subscription: '',
-      },
-    ],
-  });
+  const [tableData, setTableData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
 
@@ -156,6 +130,12 @@ const EventsDashboardAdmin = () => {
   const [timeLineDrawerOpen, setTimeLineDrawerOpen] = useState(false);
   const [timelineLoading, setTimeLineLoading] = useState(false);
   const [timeLineData, setTimeLineData] = useState([]);
+
+  const [studentEventId, setStudenEventId] = useState(null);
+  const [studentCurrentPage, setStudentCurrentPage] = useState(1);
+  const [studentDrawerOpen, setStudentDrawerOpen] = useState(false);
+  const [studentLoading, setStudentLoading] = useState(false);
+  const [studentList, setStudentList] = useState([]);
 
   const [eventId, setEventId] = useState(null);
   const [eventDrawerOpen, setEventDrawerOpen] = useState(false);
@@ -180,6 +160,8 @@ const EventsDashboardAdmin = () => {
     window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
   );
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [fileLinks, setFileLinks] = useState([]);
+  const [removedFiles, setRemovedFiles] = useState([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewFile, setPreviewFile] = useState(null);
 
@@ -200,6 +182,13 @@ const EventsDashboardAdmin = () => {
   useEffect(() => {
     fetchTableData();
   }, [currentPage]);
+  useEffect(() => {
+    if (studentDrawerOpen) {
+      fetchStudentList({
+        id: studentEventId,
+      });
+    }
+  }, [studentCurrentPage]);
   useEffect(() => {
     if (selectedDays) {
       filterForm.setFieldsValue({
@@ -233,7 +222,6 @@ const EventsDashboardAdmin = () => {
     setLoading(true);
     let params = {
       page: currentPage,
-      pageSize: pageSize,
       acad_session: acad_session ?? acad_session,
       start_date: values?.date_filter?.length
         ? values?.date_filter[0].format('YYYY-MM-DD')
@@ -249,7 +237,7 @@ const EventsDashboardAdmin = () => {
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          // setTableData(response?.data?.result);
+          setTableData(response?.data?.result);
         }
       })
       .catch((error) => {
@@ -263,33 +251,48 @@ const EventsDashboardAdmin = () => {
         setLoading(false);
       });
   };
+  const fetchStudentList = ({ id }) => {
+    const searchErp = studentListForm.getFieldsValue()?.erp_id;
+    setStudentLoading(true);
+    let params = {
+      page: studentCurrentPage,
+      event_id: id,
+      erp_id: searchErp ?? searchErp,
+    };
+    axiosInstance
+      .get(`${endpoints.eventsDashboard.studentListApi}`, {
+        params: params,
+      })
+      .then((response) => {
+        if (response?.data?.status_code == 200) {
+          setStudentList(response?.data?.result);
+        }
+      })
+      .catch((error) => {
+        notification['error']({
+          message: 'OOPS! Something went wrong. Please try again',
+          duration: notificationDuration,
+          className: 'notification-container',
+        });
+      })
+      .finally(() => {
+        setStudentLoading(false);
+      });
+  };
   const createEvent = () => {
     const values = eventForm.getFieldsValue();
-    console.log(values?.event_name, 'test');
-    console.log(values?.branch_ids, 'test');
-    console.log(values?.grade_ids, 'test');
-    console.log(eventHighlights, 'test');
-    console.log(eventDescription, 'test');
-    console.log(values?.reg_dates, 'test');
-    console.log(values?.reg_dates[0].format('YYYY-MM-DD'), 'test');
-    console.log(values?.reg_dates[1].format('YYYY-MM-DD'), 'test');
-    console.log(values?.event_date.format('YYYY-MM-DD'), 'test');
-    console.log(values?.is_subscription_needed, 'test');
-    console.log(values?.event_price, 'test');
-    console.log(values?.refundable, 'test');
-    console.log(refundPolicyData, 'test');
-    console.log(selectedFiles, 'test');
     const formData = new FormData();
+    formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
-    formData.append('acad_session', values?.acad_session?.join(','));
-    formData.append('grades', values?.grade_ids?.join(','));
+    formData.append('acad_session', values?.acad_session);
+    formData.append('grades', values?.grade_ids);
     formData.append('highlight', eventHighlights);
     formData.append('description', eventDescription);
     formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
     formData.append('reg_end', values?.reg_dates[0].format('YYYY-MM-DD'));
     formData.append('event_date', values?.event_date.format('YYYY-MM-DD'));
-    // formData.append('is_subscription_needed', values?.is_subscription_needed);
-    if (values?.is_subscription_needed) {
+    formData.append('is_subscription_need', values?.is_subscription_need);
+    if (values?.is_subscription_need) {
       formData.append('event_price', values?.event_price);
       formData.append('refundable', values?.refundable);
       if (values?.refundable) {
@@ -299,7 +302,11 @@ const EventsDashboardAdmin = () => {
         formData.append('policies', formatted_policy);
       }
     }
-    formData.append('attachments', selectedFiles);
+    if (selectedFiles?.length) {
+      for (let i = 0; i < selectedFiles.length; i++) {
+        formData.append('attachments', selectedFiles[i]);
+      }
+    }
     setEventLoading(true);
     axiosInstance
       .post(`${endpoints.eventsDashboard.eventApi}`, formData)
@@ -327,26 +334,42 @@ const EventsDashboardAdmin = () => {
   };
   const editEvent = () => {
     const values = eventForm.getFieldsValue();
-    console.log(values?.event_name, 'test');
-    console.log(values?.branch_ids, 'test');
-    console.log(values?.grade_ids, 'test');
-    console.log(eventHighlights, 'test');
-    console.log(eventDescription, 'test');
-    console.log(values?.reg_dates, 'test');
-    console.log(values?.reg_dates[0].format('YYYY-MM-DD'), 'test');
-    console.log(values?.reg_dates[1].format('YYYY-MM-DD'), 'test');
-    console.log(values?.event_date.format('YYYY-MM-DD'), 'test');
-    console.log(values?.is_subscription_needed, 'test');
-    console.log(values?.event_price, 'test');
-    console.log(values?.refundable, 'test');
-    console.log(refundPolicyData, 'test');
-    console.log(selectedFiles, 'test');
     const formData = new FormData();
+    formData.append('title', values?.event_name);
+    formData.append('event_name', values?.event_name);
+    formData.append('acad_session', values?.acad_session);
+    formData.append('grades', values?.grade_ids);
+    formData.append('highlight', eventHighlights);
+    formData.append('description', eventDescription);
+    formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
+    formData.append('reg_end', values?.reg_dates[0].format('YYYY-MM-DD'));
+    formData.append('event_date', values?.event_date.format('YYYY-MM-DD'));
+    formData.append('is_subscription_need', values?.is_subscription_need);
+    if (values?.is_subscription_need) {
+      formData.append('event_price', values?.event_price);
+      formData.append('refundable', values?.refundable);
+      if (values?.refundable) {
+        let formatted_policy = refundPolicyData
+          .map((policy) => `${policy.days}:${policy.percent}`)
+          .join(',');
+        formData.append('policies', formatted_policy);
+      }
+    }
+    if (selectedFiles?.length) {
+      for (let i = 0; i < selectedFiles.length; i++) {
+        formData.append('attachments', selectedFiles[i]);
+      }
+    }
+    if (removedFiles?.length) {
+      for (let i = 0; i < selectedFiles.length; i++) {
+        formData.append('attachments_removal', removedFiles[i]);
+      }
+    }
     setEventLoading(true);
     axiosInstance
-      .patch(`${endpoints.eventsDashboard.eventApi}`, formData)
+      .patch(`/academic/${eventId}/event-manage/`, formData)
       .then((response) => {
-        if (response?.data?.status_code == 204) {
+        if (response?.data?.status_code == 200) {
           notification['success']({
             message: 'Hurray! Event updated successfully.',
             duration: notificationDuration,
@@ -368,12 +391,11 @@ const EventsDashboardAdmin = () => {
       });
   };
   const approveEvent = ({ approveId }) => {
+    const formData = new FormData();
+    formData.append('approval_status', 4);
     setLoading(true);
-    let payload = {
-      approval_status: 4,
-    };
     axiosInstance
-      .patch(`/academic/${approveId}/event-manage/`, payload)
+      .patch(`/academic/${approveId}/event-manage/`, formData)
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
@@ -397,12 +419,12 @@ const EventsDashboardAdmin = () => {
   };
   const rejectEvent = () => {
     const remarks = feedBackModalForm?.getFieldsValue()?.remarks;
-    let payload = {
-      approval_status: 2,
-      remarks: remarks,
-    };
+    const formData = new FormData();
+    formData.append('approval_status', 2);
+    formData.append('remarks', remarks);
+    setFeedBackLoading(true);
     axiosInstance
-      .patch(`/academic/${id}/event-manage/`, payload)
+      .patch(`/academic/${id}/event-manage/`, formData)
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
@@ -422,18 +444,17 @@ const EventsDashboardAdmin = () => {
         });
       })
       .finally(() => {
-        setLoading(false);
+        setFeedBackLoading(false);
       });
   };
   const cancelEvent = () => {
     const remarks = feedBackModalForm?.getFieldsValue()?.remarks;
-    setLoading(true);
-    let payload = {
-      approval_status: 3,
-      remarks: remarks,
-    };
+    const formData = new FormData();
+    formData.append('approval_status', 3);
+    formData.append('remarks', remarks);
+    setFeedBackLoading(true);
     axiosInstance
-      .patch(`/academic/${id}/event-manage/`, payload)
+      .patch(`/academic/${id}/event-manage/`, formData)
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
@@ -453,7 +474,7 @@ const EventsDashboardAdmin = () => {
         });
       })
       .finally(() => {
-        setLoading(false);
+        setFeedBackLoading(false);
       });
   };
 
@@ -505,6 +526,7 @@ const EventsDashboardAdmin = () => {
     saveAs(blob, fullName);
   };
   const fetchGradeList = ({ branchIds }) => {
+    console.log(branchIds);
     axiosInstance
       .get(
         `${endpoints.eventsDashboard.gradeListApi}?session_year=${session_year}&branch_id=${branchIds}`
@@ -598,7 +620,7 @@ const EventsDashboardAdmin = () => {
   const openEventDrawer = ({ key, rowData }) => {
     if (key === 'create') {
       eventForm.setFieldsValue({
-        is_subscription_needed: true,
+        is_subscription_need: true,
         refundable: true,
       });
       setEventDrawerOpen(true);
@@ -606,26 +628,31 @@ const EventsDashboardAdmin = () => {
       let branchIds = branchList
         .filter((each) => rowData?.acad_session.includes(each?.id))
         .map((each) => each?.branch?.id);
-      // fetchGradeList(branchIds);
+      fetchGradeList({ branchIds });
       eventForm.setFieldsValue({
-        event_name: rowData?.event_name,
+        event_name: rowData?.title,
         acad_session: rowData?.acad_session,
         grade_ids: rowData?.grades,
-        // reg_dates: [rowData?.reg_start, rowData?.reg_end],
-        // event_date: rowData?.event_date,
-        is_subscription_needed: rowData?.is_subscription_needed,
+        highlight: rowData?.highlight,
+        description: rowData?.description,
+        reg_dates: [moment(rowData?.reg_start), moment(rowData?.reg_end)],
+        event_date: moment(rowData?.event_date),
+        is_subscription_need: rowData?.is_subscription_need,
         event_price: rowData?.event_price,
         refundable: rowData?.refundable,
       });
       setEventHighlights(rowData?.highlight);
       setEventDescription(rowData?.description);
-      setSubscriptionStatus(rowData?.is_subscription_needed);
+      setSubscriptionStatus(rowData?.is_subscription_need);
       setRefundPolicy(rowData?.refundable);
-      // const policyArray = Object.entries(rowData?.policy).map(([days, percent]) => {
-      //   return { days: days, percent: percent, amount: '' };
-      // });
-      // setRefundPolicyData(policyArray);
-      setSelectedFiles(rowData?.attachments);
+      let data = [];
+      Object.entries(rowData?.policy).forEach(([days, percent]) => {
+        let policyData = { days: days, percent: percent, amount: '' };
+        data.push(policyData);
+      });
+      console.log(data);
+      setRefundPolicyData(data);
+      setFileLinks(rowData?.attachments);
       setEventId(rowData?.id);
       setEventDrawerOpen(true);
     }
@@ -652,6 +679,17 @@ const EventsDashboardAdmin = () => {
       setEventId(null);
     }, 1000);
   };
+  const openStudentDrawer = (id) => {
+    setStudentDrawerOpen(true);
+    fetchStudentList({ id: id });
+    setStudenEventId(id);
+  };
+  const closeStudentDrawer = () => {
+    setStudentDrawerOpen(false);
+    setStudentCurrentPage(1);
+    setStudenEventId();
+    setStudentList([]);
+  };
   const openViewEventModal = (row) => {
     setViewEventModalOpen(true);
     setViewEvent(row);
@@ -661,7 +699,6 @@ const EventsDashboardAdmin = () => {
     setViewEvent();
   };
 
-  const handleReject = () => {};
   const handleSubscriptionStatusChange = (val) => {
     setSubscriptionStatus(val);
   };
@@ -760,6 +797,13 @@ const EventsDashboardAdmin = () => {
     const updatedFiles = selectedFiles.filter((_, fileIndex) => fileIndex !== index);
     setSelectedFiles(updatedFiles);
   };
+  const handleFileLinkRemove = (index) => {
+    const removedFile = fileLinks[index];
+    setRemovedFiles([...removedFiles, removedFile]);
+
+    const newFileLinks = fileLinks.filter((_, i) => i !== index);
+    setFileLinks(newFileLinks);
+  };
   const handlePreview = (file) => {
     setPreviewFile(file);
     setPreviewVisible(true);
@@ -828,7 +872,8 @@ const EventsDashboardAdmin = () => {
           color='geekblue'
           style={{ cursor: 'pointer' }}
           className='tag-hover th-br-4 shadow'
-          icon={<FileExcelOutlined className='cl-12' />}
+          icon={<EyeOutlined className='cl-12' />}
+          onClick={() => openStudentDrawer(row?.id)}
         >
           <span className='th-black-1 cl-12'>{row?.students_count} Students </span>
         </Tag>
@@ -957,6 +1002,66 @@ const EventsDashboardAdmin = () => {
           </>
         );
       },
+    },
+  ];
+  const studentColumns = [
+    {
+      title: <span className='th-white cl-12 th-fw-700'></span>,
+      align: 'center',
+      render: (data, row, index) => (
+        <span className='th-black-1 cl-12'>
+          {(studentCurrentPage - 1) * pageSize + index + 1}.
+        </span>
+      ),
+    },
+    {
+      title: <span className='th-white cl-12 th-fw-700'>ERP ID</span>,
+      align: 'center',
+      render: (data, row) => <span className='th-black-1 cl-12'>{row?.erp_id}</span>,
+    },
+    {
+      title: <span className='th-white cl-12 th-fw-700'>Name</span>,
+      align: 'center',
+      render: (data, row) => (
+        <span className='th-black-1 cl-12'>
+          {row?.name && row?.name.length > 15
+            ? row?.name.substring(0, 15) + '...'
+            : row?.name}
+        </span>
+      ),
+    },
+    {
+      title: <span className='th-white cl-12 th-fw-700'>Branch</span>,
+      align: 'center',
+      render: (data, row) => <span className='th-black-1 cl-12'>{row?.branch}</span>,
+    },
+    {
+      title: <span className='th-white cl-12 th-fw-700'>Grade</span>,
+      align: 'center',
+      render: (data, row) => <span className='th-black-1 cl-12'>{row?.grade}</span>,
+    },
+    {
+      title: <span className='th-white cl-12 th-fw-700'>Section</span>,
+      align: 'center',
+      render: (data, row) => <span className='th-black-1 cl-12'>{row?.section}</span>,
+    },
+    {
+      title: <span className='th-white cl-12 th-fw-700'>Status</span>,
+      align: 'center',
+      render: (data, row) => (
+        <>
+          {!row?.is_unsub && (
+            <Tag className='custom-tag cl-approved' icon={<CheckCircleOutlined />}>
+              Subscribed
+            </Tag>
+          )}
+          {row?.is_unsub && (
+            <Tag className='custom-tag cl-cancelled' icon={<CloseCircleOutlined />}>
+              Un Subscribed
+            </Tag>
+          )}
+        </>
+      ),
     },
   ];
   const noDataLocale = {
@@ -1555,7 +1660,7 @@ const EventsDashboardAdmin = () => {
                       ]}
                     >
                       <RangePicker
-                        format='MM/DD/YYYY'
+                        format='DD/MM/YYYY'
                         className='w-100 text-left th-black-1 th-br-4 shadow'
                         allowClear
                         disabledDate={(current) =>
@@ -1577,6 +1682,7 @@ const EventsDashboardAdmin = () => {
                     >
                       <DatePicker
                         placeholder='Event Date'
+                        format='DD/MM/YYYY'
                         className='w-100 text-left th-black-1 th-br-4 shadow'
                         allowClear
                         disabledDate={(current) =>
@@ -1587,7 +1693,7 @@ const EventsDashboardAdmin = () => {
                   </div>
                   <div className='col-lg-3 col-md-6 col-sm-6 col-6 mb-2'>
                     <Form.Item
-                      name='is_subscription_needed'
+                      name='is_subscription_need'
                       label='Is subscription needed ?'
                       rules={[
                         {
@@ -1695,7 +1801,7 @@ const EventsDashboardAdmin = () => {
                                           addonAfter='days'
                                           min={1}
                                           max={1000}
-                                          value={each?.days}
+                                          defaultValue={parseInt(each?.days)}
                                           onChange={(e) => handleChange(e, index, 'days')}
                                         />
                                       </Form.Item>
@@ -1717,7 +1823,7 @@ const EventsDashboardAdmin = () => {
                                           addonAfter='%'
                                           min={1}
                                           max={100}
-                                          value={each?.percent}
+                                          defaultValue={parseInt(each?.percent)}
                                           onChange={(e) =>
                                             handleChange(e, index, 'percent')
                                           }
@@ -1730,7 +1836,7 @@ const EventsDashboardAdmin = () => {
                                           placeholder='Refund Amount'
                                           className='w-100 text-left th-black-1 th-br-4 shadow'
                                           allowClear
-                                          addonBefore='Rs'
+                                          addo  search: e.target.value,nBefore='Rs'
                                           disabled
                                           value={each?.amount}
                                           onChange={(e) =>
@@ -1740,15 +1846,6 @@ const EventsDashboardAdmin = () => {
                                       </Form.Item>
                                     </div> */}
                                     <div className='col-lg-3 col-md-3 col-sm-2 col-2'>
-                                      {/* <CloseCircleOutlined
-                                        onClick={() => handleDelete(index)}
-                                        className='color-cancelled icon-hover'
-                                        style={{
-                                          fontSize: 24,
-                                          marginTop: 6,
-                                          cursor: 'pointer',
-                                        }}
-                                      /> */}
                                       <Button
                                         shape='circle'
                                         size='small'
@@ -1796,8 +1893,62 @@ const EventsDashboardAdmin = () => {
                         onChange={handleFileChange}
                       />
                     </Form.Item>
-                    {selectedFiles?.length == 0 && <div className='mb-4'> </div>}
-                    {selectedFiles?.length > 0 && (
+                    {fileLinks && fileLinks?.length > 0 && (
+                      <div className='mt-2'>
+                        <div className='row'>
+                          {fileLinks.map((file, index) => (
+                            <div
+                              className='col-lg-4 col-md-6 col-sm-12 col-12'
+                              key={index}
+                            >
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  border: '1px solid #d9d9d9',
+                                  borderRadius: '4px',
+                                  padding: '4px',
+                                }}
+                                // onClick={() =>
+                                //   window.open(URL.createObjectURL(file), '_blank')
+                                // }
+                              >
+                                <span
+                                  style={{
+                                    flex: 1,
+                                    color: 'blue',
+                                    textDecoration: 'underline',
+                                    cursor: 'pointer',
+                                    marginRight: '8px',
+                                  }}
+                                >
+                                  {file.length > 20
+                                    ? file
+                                        .substring(file.lastIndexOf('/') + 1)
+                                        .substring(0, 20) + '...'
+                                    : file}
+                                </span>
+                                <Button
+                                  shape='circle'
+                                  size='small'
+                                  icon={<DeleteOutlined />}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleFileLinkRemove(index);
+                                  }}
+                                  className='icon-hover cl-rejected shadow'
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {selectedFiles && selectedFiles?.length == 0 && (
+                      <div className='mb-4'> </div>
+                    )}
+                    {selectedFiles && selectedFiles?.length > 0 && (
                       <div className='mt-2'>
                         <div className='row'>
                           {selectedFiles.map((file, index) => (
@@ -1829,13 +1980,6 @@ const EventsDashboardAdmin = () => {
                                     ? file.name.substring(0, 20) + '...'
                                     : file.name}
                                 </span>
-                                {/* <DeleteOutlined
-                                  className='th-red th-pointer th-20 icon-hover'
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleFileRemove(index);
-                                  }}
-                                /> */}
                                 <Button
                                   shape='circle'
                                   size='small'
@@ -1900,33 +2044,33 @@ const EventsDashboardAdmin = () => {
             <div className='row col-lg-12 col-md-12 col-sm-12 col-12'>
               <div className='col-lg-8 col-md-7 col-sm-8 col-12'>
                 {viewEvent?.attachments?.length > 0 ? (
-                  // <Slider {...settings} className='th-slick th-post-slick'>
-                  //   {viewEvent?.attachments?.map((each) => (
-                  <MediaDisplay
-                    mediaName={viewEvent?.attachments}
-                    mediaLinks={viewEvent?.attachments}
-                    alt='File Not Supported'
-                    className='w-100 th-br-20 p-3'
-                    style={{ objectFit: 'contain' }}
-                  />
-                ) : //   ))}
-                // </Slider>
-                null}
+                  <Slider {...settings} className='th-slick th-post-slick'>
+                    {viewEvent?.attachments?.map((each) => (
+                      <MediaDisplay
+                        mediaName={each}
+                        mediaLink={each}
+                        alt='File Not Supported'
+                        className='w-100 th-br-20 p-3'
+                        style={{ objectFit: 'contain' }}
+                      />
+                    ))}
+                  </Slider>
+                ) : null}
 
-                {/* {viewEvent?.attachments?.length > 0 && (
-                 <div className='text-right'>
-                   <Button
-                     type='link'
-                     className='th-10'
-                     icon={<DownloadOutlined />}
-                     onClick={() => {
-                       handleDownloadAll(viewEvent?.attachments);
-                     }}
-                   >
-                     Download all attachments
-                   </Button>
-                 </div>
-               )} */}
+                {viewEvent?.attachments?.length > 0 && (
+                  <div className='text-right'>
+                    <Button
+                      type='link'
+                      className='th-10'
+                      icon={<DownloadOutlined />}
+                      onClick={() => {
+                        handleDownloadAll(viewEvent?.attachments);
+                      }}
+                    >
+                      Download all attachments
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className='col-lg-4 col-md-5 col-sm-12 col-12'>
                 <List
@@ -1973,6 +2117,97 @@ const EventsDashboardAdmin = () => {
           </div>
         </>
       </Modal>
+      <Drawer
+        title={
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <span>Student List</span>
+            <Button
+              size='small'
+              type='default'
+              className='th-br-4 cl-button shadow'
+              onClick={closeStudentDrawer}
+            >
+              Close
+            </Button>
+          </div>
+        }
+        visible={studentDrawerOpen}
+        onClose={closeStudentDrawer}
+        className='cl-drawer-2'
+        closeIcon={false}
+        footer={null}
+        width='90%'
+      >
+        <div>
+          {false ? (
+            <div className='center-screen'>
+              <Spin tip='Hold on! Great things take time!' size='large' />
+            </div>
+          ) : (
+            <>
+              <div className='col-lg-4 col-md-6 col-sm-6 col-12 mb-2'>
+                <Form form={studentListForm}>
+                  <Form.Item name='erp_id'>
+                    <Input
+                      placeholder='Search Student Erp'
+                      suffix={<SearchOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
+                      className='w-100 text-left th-black-1 th-br-4 shadow'
+                      onChange={(e) => {
+                        const timeout = setTimeout(() => {
+                          fetchStudentList({
+                            id: studentEventId,
+                          });
+                        }, 500);
+                        return () => clearTimeout(timeout);
+                      }}
+                      allowClear
+                    />
+                  </Form.Item>
+                </Form>
+              </div>
+              <div className='mt-2'>
+                <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
+                  <div className='shadow'>
+                    <Table
+                      className='cl-table'
+                      rowClassName={(record, index) =>
+                        index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                      }
+                      loading={studentLoading}
+                      columns={studentColumns}
+                      rowKey={(record) => record?.id}
+                      dataSource={studentList?.results}
+                      pagination={false}
+                      locale={noDataLocale}
+                      scroll={{
+                        x: 'max-content',
+                        y: '100vh',
+                      }}
+                    />
+                    <div className='d-flex justify-content-center py-2'>
+                      <Pagination
+                        current={studentCurrentPage}
+                        pageSize={15}
+                        showSizeChanger={false}
+                        onChange={(page) => {
+                          setStudentCurrentPage(page);
+                        }}
+                        total={studentList?.count}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </Drawer>
     </>
   );
 };
