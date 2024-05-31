@@ -63,6 +63,9 @@ import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
 import { getFileIcon } from 'v2/getFileIcon';
 import { domain_name } from '../../../commonDomain';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import mixpanel from 'mixpanel-browser';
+mixpanel.init('1a74c2c62a329aabf4eabc67877909b7');
+
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -77,7 +80,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const { user_level, user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_level, user_id, erp, email, first_name } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [gradeName, setGradeName] = useState('');
   const [gradeId, setGradeId] = useState();
   const [subjectName, setSubjectName] = useState('');
@@ -1462,6 +1466,12 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                       // setCurrentPeriodId(each?.id);
                                       // showDrawer();
                                       fetchLessonResourcesData(each);
+                                      mixpanel.track('LP/P/Resources', {
+                                        user_level,
+                                        erp,
+                                        email,
+                                        first_name,
+                                      });
                                     }}
                                   >
                                     View Resources &gt;
@@ -1643,6 +1653,13 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                   extension: '.' + extension,
                                                 },
                                               ],
+                                            });
+                                            mixpanel.track('LP/P/Resources/view', {
+                                              user_level,
+                                              erp,
+                                              email,
+                                              first_name,
+                                              fileName,
                                             });
                                           }}
                                           rel='noopener noreferrer'
