@@ -234,6 +234,20 @@
   color: #00bcd4 !important;
 }
 
+.cl-drawer-2 .ant-drawer-header {
+  background: #007ACC !important;
+}
+.cl-drawer-2 .ant-drawer-title {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+.cl-drawer-2 .ant-drawer-header {
+  padding: 10px 10px;
+}
+.cl-drawer-2 .ant-drawer-footer {
+  padding: 4px 10px;
+}
+
 .ant-picker-dropdown {
   z-index: 2001;
 }

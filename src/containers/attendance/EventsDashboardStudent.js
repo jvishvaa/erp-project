@@ -23,6 +23,7 @@ import {
   ClockCircleOutlined,
   ReloadOutlined,
   InfoCircleTwoTone,
+  DownloadOutlined,
 } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
 import axiosInstance from 'config/axios';
@@ -33,6 +34,30 @@ import Slider from 'react-slick';
 import MediaDisplay from './mediaDisplayEvents';
 
 import { saveAs } from 'file-saver';
+const settings = {
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  arrows: true,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      },
+    },
+  ],
+};
 
 const EventsDashboardAdmin = () => {
   const eventData1 = [
@@ -91,8 +116,8 @@ const EventsDashboardAdmin = () => {
   const [filterForm] = useForm();
   const { RangePicker } = DatePicker;
   const branch = sessionStorage.getItem('selected_branch')
-  ? JSON.parse(sessionStorage.getItem('selected_branch'))
-  : '';
+    ? JSON.parse(sessionStorage.getItem('selected_branch'))
+    : '';
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -160,13 +185,10 @@ const EventsDashboardAdmin = () => {
   };
   const subscribeEvent = ({ eventId }) => {
     setLoading(true);
-    let params = {
-      subscription: 'subscribed',
-    };
     axiosInstance
-      .put(`${endpoints.eventsDashboard.eventsListApi}${eventId}/`, {
-        params: params,
-      })
+      .post(
+        `${endpoints.eventsDashboard.studentActionApi}?event_id=${eventId}&subscribed=1`
+      )
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
@@ -190,13 +212,10 @@ const EventsDashboardAdmin = () => {
   };
   const unSubscribeEvent = ({ eventId }) => {
     setLoading(true);
-    let params = {
-      subscription: 'unsubscribed',
-    };
     axiosInstance
-      .put(`${endpoints.eventsDashboard.eventsListApi}${eventId}/`, {
-        params: params,
-      })
+      .post(
+        `${endpoints.eventsDashboard.studentActionApi}?event_id=${eventId}&subscribed=0`
+      )
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
@@ -225,6 +244,17 @@ const EventsDashboardAdmin = () => {
   const closeViewEventModal = () => {
     setViewEventModalOpen(false);
   };
+  const handleDownloadAll = async (files) => {
+    for (const item of files) {
+      const fullName = item?.split('.').pop();
+      await downloadFile(`${item}`, fullName);
+    }
+  };
+  const downloadFile = async (url, fullName) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    saveAs(blob, fullName);
+  };
 
   const columns = [
     {
@@ -247,7 +277,9 @@ const EventsDashboardAdmin = () => {
           className='tag-hover th-br-4 shadow'
         >
           <span className='th-black-1 th-16'>
-            {row?.title.length > 15 ? row?.title.substring(0, 15) + '...' : row?.title}
+            {row?.title && row?.title.length > 15
+              ? row?.title.substring(0, 15) + '...'
+              : row?.title}
           </span>
         </Tag>
       ),
@@ -538,20 +570,20 @@ const EventsDashboardAdmin = () => {
             <div className='row col-lg-12 col-md-12 col-sm-12 col-12'>
               <div className='col-lg-8 col-md-7 col-sm-8 col-12'>
                 {viewEvent?.attachments?.length > 0 ? (
-                  // <Slider {...settings} className='th-slick th-post-slick'>
-                  //   {viewEvent?.attachments?.map((each) => (
-                  <MediaDisplay
-                    mediaName={viewEvent?.attachments}
-                    mediaLinks={viewEvent?.attachments}
-                    alt='File Not Supported'
-                    className='w-100 th-br-20 p-3'
-                    style={{ objectFit: 'contain' }}
-                  />
-                ) : //   ))}
-                // </Slider>
-                null}
+                  <Slider {...settings} className='th-slick th-post-slick'>
+                    {viewEvent?.attachments?.map((each) => (
+                      <MediaDisplay
+                        mediaName={each}
+                        mediaLink={each}
+                        alt='File Not Supported'
+                        className='w-100 th-br-20 p-3'
+                        style={{ objectFit: 'contain' }}
+                      />
+                    ))}
+                  </Slider>
+                ) : null}
 
-                {/* {viewEvent?.attachments?.length > 0 && (
+                {viewEvent?.attachments?.length > 0 && (
                   <div className='text-right'>
                     <Button
                       type='link'
@@ -564,7 +596,7 @@ const EventsDashboardAdmin = () => {
                       Download all attachments
                     </Button>
                   </div>
-                )} */}
+                )}
               </div>
               <div className='col-lg-4 col-md-5 col-sm-12 col-12'>
                 <List
@@ -572,10 +604,10 @@ const EventsDashboardAdmin = () => {
                   className='cl-list shadow'
                   header={<div className='cl-list-header'>Event Details</div>}
                   dataSource={[
-                    { title: 'Reg Start Date', content: viewEvent.reg_start },
-                    { title: 'Reg End Date', content: viewEvent.reg_end },
-                    { title: 'Event Date', content: viewEvent.event_date },
-                    { title: 'Amount', content: `Rs. ${viewEvent.event_price}` },
+                    { title: 'Reg Start Date', content: viewEvent?.reg_start },
+                    { title: 'Reg End Date', content: viewEvent?.reg_end },
+                    { title: 'Event Date', content: viewEvent?.event_date },
+                    { title: 'Amount', content: `Rs. ${viewEvent?.event_price}` },
                   ]}
                   renderItem={(item) => (
                     <List.Item className='cl-list-item'>
