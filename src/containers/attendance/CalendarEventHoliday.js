@@ -903,7 +903,7 @@ const CalendarV2 = () => {
                     </div>
                   </TabPane>
                   <TabPane tab='Events' key={'2'}>
-                    {isOrchids && (
+                  {isOrchids && (
                       <>
                         {user_level === 13 ? (
                           <EventsDashboardStudent />
@@ -912,281 +912,277 @@ const CalendarV2 = () => {
                         )}
                       </>
                     )}
-                    {!isOrchids && (
-                      <div className='cardsevents'>
-                        <Form ref={formRef} style={{ width: '100%' }}>
-                          <Grid
-                            container
-                            direction='row'
-                            spacing={2}
-                            className={classes.root}
-                            style={{ padding: '0px' }}
-                          >
-                            <div className='col-md-3'>
-                              <span className='font-weight-bold th-grey th-14'>
-                                Branch*
-                              </span>
-                              <Form.Item name='branch'>
-                                <Select
-                                  mode='multiple'
-                                  getPopupContainer={(trigger) => trigger.parentNode}
-                                  className='th-grey th-bg-grey th-br-4 w-100 text-left'
-                                  placement='bottomRight'
-                                  placeholder='Select Branch'
-                                  showArrow={true}
-                                  suffixIcon={<DownOutlined className='th-grey' />}
-                                  maxTagCount={2}
-                                  value={selectedBranch}
-                                  dropdownMatchSelectWidth={false}
-                                  onSelect={(e) => {
-                                    handleSelectBranch(
-                                      e,
-                                      branchList?.map((item) => item.branch?.id),
-                                      branchList?.map((item) => item?.id)
-                                    );
-                                  }}
-                                  onDeselect={(e, value) => {
-                                    handleDeSelectBranch(value);
-                                  }}
-                                  filterOption={(input, options) => {
-                                    return (
-                                      options.children
-                                        .toLowerCase()
-                                        .indexOf(input.toLowerCase()) >= 0
-                                    );
-                                  }}
-                                >
-                                  {branchList?.length > 0 && (
-                                    <>
-                                      <Option key={0} value={'all'}>
-                                        All
-                                      </Option>
-                                    </>
-                                  )}
-                                  {branchOptions}
-                                </Select>
-                              </Form.Item>
-                            </div>
-                            <div className='col-md-3'>
-                              <span className='font-weight-bold th-grey th-14'>
-                                Grade*
-                              </span>
-                              <Form.Item name='grade'>
-                                <Select
-                                  allowClear
-                                  placeholder='Select Grade'
-                                  showSearch
-                                  optionFilterProp='children'
-                                  filterOption={(input, options) => {
-                                    return (
-                                      options.children
-                                        .toLowerCase()
-                                        .indexOf(input.toLowerCase()) >= 0
-                                    );
-                                  }}
-                                  onChange={(e) => {
-                                    handleGrade(e);
-                                  }}
-                                  // onClear={handleClearGrade}
-                                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                >
-                                  {gradeOptions}
-                                </Select>
-                              </Form.Item>
-                            </div>
-
-                            <div className='col-md-3'>
-                              <span className='font-weight-bold th-grey th-14'>
-                                Select Date Range*
-                              </span>
-                              <Form.Item name='date'>
-                                <RangePicker
-                                  value={dates}
-                                  onChange={handleDate}
-                                  style={{ width: '100%' }}
-                                />
-                              </Form.Item>
-                            </div>
-                            <div className='col-md-3'>
-                              <span className='font-weight-bold th-grey th-14'>
-                                Category
-                              </span>
-                              <Form.Item name='category'>
-                                <Select
-                                  allowClear
-                                  placeholder='Select Category'
-                                  showSearch
-                                  optionFilterProp='children'
-                                  filterOption={(input, options) => {
-                                    return (
-                                      options.children
-                                        .toLowerCase()
-                                        .indexOf(input.toLowerCase()) >= 0
-                                    );
-                                  }}
-                                  onChange={(e) => {
-                                    handleCategory(e);
-                                  }}
-                                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                                >
-                                  {categoryOptions}
-                                </Select>
-                              </Form.Item>
-                            </div>
-                            <div className='col-md-2 d-flex'>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  marginRight: '5px',
+                    {!isOrchids && (<div className='cardsevents'>
+                      <Form ref={formRef} style={{ width: '100%' }}>
+                        <Grid
+                          container
+                          direction='row'
+                          spacing={2}
+                          className={classes.root}
+                          style={{ padding: '0px' }}
+                        >
+                          <div className='col-md-3'>
+                            <span className='font-weight-bold th-grey th-14'>
+                              Branch*
+                            </span>
+                            <Form.Item name='branch'>
+                              <Select
+                                mode='multiple'
+                                getPopupContainer={(trigger) => trigger.parentNode}
+                                className='th-grey th-bg-grey th-br-4 w-100 text-left'
+                                placement='bottomRight'
+                                placeholder='Select Branch'
+                                showArrow={true}
+                                suffixIcon={<DownOutlined className='th-grey' />}
+                                maxTagCount={2}
+                                value={selectedBranch}
+                                dropdownMatchSelectWidth={false}
+                                onSelect={(e) => {
+                                  handleSelectBranch(
+                                    e,
+                                    branchList?.map((item) => item.branch?.id),
+                                    branchList?.map((item) => item?.id)
+                                  );
                                 }}
-                                onClick={filterData}
+                                onDeselect={(e, value) => {
+                                  handleDeSelectBranch(value);
+                                }}
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
                               >
-                                <Button
-                                  type='primary'
-                                  className='th-br-6 th-bg-primary th-pointer th-white'
-                                >
-                                  Filter
-                                </Button>
-                              </div>
-                              {user_level != 13 ? (
-                                <>
-                                  {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
+                                {branchList?.length > 0 && (
+                                  <>
+                                    <Option key={0} value={'all'}>
+                                      All
+                                    </Option>
+                                  </>
+                                )}
+                                {branchOptions}
+                              </Select>
+                            </Form.Item>
+                          </div>
+                          <div className='col-md-3'>
+                            <span className='font-weight-bold th-grey th-14'>Grade*</span>
+                            <Form.Item name='grade'>
+                              <Select
+                                allowClear
+                                placeholder='Select Grade'
+                                showSearch
+                                optionFilterProp='children'
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                onChange={(e) => {
+                                  handleGrade(e);
+                                }}
+                                // onClear={handleClearGrade}
+                                className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                              >
+                                {gradeOptions}
+                              </Select>
+                            </Form.Item>
+                          </div>
+
+                          <div className='col-md-3'>
+                            <span className='font-weight-bold th-grey th-14'>
+                              Select Date Range*
+                            </span>
+                            <Form.Item name='date'>
+                              <RangePicker
+                                value={dates}
+                                onChange={handleDate}
+                                style={{ width: '100%' }}
+                              />
+                            </Form.Item>
+                          </div>
+                          <div className='col-md-3'>
+                            <span className='font-weight-bold th-grey th-14'>
+                              Category
+                            </span>
+                            <Form.Item name='category'>
+                              <Select
+                                allowClear
+                                placeholder='Select Category'
+                                showSearch
+                                optionFilterProp='children'
+                                filterOption={(input, options) => {
+                                  return (
+                                    options.children
+                                      .toLowerCase()
+                                      .indexOf(input.toLowerCase()) >= 0
+                                  );
+                                }}
+                                onChange={(e) => {
+                                  handleCategory(e);
+                                }}
+                                className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                              >
+                                {categoryOptions}
+                              </Select>
+                            </Form.Item>
+                          </div>
+                          <div className='col-md-2 d-flex'>
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginRight: '5px',
+                              }}
+                              onClick={filterData}
+                            >
+                              <Button
+                                type='primary'
+                                className='th-br-6 th-bg-primary th-pointer th-white'
+                              >
+                                Filter
+                              </Button>
+                            </div>
+                            {user_level != 13 ? (
+                              <>
+                                {/* <div className='col-md-1' style={{ display: 'flex', alignItems: 'center' }} onClick={handleMarkHoliday} >
                                                                 <Button>Add Holiday</Button>
                                                             </div> */}
-                                  <div
-                                    style={{ display: 'flex', alignItems: 'center' }}
-                                    onClick={handleAddEvent}
+                                <div
+                                  style={{ display: 'flex', alignItems: 'center' }}
+                                  onClick={handleAddEvent}
+                                >
+                                  <Button
+                                    type='primary'
+                                    className='th-br-6 th-bg-primary th-pointer th-white'
                                   >
-                                    <Button
-                                      type='primary'
-                                      className='th-br-6 th-bg-primary th-pointer th-white'
-                                    >
-                                      Add Event
-                                    </Button>
-                                  </div>
-                                </>
-                              ) : (
-                                ''
-                              )}
-                            </div>
-                          </Grid>
-                        </Form>
-                        <div
-                          className='w-100 d-flex flex-wrap'
-                          style={{ minHeight: '50vh' }}
-                        >
-                          {events?.length > 0 ? (
-                            events?.map((item) => (
-                              <>
-                                <div className='col-lg-4 col-md-6 mt-2'>
-                                  <div
-                                    className='th-br-20 th-bg-grey period-card'
-                                    style={{ border: '1px solid #d9d9d9' }}
-                                  >
-                                    <div
-                                      className='row p-3 th-bg-pink align-items-center th-black-1'
-                                      style={{ borderRadius: '20px 20px 0 0' }}
-                                    >
-                                      <div className='col-8 px-0 text-truncate d-flex align-items-center'>
-                                        <img
-                                          src={EventIcon}
-                                          height='30'
-                                          className='mb-1'
-                                          alt='icon'
-                                        />
-                                        <Tooltip
-                                          placement='topLeft'
-                                          title={item?.event_name}
-                                        >
-                                          <span className='th-18 th-fw-700 ml-2 text-capitalize text-truncate'>
-                                            {item?.event_name}
-                                          </span>
-                                        </Tooltip>
-                                      </div>
-                                      <div className='col-4 pr-0 pl-1 th-16 text-right d-flex align-items-center'>
-                                        {item?.event_category_name ? (
-                                          <Tooltip
-                                            placement='topLeft'
-                                            title={item?.event_category_name}
-                                          >
-                                            <span
-                                              className=' th-fw-500 col-11 p-1 th-12 th-br-8 px-0 text-center th-white text-truncate'
-                                              style={{ background: '#ff4d4f' }}
-                                            >
-                                              {item?.event_category_name}
-                                            </span>
-                                          </Tooltip>
-                                        ) : (
-                                          ''
-                                        )}
-                                        {item?.is_enabled && user_level != 13 ? (
-                                          <Popover
-                                            content={() => handleActionEvent(item)}
-                                            trigger='click'
-                                          >
-                                            <MoreOutlined className='col-1 p-0' />
-                                            {/* <Button icon={<MoreOutlined />} /> */}
-                                          </Popover>
-                                        ) : (
-                                          ''
-                                        )}
-                                      </div>
-                                    </div>
-
-                                    <div className='row pl-2 pt-4'>
-                                      <div className='th-fw-600 col-4 px-0'>
-                                        <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
-                                          Date :
-                                        </div>
-                                      </div>
-                                      <div className='col-8 text-truncate px-3'>
-                                        {`${moment(item?.start_time).format(
-                                          'DD-MM-YYYY'
-                                        )} - ${moment(item?.end_time).format(
-                                          'DD-MM-YYYY'
-                                        )}`}
-                                      </div>
-                                    </div>
-                                    <div
-                                      className='row pl-2 pt-1 d-flex justify-content-between'
-                                      style={{
-                                        height: 60,
-                                      }}
-                                    >
-                                      <div className='th-fw-600 col-4 px-0'>
-                                        <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
-                                          Description :
-                                        </div>
-                                      </div>
-                                      <Tooltip
-                                        placement='topLeft'
-                                        title={handleTooltip(item?.description)}
-                                      >
-                                        {item?.description ? (
-                                          <div className='col-8 pl-2 th-truncate'>
-                                            <div>
-                                              <div className='text-truncate px-2 text-capitalize'>
-                                                {item?.description},
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ) : null}
-                                      </Tooltip>
-                                    </div>
-                                  </div>
+                                    Add Event
+                                  </Button>
                                 </div>
                               </>
-                            ))
-                          ) : (
-                            <div style={{ width: '100%' }}>
-                              {' '}
-                              <Empty />
-                            </div>
-                          )}
-                        </div>
+                            ) : (
+                              ''
+                            )}
+                          </div>
+                        </Grid>
+                      </Form>
+                      <div
+                        className='w-100 d-flex flex-wrap'
+                        style={{ minHeight: '50vh' }}
+                      >
+                        {events?.length > 0 ? (
+                          events?.map((item) => (
+                            <>
+                              <div className='col-lg-4 col-md-6 mt-2'>
+                                <div
+                                  className='th-br-20 th-bg-grey period-card'
+                                  style={{ border: '1px solid #d9d9d9' }}
+                                >
+                                  <div
+                                    className='row p-3 th-bg-pink align-items-center th-black-1'
+                                    style={{ borderRadius: '20px 20px 0 0' }}
+                                  >
+                                    <div className='col-8 px-0 text-truncate d-flex align-items-center'>
+                                      <img
+                                        src={EventIcon}
+                                        height='30'
+                                        className='mb-1'
+                                        alt='icon'
+                                      />
+                                      <Tooltip
+                                        placement='topLeft'
+                                        title={item?.event_name}
+                                      >
+                                        <span className='th-18 th-fw-700 ml-2 text-capitalize text-truncate'>
+                                          {item?.event_name}
+                                        </span>
+                                      </Tooltip>
+                                    </div>
+                                    <div className='col-4 pr-0 pl-1 th-16 text-right d-flex align-items-center'>
+                                      {item?.event_category_name ? (
+                                        <Tooltip
+                                          placement='topLeft'
+                                          title={item?.event_category_name}
+                                        >
+                                          <span
+                                            className=' th-fw-500 col-11 p-1 th-12 th-br-8 px-0 text-center th-white text-truncate'
+                                            style={{ background: '#ff4d4f' }}
+                                          >
+                                            {item?.event_category_name}
+                                          </span>
+                                        </Tooltip>
+                                      ) : (
+                                        ''
+                                      )}
+                                      {item?.is_enabled && user_level != 13 ? (
+                                        <Popover
+                                          content={() => handleActionEvent(item)}
+                                          trigger='click'
+                                        >
+                                          <MoreOutlined className='col-1 p-0' />
+                                          {/* <Button icon={<MoreOutlined />} /> */}
+                                        </Popover>
+                                      ) : (
+                                        ''
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <div className='row pl-2 pt-4'>
+                                    <div className='th-fw-600 col-4 px-0'>
+                                      <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                        Date :
+                                      </div>
+                                    </div>
+                                    <div className='col-8 text-truncate px-3'>
+                                      {`${moment(item?.start_time).format(
+                                        'DD-MM-YYYY'
+                                      )} - ${moment(item?.end_time).format(
+                                        'DD-MM-YYYY'
+                                      )}`}
+                                    </div>
+                                  </div>
+                                  <div
+                                    className='row pl-2 pt-1 d-flex justify-content-between'
+                                    style={{
+                                      height: 60,
+                                    }}
+                                  >
+                                    <div className='th-fw-600 col-4 px-0'>
+                                      <div className='badge th-fw-600 p-2 th-br-10 th-14 th-bg-pink'>
+                                        Description :
+                                      </div>
+                                    </div>
+                                    <Tooltip
+                                      placement='topLeft'
+                                      title={handleTooltip(item?.description)}
+                                    >
+                                      {item?.description ? (
+                                        <div className='col-8 pl-2 th-truncate'>
+                                          <div>
+                                            <div className='text-truncate px-2 text-capitalize'>
+                                              {item?.description},
+                                            </div>
+                                          </div>
+                                        </div>
+                                      ) : null}
+                                    </Tooltip>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          ))
+                        ) : (
+                          <div style={{ width: '100%' }}>
+                            {' '}
+                            <Empty />
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>)}
                   </TabPane>
                 </Tabs>
               </div>
