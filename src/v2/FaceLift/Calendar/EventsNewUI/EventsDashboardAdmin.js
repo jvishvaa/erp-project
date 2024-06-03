@@ -30,7 +30,6 @@ import {
   EditOutlined,
   CloseCircleOutlined,
   CheckCircleOutlined,
-  RiseOutlined,
   ClearOutlined,
   SyncOutlined,
   CloudUploadOutlined,
@@ -96,10 +95,6 @@ const EventsDashboardAdmin = () => {
   const [feedBackModalOpen, setFeedBackModalOpen] = useState(false);
   const [feedBackLoading, setFeedBackLoading] = useState(false);
   const [feedBackFlag, setFeedBackFlag] = useState('');
-
-  const [timeLineDrawerOpen, setTimeLineDrawerOpen] = useState(false);
-  const [timelineLoading, setTimeLineLoading] = useState(false);
-  const [timeLineData, setTimeLineData] = useState([]);
 
   const [studentEventId, setStudenEventId] = useState(null);
   const [studentCurrentPage, setStudentCurrentPage] = useState(1);
@@ -570,14 +565,7 @@ const EventsDashboardAdmin = () => {
     setId();
     feedBackModalForm.resetFields();
   };
-  const openTimeLineDrawer = () => {
-    setTimeLineDrawerOpen(true);
-    setTimeLineData([]);
-  };
-  const closeTimeLineDrawer = () => {
-    setTimeLineDrawerOpen(false);
-    setTimeLineData([]);
-  };
+
   const openEventDrawer = ({ key, rowData }) => {
     if (key === 'create') {
       eventForm.setFieldsValue({
@@ -822,13 +810,17 @@ const EventsDashboardAdmin = () => {
       align: 'center',
       width: '15%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.reg_end}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.reg_end}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Date</span>,
       align: 'center',
       sorter: (a, b) => new Date(a.event_date) - new Date(b.event_date),
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.event_date}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.event_date}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Reg. Count</span>,
@@ -970,7 +962,9 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>ERP ID</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.erp_id}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.erp_id}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Name</span>,
@@ -986,7 +980,9 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Branch</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.branch}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.branch}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Grade</span>,
@@ -996,7 +992,9 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Section</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.section}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.section}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
@@ -1235,7 +1233,9 @@ const EventsDashboardAdmin = () => {
         visible={feedBackModalOpen}
         onCancel={closeFeedBackModal}
         className={`th-event-modal ${
-          feedBackFlag === 'reject' ? 'th-event-modal-rejected' : 'th-event-modal-cancelled'
+          feedBackFlag === 'reject'
+            ? 'th-event-modal-rejected'
+            : 'th-event-modal-cancelled'
         }`}
         footer={[
           <Row justify='space-around'>
@@ -1302,82 +1302,12 @@ const EventsDashboardAdmin = () => {
         )}
       </Modal>
       <Drawer
-        title='Time Line'
-        visible={timeLineDrawerOpen}
-        onClose={closeTimeLineDrawer}
-        className='th-event-drawer'
-        closeIcon={false}
-        footer={[
-          <Row justify='space-around'>
-            <Col>
-              <Button
-                size='small'
-                className='secondary-button'
-                onClick={closeTimeLineDrawer}
-              >
-                Close
-              </Button>
-            </Col>
-          </Row>,
-        ]}
-        width={drawerWidth}
-      >
-        <div>
-          {timelineLoading ? (
-            <div className='d-flex justify-content-center align-items-center mt-2'>
-              <Spin tip='Hold on! Great things take time!' size='large' />
-            </div>
-          ) : (
-            <>
-              {timeLineData && timeLineData?.length === 0 && (
-                <Empty style={{ marginTop: '200px' }} description='No Data Found' />
-              )}
-              {timeLineData && timeLineData?.length !== 0 && (
-                <>
-                  <Timeline pending={true} mode='left' style={{ width: '100%' }}>
-                    {timeLineData?.map((eachStep, index) => {
-                      return (
-                        <Timeline.Item
-                          key={index}
-                          color='green'
-                          dot={<CheckCircleOutlined />}
-                          label={
-                            <>
-                              <div
-                                style={{
-                                  fontSize: '14px',
-                                  color: '#a1a1c2',
-                                }}
-                              >
-                                {moment(eachStep?.created_at).format('MMMM Do YYYY')}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: '12px',
-                                  color: '#a1a1c2',
-                                }}
-                              >
-                                {moment(eachStep?.created_at).format('h:mm:ss a')}
-                              </div>
-                            </>
-                          }
-                        >
-                          <span style={{ color: '#595c97' }}> {eachStep?.title}</span>
-                        </Timeline.Item>
-                      );
-                    })}
-                  </Timeline>
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </Drawer>
-      <Drawer
         title={eventId ? 'Update Event' : 'Create Event'}
         visible={eventDrawerOpen}
         closeIcon={false}
-        className={`th-event-drawer-1 ${eventId ? 'th-event-drawer-1-edit' : 'th-event-drawer-1-create'}`}
+        className={`th-event-drawer-1 ${
+          eventId ? 'th-event-drawer-1-edit' : 'th-event-drawer-1-create'
+        }`}
         footer={[
           <Row justify='space-around'>
             <Col>
@@ -1722,15 +1652,6 @@ const EventsDashboardAdmin = () => {
                                 <>
                                   <div className='row'>
                                     <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
-                                      {/* <Form.Item
-                                        name={`days_${index}`}
-                                        rules={[
-                                          {
-                                            required: true,
-                                            message: 'Please Enter Days',
-                                          },
-                                        ]}
-                                      > */}
                                       <InputNumber
                                         placeholder='No Of Days Before'
                                         className='w-100 text-left th-black-1 th-br-4'
@@ -1741,18 +1662,8 @@ const EventsDashboardAdmin = () => {
                                         value={parseInt(each?.days)}
                                         onChange={(e) => handleChange(e, index, 'days')}
                                       />
-                                      {/* </Form.Item> */}
                                     </div>
                                     <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
-                                      {/* <Form.Item
-                                        name={`percent_${index}`}
-                                        rules={[
-                                          {
-                                            required: true,
-                                            message: 'Please Enter Percentage',
-                                          },
-                                        ]}
-                                      > */}
                                       <InputNumber
                                         placeholder='Amount Percentage'
                                         className='w-100 text-left th-black-1 th-br-4'
@@ -1765,23 +1676,8 @@ const EventsDashboardAdmin = () => {
                                           handleChange(e, index, 'percent')
                                         }
                                       />
-                                      {/* </Form.Item> */}
                                     </div>
-                                    {/* <div className='col-lg-3 col-md-3 col-sm-6 col-6'>
-                                      <Form.Item name={`amount_${index}`}>
-                                        <InputNumber
-                                          placeholder='Refund Amount'
-                                          className='w-100 text-left th-black-1 th-br-4'
-                                          allowClear
-                                          addo  search: e.target.value,nBefore='Rs'
-                                          disabled
-                                          value={each?.amount}
-                                          onChange={(e) =>
-                                            handleChange(e, index, 'amount')
-                                          }
-                                        />
-                                      </Form.Item>
-                                    </div> */}
+
                                     <div className='col-lg-3 col-md-3 col-sm-2 col-2'>
                                       <Button
                                         shape='circle'
