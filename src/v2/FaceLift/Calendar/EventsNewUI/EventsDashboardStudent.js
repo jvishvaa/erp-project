@@ -52,7 +52,7 @@ const EventsDashboardStudent = () => {
       });
     } else {
       filterForm.setFieldsValue({
-        date_filter: [moment().subtract(10, 'days'), moment().add(10, 'days')],
+        date_filter: [moment(), moment().add(10, 'days')],
       });
     }
     handleFetchTableData();
@@ -74,7 +74,7 @@ const EventsDashboardStudent = () => {
       acad_session: branch?.id,
       start_date: values?.date_filter?.length
         ? values?.date_filter[0].format('YYYY-MM-DD')
-        : moment().subtract(10, 'days').format('YYYY-MM-DD'),
+        : moment(),
       end_date: values?.date_filter?.length
         ? values?.date_filter[1].format('YYYY-MM-DD')
         : moment().add(10, 'days').format('YYYY-MM-DD'),
@@ -188,13 +188,17 @@ const EventsDashboardStudent = () => {
       align: 'center',
       width: '15%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.reg_end}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.reg_end}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Date</span>,
       align: 'center',
       sorter: (a, b) => new Date(a.event_date) - new Date(b.event_date),
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.event_date}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.event_date}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
