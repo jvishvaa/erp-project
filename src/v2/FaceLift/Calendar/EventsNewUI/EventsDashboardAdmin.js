@@ -334,9 +334,8 @@ const EventsDashboardAdmin = () => {
       }
     }
     if (removedFiles?.length) {
-      for (let i = 0; i < removedFiles.length; i++) {
-        formData.append('attachments_removal', removedFiles[i]);
-      }
+      let removedFileLinks = removedFiles.map((each) => each).join(',');
+      formData.append('attachments_removal', removedFileLinks);
     }
     setEventLoading(true);
     axiosInstance
@@ -792,19 +791,19 @@ const EventsDashboardAdmin = () => {
   };
   const columns = [
     {
-      title: <span className='th-white cl-12 th-fw-700'></span>,
+      title: <span className='th-white th-event-12 th-fw-700'></span>,
       align: 'center',
       render: (data, row, index) => (
-        <span className='th-black-1 cl-12'>
+        <span className='th-black-1 th-event-12'>
           {(currentPage - 1) * pageSize + index + 1}.
         </span>
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Event Name</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Event Name</span>,
       align: 'left',
       render: (data, row) => (
-        <span className='th-black-1 cl-12'>
+        <span className='th-black-1 th-event-12'>
           {row?.title && row?.title.length > 25 ? (
             <>
               {row.title.substring(0, 25)}...
@@ -819,20 +818,20 @@ const EventsDashboardAdmin = () => {
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Reg. End Date</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Reg. End Date</span>,
       align: 'center',
       width: '15%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
-      render: (data, row) => <span className='th-black-1 cl-12'>{row?.reg_end}</span>,
+      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.reg_end}</span>,
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Event Date</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Event Date</span>,
       align: 'center',
       sorter: (a, b) => new Date(a.event_date) - new Date(b.event_date),
-      render: (data, row) => <span className='th-black-1 cl-12'>{row?.event_date}</span>,
+      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.event_date}</span>,
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Reg. Count</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Reg. Count</span>,
       align: 'center',
       render: (data, row) => (
         <Tag
@@ -841,23 +840,23 @@ const EventsDashboardAdmin = () => {
           icon={<EyeOutlined />}
           onClick={() => openStudentDrawer(row?.id)}
         >
-          <span className='th-black-1 cl-12'>{row?.students_count} Students </span>
+          <span className='th-black-1 th-event-12'>{row?.students_count} Students </span>
         </Tag>
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Status</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
       align: 'left',
       render: (data, row) => (
         <>
           {row?.approval_status === 1 && (
-            <Tag icon={<ReloadOutlined />} className='th-br-4 cl-pending'>
+            <Tag icon={<ReloadOutlined />} className='th-br-4 th-event-pending'>
               Pending
             </Tag>
           )}
           {row?.approval_status === 2 && (
             <div>
-              <Tag icon={<CloseCircleOutlined />} className='th-br-4 cl-rejected'>
+              <Tag icon={<CloseCircleOutlined />} className='th-br-4 th-event-rejected'>
                 Rejected
               </Tag>
               <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
@@ -867,7 +866,7 @@ const EventsDashboardAdmin = () => {
           )}
           {row?.approval_status === 3 && (
             <div>
-              <Tag icon={<CloseCircleOutlined />} className='th-br-4 cl-cancelled'>
+              <Tag icon={<CloseCircleOutlined />} className='th-br-4 th-event-cancelled'>
                 Cancelled
               </Tag>
               <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
@@ -877,7 +876,7 @@ const EventsDashboardAdmin = () => {
           )}
 
           {row?.approval_status === 4 && (
-            <Tag icon={<CheckCircleOutlined />} className='th-br-4 cl-approved'>
+            <Tag icon={<CheckCircleOutlined />} className='th-br-4 th-event-approved'>
               Approved
             </Tag>
           )}
@@ -885,7 +884,7 @@ const EventsDashboardAdmin = () => {
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Action</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
       align: 'left',
       key: 'action',
       render: (data, row) => {
@@ -897,7 +896,7 @@ const EventsDashboardAdmin = () => {
                 size='small'
                 icon={<EyeOutlined />}
                 onClick={() => openViewEventModal(row)}
-                className='icon-hover cl-view'
+                className='icon-hover th-event-view'
               />
             </Popover>
             {row?.approval_status === 1 && (
@@ -907,7 +906,7 @@ const EventsDashboardAdmin = () => {
                   size='small'
                   icon={<EditOutlined />}
                   onClick={() => openEventDrawer({ key: 'edit', rowData: row })}
-                  className='icon-hover cl-edit'
+                  className='icon-hover th-event-edit'
                 />
               </Popover>
             )}
@@ -920,7 +919,7 @@ const EventsDashboardAdmin = () => {
                       size='small'
                       icon={<CloseOutlined />}
                       onClick={() => openFeedBackModal({ key: 'cancel', id: row?.id })}
-                      className='icon-hover cl-cancelled'
+                      className='icon-hover th-event-cancelled'
                     />
                   </Popover>
                 )}
@@ -936,7 +935,7 @@ const EventsDashboardAdmin = () => {
                           shape='circle'
                           size='small'
                           icon={<CheckOutlined />}
-                          className='icon-hover cl-approved'
+                          className='icon-hover th-event-approved'
                         />
                       </Popover>
                     </Popconfirm>
@@ -946,7 +945,7 @@ const EventsDashboardAdmin = () => {
                         size='small'
                         icon={<CloseOutlined />}
                         onClick={() => openFeedBackModal({ key: 'reject', id: row?.id })}
-                        className='icon-hover cl-rejected'
+                        className='icon-hover th-event-rejected'
                       />
                     </Popover>
                   </>
@@ -960,24 +959,24 @@ const EventsDashboardAdmin = () => {
   ];
   const studentColumns = [
     {
-      title: <span className='th-white cl-12 th-fw-700'></span>,
+      title: <span className='th-white th-event-12 th-fw-700'></span>,
       align: 'center',
       render: (data, row, index) => (
-        <span className='th-black-1 cl-12'>
+        <span className='th-black-1 th-event-12'>
           {(studentCurrentPage - 1) * pageSize + index + 1}.
         </span>
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>ERP ID</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>ERP ID</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 cl-12'>{row?.erp_id}</span>,
+      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.erp_id}</span>,
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Name</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Name</span>,
       align: 'center',
       render: (data, row) => (
-        <span className='th-black-1 cl-12'>
+        <span className='th-black-1 th-event-12'>
           {row?.name && row?.name.length > 15
             ? row?.name.substring(0, 15) + '...'
             : row?.name}
@@ -985,32 +984,32 @@ const EventsDashboardAdmin = () => {
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Branch</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Branch</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 cl-12'>{row?.branch}</span>,
+      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.branch}</span>,
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Grade</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Grade</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 cl-12'>{row?.grade}</span>,
+      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.grade}</span>,
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Section</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Section</span>,
       align: 'center',
-      render: (data, row) => <span className='th-black-1 cl-12'>{row?.section}</span>,
+      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.section}</span>,
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Status</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
       align: 'center',
       render: (data, row) => (
         <>
           {!row?.is_unsub && (
-            <Tag className='custom-tag cl-approved' icon={<CheckCircleOutlined />}>
+            <Tag className='custom-tag th-event-approved' icon={<CheckCircleOutlined />}>
               Subscribed
             </Tag>
           )}
           {row?.is_unsub && (
-            <Tag className='custom-tag cl-cancelled' icon={<CloseCircleOutlined />}>
+            <Tag className='custom-tag th-event-cancelled' icon={<CloseCircleOutlined />}>
               Un Subscribed
             </Tag>
           )}
@@ -1051,7 +1050,7 @@ const EventsDashboardAdmin = () => {
         <div>
           <Tag
             className={`custom-tag ${
-              selectedTag === 1 ? 'cl-pending-active' : 'cl-pending'
+              selectedTag === 1 ? 'th-event-pending-active' : 'th-event-pending'
             }`}
             onClick={() => (selectedTag === 1 ? setSelectedTag() : setSelectedTag(1))}
             icon={<ReloadOutlined />}
@@ -1060,7 +1059,7 @@ const EventsDashboardAdmin = () => {
           </Tag>
           <Tag
             className={`custom-tag ${
-              selectedTag === 4 ? 'cl-approved-active' : 'cl-approved'
+              selectedTag === 4 ? 'th-event-approved-active' : 'th-event-approved'
             }`}
             onClick={() => (selectedTag === 4 ? setSelectedTag() : setSelectedTag(4))}
             icon={<CheckCircleOutlined />}
@@ -1069,7 +1068,7 @@ const EventsDashboardAdmin = () => {
           </Tag>
           <Tag
             className={`custom-tag ${
-              selectedTag === 2 ? 'cl-rejected-active' : 'cl-rejected'
+              selectedTag === 2 ? 'th-event-rejected-active' : 'th-event-rejected'
             }`}
             onClick={() => (selectedTag === 2 ? setSelectedTag() : setSelectedTag(2))}
             icon={<CloseCircleOutlined />}
@@ -1078,7 +1077,7 @@ const EventsDashboardAdmin = () => {
           </Tag>
           <Tag
             className={`custom-tag ${
-              selectedTag === 3 ? 'cl-cancelled-active' : 'cl-cancelled'
+              selectedTag === 3 ? 'th-event-cancelled-active' : 'th-event-cancelled'
             }`}
             onClick={() => (selectedTag === 3 ? setSelectedTag() : setSelectedTag(3))}
             icon={<CloseCircleOutlined />}
@@ -1087,10 +1086,10 @@ const EventsDashboardAdmin = () => {
           </Tag>
         </div>
         <div>
-          <Tag className='count-tag cl-grey'>
+          <Tag className='count-tag th-event-grey'>
             <span className='count-tag-text'>{`Total : ${tableData?.counts?.total}`}</span>
           </Tag>
-          <Tag className='count-tag cl-grey'>
+          <Tag className='count-tag th-event-grey'>
             <span className='count-tag-text'>{`Live : ${tableData?.counts?.live}`}</span>
           </Tag>
           <Button
@@ -1123,7 +1122,7 @@ const EventsDashboardAdmin = () => {
             <Popover placement='bottomLeft' content='Next 07 days Events'>
               <Tag
                 className={`custom-tag ${
-                  selectedDays === 7 ? 'cl-days-active' : 'cl-days'
+                  selectedDays === 7 ? 'th-event-days-active' : 'th-event-days'
                 }`}
                 onClick={() =>
                   selectedDays === 7 ? setSelectedDays() : setSelectedDays(7)
@@ -1136,7 +1135,7 @@ const EventsDashboardAdmin = () => {
             <Popover placement='bottomLeft' content='Next 15 days Events'>
               <Tag
                 className={`custom-tag ${
-                  selectedDays === 15 ? 'cl-days-active' : 'cl-days'
+                  selectedDays === 15 ? 'th-event-days-active' : 'th-event-days'
                 }`}
                 onClick={() =>
                   selectedDays === 15 ? setSelectedDays() : setSelectedDays(15)
@@ -1149,7 +1148,7 @@ const EventsDashboardAdmin = () => {
             <Popover placement='bottomLeft' content='Next 30 days Events'>
               <Tag
                 className={`custom-tag ${
-                  selectedDays === 30 ? 'cl-days-active' : 'cl-days'
+                  selectedDays === 30 ? 'th-event-days-active' : 'th-event-days'
                 }`}
                 onClick={() =>
                   selectedDays === 30 ? setSelectedDays() : setSelectedDays(30)
@@ -1202,7 +1201,7 @@ const EventsDashboardAdmin = () => {
         <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
           <div className=''>
             <Table
-              className='cl-table'
+              className='th-event-table'
               rowClassName={(record, index) =>
                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
               }
@@ -1235,8 +1234,8 @@ const EventsDashboardAdmin = () => {
         title={`Reason for ${feedBackFlag === 'reject' ? 'Rejecting' : 'Cancelling'}`}
         visible={feedBackModalOpen}
         onCancel={closeFeedBackModal}
-        className={`cl-modal ${
-          feedBackFlag === 'reject' ? 'cl-modal-rejected' : 'cl-modal-cancelled'
+        className={`th-event-modal ${
+          feedBackFlag === 'reject' ? 'th-event-modal-rejected' : 'th-event-modal-cancelled'
         }`}
         footer={[
           <Row justify='space-around'>
@@ -1306,7 +1305,7 @@ const EventsDashboardAdmin = () => {
         title='Time Line'
         visible={timeLineDrawerOpen}
         onClose={closeTimeLineDrawer}
-        className='cl-drawer'
+        className='th-event-drawer'
         closeIcon={false}
         footer={[
           <Row justify='space-around'>
@@ -1378,7 +1377,7 @@ const EventsDashboardAdmin = () => {
         title={eventId ? 'Update Event' : 'Create Event'}
         visible={eventDrawerOpen}
         closeIcon={false}
-        className={`cl-drawer-1 ${eventId ? 'cl-drawer-1-edit' : 'cl-drawer-1-create'}`}
+        className={`th-event-drawer-1 ${eventId ? 'th-event-drawer-1-edit' : 'th-event-drawer-1-create'}`}
         footer={[
           <Row justify='space-around'>
             <Col>
@@ -1426,7 +1425,7 @@ const EventsDashboardAdmin = () => {
                   form={eventForm}
                   onFinish={eventId ? editEvent : createEvent}
                   layout='vertical'
-                  className='row col-lg-12 col-md-12 col-sm-12 cl-form'
+                  className='row col-lg-12 col-md-12 col-sm-12 th-event-form'
                 >
                   <div className='col-lg-6 col-md-12 col-sm-12 col-12 mb-2'>
                     <Form.Item
@@ -1709,8 +1708,8 @@ const EventsDashboardAdmin = () => {
                                   size='small'
                                   className={`th-br-4 ${
                                     eventId
-                                      ? 'cl-drawer-1-add-button-edit'
-                                      : 'cl-drawer-1-add-button-create'
+                                      ? 'th-event-drawer-1-add-button-edit'
+                                      : 'th-event-drawer-1-add-button-create'
                                   }`}
                                   onClick={() => handleAdd()}
                                 >
@@ -1789,7 +1788,7 @@ const EventsDashboardAdmin = () => {
                                         size='small'
                                         icon={<CloseOutlined />}
                                         onClick={() => handleDelete(index)}
-                                        className='icon-hover cl-cancelled'
+                                        className='icon-hover th-event-cancelled'
                                       />
                                     </div>
                                   </div>
@@ -1867,7 +1866,7 @@ const EventsDashboardAdmin = () => {
                                     e.stopPropagation();
                                     handleFileLinkRemove(index);
                                   }}
-                                  className='icon-hover cl-rejected'
+                                  className='icon-hover th-event-rejected'
                                 />
                               </div>
                             </div>
@@ -1918,7 +1917,7 @@ const EventsDashboardAdmin = () => {
                                     e.stopPropagation();
                                     handleFileRemove(index);
                                   }}
-                                  className='icon-hover cl-rejected'
+                                  className='icon-hover th-event-rejected'
                                 />
                               </div>
                             </div>
@@ -1966,7 +1965,7 @@ const EventsDashboardAdmin = () => {
         }
         visible={studentDrawerOpen}
         onClose={closeStudentDrawer}
-        className='cl-drawer-2'
+        className='th-event-drawer-2'
         closeIcon={false}
         footer={null}
         width='90%'
@@ -2002,7 +2001,7 @@ const EventsDashboardAdmin = () => {
                 <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
                   <div className=''>
                     <Table
-                      className='cl-table'
+                      className='th-event-table'
                       rowClassName={(record, index) =>
                         index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
                       }
