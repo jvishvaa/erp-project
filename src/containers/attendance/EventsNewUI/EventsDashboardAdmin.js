@@ -12,7 +12,6 @@ import {
   Drawer,
   Popconfirm,
   Tag,
-  Card,
   Select,
   DatePicker,
   Modal,
@@ -20,13 +19,11 @@ import {
   InputNumber,
   Radio,
   notification,
-  List,
   Popover,
 } from 'antd';
 import {
   PlusOutlined,
   InfoCircleTwoTone,
-  FileExcelOutlined,
   PlusCircleOutlined,
   DownOutlined,
   EyeOutlined,
@@ -38,7 +35,6 @@ import {
   SyncOutlined,
   CloudUploadOutlined,
   DeleteOutlined,
-  DownloadOutlined,
   ClockCircleOutlined,
   ReloadOutlined,
   CheckOutlined,
@@ -52,9 +48,7 @@ import axiosInstance from 'config/axios';
 import moment from 'moment';
 import { useForm } from 'antd/lib/form/Form';
 import './eventsDashboard.css';
-import Slider from 'react-slick';
-import MediaDisplay from './mediaDisplayEvents';
-import { saveAs } from 'file-saver';
+import ViewEventModal from './viewEventModal';
 
 const modules = {
   toolbar: [
@@ -63,30 +57,6 @@ const modules = {
   ],
 };
 const formats = ['list', 'bullet', 'bold', 'italic', 'underline'];
-const settings = {
-  dots: false,
-  infinite: false,
-  speed: 500,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-  arrows: true,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 1,
-      },
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-      },
-    },
-  ],
-};
 
 const EventsDashboardAdmin = () => {
   const notificationDuration = 3;
@@ -140,9 +110,7 @@ const EventsDashboardAdmin = () => {
   const [eventId, setEventId] = useState(null);
   const [eventDrawerOpen, setEventDrawerOpen] = useState(false);
   const [eventLoading, setEventLoading] = useState(false);
-  const [eventData, setEventData] = useState([]);
 
-  const [acadSessionIds, setAcadSessionIds] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [eventHighlights, setEventHighlights] = useState('');
   const [eventDescription, setEventDescription] = useState('');
@@ -196,7 +164,7 @@ const EventsDashboardAdmin = () => {
       });
     } else {
       filterForm.setFieldsValue({
-        date_filter: [moment(), moment().add(10, 'days')],
+        date_filter: [moment().subtract(10, 'days'), moment().add(10, 'days')],
       });
     }
     handleFetchTableData();
@@ -225,7 +193,7 @@ const EventsDashboardAdmin = () => {
       acad_session: acad_session ?? acad_session,
       start_date: values?.date_filter?.length
         ? values?.date_filter[0].format('YYYY-MM-DD')
-        : moment().format('YYYY-MM-DD'),
+        : moment().subtract(10, 'days').format('YYYY-MM-DD'),
       end_date: values?.date_filter?.length
         ? values?.date_filter[1].format('YYYY-MM-DD')
         : moment().add(10, 'days').format('YYYY-MM-DD'),
@@ -289,7 +257,7 @@ const EventsDashboardAdmin = () => {
     formData.append('highlight', eventHighlights);
     formData.append('description', eventDescription);
     formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
-    formData.append('reg_end', values?.reg_dates[0].format('YYYY-MM-DD'));
+    formData.append('reg_end', values?.reg_dates[1].format('YYYY-MM-DD'));
     formData.append('event_date', values?.event_date.format('YYYY-MM-DD'));
     formData.append('is_subscription_need', values?.is_subscription_need);
     if (values?.is_subscription_need) {
@@ -297,6 +265,7 @@ const EventsDashboardAdmin = () => {
       formData.append('refundable', values?.refundable);
       if (values?.refundable) {
         let formatted_policy = refundPolicyData
+          .filter((policy) => policy.days && policy.percent)
           .map((policy) => `${policy.days}:${policy.percent}`)
           .join(',');
         formData.append('policies', formatted_policy);
@@ -342,7 +311,7 @@ const EventsDashboardAdmin = () => {
     formData.append('highlight', eventHighlights);
     formData.append('description', eventDescription);
     formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
-    formData.append('reg_end', values?.reg_dates[0].format('YYYY-MM-DD'));
+    formData.append('reg_end', values?.reg_dates[1].format('YYYY-MM-DD'));
     formData.append('event_date', values?.event_date.format('YYYY-MM-DD'));
     formData.append('is_subscription_need', values?.is_subscription_need);
     if (values?.is_subscription_need) {
@@ -350,10 +319,14 @@ const EventsDashboardAdmin = () => {
       formData.append('refundable', values?.refundable);
       if (values?.refundable) {
         let formatted_policy = refundPolicyData
+          .filter((policy) => policy.days && policy.percent)
           .map((policy) => `${policy.days}:${policy.percent}`)
           .join(',');
         formData.append('policies', formatted_policy);
       }
+    } else {
+      formData.append('event_price', '');
+      formData.append('refundable', false);
     }
     if (selectedFiles?.length) {
       for (let i = 0; i < selectedFiles.length; i++) {
@@ -361,7 +334,7 @@ const EventsDashboardAdmin = () => {
       }
     }
     if (removedFiles?.length) {
-      for (let i = 0; i < selectedFiles.length; i++) {
+      for (let i = 0; i < removedFiles.length; i++) {
         formData.append('attachments_removal', removedFiles[i]);
       }
     }
@@ -514,17 +487,6 @@ const EventsDashboardAdmin = () => {
     }
   };
 
-  const handleDownloadAll = async (files) => {
-    for (const item of files) {
-      const fullName = item?.split('.').pop();
-      await downloadFile(`${item}`, fullName);
-    }
-  };
-  const downloadFile = async (url, fullName) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    saveAs(blob, fullName);
-  };
   const fetchGradeList = ({ branchIds }) => {
     console.log(branchIds);
     axiosInstance
@@ -650,7 +612,6 @@ const EventsDashboardAdmin = () => {
         let policyData = { days: days, percent: percent, amount: '' };
         data.push(policyData);
       });
-      console.log(data);
       setRefundPolicyData(data);
       setFileLinks(rowData?.attachments);
       setEventId(rowData?.id);
@@ -660,9 +621,13 @@ const EventsDashboardAdmin = () => {
   const closeEventDrawer = () => {
     setEventDrawerOpen(false);
     eventForm.resetFields();
+    eventForm.setFieldsValue({
+      days_0: '',
+      percent_0: '',
+    });
     setGradeList([]);
     setEventHighlights('');
-    setEventDescription();
+    setEventDescription('');
     setSubscriptionStatus(1);
     setRefundPolicy(1);
     setRefundPolicyData([
@@ -672,9 +637,8 @@ const EventsDashboardAdmin = () => {
         amount: '',
       },
     ]);
+    setFileLinks([]);
     setSelectedFiles([]);
-    // for edit
-    setEventData([]);
     setTimeout(() => {
       setEventId(null);
     }, 1000);
@@ -733,8 +697,11 @@ const EventsDashboardAdmin = () => {
     }
   };
   const handleDelete = (index) => {
+    console.log(index);
     let policies = refundPolicyData.slice();
+    console.log(policies);
     policies.splice(index, 1);
+    console.log(policies);
     setRefundPolicyData(policies);
     if (policies?.length === 0) {
       setRefundPolicy(1);
@@ -837,18 +804,18 @@ const EventsDashboardAdmin = () => {
       title: <span className='th-white cl-12 th-fw-700'>Event Name</span>,
       align: 'left',
       render: (data, row) => (
-        <Tag
-          onClick={() => openViewEventModal(row)}
-          color='geekblue'
-          style={{ cursor: 'pointer' }}
-          className='tag-hover th-br-4 shadow'
-        >
-          <span className='th-black-1 cl-12'>
-            {row?.title && row?.title.length > 15
-              ? row?.title.substring(0, 15) + '...'
-              : row?.title}
-          </span>
-        </Tag>
+        <span className='th-black-1 cl-12'>
+          {row?.title && row?.title.length > 25 ? (
+            <>
+              {row.title.substring(0, 25)}...
+              <span className='show-more' onClick={() => openViewEventModal(row)}>
+                Show more
+              </span>
+            </>
+          ) : (
+            row?.title
+          )}
+        </span>
       ),
     },
     {
@@ -870,9 +837,8 @@ const EventsDashboardAdmin = () => {
       render: (data, row) => (
         <Tag
           color='geekblue'
-          style={{ cursor: 'pointer' }}
-          className='tag-hover th-br-4 shadow'
-          icon={<EyeOutlined className='cl-12' />}
+          className='student-tag'
+          icon={<EyeOutlined />}
           onClick={() => openStudentDrawer(row?.id)}
         >
           <span className='th-black-1 cl-12'>{row?.students_count} Students </span>
@@ -881,7 +847,7 @@ const EventsDashboardAdmin = () => {
     },
     {
       title: <span className='th-white cl-12 th-fw-700'>Status</span>,
-      align: 'center',
+      align: 'left',
       render: (data, row) => (
         <>
           {row?.approval_status === 1 && (
@@ -890,40 +856,28 @@ const EventsDashboardAdmin = () => {
             </Tag>
           )}
           {row?.approval_status === 2 && (
-            <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Tag icon={<CloseCircleOutlined />} className='th-br-4 cl-rejected'>
-                  Rejected
-                </Tag>
-                <InfoCircleTwoTone className='icon-hover' />
-              </div>
-            </Popover>
+            <div>
+              <Tag icon={<CloseCircleOutlined />} className='th-br-4 cl-rejected'>
+                Rejected
+              </Tag>
+              <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
+                <InfoCircleTwoTone />
+              </Popover>
+            </div>
           )}
           {row?.approval_status === 3 && (
-            <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Tag icon={<CloseOutlined />} className='th-br-4 cl-cancelled'>
-                  Cancelled
-                </Tag>
-                <InfoCircleTwoTone className='icon-hover' />
-              </div>
-            </Popover>
+            <div>
+              <Tag icon={<CloseCircleOutlined />} className='th-br-4 cl-cancelled'>
+                Cancelled
+              </Tag>
+              <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
+                <InfoCircleTwoTone />
+              </Popover>
+            </div>
           )}
 
           {row?.approval_status === 4 && (
-            <Tag icon={<CheckOutlined />} className='th-br-4 cl-approved'>
+            <Tag icon={<CheckCircleOutlined />} className='th-br-4 cl-approved'>
               Approved
             </Tag>
           )}
@@ -932,7 +886,7 @@ const EventsDashboardAdmin = () => {
     },
     {
       title: <span className='th-white cl-12 th-fw-700'>Action</span>,
-      align: 'center',
+      align: 'left',
       key: 'action',
       render: (data, row) => {
         return (
@@ -943,7 +897,7 @@ const EventsDashboardAdmin = () => {
                 size='small'
                 icon={<EyeOutlined />}
                 onClick={() => openViewEventModal(row)}
-                className='icon-hover cl-view shadow'
+                className='icon-hover cl-view'
               />
             </Popover>
             {row?.approval_status === 1 && (
@@ -953,7 +907,7 @@ const EventsDashboardAdmin = () => {
                   size='small'
                   icon={<EditOutlined />}
                   onClick={() => openEventDrawer({ key: 'edit', rowData: row })}
-                  className='icon-hover cl-edit shadow'
+                  className='icon-hover cl-edit'
                 />
               </Popover>
             )}
@@ -966,7 +920,7 @@ const EventsDashboardAdmin = () => {
                       size='small'
                       icon={<CloseOutlined />}
                       onClick={() => openFeedBackModal({ key: 'cancel', id: row?.id })}
-                      className='icon-hover cl-cancelled shadow'
+                      className='icon-hover cl-cancelled'
                     />
                   </Popover>
                 )}
@@ -982,7 +936,7 @@ const EventsDashboardAdmin = () => {
                           shape='circle'
                           size='small'
                           icon={<CheckOutlined />}
-                          className='icon-hover cl-approved shadow'
+                          className='icon-hover cl-approved'
                         />
                       </Popover>
                     </Popconfirm>
@@ -992,7 +946,7 @@ const EventsDashboardAdmin = () => {
                         size='small'
                         icon={<CloseOutlined />}
                         onClick={() => openFeedBackModal({ key: 'reject', id: row?.id })}
-                        className='icon-hover cl-rejected shadow'
+                        className='icon-hover cl-rejected'
                       />
                     </Popover>
                   </>
@@ -1095,8 +1049,7 @@ const EventsDashboardAdmin = () => {
         style={{ paddingLeft: '15px', paddingRight: '15px' }}
       >
         <div>
-          <Button
-            size='small'
+          <Tag
             className={`custom-tag ${
               selectedTag === 1 ? 'cl-pending-active' : 'cl-pending'
             }`}
@@ -1104,9 +1057,8 @@ const EventsDashboardAdmin = () => {
             icon={<ReloadOutlined />}
           >
             {`Pending: ${tableData?.counts?.pending}`}
-          </Button>
-          <Button
-            size='small'
+          </Tag>
+          <Tag
             className={`custom-tag ${
               selectedTag === 4 ? 'cl-approved-active' : 'cl-approved'
             }`}
@@ -1114,9 +1066,8 @@ const EventsDashboardAdmin = () => {
             icon={<CheckCircleOutlined />}
           >
             {`Approved: ${tableData?.counts?.approved}`}
-          </Button>
-          <Button
-            size='small'
+          </Tag>
+          <Tag
             className={`custom-tag ${
               selectedTag === 2 ? 'cl-rejected-active' : 'cl-rejected'
             }`}
@@ -1124,9 +1075,8 @@ const EventsDashboardAdmin = () => {
             icon={<CloseCircleOutlined />}
           >
             {`Rejected: ${tableData?.counts?.rejected}`}
-          </Button>
-          <Button
-            size='small'
+          </Tag>
+          <Tag
             className={`custom-tag ${
               selectedTag === 3 ? 'cl-cancelled-active' : 'cl-cancelled'
             }`}
@@ -1134,19 +1084,18 @@ const EventsDashboardAdmin = () => {
             icon={<CloseCircleOutlined />}
           >
             {`Cancelled: ${tableData?.counts?.cancelled}`}
-          </Button>
+          </Tag>
         </div>
         <div>
-          <Tag className='custom-tag-1 cl-grey'>
-            <span className='custom-tag-text-1'>{`Total : ${tableData?.counts?.total}`}</span>
+          <Tag className='count-tag cl-grey'>
+            <span className='count-tag-text'>{`Total : ${tableData?.counts?.total}`}</span>
           </Tag>
-          <Tag className='custom-tag-1 cl-grey'>
-            <span className='custom-tag-text-1'>{`Live : ${tableData?.counts?.live}`}</span>
+          <Tag className='count-tag cl-grey'>
+            <span className='count-tag-text'>{`Live : ${tableData?.counts?.live}`}</span>
           </Tag>
           <Button
             size='small'
-            type='primary'
-            className='th-br-4 shadow'
+            className='primary-button create-button'
             icon={<PlusCircleOutlined />}
             onClick={() => openEventDrawer({ key: 'create' })}
           >
@@ -1161,7 +1110,7 @@ const EventsDashboardAdmin = () => {
               <Form.Item name='date_filter'>
                 <RangePicker
                   format='DD/MM/YYYY'
-                  className='w-100 text-left th-black-1 th-br-4 shadow'
+                  className='w-100 text-left th-black-1 th-br-4'
                   defaultValue={filterForm?.getFieldsValue()?.date_filter}
                   disabled={selectedDays}
                   onChange={() => handleFetchTableData()}
@@ -1170,11 +1119,10 @@ const EventsDashboardAdmin = () => {
             </Popover>
           </div>
 
-          <div className='col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-around mt-1 mb-2'>
+          <div className='col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-around align-items-center mt-1 mb-2'>
             <Popover placement='bottomLeft' content='Next 07 days Events'>
-              <Button
-                size='small'
-                className={`custom-tag th-br-4 ${
+              <Tag
+                className={`custom-tag ${
                   selectedDays === 7 ? 'cl-days-active' : 'cl-days'
                 }`}
                 onClick={() =>
@@ -1183,12 +1131,11 @@ const EventsDashboardAdmin = () => {
                 icon={<ClockCircleOutlined />}
               >
                 7 Days
-              </Button>
+              </Tag>
             </Popover>
             <Popover placement='bottomLeft' content='Next 15 days Events'>
-              <Button
-                size='small'
-                className={`custom-tag th-br-4 ${
+              <Tag
+                className={`custom-tag ${
                   selectedDays === 15 ? 'cl-days-active' : 'cl-days'
                 }`}
                 onClick={() =>
@@ -1197,12 +1144,11 @@ const EventsDashboardAdmin = () => {
                 icon={<ClockCircleOutlined />}
               >
                 15 Days
-              </Button>
+              </Tag>
             </Popover>
             <Popover placement='bottomLeft' content='Next 30 days Events'>
-              <Button
-                size='small'
-                className={`custom-tag th-br-4 ${
+              <Tag
+                className={`custom-tag ${
                   selectedDays === 30 ? 'cl-days-active' : 'cl-days'
                 }`}
                 onClick={() =>
@@ -1211,7 +1157,7 @@ const EventsDashboardAdmin = () => {
                 icon={<ClockCircleOutlined />}
               >
                 30 Days
-              </Button>
+              </Tag>
             </Popover>
           </div>
           {is_central_user && (
@@ -1233,7 +1179,7 @@ const EventsDashboardAdmin = () => {
                     );
                   }}
                   onChange={() => handleFetchTableData()}
-                  className='w-100 text-left th-black-1 th-bg-grey th-br-4 shadow'
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                 >
                   {branchOptions}
                 </Select>
@@ -1243,10 +1189,9 @@ const EventsDashboardAdmin = () => {
           <div className='d-flex col-lg-2 col-md-6 col-sm-6 col-6 mt-1 mb-2'>
             <Button
               size='small'
-              type='default'
-              className='cl-button th-br-4 shadow'
-              onClick={() => handleClearAll()}
+              className='secondary-button'
               icon={<ClearOutlined />}
+              onClick={() => handleClearAll()}
             >
               Clear All
             </Button>
@@ -1255,7 +1200,7 @@ const EventsDashboardAdmin = () => {
       </div>
       <div className='mt-2'>
         <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
-          <div className='shadow'>
+          <div className=''>
             <Table
               className='cl-table'
               rowClassName={(record, index) =>
@@ -1298,8 +1243,7 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                type='default'
-                className='th-br-4 cl-button shadow'
+                className='secondary-button'
                 onClick={closeFeedBackModal}
               >
                 Close
@@ -1308,12 +1252,12 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                className={`shadow th-br-4 ${
-                  feedBackFlag === 'reject' ? 'cl-rejected-active' : 'cl-cancelled-active'
+                className={`primary-button ${
+                  feedBackFlag === 'reject' ? 'reject-button' : 'cancel-button'
                 }`}
+                icon={<CloseCircleOutlined />}
                 form='feedBackModalForm'
                 htmlType='submit'
-                icon={<CloseCircleOutlined />}
               >
                 {feedBackFlag === 'reject' ? 'Reject' : 'Cancel'}
               </Button>
@@ -1369,8 +1313,7 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                type='default'
-                className='shadow th-br-4 cl-button'
+                className='secondary-button'
                 onClick={closeTimeLineDrawer}
               >
                 Close
@@ -1441,8 +1384,7 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                type='default'
-                className='shadow th-br-4 cl-button'
+                className='secondary-button'
                 onClick={closeEventDrawer}
               >
                 Close
@@ -1451,9 +1393,7 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                className={`shadow btn-block th-br-4 ${
-                  eventId ? 'cl-drawer-1-edit-button' : 'cl-drawer-1-create-button'
-                }`}
+                className={`primary-button ${eventId ? 'edit-button' : 'create-button'}`}
                 icon={
                   eventLoading ? (
                     <SyncOutlined spin />
@@ -1499,7 +1439,7 @@ const EventsDashboardAdmin = () => {
                         },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
-                            const maxCharCount = 199;
+                            const maxCharCount = 200;
                             if (value && value.length > maxCharCount) {
                               return Promise.reject(
                                 new Error(`Event name must be less than 200 characters`)
@@ -1512,7 +1452,7 @@ const EventsDashboardAdmin = () => {
                     >
                       <Input
                         placeholder='Enter Event Name'
-                        className='w-100 text-left th-black-1 th-br-4 shadow'
+                        className='w-100 text-left th-black-1 th-br-4'
                         allowClear
                         showCount
                         maxLength={200}
@@ -1548,7 +1488,7 @@ const EventsDashboardAdmin = () => {
                           );
                         }}
                         onChange={() => handleBranchChange()}
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4 shadow'
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       >
                         {branchList && branchList?.length > 0 && (
                           <>
@@ -1590,7 +1530,7 @@ const EventsDashboardAdmin = () => {
                           );
                         }}
                         onChange={() => handleGradeChange()}
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4 shadow'
+                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       >
                         {gradeList && gradeList.length > 0 && (
                           <>
@@ -1620,7 +1560,6 @@ const EventsDashboardAdmin = () => {
                         onChange={handleChangeEventHighlights}
                         modules={modules}
                         formats={formats}
-                        className='shadow'
                         placeholder='Please Enter Event Highlights'
                       />
                     </Form.Item>
@@ -1642,7 +1581,6 @@ const EventsDashboardAdmin = () => {
                         onChange={handleChangeEventDescription}
                         modules={modules}
                         formats={formats}
-                        className='shadow'
                         placeholder='Please Enter Event Description'
                       />
                     </Form.Item>
@@ -1661,7 +1599,7 @@ const EventsDashboardAdmin = () => {
                     >
                       <RangePicker
                         format='DD/MM/YYYY'
-                        className='w-100 text-left th-black-1 th-br-4 shadow'
+                        className='w-100 text-left th-black-1 th-br-4'
                         allowClear
                         disabledDate={(current) =>
                           current && current < moment().endOf('day').subtract(1, 'day')
@@ -1683,7 +1621,7 @@ const EventsDashboardAdmin = () => {
                       <DatePicker
                         placeholder='Event Date'
                         format='DD/MM/YYYY'
-                        className='w-100 text-left th-black-1 th-br-4 shadow'
+                        className='w-100 text-left th-black-1 th-br-4'
                         allowClear
                         disabledDate={(current) =>
                           current && current < moment().endOf('day').subtract(1, 'day')
@@ -1706,10 +1644,10 @@ const EventsDashboardAdmin = () => {
                         onChange={(e) => handleSubscriptionStatusChange(e.target.value)}
                         defaultValue={subscriptionStatus}
                       >
-                        <Radio className='th-br-4 shadow' value={true}>
+                        <Radio className='th-br-4' value={true}>
                           Yes
                         </Radio>
-                        <Radio className='th-br-4 shadow' value={false}>
+                        <Radio className='th-br-4' value={false}>
                           No
                         </Radio>
                       </Radio.Group>
@@ -1730,7 +1668,7 @@ const EventsDashboardAdmin = () => {
                         >
                           <InputNumber
                             placeholder='Enter Event Cost'
-                            className='w-100 text-left th-black-1 th-br-4 shadow'
+                            className='w-100 text-left th-black-1 th-br-4'
                             allowClear
                             addonBefore='Rs'
                             min={0}
@@ -1754,10 +1692,10 @@ const EventsDashboardAdmin = () => {
                             onChange={(e) => handleRefundPolicyChange(e.target.value)}
                             defaultValue={refundPolicy}
                           >
-                            <Radio className='th-br-4 shadow mb-2' value={false}>
+                            <Radio className='th-br-4 mb-2' value={false}>
                               No Refund will be provided once subscribed
                             </Radio>
-                            <Radio className='th-br-4 shadow' value={true}>
+                            <Radio className='th-br-4' value={true}>
                               Refund based on remaining days
                             </Radio>
                           </Radio.Group>
@@ -1769,14 +1707,14 @@ const EventsDashboardAdmin = () => {
                                 <Button
                                   icon={<PlusOutlined />}
                                   size='small'
-                                  className={`th-br-4 shadow ${
+                                  className={`th-br-4 ${
                                     eventId
                                       ? 'cl-drawer-1-add-button-edit'
                                       : 'cl-drawer-1-add-button-create'
                                   }`}
                                   onClick={() => handleAdd()}
                                 >
-                                  Add
+                                  Add Policy
                                 </Button>
                               </div>
                             </div>
@@ -1785,7 +1723,7 @@ const EventsDashboardAdmin = () => {
                                 <>
                                   <div className='row'>
                                     <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
-                                      <Form.Item
+                                      {/* <Form.Item
                                         name={`days_${index}`}
                                         rules={[
                                           {
@@ -1793,21 +1731,21 @@ const EventsDashboardAdmin = () => {
                                             message: 'Please Enter Days',
                                           },
                                         ]}
-                                      >
-                                        <InputNumber
-                                          placeholder='No Of Days Before'
-                                          className='w-100 text-left th-black-1 th-br-4 shadow'
-                                          allowClear
-                                          addonAfter='days'
-                                          min={1}
-                                          max={1000}
-                                          defaultValue={parseInt(each?.days)}
-                                          onChange={(e) => handleChange(e, index, 'days')}
-                                        />
-                                      </Form.Item>
+                                      > */}
+                                      <InputNumber
+                                        placeholder='No Of Days Before'
+                                        className='w-100 text-left th-black-1 th-br-4'
+                                        allowClear
+                                        addonAfter='days'
+                                        min={1}
+                                        max={1000}
+                                        value={parseInt(each?.days)}
+                                        onChange={(e) => handleChange(e, index, 'days')}
+                                      />
+                                      {/* </Form.Item> */}
                                     </div>
                                     <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
-                                      <Form.Item
+                                      {/* <Form.Item
                                         name={`percent_${index}`}
                                         rules={[
                                           {
@@ -1815,26 +1753,26 @@ const EventsDashboardAdmin = () => {
                                             message: 'Please Enter Percentage',
                                           },
                                         ]}
-                                      >
-                                        <InputNumber
-                                          placeholder='Amount Percentage'
-                                          className='w-100 text-left th-black-1 th-br-4 shadow'
-                                          allowClear
-                                          addonAfter='%'
-                                          min={1}
-                                          max={100}
-                                          defaultValue={parseInt(each?.percent)}
-                                          onChange={(e) =>
-                                            handleChange(e, index, 'percent')
-                                          }
-                                        />
-                                      </Form.Item>
+                                      > */}
+                                      <InputNumber
+                                        placeholder='Amount Percentage'
+                                        className='w-100 text-left th-black-1 th-br-4'
+                                        allowClear
+                                        addonAfter='%'
+                                        min={1}
+                                        max={100}
+                                        value={parseInt(each?.percent)}
+                                        onChange={(e) =>
+                                          handleChange(e, index, 'percent')
+                                        }
+                                      />
+                                      {/* </Form.Item> */}
                                     </div>
                                     {/* <div className='col-lg-3 col-md-3 col-sm-6 col-6'>
                                       <Form.Item name={`amount_${index}`}>
                                         <InputNumber
                                           placeholder='Refund Amount'
-                                          className='w-100 text-left th-black-1 th-br-4 shadow'
+                                          className='w-100 text-left th-black-1 th-br-4'
                                           allowClear
                                           addo  search: e.target.value,nBefore='Rs'
                                           disabled
@@ -1851,7 +1789,7 @@ const EventsDashboardAdmin = () => {
                                         size='small'
                                         icon={<CloseOutlined />}
                                         onClick={() => handleDelete(index)}
-                                        className='icon-hover cl-cancelled shadow'
+                                        className='icon-hover cl-cancelled'
                                       />
                                     </div>
                                   </div>
@@ -1874,10 +1812,8 @@ const EventsDashboardAdmin = () => {
                     >
                       <Button
                         size='small'
-                        className={`th-br-4 shadow ${
-                          eventId
-                            ? 'cl-drawer-1-edit-button'
-                            : 'cl-drawer-1-create-button'
+                        className={`primary-button ${
+                          eventId ? 'edit-button' : 'create-button'
                         }`}
                         icon={<CloudUploadOutlined />}
                         onClick={() => document.getElementById('fileInput').click()}
@@ -1910,9 +1846,6 @@ const EventsDashboardAdmin = () => {
                                   borderRadius: '4px',
                                   padding: '4px',
                                 }}
-                                // onClick={() =>
-                                //   window.open(URL.createObjectURL(file), '_blank')
-                                // }
                               >
                                 <span
                                   style={{
@@ -1922,12 +1855,9 @@ const EventsDashboardAdmin = () => {
                                     cursor: 'pointer',
                                     marginRight: '8px',
                                   }}
+                                  onClick={() => window.open(file, '_blank')}
                                 >
-                                  {file.length > 20
-                                    ? file
-                                        .substring(file.lastIndexOf('/') + 1)
-                                        .substring(0, 20) + '...'
-                                    : file}
+                                  Attachment_{index + 1}
                                 </span>
                                 <Button
                                   shape='circle'
@@ -1937,7 +1867,7 @@ const EventsDashboardAdmin = () => {
                                     e.stopPropagation();
                                     handleFileLinkRemove(index);
                                   }}
-                                  className='icon-hover cl-rejected shadow'
+                                  className='icon-hover cl-rejected'
                                 />
                               </div>
                             </div>
@@ -1988,7 +1918,7 @@ const EventsDashboardAdmin = () => {
                                     e.stopPropagation();
                                     handleFileRemove(index);
                                   }}
-                                  className='icon-hover cl-rejected shadow'
+                                  className='icon-hover cl-rejected'
                                 />
                               </div>
                             </div>
@@ -2010,113 +1940,11 @@ const EventsDashboardAdmin = () => {
           </Modal>
         </>
       </Drawer>
-      <Modal
-        title={
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <span>{viewEvent?.title}</span>
-            <Button
-              size='small'
-              type='default'
-              className='th-br-4 cl-button shadow'
-              onClick={closeViewEventModal}
-            >
-              Close
-            </Button>
-          </div>
-        }
-        visible={viewEventModalOpen}
-        className='cl-modal-preview'
-        footer={null}
-        onCancel={() => closeViewEventModal()}
-        style={{
-          top: '1%',
-        }}
-        width='90%'
-      >
-        <>
-          <div className='row mt-2 mb-2'>
-            <div className='row col-lg-12 col-md-12 col-sm-12 col-12'>
-              <div className='col-lg-8 col-md-7 col-sm-8 col-12'>
-                {viewEvent?.attachments?.length > 0 ? (
-                  <Slider {...settings} className='th-slick th-post-slick'>
-                    {viewEvent?.attachments?.map((each) => (
-                      <MediaDisplay
-                        mediaName={each}
-                        mediaLink={each}
-                        alt='File Not Supported'
-                        className='w-100 th-br-20 p-3'
-                        style={{ objectFit: 'contain' }}
-                      />
-                    ))}
-                  </Slider>
-                ) : null}
-
-                {viewEvent?.attachments?.length > 0 && (
-                  <div className='text-right'>
-                    <Button
-                      type='link'
-                      className='th-10'
-                      icon={<DownloadOutlined />}
-                      onClick={() => {
-                        handleDownloadAll(viewEvent?.attachments);
-                      }}
-                    >
-                      Download all attachments
-                    </Button>
-                  </div>
-                )}
-              </div>
-              <div className='col-lg-4 col-md-5 col-sm-12 col-12'>
-                <List
-                  size='small'
-                  className='cl-list shadow'
-                  header={<div className='cl-list-header'>Event Details</div>}
-                  dataSource={[
-                    { title: 'Reg Start Date', content: viewEvent?.reg_start },
-                    { title: 'Reg End Date', content: viewEvent?.reg_end },
-                    { title: 'Event Date', content: viewEvent?.event_date },
-                    { title: 'Amount', content: `Rs. ${viewEvent?.event_price}` },
-                  ]}
-                  renderItem={(item) => (
-                    <List.Item className='cl-list-item'>
-                      <strong>{item.title}:</strong> {item.content}
-                    </List.Item>
-                  )}
-                />
-              </div>
-            </div>
-            <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
-              <Card className='cl-card shadow'>
-                <div className='card-content'>
-                  <div className='card-title'>Event Highlights</div>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: viewEvent?.highlight,
-                    }}
-                  />
-                </div>
-              </Card>
-
-              <Card className='cl-card shadow'>
-                <div className='card-content'>
-                  <div className='card-title'>Event Description</div>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: viewEvent?.description,
-                    }}
-                  />
-                </div>
-              </Card>
-            </div>
-          </div>
-        </>
-      </Modal>
+      <ViewEventModal
+        viewEventModalOpen={viewEventModalOpen}
+        closeViewEventModal={closeViewEventModal}
+        viewEvent={viewEvent}
+      />
       <Drawer
         title={
           <div
@@ -2129,8 +1957,7 @@ const EventsDashboardAdmin = () => {
             <span>Student List</span>
             <Button
               size='small'
-              type='default'
-              className='th-br-4 cl-button shadow'
+              className='secondary-button'
               onClick={closeStudentDrawer}
             >
               Close
@@ -2157,7 +1984,7 @@ const EventsDashboardAdmin = () => {
                     <Input
                       placeholder='Search Student Erp'
                       suffix={<SearchOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
-                      className='w-100 text-left th-black-1 th-br-4 shadow'
+                      className='w-100 text-left th-black-1 th-br-4'
                       onChange={(e) => {
                         const timeout = setTimeout(() => {
                           fetchStudentList({
@@ -2173,7 +2000,7 @@ const EventsDashboardAdmin = () => {
               </div>
               <div className='mt-2'>
                 <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
-                  <div className='shadow'>
+                  <div className=''>
                     <Table
                       className='cl-table'
                       rowClassName={(record, index) =>
