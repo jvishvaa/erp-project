@@ -164,19 +164,19 @@ const EventsDashboardStudent = () => {
 
   const columns = [
     {
-      title: <span className='th-white cl-12 th-fw-700'></span>,
+      title: <span className='th-white th-event-12 th-fw-700'></span>,
       align: 'center',
       render: (data, row, index) => (
-        <span className='th-black-1 cl-12'>
+        <span className='th-black-1 th-event-12'>
           {(currentPage - 1) * pageSize + index + 1}.
         </span>
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Event Name</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Event Name</span>,
       align: 'left',
       render: (data, row) => (
-        <span className='th-black-1 cl-12'>
+        <span className='th-black-1 th-event-12'>
           {row?.title && row?.title.length > 25
             ? row?.title.substring(0, 25) + '...'
             : row?.title}
@@ -184,20 +184,20 @@ const EventsDashboardStudent = () => {
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Reg. End Date</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Reg. End Date</span>,
       align: 'center',
       width: '15%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
-      render: (data, row) => <span className='th-black-1 cl-12'>{row?.reg_end}</span>,
+      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.reg_end}</span>,
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Event Date</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Event Date</span>,
       align: 'center',
       sorter: (a, b) => new Date(a.event_date) - new Date(b.event_date),
-      render: (data, row) => <span className='th-black-1 cl-12'>{row?.event_date}</span>,
+      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.event_date}</span>,
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Status</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
       align: 'center',
       render: (data, row) => (
         <>
@@ -209,7 +209,7 @@ const EventsDashboardStudent = () => {
                 alignItems: 'center',
               }}
             >
-              <Tag className='th-br-4 cl-canelled' icon={<CloseCircleOutlined />}>
+              <Tag className='th-br-4 th-event-canelled' icon={<CloseCircleOutlined />}>
                 Cancelled
               </Tag>
               <Popover
@@ -222,17 +222,17 @@ const EventsDashboardStudent = () => {
           ) : (
             <>
               {row?.subscription === 'pending' && (
-                <Tag className='th-br-4 cl-pending' icon={<ReloadOutlined />}>
+                <Tag className='th-br-4 th-event-pending' icon={<ReloadOutlined />}>
                   Not Subscribed Yet
                 </Tag>
               )}
               {row?.subscription === 'subscribed' && (
-                <Tag className='th-br-4 cl-approved' icon={<CheckCircleOutlined />}>
+                <Tag className='th-br-4 th-event-approved' icon={<CheckCircleOutlined />}>
                   Subscribed
                 </Tag>
               )}
               {row?.subscription === 'unsubscribed' && (
-                <Tag className='th-br-4 cl-canelled' icon={<CloseCircleOutlined />}>
+                <Tag className='th-br-4 th-event-canelled' icon={<CloseCircleOutlined />}>
                   Un Subscribed
                 </Tag>
               )}
@@ -242,7 +242,7 @@ const EventsDashboardStudent = () => {
       ),
     },
     {
-      title: <span className='th-white cl-12 th-fw-700'>Action</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
       align: 'center',
       key: 'action',
       render: (data, row) => {
@@ -273,7 +273,7 @@ const EventsDashboardStudent = () => {
                   >
                     <Popover placement='topRight' content='Subscribe Event'>
                       <Tag
-                        className='custom-tag cl-approved'
+                        className='custom-tag th-event-approved'
                         icon={<CheckCircleOutlined />}
                       >
                         Subscribe Event
@@ -293,7 +293,7 @@ const EventsDashboardStudent = () => {
                   >
                     <Popover placement='topRight' content='Un Subscribe Event'>
                       <Tag
-                        className='custom-tag cl-rejected'
+                        className='custom-tag th-event-rejected'
                         icon={<CloseCircleOutlined />}
                       >
                         Un Subscribe Event
@@ -345,7 +345,7 @@ const EventsDashboardStudent = () => {
             <Popover placement='bottomLeft' content='Next 07 days Events'>
               <Tag
                 className={`custom-tag ${
-                  selectedDays === 7 ? 'cl-days-active' : 'cl-days'
+                  selectedDays === 7 ? 'th-event-days-active' : 'th-event-days'
                 }`}
                 onClick={() =>
                   selectedDays === 7 ? setSelectedDays() : setSelectedDays(7)
@@ -358,7 +358,7 @@ const EventsDashboardStudent = () => {
             <Popover placement='bottomLeft' content='Next 15 days Events'>
               <Tag
                 className={`custom-tag ${
-                  selectedDays === 15 ? 'cl-days-active' : 'cl-days'
+                  selectedDays === 15 ? 'th-event-days-active' : 'th-event-days'
                 }`}
                 onClick={() =>
                   selectedDays === 15 ? setSelectedDays() : setSelectedDays(15)
@@ -372,7 +372,7 @@ const EventsDashboardStudent = () => {
               <Tag
                 size='small'
                 className={`custom-tag ${
-                  selectedDays === 30 ? 'cl-days-active' : 'cl-days'
+                  selectedDays === 30 ? 'th-event-days-active' : 'th-event-days'
                 }`}
                 onClick={() =>
                   selectedDays === 30 ? setSelectedDays() : setSelectedDays(30)
@@ -389,7 +389,7 @@ const EventsDashboardStudent = () => {
         <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
           <div className=''>
             <Table
-              className='cl-table'
+              className='th-event-table'
               rowClassName={(record, index) =>
                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
               }

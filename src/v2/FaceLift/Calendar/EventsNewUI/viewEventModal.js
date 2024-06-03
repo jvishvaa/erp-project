@@ -65,7 +65,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
           </div>
         }
         visible={viewEventModalOpen}
-        className='cl-modal-preview'
+        className='th-event-modal-preview'
         footer={null}
         onCancel={() => closeViewEventModal()}
         style={{
@@ -109,8 +109,8 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
               <div className='col-lg-4 col-md-5 col-sm-12 col-12'>
                 <List
                   size='small'
-                  className='cl-list'
-                  header={<div className='cl-list-header'>Event Details</div>}
+                  className='th-event-list'
+                  header={<div className='th-event-list-header'>Event Details</div>}
                   dataSource={[
                     { title: 'Reg Start Date', content: viewEvent?.reg_start },
                     { title: 'Reg End Date', content: viewEvent?.reg_end },
@@ -118,7 +118,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                     { title: 'Amount', content: `Rs. ${viewEvent?.event_price}` },
                   ]}
                   renderItem={(item) => (
-                    <List.Item className='cl-list-item'>
+                    <List.Item className='th-event-list-item'>
                       <strong>{item.title}:</strong> {item.content}
                     </List.Item>
                   )}
@@ -126,7 +126,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
               </div>
             </div>
             <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
-              <Card className='cl-card'>
+              <Card className='th-event-card'>
                 <div className='card-content'>
                   <div className='card-title'>Event Highlights</div>
                   <div
@@ -137,7 +137,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                 </div>
               </Card>
 
-              <Card className='cl-card'>
+              <Card className='th-event-card'>
                 <div className='card-content'>
                   <div className='card-title'>Event Description</div>
                   <div

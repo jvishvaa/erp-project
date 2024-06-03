@@ -44,35 +44,35 @@
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
   transform: translateY(-4px);
 }
-.cl-pending {
+.th-event-pending {
   border: 1px solid var(--pending-color) !important;
   color: var(--pending-color) !important;
 }
-.cl-pending-active {
+.th-event-pending-active {
   background: var(--pending-color) !important;
   color: var(--text-color) !important;
 }
-.cl-approved {
+.th-event-approved {
   border: 1px solid var(--approved-color) !important;
   color: var(--approved-color) !important;
 }
-.cl-approved-active {
+.th-event-approved-active {
   background: var(--approved-color) !important;
   color: var(--text-color) !important;
 }
-.cl-rejected {
+.th-event-rejected {
   border: 1px solid var(--rejected-color) !important;
   color: var(--rejected-color) !important;
 }
-.cl-rejected-active {
+.th-event-rejected-active {
   background: var(--rejected-color) !important;
   color: var(--text-color) !important;
 }
-.cl-cancelled {
+.th-event-cancelled {
   border: 1px solid var(--cancelled-color) !important;
   color: var(--cancelled-color) !important;
 }
-.cl-cancelled-active {
+.th-event-cancelled-active {
   background: var(--cancelled-color) !important;
   color: var(--text-color) !important;
 }
@@ -85,11 +85,11 @@
   font-weight: 700;
   color: var(--primary-color);
 }
-.cl-days {
+.th-event-days {
   border: 1px solid var(--primary-color) !important;
   color: var(--primary-color) !important;
 }
-.cl-days-active {
+.th-event-days-active {
   background: var(--primary-color) !important;
   color: var(--text-color) !important;
 }
@@ -173,50 +173,50 @@
 .color-cancelled {
   color: var(--cancelled-color) !important;
 }
-.cl-preview {
+.th-event-preview {
   border: 1px solid var(--preview-color) !important;
   color: var(--preview-color) !important;
 }
-.cl-view {
+.th-event-view {
   border: 1px solid var(--view-color) !important;
   color: var(--view-color) !important;
 }
-.cl-edit {
+.th-event-edit {
   border: 1px solid var(--edit-color) !important;
   color: var(--edit-color) !important;
 }
-.cl-grey {
+.th-event-grey {
   background: var(--list-bg-color);
 }
-/* .cl-button {
+/* .th-event-button {
   border: 1px solid #1890ff !important;
   color: #1890ff !important;
 } */
 
 /*******Reject or Cancel Modal********/
 
-.cl-modal .ant-modal-title {
+.th-event-modal .ant-modal-title {
   color: var(--text-color) !important;
   font-weight: 700 !important;
 }
-.cl-modal .ant-modal-close-x {
+.th-event-modal .ant-modal-close-x {
   display: none;
 }
-.cl-modal .ant-modal-header {
+.th-event-modal .ant-modal-header {
   border-radius: 4px 4px 0px 0px !important;
   padding: 4px 10px;
 }
-.cl-modal .ant-modal-footer {
+.th-event-modal .ant-modal-footer {
   border-radius: 0px 0px 4px 4px !important;
   padding: 4px 10px;
 }
-.cl-modal .ant-modal-content {
+.th-event-modal .ant-modal-content {
   border-radius: 4px !important;
 }
-.cl-modal-rejected .ant-modal-header {
+.th-event-modal-rejected .ant-modal-header {
   background: var(--rejected-color) !important;
 }
-.cl-modal-cancelled .ant-modal-header {
+.th-event-modal-cancelled .ant-modal-header {
   background: var(--cancelled-color) !important;
 }
 .reject-button {
@@ -232,46 +232,46 @@
 
 /*******Time Line Drawer********/
 
-.cl-drawer .ant-drawer-header {
+.th-event-drawer .ant-drawer-header {
   background: var(--drawer-header-bg-color) !important;
 }
-.cl-drawer .ant-drawer-title {
+.th-event-drawer .ant-drawer-title {
   color: var(--text-color) !important;
   font-weight: 700 !important;
 }
-.cl-drawer .ant-drawer-header {
+.th-event-drawer .ant-drawer-header {
   padding: 10px 10px;
 }
-.cl-drawer .ant-drawer-footer {
+.th-event-drawer .ant-drawer-footer {
   padding: 4px 10px;
 }
 
 /*******Create or Edit Drawer********/
 
-.cl-drawer-1-create .ant-drawer-header {
+.th-event-drawer-1-create .ant-drawer-header {
   background: var(--drawer-create-header-bg-color) !important;
 }
-.cl-drawer-1-edit .ant-drawer-header {
+.th-event-drawer-1-edit .ant-drawer-header {
   background: var(--drawer-edit-header-bg-color) !important;
 }
-.cl-drawer-1 .ant-drawer-title {
+.th-event-drawer-1 .ant-drawer-title {
   color: var(--text-color) !important;
   font-weight: 700 !important;
 }
-.cl-drawer-1 .ant-drawer-header {
+.th-event-drawer-1 .ant-drawer-header {
   padding: 4px 10px;
 }
-.cl-drawer-1 .ant-drawer-footer {
+.th-event-drawer-1 .ant-drawer-footer {
   padding: 4px 10px;
 }
-.cl-drawer-1 .ant-drawer-body {
+.th-event-drawer-1 .ant-drawer-body {
   padding: 0px !important;
 }
-.cl-drawer-1-add-button-create {
+.th-event-drawer-1-add-button-create {
   border: 1px solid var(--drawer-add-create-border-color) !important;
   color: var(--drawer-add-create-border-color) !important;
 }
-.cl-drawer-1-add-button-edit {
+.th-event-drawer-1-add-button-edit {
   border: 1px solid var(--drawer-add-edit-border-color) !important;
   color: var(--drawer-add-edit-border-color) !important;
 }
@@ -288,10 +288,10 @@
 
 /*******Preview Modal********/
 
-.cl-modal-preview .ant-modal-close-x {
+.th-event-modal-preview .ant-modal-close-x {
   display: none;
 }
-.cl-modal-preview .ant-modal-header {
+.th-event-modal-preview .ant-modal-header {
   background: var(--modal-bg-color) !important;
   border-radius: 4px 4px 0px 0px !important;
   padding: 4px 10px;
@@ -300,10 +300,10 @@
   top: 0;
   z-index: 1;
 }
-.cl-modal-preview .ant-modal-content {
+.th-event-modal-preview .ant-modal-content {
   border-radius: 4px !important;
 }
-.cl-card {
+.th-event-card {
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
@@ -311,58 +311,58 @@
   background-color: var(--card-bg-color);
   transition: box-shadow 0.3s ease-in-out;
 }
-.cl-card:hover {
+.th-event-card:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.cl-card .card-content {
+.th-event-card .card-content {
   font-family: 'Arial, sans-serif';
   color: var(--card-content-color);
   line-height: 1.6;
 }
-.cl-card .card-title {
+.th-event-card .card-title {
   font-size: 1.5em;
   font-weight: bold;
   margin-bottom: 10px;
   color: var(--card-title-color);
 }
-.cl-list {
+.th-event-list {
   border: 1px solid var(--list-border-color);
   border-radius: 8px;
   background-color: var(--list-bg-color);
   overflow: hidden;
 }
-.cl-list-header {
+.th-event-list-header {
   background-color: var(--list-header-bg-color);
   padding: 10px;
   border-bottom: 1px solid var(--list-border-color);
   font-weight: bold;
   font-size: 1.2em;
 }
-.cl-list .ant-list-header {
+.th-event-list .ant-list-header {
   padding: 0px;
 }
-.cl-list-item {
+.th-event-list-item {
   padding: 10px;
   border-bottom: 1px solid var(--list-border-color);
 }
 
-.cl-list-item:last-child {
+.th-event-list-item:last-child {
   border-bottom: none;
 }
 
 /*******Student List Drawer********/
 
-.cl-drawer-2 .ant-drawer-header {
+.th-event-drawer-2 .ant-drawer-header {
   background: var(--view-color) !important;
 }
-.cl-drawer-2 .ant-drawer-title {
+.th-event-drawer-2 .ant-drawer-title {
   color: var(--text-color) !important;
   font-weight: 700 !important;
 }
-.cl-drawer-2 .ant-drawer-header {
+.th-event-drawer-2 .ant-drawer-header {
   padding: 10px 10px;
 }
-.cl-drawer-2 .ant-drawer-footer {
+.th-event-drawer-2 .ant-drawer-footer {
   padding: 4px 10px;
 }
 
@@ -378,33 +378,33 @@
   border-radius: 4px;
   background-color: var(--list-bg-color);
 }
-.cl-form .ant-form-item {
+.th-event-form .ant-form-item {
   margin-bottom: 0px !important;
 }
-.cl-table .ant-table-thead > tr > th {
+.th-event-table .ant-table-thead > tr > th {
   padding: 4px 10px;
 }
-.cl-table .ant-table-tbody > tr > td {
+.th-event-table .ant-table-tbody > tr > td {
   padding: 4px 10px;
 }
-.cl-table .ant-table-cell-scrollbar:not([rowspan]) {
+.th-event-table .ant-table-cell-scrollbar:not([rowspan]) {
   box-shadow: none;
 }
-.cl-table .ant-table-container table > thead > tr:first-child th:first-child {
+.th-event-table .ant-table-container table > thead > tr:first-child th:first-child {
   border-top-left-radius: 4px !important;
 }
-.cl-table .ant-table-container table > thead > tr:first-child th:last-child {
+.th-event-table .ant-table-container table > thead > tr:first-child th:last-child {
   border-top-right-radius: 4px !important;
 }
-.cl-table {
+.th-event-table {
   border: 1px solid var(--table-border-color);
   border-collapse: collapse;
   padding: 0 !important;
 }
-.cl-table .ant-table {
+.th-event-table .ant-table {
   font-size: 22px !important;
 }
-.cl-12 {
+.th-event-12 {
   font-size: 14px;
 }
 ::-webkit-scrollbar {
