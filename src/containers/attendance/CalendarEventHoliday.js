@@ -19,8 +19,8 @@ import {
   Badge,
   Popover,
 } from 'antd';
-import EventsDashboardStudent from './EventsNewUI/EventsDashboardStudent';
-import EventsDashboardAdmin from './EventsNewUI/EventsDashboardAdmin';
+import EventsDashboardStudent from 'v2/FaceLift/Calendar/EventsNewUI/EventsDashboardStudent';
+import EventsDashboardAdmin from 'v2/FaceLift/Calendar/EventsNewUI/EventsDashboardAdmin';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import HolidayIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/holidayNew.png';
 import EventIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/eventNew.png';
