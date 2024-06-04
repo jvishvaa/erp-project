@@ -481,6 +481,8 @@ import CreateNoAcademicStaff from 'v2/FaceLift/UserManagement/Staff/createNonAca
 import PrincipalDashboardTableActivity from 'containers/newBlog/PrincipalDashboardTableActivity';
 import SubjectWiseRatings from 'containers/newBlog/CreateRating/SubjectWiseRatings';
 import ErpAdminViewClassv2 from 'v2/FaceLift/OnlineClass/ErpViewClass';
+import VideoObservation from 'containers/observation/video-observation';
+import AddVideoObservation from 'containers/observation/add-video-observation'
 // import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
@@ -1503,7 +1505,7 @@ const V1Router = [
   <Route exact path='/blog/create'>
     {({ match }) => <AdminCreateBlog match={match} />}
   </Route>,
-  <Route exact path='/blog/wall'>
+  <Route exact path='/school-wall'>
     {({ match }) => <BlogWall match={match} />}
   </Route>,
   <Route exact path='/blog/wall/redirect'>
@@ -1854,6 +1856,12 @@ const V1Router = [
   <Route path='/create-subject-wise-rating'>
     {({ match }) => <SubjectWiseRatings match={match} />}
   </Route>,
+  <Route path='/assign-video-observation'>
+  {({ match }) => <VideoObservation match={match} />}
+  </Route>,
+    <Route path='/add-video-observation'>
+    {({ match }) => <AddVideoObservation match={match} />}
+    </Route>,
   //   <Route path='/pptview'>
   //   {({ match }) => <PPTView match={match} />}
   // </Route>,
