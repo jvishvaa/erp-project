@@ -1505,7 +1505,7 @@ const V1Router = [
   <Route exact path='/blog/create'>
     {({ match }) => <AdminCreateBlog match={match} />}
   </Route>,
-  <Route exact path='/blog/wall'>
+  <Route exact path='/school-wall'>
     {({ match }) => <BlogWall match={match} />}
   </Route>,
   <Route exact path='/blog/wall/redirect'>

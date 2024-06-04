@@ -70,7 +70,7 @@ const UploadModalBlog = (props) => {
           message.success(res?.data?.message);
           setFileList([]);
           props.handleClose();
-          history.push('/blog/wall');
+          history.push('/school-wall');
         }
       })
       .catch((e) => {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import './blog.css';
-import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import './styles.scss';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -1848,85 +1847,80 @@ const BlogWall = () => {
   };
   return (
     <React.Fragment>
-      <Layout>
-        {''}
-        <div className='row th-16 align-items-center px-2'>
-          <div className='col-md-8'>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item className='th-black-1 th-16'>School Wall</Breadcrumb.Item>
-            </Breadcrumb>
+      <div className='row th-16 align-items-center px-2'>
+        <div className='col-md-8'>
+          <Breadcrumb separator='>'>
+            <Breadcrumb.Item className='th-black-1 th-16'>School Wall</Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
+        {user_level == '13' || user_level == '10' ? (
+          ''
+        ) : (
+          <div className='col-md-4 text-right'>
+            <Button
+              icon={<FormOutlined />}
+              className='th-button-active th-br-6 text-truncate th-pointer'
+              onClick={() => history.push(`/create-post-activity`)}
+            >
+              Create Post Activity
+            </Button>
           </div>
-          {user_level == '13' || user_level == '10' ? (
-            ''
-          ) : (
-            <div className='col-md-4 text-right'>
-              <Button
-                icon={<FormOutlined />}
-                className='th-button-active th-br-6 text-truncate th-pointer'
-                onClick={() => history.push(`/create-post-activity`)}
-              >
-                Create Post Activity
-              </Button>
-            </div>
-          )}
-          <div className='col-12 my-2'>
-            <img src={BlogWallImage} alt='icon' className='post-redirect-card' />
-          </div>
+        )}
+        <div className='col-12 my-2'>
+          <img src={BlogWallImage} alt='icon' className='post-redirect-card' />
+        </div>
 
-          <div className='row mt-3'>
-            <div className='col-12 '>
-              <div className='d-flex align-items-center justify-content-between flex-wrap'>
-                <div className='d-flex justify-content-start align-items-center flex-wrap'>
-                  {categoriesFilter === 'Posts' || categoriesFilter === 'Blogs' ? (
-                    <>
-                      <div className=' th-black-2 th-fw-500 mr-2'>Select Level</div>
-                      <div className=''>
-                        <div className='d-flex justify-content-between align-items-center flex-wrap'>
-                          {levels?.map((item, index) => (
-                            <div className='mx-1'>
-                              {item.visible && (
-                                <Button
-                                  onClick={() => onChangeTab(index + 1)}
-                                  className={`${
-                                    showTab == index + 1
-                                      ? 'th-button-active'
-                                      : 'th-button'
-                                  } th-br-5 mb-2 mb-sm-0`}
-                                >
-                                  {item.name}
-                                </Button>
-                              )}
-                            </div>
-                          ))}
-                        </div>
+        <div className='row mt-3'>
+          <div className='col-12 '>
+            <div className='d-flex align-items-center justify-content-between flex-wrap'>
+              <div className='d-flex justify-content-start align-items-center flex-wrap'>
+                {categoriesFilter === 'Posts' || categoriesFilter === 'Blogs' ? (
+                  <>
+                    <div className=' th-black-2 th-fw-500 mr-2'>Select Level</div>
+                    <div className=''>
+                      <div className='d-flex justify-content-between align-items-center flex-wrap'>
+                        {levels?.map((item, index) => (
+                          <div className='mx-1'>
+                            {item.visible && (
+                              <Button
+                                onClick={() => onChangeTab(index + 1)}
+                                className={`${
+                                  showTab == index + 1 ? 'th-button-active' : 'th-button'
+                                } th-br-5 mb-2 mb-sm-0`}
+                              >
+                                {item.name}
+                              </Button>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    </>
-                  ) : null}
-                </div>
-                <div className='d-flex my-2 my-md-2'>
-                  <div className='d-flex align-items-center justify-content-between'>
-                    <div className=' th-black-2 th-fw-500 mr-2'>Select Category</div>
-                    <div>
-                      <Select
-                        value={categoriesFilter}
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        dropdownMatchSelectWidth={false}
-                        onChange={handleChange}
-                        className='w-100 text-left th-black-1 th-bg-grey th-br-4'
-                        placement='bottomRight'
-                      >
-                        {categoryOptions}
-                      </Select>
                     </div>
+                  </>
+                ) : null}
+              </div>
+              <div className='d-flex my-2 my-md-2'>
+                <div className='d-flex align-items-center justify-content-between'>
+                  <div className=' th-black-2 th-fw-500 mr-2'>Select Category</div>
+                  <div>
+                    <Select
+                      value={categoriesFilter}
+                      getPopupContainer={(trigger) => trigger.parentNode}
+                      dropdownMatchSelectWidth={false}
+                      onChange={handleChange}
+                      className='w-100 text-left th-black-1 th-bg-grey th-br-4'
+                      placement='bottomRight'
+                    >
+                      {categoryOptions}
+                    </Select>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className='col-12 px-0 px-sm-2'>{PostContent()}</div>
           </div>
+
+          <div className='col-12 px-0 px-sm-2'>{PostContent()}</div>
         </div>
-      </Layout>
+      </div>
     </React.Fragment>
   );
 };
