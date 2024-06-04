@@ -9,6 +9,7 @@ import {
   Tag,
   DatePicker,
   notification,
+  Tooltip,
 } from 'antd';
 import {
   EyeOutlined,
@@ -33,6 +34,9 @@ const EventsDashboardStudent = () => {
   const { RangePicker } = DatePicker;
   const branch = sessionStorage.getItem('selected_branch')
     ? JSON.parse(sessionStorage.getItem('selected_branch'))
+    : '';
+  const session_year = sessionStorage.getItem('acad_session')
+    ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
     : '';
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState();
@@ -78,6 +82,7 @@ const EventsDashboardStudent = () => {
       end_date: values?.date_filter?.length
         ? values?.date_filter[1].format('YYYY-MM-DD')
         : moment().add(10, 'days').format('YYYY-MM-DD'),
+      current_session: session_year,
     };
     axiosInstance
       .get(`${endpoints.eventsDashboard.eventsListApi}`, {
@@ -223,12 +228,16 @@ const EventsDashboardStudent = () => {
               <Tag className='th-br-4 th-event-canelled' icon={<CloseCircleOutlined />}>
                 Cancelled
               </Tag>
-              <Popover
-                placement='topRight'
-                content='Event got cancelled due to unforeseen circumstances. Your full amount will be refunded to your wallet'
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomRight'
+                title={
+                  'Event got cancelled due to unforeseen circumstances. Your full amount will be refunded to your wallet'
+                }
+                overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
               >
                 <InfoCircleTwoTone />
-              </Popover>
+              </Tooltip>
             </div>
           ) : (
             <>
