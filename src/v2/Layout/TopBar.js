@@ -1059,9 +1059,9 @@ const Appbar = ({ children, history, ...props }) => {
                   // onClick={handleMobileMenuOpen}
                   color='inherit'
                 > */}
-                  {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
-                   */}
-                  {/* <Link to='/acad-calendar'>
+                {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
+                 */}
+                {/* <Link to='/acad-calendar'>
                     {window.location.pathname.includes('/acad-calendar') ? (
                       <img src={AcadCalendarIcon} width='20px' height='20px' />
                     ) : (
@@ -1142,17 +1142,19 @@ const Appbar = ({ children, history, ...props }) => {
                         </div>
                       }
                     >
-                      <div
-                        className='th-primary d-flex align-items-center th-pointer px-1'
-                        onClick={() => {
-                          if (localStorage.getItem('storewalletLocal') === null) {
-                            handleWalletCLick();
-                          }
-                        }}
-                      >
-                        {/* <WalletOutlined className='th-20 px-1' /> */}
-                        <img width='24px' src={WalletIcon} />
-                      </div>
+                      <Tooltip title='Wallet'>
+                        <div
+                          className='th-primary d-flex align-items-center th-pointer px-1'
+                          onClick={() => {
+                            if (localStorage.getItem('storewalletLocal') === null) {
+                              handleWalletCLick();
+                            }
+                          }}
+                        >
+                          {/* <WalletOutlined className='th-20 px-1' /> */}
+                          <img width='24px' src={WalletIcon} />
+                        </div>
+                      </Tooltip>
                     </Popover>
                   ) : (
                     ''
@@ -1213,31 +1215,35 @@ const Appbar = ({ children, history, ...props }) => {
                       </div>
                     </Popover>
                   )}
-                  <IconButton
-                    className='py-2 th-icon-no-hover'
-                    aria-label='show more'
-                    aria-controls={mobileMenuId}
-                    aria-haspopup='true'
-                    onClick={handleMobileMenuOpen}
-                    color='inherit'
-                  >
-                    {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} /> */}
+                  <Tooltip title='Profile'>
+                    <IconButton
+                      className='py-2 th-icon-no-hover'
+                      aria-label='show more'
+                      aria-controls={mobileMenuId}
+                      aria-haspopup='true'
+                      onClick={handleMobileMenuOpen}
+                      color='inherit'
+                    >
+                      {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} /> */}
 
-                    {/* {profileDetails?.is_verified ? (
+                      {/* {profileDetails?.is_verified ? (
                       <Typography>
                         {profile}
                         <KeyboardArrowDownIcon />
                       </Typography>
                     ) : ( */}
-                    <img
-                      width='20px'
-                      height='20px'
-                      src={
-                        roleDetails?.user_profile ? roleDetails?.user_profile : StaffIcon
-                      }
-                    />
-                    {/* )} */}
-                  </IconButton>
+                      <img
+                        width='20px'
+                        height='20px'
+                        src={
+                          roleDetails?.user_profile
+                            ? roleDetails?.user_profile
+                            : StaffIcon
+                        }
+                      />
+                      {/* )} */}
+                    </IconButton>
+                  </Tooltip>
                 </div>
               </>
             )}

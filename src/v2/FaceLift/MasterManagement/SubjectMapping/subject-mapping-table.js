@@ -36,6 +36,7 @@ const SubjectMappingTable = () => {
   const [filterForm] = useForm();
   const [formRef] = useForm();
   const sessionYearList = JSON.parse(sessionStorage.getItem('acad_session_list'));
+  const session_year = JSON.parse(sessionStorage.getItem('acad_session'));
   const [loading, setLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -50,7 +51,7 @@ const SubjectMappingTable = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [multiActionKey, setMultiActionKey] = useState('');
   // for filter api - as it seeks name of the params
-  const [sessionYear, setSessionYear] = useState();
+  const [sessionYear, setSessionYear] = useState(session_year?.session_year);
   const [branch, setBranch] = useState();
   const [grade, setGrade] = useState([]);
   // for side drawer
@@ -71,6 +72,12 @@ const SubjectMappingTable = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
+  }, []);
+  useEffect(() => {
+    filterForm.setFieldsValue({
+      session_year: session_year?.id,
+    });
+    fetchBranchList();
   }, []);
   useEffect(() => {
     fetchTableData();
@@ -706,6 +713,7 @@ const SubjectMappingTable = () => {
                         );
                       }}
                       onChange={(e, val) => handleSessionYearChange(val)}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {sessionYearOptions}
@@ -728,6 +736,7 @@ const SubjectMappingTable = () => {
                         );
                       }}
                       onChange={(e, val) => handleBranchChange(val)}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {branchOptions}
@@ -752,6 +761,7 @@ const SubjectMappingTable = () => {
                         );
                       }}
                       onChange={(e, val) => handleGradeChange(val)}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {gradeOptions}
@@ -1000,6 +1010,7 @@ const SubjectMappingTable = () => {
                         );
                       }}
                       onChange={handleSessionYearChangeDrawer}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {sessionYearOptions}
@@ -1029,6 +1040,7 @@ const SubjectMappingTable = () => {
                         );
                       }}
                       onChange={handleBranchChangeDrawer}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {branchOptionsDrawer}
@@ -1060,6 +1072,7 @@ const SubjectMappingTable = () => {
                         );
                       }}
                       onChange={handleGradeChangeDrawer}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {gradeOptionsDrawer}
@@ -1090,6 +1103,7 @@ const SubjectMappingTable = () => {
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {sectionOptionsDrawer}
@@ -1120,6 +1134,7 @@ const SubjectMappingTable = () => {
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {allSubjectOptionsDrawer}

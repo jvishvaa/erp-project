@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Card, Modal, List } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Button, Card, Modal, List, Row, Col } from 'antd';
+import { DownloadOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import './eventsDashboard.css';
 import Slider from 'react-slick';
 import MediaDisplay from './mediaDisplayEvents';
@@ -47,34 +47,41 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
     <>
       <Modal
         title={
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <span>{viewEvent?.title}</span>
-            <Button
-              size='small'
-              className='secondary-button'
-              onClick={closeViewEventModal}
-            >
-              Close
-            </Button>
+          <div className='d-flex justify-content-between align-items-center'>
+            <div>{viewEvent?.title}</div>
+            <div>
+              <CloseSquareOutlined
+                style={{ fontSize: '22px' }}
+                onClick={closeViewEventModal}
+              />
+            </div>
           </div>
         }
         visible={viewEventModalOpen}
         className='th-event-modal-preview'
-        footer={null}
+        footer={[
+          <Row justify='space-around'>
+            <Col>
+              <Button
+                size='small'
+                className='secondary-button drawer-modal-footer-button'
+                onClick={closeViewEventModal}
+              >
+                Close
+              </Button>
+            </Col>
+          </Row>,
+        ]}
         onCancel={() => closeViewEventModal()}
         style={{
-          top: '1%',
+          top: '0%',
+          height: '100%',
+          bottom: '0%',
         }}
         width='90%'
       >
         <>
-          <div className='row mt-2 mb-2'>
+          <div className='row'>
             <div className='row col-lg-12 col-md-12 col-sm-12 col-12'>
               <div className='col-lg-8 col-md-7 col-sm-8 col-12'>
                 {viewEvent?.attachments?.length > 0 ? (
@@ -94,8 +101,8 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                 {viewEvent?.attachments?.length > 0 && (
                   <div className='text-right'>
                     <Button
-                      type='link'
-                      className='th-10'
+                      size='small'
+                      className='secondary-button'
                       icon={<DownloadOutlined />}
                       onClick={() => {
                         handleDownloadAll(viewEvent?.attachments);
@@ -115,7 +122,12 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                     { title: 'Reg Start Date', content: viewEvent?.reg_start },
                     { title: 'Reg End Date', content: viewEvent?.reg_end },
                     { title: 'Event Date', content: viewEvent?.event_date },
-                    { title: 'Amount', content: `Rs. ${viewEvent?.event_price}` },
+                    {
+                      title: 'Amount',
+                      content: viewEvent?.event_price
+                        ? `Rs. ${viewEvent?.event_price}`
+                        : 'Nill',
+                    },
                   ]}
                   renderItem={(item) => (
                     <List.Item className='th-event-list-item'>
@@ -136,7 +148,6 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                   />
                 </div>
               </Card>
-
               <Card className='th-event-card'>
                 <div className='card-content'>
                   <div className='card-title'>Event Description</div>
