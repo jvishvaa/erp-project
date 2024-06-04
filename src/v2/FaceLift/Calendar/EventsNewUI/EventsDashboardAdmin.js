@@ -560,6 +560,10 @@ const EventsDashboardAdmin = () => {
     }
     setSelectedTag();
     setSelectedDays();
+    filterForm.setFieldsValue({
+      date_filter: [moment(), moment().add(10, 'days')],
+    });
+    handleFetchTableData();
   };
   const openFeedBackModal = ({ key, id }) => {
     setId(id);
@@ -1123,14 +1127,17 @@ const EventsDashboardAdmin = () => {
               tableData?.counts?.live || ''
             }`}</span>
           </Tag>
-          <Button
-            size='small'
-            className='primary-button create-button'
-            icon={<PlusCircleOutlined />}
-            onClick={() => openEventDrawer({ key: 'create' })}
-          >
-            Create Event
-          </Button>
+          {[10, 14, 34].includes(user_level) ||
+            (is_central_user && (
+              <Button
+                size='small'
+                className='primary-button create-button'
+                icon={<PlusCircleOutlined />}
+                onClick={() => openEventDrawer({ key: 'create' })}
+              >
+                Create Event
+              </Button>
+            ))}
         </div>
       </div>
       <div className='row'>
