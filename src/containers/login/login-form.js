@@ -15,6 +15,7 @@ import axiosInstance from 'config/axios';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import endpointsV2 from 'v2/config/endpoints';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 function LoginForm(props) {
   const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;
@@ -139,7 +140,8 @@ function LoginForm(props) {
                 history.push('/profile');
               }
               userData['erp_config'] = erpConfig;
-              localStorage.setItem('userDetails', JSON.stringify(userData));
+              localStorage.setItem('userDetails', JSON.stringify(userData));              
+              TrackerHandler('user_login');
               window.location.reload();
             });
           }

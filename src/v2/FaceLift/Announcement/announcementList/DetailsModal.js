@@ -15,6 +15,7 @@ import excelFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/excelF
 import pdfFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/pdfFileIcon.svg';
 import moment from 'moment';
 import '../index.css';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const DetailsModal = (props) => {
   const carousel = useRef();
@@ -155,6 +156,9 @@ const DetailsModal = (props) => {
               // message.success(res?.data?.message);
               props.handleClose();
               message.success('Announcement Published Successfully');
+              TrackerHandler('announcement_created', {
+                status: 'publish',
+              });
               props.setTab(3);
               // setIsVerifed(true);
             } else {

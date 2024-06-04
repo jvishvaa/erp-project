@@ -10,6 +10,7 @@ import { UserOutlined } from '@ant-design/icons';
 import LetsEduvateLogo from '../../assets/images/logo.png';
 import axios from 'axios';
 import endpointsV2 from 'v2/config/endpoints';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const UserProfiles = () => {
   const history = useHistory();
@@ -122,6 +123,7 @@ const UserProfiles = () => {
               }
               userData['erp_config'] = erpConfig;
               localStorage.setItem('userDetails', JSON.stringify(userData));
+              TrackerHandler('user_login');
               window.location.reload();
             });
           } else {

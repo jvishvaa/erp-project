@@ -63,8 +63,7 @@ import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
 import { getFileIcon } from 'v2/getFileIcon';
 import { domain_name } from '../../../commonDomain';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
-import mixpanel from 'mixpanel-browser';
-mixpanel.init('1a74c2c62a329aabf4eabc67877909b7');
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -1466,12 +1465,6 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                       // setCurrentPeriodId(each?.id);
                                       // showDrawer();
                                       fetchLessonResourcesData(each);
-                                      mixpanel.track('LP/P/Resources', {
-                                        user_level,
-                                        erp,
-                                        email,
-                                        first_name,
-                                      });
                                     }}
                                   >
                                     View Resources &gt;
@@ -1654,12 +1647,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                 },
                                               ],
                                             });
-                                            mixpanel.track('LP/P/Resources/view', {
-                                              user_level,
-                                              erp,
-                                              email,
-                                              first_name,
-                                              fileName,
+                                            TrackerHandler('lp_resources_view', {
+                                              view_type: 'lesson plan',
                                             });
                                           }}
                                           rel='noopener noreferrer'
@@ -1682,6 +1671,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                   extension: '.' + extension,
                                                 },
                                               ],
+                                            });
+                                            TrackerHandler('lp_resources_view', {
+                                              view_type: 'lesson plan',
                                             });
                                           }}
                                           rel='noopener noreferrer'
@@ -2651,7 +2643,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                 <div className='text-center'>
                   <Button
                     type='default'
-                    onClick={handleNextPeriodResource}
+                    onClick={() => {
+                      handleNextPeriodResource();
+                    }}
                     className='my-1 th-primary th-bg-grey'
                   >
                     Resources <RightCircleOutlined />

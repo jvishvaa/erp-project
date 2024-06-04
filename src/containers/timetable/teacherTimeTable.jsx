@@ -11,6 +11,7 @@ import Loader from './../../components/loader/loader';
 import TeacherDetailsDialogue from './teacherDetailsDialogue';
 import { AlertNotificationContext } from './../../context-api/alert-context/alert-state';
 import { useSelector } from 'react-redux';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const TeacherTimeTable = () => {
   const history = useHistory();
@@ -113,6 +114,9 @@ const TeacherTimeTable = () => {
       })
       .finally(() => {
         setLoading(false);
+        TrackerHandler('lp_resources_view', {
+          view_type: 'annual plan',
+        });
       });
   }, []);
 

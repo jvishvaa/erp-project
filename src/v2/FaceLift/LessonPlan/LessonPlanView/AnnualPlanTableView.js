@@ -59,6 +59,7 @@ import moment from 'moment';
 import { getFileIcon } from 'v2/getFileIcon';
 import { domain_name } from '../../../commonDomain';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -1436,6 +1437,9 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                 },
                                               ],
                                             });
+                                            TrackerHandler('lp_resources_view', {
+                                              view_type: 'annual plan',
+                                            });
                                           }}
                                           rel='noopener noreferrer'
                                           target='_blank'
@@ -1457,6 +1461,9 @@ const TableView = ({ showTab, initAddQuestionPaperToTest }) => {
                                                   extension: '.' + extension,
                                                 },
                                               ],
+                                            });
+                                            TrackerHandler('lp_resources_view', {
+                                              view_type: 'annual plan',
                                             });
                                           }}
                                           rel='noopener noreferrer'
