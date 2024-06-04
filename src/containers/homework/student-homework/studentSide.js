@@ -43,6 +43,7 @@ import HomeworkSubmissionNew from './studenthwsubmission';
 import GrievanceModal from 'v2/FaceLift/myComponents/GrievanceModal';
 import Loader from 'components/loader/loader';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
@@ -527,6 +528,9 @@ const StudentHomeworkNew = withRouter(
     };
 
     const handleHw = (item, tab) => {
+      TrackerHandler('homework_view', {
+        title: item?.homework_name,
+      });
       setDeuDate(item?.last_submission_dt);
       setHwSelect(true);
       if (tab == 1 || tab == 2) {
@@ -1057,7 +1061,9 @@ const StudentHomeworkNew = withRouter(
                                         margin: '0 auto',
                                         cursor: 'pointer',
                                       }}
-                                      onClick={() => handleHw(item, segment)}
+                                      onClick={() => {
+                                        handleHw(item, segment);
+                                      }}
                                     >
                                       <Tooltip title={item?.homework__homework_name}>
                                         <div className='th-14 text-truncate w-75'>

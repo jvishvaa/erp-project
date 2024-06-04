@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import publishIcon from 'v2/Assets/dashboardIcons/announcementListIcons/publishIcon.svg';
 import deleteIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/deleteIcon.svg';
 import moment from 'moment';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const ListCard = (props) => {
   const {
@@ -16,7 +17,7 @@ const ListCard = (props) => {
     content,
     created_time: date,
     is_flash_event,
-    created_by_user_level
+    created_by_user_level,
   } = props.data;
   const { showTab, deleteAnnouncement } = props;
   const [showModal, setShowModal] = useState(false);
@@ -97,6 +98,7 @@ const ListCard = (props) => {
           } col-5 text-truncate th-pointer`}
           style={{ width: '95%' }}
           onClick={() => {
+            TrackerHandler('announcement_view', { title });
             setShowModal(true);
           }}
         >
@@ -148,7 +150,8 @@ const ListCard = (props) => {
                 </div>
               ) : null}
               {showTab == 2 ||
-              ([1, 3].includes(parseInt(showTab)) && (is_superuser || [1].includes(user_level))) ? (
+              ([1, 3].includes(parseInt(showTab)) &&
+                (is_superuser || [1].includes(user_level))) ? (
                 <>
                   <Popconfirm
                     title='Sure to delete?'
@@ -168,7 +171,8 @@ const ListCard = (props) => {
                 </>
               ) : null}
               {showTab == 2 ||
-              ([1, 3].includes(parseInt(showTab)) && (is_superuser || [1, 8].includes(user_level))) ? (
+              ([1, 3].includes(parseInt(showTab)) &&
+                (is_superuser || [1, 8].includes(user_level))) ? (
                 <>
                   <Link
                     to={{

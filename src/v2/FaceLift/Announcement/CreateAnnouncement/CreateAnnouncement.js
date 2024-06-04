@@ -25,6 +25,7 @@ import MembersModal from './MembersModal';
 import { useHistory } from 'react-router-dom';
 import { Profanity } from 'components/file-validation/Profanity.js';
 import moment from 'moment';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const { Option } = Select;
 
@@ -613,6 +614,9 @@ const CreateAnnouncement = (props) => {
                 : 'Announcement Published Successfully'
             );
             setLoading(false);
+            TrackerHandler('announcement_created', {
+              status: asDraft ? 'draft' : 'publish',
+            });
             history.push('/announcement-list');
           }
         })

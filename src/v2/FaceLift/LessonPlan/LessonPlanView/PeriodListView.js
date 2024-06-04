@@ -63,6 +63,8 @@ import hwIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/hwIcon.png';
 import { getFileIcon } from 'v2/getFileIcon';
 import { domain_name } from '../../../commonDomain';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
+
 const { Option } = Select;
 const { Panel } = Collapse;
 
@@ -77,7 +79,8 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const { user_level, user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_level, user_id, erp, email, first_name } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [gradeName, setGradeName] = useState('');
   const [gradeId, setGradeId] = useState();
   const [subjectName, setSubjectName] = useState('');
@@ -1644,6 +1647,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                 },
                                               ],
                                             });
+                                            TrackerHandler('lp_resources_view', {
+                                              view_type: 'lesson plan',
+                                            });
                                           }}
                                           rel='noopener noreferrer'
                                           target='_blank'
@@ -1665,6 +1671,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                                                   extension: '.' + extension,
                                                 },
                                               ],
+                                            });
+                                            TrackerHandler('lp_resources_view', {
+                                              view_type: 'lesson plan',
                                             });
                                           }}
                                           rel='noopener noreferrer'
@@ -2634,7 +2643,9 @@ const PeriodListView = ({ initAddQuestionPaperToTest }) => {
                 <div className='text-center'>
                   <Button
                     type='default'
-                    onClick={handleNextPeriodResource}
+                    onClick={() => {
+                      handleNextPeriodResource();
+                    }}
                     className='my-1 th-primary th-bg-grey'
                   >
                     Resources <RightCircleOutlined />
