@@ -1192,8 +1192,12 @@ const Layout = ({ children, history }) => {
         history.push('/blog/activityreview');
         break;
       }
+      // case 'Create Rating': {
+      //   history.push('/blog/createratingtype');
+      //   break;
+      // }
       case 'Create Rating': {
-        history.push('/blog/createratingtype');
+        history.push('/create-subject-wise-rating');
         break;
       }
 
@@ -1276,6 +1280,10 @@ const Layout = ({ children, history }) => {
       }
       case 'FAQ': {
         history.push('/frequently-asked-questions');
+        break;
+      }
+      case 'Assign Video Observation':{
+        history.push('/assign-video-observation')
         break;
       }
 

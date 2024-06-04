@@ -81,6 +81,7 @@ const resolveMenu = (url) => {
   if (url.includes('ManagePayments')) return 'Finance';
   if (url.includes('blog')) return 'Activity Management';
   if (url.includes('activity-management')) return 'Activity Management';
+  if (url.includes('create-subject-wise-rating')) return 'Activity Management';
   if (url.includes('course-list')) return 'Master Management';
   if (url.includes('user-level-table')) return 'User Management';
   if (url.includes('virtual-school')) return 'User Management';
@@ -95,7 +96,7 @@ const resolveMenu = (url) => {
   if (url.includes('studentwallet')) return 'Student Wallet';
   if (url.includes('curriculum-completion-student-subject')) return 'Lesson Plan';
   if (url.includes('frequently-asked-questions')) return 'FAQ';
-
+  if (url.includes('assign-video-observation')) return 'Assign Video Observation';
   // if (url.includes('Appointment')) return 'Appointments';
   return null;
 };

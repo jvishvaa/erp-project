@@ -533,7 +533,7 @@ svg {
 }
 .th-media-display {
   video {
-    height: 200px;
+    height: 220px;
   }
   audio {
     height: 130px;
@@ -566,7 +566,7 @@ svg {
 }
 
 .th-post-content > * {
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 5;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;

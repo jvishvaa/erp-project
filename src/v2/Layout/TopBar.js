@@ -959,13 +959,15 @@ const Appbar = ({ children, history, ...props }) => {
             (userData?.is_superuser == true && isOrchids) ? (
               <>
                 {isMobile ? null : (
-                  <IconButton
-                    className={classes.grow}
-                    style={{ margin: '0' }}
-                    onClick={handlecvbox}
-                  >
-                    <img src={CVbox} width='24px' />
-                  </IconButton>
+                  <Tooltip title='Redirect to CVBox'>
+                    <IconButton
+                      className={classes.grow}
+                      style={{ margin: '0' }}
+                      onClick={handlecvbox}
+                    >
+                      <img src={CVbox} width='24px' />
+                    </IconButton>
+                  </Tooltip>
                 )}
               </>
             ) : (
@@ -984,13 +986,15 @@ const Appbar = ({ children, history, ...props }) => {
                 {apps?.finance == true ? (
                   <>
                     {isMobile ? null : (
-                      <IconButton
-                        className={classes.grow}
-                        style={{ margin: '0' }}
-                        onClick={handleFinance}
-                      >
-                        <img src={RupeeSymbol} width='24px' />
-                      </IconButton>
+                      <Tooltip title='Redirect to Finance'>
+                        <IconButton
+                          className={classes.grow}
+                          style={{ margin: '0' }}
+                          onClick={handleFinance}
+                        >
+                          <img src={RupeeSymbol} width='24px' />
+                        </IconButton>
+                      </Tooltip>
                     )}
                   </>
                 ) : (
@@ -1008,13 +1012,15 @@ const Appbar = ({ children, history, ...props }) => {
             userData?.is_superuser == true ? (
               <>
                 {isMobile ? null : (
-                  <IconButton
-                    className={classes.grow}
-                    style={{ margin: '0' }}
-                    onClick={handleTicket}
-                  >
-                    <LiveHelpIcon />
-                  </IconButton>
+                  <Tooltip title='Grievances'>
+                    <IconButton
+                      className={classes.grow}
+                      style={{ margin: '0' }}
+                      onClick={handleTicket}
+                    >
+                      <LiveHelpIcon />
+                    </IconButton>
+                  </Tooltip>
                 )}
               </>
             ) : (
@@ -1043,40 +1049,42 @@ const Appbar = ({ children, history, ...props }) => {
                 >
                   <img src={MusicIcon} width='20px' height='20px' />
                 </IconButton> */}
-                <IconButton
+                {/* <IconButton
                   className='py-2 th-icon-no-hover'
                   aria-label='show more'
                   aria-controls={mobileMenuId}
                   aria-haspopup='true'
                   // onClick={handleMobileMenuOpen}
                   color='inherit'
-                >
+                > */}
                   {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
                    */}
-                  <Link to='/acad-calendar'>
+                  {/* <Link to='/acad-calendar'>
                     {window.location.pathname.includes('/acad-calendar') ? (
                       <img src={AcadCalendarIcon} width='20px' height='20px' />
                     ) : (
                       <img src={EventsIcon} width='20px' height='20px' />
                     )}
-                  </Link>
-                </IconButton>
-                <IconButton
-                  className='py-2 th-icon-no-hover'
-                  aria-label='show more'
-                  aria-controls={mobileMenuId}
-                  aria-haspopup='true'
-                  // onClick={handleMobileMenuOpen}
-                  color='inherit'
-                >
-                  <Link to='/announcement-list'>
-                    {window.location.pathname.includes('/announcement-list') ? (
-                      <img src={AnnouncementIcon} width='20px' height='20px' />
-                    ) : (
-                      <img src={NotificationsIcon} width='20px' height='20px' />
-                    )}
-                  </Link>
-                </IconButton>
+                  </Link> */}
+                {/* </IconButton> */}
+                <Tooltip title='Notifications'>
+                  <IconButton
+                    className='py-2 th-icon-no-hover'
+                    aria-label='show more'
+                    aria-controls={mobileMenuId}
+                    aria-haspopup='true'
+                    // onClick={handleMobileMenuOpen}
+                    color='inherit'
+                  >
+                    <Link to='/announcement-list'>
+                      {window.location.pathname.includes('/announcement-list') ? (
+                        <img src={AnnouncementIcon} width='20px' height='20px' />
+                      ) : (
+                        <img src={NotificationsIcon} width='20px' height='20px' />
+                      )}
+                    </Link>
+                  </IconButton>
+                </Tooltip>
                 <div className={classes.sectionDesktop}>
                   {userData?.user_level == 13 ? (
                     <Popover

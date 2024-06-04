@@ -51,8 +51,8 @@ export default {
   },
   moduleManagement: {
     moduleList: '/erp_user/modules_all/',
-    deleteModules : '/erp_user/delete_modules/',
-    restoreModules : '/erp_user/restore_modules/',
+    deleteModules: '/erp_user/delete_modules/',
+    restoreModules: '/erp_user/restore_modules/',
   },
   newEbook: {
     ebookGrade: '/academic/ebook_mapped_grades_v1/',
@@ -257,6 +257,9 @@ export default {
     grievanceTicket: `${baseFinanceURL}/apiV1/ticket/`,
   },
 
+  ratingApis: {
+    subjectWiseRatingSchemasApi: `/activity-mgmt/schemes/`,
+  },
   newBlog: {
     activityCreate: `${newBlogURL}/api/activity_detail_create/`,
     activityWebLogin: `${newBlogURL}/api/web_login/`,
@@ -394,6 +397,16 @@ export default {
     getPosts: '/social-media/social-media-post/',
     likePost: '/social-media/like/',
     comments: '/social-media/comments/',
+  },
+  assignVideoObservation: {
+    videoReview: '/erp_user/video-review/',
+  },
+  eventsDashboard: {
+    gradeListApi: '/erp_user/grademapping/',
+    eventsListApi: '/academic/event-dash/',
+    eventApi: '/academic/event-manage/',
+    studentListApi: '/academic/sub-list/',
+    studentActionApi: 'academic/event-sub/',
   },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,

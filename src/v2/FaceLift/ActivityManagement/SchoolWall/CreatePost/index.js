@@ -1,4 +1,4 @@
-import { Modal, Select, Form, message, Image, Tag, Progress } from 'antd';
+import { Modal, Select, Form, message, Image, Tag, Progress, Input } from 'antd';
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axiosInstance from 'v2/config/axios';
@@ -10,7 +10,6 @@ import pdfIcon from 'v2/Assets/images/pdf.png';
 import endpoints from 'v2/config/endpoints';
 import { DeleteOutlined, DownOutlined, EyeFilled } from '@ant-design/icons';
 import { Profanity } from 'components/file-validation/Profanity';
-import MyTinyEditor from 'containers/question-bank/create-question/tinymce-editor';
 
 const { Option } = Select;
 const MAX_FILE_SIZE = 52428800;
@@ -26,7 +25,6 @@ const CreatePost = ({
     (state) => state.commonFilterReducer?.selectedYear
   );
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
-  const { first_name } = JSON.parse(localStorage?.getItem('userDetails'));
   const fileRef = useRef();
   const formRef = useRef();
   const [selectedBranch, setSelectedBranch] = useState([]);
@@ -38,15 +36,9 @@ const CreatePost = ({
   const [attachmentList, setAttachmentList] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [createLoading, setCreateLoading] = useState(false);
-  const [textEditorContent, setTextEditorContent] = useState('');
   const [fileUploading, setFileUploading] = useState(false);
   const [individualFileProgress, setIndividualFileProgress] = useState(0);
   const [individualFileprogressEvent, setIndividualFileprogressEvent] = useState({});
-  const [openEditor, setOpenEditor] = useState(false);
-
-  const handleEditorChange = (content) => {
-    setTextEditorContent(content);
-  };
 
   const convertToMB = (bytes) => {
     const bytesInMB = 1024 * 1024;
@@ -291,14 +283,11 @@ const CreatePost = ({
       message.error('Description contains foul words, please remove them');
       return;
     }
-    if (!textEditorContent) {
-      message.error('Please add some content');
-      return;
-    }
+
     let payload = {
       acad_session: selectedAcadSession,
       grades: gradeID,
-      description: textEditorContent,
+      description: updatedValues?.description,
       category: updatedValues?.category,
     };
     if (sectionIDs?.length > 0) {
@@ -348,7 +337,6 @@ const CreatePost = ({
   const closeModal = () => {
     formRef.current.resetFields();
     handleClosePostModal();
-    setTextEditorContent('');
     setGradeData([]);
     setGradeID([]);
     setSectionData([]);
@@ -357,8 +345,6 @@ const CreatePost = ({
   };
 
   useEffect(() => {
-    setOpenEditor(true);
-    handleEditorChange(selectedPost ? selectedPost?.description : '');
     if (selectedPost) {
       let branches = branchList
         ?.filter((el) => selectedPost?.acad_session.includes(el?.id))
@@ -376,6 +362,7 @@ const CreatePost = ({
         grade: grades,
         section: sections,
         category: selectedPost?.category,
+        description: selectedPost?.description,
       });
       fetchGradeData({
         session_year: selectedAcademicYear?.id,
@@ -581,17 +568,25 @@ const CreatePost = ({
               </Form.Item>
             </div>
             <div className='col-12 mt-3'>
-              {openEditor && (
-                <MyTinyEditor
-                  id='post_description'
-                  content={textEditorContent}
-                  setOpenEditor={setOpenEditor}
-                  isSocialMediaEditor={true}
-                  handleEditorChange={handleEditorChange}
-                  placeholder={`What's on your mind, ${first_name}?`}
-                />
-              )}
-              {/* </Form.Item> */}
+              <Form.Item
+                name='description'
+                label=''
+                rules={[
+                  { required: true, message: 'This is required' },
+                  {
+                    validator: (_, value) => {
+                      if (value.length > 0 && value.trim() === '') {
+                        return Promise.reject(
+                          new Error('Description should not contain only spaces')
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
+                ]}
+              >
+                <Input.TextArea rows={6} className='th-br-6' />
+              </Form.Item>
             </div>
           </div>
         </Form>

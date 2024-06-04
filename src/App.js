@@ -502,6 +502,8 @@ import endpointsV2 from 'v2/config/endpoints';
 import _ from 'lodash';
 import FrequentlyAskedQuestions from './containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions.jsx';
 import AddFaq from './containers/FrequentlyAskedQuestions/AddFaq.jsx';
+import VideoObservation from './containers/observation/video-observation.js';
+import AddVideoObservation from 'containers/observation/add-video-observation';
 
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
@@ -666,18 +668,23 @@ function App({ alert, isMsAPI, erpConfig }) {
       if (localStorage.getItem('duePopup') === null) {
         getStudentDueData({
           branch_id: branchId,
-          session_year: JSON.parse(sessionStorage.getItem('selected_branch'))
-            ?.session_year?.session_year,
+          session_year: sessionStorage.getItem('selected_branch')
+            ? JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
+                ?.session_year
+            : '',
           erp_id: userDetails?.erp,
         });
       }
       getEventPopup({
-        session_year: JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year
-          ?.id,
+        session_year: sessionStorage.getItem('selected_branch')
+          ? JSON.parse(sessionStorage.getItem('selected_branch'))?.session_year?.id
+          : '',
         page_number: 1,
         page_size: 10,
         is_sent: 'True',
-        branch_id: JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id,
+        branch_id: sessionStorage.getItem('selected_branch')
+          ? JSON.parse(sessionStorage.getItem('selected_branch'))?.branch?.id
+          : '',
         is_flash_event: true,
       });
     }
@@ -980,7 +987,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/blog/create'>
                               {({ match }) => <AdminCreateBlog match={match} />}
                             </Route>
-                            <Route exact path='/blog/wall'>
+                            <Route exact path='/school-wall'>
                               {({ match }) => <BlogWall match={match} />}
                             </Route>
                             <Route exact path='/blog/wall/redirect'>
@@ -2583,6 +2590,14 @@ function App({ alert, isMsAPI, erpConfig }) {
                             ,
                             <Route path='/add-faq'>
                               {({ match }) => <AddFaq match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/assign-video-observation'>
+                            {({ match }) => <VideoObservation match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/add-video-observation'>
+                            {({ match }) => <AddVideoObservation match={match} />}
                             </Route>
                             ,
                             <Route path='*'>

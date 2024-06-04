@@ -95,6 +95,7 @@ const ErpAdminViewClassv2 = () => {
   const [flag, setFlag] = useState(false);
   const [classOver, setClassOver] = useState(false);
   const [disableHost, setDisableHost] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
   const { email = '' } = JSON.parse(localStorage.getItem('userDetails'));
 
   useEffect(() => {
@@ -769,6 +770,7 @@ const ErpAdminViewClassv2 = () => {
   }
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+    setDownloadLoading(true)
     try {
       const { data } =
         JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false
@@ -778,7 +780,7 @@ const ErpAdminViewClassv2 = () => {
                 'YYYY-MM-DD'
               )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
               null,
-              'arraybuffer',
+              'blob',
               true
             )
           : await axiosInstance.get(
@@ -788,7 +790,7 @@ const ErpAdminViewClassv2 = () => {
                 'YYYY-MM-DD'
               )}`,
               {
-                responseType: 'arraybuffer',
+                responseType: 'blob',
               }
             );
       const blob = new Blob([data], {
@@ -801,8 +803,17 @@ const ErpAdminViewClassv2 = () => {
       )}to${moment(endDateTechPer).format('YYYY-MM-DD')}`;
       link.click();
       link.remove();
-    } catch {
-      message.error('error', 'Failed To Download, Try After Some Time');
+    } catch (error) {
+      const fileReader = new FileReader();
+      fileReader.onload = function (event) {
+        const text = event.target.result;
+        message.error(
+          text ? JSON.parse(text).message : 'Failed To Download, Try After Some Time'
+        );
+      };
+      fileReader.readAsText(error.response.data);
+    }finally{
+      setDownloadLoading(false)
     }
   };
 
@@ -1801,9 +1812,9 @@ const ErpAdminViewClassv2 = () => {
                         <div className='col-md-2 col-sm-6 col-12'>
                           <Button
                             type='primary'
-                            className='btn-block th-br-4 th-14'
+                            className='th-br-4 th-14 w-100'
                             onClick={handleDownload}
-                            style={{ fontSize: '12px', padding: '5px' }}
+                            loading={downloadLoading}
                           >
                             Download Class Data
                           </Button>

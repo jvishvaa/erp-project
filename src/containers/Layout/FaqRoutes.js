@@ -309,7 +309,8 @@ export const FaqRoutes = [
   { key: 'Create Activity Type', path: '/blog/createactivitytype' },
   { key: 'School Wall', path: '/school-wall' },
   { key: 'Blog', path: '/blog/activityreview' },
-  { key: 'Create Rating', path: '/blog/createratingtype' },
+  // { key: 'Create Rating', path: '/blog/createratingtype' },
+  { key: 'Create Rating', path: '/create-subject-wise-rating' },
   { key: 'Class Section Wise Strength', path: '/student_count_report' },
   { key: 'Connection pod', path: '/online-class/connection-pod' },
   { key: 'Assign User Level', path: '/user-level-table' },
@@ -330,4 +331,5 @@ export const FaqRoutes = [
   { key: 'Non Academic Staff', path: '/user-management/non-academic-staff' },
   { key: 'Activity Dashboard', path: '/activity-management-dashboard' },
   { key: 'FAQ', path: '/frequently-asked-questions' },
+  {key : 'Assign Video Observation', path : '/assign-video-observation'}
 ];

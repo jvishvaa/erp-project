@@ -16,9 +16,9 @@ import {
   UpOutlined,
 } from '@ant-design/icons';
 import Slider from 'react-slick';
-import ReactHtmlParser from 'react-html-parser';
 import { saveAs } from 'file-saver';
 import endpoints from 'v2/config/endpoints';
+import TextCollapse from './TextCollapse';
 
 const PostCard = (props) => {
   const newCommentRef = useRef();
@@ -102,13 +102,6 @@ const PostCard = (props) => {
     saveAs(blob, fullName);
   };
 
-  useEffect(() => {
-    if (contentRef.current) {
-      if (contentRef.current.clientHeight > 200) {
-        setLargeText(true);
-      }
-    }
-  }, [contentRef?.current]);
   return (
     <>
       <div className={'p-3 bg-white th-post-card'}>
@@ -176,26 +169,7 @@ const PostCard = (props) => {
         </div>
         <div className='mt-3 position-relative'>
           <>
-            <div
-              className={`th-fw-500 th-14 th-black py-2 w-100 th-post-description d-flex align-items-end ${
-                !showFullText && hasLargeText ? 'th-post-content' : ''
-              }`}
-              ref={contentRef}
-            >
-              <div className='text-justify' style={{ width: '98%' }}>
-                {ReactHtmlParser(description)}
-              </div>
-              {hasLargeText && (
-                <span
-                  className='th-pointer th-grey text-italic'
-                  onClick={() => {
-                    setShowFullText((prev) => !prev);
-                  }}
-                >
-                  {!showFullText ? <DownOutlined /> : <UpOutlined />}
-                </span>
-              )}
-            </div>
+            <TextCollapse content={description}/>
           </>
 
           {files?.length > 0 ? (

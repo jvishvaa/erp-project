@@ -50,7 +50,7 @@ const HomeworkDashboard = () => {
   const user_level = userData?.user_level;
 
   const visibleLevel =
-    user_level === 8 || user_level === 10
+    user_level === 2 || user_level === 8 || user_level === 10
       ? 'branch'
       : user_level === 11
       ? 'grade'
@@ -440,11 +440,16 @@ const HomeworkDashboard = () => {
     });
   };
 
-  const handleDateChange = (value) => {
+  const handleDateChange = (value, rangepicker) => {
     if (value) {
-      setStartDate(moment(value[0]).format('YYYY-MM-DD'));
-      setEndDate(moment(value[1]).format('YYYY-MM-DD'));
-      setDates(value);
+      if (rangepicker) {
+        setStartDate(moment(value[0]).format('YYYY-MM-DD'));
+        setEndDate(moment(value[1]).format('YYYY-MM-DD'));
+        setDates(value);
+      } else {
+        setStartDate(moment(value).format('YYYY-MM-DD'));
+        setEndDate(moment(value).format('YYYY-MM-DD'));
+      }
     } else {
       setStartDate(null);
       setEndDate(null);
@@ -466,19 +471,13 @@ const HomeworkDashboard = () => {
   };
 
   const disabledDate = (current) => {
-    console.log(
-      { current },
-      dates,
-      startDate,
-      endDate,
-      moment().diff(dates?.[0], 'days')
-    );
     if (!dates) {
       return false;
     }
     const tooLate = dates[0] && current.diff(dates[0], 'days') > 30;
     const tooEarly = dates[1] && dates[1].diff(current, 'days') > 30;
-    return !!tooEarly || !!tooLate;
+    const futureDay = current && current > moment().endOf('day');
+    return !!tooEarly || !!tooLate || futureDay;
   };
 
   const subjectOptions = subjectList?.map((each) => {
@@ -522,17 +521,25 @@ const HomeworkDashboard = () => {
                     <div className='row align-items-center'>
                       <div className={`col-xl-3 col-md-3 col-sm-6 col-12 pl-0`}>
                         <Form.Item name='date' label='Date'>
-                          <RangePicker
-                            className='th-width-100 th-br-4'
-                            onCalendarChange={(value) => handleDateChange(value)}
-                            onOpenChange={onOpenChange}
-                            defaultValue={
-                              dates || [moment().subtract(30, 'days'), moment()]
-                            }
-                            format={dateFormat}
-                            disabledDate={disabledDate}
-                            separator={'to'}
-                          />
+                          {user_level === 2 ? (
+                            <DatePicker
+                              className='th-width-100 th-br-4 th-input-left '
+                              onChange={(value) => handleDateChange(value, false)}
+                              disabledDate={(current) => current.isAfter(moment())}
+                            />
+                          ) : (
+                            <RangePicker
+                              className='th-width-100 th-br-4'
+                              onCalendarChange={(value) => handleDateChange(value, true)}
+                              onOpenChange={onOpenChange}
+                              defaultValue={
+                                dates || [moment().subtract(30, 'days'), moment()]
+                              }
+                              format={dateFormat}
+                              disabledDate={disabledDate}
+                              separator={'to'}
+                            />
+                          )}
                         </Form.Item>
                       </div>
                       {visibleLevel === 'branch' || visibleLevel === 'grade' ? (
