@@ -177,9 +177,16 @@ const EventsDashboardStudent = () => {
       align: 'left',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.title && row?.title.length > 25
-            ? row?.title.substring(0, 25) + '...'
-            : row?.title}
+          {row?.title && row?.title.length > 27 ? (
+            <>
+              {row.title.substring(0, 27)}...
+              <span className='show-more' onClick={() => openViewEventModal(row)}>
+                Show more
+              </span>
+            </>
+          ) : (
+            row?.title
+          )}
         </span>
       ),
     },
@@ -247,7 +254,7 @@ const EventsDashboardStudent = () => {
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
-      align: 'center',
+      align: 'left',
       key: 'action',
       render: (data, row) => {
         return (
@@ -260,7 +267,7 @@ const EventsDashboardStudent = () => {
                 className='custom-tag'
                 icon={<EyeOutlined />}
               >
-                View Event
+                View
               </Tag>
             </Popover>
             {row?.approval_status !== 3 && (
@@ -280,7 +287,7 @@ const EventsDashboardStudent = () => {
                         className='custom-tag th-event-approved'
                         icon={<CheckCircleOutlined />}
                       >
-                        Subscribe Event
+                        Subscribe
                       </Tag>
                     </Popover>
                   </Popconfirm>
@@ -300,7 +307,7 @@ const EventsDashboardStudent = () => {
                         className='custom-tag th-event-rejected'
                         icon={<CloseCircleOutlined />}
                       >
-                        Un Subscribe Event
+                        Un Subscribe
                       </Tag>
                     </Popover>
                   </Popconfirm>
