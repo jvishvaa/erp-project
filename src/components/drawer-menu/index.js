@@ -82,7 +82,7 @@ const resolveMenu = (url) => {
   if (url.includes('ShippingPayment')) return 'Finance';
   if (url.includes('ManagePayments')) return 'Finance';
   if (url.includes('frequently-asked-questions')) return 'FAQ';
-
+  if (url.includes('assign-video-observation')) return 'Assign Video Observation';
   // if (url.includes('Appointment')) return 'Appointments';
   return null;
 };

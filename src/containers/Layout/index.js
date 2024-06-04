@@ -1282,6 +1282,10 @@ const Layout = ({ children, history }) => {
         history.push('/frequently-asked-questions');
         break;
       }
+      case 'Assign Video Observation':{
+        history.push('/assign-video-observation')
+        break;
+      }
 
       default:
         break;

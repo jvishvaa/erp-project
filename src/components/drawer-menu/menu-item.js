@@ -716,6 +716,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'FAQ',
       Path: '/frequently-asked-questions',
     },
+    {
+      name : 'Assign Video Observation',
+      path : '/assign-video-observation'
+    },
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);
