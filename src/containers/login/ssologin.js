@@ -134,7 +134,7 @@ function LoginFormSSO(props) {
           }
           userData['erp_config'] = erpConfig;
           localStorage.setItem('userDetails', JSON.stringify(userData));
-          TrackerHandler('user_login');
+          TrackerHandler('user_login', { login_type: 'sso' });
           window.location.reload();
         });
       } else {

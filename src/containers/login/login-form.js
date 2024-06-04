@@ -140,8 +140,8 @@ function LoginForm(props) {
                 history.push('/profile');
               }
               userData['erp_config'] = erpConfig;
-              localStorage.setItem('userDetails', JSON.stringify(userData));              
-              TrackerHandler('user_login');
+              localStorage.setItem('userDetails', JSON.stringify(userData));
+              TrackerHandler('user_login', { login_type: 'password' });
               window.location.reload();
             });
           }

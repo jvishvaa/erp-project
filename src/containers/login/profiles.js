@@ -123,7 +123,7 @@ const UserProfiles = () => {
               }
               userData['erp_config'] = erpConfig;
               localStorage.setItem('userDetails', JSON.stringify(userData));
-              TrackerHandler('user_login');
+              TrackerHandler('user_login',{ login_type: 'profile_selection' });
               window.location.reload();
             });
           } else {

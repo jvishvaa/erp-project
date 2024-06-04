@@ -99,7 +99,7 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
               }
               userData['erp_config'] = erpConfig;
               localStorage.setItem('userDetails', JSON.stringify(userData));              
-              TrackerHandler('user_login');
+              TrackerHandler('user_login',{ login_type: 'otp' });
               window.location.reload();
             });
           }
