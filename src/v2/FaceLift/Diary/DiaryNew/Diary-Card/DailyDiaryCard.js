@@ -41,6 +41,7 @@ import toddlerGroup from '../../../../../assets/images/toddler-group.svg';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 const { Panel } = Collapse;
 const isOrchids = IsOrchidsChecker();
 
@@ -269,6 +270,7 @@ const DailyDairyCard = ({ diary, fetchDiaryList, subject, isStudentDiary }) => {
     ));
   };
   const showDrawer = () => {
+    TrackerHandler('dailydiary_view');
     setDrawerVisible(true);
   };
 

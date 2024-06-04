@@ -9,6 +9,7 @@ import { AttachmentPreviewerContext } from 'components/attachment-previewer/atta
 import moment from 'moment';
 import hwIcon from 'v2/Assets/dashboardIcons/diaryIcons/hwIcon.png';
 import { getFileIcon } from 'v2/getFileIcon';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -16,6 +17,7 @@ const GeneralDiaryCard = ({ diary, fetchDiaryList, isStudentDiary }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   const showDrawer = () => {
+    TrackerHandler('generaldiary_view');
     setDrawerVisible(true);
   };
 

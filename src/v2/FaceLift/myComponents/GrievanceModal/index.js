@@ -4,7 +4,7 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import ENVCONFIG from 'config/config';
-
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 const { TextArea } = Input;
 
 const GrievanceModal = (props) => {
@@ -89,6 +89,9 @@ const GrievanceModal = (props) => {
           if (res.status === 201) {
             props.handleClose();
             message.success('Ticket raised successfully');
+            TrackerHandler('grievance_creation', {
+              source_module: props?.module,
+            });
 
             setTimeout(function () {
               window.open(

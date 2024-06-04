@@ -13,6 +13,7 @@ import endpointsV2 from 'v2/config/endpoints';
 import { Spin, message } from 'antd';
 import EduvateLogo from 'assets/images/logo.png';
 import { logout } from 'redux/actions';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 function LoginFormSSO(props) {
   const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;
@@ -133,6 +134,7 @@ function LoginFormSSO(props) {
           }
           userData['erp_config'] = erpConfig;
           localStorage.setItem('userDetails', JSON.stringify(userData));
+          TrackerHandler('user_login', { login_type: 'sso' });
           window.location.reload();
         });
       } else {
