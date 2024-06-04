@@ -161,6 +161,7 @@ const PeriodView = () => {
       });
     }
   }, [subject]);
+
   return (
     <div className='row'>
       {isOrchids && (

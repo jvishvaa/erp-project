@@ -44,6 +44,8 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { Profanity } from 'components/file-validation/Profanity.js';
+import useTimeTracker from 'v2/MixpanelTracking';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const isOrchids = IsOrchidsChecker();
 const { Panel } = Collapse;
@@ -57,7 +59,8 @@ const DailyDiary = ({ isSubstituteDiary }) => {
   );
 
   const dispatch = useDispatch();
-  // const { erp } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_level, user_id, erp, email, first_name } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [branchID, setBranchID] = useState(selectedBranch?.branch?.id);
@@ -451,6 +454,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
               // if (isAutoAssignDiary) {
               //   history.goBack();
               // } else {
+              TrackerHandler('dailydiary_created');
               history.push('/diary/teacher');
               // }
             } else if (res?.data?.message.includes('locked')) {
@@ -1196,6 +1200,9 @@ const DailyDiary = ({ isSubstituteDiary }) => {
         reqObj['diary_id'] = diaryID;
       }
     }
+    TrackerHandler('homework_created', {
+      action: homeworkMapped ? 'update' : 'create',
+    });
     try {
       const response = await dispatch(
         addHomeWork(
@@ -1787,6 +1794,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [subjectID]);
 
+  useTimeTracker('web_homework');
   return (
     <div className='row th-bg-white'>
       <div className='row py-1'>

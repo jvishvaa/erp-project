@@ -22,6 +22,7 @@ import {
 import EditPeriodDialog from './editPeriodDialog';
 import ConfirmPopOver from '../ConfirmPopOver.js';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 // import NewTimeTable from 'components/newTimeTable.js';
 
@@ -250,6 +251,7 @@ const DateAndCalander = (props) => {
   const createTT = async (payload) => {
     let data = await createTimeTable(payload);
     if (data?.status_code === 200) {
+      TrackerHandler('timetable_created');
       const list = await getTTList(props?.section_mappingId);
       setTimeTableList(list?.result);
       list.result.forEach((item) => {

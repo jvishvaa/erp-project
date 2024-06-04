@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { Profanity } from 'components/file-validation/Profanity.js';
+import {TrackerHandler} from 'v2/MixpanelTracking/Tracker'
 
 const GeneralDiary = ({ isSubstituteDiary }) => {
   const selectedAcademicYear = useSelector(
@@ -203,6 +204,7 @@ const GeneralDiary = ({ isSubstituteDiary }) => {
         if (res.data.status_code === 200) {
           if (res?.data?.message.includes('successfully')) {
             message.success('General Diary Created Successfully');
+            TrackerHandler('generaldiary_created');
             history.push('/diary/teacher');
           } else {
             message.error(res?.data?.message);
