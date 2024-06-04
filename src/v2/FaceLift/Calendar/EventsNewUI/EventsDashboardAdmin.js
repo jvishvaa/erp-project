@@ -20,6 +20,7 @@ import {
   Radio,
   notification,
   Popover,
+  Tooltip,
 } from 'antd';
 import {
   PlusOutlined,
@@ -39,6 +40,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   SearchOutlined,
+  CloseSquareOutlined,
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -115,13 +117,9 @@ const EventsDashboardAdmin = () => {
     {
       days: '',
       percent: '',
-      amount: '',
     },
   ]);
 
-  const [drawerWidth, setDrawerWidth] = useState(
-    window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
-  );
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [fileLinks, setFileLinks] = useState([]);
   const [removedFiles, setRemovedFiles] = useState([]);
@@ -131,17 +129,6 @@ const EventsDashboardAdmin = () => {
   const [viewEventModalOpen, setViewEventModalOpen] = useState(false);
   const [viewEvent, setViewEvent] = useState();
 
-  useEffect(() => {
-    const handleResize = () => {
-      setDrawerWidth(
-        window.innerWidth <= 768 ? '90%' : window.innerWidth <= 992 ? '50%' : '30%'
-      );
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
   useEffect(() => {
     fetchTableData();
   }, [currentPage]);
@@ -159,7 +146,7 @@ const EventsDashboardAdmin = () => {
       });
     } else {
       filterForm.setFieldsValue({
-        date_filter: [moment().subtract(10, 'days'), moment().add(10, 'days')],
+        date_filter: [moment(), moment().add(10, 'days')],
       });
     }
     handleFetchTableData();
@@ -188,11 +175,12 @@ const EventsDashboardAdmin = () => {
       acad_session: acad_session ?? acad_session,
       start_date: values?.date_filter?.length
         ? values?.date_filter[0].format('YYYY-MM-DD')
-        : moment().subtract(10, 'days').format('YYYY-MM-DD'),
+        : moment().format('YYYY-MM-DD'),
       end_date: values?.date_filter?.length
         ? values?.date_filter[1].format('YYYY-MM-DD')
         : moment().add(10, 'days').format('YYYY-MM-DD'),
       approval_status: selectedTag ?? selectedTag,
+      current_session: session_year,
     };
     axiosInstance
       .get(`${endpoints.eventsDashboard.eventsListApi}`, {
@@ -242,7 +230,18 @@ const EventsDashboardAdmin = () => {
         setStudentLoading(false);
       });
   };
+  const hasValidEntry = () => {
+    return refundPolicyData.some((entry) => entry.days && entry.percent);
+  };
   const createEvent = () => {
+    if (refundPolicy && !hasValidEntry()) {
+      notification['warning']({
+        message: 'Please fill out at least one refund policy',
+        duration: notificationDuration,
+        className: 'notification-container',
+      });
+      return;
+    }
     const values = eventForm.getFieldsValue();
     const formData = new FormData();
     formData.append('title', values?.event_name);
@@ -297,6 +296,14 @@ const EventsDashboardAdmin = () => {
       });
   };
   const editEvent = () => {
+    if (refundPolicy && !hasValidEntry()) {
+      notification['warning']({
+        message: 'Please fill out at least one refund policy',
+        duration: notificationDuration,
+        className: 'notification-container',
+      });
+      return;
+    }
     const values = eventForm.getFieldsValue();
     const formData = new FormData();
     formData.append('title', values?.event_name);
@@ -621,7 +628,6 @@ const EventsDashboardAdmin = () => {
       {
         days: '',
         percent: '',
-        amount: '',
       },
     ]);
     setFileLinks([]);
@@ -659,7 +665,6 @@ const EventsDashboardAdmin = () => {
         {
           days: '',
           percent: '',
-          amount: '',
         },
       ]);
     } else {
@@ -777,6 +782,7 @@ const EventsDashboardAdmin = () => {
       return <p>No preview available</p>;
     }
   };
+
   const columns = [
     {
       title: <span className='th-white th-event-12 th-fw-700'></span>,
@@ -790,11 +796,12 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Name</span>,
       align: 'left',
+      width: '25%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.title && row?.title.length > 25 ? (
+          {row?.title && row?.title.length > 27 ? (
             <>
-              {row.title.substring(0, 25)}...
+              {row.title.substring(0, 27)}...
               <span className='show-more' onClick={() => openViewEventModal(row)}>
                 Show more
               </span>
@@ -842,33 +849,55 @@ const EventsDashboardAdmin = () => {
       render: (data, row) => (
         <>
           {row?.approval_status === 1 && (
-            <Tag icon={<ReloadOutlined />} className='th-br-4 th-event-pending'>
+            <Tag
+              icon={<ReloadOutlined />}
+              className='th-br-4 th-tag-width th-event-pending'
+            >
               Pending
             </Tag>
           )}
           {row?.approval_status === 2 && (
             <div>
-              <Tag icon={<CloseCircleOutlined />} className='th-br-4 th-event-rejected'>
+              <Tag
+                icon={<CloseCircleOutlined />}
+                className='th-br-4 th-tag-width th-event-rejected'
+              >
                 Rejected
               </Tag>
-              <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomRight'
+                title={`Remarks: ${row?.remarks}`}
+                overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
+              >
                 <InfoCircleTwoTone />
-              </Popover>
+              </Tooltip>
             </div>
           )}
           {row?.approval_status === 3 && (
             <div>
-              <Tag icon={<CloseCircleOutlined />} className='th-br-4 th-event-cancelled'>
+              <Tag
+                icon={<CloseCircleOutlined />}
+                className='th-br-4 th-tag-width th-event-cancelled'
+              >
                 Cancelled
               </Tag>
-              <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomRight'
+                title={`Remarks: ${row?.remarks}`}
+                overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
+              >
                 <InfoCircleTwoTone />
-              </Popover>
+              </Tooltip>
             </div>
           )}
 
           {row?.approval_status === 4 && (
-            <Tag icon={<CheckCircleOutlined />} className='th-br-4 th-event-approved'>
+            <Tag
+              icon={<CheckCircleOutlined />}
+              className='th-br-4 th-tag-width th-event-approved'
+            >
               Approved
             </Tag>
           )}
@@ -888,7 +917,7 @@ const EventsDashboardAdmin = () => {
                 size='small'
                 icon={<EyeOutlined />}
                 onClick={() => openViewEventModal(row)}
-                className='icon-hover th-event-view'
+                className='icon-hover th-event-preview'
               />
             </Popover>
             {row?.approval_status === 1 && (
@@ -1002,12 +1031,12 @@ const EventsDashboardAdmin = () => {
       render: (data, row) => (
         <>
           {!row?.is_unsub && (
-            <Tag className='custom-tag th-event-approved' icon={<CheckCircleOutlined />}>
+            <Tag className='th-br-4 th-event-approved' icon={<CheckCircleOutlined />}>
               Subscribed
             </Tag>
           )}
           {row?.is_unsub && (
-            <Tag className='custom-tag th-event-cancelled' icon={<CloseCircleOutlined />}>
+            <Tag className='th-br-4 th-event-cancelled' icon={<CloseCircleOutlined />}>
               Un Subscribed
             </Tag>
           )}
@@ -1053,7 +1082,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 1 ? setSelectedTag() : setSelectedTag(1))}
             icon={<ReloadOutlined />}
           >
-            {`Pending: ${tableData?.counts?.pending}`}
+            {`Pending : ${tableData?.counts?.pending || ''}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1062,7 +1091,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 4 ? setSelectedTag() : setSelectedTag(4))}
             icon={<CheckCircleOutlined />}
           >
-            {`Approved: ${tableData?.counts?.approved}`}
+            {`Approved : ${tableData?.counts?.approved || ''}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1071,7 +1100,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 2 ? setSelectedTag() : setSelectedTag(2))}
             icon={<CloseCircleOutlined />}
           >
-            {`Rejected: ${tableData?.counts?.rejected}`}
+            {`Rejected : ${tableData?.counts?.rejected || ''}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1080,15 +1109,19 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 3 ? setSelectedTag() : setSelectedTag(3))}
             icon={<CloseCircleOutlined />}
           >
-            {`Cancelled: ${tableData?.counts?.cancelled}`}
+            {`Cancelled : ${tableData?.counts?.cancelled || ''}`}
           </Tag>
         </div>
         <div>
           <Tag className='count-tag th-event-grey'>
-            <span className='count-tag-text'>{`Total : ${tableData?.counts?.total}`}</span>
+            <span className='count-tag-text'>{`Total : ${
+              tableData?.counts?.total || ''
+            }`}</span>
           </Tag>
           <Tag className='count-tag th-event-grey'>
-            <span className='count-tag-text'>{`Live : ${tableData?.counts?.live}`}</span>
+            <span className='count-tag-text'>{`Live : ${
+              tableData?.counts?.live || ''
+            }`}</span>
           </Tag>
           <Button
             size='small'
@@ -1100,7 +1133,7 @@ const EventsDashboardAdmin = () => {
           </Button>
         </div>
       </div>
-      <div className='row mb-2'>
+      <div className='row'>
         <Form id='filterForm' form={filterForm} className='row col-12'>
           <div className='col-lg-3 col-md-6 col-sm-12 col-12'>
             <Popover placement='bottomLeft' content='Select Event Date Filter'>
@@ -1116,7 +1149,7 @@ const EventsDashboardAdmin = () => {
             </Popover>
           </div>
 
-          <div className='col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-around align-items-center mt-1 mb-2'>
+          <div className='col-lg-4 col-md-6 col-sm-12 col-12 d-flex justify-content-around align-items-center'>
             <Popover placement='bottomLeft' content='Next 07 days Events'>
               <Tag
                 className={`custom-tag ${
@@ -1158,7 +1191,7 @@ const EventsDashboardAdmin = () => {
             </Popover>
           </div>
           {is_central_user && (
-            <div className='col-lg-3 col-md-6 col-sm-6 col-6 mb-2'>
+            <div className='col-lg-3 col-md-6 col-sm-6 col-6'>
               <Form.Item name='branch_filter'>
                 <Select
                   mode='multiple'
@@ -1183,7 +1216,7 @@ const EventsDashboardAdmin = () => {
               </Form.Item>
             </div>
           )}
-          <div className='d-flex col-lg-2 col-md-6 col-sm-6 col-6 mt-1 mb-2'>
+          <div className='d-flex col-lg-2 col-md-6 col-sm-6 col-6 align-items-center'>
             <Button
               size='small'
               className='secondary-button'
@@ -1195,7 +1228,7 @@ const EventsDashboardAdmin = () => {
           </div>
         </Form>
       </div>
-      <div className='mt-2'>
+      <div className=''>
         <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
           <div className=''>
             <Table
@@ -1229,7 +1262,17 @@ const EventsDashboardAdmin = () => {
         </div>
       </div>
       <Modal
-        title={`Reason for ${feedBackFlag === 'reject' ? 'Rejecting' : 'Cancelling'}`}
+        title={
+          <div className='d-flex justify-content-between align-items-center'>
+            <div>Reason for {feedBackFlag === 'reject' ? 'Rejecting' : 'Cancelling'}</div>
+            <div>
+              <CloseSquareOutlined
+                style={{ fontSize: '22px' }}
+                onClick={closeFeedBackModal}
+              />
+            </div>
+          </div>
+        }
         visible={feedBackModalOpen}
         onCancel={closeFeedBackModal}
         className={`th-event-modal ${
@@ -1242,7 +1285,7 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                className='secondary-button'
+                className='secondary-button drawer-modal-footer-button'
                 onClick={closeFeedBackModal}
               >
                 Close
@@ -1251,25 +1294,25 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                className={`primary-button ${
+                className={`primary-button drawer-modal-footer-button ${
                   feedBackFlag === 'reject' ? 'reject-button' : 'cancel-button'
                 }`}
-                icon={<CloseCircleOutlined />}
+                icon={feedBackLoading ? <SyncOutlined spin /> : <CloseCircleOutlined />}
                 form='feedBackModalForm'
                 htmlType='submit'
               >
-                {feedBackFlag === 'reject' ? 'Reject' : 'Cancel'}
+                {feedBackFlag === 'reject' ? 'Reject Event' : 'Cancel Event'}
               </Button>
             </Col>
           </Row>,
         ]}
       >
         {feedBackLoading ? (
-          <div className='d-flex justify-content-center align-items-center mt-2'>
+          <div className='d-flex justify-content-center align-items-center'>
             <Spin tip='Hold on! Great things take time!' size='large' />
           </div>
         ) : (
-          <div className='col-lg-12 col-md-12 col-sm-12 col-12 mt-2 mb-2'>
+          <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
             <Form
               id='feedBackModalForm'
               form={feedBackModalForm}
@@ -1302,7 +1345,17 @@ const EventsDashboardAdmin = () => {
         )}
       </Modal>
       <Drawer
-        title={eventId ? 'Update Event' : 'Create Event'}
+        title={
+          <div className='d-flex justify-content-between align-items-center'>
+            <div>{eventId ? 'Update Event' : 'Create Event'}</div>
+            <div>
+              <CloseSquareOutlined
+                style={{ fontSize: '22px' }}
+                onClick={closeEventDrawer}
+              />
+            </div>
+          </div>
+        }
         visible={eventDrawerOpen}
         closeIcon={false}
         className={`th-event-drawer-1 ${
@@ -1313,7 +1366,7 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                className='secondary-button'
+                className='secondary-button drawer-modal-footer-button'
                 onClick={closeEventDrawer}
               >
                 Close
@@ -1322,7 +1375,9 @@ const EventsDashboardAdmin = () => {
             <Col>
               <Button
                 size='small'
-                className={`primary-button ${eventId ? 'edit-button' : 'create-button'}`}
+                className={`primary-button drawer-modal-footer-button ${
+                  eventId ? 'edit-button' : 'create-button'
+                }`}
                 icon={
                   eventLoading ? (
                     <SyncOutlined spin />
@@ -1631,12 +1686,22 @@ const EventsDashboardAdmin = () => {
                         </Form.Item>
                         {refundPolicy && (
                           <>
-                            <div className='row'>
-                              <div className='col-12 text-right'>
+                            <div className='row justify-content-between'>
+                              <div
+                                className='col-md-8 col-12'
+                                style={{
+                                  fontSize: '12px',
+                                  fontStyle: 'italic',
+                                }}
+                              >
+                                Note : Be cautious while filling refund policy. Please
+                                enter days in 1 to 100 range and percent in 1 to 100 range
+                              </div>
+                              <div className='col-md-4 col-12'>
                                 <Button
                                   icon={<PlusOutlined />}
                                   size='small'
-                                  className={`th-br-4 ${
+                                  className={`secondary-button ${
                                     eventId
                                       ? 'th-event-drawer-1-add-button-edit'
                                       : 'th-event-drawer-1-add-button-create'
@@ -1650,7 +1715,7 @@ const EventsDashboardAdmin = () => {
                             {refundPolicyData.map((each, index) => {
                               return (
                                 <>
-                                  <div className='row'>
+                                  <div className='row align-items-center'>
                                     <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
                                       <InputNumber
                                         placeholder='No Of Days Before'
@@ -1658,7 +1723,7 @@ const EventsDashboardAdmin = () => {
                                         allowClear
                                         addonAfter='days'
                                         min={1}
-                                        max={1000}
+                                        max={100}
                                         value={parseInt(each?.days)}
                                         onChange={(e) => handleChange(e, index, 'days')}
                                       />
@@ -1677,16 +1742,17 @@ const EventsDashboardAdmin = () => {
                                         }
                                       />
                                     </div>
-
-                                    <div className='col-lg-3 col-md-3 col-sm-2 col-2'>
-                                      <Button
-                                        shape='circle'
-                                        size='small'
-                                        icon={<CloseOutlined />}
-                                        onClick={() => handleDelete(index)}
-                                        className='icon-hover th-event-cancelled'
-                                      />
-                                    </div>
+                                    {index != 0 && (
+                                      <div className='col-lg-3 col-md-3 col-sm-2 col-2'>
+                                        <Button
+                                          shape='circle'
+                                          size='small'
+                                          icon={<CloseOutlined />}
+                                          onClick={() => handleDelete(index)}
+                                          className='icon-hover th-event-cancelled'
+                                        />
+                                      </div>
+                                    )}
                                   </div>
                                 </>
                               );
@@ -1842,38 +1908,43 @@ const EventsDashboardAdmin = () => {
       />
       <Drawer
         title={
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <span>Student List</span>
-            <Button
-              size='small'
-              className='secondary-button'
-              onClick={closeStudentDrawer}
-            >
-              Close
-            </Button>
+          <div className='d-flex justify-content-between align-items-center'>
+            <div>Student List</div>
+            <div>
+              <CloseSquareOutlined
+                style={{ fontSize: '22px' }}
+                onClick={closeStudentDrawer}
+              />
+            </div>
           </div>
         }
         visible={studentDrawerOpen}
         onClose={closeStudentDrawer}
+        footer={[
+          <Row justify='space-around'>
+            <Col>
+              <Button
+                size='small'
+                className='secondary-button drawer-modal-footer-button'
+                onClick={closeStudentDrawer}
+              >
+                Close
+              </Button>
+            </Col>
+          </Row>,
+        ]}
         className='th-event-drawer-2'
         closeIcon={false}
-        footer={null}
         width='90%'
       >
         <div>
-          {false ? (
+          {studentLoading ? (
             <div className='center-screen'>
               <Spin tip='Hold on! Great things take time!' size='large' />
             </div>
           ) : (
             <>
-              <div className='col-lg-4 col-md-6 col-sm-6 col-12 mb-2'>
+              <div className='col-lg-4 col-md-6 col-sm-6 col-12'>
                 <Form form={studentListForm}>
                   <Form.Item name='erp_id'>
                     <Input
@@ -1893,7 +1964,7 @@ const EventsDashboardAdmin = () => {
                   </Form.Item>
                 </Form>
               </div>
-              <div className='mt-2'>
+              <div className=''>
                 <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
                   <div className=''>
                     <Table

@@ -9,6 +9,7 @@ import {
   Tag,
   DatePicker,
   notification,
+  Tooltip,
 } from 'antd';
 import {
   EyeOutlined,
@@ -34,6 +35,9 @@ const EventsDashboardStudent = () => {
   const branch = sessionStorage.getItem('selected_branch')
     ? JSON.parse(sessionStorage.getItem('selected_branch'))
     : '';
+  const session_year = sessionStorage.getItem('acad_session')
+    ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
+    : '';
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,7 +56,7 @@ const EventsDashboardStudent = () => {
       });
     } else {
       filterForm.setFieldsValue({
-        date_filter: [moment().subtract(10, 'days'), moment().add(10, 'days')],
+        date_filter: [moment(), moment().add(10, 'days')],
       });
     }
     handleFetchTableData();
@@ -74,10 +78,11 @@ const EventsDashboardStudent = () => {
       acad_session: branch?.id,
       start_date: values?.date_filter?.length
         ? values?.date_filter[0].format('YYYY-MM-DD')
-        : moment().subtract(10, 'days').format('YYYY-MM-DD'),
+        : moment(),
       end_date: values?.date_filter?.length
         ? values?.date_filter[1].format('YYYY-MM-DD')
         : moment().add(10, 'days').format('YYYY-MM-DD'),
+      current_session: session_year,
     };
     axiosInstance
       .get(`${endpoints.eventsDashboard.eventsListApi}`, {
@@ -177,9 +182,16 @@ const EventsDashboardStudent = () => {
       align: 'left',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.title && row?.title.length > 25
-            ? row?.title.substring(0, 25) + '...'
-            : row?.title}
+          {row?.title && row?.title.length > 27 ? (
+            <>
+              {row.title.substring(0, 27)}...
+              <span className='show-more' onClick={() => openViewEventModal(row)}>
+                Show more
+              </span>
+            </>
+          ) : (
+            row?.title
+          )}
         </span>
       ),
     },
@@ -188,13 +200,17 @@ const EventsDashboardStudent = () => {
       align: 'center',
       width: '15%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.reg_end}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.reg_end}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Date</span>,
       align: 'center',
       sorter: (a, b) => new Date(a.event_date) - new Date(b.event_date),
-      render: (data, row) => <span className='th-black-1 th-event-12'>{row?.event_date}</span>,
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>{row?.event_date}</span>
+      ),
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
@@ -212,12 +228,16 @@ const EventsDashboardStudent = () => {
               <Tag className='th-br-4 th-event-canelled' icon={<CloseCircleOutlined />}>
                 Cancelled
               </Tag>
-              <Popover
-                placement='topRight'
-                content='Event got cancelled due to unforeseen circumstances. Your full amount will be refunded to your wallet'
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomRight'
+                title={
+                  'Event got cancelled due to unforeseen circumstances. Your full amount will be refunded to your wallet'
+                }
+                overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
               >
                 <InfoCircleTwoTone />
-              </Popover>
+              </Tooltip>
             </div>
           ) : (
             <>
@@ -243,7 +263,7 @@ const EventsDashboardStudent = () => {
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
-      align: 'center',
+      align: 'left',
       key: 'action',
       render: (data, row) => {
         return (
@@ -256,7 +276,7 @@ const EventsDashboardStudent = () => {
                 className='custom-tag'
                 icon={<EyeOutlined />}
               >
-                View Event
+                View
               </Tag>
             </Popover>
             {row?.approval_status !== 3 && (
@@ -276,7 +296,7 @@ const EventsDashboardStudent = () => {
                         className='custom-tag th-event-approved'
                         icon={<CheckCircleOutlined />}
                       >
-                        Subscribe Event
+                        Subscribe
                       </Tag>
                     </Popover>
                   </Popconfirm>
@@ -296,7 +316,7 @@ const EventsDashboardStudent = () => {
                         className='custom-tag th-event-rejected'
                         icon={<CloseCircleOutlined />}
                       >
-                        Un Subscribe Event
+                        Un Subscribe
                       </Tag>
                     </Popover>
                   </Popconfirm>
