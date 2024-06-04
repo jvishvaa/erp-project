@@ -20,6 +20,7 @@ import {
   Radio,
   notification,
   Popover,
+  Tooltip,
 } from 'antd';
 import {
   PlusOutlined,
@@ -179,6 +180,7 @@ const EventsDashboardAdmin = () => {
         ? values?.date_filter[1].format('YYYY-MM-DD')
         : moment().add(10, 'days').format('YYYY-MM-DD'),
       approval_status: selectedTag ?? selectedTag,
+      current_session: session_year,
     };
     axiosInstance
       .get(`${endpoints.eventsDashboard.eventsListApi}`, {
@@ -780,6 +782,7 @@ const EventsDashboardAdmin = () => {
       return <p>No preview available</p>;
     }
   };
+
   const columns = [
     {
       title: <span className='th-white th-event-12 th-fw-700'></span>,
@@ -861,9 +864,14 @@ const EventsDashboardAdmin = () => {
               >
                 Rejected
               </Tag>
-              <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomRight'
+                title={`Remarks: ${row?.remarks}`}
+                overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
+              >
                 <InfoCircleTwoTone />
-              </Popover>
+              </Tooltip>
             </div>
           )}
           {row?.approval_status === 3 && (
@@ -874,9 +882,14 @@ const EventsDashboardAdmin = () => {
               >
                 Cancelled
               </Tag>
-              <Popover placement='topRight' content={`Remarks: ${row?.remarks}`}>
+              <Tooltip
+                autoAdjustOverflow='false'
+                placement='bottomRight'
+                title={`Remarks: ${row?.remarks}`}
+                overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
+              >
                 <InfoCircleTwoTone />
-              </Popover>
+              </Tooltip>
             </div>
           )}
 
@@ -1288,7 +1301,7 @@ const EventsDashboardAdmin = () => {
                 form='feedBackModalForm'
                 htmlType='submit'
               >
-                {feedBackFlag === 'reject' ? 'Reject' : 'Cancel'}
+                {feedBackFlag === 'reject' ? 'Reject Event' : 'Cancel Event'}
               </Button>
             </Col>
           </Row>,
