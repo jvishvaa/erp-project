@@ -34,11 +34,6 @@ const AddVideoObservation = () => {
   const editFormRef = createRef();
   const [formRefs, setFormRefs] = useState([]);
   const [branch, setBranch] = useState(null);
-  const [userName, setUserName] = useState(
-    history?.location?.state?.record?.assigned_obs
-      ? history?.location?.state?.record?.assigned_obs
-      : null
-  );
   const [editObservedBranch, setEditObservedBranch] = useState(null);
   const [formFields, setFormFields] = useState([
     {
@@ -77,7 +72,7 @@ const AddVideoObservation = () => {
     setForms([
       ...forms,
       {
-        id: forms.length + 1,
+        id: Date.now(),
         videoLink: null,
         branch: null,
         role: null,
@@ -89,14 +84,14 @@ const AddVideoObservation = () => {
   };
 
   const handleRemoveForm = (id) => {
-    if (id === 1) {
+    if (forms?.length === 1) {
       return;
     }
     setForms(forms.filter((form) => form.id !== id));
   };
 
   const handleInputChange = (id, field, value, prefill) => {
-    if (value) {
+    if (id) {
       setForms((prevForms) =>
         prevForms.map((form) => {
           if (form.id === id) {
@@ -184,16 +179,14 @@ const AddVideoObservation = () => {
 
   const addFormField = () => {
     if (formFields.length < 3) {
-      setFormFields([
-        ...formFields,
-        {
-          id: formFields.length + 1,
-          branch: null,
-          role: null,
-          user_name: null,
-          userNameList: [],
-        },
-      ]);
+      const newFormField = {
+        id: Date.now(),
+        branch: null,
+        role: null,
+        user_name: null,
+        userNameList: [],
+      };
+      setFormFields([...formFields, newFormField]);
     } else {
       message.error('You Cannot Add More Than 3 Observers');
     }
@@ -205,7 +198,6 @@ const AddVideoObservation = () => {
     setFormFields(fields);
   };
 
-  console.log(formFields, 'hello');
 
   const handleFieldChange = (value, index, field, prefill) => {
     if (value) {
@@ -460,20 +452,20 @@ const AddVideoObservation = () => {
 
     for (let i = 0; i < forms.length; i++) {
       const form = forms[i];
-      if (!form.videoLink) {
-        message.error(`Form ${i + 1}: Video Link is required.`);
-        return;
-      }
       if (!form.branch) {
-        message.error(`Form ${i + 1}: Branch is required.`);
+        message.error(`Observed ${i + 1}: Branch is required.`);
         return;
       }
       if (!form.role) {
-        message.error(`Form ${i + 1}: Role is required.`);
+        message.error(`Observed ${i + 1}: Role is required.`);
         return;
       }
       if (!form.name) {
-        message.error(`Form ${i + 1}: Name is required.`);
+        message.error(`Observed ${i + 1}: Name is required.`);
+        return;
+      }
+      if (!form.videoLink || form.videoLink?.trim()?.length === 0) {
+        message.error(`Observed ${i + 1}: Video Link is required.`);
         return;
       }
     }
@@ -564,7 +556,7 @@ const AddVideoObservation = () => {
   };
 
   return (
-    <div className='row py-3 px-2'>
+    <div className='row px-2'>
       <Layout>
         <div className='row pb-3'>
           <div className='col-md-12 th-bg-grey'>
@@ -721,7 +713,7 @@ const AddVideoObservation = () => {
                     </Form>
                   </div>
                   {!history?.location?.state?.record && formFields.length < 3 ? (
-                    <div className='d-flex justify-content-center'>
+                    <div className='d-flex flex-row-reverse w-90'>
                       <Button
                         className='th-br-6'
                         type='primary'
@@ -882,7 +874,7 @@ const AddVideoObservation = () => {
                                   </Select>
                                 </Form.Item>
                               </div>
-                              <div className='col-md-12 col-sm-6 '>
+                              <div className='col-md-12 col-sm-6'>
                                 <Form.Item
                                   name={`edit_video_${form.id}`}
                                   rules={[
@@ -897,13 +889,13 @@ const AddVideoObservation = () => {
                                     allowClear={true}
                                     placeholder='Video link*'
                                     value={form.videoLink}
-                                    onChange={(e) =>
+                                    onChange={(e) => {
                                       handleInputChange(
                                         form.id,
                                         'videoLink',
                                         e.target.value
-                                      )
-                                    }
+                                      );
+                                    }}
                                     required={true}
                                     autoComplete='off'
                                     maxLength={200}
@@ -917,7 +909,7 @@ const AddVideoObservation = () => {
                     </div>
                   </div>
                   {!history?.location?.state?.record && forms?.length < 25 ? (
-                    <div className='d-flex justify-content-center'>
+                    <div className='d-flex flex-row-reverse w-90'>
                       <Button
                         className='th-br-6'
                         onClick={handleAddForm}
@@ -934,7 +926,7 @@ const AddVideoObservation = () => {
           </div>
         </div>
         <div className='d-flex justify-content-center mb-4 mt-4'>
-          <div className='d-flex justify-content-center w-100'>
+          <div className='d-flex flex-row-reverse th-width-85'>
             <Button
               type='primary'
               className='th-br-6'
