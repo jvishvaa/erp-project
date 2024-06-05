@@ -59,19 +59,20 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
         }
         visible={viewEventModalOpen}
         className='th-event-modal-preview'
-        footer={[
-          <Row justify='space-around'>
-            <Col>
-              <Button
-                size='small'
-                className='secondary-button drawer-modal-footer-button'
-                onClick={closeViewEventModal}
-              >
-                Close
-              </Button>
-            </Col>
-          </Row>,
-        ]}
+        // footer={[
+        //   <Row justify='space-around'>
+        //     <Col>
+        //       <Button
+        //         size='small'
+        //         className='secondary-button drawer-modal-footer-button'
+        //         onClick={closeViewEventModal}
+        //       >
+        //         Close
+        //       </Button>
+        //     </Col>
+        //   </Row>,
+        // ]}
+        footer={null}
         onCancel={() => closeViewEventModal()}
         style={{
           top: '0%',
@@ -97,7 +98,19 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                         />
                       ))}
                     </Slider>
-                  ) : null}
+                  ) : (
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: '12px',
+                        fontStyle: 'italic',
+                      }}
+                    >
+                      No Attachments Available
+                    </div>
+                  )}
                   {viewEvent?.attachments?.length > 0 && (
                     <div className='text-right'>
                       <Button
