@@ -400,6 +400,7 @@ export default {
   },
   assignVideoObservation: {
     videoReview: '/erp_user/video-review/',
+    bulkVideoUpdate : '/erp_user/video-review-web/',
   },
   eventsDashboard: {
     gradeListApi: '/erp_user/grademapping/',
