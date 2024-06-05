@@ -57,6 +57,7 @@
     "material-ui-nested-menu-item": "^1.0.2",
     "material-ui-search-bar": "^1.0.0",
     "materialui-daterange-picker": "^1.1.92",
+    "mixpanel-browser": "^2.50.0",
     "ml5": "^0.7.1",
     "moment": "^2.29.1",
     "node-sass": "4.14.1",

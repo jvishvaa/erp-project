@@ -18,10 +18,11 @@ import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import Loader from '../../../components/loader/loader';
 import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
-import TimeTableDialog from '../date-and-calander/timeTableDialog'
+import TimeTableDialog from '../date-and-calander/timeTableDialog';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -80,13 +81,12 @@ export default function TableViews(props) {
   const [usersData, setUsersData] = useState([]);
   const themeContext = useTheme();
   const [excelData] = useState([]);
-const [isEdit,setIsEdit] = useState(false)
-const [selectedItem , setSelectedItem] = useState()
+  const [isEdit, setIsEdit] = useState(false);
+  const [selectedItem, setSelectedItem] = useState();
 
-  
-  const handleEdit = (e,value) => {
-    setSelectedItem(value)
- setIsEdit(true)
+  const handleEdit = (e, value) => {
+    setSelectedItem(value);
+    setIsEdit(true);
     // history.push(`/user-management/edit-user/${id}`);
   };
 
@@ -100,10 +100,10 @@ const [selectedItem , setSelectedItem] = useState()
         ttname: items?.ttname, //username
         // erpId: items.erp_id,
         status: items?.status,
-        created_at:  moment(items?.created_at).format('MMMM Do YYYY'), 
-         //emails
+        created_at: moment(items?.created_at).format('MMMM Do YYYY'),
+        //emails
         // role: items?.roles?.role_name,
-        section_mapping_id : items?.section_mapping_id,
+        section_mapping_id: items?.section_mapping_id,
         active: items?.is_active,
         is_delete: items?.is_delete,
         start_date: items?.start_date,
@@ -121,7 +121,6 @@ const [selectedItem , setSelectedItem] = useState()
     getUsersData();
   }, [props.TimeTableList]);
 
-  
   return (
     <div>
       <Paper className={`${classes.root} common-table`}>
@@ -149,13 +148,16 @@ const [selectedItem , setSelectedItem] = useState()
                   tabIndex={-1}
                   key={`user_table_index${i}`}
                 >
-                  <TableCell className={classes.tableCell}>{items.ttname}-({`${moment(items?.start_date).format('MMMM D[,] YYYY')}`} -{' '}
-            {`${moment(items?.end_date).format('MMMM D[,] YYYY')}`})</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {items.ttname}-(
+                    {`${moment(items?.start_date).format('MMMM D[,] YYYY')}`} -{' '}
+                    {`${moment(items?.end_date).format('MMMM D[,] YYYY')}`})
+                  </TableCell>
                   {/* <TableCell className={classes.tableCell}>{items.erpId}</TableCell> */}
                   <TableCell className={classes.tableCell}>{items.created_at}</TableCell>
                   {/* <TableCell className={classes.tableCell}>{items?.role}</TableCell> */}
                   <TableCell className={classes.tableCell}>
-                  <div style={{ color: 'green' }}>Saved</div>
+                    <div style={{ color: 'green' }}>Saved</div>
                     {/* {items && items.active === true ? (
                       <div style={{ color: 'green' }}>Activated</div>
                     ) : items && items.status === 2 ? (
@@ -207,29 +209,49 @@ const [selectedItem , setSelectedItem] = useState()
                     )} */}
                     {items && items?.is_delete == false ? (
                       <>
-                        {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10 || props?.is_superuser) && props?.teacherView && <IconButton
-                          title='Delete'
-                          onClick={() => props.handleOperation('delete', items)}
-                        >
-                          <DeleteOutlinedIcon
-                            style={{ color: themeContext.palette.primary.main }}
-                          />
-                        </IconButton>}
+                        {(props?.user_level === 1 ||
+                          props?.user_level === 8 ||
+                          props?.user_level === 10 ||
+                          props?.is_superuser) &&
+                          props?.teacherView && (
+                            <IconButton
+                              title='Delete'
+                              onClick={() => props.handleOperation('delete', items)}
+                            >
+                              <DeleteOutlinedIcon
+                                style={{ color: themeContext.palette.primary.main }}
+                              />
+                            </IconButton>
+                          )}
                         <IconButton
                           //   title='Edit'
                           title='view'
                           //   onClick={() => handleEdit(items.userId)}
-                          onClick={(e) => props.handleView(e, items, 'tableview')}
+                          onClick={(e) => {
+                            TrackerHandler('timetable_view', {
+                              timetable_name: items.ttname,
+                            });
+                            props.handleView(e, items, 'tableview');
+                          }}
                         >
                           <VisibilityOutlinedIcon
                             style={{ color: themeContext.palette.primary.main }}
                           />
                         </IconButton>{' '}
-                        {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10 || props?.is_superuser) && props?.teacherView && <IconButton title='Edit' onClick={(e) => props.handleOperation('edit', items)}>
-                       <EditOutlinedIcon
-                         style={{ color: themeContext.palette.primary.main }}
-                       />
-                     </IconButton>}
+                        {(props?.user_level === 1 ||
+                          props?.user_level === 8 ||
+                          props?.user_level === 10 ||
+                          props?.is_superuser) &&
+                          props?.teacherView && (
+                            <IconButton
+                              title='Edit'
+                              onClick={(e) => props.handleOperation('edit', items)}
+                            >
+                              <EditOutlinedIcon
+                                style={{ color: themeContext.palette.primary.main }}
+                              />
+                            </IconButton>
+                          )}
                       </>
                     ) : (
                       ''

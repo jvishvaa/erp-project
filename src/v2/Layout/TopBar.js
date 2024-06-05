@@ -63,6 +63,7 @@ import { domain_name } from 'v2/commonDomain';
 import CVbox from 'assets/images/cvbox.png';
 import WalletIcon from 'assets/images/wallet.png';
 import { AccessKey } from 'v2/cvboxAccesskey';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
 
@@ -595,6 +596,7 @@ const Appbar = ({ children, history, ...props }) => {
               }
               userData['erp_config'] = erpConfig;
               localStorage.setItem('userDetails', JSON.stringify(userData));
+              TrackerHandler('user_login', { login_type: 'profile_switch' });
               window.location.reload();
             });
           } else {

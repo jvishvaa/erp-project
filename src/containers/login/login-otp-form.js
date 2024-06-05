@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { login, handleSendOtp, isMsAPI } from '../../redux/actions';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const OTP_REGEX = /^[0-9]{0,6}$/;
 
@@ -97,7 +98,8 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
                 history.push('/profile');
               }
               userData['erp_config'] = erpConfig;
-              localStorage.setItem('userDetails', JSON.stringify(userData));
+              localStorage.setItem('userDetails', JSON.stringify(userData));              
+              TrackerHandler('user_login',{ login_type: 'otp' });
               window.location.reload();
             });
           }
