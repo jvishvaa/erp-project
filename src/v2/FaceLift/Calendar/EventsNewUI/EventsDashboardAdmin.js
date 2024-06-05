@@ -116,7 +116,7 @@ const EventsDashboardAdmin = () => {
   const [refundPolicyData, setRefundPolicyData] = useState([
     {
       days: '',
-      percent: '',
+      amount: '',
     },
   ]);
 
@@ -151,7 +151,6 @@ const EventsDashboardAdmin = () => {
     }
     handleFetchTableData();
   }, [selectedTag, selectedDays]);
-
   const handleFetchTableData = () => {
     if (currentPage == 1) {
       fetchTableData();
@@ -231,7 +230,7 @@ const EventsDashboardAdmin = () => {
       });
   };
   const hasValidEntry = () => {
-    return refundPolicyData.some((entry) => entry.days && entry.percent);
+    return refundPolicyData.some((entry) => entry.days && entry.amount);
   };
   const createEvent = () => {
     if (refundPolicy && !hasValidEntry()) {
@@ -247,7 +246,7 @@ const EventsDashboardAdmin = () => {
     formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
     formData.append('acad_session', values?.acad_session);
-    formData.append('grades', values?.grade_ids);
+    formData.append('section_mapping', values?.grade_ids);
     formData.append('highlight', eventHighlights);
     formData.append('description', eventDescription);
     formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
@@ -259,8 +258,8 @@ const EventsDashboardAdmin = () => {
       formData.append('refundable', values?.refundable);
       if (values?.refundable) {
         let formatted_policy = refundPolicyData
-          .filter((policy) => policy.days && policy.percent)
-          .map((policy) => `${policy.days}:${policy.percent}`)
+          .filter((policy) => policy.days && policy.amount)
+          .map((policy) => `${policy.days}:${policy.amount}`)
           .join(',');
         formData.append('policies', formatted_policy);
       }
@@ -309,7 +308,7 @@ const EventsDashboardAdmin = () => {
     formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
     formData.append('acad_session', values?.acad_session);
-    formData.append('grades', values?.grade_ids);
+    formData.append('section_mapping', values?.grade_ids);
     formData.append('highlight', eventHighlights);
     formData.append('description', eventDescription);
     formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
@@ -321,8 +320,8 @@ const EventsDashboardAdmin = () => {
       formData.append('refundable', values?.refundable);
       if (values?.refundable) {
         let formatted_policy = refundPolicyData
-          .filter((policy) => policy.days && policy.percent)
-          .map((policy) => `${policy.days}:${policy.percent}`)
+          .filter((policy) => policy.days && policy.amount)
+          .map((policy) => `${policy.days}:${policy.amount}`)
           .join(',');
         formData.append('policies', formatted_policy);
       }
@@ -489,7 +488,6 @@ const EventsDashboardAdmin = () => {
   };
 
   const fetchGradeList = ({ branchIds }) => {
-    console.log(branchIds);
     axiosInstance
       .get(
         `${endpoints.eventsDashboard.gradeListApi}?session_year=${session_year}&branch_id=${branchIds}`
@@ -538,7 +536,7 @@ const EventsDashboardAdmin = () => {
     const grade_ids = eventForm.getFieldsValue()?.grade_ids;
     if (grade_ids?.length) {
       if (grade_ids.includes('all')) {
-        const allIds = gradeList.map((each) => each?.grade_id);
+        const allIds = gradeList.map((each) => each?.id);
         eventForm.setFieldsValue({
           grade_ids: allIds,
         });
@@ -554,16 +552,15 @@ const EventsDashboardAdmin = () => {
       filterForm.setFieldsValue({
         branch_filter: [],
       });
-      if (!selectedTag || !selectedDays) {
-        handleFetchTableData();
-      }
     }
     setSelectedTag();
     setSelectedDays();
     filterForm.setFieldsValue({
       date_filter: [moment(), moment().add(10, 'days')],
     });
-    handleFetchTableData();
+    if (!selectedTag && !selectedDays) {
+      handleFetchTableData();
+    }
   };
   const openFeedBackModal = ({ key, id }) => {
     setId(id);
@@ -582,7 +579,10 @@ const EventsDashboardAdmin = () => {
       eventForm.setFieldsValue({
         is_subscription_need: true,
         refundable: true,
+        acad_session: branch?.id,
       });
+      let branchIds = [branch?.branch?.id];
+      fetchGradeList({ branchIds });
       setEventDrawerOpen(true);
     } else {
       let branchIds = branchList
@@ -592,7 +592,7 @@ const EventsDashboardAdmin = () => {
       eventForm.setFieldsValue({
         event_name: rowData?.title,
         acad_session: rowData?.acad_session,
-        grade_ids: rowData?.grades,
+        grade_ids: rowData?.sec_map,
         highlight: rowData?.highlight,
         description: rowData?.description,
         reg_dates: [moment(rowData?.reg_start), moment(rowData?.reg_end)],
@@ -606,8 +606,8 @@ const EventsDashboardAdmin = () => {
       setSubscriptionStatus(rowData?.is_subscription_need);
       setRefundPolicy(rowData?.refundable);
       let data = [];
-      Object.entries(rowData?.policy).forEach(([days, percent]) => {
-        let policyData = { days: days, percent: percent, amount: '' };
+      Object.entries(rowData?.policy).forEach(([days, amount]) => {
+        let policyData = { days: days, amount: amount };
         data.push(policyData);
       });
       setRefundPolicyData(data);
@@ -619,10 +619,6 @@ const EventsDashboardAdmin = () => {
   const closeEventDrawer = () => {
     setEventDrawerOpen(false);
     eventForm.resetFields();
-    eventForm.setFieldsValue({
-      days_0: '',
-      percent_0: '',
-    });
     setGradeList([]);
     setEventHighlights('');
     setEventDescription('');
@@ -631,7 +627,7 @@ const EventsDashboardAdmin = () => {
     setRefundPolicyData([
       {
         days: '',
-        percent: '',
+        amount: '',
       },
     ]);
     setFileLinks([]);
@@ -668,7 +664,7 @@ const EventsDashboardAdmin = () => {
       setRefundPolicyData([
         {
           days: '',
-          percent: '',
+          amount: '',
         },
       ]);
     } else {
@@ -680,7 +676,6 @@ const EventsDashboardAdmin = () => {
     if (refundPolicyData?.length < 4) {
       let newPolicy = {
         days: '',
-        percent: '',
         amount: '',
       };
       setRefundPolicyData([...refundPolicyData, newPolicy]);
@@ -722,7 +717,7 @@ const EventsDashboardAdmin = () => {
       if (file.size > maxSize) {
         notification.error({
           message: 'File Size Error',
-          description: `${file.name} exceeds the maximum size of 50 MB`,
+          description: `${file.name} exceeds the maximum size of ${maxSize} MB`,
           duration: notificationDuration,
           className: 'w-100',
         });
@@ -786,7 +781,6 @@ const EventsDashboardAdmin = () => {
       return <p>No preview available</p>;
     }
   };
-
   const columns = [
     {
       title: <span className='th-white th-event-12 th-fw-700'></span>,
@@ -800,18 +794,33 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Name</span>,
       align: 'left',
-      width: '25%',
+      width: '20%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.title && row?.title.length > 27 ? (
+          {row?.title && row?.title.length > 20 ? (
             <>
-              {row.title.substring(0, 27)}...
+              {row.title.substring(0, 20)}...
               <span className='show-more' onClick={() => openViewEventModal(row)}>
                 Show more
               </span>
             </>
           ) : (
             row?.title
+          )}
+        </span>
+      ),
+    },
+    {
+      title: <span className='th-white th-16 th-fw-700'>Branch</span>,
+      align: 'center',
+      render: (data, row) => (
+        <span className='th-black-1 th-16'>
+          {row?.branch_name && row?.branch_name.length > 15 ? (
+            <Popover placement='bottomLeft' content={row?.branch_name}>
+              {row?.branch_name.substring(0, 15)}...
+            </Popover>
+          ) : (
+            row?.branch_name
           )}
         </span>
       ),
@@ -924,17 +933,22 @@ const EventsDashboardAdmin = () => {
                 className='icon-hover th-event-preview'
               />
             </Popover>
-            {row?.approval_status === 1 && (
-              <Popover placement='topRight' content='Edit Event'>
-                <Button
-                  shape='circle'
-                  size='small'
-                  icon={<EditOutlined />}
-                  onClick={() => openEventDrawer({ key: 'edit', rowData: row })}
-                  className='icon-hover th-event-edit'
-                />
-              </Popover>
-            )}
+            {[10, 14, 34].includes(user_level) ||
+              (is_central_user && (
+                <>
+                  {row?.approval_status === 1 && (
+                    <Popover placement='topRight' content='Edit Event'>
+                      <Button
+                        shape='circle'
+                        size='small'
+                        icon={<EditOutlined />}
+                        onClick={() => openEventDrawer({ key: 'edit', rowData: row })}
+                        className='icon-hover th-event-edit'
+                      />
+                    </Popover>
+                  )}
+                </>
+              ))}
             {[8, 26].includes(user_level) && (
               <>
                 {row?.approval_status === 4 && (
@@ -1068,8 +1082,8 @@ const EventsDashboardAdmin = () => {
     </Option>
   ));
   const gradeOptions = gradeList?.map((each) => (
-    <Option key={each?.grade_id} value={each?.grade_id}>
-      {each?.grade_name}
+    <Option key={each?.id} value={each?.id}>
+      {each?.grade__grade_name}
     </Option>
   ));
   return (
@@ -1086,7 +1100,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 1 ? setSelectedTag() : setSelectedTag(1))}
             icon={<ReloadOutlined />}
           >
-            {`Pending : ${tableData?.counts?.pending || ''}`}
+            {`Pending : ${tableData?.counts?.pending || 0}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1095,7 +1109,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 4 ? setSelectedTag() : setSelectedTag(4))}
             icon={<CheckCircleOutlined />}
           >
-            {`Approved : ${tableData?.counts?.approved || ''}`}
+            {`Approved : ${tableData?.counts?.approved || 0}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1104,7 +1118,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 2 ? setSelectedTag() : setSelectedTag(2))}
             icon={<CloseCircleOutlined />}
           >
-            {`Rejected : ${tableData?.counts?.rejected || ''}`}
+            {`Rejected : ${tableData?.counts?.rejected || 0}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1113,7 +1127,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 3 ? setSelectedTag() : setSelectedTag(3))}
             icon={<CloseCircleOutlined />}
           >
-            {`Cancelled : ${tableData?.counts?.cancelled || ''}`}
+            {`Cancelled : ${tableData?.counts?.cancelled || 0}`}
           </Tag>
         </div>
         <div>
@@ -1147,6 +1161,7 @@ const EventsDashboardAdmin = () => {
               <Form.Item name='date_filter'>
                 <RangePicker
                   format='DD/MM/YYYY'
+                  allowClear={false}
                   className='w-100 text-left th-black-1 th-br-4'
                   defaultValue={filterForm?.getFieldsValue()?.date_filter}
                   disabled={selectedDays}
@@ -1702,7 +1717,7 @@ const EventsDashboardAdmin = () => {
                                 }}
                               >
                                 Note : Be cautious while filling refund policy. Please
-                                enter days in 1 to 100 range and percent in 1 to 100 range
+                                enter days in 1 to 100 range and refund amount.
                               </div>
                               <div className='col-md-4 col-12'>
                                 <Button
@@ -1737,16 +1752,14 @@ const EventsDashboardAdmin = () => {
                                     </div>
                                     <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
                                       <InputNumber
-                                        placeholder='Amount Percentage'
+                                        placeholder='Refund Amount'
                                         className='w-100 text-left th-black-1 th-br-4'
                                         allowClear
-                                        addonAfter='%'
-                                        min={1}
-                                        max={100}
-                                        value={parseInt(each?.percent)}
-                                        onChange={(e) =>
-                                          handleChange(e, index, 'percent')
-                                        }
+                                        addonBefore='Rs'
+                                        min={0}
+                                        max={100000}
+                                        value={parseInt(each?.amount)}
+                                        onChange={(e) => handleChange(e, index, 'amount')}
                                       />
                                     </div>
                                     {index != 0 && (
