@@ -58,6 +58,7 @@ const VideoObservation = () => {
   const [modalUserName, setModalUserName] = useState(null);
   const [modalAcadSess, setMmodalAcadSess] = useState(null);
   const [modalUserNameOptions, setModalUserNameOptions] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
   const inputRef = useRef(null);
   const modalRef = useRef(null);
 
@@ -71,12 +72,38 @@ const VideoObservation = () => {
     setIsModalOpen(false);
     handleClearModal();
   };
+  const handleSelectAllChange = (e) => {
+    const isChecked = e.target.checked;
+    setSelectAll(isChecked);
+
+    if (isChecked) {
+      const allRowIds = tableData.map(record => record.id);
+      setSelectedRows(allRowIds);
+    } else {
+      setSelectedRows([]);
+    }
+  };
   const columns = [
     {
       title: (
-        <span style={{ textAlign: 'center' }} className='th-white th-fw-700'>
-          Sl No.
-        </span>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+          }}
+        >
+          {allFiltersSelected && tableData.some((ele) => !ele.evaluated) && (
+            <Checkbox
+              onChange={handleSelectAllChange}
+              checked={selectAll}
+            />
+          )}
+          <span style={{ textAlign: 'center' }} className='th-white th-fw-700'>
+            Sl No.
+          </span>
+        </div>
       ),
       dataIndex: 'slNo',
       key: 'slNo',
@@ -288,9 +315,7 @@ const VideoObservation = () => {
     setLoad(true);
     axiosInstance
       .get(
-        `${endpointsV2?.assignVideoObservation?.bulkVideoUpdate}?page=${
-          refferListPageData.currentPage
-        }`,
+        `${endpointsV2?.assignVideoObservation?.bulkVideoUpdate}?page=${refferListPageData.currentPage}`,
         {
           params: filteredParams,
         }
@@ -379,7 +404,7 @@ const VideoObservation = () => {
       const value = JSON.parse(e);
       setBranch(value?.value);
       setAcadSession(value?.acad_session);
-      setTableData([])
+      setTableData([]);
     } else {
       setBranch(null);
       setUserLevel(null);
@@ -397,7 +422,7 @@ const VideoObservation = () => {
       setUserLevel(e);
       if (branch) {
         fetchUserName(branch, e);
-        setTableData([])
+        setTableData([]);
       }
     } else {
       setUserLevel(null);
@@ -448,15 +473,22 @@ const VideoObservation = () => {
   const handleCheckboxChange = (e, record) => {
     const newSelectedRows = e.target.checked
       ? [...selectedRows, record.id]
-      : selectedRows.filter((id) => id !== record.id);
+      : selectedRows.filter(id => id !== record.id);
     setSelectedRows(newSelectedRows);
+
+    if (!e.target.checked) {
+      setSelectAll(false);
+    } else if (newSelectedRows.length === tableData.length) {
+      setSelectAll(true);
+    }
   };
 
   const handleReassignVideo = () => {
     setIsModalOpen(true);
   };
-
+  
   const handleFilter = () => {
+    setSelectAll(false)
     if (branch == null) {
       return message.error('Please Select All The Filters');
     } else {
@@ -748,7 +780,13 @@ const VideoObservation = () => {
               getPopupContainer={(trigger) => trigger.parentNode}
               overlayClassName='custom-popconfirm'
             >
-              <Button key='delete' type='danger' danger disabled={load} className='th-br-6'>
+              <Button
+                key='delete'
+                type='danger'
+                danger
+                disabled={load}
+                className='th-br-6'
+              >
                 Delete
               </Button>
             </Popconfirm>,
@@ -834,9 +872,11 @@ const VideoObservation = () => {
               </Form.Item>
             </div>
           </Form>
-            <div>
-              <p className='th-grey text-right'>{selectedRows?.length} items selected.</p>
-            </div>
+          <div>
+            <p className='th-grey text-right th-width-95'>
+              {selectedRows?.length} items selected.
+            </p>
+          </div>
         </Modal>
       </Layout>
     </div>
