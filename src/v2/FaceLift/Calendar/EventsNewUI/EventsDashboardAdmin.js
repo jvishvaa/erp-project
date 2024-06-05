@@ -246,7 +246,7 @@ const EventsDashboardAdmin = () => {
     formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
     formData.append('acad_session', values?.acad_session);
-    formData.append('section_mapping', values?.grade_ids);
+    formData.append('grades', values?.grade_ids);
     formData.append('highlight', eventHighlights);
     formData.append('description', eventDescription);
     formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
@@ -308,7 +308,7 @@ const EventsDashboardAdmin = () => {
     formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
     formData.append('acad_session', values?.acad_session);
-    formData.append('section_mapping', values?.grade_ids);
+    formData.append('grades', values?.grade_ids);
     formData.append('highlight', eventHighlights);
     formData.append('description', eventDescription);
     formData.append('reg_start', values?.reg_dates[0].format('YYYY-MM-DD'));
@@ -494,7 +494,18 @@ const EventsDashboardAdmin = () => {
       )
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          setGradeList(response?.data?.data);
+          let data = response?.data?.data;
+          const uniqueGradesMap = new Map();
+          data.forEach((item) => {
+            if (!uniqueGradesMap.has(item.grade_id)) {
+              uniqueGradesMap.set(item.grade_id, {
+                grade_id: item.grade_id,
+                grade_name: item.grade_name,
+              });
+            }
+          });
+          const uniqueGrades = Array.from(uniqueGradesMap.values());
+          setGradeList(uniqueGrades);
         }
       })
       .catch((error) => {
@@ -536,7 +547,7 @@ const EventsDashboardAdmin = () => {
     const grade_ids = eventForm.getFieldsValue()?.grade_ids;
     if (grade_ids?.length) {
       if (grade_ids.includes('all')) {
-        const allIds = gradeList.map((each) => each?.id);
+        const allIds = gradeList.map((each) => each?.grade_id);
         eventForm.setFieldsValue({
           grade_ids: allIds,
         });
@@ -592,7 +603,7 @@ const EventsDashboardAdmin = () => {
       eventForm.setFieldsValue({
         event_name: rowData?.title,
         acad_session: rowData?.acad_session,
-        grade_ids: rowData?.sec_map,
+        grade_ids: rowData?.grades,
         highlight: rowData?.highlight,
         description: rowData?.description,
         reg_dates: [moment(rowData?.reg_start), moment(rowData?.reg_end)],
@@ -717,7 +728,9 @@ const EventsDashboardAdmin = () => {
       if (file.size > maxSize) {
         notification.error({
           message: 'File Size Error',
-          description: `${file.name} exceeds the maximum size of ${maxSize} MB`,
+          description: `${file.name} exceeds the maximum size of ${
+            maxSize / (1024 * 1024)
+          } MB`,
           duration: notificationDuration,
           className: 'w-100',
         });
@@ -811,12 +824,12 @@ const EventsDashboardAdmin = () => {
       ),
     },
     {
-      title: <span className='th-white th-16 th-fw-700'>Branch</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Branch</span>,
       align: 'center',
       render: (data, row) => (
-        <span className='th-black-1 th-16'>
+        <span className='th-black-1 th-event-12'>
           {row?.branch_name && row?.branch_name.length > 15 ? (
-            <Popover placement='bottomLeft' content={row?.branch_name}>
+            <Popover placement='bottomRight' content={row?.branch_name}>
               {row?.branch_name.substring(0, 15)}...
             </Popover>
           ) : (
@@ -1082,8 +1095,8 @@ const EventsDashboardAdmin = () => {
     </Option>
   ));
   const gradeOptions = gradeList?.map((each) => (
-    <Option key={each?.id} value={each?.id}>
-      {each?.grade__grade_name}
+    <Option key={each?.grade_id} value={each?.grade_id}>
+      {each?.grade_name}
     </Option>
   ));
   return (
@@ -1133,12 +1146,12 @@ const EventsDashboardAdmin = () => {
         <div>
           <Tag className='count-tag th-event-grey'>
             <span className='count-tag-text'>{`Total : ${
-              tableData?.counts?.total || ''
+              tableData?.counts?.total || 0
             }`}</span>
           </Tag>
           <Tag className='count-tag th-event-grey'>
             <span className='count-tag-text'>{`Live : ${
-              tableData?.counts?.live || ''
+              tableData?.counts?.live || 0
             }`}</span>
           </Tag>
           {[10, 14, 34].includes(user_level) ||
