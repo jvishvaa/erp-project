@@ -329,12 +329,18 @@
   border-radius: 4px !important;
 }
 .th-event-modal-preview .ant-modal-footer {
-  padding: 4px 10px !important;
+  padding: 10px 10px !important;
   background-color: var(--text-color) !important;
   position: -webkit-sticky;
   position: sticky;
   bottom: 0;
   z-index: 1;
+}
+.th-images-card {
+  border-radius: 12px;
+  border: 1px solid var(--card-border-color);
+  background-color: var(--card-bg-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .th-event-card {
   border-radius: 12px;
@@ -437,9 +443,9 @@
 .th-event-12 {
   font-size: 14px;
 }
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 0px;
-} */
+}
 .center-screen {
   position: fixed;
   top: 0;

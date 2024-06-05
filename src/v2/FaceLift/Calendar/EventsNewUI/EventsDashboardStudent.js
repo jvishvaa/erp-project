@@ -78,7 +78,7 @@ const EventsDashboardStudent = () => {
       acad_session: branch?.id,
       start_date: values?.date_filter?.length
         ? values?.date_filter[0].format('YYYY-MM-DD')
-        : moment(),
+        : moment().format('YYYY-MM-DD'),
       end_date: values?.date_filter?.length
         ? values?.date_filter[1].format('YYYY-MM-DD')
         : moment().add(10, 'days').format('YYYY-MM-DD'),
@@ -117,8 +117,14 @@ const EventsDashboardStudent = () => {
             duration: notificationDuration,
             className: 'notification-container',
           });
+          fetchTableData();
+        } else if (response?.data?.status_code == 402) {
+          notification['error']({
+            message: 'Insufficient wallet balance. Please recharge to subscribe',
+            duration: notificationDuration,
+            className: 'notification-container',
+          });
         }
-        fetchTableData();
       })
       .catch((error) => {
         notification['error']({

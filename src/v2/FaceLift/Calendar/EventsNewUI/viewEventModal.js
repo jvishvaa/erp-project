@@ -84,34 +84,35 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
           <div className='row'>
             <div className='row col-lg-12 col-md-12 col-sm-12 col-12'>
               <div className='col-lg-8 col-md-7 col-sm-8 col-12'>
-                {viewEvent?.attachments?.length > 0 ? (
-                  <Slider {...settings} className='th-slick th-post-slick'>
-                    {viewEvent?.attachments?.map((each) => (
-                      <MediaDisplay
-                        mediaName={each}
-                        mediaLink={each}
-                        alt='File Not Supported'
-                        className='w-100 th-br-20 p-3'
-                        style={{ objectFit: 'contain' }}
-                      />
-                    ))}
-                  </Slider>
-                ) : null}
-
-                {viewEvent?.attachments?.length > 0 && (
-                  <div className='text-right'>
-                    <Button
-                      size='small'
-                      className='secondary-button'
-                      icon={<DownloadOutlined />}
-                      onClick={() => {
-                        handleDownloadAll(viewEvent?.attachments);
-                      }}
-                    >
-                      Download all attachments
-                    </Button>
-                  </div>
-                )}
+                <Card className='th-images-card'>
+                  {viewEvent?.attachments?.length > 0 ? (
+                    <Slider {...settings} className='th-slick th-post-slick'>
+                      {viewEvent?.attachments?.map((each) => (
+                        <MediaDisplay
+                          mediaName={each}
+                          mediaLink={each}
+                          alt='File Not Supported'
+                          className='w-100 th-br-20 p-3'
+                          style={{ objectFit: 'contain' }}
+                        />
+                      ))}
+                    </Slider>
+                  ) : null}
+                  {viewEvent?.attachments?.length > 0 && (
+                    <div className='text-right'>
+                      <Button
+                        size='small'
+                        className='secondary-button'
+                        icon={<DownloadOutlined />}
+                        onClick={() => {
+                          handleDownloadAll(viewEvent?.attachments);
+                        }}
+                      >
+                        Download all attachments
+                      </Button>
+                    </div>
+                  )}
+                </Card>
               </div>
               <div className='col-lg-4 col-md-5 col-sm-12 col-12'>
                 <List
