@@ -77,7 +77,7 @@ const VideoObservation = () => {
     setSelectAll(isChecked);
 
     if (isChecked) {
-      const allRowIds = tableData.map(record => record.id);
+      const allRowIds = tableData.filter(record => !record.evaluated).map(record => record.id);
       setSelectedRows(allRowIds);
     } else {
       setSelectedRows([]);
@@ -478,7 +478,7 @@ const VideoObservation = () => {
 
     if (!e.target.checked) {
       setSelectAll(false);
-    } else if (newSelectedRows.length === tableData.length) {
+    } else if (newSelectedRows.length === tableData.filter(record => !record.evaluated).length) {
       setSelectAll(true);
     }
   };
