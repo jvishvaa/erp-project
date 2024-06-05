@@ -59,19 +59,6 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
         }
         visible={viewEventModalOpen}
         className='th-event-modal-preview'
-        // footer={[
-        //   <Row justify='space-around'>
-        //     <Col>
-        //       <Button
-        //         size='small'
-        //         className='secondary-button drawer-modal-footer-button'
-        //         onClick={closeViewEventModal}
-        //       >
-        //         Close
-        //       </Button>
-        //     </Col>
-        //   </Row>,
-        // ]}
         footer={null}
         onCancel={() => closeViewEventModal()}
         style={{
