@@ -233,7 +233,8 @@ const EventsDashboardAdmin = () => {
     return refundPolicyData.some((entry) => entry.days && entry.amount);
   };
   const createEvent = () => {
-    if (refundPolicy && !hasValidEntry()) {
+    const values = eventForm.getFieldsValue();
+    if (values?.is_subscription_need && values?.refundable && !hasValidEntry()) {
       notification['warning']({
         message: 'Please fill out at least one refund policy',
         duration: notificationDuration,
@@ -241,7 +242,6 @@ const EventsDashboardAdmin = () => {
       });
       return;
     }
-    const values = eventForm.getFieldsValue();
     const formData = new FormData();
     formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
@@ -295,7 +295,8 @@ const EventsDashboardAdmin = () => {
       });
   };
   const editEvent = () => {
-    if (refundPolicy && !hasValidEntry()) {
+    const values = eventForm.getFieldsValue();
+    if (values?.is_subscription_need && values?.refundable && !hasValidEntry()) {
       notification['warning']({
         message: 'Please fill out at least one refund policy',
         duration: notificationDuration,
@@ -303,7 +304,6 @@ const EventsDashboardAdmin = () => {
       });
       return;
     }
-    const values = eventForm.getFieldsValue();
     const formData = new FormData();
     formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
@@ -454,20 +454,18 @@ const EventsDashboardAdmin = () => {
   const quillRef1 = useRef(null);
   const quillRef2 = useRef(null);
   const handleChangeEventHighlights = (content, delta, source, editor) => {
-    console.log(content);
     const text = editor.getText();
     if (text.length <= 3000) {
       setEventHighlights(content);
     } else {
       notification['error']({
-        message: 'OOPS! Max Words Limit Reached',
+        message: 'OOPS! Max Characters Limit Reached. Reduce the content',
         duration: notificationDuration,
         className: 'notification-container',
       });
-      const truncatedContent = text.slice(0, 3000);
-      setEventHighlights(truncatedContent);
+      setEventHighlights('');
       const quill = quillRef1.current.getEditor();
-      quill.setText(truncatedContent);
+      quill.setText('');
     }
   };
   const handleChangeEventDescription = (content, delta, source, editor) => {
@@ -476,14 +474,13 @@ const EventsDashboardAdmin = () => {
       setEventDescription(content);
     } else {
       notification['error']({
-        message: 'OOPS! Max Words Limit Reached',
+        message: 'OOPS! Max Characters Limit Reached. Reduce the content',
         duration: notificationDuration,
         className: 'notification-container',
       });
-      const truncatedContent = text.slice(0, 3000);
-      setEventDescription(truncatedContent);
+      setEventDescription('');
       const quill = quillRef2.current.getEditor();
-      quill.setText(truncatedContent);
+      quill.setText('');
     }
   };
 
@@ -668,6 +665,17 @@ const EventsDashboardAdmin = () => {
   };
 
   const handleSubscriptionStatusChange = (val) => {
+    eventForm.setFieldsValue({
+      event_price: '',
+      refundable: true,
+    });
+    setRefundPolicy(1);
+    setRefundPolicyData([
+      {
+        days: '',
+        amount: '',
+      },
+    ]);
     setSubscriptionStatus(val);
   };
   const handleRefundPolicyChange = (val) => {
@@ -699,11 +707,8 @@ const EventsDashboardAdmin = () => {
     }
   };
   const handleDelete = (index) => {
-    console.log(index);
     let policies = refundPolicyData.slice();
-    console.log(policies);
     policies.splice(index, 1);
-    console.log(policies);
     setRefundPolicyData(policies);
     if (policies?.length === 0) {
       setRefundPolicy(1);
@@ -796,8 +801,9 @@ const EventsDashboardAdmin = () => {
   };
   const columns = [
     {
-      title: <span className='th-white th-event-12 th-fw-700'></span>,
+      title: <span className='th-white th-event-12 th-fw-700'>SNo</span>,
       align: 'center',
+      width: '5%',
       render: (data, row, index) => (
         <span className='th-black-1 th-event-12'>
           {(currentPage - 1) * pageSize + index + 1}.
@@ -811,12 +817,14 @@ const EventsDashboardAdmin = () => {
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
           {row?.title && row?.title.length > 20 ? (
-            <>
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={row?.title}
+              overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
+            >
               {row.title.substring(0, 20)}...
-              <span className='show-more' onClick={() => openViewEventModal(row)}>
-                Show more
-              </span>
-            </>
+            </Tooltip>
           ) : (
             row?.title
           )}
@@ -828,9 +836,9 @@ const EventsDashboardAdmin = () => {
       align: 'center',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.branch_name && row?.branch_name.length > 15 ? (
-            <Popover placement='bottomRight' content={row?.branch_name}>
-              {row?.branch_name.substring(0, 15)}...
+          {row?.branch_name && row?.branch_name.length > 10 ? (
+            <Popover placement='bottomLeft' content={row?.branch_name}>
+              {row?.branch_name.substring(0, 10)}...
             </Popover>
           ) : (
             row?.branch_name
@@ -1458,10 +1466,10 @@ const EventsDashboardAdmin = () => {
                         },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
-                            const maxCharCount = 200;
+                            const maxCharCount = 100;
                             if (value && value.length > maxCharCount) {
                               return Promise.reject(
-                                new Error(`Event name must be less than 200 characters`)
+                                new Error(`Event name must be less than 100 characters`)
                               );
                             }
                             return Promise.resolve();
@@ -1474,7 +1482,7 @@ const EventsDashboardAdmin = () => {
                         className='w-100 text-left th-black-1 th-br-4'
                         allowClear
                         showCount
-                        maxLength={200}
+                        maxLength={100}
                       />
                     </Form.Item>
                   </div>
@@ -1490,7 +1498,7 @@ const EventsDashboardAdmin = () => {
                       ]}
                     >
                       <Select
-                        mode='multiple'
+                        mode={!eventId ? 'multiple' : undefined}
                         maxTagCount={1}
                         allowClear
                         getPopupContainer={(trigger) => trigger.parentNode}
@@ -1507,6 +1515,7 @@ const EventsDashboardAdmin = () => {
                           );
                         }}
                         onChange={() => handleBranchChange()}
+                        disabled={eventId}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       >
                         {branchList && branchList?.length > 0 && (
@@ -1575,13 +1584,22 @@ const EventsDashboardAdmin = () => {
                     >
                       <ReactQuill
                         ref={quillRef1}
-                        defaultValue={eventHighlights}
+                        value={eventHighlights}
                         onChange={handleChangeEventHighlights}
                         modules={modules}
                         formats={formats}
                         placeholder='Please Enter Event Highlights'
                       />
                     </Form.Item>
+                    <span
+                      className='d-flex justify-content-end col-12'
+                      style={{
+                        fontSize: '12px',
+                        fontStyle: 'italic',
+                      }}
+                    >
+                      Note : Max 3000 Characters Allowed
+                    </span>
                   </div>
                   <div className='col-lg-12 col-md-12 col-sm-12 col-12 mb-2'>
                     <Form.Item
@@ -1603,6 +1621,15 @@ const EventsDashboardAdmin = () => {
                         placeholder='Please Enter Event Description'
                       />
                     </Form.Item>
+                    <span
+                      className='d-flex justify-content-end col-12'
+                      style={{
+                        fontSize: '12px',
+                        fontStyle: 'italic',
+                      }}
+                    >
+                      Note : Max 3000 Characters Allowed
+                    </span>
                   </div>
 
                   <div className='col-lg-4 col-md-6 col-sm-6 col-6 mb-2'>
@@ -1747,49 +1774,52 @@ const EventsDashboardAdmin = () => {
                                 </Button>
                               </div>
                             </div>
-                            {refundPolicyData.map((each, index) => {
-                              return (
-                                <>
-                                  <div className='row align-items-center'>
-                                    <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
-                                      <InputNumber
-                                        placeholder='No Of Days Before'
-                                        className='w-100 text-left th-black-1 th-br-4'
-                                        allowClear
-                                        addonAfter='days'
-                                        min={1}
-                                        max={100}
-                                        value={parseInt(each?.days)}
-                                        onChange={(e) => handleChange(e, index, 'days')}
-                                      />
-                                    </div>
-                                    <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
-                                      <InputNumber
-                                        placeholder='Refund Amount'
-                                        className='w-100 text-left th-black-1 th-br-4'
-                                        allowClear
-                                        addonBefore='Rs'
-                                        min={0}
-                                        max={100000}
-                                        value={parseInt(each?.amount)}
-                                        onChange={(e) => handleChange(e, index, 'amount')}
-                                      />
-                                    </div>
-                                    {index != 0 && (
-                                      <div className='col-lg-3 col-md-3 col-sm-2 col-2'>
-                                        <Button
-                                          shape='circle'
-                                          size='small'
-                                          icon={<CloseOutlined />}
-                                          onClick={() => handleDelete(index)}
-                                          className='icon-hover th-event-cancelled'
+                            {refundPolicy &&
+                              refundPolicyData.map((each, index) => {
+                                return (
+                                  <>
+                                    <div className='row align-items-center'>
+                                      <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
+                                        <InputNumber
+                                          placeholder='No Of Days Before'
+                                          className='w-100 text-left th-black-1 th-br-4'
+                                          allowClear
+                                          addonAfter='days'
+                                          min={1}
+                                          max={100}
+                                          value={parseInt(each?.days)}
+                                          onChange={(e) => handleChange(e, index, 'days')}
                                         />
                                       </div>
-                                    )}
-                                  </div>
-                                </>
-                              );
-                            })}
+                                      <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
+                                        <InputNumber
+                                          placeholder='Refund Amount'
+                                          className='w-100 text-left th-black-1 th-br-4'
+                                          allowClear
+                                          addonBefore='Rs'
+                                          min={0}
+                                          max={100000}
+                                          value={parseInt(each?.amount)}
+                                          onChange={(e) =>
+                                            handleChange(e, index, 'amount')
+                                          }
+                                        />
+                                      </div>
+                                      {index != 0 && (
+                                        <div className='col-lg-3 col-md-3 col-sm-2 col-2'>
+                                          <Button
+                                            shape='circle'
+                                            size='small'
+                                            icon={<CloseOutlined />}
+                                            onClick={() => handleDelete(index)}
+                                            className='icon-hover th-event-cancelled'
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </>
+                                );
+                              })}
                           </>
                         )}
                       </div>
