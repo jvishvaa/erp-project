@@ -379,7 +379,7 @@ const AddVideoObservation = () => {
         return;
       }
       if (!field.role) {
-        message.error(`Observer ${i + 1}: Role is required.`);
+        message.error(`Observer ${i + 1}: Level is required.`);
         return;
       }
       if (!field.user_name || field.user_name.length === 0) {
@@ -390,8 +390,8 @@ const AddVideoObservation = () => {
 
     for (let i = 0; i < forms.length; i++) {
       const form = forms[i];
-      if (!form.videoLink) {
-        message.error(`Form ${i + 1}: Video Link is required.`);
+      if (!form.videoLink || form.videoLink?.trim()?.length === 0) {
+        message.error(`Observed ${i + 1}: Video Link is required.`);
         return;
       }
       if (!form.branch) {
@@ -399,7 +399,7 @@ const AddVideoObservation = () => {
         return;
       }
       if (!form.role) {
-        message.error(`Form ${i + 1}: Role is required.`);
+        message.error(`Form ${i + 1}: Level is required.`);
         return;
       }
       if (!form.name) {
@@ -441,7 +441,7 @@ const AddVideoObservation = () => {
         return;
       }
       if (!field.role) {
-        message.error(`Observer ${i + 1}: Role is required.`);
+        message.error(`Observer ${i + 1}: Level is required.`);
         return;
       }
       if (!field.user_name || field.user_name.length === 0) {
@@ -457,7 +457,7 @@ const AddVideoObservation = () => {
         return;
       }
       if (!form.role) {
-        message.error(`Observed ${i + 1}: Role is required.`);
+        message.error(`Observed ${i + 1}: Level is required.`);
         return;
       }
       if (!form.name) {
@@ -651,12 +651,12 @@ const AddVideoObservation = () => {
                               <Form.Item
                                 name={`role_${field.id}`}
                                 rules={[
-                                  { required: true, message: 'Please select a role!' },
+                                  { required: true, message: 'Please select a level!' },
                                 ]}
                               >
                                 <Select
                                   allowClear
-                                  placeholder='Select user role*'
+                                  placeholder='Select user level*'
                                   showSearch
                                   optionFilterProp='children'
                                   filterOption={(input, option) =>
@@ -816,12 +816,12 @@ const AddVideoObservation = () => {
                                 <Form.Item
                                   name={`edit_role_${form.id}`}
                                   rules={[
-                                    { required: true, message: 'Please select role!' },
+                                    { required: true, message: 'Please select level!' },
                                   ]}
                                 >
                                   <Select
                                     allowClear
-                                    placeholder='Select user role*'
+                                    placeholder='Select user level*'
                                     showSearch
                                     optionFilterProp='children'
                                     filterOption={(input, option) =>
