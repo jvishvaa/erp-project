@@ -25,6 +25,8 @@ import {
   EditOutlined,
   SyncOutlined,
   RedoOutlined,
+  DesktopOutlined,
+  MobileOutlined,
 } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
 import axiosInstance from 'config/axios';
@@ -46,7 +48,9 @@ const RoleManagement = () => {
   const [moduleList, setModuleList] = useState([]);
   const [roleId, setRoleId] = useState();
   let parentModuleIds = [];
+  let mobileParentModuleIds = [];
   let childModuleIds = [];
+  let mobileModule = [];
   const extractContent = (s) => {
     const span = document.createElement('span');
     span.innerHTML = s;
@@ -164,40 +168,80 @@ const RoleManagement = () => {
       message.error('OOPS! You missed entering role name');
       return;
     }
-    if (parentModuleIds?.length === 0 && childModuleIds?.length === 0) {
-      message.error('Please select atleast one module');
+    if (
+      parentModuleIds?.length === 0 &&
+      childModuleIds?.length === 0 &&
+      mobileParentModuleIds?.length === 0 &&
+      mobileModule?.length === 0
+    ) {
+      message.error('Please select at least one module');
       return;
     }
     setDrawerLoading(true);
     const selectedParentModules = moduleList.filter((module) =>
       parentModuleIds.includes(module.id)
     );
+    const selectedMobileParentModule = moduleList.filter((module) =>
+      mobileParentModuleIds.includes(module.id)
+    );
     const selectedParentsChildModuleIds = selectedParentModules.flatMap((module) =>
       module.module_child.map((child) => child.module_child_id)
     );
+    const selectedMobileChildModuleIds = selectedMobileParentModule.flatMap((module) =>
+      module.module_child.map((child) => child.module_child_id)
+    );
     let combinedModuleIds = [...selectedParentsChildModuleIds, ...childModuleIds];
+    let combinedMobileModuleIds = [...selectedMobileChildModuleIds, ...mobileModule];
     let moduleIds = [...new Set(combinedModuleIds)];
+    let mobileModuleIds = [...new Set(combinedMobileModuleIds)];
     let url;
     if (roleId) {
       url = `${endpoints.roleManagement.updateRole}`;
     } else {
       url = `${endpoints.roleManagement.createRole}`;
     }
+    const createModulePayload = (moduleId, isMobile) => ({
+      modules_id: moduleId,
+      my_branch: true,
+      my_grade: true,
+      my_section: true,
+      my_subject: true,
+      custom_year: [],
+      custom_grade: [],
+      custom_section: [],
+      custom_branch: [],
+      custom_subject: [],
+      is_mobile: isMobile,
+    });
+
+    let payloadModules = [];
+
+    if (JSON.stringify(moduleIds.sort()) === JSON.stringify(mobileModuleIds.sort())) {
+      moduleIds.forEach((moduleId) => {
+        payloadModules.push(createModulePayload(moduleId, false));
+        payloadModules.push(createModulePayload(moduleId, true));
+      });
+    } else {
+      let commonIds = moduleIds.filter((id) => mobileModuleIds.includes(id));
+      let uniqueModuleIds = moduleIds.filter((id) => !mobileModuleIds.includes(id));
+      let uniqueMobileModuleIds = mobileModuleIds.filter((id) => !moduleIds.includes(id));
+      commonIds.forEach((id) => {
+        payloadModules.push(createModulePayload(id, false));
+        payloadModules.push(createModulePayload(id, true));
+      });
+      uniqueModuleIds.forEach((id) => {
+        payloadModules.push(createModulePayload(id, false));
+      });
+      uniqueMobileModuleIds.forEach((id) => {
+        payloadModules.push(createModulePayload(id, true));
+      });
+    }
+
     const payload = {
       role_name: role_name,
-      Module: moduleIds.map((moduleId) => ({
-        modules_id: moduleId,
-        my_branch: true,
-        my_grade: true,
-        my_section: true,
-        my_subject: true,
-        custom_year: [],
-        custom_grade: [],
-        custom_section: [],
-        custom_branch: [],
-        custom_subject: [],
-      })),
+      Module: payloadModules,
     };
+
     if (roleId) {
       payload.role_id = roleId;
     }
@@ -386,9 +430,11 @@ const RoleManagement = () => {
   const ChildModulesDivComponents = ({
     childModule,
     isParentModuleSelected,
+    isMobileParentModuleSelected,
     subIndex,
   }) => {
     const [isChildModuleSelected, setIsChildModuleSelected] = useState(false);
+    const [isMobileModuleSelected, setIsMobileModuleSelected] = useState(false);
     useEffect(() => {
       if (childModule?.checked) {
         childModuleIds.push(childModule?.module_child_id);
@@ -406,28 +452,105 @@ const RoleManagement = () => {
       }
       setIsChildModuleSelected(!isChildModuleSelected);
     };
+    useEffect(() => {
+      if (isParentModuleSelected) {
+        setIsChildModuleSelected(true);
+      } else if (childModule?.checked) {
+        setIsChildModuleSelected(true);
+      } else {
+        setIsChildModuleSelected(false);
+      }
+    }, [isParentModuleSelected, childModule]);
+
+    useEffect(() => {
+      if (isMobileParentModuleSelected) {
+        setIsMobileModuleSelected(true);
+      } else if (childModule?.is_mobile) {
+        setIsMobileModuleSelected(true);
+      } else {
+        setIsMobileModuleSelected(false);
+      }
+    }, [isMobileParentModuleSelected, childModule]);
+
+    useEffect(() => {
+      if (childModule?.is_mobile) {
+        mobileModule.push(childModule?.module_child_id);
+        setIsMobileModuleSelected(true);
+      }
+    }, [childModule]);
+    const handleMobileModuleCheck = (childModId) => {
+      if (!mobileModule.includes(childModId)) {
+        mobileModule.push(childModId);
+      } else {
+        const index = mobileModule.indexOf(childModId);
+        if (index !== -1) {
+          mobileModule.splice(index, 1);
+        }
+      }
+      setIsMobileModuleSelected(!isMobileModuleSelected);
+    };
+    const getDivClassName = (isMobileSelected, isWebSelected, subIndex) => {
+      if (isMobileSelected) {
+        return 'th-bg-blue-2';
+      }
+      if (isWebSelected) {
+        return 'th-bg-blue-2';
+      }
+      return subIndex % 2 === 0 ? 'th-bg-grey' : 'th-bg-white';
+    };
     return (
       <>
-        <div
-          key={subIndex}
-          className={`${
-            !isParentModuleSelected && !isChildModuleSelected
-              ? subIndex % 2 === 0
-                ? 'th-bg-grey'
-                : 'th-bg-white'
-              : ''
-          }${
-            !isParentModuleSelected && isChildModuleSelected ? 'th-bg-blue-2' : ''
-          } d-flex justify-content-between`}
-        >
-          <span className='th-black-1 th-14'>{childModule?.module_child_name}</span>
-          {isParentModuleSelected ? null : (
-            <Checkbox
-              checked={isChildModuleSelected}
-              onClick={() => handleChildModuleCheck(childModule?.module_child_id)}
-              style={{ cursor: 'pointer' }}
-            />
-          )}
+        <div className='d-flex justify-content-between'>
+          <div
+            key={subIndex}
+            className={`${getDivClassName(
+              isMobileModuleSelected,
+              isChildModuleSelected,
+              subIndex
+            )} d-flex justify-content-between th-width-80`}
+          >
+            <span className='th-black-1 th-14'>{childModule?.module_child_name}</span>
+            {isParentModuleSelected ? null : (
+              <Tooltip
+                title='Web'
+                getTooltipContainer={(trigger) => trigger.parentNode}
+                overlayInnerStyle={{
+                  fontSize: '13px',
+                  width: '36px',
+                  padding: '5px 4px',
+                }}
+              >
+                <Checkbox
+                  checked={isChildModuleSelected}
+                  onClick={() => handleChildModuleCheck(childModule?.module_child_id)}
+                  className='cursor-pointer'
+                />
+              </Tooltip>
+            )}
+          </div>
+          <div
+            className={`${
+              isMobileModuleSelected ? 'th-bg-blue-2' : ''
+            } d-flex justify-content-end th-width-20`}
+          >
+            {isMobileParentModuleSelected ? null : (
+              <Tooltip
+                title='Mobile'
+                getTooltipContainer={(trigger) => trigger.parentNode}
+                overlayInnerStyle={{
+                  fontSize: '13px',
+                  width: '51px',
+                  padding: '5px 4px',
+                }}
+              >
+                <Checkbox
+                  checked={isMobileParentModuleSelected || isMobileModuleSelected}
+                  onClick={() => handleMobileModuleCheck(childModule?.module_child_id)}
+                  className='cursor-pointer'
+                />
+              </Tooltip>
+            )}
+          </div>
         </div>
       </>
     );
@@ -444,7 +567,70 @@ const RoleManagement = () => {
         }
       }
       setIsParentModuleSelected(!isParentModuleSelected);
+      parentModule.module_child.forEach((childModule) => {
+        if (!isParentModuleSelected) {
+          if (!childModuleIds.includes(childModule.module_child_id)) {
+            childModuleIds.push(childModule.module_child_id);
+          }
+        } else {
+          const index = childModuleIds.indexOf(childModule.module_child_id);
+          if (index !== -1) {
+            childModuleIds.splice(index, 1);
+          }
+        }
+      });
     };
+    const [isMobileParentModuleSelected, setIsMobileParentModuleSelected] =
+      useState(false);
+    const handleMobileParentModuleCheck = (parentModId) => {
+      if (!mobileParentModuleIds.includes(parentModId)) {
+        mobileParentModuleIds.push(parentModId);
+      } else {
+        const index = mobileParentModuleIds.indexOf(parentModId);
+        if (index !== -1) {
+          mobileParentModuleIds.splice(index, 1);
+        }
+      }
+      setIsMobileParentModuleSelected(!isMobileParentModuleSelected);
+      parentModule.module_child.forEach((childModule) => {
+        if (!isMobileParentModuleSelected) {
+          if (!mobileModule.includes(childModule.module_child_id)) {
+            mobileModule.push(childModule.module_child_id);
+          }
+        } else {
+          const index = mobileModule.indexOf(childModule.module_child_id);
+          if (index !== -1) {
+            mobileModule.splice(index, 1);
+          }
+        }
+      });
+    };
+
+    const moduleChildMap = new Map();
+
+    parentModule.module_child.forEach((childModule) => {
+      const existingModule = moduleChildMap.get(childModule.module_child_id);
+
+      if (existingModule) {
+        if (!existingModule.is_mobile && childModule.is_mobile) {
+          moduleChildMap.set(childModule.module_child_id, childModule);
+        }
+      } else {
+        moduleChildMap.set(childModule.module_child_id, childModule);
+      }
+    });
+    const uniqueChildModules = Array.from(moduleChildMap.values()).map((childModule) => {
+      const isOnlyOneModule =
+        parentModule.module_child.filter(
+          (module) => module.module_child_id === childModule.module_child_id
+        ).length === 1;
+
+      if (isOnlyOneModule && childModule.is_mobile) {
+        return { ...childModule, checked: false };
+      }
+
+      return childModule;
+    });
     return (
       <>
         <Card
@@ -453,14 +639,49 @@ const RoleManagement = () => {
           headStyle={{ background: '#1b4ccb', borderRadius: '10px 10px 0 0' }}
           title={
             <div className='d-flex justify-content-between'>
-              <span className='th-white th-16 th-fw-700'>
-                {parentModule?.module_parent}
-              </span>
-              <Checkbox
-                checked={isParentModuleSelected}
-                onClick={() => handleParentModuleCheck(parentModule?.id)}
-                style={{ cursor: 'pointer' }}
-              />
+              <div className='d-flex justify-content-between align-items-center th-width-80 flex-wrap'>
+                <span className='th-white th-16 th-fw-700'>
+                  {parentModule?.module_parent}
+                </span>
+                <Tooltip
+                  title='Web'
+                  getTooltipContainer={(trigger) => trigger.parentNode}
+                  overlayInnerStyle={{
+                    fontSize: '13px',
+                    width: '36px',
+                    padding: '5px 4px',
+                  }}
+                >
+                  <div className='d-flex justify-content-center align-items-center flex-wrap gap-3'>
+                    <DesktopOutlined className='th-white th-14' />
+                    <Checkbox
+                      checked={isParentModuleSelected}
+                      onClick={() => handleParentModuleCheck(parentModule?.id)}
+                      className='cursor-pointer mx-1'
+                    />
+                  </div>
+                </Tooltip>
+              </div>
+              <div className='d-flex justify-content-end flex-wrap th-width-20'>
+                <Tooltip
+                  title='Mobile'
+                  getTooltipContainer={(trigger) => trigger.parentNode}
+                  overlayInnerStyle={{
+                    fontSize: '13px',
+                    width: '50px',
+                    padding: '5px 4px',
+                  }}
+                >
+                  <div className='d-flex justify-content-center align-items-center flex-wrap'>
+                    <MobileOutlined className='th-white th-14' />
+                    <Checkbox
+                      checked={isMobileParentModuleSelected}
+                      onClick={() => handleMobileParentModuleCheck(parentModule?.id)}
+                      className='cursor-pointer mx-1'
+                    />
+                  </div>
+                </Tooltip>
+              </div>
             </div>
           }
           className={`${
@@ -472,10 +693,11 @@ const RoleManagement = () => {
             scrollbarWidth: 'thin',
           }}
         >
-          {parentModule?.module_child.map((childModule, subIndex) => (
+          {uniqueChildModules?.map((childModule, subIndex) => (
             <ChildModulesDivComponents
               childModule={childModule}
               isParentModuleSelected={isParentModuleSelected}
+              isMobileParentModuleSelected={isMobileParentModuleSelected}
               subIndex={subIndex}
             />
           ))}

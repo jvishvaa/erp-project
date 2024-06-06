@@ -77,7 +77,9 @@ const VideoObservation = () => {
     setSelectAll(isChecked);
 
     if (isChecked) {
-      const allRowIds = tableData.filter(record => !record.evaluated).map(record => record.id);
+      const allRowIds = tableData
+        .filter((record) => !record.evaluated)
+        .map((record) => record.id);
       setSelectedRows(allRowIds);
     } else {
       setSelectedRows([]);
@@ -95,10 +97,7 @@ const VideoObservation = () => {
           }}
         >
           {allFiltersSelected && tableData.some((ele) => !ele.evaluated) && (
-            <Checkbox
-              onChange={handleSelectAllChange}
-              checked={selectAll}
-            />
+            <Checkbox onChange={handleSelectAllChange} checked={selectAll} />
           )}
           <span style={{ textAlign: 'center' }} className='th-white th-fw-700'>
             Sl No.
@@ -393,6 +392,9 @@ const VideoObservation = () => {
       .then((res) => {
         fetchTableData();
         message.success('Deleted Successfully');
+        setSelectedRows((prevSelectedRows) =>
+          prevSelectedRows.filter((rowId) => rowId !== id)
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -407,7 +409,6 @@ const VideoObservation = () => {
       setTableData([]);
     } else {
       setBranch(null);
-      setUserLevel(null);
       setUserNameList([]);
       setUserName(null);
       formRef.current.setFieldsValue({
@@ -420,10 +421,7 @@ const VideoObservation = () => {
   const handleUserLevel = (e) => {
     if (e && e?.length != 0) {
       setUserLevel(e);
-      if (branch) {
-        fetchUserName(branch, e);
-        setTableData([]);
-      }
+      setTableData([]);
     } else {
       setUserLevel(null);
       setUserNameList([]);
@@ -473,12 +471,14 @@ const VideoObservation = () => {
   const handleCheckboxChange = (e, record) => {
     const newSelectedRows = e.target.checked
       ? [...selectedRows, record.id]
-      : selectedRows.filter(id => id !== record.id);
+      : selectedRows.filter((id) => id !== record.id);
     setSelectedRows(newSelectedRows);
 
     if (!e.target.checked) {
       setSelectAll(false);
-    } else if (newSelectedRows.length === tableData.filter(record => !record.evaluated).length) {
+    } else if (
+      newSelectedRows.length === tableData.filter((record) => !record.evaluated).length
+    ) {
       setSelectAll(true);
     }
   };
@@ -486,11 +486,11 @@ const VideoObservation = () => {
   const handleReassignVideo = () => {
     setIsModalOpen(true);
   };
-  
+
   const handleFilter = () => {
-    setSelectAll(false)
-    if (branch == null) {
-      return message.error('Please Select All The Filters');
+    setSelectAll(false);
+    if (branch == null && userLevel==null && userName==null) {
+      return message.error('Please Select The Filters');
     } else {
       fetchTableData();
       setRefferListPageData({
@@ -605,281 +605,289 @@ const VideoObservation = () => {
   useEffect(() => {
     fetchTableData();
   }, [refferListPageData.currentPage, selectedBranch]);
+  useEffect(()=>{
+    fetchUserName(branch, userLevel);
+  }, [branch, userLevel])
   return (
-    <div className='row  px-2'>
+    <>
       <Layout>
-        <div className='row pt-3 pb-3'>
-          <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
-            <Breadcrumb separator='>'>
-              <Breadcrumb.Item className='th-black-1 th-16 th-grey'>
-                Assign Video Observation
-              </Breadcrumb.Item>
-            </Breadcrumb>
+        <div className='row  px-2'>
+          <div className='row pt-3 pb-3'>
+            <div className='col-md-6 th-bg-grey' style={{ zIndex: 2 }}>
+              <Breadcrumb separator='>'>
+                <Breadcrumb.Item className='th-black-1 th-16 th-grey'>
+                  Assign Video Observation
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
           </div>
-        </div>
 
-        <div className='row'>
-          <div className='col-md-12'>
-            <div className='th-bg-white th-br-5 py-3 shadow-sm'>
-              <div>
-                <Form
-                  ref={formRef}
-                  className='d-flex align-items-center flex-wrap'
-                  direction='row'
-                >
-                  <div className='col-md-2'>
-                    <span className='th-grey th-14'>Branch*</span>
-                    <Form.Item name='branch'>
-                      <Select
-                        allowClear
-                        placeholder='Select Branch'
-                        showSearch
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                        className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        onChange={(e) => handleBranch(e)}
-                      >
-                        {BranchListOptions}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                  <div className='col-md-2'>
-                    <span className='th-grey th-14'>User Level*</span>
-                    <Form.Item name='role'>
-                      <Select
-                        allowClear
-                        placeholder='Select User Level'
-                        suffixIcon={<DownOutlined className='th-grey' />}
-                        showSearch
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                            0
-                          );
-                        }}
-                        className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                        onChange={(e) => handleUserLevel(e)}
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                      >
-                        {userLevelListOptions}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                  <div className='col-md-2'>
-                    <span className='th-grey th-14'>Name</span>
-                    <Form.Item name='user_name'>
-                      <Select
-                        allowClear
-                        placeholder='Select User Name'
-                        showSearch
-                        optionFilterProp='children'
-                        filterOption={(input, options) => {
-                          return (
-                            options?.children
-                              ?.toLowerCase()
-                              ?.indexOf(input?.toLowerCase()) >= 0
-                          );
-                        }}
-                        className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                        onChange={(e) => handleUserName(e)}
-                      >
-                        {userNameListOption}
-                      </Select>
-                    </Form.Item>
-                  </div>
-                  <div className='col-md-2 mt-2'>
-                    <Button
-                      type='primary'
-                      className='Buttons'
-                      onClick={() => handleFilter()}
-                      class='mt-3'
-                    >
-                      Filter
-                    </Button>
-                  </div>
-                  <div className='col-md-2 mt-2'>
-                    <Button
-                      type='primary'
-                      className='Buttons'
-                      onClick={() => history.push('/add-video-observation')}
-                      class='mt-3'
-                    >
-                      Add Video Observation
-                    </Button>
-                  </div>
-                  {selectedRows.length > 0 && (
+          <div className='row'>
+            <div className='col-md-12'>
+              <div className='th-bg-white th-br-5 py-3 shadow-sm'>
+                <div>
+                  <Form
+                    ref={formRef}
+                    className='d-flex align-items-center flex-wrap'
+                    direction='row'
+                  >
+                    <div className='col-md-2'>
+                      <span className='th-grey th-14'>Branch*</span>
+                      <Form.Item name='branch'>
+                        <Select
+                          allowClear
+                          placeholder='Select Branch'
+                          showSearch
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                          className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          onChange={(e) => handleBranch(e)}
+                        >
+                          {BranchListOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                    <div className='col-md-2'>
+                      <span className='th-grey th-14'>User Level*</span>
+                      <Form.Item name='role'>
+                        <Select
+                          allowClear
+                          placeholder='Select User Level'
+                          suffixIcon={<DownOutlined className='th-grey' />}
+                          showSearch
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                ?.toLowerCase()
+                                ?.indexOf(input?.toLowerCase()) >= 0
+                            );
+                          }}
+                          className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                          onChange={(e) => handleUserLevel(e)}
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                        >
+                          {userLevelListOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                    <div className='col-md-2'>
+                      <span className='th-grey th-14'>Name</span>
+                      <Form.Item name='user_name'>
+                        <Select
+                          allowClear
+                          placeholder='Select User Name'
+                          showSearch
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options?.children
+                                ?.toLowerCase()
+                                ?.indexOf(input?.toLowerCase()) >= 0
+                            );
+                          }}
+                          className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                          getPopupContainer={(trigger) => trigger.parentNode}
+                          onChange={(e) => handleUserName(e)}
+                        >
+                          {userNameListOption}
+                        </Select>
+                      </Form.Item>
+                    </div>
                     <div className='col-md-2 mt-2'>
                       <Button
-                        type='secondary'
+                        type='primary'
                         className='Buttons'
-                        onClick={() => handleReassignVideo()}
+                        onClick={() => handleFilter()}
                         class='mt-3'
                       >
-                        Reassign Video
+                        Filter
                       </Button>
                     </div>
-                  )}
-                </Form>
-                <div className='table'>
-                  <span className='border p-1' style={{ borderColor: '#d9d9d9' }}>
-                    <InfoCircleTwoTone className='pr-2' />
-                    <i className='th-grey'>
-                      Please Select Branch And User Level For User Name
-                    </i>
-                  </span>
-                  <Table
-                    dataSource={tableData}
-                    columns={columns}
-                    className='text-center mt-2'
-                    pagination={false}
-                  />
-                </div>
-                {tableData?.length > 0 && (
-                  <div className='text-center mt-2'>
-                    <Pagination
-                      current={refferListPageData.currentPage}
-                      total={refferListPageData.totalCount}
-                      pageSize={refferListPageData.pageSize}
-                      onChange={(value) =>
-                        setRefferListPageData({
-                          ...refferListPageData,
-                          currentPage: value,
-                        })
-                      }
-                      showSizeChanger={false}
-                      showQuickJumper={false}
-                      showTotal={(total, range) =>
-                        `${range[0]}-${range[1]} of ${total} items`
-                      }
+                    <div className='col-md-2 mt-2'>
+                      <Button
+                        type='primary'
+                        className='Buttons'
+                        onClick={() => history.push('/add-video-observation')}
+                        class='mt-3'
+                      >
+                        Add Video Observation
+                      </Button>
+                    </div>
+                    {selectedRows.length > 0 && (
+                      <div className='col-md-2 mt-2'>
+                        <Button
+                          type='secondary'
+                          className='Buttons'
+                          onClick={() => handleReassignVideo()}
+                          class='mt-3'
+                        >
+                          Reassign
+                        </Button>
+                      </div>
+                    )}
+                  </Form>
+                  <div className='table'>
+                    <span className='border p-1' style={{ borderColor: '#d9d9d9' }}>
+                      <InfoCircleTwoTone className='pr-2' />
+                      <i className='th-grey'>
+                        Please Select Branch And User Level For User Name
+                      </i>
+                    </span>
+                    <Table
+                      dataSource={tableData}
+                      columns={columns}
+                      className='text-center mt-2'
+                      pagination={false}
                     />
                   </div>
-                )}
+                  {tableData?.length > 0 && (
+                    <div className='text-center mt-2'>
+                      <Pagination
+                        current={refferListPageData.currentPage}
+                        total={refferListPageData.totalCount}
+                        pageSize={refferListPageData.pageSize}
+                        onChange={(value) =>
+                          setRefferListPageData({
+                            ...refferListPageData,
+                            currentPage: value,
+                          })
+                        }
+                        showSizeChanger={false}
+                        showQuickJumper={false}
+                        showTotal={(total, range) =>
+                          `${range[0]}-${range[1]} of ${total} items`
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {load && <Loader />}
-        <Modal
-          title='Bulk Delete Or Edit'
-          visible={isModalOpen}
-          onCancel={handleCancel}
-          footer={[
-            <Popconfirm
-              title='Are you Sure ?'
-              onConfirm={() => handelDeleteModal()}
-              okText='Yes'
-              cancelText='No'
-              getPopupContainer={(trigger) => trigger.parentNode}
-              overlayClassName='custom-popconfirm'
-            >
+          {load && <Loader />}
+          <Modal
+            title='Bulk Delete Or Edit'
+            visible={isModalOpen}
+            onCancel={handleCancel}
+            footer={[
+              <Popconfirm
+                title='Are you Sure ?'
+                onConfirm={() => handelDeleteModal()}
+                okText='Yes'
+                cancelText='No'
+                getPopupContainer={(trigger) => trigger.parentNode}
+                overlayClassName='custom-popconfirm'
+              >
+                <Button
+                  key='delete'
+                  type='danger'
+                  danger
+                  disabled={load}
+                  className='th-br-6'
+                >
+                  Delete
+                </Button>
+              </Popconfirm>,
               <Button
-                key='delete'
-                type='danger'
-                danger
+                key='update'
+                type='primary'
+                onClick={() => handleUpdateModal()}
+                icon={load ? <SyncOutlined spin /> : <EditOutlined />}
                 disabled={load}
                 className='th-br-6'
               >
-                Delete
-              </Button>
-            </Popconfirm>,
-            <Button
-              key='update'
-              type='primary'
-              onClick={() => handleUpdateModal()}
-              icon={load ? <SyncOutlined spin /> : <EditOutlined />}
-              disabled={load}
-              className='th-br-6'
-            >
-              Assign observer
-            </Button>,
-          ]}
-        >
-          <Form
-            className='d-flex align-items-center flex-wrap'
-            ref={modalRef}
-            direction='row'
+                Assign observer
+              </Button>,
+            ]}
           >
-            <div className='col-md-4'>
-              <span className='th-grey th-14'>Branch*</span>
-              <Form.Item name='modal_branch'>
-                <Select
-                  allowClear
-                  placeholder='Select Branch'
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  onChange={(e) => handleModalBranchChange(e)}
-                >
-                  {BranchListOptions}
-                </Select>
-              </Form.Item>
+            <Form
+              className='d-flex align-items-center flex-wrap'
+              ref={modalRef}
+              direction='row'
+            >
+              <div className='col-md-4'>
+                <span className='th-grey th-14'>Branch*</span>
+                <Form.Item name='modal_branch'>
+                  <Select
+                    allowClear
+                    placeholder='Select Branch'
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0
+                      );
+                    }}
+                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    onChange={(e) => handleModalBranchChange(e)}
+                  >
+                    {BranchListOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-4'>
+                <span className='th-grey th-14'>Level*</span>
+                <Form.Item name='modal_role'>
+                  <Select
+                    allowClear
+                    placeholder='Select User Level'
+                    suffixIcon={<DownOutlined className='th-grey' />}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0
+                      );
+                    }}
+                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                    onChange={(e) => handleModalUserLevelChange(e)}
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                  >
+                    {userLevelListOptions}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-4'>
+                <span className='th-grey th-14'>Name</span>
+                <Form.Item name='modal_user_name'>
+                  <Select
+                    allowClear
+                    placeholder='Select User Name'
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >=
+                        0
+                      );
+                    }}
+                    className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                    getPopupContainer={(trigger) => trigger.parentNode}
+                    onChange={(e) => handleModalUserNameChange(e)}
+                  >
+                    {modalUserNameListOption}
+                  </Select>
+                </Form.Item>
+              </div>
+            </Form>
+            <div>
+              <p className='th-grey text-right th-width-95'>
+                {selectedRows?.length} items selected.
+              </p>
             </div>
-            <div className='col-md-4'>
-              <span className='th-grey th-14'>Level*</span>
-              <Form.Item name='modal_role'>
-                <Select
-                  allowClear
-                  placeholder='Select User Level'
-                  suffixIcon={<DownOutlined className='th-grey' />}
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  onChange={(e) => handleModalUserLevelChange(e)}
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                >
-                  {userLevelListOptions}
-                </Select>
-              </Form.Item>
-            </div>
-            <div className='col-md-4'>
-              <span className='th-grey th-14'>Name</span>
-              <Form.Item name='modal_user_name'>
-                <Select
-                  allowClear
-                  placeholder='Select User Name'
-                  showSearch
-                  optionFilterProp='children'
-                  filterOption={(input, options) => {
-                    return (
-                      options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0
-                    );
-                  }}
-                  className='w-100 text-left th-black-1 th-bg-white th-br-4'
-                  getPopupContainer={(trigger) => trigger.parentNode}
-                  onChange={(e) => handleModalUserNameChange(e)}
-                >
-                  {modalUserNameListOption}
-                </Select>
-              </Form.Item>
-            </div>
-          </Form>
-          <div>
-            <p className='th-grey text-right th-width-95'>
-              {selectedRows?.length} items selected.
-            </p>
-          </div>
-        </Modal>
+          </Modal>
+        </div>
       </Layout>
-    </div>
+    </>
   );
 };
 
