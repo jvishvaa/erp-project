@@ -210,13 +210,14 @@ const AddVideoObservation = () => {
           fields[index]['branch'] = parsedValue.branch_id;
           fields[index]['acad_session'] = parsedValue.acad_session;
         }
+        fetchUserName(parsedValue.branch_id,fields[index].role, index);
         fields[index].userNameList = [];
         fields[index].user_name = null;
         formRef.current.setFieldsValue({
           [`user_name_${fields[index].id}`]: null,
         });
         setFormFields(fields);
-      } else if (field === 'role') {
+      } else if (field === 'role' || field=='branch') {
         fields[index]['role'] = value;
 
         fields[index].userNameList = [];

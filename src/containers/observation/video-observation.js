@@ -729,7 +729,7 @@ const VideoObservation = () => {
                           onClick={() => handleReassignVideo()}
                           class='mt-3'
                         >
-                          Reassign Video
+                          Reassign
                         </Button>
                       </div>
                     )}
