@@ -11,6 +11,11 @@ import {
   notification,
   Tooltip,
   Button,
+  Row,
+  Col,
+  Modal,
+  List,
+  Spin,
 } from 'antd';
 import {
   EyeOutlined,
@@ -19,6 +24,8 @@ import {
   ClockCircleOutlined,
   ReloadOutlined,
   InfoCircleTwoTone,
+  SyncOutlined,
+  CloseSquareOutlined,
 } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
 import endpointsV2 from 'v2/config/endpoints';
@@ -54,6 +61,11 @@ const EventsDashboardStudent = () => {
   const [viewEventModalOpen, setViewEventModalOpen] = useState(false);
   const [viewEvent, setViewEvent] = useState();
   const [imprestWallet, setImprestWallet] = useState();
+
+  const [unSubscribeLoading, setUnSubscribeLoading] = useState(false);
+  const [unSubscribeModalOpen, setUnSubscribeModalOpen] = useState(false);
+  const [policyDatesArray, setPolicyDatesArray] = useState([]);
+  const [eventDetails, setEventDetails] = useState([]);
 
   useEffect(() => {
     fetchImprestWalletData();
@@ -130,6 +142,7 @@ const EventsDashboardStudent = () => {
             className: 'notification-container',
           });
           fetchTableData();
+          fetchImprestWalletData();
         } else if (response?.data?.status_code == 402) {
           notification['error']({
             message: 'Insufficient wallet balance. Please recharge to subscribe',
@@ -150,7 +163,8 @@ const EventsDashboardStudent = () => {
       });
   };
   const unSubscribeEvent = ({ eventId }) => {
-    setLoading(true);
+    setUnSubscribeLoading(true);
+    console.log('test');
     axiosInstance
       .post(
         `${endpoints.eventsDashboard.studentActionApi}?event_id=${eventId}&subscribed=0`
@@ -163,7 +177,9 @@ const EventsDashboardStudent = () => {
             duration: 5,
             className: 'notification-container',
           });
+          closeUnSubscribeModal();
           fetchTableData();
+          fetchImprestWalletData();
         }
       })
       .catch((error) => {
@@ -174,7 +190,7 @@ const EventsDashboardStudent = () => {
         });
       })
       .finally(() => {
-        setLoading(false);
+        setUnSubscribeLoading(false);
       });
   };
 
@@ -186,10 +202,27 @@ const EventsDashboardStudent = () => {
     setViewEventModalOpen(false);
   };
 
+  const openUnSubscribeModal = ({ rowData }) => {
+    let data = rowData?.policy_dates
+      ? Object.entries(rowData.policy_dates).map(([date, amount]) => ({
+          date,
+          amount: `Rs. ${amount}`,
+        }))
+      : [];
+    setPolicyDatesArray(data);
+    setEventDetails(rowData);
+    setUnSubscribeModalOpen(true);
+  };
+  const closeUnSubscribeModal = () => {
+    setPolicyDatesArray([]);
+    setEventDetails([]);
+    setUnSubscribeModalOpen(false);
+  };
+
   const handleFinanceRedirection = () => {
     if (ENVCONFIG?.apiGateway?.finance && token) {
       window.open(
-        `${ENVCONFIG.apiGateway.finance}/sso/finance/${token}#/imprest`,
+        `${ENVCONFIG?.apiGateway?.finance}/sso/imprest/${token}#/auth/login`,
         '_blank'
       );
     } else {
@@ -217,7 +250,7 @@ const EventsDashboardStudent = () => {
 
   const columns = [
     {
-      title: <span className='th-white th-event-12 th-fw-700'>SNo</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>S. No</span>,
       align: 'center',
       width: '5%',
       render: (data, row, index) => (
@@ -366,24 +399,15 @@ const EventsDashboardStudent = () => {
                   </Popconfirm>
                 )}
                 {row?.subscription === 'subscribed' && (
-                  <Popconfirm
-                    placement='bottomRight'
-                    title='If you unsubscribe, you cannot subscribe again. Are you sure you want to unsubscribe from this event?'
-                    onConfirm={() =>
-                      unSubscribeEvent({
-                        eventId: row?.id,
-                      })
-                    }
-                  >
-                    <Popover placement='topRight' content='Un Subscribe Event'>
-                      <Tag
-                        className='custom-tag th-event-rejected'
-                        icon={<CloseCircleOutlined />}
-                      >
-                        Un Subscribe
-                      </Tag>
-                    </Popover>
-                  </Popconfirm>
+                  <Popover placement='topRight' content='Un Subscribe Event'>
+                    <Tag
+                      className='custom-tag th-event-rejected'
+                      icon={<CloseCircleOutlined />}
+                      onClick={() => openUnSubscribeModal({ rowData: row })}
+                    >
+                      Un Subscribe
+                    </Tag>
+                  </Popover>
                 )}
               </>
             )}
@@ -521,6 +545,127 @@ const EventsDashboardStudent = () => {
         closeViewEventModal={closeViewEventModal}
         viewEvent={viewEvent}
       />
+      <Modal
+        title={
+          <div className='d-flex justify-content-between align-items-center'>
+            <div>Un Subscribe Event</div>
+            <div>
+              <CloseSquareOutlined
+                onClick={closeUnSubscribeModal}
+                className='th-close-icon'
+              />
+            </div>
+          </div>
+        }
+        visible={unSubscribeModalOpen}
+        onCancel={closeUnSubscribeModal}
+        className='th-event-modal th-event-modal-rejected'
+        style={{
+          top: '10%',
+        }}
+        footer={[
+          <Row justify='space-around'>
+            <Col>
+              <Button
+                size='small'
+                className='secondary-button drawer-modal-footer-button'
+                onClick={closeUnSubscribeModal}
+              >
+                Close
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                size='small'
+                className='primary-button drawer-modal-footer-button reject-button'
+                icon={
+                  unSubscribeLoading ? <SyncOutlined spin /> : <CloseCircleOutlined />
+                }
+                onClick={() => unSubscribeEvent({ eventId: eventDetails?.id })}
+                disabled={unSubscribeLoading}
+              >
+                Un Subscribe Event
+              </Button>
+            </Col>
+          </Row>,
+        ]}
+      >
+        {unSubscribeLoading ? (
+          <div className='d-flex justify-content-center align-items-center'>
+            <Spin tip='Hold on! Great things take time!' size='large' />
+          </div>
+        ) : (
+          <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
+            {eventDetails?.refundable ? (
+              <>
+                <span className='d-flex justify-content-center'>
+                  Event Price : Rs. {eventDetails?.event_price}
+                </span>
+                <List
+                  size='small'
+                  className='th-unsubscribe-list'
+                  style={{
+                    marginBottom: '10px',
+                  }}
+                  header={
+                    <>
+                      <div className='d-flex justify-content-center th-unsubscribe-list-header'>
+                        <strong>Refund Policy</strong>
+                      </div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          padding: '0px 4px',
+                          borderBottom: '1px solid #f0f0f0',
+                          background: '#fafafa',
+                        }}
+                      >
+                        <span style={{ flex: 1 }}>
+                          <strong>Cancel Before Date</strong>
+                        </span>
+                        <span style={{ flex: 1, textAlign: 'right' }}>
+                          <strong>Refund Amount</strong>
+                        </span>
+                      </div>
+                    </>
+                  }
+                  dataSource={policyDatesArray}
+                  renderItem={(item) => (
+                    <List.Item className='th-unsubscribe-list-item'>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          width: '100%',
+                        }}
+                      >
+                        <span style={{ flex: 1 }}>{item.date}</span>
+                        <span style={{ flex: 1, textAlign: 'right' }}>{item.amount}</span>
+                      </div>
+                    </List.Item>
+                  )}
+                />
+              </>
+            ) : (
+              <span
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontStyle: 'italic',
+                  color: '#f44336',
+                  marginBottom: '10px',
+                }}
+              >
+                As per refund policy, No Refund will be given
+              </span>
+            )}
+            If you unsubscribe, you cannot subscribe again. Are you sure you want to
+            unsubscribe from this event?
+          </div>
+        )}
+      </Modal>
     </>
   );
 };
