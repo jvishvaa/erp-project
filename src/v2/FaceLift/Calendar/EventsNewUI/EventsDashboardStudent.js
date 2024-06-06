@@ -10,6 +10,7 @@ import {
   DatePicker,
   notification,
   Tooltip,
+  Button,
 } from 'antd';
 import {
   EyeOutlined,
@@ -20,13 +21,13 @@ import {
   InfoCircleTwoTone,
 } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
+import endpointsV2 from 'v2/config/endpoints';
 import axiosInstance from 'config/axios';
 import moment from 'moment';
 import { useForm } from 'antd/lib/form/Form';
 import './eventsDashboard.css';
 import ViewEventModal from './viewEventModal';
-
-import { saveAs } from 'file-saver';
+import ENVCONFIG from 'config/config';
 
 const EventsDashboardStudent = () => {
   const notificationDuration = 3;
@@ -38,6 +39,13 @@ const EventsDashboardStudent = () => {
   const session_year = sessionStorage.getItem('acad_session')
     ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
     : '';
+  let erpID = localStorage.getItem('userDetails')
+    ? JSON.parse(localStorage.getItem('userDetails'))
+    : {};
+  const { token } = localStorage.getItem('userDetails')
+    ? JSON.parse(localStorage.getItem('userDetails'))
+    : {};
+
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,7 +53,11 @@ const EventsDashboardStudent = () => {
   const [selectedDays, setSelectedDays] = useState();
   const [viewEventModalOpen, setViewEventModalOpen] = useState(false);
   const [viewEvent, setViewEvent] = useState();
+  const [imprestWallet, setImprestWallet] = useState();
 
+  useEffect(() => {
+    fetchImprestWalletData();
+  }, []);
   useEffect(() => {
     fetchTableData();
   }, [currentPage]);
@@ -146,8 +158,9 @@ const EventsDashboardStudent = () => {
       .then((response) => {
         if (response?.data?.status_code == 200) {
           notification['success']({
-            message: 'Hurray! Un Subscribed Successfully',
-            duration: notificationDuration,
+            message:
+              'Success! Refund amount will be credited to imprest wallet as per refund policy',
+            duration: 5,
             className: 'notification-container',
           });
           fetchTableData();
@@ -173,10 +186,40 @@ const EventsDashboardStudent = () => {
     setViewEventModalOpen(false);
   };
 
+  const handleFinanceRedirection = () => {
+    if (ENVCONFIG?.apiGateway?.finance && token) {
+      window.open(
+        `${ENVCONFIG.apiGateway.finance}/sso/finance/${token}#/imprest`,
+        '_blank'
+      );
+    } else {
+      notification['error']({
+        message: 'OOPS! Redirection failed. Try again after some time',
+        duration: notificationDuration,
+        className: 'notification-container',
+      });
+    }
+  };
+
+  const fetchImprestWalletData = () => {
+    axiosInstance
+      .get(`${endpointsV2.finance.imprestWallet}?erp_id=${erpID?.erp}`)
+      .then((res) => {
+        if (res?.data?.results) {
+          setImprestWallet(res?.data?.results);
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+      })
+      .finally(() => {});
+  };
+
   const columns = [
     {
-      title: <span className='th-white th-event-12 th-fw-700'></span>,
+      title: <span className='th-white th-event-12 th-fw-700'>SNo</span>,
       align: 'center',
+      width: '5%',
       render: (data, row, index) => (
         <span className='th-black-1 th-event-12'>
           {(currentPage - 1) * pageSize + index + 1}.
@@ -186,15 +229,18 @@ const EventsDashboardStudent = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Name</span>,
       align: 'left',
+      width: '35%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.title && row?.title.length > 27 ? (
-            <>
-              {row.title.substring(0, 27)}...
-              <span className='show-more' onClick={() => openViewEventModal(row)}>
-                Show more
-              </span>
-            </>
+          {row?.title && row?.title.length > 35 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={row?.title}
+              overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
+            >
+              {row.title.substring(0, 35)}...
+            </Tooltip>
           ) : (
             row?.title
           )}
@@ -213,6 +259,7 @@ const EventsDashboardStudent = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Date</span>,
       align: 'center',
+      width: '15%',
       sorter: (a, b) => new Date(a.event_date) - new Date(b.event_date),
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>{row?.event_date}</span>
@@ -221,6 +268,7 @@ const EventsDashboardStudent = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
       align: 'center',
+      width: '10%',
       render: (data, row) => (
         <>
           {row?.approval_status === 3 ? (
@@ -248,17 +296,26 @@ const EventsDashboardStudent = () => {
           ) : (
             <>
               {row?.subscription === 'pending' && (
-                <Tag className='th-br-4 th-event-pending' icon={<ReloadOutlined />}>
-                  Not Subscribed Yet
+                <Tag
+                  className='th-br-4 th-tag-width-1 th-event-pending'
+                  icon={<ReloadOutlined />}
+                >
+                  Not Subscribed
                 </Tag>
               )}
               {row?.subscription === 'subscribed' && (
-                <Tag className='th-br-4 th-event-approved' icon={<CheckCircleOutlined />}>
+                <Tag
+                  className='th-br-4 th-tag-width-1 th-event-approved'
+                  icon={<CheckCircleOutlined />}
+                >
                   Subscribed
                 </Tag>
               )}
               {row?.subscription === 'unsubscribed' && (
-                <Tag className='th-br-4 th-event-canelled' icon={<CloseCircleOutlined />}>
+                <Tag
+                  className='th-br-4 th-tag-width-1 th-event-canelled'
+                  icon={<CloseCircleOutlined />}
+                >
                   Un Subscribed
                 </Tag>
               )}
@@ -271,6 +328,7 @@ const EventsDashboardStudent = () => {
       title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
       align: 'left',
       key: 'action',
+      width: '20%',
       render: (data, row) => {
         return (
           <>
@@ -350,9 +408,9 @@ const EventsDashboardStudent = () => {
   };
   return (
     <>
-      <div className='row mb-2'>
+      <div className='row'>
         <Form id='filterForm' form={filterForm} className='row col-12'>
-          <div className='col-lg-3 col-md-6 col-sm-12 col-12'>
+          <div className='col-lg-3 col-md-12 col-sm-12 col-12'>
             <Popover placement='bottomLeft' content='Select Event Date Filter'>
               <Form.Item name='date_filter'>
                 <RangePicker
@@ -409,9 +467,23 @@ const EventsDashboardStudent = () => {
               </Tag>
             </Popover>
           </div>
+          <div className='col-lg-5 col-md-6 col-sm-12 col-12 d-flex justify-content-end mt-1 mb-2'>
+            <Tag className='count-tag th-event-grey'>
+              <span className='count-tag-text'>
+                {`Imprest Wallet : ₹ ${imprestWallet?.amount ?? 0}`}
+              </span>
+            </Tag>
+            <Button
+              size='small'
+              className='primary-button create-button'
+              onClick={() => handleFinanceRedirection()}
+            >
+              Recharge Imprest Wallet
+            </Button>
+          </div>
         </Form>
       </div>
-      <div className='mt-2'>
+      <div className=''>
         <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
           <div className=''>
             <Table

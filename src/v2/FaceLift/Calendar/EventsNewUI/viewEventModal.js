@@ -11,7 +11,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 2,
     slidesToScroll: 1,
     arrows: true,
     responsive: [
@@ -22,6 +22,13 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
           slidesToScroll: 1,
         },
       },
+      // {
+      //   breakpoint: 992,
+      //   settings: {
+      //     slidesToShow: 2,
+      //     slidesToScroll: 1,
+      //   },
+      // },
       {
         breakpoint: 600,
         settings: {
@@ -42,6 +49,12 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
     const blob = await response.blob();
     saveAs(blob, fullName);
   };
+  const policyDatesArray = viewEvent?.policy_dates
+    ? Object.entries(viewEvent.policy_dates).map(([date, amount]) => ({
+        date,
+        amount: `Rs. ${amount}`,
+      }))
+    : [];
 
   return (
     <>
@@ -71,7 +84,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
         <>
           <div className='row'>
             <div className='row col-lg-12 col-md-12 col-sm-12 col-12'>
-              <div className='col-lg-8 col-md-7 col-sm-8 col-12'>
+              <div className='col-lg-6 col-md-12 col-sm-12 col-12'>
                 <Card className='th-images-card'>
                   {viewEvent?.attachments?.length > 0 ? (
                     <Slider {...settings} className='th-slick th-post-slick'>
@@ -114,7 +127,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                   )}
                 </Card>
               </div>
-              <div className='col-lg-4 col-md-5 col-sm-12 col-12'>
+              <div className='col-lg-3 col-md-6 col-sm-12 col-12'>
                 <List
                   size='small'
                   className='th-event-list'
@@ -132,9 +145,81 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                   ]}
                   renderItem={(item) => (
                     <List.Item className='th-event-list-item'>
-                      <strong>{item.title}:</strong> {item.content}
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          width: '100%',
+                        }}
+                      >
+                        <span style={{ flex: 1 }}>{item.title}</span>
+                        <span style={{ flex: 1, textAlign: 'right' }}>
+                          {item.content}
+                        </span>
+                      </div>
                     </List.Item>
                   )}
+                />
+              </div>
+              <div className='col-lg-3 col-md-6 col-sm-12 col-12'>
+                <List
+                  size='small'
+                  className='th-event-list'
+                  header={
+                    <>
+                      <div className='th-event-list-header'>Refund Policy</div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          padding: '0px 4px',
+                          borderBottom: '1px solid #f0f0f0',
+                          background: '#fafafa',
+                        }}
+                      >
+                        <span style={{ flex: 1 }}>
+                          <strong>Cancel Before</strong>
+                        </span>
+                        <span style={{ flex: 1, textAlign: 'right' }}>
+                          <strong>Refund Amount</strong>
+                        </span>
+                      </div>
+                    </>
+                  }
+                  dataSource={policyDatesArray.length > 0 ? policyDatesArray : [{}]}
+                  renderItem={(item) =>
+                    viewEvent?.refundable && policyDatesArray.length > 0 ? (
+                      <List.Item className='th-event-list-item'>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            width: '100%',
+                          }}
+                        >
+                          <span style={{ flex: 1 }}>{item.date}</span>
+                          <span style={{ flex: 1, textAlign: 'right' }}>
+                            {item.amount}
+                          </span>
+                        </div>
+                      </List.Item>
+                    ) : (
+                      <List.Item className='d-flex justify-content-center align-items-center th-event-list-item'>
+                        <span
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: '12px',
+                            fontStyle: 'italic',
+                            color: '#f44336',
+                          }}
+                        >
+                          No Refund Once Subscribed
+                        </span>
+                      </List.Item>
+                    )
+                  }
                 />
               </div>
             </div>

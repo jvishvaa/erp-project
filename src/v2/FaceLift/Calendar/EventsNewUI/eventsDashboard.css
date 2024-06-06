@@ -80,6 +80,9 @@
 .th-tag-width {
   width: 95px;
 }
+.th-tag-width-1 {
+  width: 125px;
+}
 .count-tag {
   border-radius: 4px;
   margin-bottom: 0.5rem !important;
@@ -341,7 +344,11 @@
   border: 1px solid var(--card-border-color);
   background-color: var(--card-bg-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  min-height: 200px;
+  min-height: 230px;
+  max-height: 300px;
+}
+.th-images-card .ant-card-body {
+  padding: 8px;
 }
 .th-event-card {
   border-radius: 12px;
@@ -367,6 +374,7 @@
   background-color: var(--list-bg-color);
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-height: 230px;
 }
 .th-event-list-header {
   background-color: var(--list-header-bg-color);
