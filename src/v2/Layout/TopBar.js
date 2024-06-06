@@ -120,6 +120,8 @@ const Appbar = ({ children, history, ...props }) => {
   const [wallet, setWallet] = useState(null);
   const [walletLoading, setWalletLoading] = useState(false);
   const [storeWalletLoading, setStoreWalletLoading] = useState(false);
+  const [imprestWallet, setImprestWallet] = useState(null);
+  const [imprestWalletLoading, setImprestWalletLoading] = useState(false);
   const [showWalletPopover, setShowWalletPopover] = useState(false);
 
   const walletPrevData = JSON.parse(localStorage.getItem('walletLocal')) || null;
@@ -303,6 +305,7 @@ const Appbar = ({ children, history, ...props }) => {
   const handleWalletCLick = () => {
     fetchStoreWalletData();
     fetchWalletData();
+    fetchImprestWalletData();
   };
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -645,6 +648,24 @@ const Appbar = ({ children, history, ...props }) => {
         setWalletLoading(false);
       });
   };
+
+  const fetchImprestWalletData = () => {
+    setImprestWalletLoading(true);
+    axiosInstance
+      .get(`${endpointsV2.finance.imprestWallet}?erp_id=${erpID?.erp}`)
+      .then((res) => {
+        if (res?.data?.results) {
+          setImprestWallet(res?.data?.results);
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+      })
+      .finally(() => {
+        setImprestWalletLoading(false);
+      });
+  };
+
   return (
     <>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
@@ -1102,7 +1123,7 @@ const Appbar = ({ children, history, ...props }) => {
                       placement='bottomRight'
                       content={
                         <div style={{ width: 200 }}>
-                          {walletLoading || storeWalletLoading ? (
+                          {walletLoading || storeWalletLoading || imprestWalletLoading ? (
                             <Space direction='vertical'>
                               {[1, 2, 3]?.map((el) => (
                                 <Skeleton.Input
@@ -1118,10 +1139,16 @@ const Appbar = ({ children, history, ...props }) => {
                                 <div>Academic Wallet :</div>
                                 <div className='th-fw-600'>₹ {wallet?.amount ?? 0}</div>
                               </div>
-                              <div className='d-flex justify-content-between pb-2'>
+                              <div className='d-flex justify-content-between'>
                                 <div>Store Wallet :</div>
                                 <div className='th-fw-600'>
                                   ₹ {storeWallet?.store_amount ?? 0}
+                                </div>
+                              </div>
+                              <div className='d-flex justify-content-between pb-2'>
+                                <div>Imprest Wallet :</div>
+                                <div className='th-fw-600'>
+                                  ₹ {imprestWallet?.amount ?? 0}
                                 </div>
                               </div>
                               <div className='d-flex justify-content-center'>
