@@ -217,11 +217,11 @@
 }
 .th-event-modal .ant-modal-header {
   border-radius: 4px 4px 0px 0px !important;
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-modal .ant-modal-footer {
   border-radius: 0px 0px 4px 4px !important;
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-modal .ant-modal-body {
   padding: 10px !important;
@@ -256,10 +256,10 @@
   font-weight: 700 !important;
 }
 .th-event-drawer .ant-drawer-header {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-drawer .ant-drawer-footer {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 
 /*******Create or Edit Drawer********/
@@ -275,10 +275,10 @@
   font-weight: 700 !important;
 }
 .th-event-drawer-1 .ant-drawer-header {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-drawer-1 .ant-drawer-footer {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-drawer-1 .ant-drawer-body {
   padding: 10px !important;
@@ -322,7 +322,7 @@
 .th-event-modal-preview .ant-modal-header {
   background: var(--preview-color) !important;
   border-radius: 4px 4px 0px 0px !important;
-  padding: 4px 10px;
+  padding: 10px 10px;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -408,10 +408,10 @@
   padding: 10px !important;
 }
 .th-event-drawer-2 .ant-drawer-header {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-drawer-2 .ant-drawer-footer {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 
 /*******Student side unsubscribe Modal********/
