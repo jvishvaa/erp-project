@@ -112,8 +112,10 @@ const EventsDashboardAdmin = () => {
   const [gradeList, setGradeList] = useState([]);
   const [eventHighlights, setEventHighlights] = useState('');
   const [eventHighlightsText, setEventHighlightsText] = useState(null);
+  const [eventHighlightsFlag, setEventHighlightsFlag] = useState(true);
   const [eventDescription, setEventDescription] = useState('');
   const [eventDescriptionText, setEventDescriptionText] = useState(null);
+  const [eventDescriptionFlag, setEventDescriptionFlag] = useState(true);
   const [subscriptionStatus, setSubscriptionStatus] = useState(1);
   const [refundPolicy, setRefundPolicy] = useState(1);
   const [refundPolicyData, setRefundPolicyData] = useState([
@@ -237,7 +239,7 @@ const EventsDashboardAdmin = () => {
     return refundPolicyData.some((entry) => entry.days && entry.amount);
   };
   const createEvent = () => {
-    if (eventHighlightsText?.length >= maxCharLimit) {
+    if (eventHighlightsText?.length > maxCharLimit) {
       notification['warning']({
         message: 'Event Highlights max characters limit reached',
         duration: notificationDuration,
@@ -245,7 +247,7 @@ const EventsDashboardAdmin = () => {
       });
       return;
     }
-    if (eventDescriptionText?.length >= maxCharLimit) {
+    if (eventDescriptionText?.length > maxCharLimit) {
       notification['warning']({
         message: 'Event Description max characters limit reached',
         duration: notificationDuration,
@@ -493,24 +495,32 @@ const EventsDashboardAdmin = () => {
     const text = editor.getText();
     setEventHighlightsText(text);
     setEventHighlights(content);
-    if (text?.length >= maxCharLimit) {
+    if (text?.length <= maxCharLimit) {
+      setEventHighlightsFlag(true);
+    }
+    if (text?.length > maxCharLimit && eventHighlightsFlag) {
       notification['error']({
         message: 'OOPS! Max Characters Limit Reached. Reduce the content',
         duration: notificationDuration,
         className: 'notification-container',
       });
+      setEventHighlightsFlag(false);
     }
   };
   const handleChangeEventDescription = (content, delta, source, editor) => {
     const text = editor.getText();
     setEventDescriptionText(text);
     setEventDescription(content);
-    if (text?.length >= maxCharLimit) {
+    if (text?.length <= maxCharLimit) {
+      setEventDescriptionFlag(true);
+    }
+    if (text?.length > maxCharLimit && eventDescriptionFlag) {
       notification['error']({
         message: 'OOPS! Max Characters Limit Reached. Reduce the content',
         duration: notificationDuration,
         className: 'notification-container',
       });
+      setEventDescriptionFlag(false);
     }
   };
 
@@ -857,17 +867,17 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Name</span>,
       align: 'left',
-      width: '20%',
+      width: '25%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.title && row?.title.length > 20 ? (
+          {row?.title && row?.title.length > 30 ? (
             <Tooltip
               autoAdjustOverflow='false'
               placement='bottomLeft'
               title={row?.title}
               overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
             >
-              {row.title.substring(0, 20)}...
+              {row.title.substring(0, 30)}...
             </Tooltip>
           ) : (
             row?.title
@@ -878,11 +888,12 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Branch</span>,
       align: 'center',
+      width: '15%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.branch_name && row?.branch_name.length > 10 ? (
+          {row?.branch_name && row?.branch_name.length > 15 ? (
             <Popover placement='bottomLeft' content={row?.branch_name}>
-              {row?.branch_name.substring(0, 10)}...
+              {row?.branch_name.substring(0, 15)}...
             </Popover>
           ) : (
             row?.branch_name
@@ -893,7 +904,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Reg. End Date</span>,
       align: 'center',
-      width: '15%',
+      width: '13%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>{row?.reg_end}</span>
@@ -902,6 +913,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Date</span>,
       align: 'center',
+      width: '10%',
       sorter: (a, b) => new Date(a.event_date) - new Date(b.event_date),
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>{row?.event_date}</span>
@@ -910,6 +922,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Reg. Count</span>,
       align: 'center',
+      width: '10%',
       render: (data, row) => (
         <Tag
           color='geekblue'
@@ -924,6 +937,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
       align: 'left',
+      width: '12%',
       render: (data, row) => (
         <>
           {row?.approval_status === 1 && (
@@ -986,6 +1000,7 @@ const EventsDashboardAdmin = () => {
       title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
       align: 'left',
       key: 'action',
+      width: '10%',
       render: (data, row) => {
         return (
           <>
@@ -998,7 +1013,7 @@ const EventsDashboardAdmin = () => {
                 className='icon-hover th-event-preview'
               />
             </Popover>
-            {([10, 14, 34].includes(user_level) || is_central_user) && (
+            {([10, 14, 34, 8, 26].includes(user_level) || is_central_user) && (
               <>
                 {row?.approval_status === 1 && (
                   <Popover placement='topRight' content='Edit Event'>
@@ -1062,8 +1077,9 @@ const EventsDashboardAdmin = () => {
   ];
   const studentColumns = [
     {
-      title: <span className='th-white th-event-12 th-fw-700'></span>,
+      title: <span className='th-white th-event-12 th-fw-700'>SNo</span>,
       align: 'center',
+      width: '5%',
       render: (data, row, index) => (
         <span className='th-black-1 th-event-12'>
           {(studentCurrentPage - 1) * pageSize + index + 1}.
@@ -1643,14 +1659,14 @@ const EventsDashboardAdmin = () => {
                         formats={formats}
                         placeholder='Please Enter Event Highlights'
                         className={
-                          eventHighlightsText?.length >= maxCharLimit
+                          eventHighlightsText?.length > maxCharLimit
                             ? 'th-react-quill'
                             : ''
                         }
                       />
                     </Form.Item>
                     {eventHighlightsText &&
-                      eventHighlightsText?.length >= maxCharLimit && (
+                      eventHighlightsText?.length > maxCharLimit && (
                         <span
                           className='d-flex justify-content-end col-12'
                           style={{
@@ -1669,7 +1685,7 @@ const EventsDashboardAdmin = () => {
                           fontSize: '12px',
                           fontStyle: 'italic',
                           color:
-                            eventHighlightsText?.length >= maxCharLimit
+                            eventHighlightsText?.length > maxCharLimit
                               ? 'red'
                               : 'inherit',
                         }}
@@ -1697,14 +1713,14 @@ const EventsDashboardAdmin = () => {
                         formats={formats}
                         placeholder='Please Enter Event Description'
                         className={
-                          eventDescriptionText?.length >= maxCharLimit
+                          eventDescriptionText?.length > maxCharLimit
                             ? 'th-react-quill'
                             : ''
                         }
                       />
                     </Form.Item>
                     {eventDescriptionText &&
-                      eventDescriptionText?.length >= maxCharLimit && (
+                      eventDescriptionText?.length > maxCharLimit && (
                         <span
                           className='d-flex justify-content-end col-12'
                           style={{
@@ -1723,7 +1739,7 @@ const EventsDashboardAdmin = () => {
                           fontSize: '12px',
                           fontStyle: 'italic',
                           color:
-                            eventDescriptionText?.length >= maxCharLimit
+                            eventDescriptionText?.length > maxCharLimit
                               ? 'red'
                               : 'inherit',
                         }}

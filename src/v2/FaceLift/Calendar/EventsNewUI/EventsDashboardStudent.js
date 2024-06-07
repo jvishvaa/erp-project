@@ -250,7 +250,7 @@ const EventsDashboardStudent = () => {
 
   const columns = [
     {
-      title: <span className='th-white th-event-12 th-fw-700'>S. No</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>SNo</span>,
       align: 'center',
       width: '5%',
       render: (data, row, index) => (
@@ -262,7 +262,7 @@ const EventsDashboardStudent = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Name</span>,
       align: 'left',
-      width: '35%',
+      width: '30%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
           {row?.title && row?.title.length > 35 ? (
@@ -300,19 +300,16 @@ const EventsDashboardStudent = () => {
     },
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
-      align: 'center',
-      width: '10%',
+      align: 'left',
+      width: '15%',
       render: (data, row) => (
         <>
           {row?.approval_status === 3 ? (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Tag className='th-br-4 th-event-canelled' icon={<CloseCircleOutlined />}>
+            <div>
+              <Tag
+                className='th-br-4 th-tag-width-1 th-event-cancelled'
+                icon={<CloseCircleOutlined />}
+              >
                 Cancelled
               </Tag>
               <Tooltip
@@ -346,7 +343,7 @@ const EventsDashboardStudent = () => {
               )}
               {row?.subscription === 'unsubscribed' && (
                 <Tag
-                  className='th-br-4 th-tag-width-1 th-event-canelled'
+                  className='th-br-4 th-tag-width-1 th-event-rejected'
                   icon={<CloseCircleOutlined />}
                 >
                   Un Subscribed
