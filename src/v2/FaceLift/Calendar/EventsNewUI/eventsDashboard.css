@@ -481,9 +481,6 @@
 .th-event-12 {
   font-size: 14px;
 }
-::-webkit-scrollbar {
-  width: 2px;
-}
 .center-screen {
   position: fixed;
   top: 0;
