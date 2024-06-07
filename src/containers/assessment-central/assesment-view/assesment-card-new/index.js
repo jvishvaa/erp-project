@@ -21,6 +21,8 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import diamond from '../../../../../src/assets/images/diamond.png';
 import ReactToPrint from 'react-to-print';
 import QuestionPreview from '../QuestionPreview';
+import QuestionPreview_V2 from '../QuestionPreview_v2/questionPreviewV2';
+
 const AssessmentCard = ({
   period,
   setPeriodDataForView,
@@ -49,6 +51,14 @@ const AssessmentCard = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
   const open = Boolean(anchorEl);
+  const displayStyle = {
+    '@media screen': {
+      printContent: {
+        display: 'none',
+      },
+    },
+  };
+  const schoolData = JSON.parse(localStorage.getItem('schoolDetails')) || {};
 
   const history = useHistory();
   const handlePeriodMenuOpen = (index, id) => {
@@ -74,6 +84,16 @@ const AssessmentCard = ({
   const handleAssign = () => {
     initAddQuestionPaperToTest(period);
     history.push('/create-assesment');
+  };
+
+  const handlePrint = async (withID, eachQuestionPaper) => {
+    await new Promise((resolve) => {
+      setLoading(true);
+      setPrintData(eachQuestionPaper);
+      setTimeout(resolve, 200);
+      setTimeout(() => handleMenuClose(), 400);
+    });
+    // setPrintWithID(withID);
   };
 
   const handlePublish = () => {
@@ -328,11 +348,6 @@ const AssessmentCard = ({
   const handlePrintData = async (period) => {
     await new Promise((resolve) => {
       setLoading(true);
-      // setPrintData(period);
-      // handlePrintData(period)
-      // setTimeout(resolve, 200);
-      // setTimeout(() => handleMenuClose(), 400);
-
       axios
         .get(endpoints?.assessmentErp?.autoQuestionPaper, {
           headers: { 'x-api-key': 'vikash@12345#1231' },
@@ -482,16 +497,50 @@ const AssessmentCard = ({
                   {period.is_verified && !period?.is_delete && (
                     <>
                       {period.is_central && period.hasOwnProperty('template_id') && (
+                        // <ReactToPrint
+                        //   onBeforeGetContent={() => handlePrintData(period)}
+                        //   onAfterPrint={() => {
+                        //     setLoading(false);
+                        //     setPrintData(null);
+                        //     // handleMenuClose();
+                        //   }}
+                        //   trigger={() => <MenuItem>Print</MenuItem>}
+                        //   content={() => printRef}
+                        //   documentTitle={`Print`}
+                        // />
                         <ReactToPrint
                           onBeforeGetContent={() => handlePrintData(period)}
                           onAfterPrint={() => {
+                            // handleSubmitEnquiryModal();
                             setLoading(false);
                             setPrintData(null);
-                            // handleMenuClose();
                           }}
                           trigger={() => <MenuItem>Print</MenuItem>}
                           content={() => printRef}
                           documentTitle={`Print`}
+                          copyStyles={true}
+                          pageStyle={`
+                          @page {
+                            margin: 10mm 10mm 25mm 10mm;
+                            size: A4;
+                          }
+
+                          @media print {
+                            body {
+                                -webkit-print-color-adjust: exact;
+                            }
+
+                            html, body {
+                              width: 100%;
+                              height: 100%;
+                              margin: 0;
+                              padding: 0;
+                            }
+                              .print:last-child {
+                                page-break-after: avoid;
+                              }
+                          }
+                        `}
                         />
                       )}
                       {!period.hasOwnProperty('template_id') && (
@@ -520,16 +569,50 @@ const AssessmentCard = ({
                   {period?.is_delete && (
                     <>
                       {period.is_central && period.hasOwnProperty('template_id') && (
+                        // <ReactToPrint
+                        //   onBeforeGetContent={() => handlePrintData(period)}
+                        //   onAfterPrint={() => {
+                        //     setLoading(false);
+                        //     setPrintData(null);
+                        //     // handleMenuClose();
+                        //   }}
+                        //   trigger={() => <MenuItem>Print</MenuItem>}
+                        //   content={() => printRef}
+                        //   documentTitle={`Print`}
+                        // />
                         <ReactToPrint
                           onBeforeGetContent={() => handlePrintData(period)}
                           onAfterPrint={() => {
+                            // handleSubmitEnquiryModal();
                             setLoading(false);
                             setPrintData(null);
-                            // handleMenuClose();
                           }}
                           trigger={() => <MenuItem>Print</MenuItem>}
                           content={() => printRef}
                           documentTitle={`Print`}
+                          copyStyles={true}
+                          pageStyle={`
+                          @page {
+                            margin: 10mm 10mm 25mm 10mm;
+                            size: A4;
+                          }
+
+                          @media print {
+                            body {
+                                -webkit-print-color-adjust: exact;
+                            }
+
+                            html, body {
+                              width: 100%;
+                              height: 100%;
+                              margin: 0;
+                              padding: 0;
+                            }
+                              .print:last-child {
+                                page-break-after: avoid;
+                              }
+                          }
+                        `}
                         />
                       )}
                       <MenuItem
@@ -545,16 +628,50 @@ const AssessmentCard = ({
                   {!period.is_verified && !period?.is_delete && (
                     <>
                       {period.is_central && period.hasOwnProperty('template_id') && (
+                        // <ReactToPrint
+                        //   onBeforeGetContent={() => handlePrintData(period)}
+                        //   onAfterPrint={() => {
+                        //     setLoading(false);
+                        //     setPrintData(null);
+                        //     // handleMenuClose();
+                        //   }}
+                        //   trigger={() => <MenuItem>Print</MenuItem>}
+                        //   content={() => printRef}
+                        //   documentTitle={`Print`}
+                        // />
                         <ReactToPrint
                           onBeforeGetContent={() => handlePrintData(period)}
                           onAfterPrint={() => {
+                            // handleSubmitEnquiryModal();
                             setLoading(false);
                             setPrintData(null);
-                            // handleMenuClose();
                           }}
                           trigger={() => <MenuItem>Print</MenuItem>}
                           content={() => printRef}
                           documentTitle={`Print`}
+                          copyStyles={true}
+                          pageStyle={`
+                          @page {
+                            margin: 10mm 10mm 25mm 10mm;
+                            size: A4;
+                          }
+
+                          @media print {
+                            body {
+                                -webkit-print-color-adjust: exact;
+                            }
+
+                            html, body {
+                              width: 100%;
+                              height: 99%;
+                              margin: 0;
+                              padding: 0;
+                            }
+                              .print:last-child {
+                                page-break-after: avoid;
+                              }
+                          }
+                        `}
                         />
                       )}
                       <MenuItem
@@ -766,8 +883,15 @@ const AssessmentCard = ({
       </Paper>
       {printData && (
         <div>
-          <div ref={(el) => (printRef = el)} className={classes.printContent}>
-            <QuestionPreview templateFrom={printData} currentStep={4} isPrint={true} />
+          {/* <div ref={(el) => (printRef = el)} className={classes.printContent} > */}
+          <div ref={(el) => (printRef = el)} className='printContent'>
+            {/* <QuestionPreview templateFrom={printData} currentStep={4} isPrint={true} /> */}
+            <QuestionPreview_V2
+              templateFrom={printData}
+              currentStep={4}
+              isPrint={true}
+              schoolData={schoolData}
+            />
           </div>
         </div>
       )}
