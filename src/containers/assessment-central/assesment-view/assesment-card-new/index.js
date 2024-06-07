@@ -58,6 +58,7 @@ const AssessmentCard = ({
       },
     },
   };
+  const schoolData = JSON.parse(localStorage.getItem('schoolDetails')) || {};
 
   const history = useHistory();
   const handlePeriodMenuOpen = (index, id) => {
@@ -883,19 +884,14 @@ const AssessmentCard = ({
       {printData && (
         <div>
           {/* <div ref={(el) => (printRef = el)} className={classes.printContent} > */}
-          <div
-            ref={(el) => (printRef = el)}
-            // style={{
-            //   lineHeight: '1.5',
-            //   pageBreakInside: 'avoid',
-            //   pageBreakBefore: 'auto',
-            //   pageBreakAfter: 'avoid',
-            // }}
-            style={displayStyle}
-            // className={`${classes.printContent}`}
-          >
+          <div ref={(el) => (printRef = el)} className='printContent'>
             {/* <QuestionPreview templateFrom={printData} currentStep={4} isPrint={true} /> */}
-            <QuestionPreview_V2 templateFrom={printData} currentStep={4} isPrint={true} />
+            <QuestionPreview_V2
+              templateFrom={printData}
+              currentStep={4}
+              isPrint={true}
+              schoolData={schoolData}
+            />
           </div>
         </div>
       )}

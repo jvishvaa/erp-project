@@ -45,8 +45,8 @@
 .generated-question-div {
   img {
     padding: 10px 0px !important;
-    height: 350px !important;
-    width: 400px !important;
+    max-height: 350px !important;
+    max-width: 400px !important;
     object-fit: contain;
   }
   p {
@@ -61,6 +61,12 @@
 
 .last-page {
   page-break-after: avoid;
+}
+
+@media print {
+  .check-break {
+    page-break-inside: avoid;
+  }
 }
 
 @page {
@@ -79,16 +85,32 @@
   height: auto;
 }
 
+.section-container {
+  page-break-after: auto;
+}
+
 @media print {
   html,
   body {
     height: 99%;
     width: 100%;
   }
-  .print-container {
-    page-break-after: avoid;
-    height: auto;
+}
+
+@media screen {
+  .printContent {
+    display: 'none';
   }
+}
+
+@media print {
+  .printContent {
+    display: 'block !important';
+  }
+}
+
+.print-container:last-child {
+  page-break-after: auto;
 }
 
 .force-page-break {

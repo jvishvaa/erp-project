@@ -9,11 +9,20 @@ import QuestionView from './questionView';
 
 const QuestionPreview_V2 = React.forwardRef(
   (
-    { classes, templateFrom, currentStep, isPrint, isQuestionPaper, printWithID },
+    {
+      classes,
+      templateFrom,
+      currentStep,
+      isPrint,
+      isQuestionPaper,
+      printWithID,
+      schoolData,
+    },
     ref
   ) => {
     const contentRef = useRef();
     const printContainerRef = useRef(null);
+
     useEffect(() => {
       const handleBeforePrint = () => {
         const content = contentRef.current;
@@ -36,17 +45,35 @@ const QuestionPreview_V2 = React.forwardRef(
     useEffect(() => {
       const addPageNumbers = () => {
         const printContainer = printContainerRef.current;
-        const totalPages = Math.ceil(printContainer.scrollHeight / 1490);
+        const totalPages = Math.ceil(printContainer.scrollHeight / 1400);
+        // console.log(
+        //   totalPages,
+        //   printContainer.scrollHeight / 1400,
+        //   1400,
+        //   'printContainer'
+        // );
         for (let i = 1; i <= totalPages; i++) {
           const pageNumberDiv = document.createElement('div');
           const pageNumber = document.createTextNode(`Page ${i}`);
           pageNumberDiv.style.position = 'absolute';
           if (i === 1) {
             pageNumberDiv.style.top = `calc(${i} * (378mm))`;
-          } else if (i > 4) {
-            pageNumberDiv.style.top = `calc(${i} * (378mm + ${i}mm))`;
-          } else {
+          } else if (i > 1 && i <= 4) {
             pageNumberDiv.style.top = `calc(${i} * (378mm + ${i + 1}mm))`;
+          } else if (i > 4 && i < 6) {
+            pageNumberDiv.style.top = `calc(${i} * (378mm + ${i}mm))`;
+          } else if (i === 6) {
+            pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 1}mm))`;
+          } else if (i === 7) {
+            pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 1.5}mm))`;
+          } else if (i === 8) {
+            pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 2.5}mm))`;
+          } else if (i === 9) {
+            pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 3.5}mm))`;
+          } else if (i === 10) {
+            pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 4}mm))`;
+          } else {
+            pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - (i - 6)}mm))`;
           }
           pageNumberDiv.style.height = '16px';
           pageNumberDiv.appendChild(pageNumber);
@@ -61,21 +88,21 @@ const QuestionPreview_V2 = React.forwardRef(
     }, [isPrint]);
 
     return (
-      <div ref={ref} className='print-container'>
-        <div ref={printContainerRef} className='container border p-1'>
+      <div ref={ref}>
+        <div ref={printContainerRef} className='container border p-1 print-container'>
           {/* <div> */}
           <div className='row bg-light p-2'>
             <div className='col-6 d-flex align-items-center'>
               <div className='mr-3 bg-white br-10 rounded-6'>
                 <img
-                  src={OrchidsLogo}
+                  src={schoolData?.school_logo}
                   alt='OrchidsLogo'
                   className='rounded-6 image'
                   style={{ width: '80px', height: '80px' }}
                 />
               </div>
               <div>
-                <div className='school-name'>Orchids International School</div>
+                <div className='school-name'>{schoolData?.school_name}</div>
                 <div className='text-muted'>Powered By Eduvate</div>
               </div>
             </div>
@@ -110,7 +137,7 @@ const QuestionPreview_V2 = React.forwardRef(
           </div>
           <div className='mb-1 rounded d-flex flex-column pl-4 pr-4 p-1 bg-custom'>
             <div className='font-weight-bold'>General Instructions</div>
-            <div>{templateFrom?.instruction}</div>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{templateFrom?.instruction}</p>
           </div>
           {currentStep > 1 &&
             templateFrom?.section?.map((eachSection, sectionIndex) => {
@@ -125,10 +152,10 @@ const QuestionPreview_V2 = React.forwardRef(
               return (
                 <div className='p-3'>
                   <div
-                    className='py-2 px-4 rounded bg-custom check-break'
+                    className='py-2 px-4 rounded bg-custom check-break section-container'
                     ref={contentRef}
                   >
-                    <div className='d-flex align-items-center section-container'>
+                    <div className='d-flex align-items-center'>
                       <div className='font-weight-bold bold text-center flex-fill ml-5'>
                         {eachSection?.header.replace(/\d+/, (match) =>
                           String.fromCharCode(64 + parseInt(match))
@@ -171,7 +198,7 @@ const QuestionPreview_V2 = React.forwardRef(
                                           ?.question
                                       : null,
                                   }}
-                                  className='pl-1 align-self-center generated-question-div question-custom check-break mb-0'
+                                  className='pl-1 align-self-center generated-question-div question-custom check-break mb-1'
                                 />
                                 {printWithID ? (
                                   <div className='mb-2 mt-0'>{`(Question ID = ${eachQuestion?.question?.id} )`}</div>
@@ -253,9 +280,14 @@ const QuestionPreview_V2 = React.forwardRef(
                                                           <img
                                                             src={endpoints.s3 + eachImage}
                                                             alt='option image'
-                                                            height={150}
+                                                            // height={150}
+                                                            // width={200}
                                                             className='p-3'
                                                             key={indexImage}
+                                                            style={{
+                                                              maxHeight: '150px',
+                                                              maxWidth: '200px',
+                                                            }}
                                                           />
                                                         )
                                                       )
@@ -324,9 +356,14 @@ const QuestionPreview_V2 = React.forwardRef(
                                                                 endpoints.s3 + eachImage
                                                               }
                                                               alt='option image'
-                                                              height={150}
-                                                              className='p-3 check-break'
+                                                              // height={150}
+                                                              // width={200}
+                                                              className='p-2 check-break'
                                                               key={indexImage}
+                                                              style={{
+                                                                maxHeight: '150px',
+                                                                maxWidth: '200px',
+                                                              }}
                                                             />
                                                           )
                                                         )
