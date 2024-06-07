@@ -96,13 +96,22 @@ const AddVideoObservation = () => {
         prevForms.map((form) => {
           if (form.id === id) {
             let updatedForm = { ...form, [field]: value };
+            console.log(updatedForm, 'hello');
             if (field === 'branch') {
-              const parsedValue = JSON.parse(value);
-              if (!prefill) {
+              if (value) {
+                const parsedValue = JSON.parse(value);
+                if (!prefill) {
+                  updatedForm = {
+                    ...updatedForm,
+                    branch: parsedValue.branch_id,
+                    acad_session: parsedValue.acad_session,
+                  };
+                }
+              } else {
                 updatedForm = {
                   ...updatedForm,
-                  branch: parsedValue.branch_id,
-                  acad_session: parsedValue.acad_session,
+                  branch: null,
+                  acad_session: null,
                 };
               }
             }
@@ -112,7 +121,9 @@ const AddVideoObservation = () => {
               });
               updatedForm.name = null;
               updatedForm.usernameListOptions = [];
-              handleBranchOrRoleChange(id, field, value);
+              if (updatedForm.branch && updatedForm.role) {
+                handleBranchOrRoleChange(id, field, updatedForm.branch, updatedForm.role);
+              }
             }
 
             if (!updatedForm.branch && !updatedForm.role) {
@@ -149,13 +160,10 @@ const AddVideoObservation = () => {
     );
   };
 
-  const handleBranchOrRoleChange = (id, field, value) => {
+  const handleBranchOrRoleChange = (id, field, branch, role) => {
     const form = forms.find((form) => form.id === id);
-
-    const newBranch = field === 'branch' ? JSON.parse(value).branch_id : form.branch;
-    const newRole = field === 'role' ? value : form.role;
-    if (newBranch || newRole) {
-      fetchEditUserName(newBranch, newRole)
+    if (branch && role) {
+      fetchEditUserName(branch, role)
         .then((newOptions) => {
           updateUsernameListOptions(id, newOptions);
         })
@@ -198,7 +206,6 @@ const AddVideoObservation = () => {
     setFormFields(fields);
   };
 
-
   const handleFieldChange = (value, index, field, prefill) => {
     if (value) {
       const parsedValue = JSON?.parse(value);
@@ -210,14 +217,13 @@ const AddVideoObservation = () => {
           fields[index]['branch'] = parsedValue.branch_id;
           fields[index]['acad_session'] = parsedValue.acad_session;
         }
-        fetchUserName(parsedValue.branch_id,fields[index].role, index);
         fields[index].userNameList = [];
         fields[index].user_name = null;
         formRef.current.setFieldsValue({
           [`user_name_${fields[index].id}`]: null,
         });
         setFormFields(fields);
-      } else if (field === 'role' || field=='branch') {
+      } else if (field === 'role' || field == 'branch') {
         fields[index]['role'] = value;
 
         fields[index].userNameList = [];
@@ -226,8 +232,6 @@ const AddVideoObservation = () => {
         formRef.current.setFieldsValue({
           [`user_name_${fields[index].id}`]: null,
         });
-
-        fetchUserName(fields[index].branch, value, index);
       } else {
         fields[index][field] = value;
       }
@@ -241,7 +245,20 @@ const AddVideoObservation = () => {
         formRef.current.setFieldsValue({
           [`user_name_${fields[index].id}`]: null,
         });
+        if (field == 'branch') {
+          fields[index].branch = null;
+          fields[index].acad_session = null;
+        }
+        if (field == 'role') {
+          fields[index].role = null;
+        }
         setFormFields(fields);
+      }
+    }
+    if (field == 'branch' || field == 'role') {
+      const fields = [...formFields];
+      if (fields[index].branch && fields[index].role) {
+        fetchUserName(fields[index].branch, fields[index].role, index);
       }
     }
   };
