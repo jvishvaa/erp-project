@@ -40,6 +40,9 @@ const EventsDashboardStudent = () => {
   const notificationDuration = 3;
   const [filterForm] = useForm();
   const { RangePicker } = DatePicker;
+  const financeSessionYearList = localStorage.getItem('financeSessions')
+    ? JSON.parse(localStorage.getItem('financeSessions'))
+    : [];
   const branch = sessionStorage.getItem('selected_branch')
     ? JSON.parse(sessionStorage.getItem('selected_branch'))
     : '';
@@ -235,8 +238,13 @@ const EventsDashboardStudent = () => {
   };
 
   const fetchImprestWalletData = () => {
+    let finance_session_year_id = financeSessionYearList.find(
+      (each) => parseInt(each?.academic_session_id) === session_year
+    )?.id;
     axiosInstance
-      .get(`${endpointsV2.finance.imprestWallet}?erp_id=${erpID?.erp}`)
+      .get(
+        `${endpointsV2.finance.imprestWallet}?finance_session_year=${finance_session_year_id}&branch_id=${branch?.branch?.id}&erp_id=${erpID?.erp}`
+      )
       .then((res) => {
         if (res?.data?.results) {
           setImprestWallet(res?.data?.results);
