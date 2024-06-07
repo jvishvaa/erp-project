@@ -96,7 +96,6 @@ const AddVideoObservation = () => {
         prevForms.map((form) => {
           if (form.id === id) {
             let updatedForm = { ...form, [field]: value };
-            console.log(updatedForm, 'hello');
             if (field === 'branch') {
               if (value) {
                 const parsedValue = JSON.parse(value);
