@@ -489,7 +489,7 @@ const VideoObservation = () => {
 
   const handleFilter = () => {
     setSelectAll(false);
-    if (branch == null && userLevel==null && userName==null) {
+    if (branch == null && userLevel == null && userName == null) {
       return message.error('Please Select The Filters');
     } else {
       fetchTableData();
@@ -605,9 +605,11 @@ const VideoObservation = () => {
   useEffect(() => {
     fetchTableData();
   }, [refferListPageData.currentPage, selectedBranch]);
-  useEffect(()=>{
-    fetchUserName(branch, userLevel);
-  }, [branch, userLevel])
+  useEffect(() => {
+    if (branch && userLevel) {
+      fetchUserName(branch, userLevel);
+    }
+  }, [branch, userLevel]);
   return (
     <>
       <Layout>
@@ -746,6 +748,7 @@ const VideoObservation = () => {
                       columns={columns}
                       className='text-center mt-2'
                       pagination={false}
+                      scroll={{ y: '80vh' }}
                     />
                   </div>
                   {tableData?.length > 0 && (
@@ -754,12 +757,14 @@ const VideoObservation = () => {
                         current={refferListPageData.currentPage}
                         total={refferListPageData.totalCount}
                         pageSize={refferListPageData.pageSize}
-                        onChange={(value) =>
+                        onChange={(value) => {
                           setRefferListPageData({
                             ...refferListPageData,
                             currentPage: value,
-                          })
-                        }
+                          });
+                          setSelectedRows([]);
+                          setSelectAll(false)
+                        }}
                         showSizeChanger={false}
                         showQuickJumper={false}
                         showTotal={(total, range) =>
@@ -774,6 +779,7 @@ const VideoObservation = () => {
           </div>
           {load && <Loader />}
           <Modal
+            width={'600px'}
             title='Bulk Delete Or Edit'
             visible={isModalOpen}
             onCancel={handleCancel}
@@ -823,7 +829,8 @@ const VideoObservation = () => {
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
-                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0
+                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >=
+                        0
                       );
                     }}
                     className='w-100 text-left th-black-1 th-bg-white th-br-4'
@@ -845,7 +852,8 @@ const VideoObservation = () => {
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
-                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0
+                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >=
+                        0
                       );
                     }}
                     className='w-100 text-left th-black-1 th-bg-white th-br-4'
