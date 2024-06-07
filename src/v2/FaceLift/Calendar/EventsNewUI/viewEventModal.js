@@ -18,17 +18,10 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 2,
           slidesToScroll: 1,
         },
       },
-      // {
-      //   breakpoint: 992,
-      //   settings: {
-      //     slidesToShow: 2,
-      //     slidesToScroll: 1,
-      //   },
-      // },
       {
         breakpoint: 600,
         settings: {
@@ -64,8 +57,8 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
             <div>{viewEvent?.title}</div>
             <div>
               <CloseSquareOutlined
-                style={{ fontSize: '22px' }}
                 onClick={closeViewEventModal}
+                className='th-close-icon'
               />
             </div>
           </div>
@@ -106,6 +99,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                         alignItems: 'center',
                         fontSize: '12px',
                         fontStyle: 'italic',
+                        height: '300px',
                       }}
                     >
                       No Attachments Available
@@ -137,10 +131,18 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                     { title: 'Reg End Date', content: viewEvent?.reg_end },
                     { title: 'Event Date', content: viewEvent?.event_date },
                     {
+                      title: 'Subscription',
+                      content: viewEvent?.is_subscription_need ? 'Yes' : 'No',
+                    },
+                    {
                       title: 'Amount',
                       content: viewEvent?.event_price
                         ? `Rs. ${viewEvent?.event_price}`
-                        : 'Nill',
+                        : 'Rs. 0',
+                    },
+                    {
+                      title: 'Refundable',
+                      content: viewEvent?.refundable ? 'Yes' : 'No',
                     },
                   ]}
                   renderItem={(item) => (
@@ -172,7 +174,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                         style={{
                           display: 'flex',
                           justifyContent: 'space-between',
-                          padding: '0px 4px',
+                          padding: '10px 10px',
                           borderBottom: '1px solid #f0f0f0',
                           background: '#fafafa',
                         }}
