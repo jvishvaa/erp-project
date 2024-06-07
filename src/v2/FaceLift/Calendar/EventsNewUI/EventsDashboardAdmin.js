@@ -80,7 +80,7 @@ const EventsDashboardAdmin = () => {
     : '';
   const branchList = sessionStorage.getItem('branch_list')
     ? JSON.parse(sessionStorage.getItem('branch_list'))
-    : '';
+    : [];
   const session_year = sessionStorage.getItem('acad_session')
     ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
     : '';
@@ -888,12 +888,12 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Branch</span>,
       align: 'center',
-      width: '15%',
+      width: '10%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.branch_name && row?.branch_name.length > 15 ? (
+          {row?.branch_name && row?.branch_name.length > 10 ? (
             <Popover placement='bottomLeft' content={row?.branch_name}>
-              {row?.branch_name.substring(0, 15)}...
+              {row?.branch_name.substring(0, 10)}...
             </Popover>
           ) : (
             row?.branch_name
@@ -1000,7 +1000,6 @@ const EventsDashboardAdmin = () => {
       title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
       align: 'left',
       key: 'action',
-      width: '10%',
       render: (data, row) => {
         return (
           <>
@@ -1876,7 +1875,7 @@ const EventsDashboardAdmin = () => {
                           <>
                             <div className='row justify-content-between'>
                               <div
-                                className='col-md-8 col-12'
+                                className='col-md-6 col-12'
                                 style={{
                                   fontSize: '12px',
                                   fontStyle: 'italic',
