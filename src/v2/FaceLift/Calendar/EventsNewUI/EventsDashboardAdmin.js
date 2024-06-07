@@ -61,6 +61,7 @@ const formats = ['list', 'bullet', 'bold', 'italic', 'underline'];
 
 const EventsDashboardAdmin = () => {
   const notificationDuration = 3;
+  const maxCharLimit = 3000;
   const { Option } = Select;
   const { RangePicker } = DatePicker;
   const { TextArea } = Input;
@@ -110,13 +111,17 @@ const EventsDashboardAdmin = () => {
 
   const [gradeList, setGradeList] = useState([]);
   const [eventHighlights, setEventHighlights] = useState('');
+  const [eventHighlightsText, setEventHighlightsText] = useState(null);
+  const [eventHighlightsFlag, setEventHighlightsFlag] = useState(true);
   const [eventDescription, setEventDescription] = useState('');
+  const [eventDescriptionText, setEventDescriptionText] = useState(null);
+  const [eventDescriptionFlag, setEventDescriptionFlag] = useState(true);
   const [subscriptionStatus, setSubscriptionStatus] = useState(1);
   const [refundPolicy, setRefundPolicy] = useState(1);
   const [refundPolicyData, setRefundPolicyData] = useState([
     {
       days: '',
-      percent: '',
+      amount: '',
     },
   ]);
 
@@ -128,6 +133,7 @@ const EventsDashboardAdmin = () => {
 
   const [viewEventModalOpen, setViewEventModalOpen] = useState(false);
   const [viewEvent, setViewEvent] = useState();
+  const [amount, setAmount] = useState(null);
 
   useEffect(() => {
     fetchTableData();
@@ -151,7 +157,6 @@ const EventsDashboardAdmin = () => {
     }
     handleFetchTableData();
   }, [selectedTag, selectedDays]);
-
   const handleFetchTableData = () => {
     if (currentPage == 1) {
       fetchTableData();
@@ -231,10 +236,27 @@ const EventsDashboardAdmin = () => {
       });
   };
   const hasValidEntry = () => {
-    return refundPolicyData.some((entry) => entry.days && entry.percent);
+    return refundPolicyData.some((entry) => entry.days && entry.amount);
   };
   const createEvent = () => {
-    if (refundPolicy && !hasValidEntry()) {
+    if (eventHighlightsText?.length > maxCharLimit) {
+      notification['warning']({
+        message: 'Event Highlights max characters limit reached',
+        duration: notificationDuration,
+        className: 'notification-container',
+      });
+      return;
+    }
+    if (eventDescriptionText?.length > maxCharLimit) {
+      notification['warning']({
+        message: 'Event Description max characters limit reached',
+        duration: notificationDuration,
+        className: 'notification-container',
+      });
+      return;
+    }
+    const values = eventForm.getFieldsValue();
+    if (values?.is_subscription_need && values?.refundable && !hasValidEntry()) {
       notification['warning']({
         message: 'Please fill out at least one refund policy',
         duration: notificationDuration,
@@ -242,7 +264,6 @@ const EventsDashboardAdmin = () => {
       });
       return;
     }
-    const values = eventForm.getFieldsValue();
     const formData = new FormData();
     formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
@@ -259,8 +280,8 @@ const EventsDashboardAdmin = () => {
       formData.append('refundable', values?.refundable);
       if (values?.refundable) {
         let formatted_policy = refundPolicyData
-          .filter((policy) => policy.days && policy.percent)
-          .map((policy) => `${policy.days}:${policy.percent}`)
+          .filter((policy) => policy.days && policy.amount)
+          .map((policy) => `${policy.days}:${policy.amount}`)
           .join(',');
         formData.append('policies', formatted_policy);
       }
@@ -296,7 +317,24 @@ const EventsDashboardAdmin = () => {
       });
   };
   const editEvent = () => {
-    if (refundPolicy && !hasValidEntry()) {
+    if (eventHighlightsText?.length >= maxCharLimit) {
+      notification['warning']({
+        message: 'Event Highlights max characters limit reached',
+        duration: notificationDuration,
+        className: 'notification-container',
+      });
+      return;
+    }
+    if (eventDescriptionText?.length >= maxCharLimit) {
+      notification['warning']({
+        message: 'Event Description max characters limit reached',
+        duration: notificationDuration,
+        className: 'notification-container',
+      });
+      return;
+    }
+    const values = eventForm.getFieldsValue();
+    if (values?.is_subscription_need && values?.refundable && !hasValidEntry()) {
       notification['warning']({
         message: 'Please fill out at least one refund policy',
         duration: notificationDuration,
@@ -304,7 +342,6 @@ const EventsDashboardAdmin = () => {
       });
       return;
     }
-    const values = eventForm.getFieldsValue();
     const formData = new FormData();
     formData.append('title', values?.event_name);
     formData.append('event_name', values?.event_name);
@@ -321,8 +358,8 @@ const EventsDashboardAdmin = () => {
       formData.append('refundable', values?.refundable);
       if (values?.refundable) {
         let formatted_policy = refundPolicyData
-          .filter((policy) => policy.days && policy.percent)
-          .map((policy) => `${policy.days}:${policy.percent}`)
+          .filter((policy) => policy.days && policy.amount)
+          .map((policy) => `${policy.days}:${policy.amount}`)
           .join(',');
         formData.append('policies', formatted_policy);
       }
@@ -455,48 +492,57 @@ const EventsDashboardAdmin = () => {
   const quillRef1 = useRef(null);
   const quillRef2 = useRef(null);
   const handleChangeEventHighlights = (content, delta, source, editor) => {
-    console.log(content);
     const text = editor.getText();
-    if (text.length <= 3000) {
-      setEventHighlights(content);
-    } else {
+    setEventHighlightsText(text);
+    setEventHighlights(content);
+    if (text?.length <= maxCharLimit) {
+      setEventHighlightsFlag(true);
+    }
+    if (text?.length > maxCharLimit && eventHighlightsFlag) {
       notification['error']({
-        message: 'OOPS! Max Words Limit Reached',
+        message: 'OOPS! Max Characters Limit Reached. Reduce the content',
         duration: notificationDuration,
         className: 'notification-container',
       });
-      const truncatedContent = text.slice(0, 3000);
-      setEventHighlights(truncatedContent);
-      const quill = quillRef1.current.getEditor();
-      quill.setText(truncatedContent);
+      setEventHighlightsFlag(false);
     }
   };
   const handleChangeEventDescription = (content, delta, source, editor) => {
     const text = editor.getText();
-    if (text.length <= 3000) {
-      setEventDescription(content);
-    } else {
+    setEventDescriptionText(text);
+    setEventDescription(content);
+    if (text?.length <= maxCharLimit) {
+      setEventDescriptionFlag(true);
+    }
+    if (text?.length > maxCharLimit && eventDescriptionFlag) {
       notification['error']({
-        message: 'OOPS! Max Words Limit Reached',
+        message: 'OOPS! Max Characters Limit Reached. Reduce the content',
         duration: notificationDuration,
         className: 'notification-container',
       });
-      const truncatedContent = text.slice(0, 3000);
-      setEventDescription(truncatedContent);
-      const quill = quillRef2.current.getEditor();
-      quill.setText(truncatedContent);
+      setEventDescriptionFlag(false);
     }
   };
 
   const fetchGradeList = ({ branchIds }) => {
-    console.log(branchIds);
     axiosInstance
       .get(
         `${endpoints.eventsDashboard.gradeListApi}?session_year=${session_year}&branch_id=${branchIds}`
       )
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          setGradeList(response?.data?.data);
+          let data = response?.data?.data;
+          const uniqueGradesMap = new Map();
+          data.forEach((item) => {
+            if (!uniqueGradesMap.has(item.grade_id)) {
+              uniqueGradesMap.set(item.grade_id, {
+                grade_id: item.grade_id,
+                grade_name: item.grade_name,
+              });
+            }
+          });
+          const uniqueGrades = Array.from(uniqueGradesMap.values());
+          setGradeList(uniqueGrades);
         }
       })
       .catch((error) => {
@@ -554,16 +600,15 @@ const EventsDashboardAdmin = () => {
       filterForm.setFieldsValue({
         branch_filter: [],
       });
-      if (!selectedTag || !selectedDays) {
-        handleFetchTableData();
-      }
     }
     setSelectedTag();
     setSelectedDays();
     filterForm.setFieldsValue({
       date_filter: [moment(), moment().add(10, 'days')],
     });
-    handleFetchTableData();
+    if (!selectedTag && !selectedDays) {
+      handleFetchTableData();
+    }
   };
   const openFeedBackModal = ({ key, id }) => {
     setId(id);
@@ -582,7 +627,10 @@ const EventsDashboardAdmin = () => {
       eventForm.setFieldsValue({
         is_subscription_need: true,
         refundable: true,
+        acad_session: branch?.id,
       });
+      let branchIds = [branch?.branch?.id];
+      fetchGradeList({ branchIds });
       setEventDrawerOpen(true);
     } else {
       let branchIds = branchList
@@ -604,10 +652,11 @@ const EventsDashboardAdmin = () => {
       setEventHighlights(rowData?.highlight);
       setEventDescription(rowData?.description);
       setSubscriptionStatus(rowData?.is_subscription_need);
+      setAmount(rowData?.event_price);
       setRefundPolicy(rowData?.refundable);
       let data = [];
-      Object.entries(rowData?.policy).forEach(([days, percent]) => {
-        let policyData = { days: days, percent: percent, amount: '' };
+      Object.entries(rowData?.policy).forEach(([days, amount]) => {
+        let policyData = { days: days, amount: amount };
         data.push(policyData);
       });
       setRefundPolicyData(data);
@@ -619,19 +668,18 @@ const EventsDashboardAdmin = () => {
   const closeEventDrawer = () => {
     setEventDrawerOpen(false);
     eventForm.resetFields();
-    eventForm.setFieldsValue({
-      days_0: '',
-      percent_0: '',
-    });
     setGradeList([]);
     setEventHighlights('');
+    setEventHighlightsText('');
     setEventDescription('');
+    setEventDescriptionText('');
     setSubscriptionStatus(1);
+    setAmount(null);
     setRefundPolicy(1);
     setRefundPolicyData([
       {
         days: '',
-        percent: '',
+        amount: '',
       },
     ]);
     setFileLinks([]);
@@ -661,6 +709,17 @@ const EventsDashboardAdmin = () => {
   };
 
   const handleSubscriptionStatusChange = (val) => {
+    eventForm.setFieldsValue({
+      event_price: '',
+      refundable: true,
+    });
+    setRefundPolicy(1);
+    setRefundPolicyData([
+      {
+        days: '',
+        amount: '',
+      },
+    ]);
     setSubscriptionStatus(val);
   };
   const handleRefundPolicyChange = (val) => {
@@ -668,7 +727,7 @@ const EventsDashboardAdmin = () => {
       setRefundPolicyData([
         {
           days: '',
-          percent: '',
+          amount: '',
         },
       ]);
     } else {
@@ -680,7 +739,6 @@ const EventsDashboardAdmin = () => {
     if (refundPolicyData?.length < 4) {
       let newPolicy = {
         days: '',
-        percent: '',
         amount: '',
       };
       setRefundPolicyData([...refundPolicyData, newPolicy]);
@@ -693,11 +751,8 @@ const EventsDashboardAdmin = () => {
     }
   };
   const handleDelete = (index) => {
-    console.log(index);
     let policies = refundPolicyData.slice();
-    console.log(policies);
     policies.splice(index, 1);
-    console.log(policies);
     setRefundPolicyData(policies);
     if (policies?.length === 0) {
       setRefundPolicy(1);
@@ -707,6 +762,16 @@ const EventsDashboardAdmin = () => {
     }
   };
   const handleChange = (value, index, key) => {
+    if (key === 'amount') {
+      if (value > amount) {
+        notification['error']({
+          message: 'Refund amount must be less than event price',
+          duration: notificationDuration,
+          className: 'notification-container',
+        });
+        return;
+      }
+    }
     let policies = [...refundPolicyData];
     policies[index] = { ...policies[index], [key]: value };
     setRefundPolicyData(policies);
@@ -722,7 +787,9 @@ const EventsDashboardAdmin = () => {
       if (file.size > maxSize) {
         notification.error({
           message: 'File Size Error',
-          description: `${file.name} exceeds the maximum size of 50 MB`,
+          description: `${file.name} exceeds the maximum size of ${
+            maxSize / (1024 * 1024)
+          } MB`,
           duration: notificationDuration,
           className: 'w-100',
         });
@@ -786,11 +853,11 @@ const EventsDashboardAdmin = () => {
       return <p>No preview available</p>;
     }
   };
-
   const columns = [
     {
-      title: <span className='th-white th-event-12 th-fw-700'></span>,
+      title: <span className='th-white th-event-12 th-fw-700'>SNo</span>,
       align: 'center',
+      width: '5%',
       render: (data, row, index) => (
         <span className='th-black-1 th-event-12'>
           {(currentPage - 1) * pageSize + index + 1}.
@@ -803,13 +870,15 @@ const EventsDashboardAdmin = () => {
       width: '25%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.title && row?.title.length > 27 ? (
-            <>
-              {row.title.substring(0, 27)}...
-              <span className='show-more' onClick={() => openViewEventModal(row)}>
-                Show more
-              </span>
-            </>
+          {row?.title && row?.title.length > 30 ? (
+            <Tooltip
+              autoAdjustOverflow='false'
+              placement='bottomLeft'
+              title={row?.title}
+              overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
+            >
+              {row.title.substring(0, 30)}...
+            </Tooltip>
           ) : (
             row?.title
           )}
@@ -817,9 +886,25 @@ const EventsDashboardAdmin = () => {
       ),
     },
     {
-      title: <span className='th-white th-event-12 th-fw-700'>Reg. End Date</span>,
+      title: <span className='th-white th-event-12 th-fw-700'>Branch</span>,
       align: 'center',
       width: '15%',
+      render: (data, row) => (
+        <span className='th-black-1 th-event-12'>
+          {row?.branch_name && row?.branch_name.length > 15 ? (
+            <Popover placement='bottomLeft' content={row?.branch_name}>
+              {row?.branch_name.substring(0, 15)}...
+            </Popover>
+          ) : (
+            row?.branch_name
+          )}
+        </span>
+      ),
+    },
+    {
+      title: <span className='th-white th-event-12 th-fw-700'>Reg. End Date</span>,
+      align: 'center',
+      width: '13%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>{row?.reg_end}</span>
@@ -828,6 +913,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Event Date</span>,
       align: 'center',
+      width: '10%',
       sorter: (a, b) => new Date(a.event_date) - new Date(b.event_date),
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>{row?.event_date}</span>
@@ -836,6 +922,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Reg. Count</span>,
       align: 'center',
+      width: '10%',
       render: (data, row) => (
         <Tag
           color='geekblue'
@@ -850,6 +937,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
       align: 'left',
+      width: '12%',
       render: (data, row) => (
         <>
           {row?.approval_status === 1 && (
@@ -912,6 +1000,7 @@ const EventsDashboardAdmin = () => {
       title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
       align: 'left',
       key: 'action',
+      width: '10%',
       render: (data, row) => {
         return (
           <>
@@ -924,16 +1013,20 @@ const EventsDashboardAdmin = () => {
                 className='icon-hover th-event-preview'
               />
             </Popover>
-            {row?.approval_status === 1 && (
-              <Popover placement='topRight' content='Edit Event'>
-                <Button
-                  shape='circle'
-                  size='small'
-                  icon={<EditOutlined />}
-                  onClick={() => openEventDrawer({ key: 'edit', rowData: row })}
-                  className='icon-hover th-event-edit'
-                />
-              </Popover>
+            {([10, 14, 34, 8, 26].includes(user_level) || is_central_user) && (
+              <>
+                {row?.approval_status === 1 && (
+                  <Popover placement='topRight' content='Edit Event'>
+                    <Button
+                      shape='circle'
+                      size='small'
+                      icon={<EditOutlined />}
+                      onClick={() => openEventDrawer({ key: 'edit', rowData: row })}
+                      className='icon-hover th-event-edit'
+                    />
+                  </Popover>
+                )}
+              </>
             )}
             {[8, 26].includes(user_level) && (
               <>
@@ -984,8 +1077,9 @@ const EventsDashboardAdmin = () => {
   ];
   const studentColumns = [
     {
-      title: <span className='th-white th-event-12 th-fw-700'></span>,
+      title: <span className='th-white th-event-12 th-fw-700'>SNo</span>,
       align: 'center',
+      width: '5%',
       render: (data, row, index) => (
         <span className='th-black-1 th-event-12'>
           {(studentCurrentPage - 1) * pageSize + index + 1}.
@@ -1086,7 +1180,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 1 ? setSelectedTag() : setSelectedTag(1))}
             icon={<ReloadOutlined />}
           >
-            {`Pending : ${tableData?.counts?.pending || ''}`}
+            {`Pending : ${tableData?.counts?.pending || 0}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1095,7 +1189,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 4 ? setSelectedTag() : setSelectedTag(4))}
             icon={<CheckCircleOutlined />}
           >
-            {`Approved : ${tableData?.counts?.approved || ''}`}
+            {`Approved : ${tableData?.counts?.approved || 0}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1104,7 +1198,7 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 2 ? setSelectedTag() : setSelectedTag(2))}
             icon={<CloseCircleOutlined />}
           >
-            {`Rejected : ${tableData?.counts?.rejected || ''}`}
+            {`Rejected : ${tableData?.counts?.rejected || 0}`}
           </Tag>
           <Tag
             className={`custom-tag ${
@@ -1113,31 +1207,31 @@ const EventsDashboardAdmin = () => {
             onClick={() => (selectedTag === 3 ? setSelectedTag() : setSelectedTag(3))}
             icon={<CloseCircleOutlined />}
           >
-            {`Cancelled : ${tableData?.counts?.cancelled || ''}`}
+            {`Cancelled : ${tableData?.counts?.cancelled || 0}`}
           </Tag>
         </div>
         <div>
           <Tag className='count-tag th-event-grey'>
             <span className='count-tag-text'>{`Total : ${
-              tableData?.counts?.total || ''
+              tableData?.counts?.total || 0
             }`}</span>
           </Tag>
           <Tag className='count-tag th-event-grey'>
             <span className='count-tag-text'>{`Live : ${
-              tableData?.counts?.live || ''
+              tableData?.counts?.live || 0
             }`}</span>
           </Tag>
-          {[10, 14, 34].includes(user_level) ||
-            (is_central_user && (
-              <Button
-                size='small'
-                className='primary-button create-button'
-                icon={<PlusCircleOutlined />}
-                onClick={() => openEventDrawer({ key: 'create' })}
-              >
-                Create Event
-              </Button>
-            ))}
+          {([10, 14, 34].includes(user_level) || is_central_user) && (
+            <Button
+              size='small'
+              is_central_user
+              className='primary-button create-button'
+              icon={<PlusCircleOutlined />}
+              onClick={() => openEventDrawer({ key: 'create' })}
+            >
+              Create Event
+            </Button>
+          )}
         </div>
       </div>
       <div className='row'>
@@ -1147,6 +1241,7 @@ const EventsDashboardAdmin = () => {
               <Form.Item name='date_filter'>
                 <RangePicker
                   format='DD/MM/YYYY'
+                  allowClear={false}
                   className='w-100 text-left th-black-1 th-br-4'
                   defaultValue={filterForm?.getFieldsValue()?.date_filter}
                   disabled={selectedDays}
@@ -1274,8 +1369,8 @@ const EventsDashboardAdmin = () => {
             <div>Reason for {feedBackFlag === 'reject' ? 'Rejecting' : 'Cancelling'}</div>
             <div>
               <CloseSquareOutlined
-                style={{ fontSize: '22px' }}
                 onClick={closeFeedBackModal}
+                className='th-close-icon'
               />
             </div>
           </div>
@@ -1307,6 +1402,7 @@ const EventsDashboardAdmin = () => {
                 icon={feedBackLoading ? <SyncOutlined spin /> : <CloseCircleOutlined />}
                 form='feedBackModalForm'
                 htmlType='submit'
+                disabled={feedBackLoading}
               >
                 {feedBackFlag === 'reject' ? 'Reject Event' : 'Cancel Event'}
               </Button>
@@ -1356,10 +1452,7 @@ const EventsDashboardAdmin = () => {
           <div className='d-flex justify-content-between align-items-center'>
             <div>{eventId ? 'Update Event' : 'Create Event'}</div>
             <div>
-              <CloseSquareOutlined
-                style={{ fontSize: '22px' }}
-                onClick={closeEventDrawer}
-              />
+              <CloseSquareOutlined onClick={closeEventDrawer} className='th-close-icon' />
             </div>
           </div>
         }
@@ -1396,6 +1489,7 @@ const EventsDashboardAdmin = () => {
                 }
                 form='eventForm'
                 htmlType='submit'
+                disabled={eventLoading}
               >
                 {eventId ? 'Update Event' : 'Create Event'}
               </Button>
@@ -1430,10 +1524,10 @@ const EventsDashboardAdmin = () => {
                         },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
-                            const maxCharCount = 200;
+                            const maxCharCount = 100;
                             if (value && value.length > maxCharCount) {
                               return Promise.reject(
-                                new Error(`Event name must be less than 200 characters`)
+                                new Error(`Event name must be less than 100 characters`)
                               );
                             }
                             return Promise.resolve();
@@ -1446,7 +1540,7 @@ const EventsDashboardAdmin = () => {
                         className='w-100 text-left th-black-1 th-br-4'
                         allowClear
                         showCount
-                        maxLength={200}
+                        maxLength={100}
                       />
                     </Form.Item>
                   </div>
@@ -1462,7 +1556,7 @@ const EventsDashboardAdmin = () => {
                       ]}
                     >
                       <Select
-                        mode='multiple'
+                        mode={!eventId ? 'multiple' : undefined}
                         maxTagCount={1}
                         allowClear
                         getPopupContainer={(trigger) => trigger.parentNode}
@@ -1479,6 +1573,7 @@ const EventsDashboardAdmin = () => {
                           );
                         }}
                         onChange={() => handleBranchChange()}
+                        disabled={eventId}
                         className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                       >
                         {branchList && branchList?.length > 0 && (
@@ -1491,6 +1586,17 @@ const EventsDashboardAdmin = () => {
                         )}
                       </Select>
                     </Form.Item>
+                    {eventId && (
+                      <span
+                        style={{
+                          fontSize: '12px',
+                          fontStyle: 'italic',
+                          color: 'red',
+                        }}
+                      >
+                        Branch cannot be edited
+                      </span>
+                    )}
                   </div>
                   <div className='col-lg-3 col-md-6 col-sm-12 col-12 mb-2'>
                     <Form.Item
@@ -1547,13 +1653,46 @@ const EventsDashboardAdmin = () => {
                     >
                       <ReactQuill
                         ref={quillRef1}
-                        defaultValue={eventHighlights}
+                        value={eventHighlights}
                         onChange={handleChangeEventHighlights}
                         modules={modules}
                         formats={formats}
                         placeholder='Please Enter Event Highlights'
+                        className={
+                          eventHighlightsText?.length > maxCharLimit
+                            ? 'th-react-quill'
+                            : ''
+                        }
                       />
                     </Form.Item>
+                    {eventHighlightsText &&
+                      eventHighlightsText?.length > maxCharLimit && (
+                        <span
+                          className='d-flex justify-content-end col-12'
+                          style={{
+                            fontSize: '12px',
+                            fontStyle: 'italic',
+                            color: 'red',
+                          }}
+                        >
+                          Max character limit reached. Please reduce the content.
+                        </span>
+                      )}
+                    {eventHighlightsText && (
+                      <span
+                        className='d-flex justify-content-end col-12'
+                        style={{
+                          fontSize: '12px',
+                          fontStyle: 'italic',
+                          color:
+                            eventHighlightsText?.length > maxCharLimit
+                              ? 'red'
+                              : 'inherit',
+                        }}
+                      >
+                        Char Count : {eventHighlightsText?.length} / {maxCharLimit}
+                      </span>
+                    )}
                   </div>
                   <div className='col-lg-12 col-md-12 col-sm-12 col-12 mb-2'>
                     <Form.Item
@@ -1573,8 +1712,41 @@ const EventsDashboardAdmin = () => {
                         modules={modules}
                         formats={formats}
                         placeholder='Please Enter Event Description'
+                        className={
+                          eventDescriptionText?.length > maxCharLimit
+                            ? 'th-react-quill'
+                            : ''
+                        }
                       />
                     </Form.Item>
+                    {eventDescriptionText &&
+                      eventDescriptionText?.length > maxCharLimit && (
+                        <span
+                          className='d-flex justify-content-end col-12'
+                          style={{
+                            fontSize: '12px',
+                            fontStyle: 'italic',
+                            color: 'red',
+                          }}
+                        >
+                          Max character limit reached. Please reduce the content.
+                        </span>
+                      )}
+                    {eventDescriptionText && (
+                      <span
+                        className='d-flex justify-content-end col-12'
+                        style={{
+                          fontSize: '12px',
+                          fontStyle: 'italic',
+                          color:
+                            eventDescriptionText?.length > maxCharLimit
+                              ? 'red'
+                              : 'inherit',
+                        }}
+                      >
+                        Char Count : {eventDescriptionText?.length} / {maxCharLimit}
+                      </span>
+                    )}
                   </div>
 
                   <div className='col-lg-4 col-md-6 col-sm-6 col-6 mb-2'>
@@ -1649,7 +1821,7 @@ const EventsDashboardAdmin = () => {
                       <div className='col-lg-3 col-md-6 col-sm-6 col-6 mb-2'>
                         <Form.Item
                           name='event_price'
-                          label='Amount'
+                          label='Event Price'
                           rules={[
                             {
                               required: true,
@@ -1664,6 +1836,15 @@ const EventsDashboardAdmin = () => {
                             addonBefore='Rs'
                             min={0}
                             max={100000}
+                            onChange={(val) => {
+                              setRefundPolicyData([
+                                {
+                                  days: '',
+                                  amount: '',
+                                },
+                              ]);
+                              setAmount(val);
+                            }}
                           />
                         </Form.Item>
                       </div>
@@ -1699,10 +1880,11 @@ const EventsDashboardAdmin = () => {
                                 style={{
                                   fontSize: '12px',
                                   fontStyle: 'italic',
+                                  color: 'red',
                                 }}
                               >
                                 Note : Be cautious while filling refund policy. Please
-                                enter days in 1 to 100 range and percent in 1 to 100 range
+                                provide event price to enter refund policy
                               </div>
                               <div className='col-md-4 col-12'>
                                 <Button
@@ -1719,51 +1901,54 @@ const EventsDashboardAdmin = () => {
                                 </Button>
                               </div>
                             </div>
-                            {refundPolicyData.map((each, index) => {
-                              return (
-                                <>
-                                  <div className='row align-items-center'>
-                                    <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
-                                      <InputNumber
-                                        placeholder='No Of Days Before'
-                                        className='w-100 text-left th-black-1 th-br-4'
-                                        allowClear
-                                        addonAfter='days'
-                                        min={1}
-                                        max={100}
-                                        value={parseInt(each?.days)}
-                                        onChange={(e) => handleChange(e, index, 'days')}
-                                      />
-                                    </div>
-                                    <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
-                                      <InputNumber
-                                        placeholder='Amount Percentage'
-                                        className='w-100 text-left th-black-1 th-br-4'
-                                        allowClear
-                                        addonAfter='%'
-                                        min={1}
-                                        max={100}
-                                        value={parseInt(each?.percent)}
-                                        onChange={(e) =>
-                                          handleChange(e, index, 'percent')
-                                        }
-                                      />
-                                    </div>
-                                    {index != 0 && (
-                                      <div className='col-lg-3 col-md-3 col-sm-2 col-2'>
-                                        <Button
-                                          shape='circle'
-                                          size='small'
-                                          icon={<CloseOutlined />}
-                                          onClick={() => handleDelete(index)}
-                                          className='icon-hover th-event-cancelled'
+                            {refundPolicy &&
+                              refundPolicyData.map((each, index) => {
+                                return (
+                                  <>
+                                    <div className='row align-items-center'>
+                                      <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
+                                        <InputNumber
+                                          placeholder='No Of Days Before'
+                                          className='w-100 text-left th-black-1 th-br-4'
+                                          allowClear
+                                          addonAfter='days'
+                                          min={1}
+                                          max={100}
+                                          value={parseInt(each?.days)}
+                                          onChange={(e) => handleChange(e, index, 'days')}
+                                          disabled={!amount}
                                         />
                                       </div>
-                                    )}
-                                  </div>
-                                </>
-                              );
-                            })}
+                                      <div className='col-lg-3 col-md-3 col-sm-5 col-5'>
+                                        <InputNumber
+                                          placeholder='Refund Amount'
+                                          className='w-100 text-left th-black-1 th-br-4'
+                                          allowClear
+                                          addonBefore='Rs'
+                                          min={0}
+                                          max={100000}
+                                          value={parseInt(each?.amount)}
+                                          onChange={(e) =>
+                                            handleChange(e, index, 'amount')
+                                          }
+                                          disabled={!amount}
+                                        />
+                                      </div>
+                                      {index != 0 && (
+                                        <div className='col-lg-3 col-md-3 col-sm-2 col-2'>
+                                          <Button
+                                            shape='circle'
+                                            size='small'
+                                            icon={<CloseOutlined />}
+                                            onClick={() => handleDelete(index)}
+                                            className='icon-hover th-event-cancelled'
+                                          />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </>
+                                );
+                              })}
                           </>
                         )}
                       </div>
@@ -1919,8 +2104,8 @@ const EventsDashboardAdmin = () => {
             <div>Student List</div>
             <div>
               <CloseSquareOutlined
-                style={{ fontSize: '22px' }}
                 onClick={closeStudentDrawer}
+                className='th-close-icon'
               />
             </div>
           </div>

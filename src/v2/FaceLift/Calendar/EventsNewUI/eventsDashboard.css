@@ -43,7 +43,6 @@
 }
 .custom-tag:hover {
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  transform: translateY(-4px);
 }
 .th-event-pending {
   border: 1px solid var(--pending-color) !important;
@@ -79,6 +78,9 @@
 }
 .th-tag-width {
   width: 95px;
+}
+.th-tag-width-1 {
+  width: 125px;
 }
 .count-tag {
   border-radius: 4px;
@@ -124,12 +126,10 @@
 }
 .primary-button:hover {
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  transform: translateY(-4px);
   opacity: var(--button-hover-optimacy);
 }
 .primary-button:active {
   box-shadow: none !important;
-  transform: none !important;
   opacity: 1 !important;
 }
 .secondary-button {
@@ -143,12 +143,10 @@
 }
 .secondary-button:hover {
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  transform: translateY(-4px);
   opacity: var(--button-hover-optimacy);
 }
 .secondary-button:active {
   box-shadow: none !important;
-  transform: none !important;
   opacity: 1 !important;
 }
 .secondary-button:focus {
@@ -171,12 +169,10 @@
 }
 .icon-hover:hover {
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-  /* transform: translateY(-4px); */
   opacity: var(--button-hover-optimacy);
 }
 .primary-button:active {
   box-shadow: none !important;
-  transform: none !important;
   opacity: 1 !important;
 }
 .color-approved {
@@ -199,6 +195,16 @@
 .th-event-grey {
   background: var(--list-bg-color);
 }
+.th-close-icon {
+  transition: background-color 0.3s ease, box-shadow 0.1s ease, transform 0.1s ease,
+    border-color 0.3s ease;
+  font-size: 22px;
+  cursor: pointer;
+}
+.th-close-icon:hover {
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: var(--button-hover-optimacy);
+}
 
 /*******Reject or Cancel Modal********/
 
@@ -211,11 +217,11 @@
 }
 .th-event-modal .ant-modal-header {
   border-radius: 4px 4px 0px 0px !important;
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-modal .ant-modal-footer {
   border-radius: 0px 0px 4px 4px !important;
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-modal .ant-modal-body {
   padding: 10px !important;
@@ -250,10 +256,10 @@
   font-weight: 700 !important;
 }
 .th-event-drawer .ant-drawer-header {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-drawer .ant-drawer-footer {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 
 /*******Create or Edit Drawer********/
@@ -269,10 +275,10 @@
   font-weight: 700 !important;
 }
 .th-event-drawer-1 .ant-drawer-header {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-drawer-1 .ant-drawer-footer {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-drawer-1 .ant-drawer-body {
   padding: 10px !important;
@@ -316,7 +322,7 @@
 .th-event-modal-preview .ant-modal-header {
   background: var(--preview-color) !important;
   border-radius: 4px 4px 0px 0px !important;
-  padding: 4px 10px;
+  padding: 10px 10px;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -329,23 +335,34 @@
   border-radius: 4px !important;
 }
 .th-event-modal-preview .ant-modal-footer {
-  padding: 4px 10px !important;
+  padding: 10px 10px !important;
   background-color: var(--text-color) !important;
   position: -webkit-sticky;
   position: sticky;
   bottom: 0;
   z-index: 1;
 }
+.th-images-card {
+  border-radius: 12px;
+  border: 1px solid var(--card-border-color);
+  background-color: var(--card-bg-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-height: 300px;
+  max-height: 300px;
+  margin-bottom: 10px;
+}
+.th-images-card .ant-card-body {
+  padding: 8px;
+}
 .th-event-card {
   border-radius: 12px;
-  margin-top: 10px;
+  margin-bottom: 10px;
   padding: 10px;
   border: 1px solid var(--card-border-color);
   background-color: var(--card-bg-color);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .th-event-card .card-content {
-  font-family: 'Times New Roman', sans-serif;
   color: var(--card-content-color);
   line-height: 1.6;
 }
@@ -361,6 +378,8 @@
   background-color: var(--list-bg-color);
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-height: 300px;
+  margin-bottom: 10px;
 }
 .th-event-list-header {
   background-color: var(--list-header-bg-color);
@@ -376,9 +395,8 @@
   padding: 10px;
   border-bottom: 1px solid var(--list-border-color);
 }
-
-.th-event-list-item:last-child {
-  border-bottom: none;
+.th-event-list .ant-list-item:last-child {
+  border-bottom: 1px solid #f0f0f0;
 }
 
 /*******Student List Drawer********/
@@ -390,14 +408,40 @@
   padding: 10px !important;
 }
 .th-event-drawer-2 .ant-drawer-header {
-  padding: 4px 10px;
+  padding: 10px 10px;
 }
 .th-event-drawer-2 .ant-drawer-footer {
-  padding: 4px 10px;
+  padding: 10px 10px;
+}
+
+/*******Student side unsubscribe Modal********/
+
+.th-unsubscribe-list {
+  border: 1px solid var(--list-border-color);
+  border-radius: 8px;
+  background-color: var(--list-bg-color);
+}
+.th-unsubscribe-list-header {
+  background-color: var(--list-header-bg-color);
+  border-bottom: 1px solid var(--list-border-color);
+  font-weight: bold;
+  font-size: 1.2em;
+}
+.th-unsubscribe-list .ant-list-header {
+  padding: 0px;
+}
+.th-unsubscribe-list-item {
+  border-bottom: 1px solid var(--list-border-color);
 }
 
 /*******Common********/
 
+.th-react-quill .ql-container.ql-snow {
+  border: 1px solid var(--rejected-color);
+}
+.th-react-quill .ql-toolbar.ql-snow {
+  border: 1px solid var(--rejected-color);
+}
 .ant-picker-dropdown {
   z-index: 2001;
 }
@@ -437,9 +481,9 @@
 .th-event-12 {
   font-size: 14px;
 }
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 0px;
-} */
+}
 .center-screen {
   position: fixed;
   top: 0;

@@ -383,6 +383,7 @@ export default {
   finance: {
     storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
     walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
+    imprestWallet: `${baseFinanceURL}/apiV1/imprest-transactions/`
   },
   FrequentlyAskedQuestions: {
     FaqApi: `${baseURL}/erp_user/faq/`,
@@ -400,6 +401,7 @@ export default {
   },
   assignVideoObservation: {
     videoReview: '/erp_user/video-review/',
+    bulkVideoUpdate : '/erp_user/video-review-web/',
   },
   eventsDashboard: {
     gradeListApi: '/erp_user/grademapping/',
