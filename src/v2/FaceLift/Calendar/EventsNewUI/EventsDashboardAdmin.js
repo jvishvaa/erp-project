@@ -1873,7 +1873,7 @@ const EventsDashboardAdmin = () => {
                         </Form.Item>
                         {refundPolicy && (
                           <>
-                            <div className='row justify-content-between'>
+                            <div className='row'>
                               <div
                                 className='col-md-6 col-12'
                                 style={{
