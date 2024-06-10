@@ -42,51 +42,6 @@ const QuestionPreview_V2 = React.forwardRef(
       };
     }, []);
 
-    // useEffect(() => {
-    //   const addPageNumbers = () => {
-    //     const printContainer = printContainerRef.current;
-    //     const totalPages = Math.ceil(printContainer.scrollHeight / 1400);
-    //     // console.log(
-    //     //   totalPages,
-    //     //   printContainer.scrollHeight / 1400,
-    //     //   1400,
-    //     //   'printContainer'
-    //     // );
-    //     for (let i = 1; i <= totalPages; i++) {
-    //       const pageNumberDiv = document.createElement('div');
-    //       const pageNumber = document.createTextNode(`Page ${i}`);
-    //       pageNumberDiv.style.position = 'absolute';
-    //       if (i === 1) {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm))`;
-    //       } else if (i > 1 && i <= 4) {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm + ${i + 1}mm))`;
-    //       } else if (i > 4 && i < 6) {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm + ${i}mm))`;
-    //       } else if (i === 6) {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 1}mm))`;
-    //       } else if (i === 7) {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 1.5}mm))`;
-    //       } else if (i === 8) {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 2.5}mm))`;
-    //       } else if (i === 9) {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 3.5}mm))`;
-    //       } else if (i === 10) {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - 4}mm))`;
-    //       } else {
-    //         pageNumberDiv.style.top = `calc(${i} * (378mm + ${i - (i - 6)}mm))`;
-    //       }
-    //       pageNumberDiv.style.height = '16px';
-    //       pageNumberDiv.appendChild(pageNumber);
-    //       printContainer.appendChild(pageNumberDiv);
-    //       pageNumberDiv.style.left = `calc(100% - (${pageNumberDiv.offsetWidth}px + 40px))`;
-    //     }
-    //   };
-
-    //   if (isPrint) {
-    //     addPageNumbers();
-    //   }
-    // }, [isPrint]);
-
     useEffect(() => {
       const addPageNumbers = () => {
         const printContainer = printContainerRef.current;
