@@ -80,61 +80,65 @@ const UserProfiles = () => {
           token && requestHeader
         )
         .then((result) => {
-          if (result.status === 200) {
-            setLoading(false);
-            localStorage.setItem('mobileLoginDetails', JSON.stringify(result));
-            localStorage.setItem(
-              'userDetails',
-              JSON.stringify(result.data?.login_response?.result?.user_details)
-            );
-            localStorage.setItem(
-              'navigationData',
-              JSON.stringify(result.data?.login_response?.result?.navigation_data)
-            );
-            localStorage.setItem(
-              'apps',
-              JSON.stringify(result?.data?.login_response?.result?.apps)
-            );
-            {
-              showMessage && setAlert('success', result.data.message);
-            }
-            isMsAPI();
-            fetchERPSystemConfig(profileData?.isLogin).then((res) => {
-              let erpConfig;
-              let userData = JSON.parse(localStorage.getItem('userDetails'));
-              if (res === true || res.length > 0) {
-                erpConfig = res;
-                let refURL = localStorage.getItem('refURL');
-                if (refURL) {
-                  localStorage.removeItem('refURL');
-                  window.location.href = refURL;
-                } else if (userData?.user_level !== 4) {
-                  history.push('/acad-calendar');
-                  console.log(userData?.user_level, 'level');
+          if (result.data?.status_code === 200) {
+            if (result.data?.login_response?.status_code === 200) {
+              localStorage.setItem('mobileLoginDetails', JSON.stringify(result));
+              localStorage.setItem(
+                'userDetails',
+                JSON.stringify(result.data?.login_response?.result?.user_details)
+              );
+              localStorage.setItem(
+                'navigationData',
+                JSON.stringify(result.data?.login_response?.result?.navigation_data)
+              );
+              localStorage.setItem(
+                'apps',
+                JSON.stringify(result?.data?.login_response?.result?.apps)
+              );
+              {
+                showMessage && setAlert('success', result.data.message);
+              }
+              isMsAPI();
+              fetchERPSystemConfig(profileData?.isLogin).then((res) => {
+                let erpConfig;
+                let userData = JSON.parse(localStorage.getItem('userDetails'));
+                if (res === true || res.length > 0) {
+                  erpConfig = res;
+                  let refURL = localStorage.getItem('refURL');
+                  if (refURL) {
+                    localStorage.removeItem('refURL');
+                    window.location.href = refURL;
+                  } else if (userData?.user_level !== 4) {
+                    history.push('/acad-calendar');
+                    console.log(userData?.user_level, 'level');
+                  } else {
+                    history.push('/profile');
+                  }
+                } else if (res === false) {
+                  erpConfig = res;
+                  history.push('/profile');
                 } else {
+                  erpConfig = res;
                   history.push('/profile');
                 }
-              } else if (res === false) {
-                erpConfig = res;
-                history.push('/profile');
-              } else {
-                erpConfig = res;
-                history.push('/profile');
-              }
-              userData['erp_config'] = erpConfig;
-              localStorage.setItem('userDetails', JSON.stringify(userData));
-              TrackerHandler('user_login',{ login_type: 'profile_selection' });
-              window.location.reload();
-            });
+                userData['erp_config'] = erpConfig;
+                localStorage.setItem('userDetails', JSON.stringify(userData));
+                TrackerHandler('user_login', { login_type: 'profile_selection' });
+                window.location.reload();
+              });
+            } else {
+              setAlert('error', result.data?.login_response.message);
+              return;
+            }
           } else {
             setAlert('error', result.data.message);
-            setLoading(false);
-            // setDisableLogin(false)
           }
         })
         .catch((error) => {
-          setLoading(false);
           setAlert('error', error.message);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
