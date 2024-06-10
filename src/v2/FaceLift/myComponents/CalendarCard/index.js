@@ -405,10 +405,11 @@ const CalendarCard = () => {
         visible={isModalOpen}
         onCancel={modalClose}
         footer={false}
+        centered
         className='event_holidaymod'
       >
         <div className='p-1' style={{ background: '#F8F8F8' }}>
-          <div style={{ minHeight: '30vh', maxHeight: '60vh', overflowY: 'auto', padding: '4%', margin: '4%' }}>
+          <div style={{ minHeight: '30vh', maxHeight: '60vh', overflowY: 'auto', margin: '4%' }}>
             <div className='row d-flex justify-content-between th-13'>
               <div className='font-weight-bold'>
                 Start Date : {moment(modData?.start_time).format('DD-MM-YYYY')}
