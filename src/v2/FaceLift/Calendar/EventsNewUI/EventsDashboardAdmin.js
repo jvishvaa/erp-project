@@ -904,7 +904,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Reg. End Date</span>,
       align: 'center',
-      width: '13%',
+      width: '12%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>{row?.reg_end}</span>
@@ -937,7 +937,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
       align: 'left',
-      width: '12%',
+      width: '13%',
       render: (data, row) => (
         <>
           {row?.approval_status === 1 && (
