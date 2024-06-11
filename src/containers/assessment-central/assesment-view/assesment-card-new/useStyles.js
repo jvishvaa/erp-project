@@ -49,12 +49,12 @@ const useStyles = makeStyles((theme) => ({
     height: '25px',
     width: '25px',
   },
-  printContent: {
-    lineHeight: '1.5',
-    pageBreakInside: 'avoid',
-    pageBreakBefore: 'auto',
-    pageBreakAfter: 'avoid',
-  },
+  // printContent: {
+  //   lineHeight: '1.5',
+  //   pageBreakInside: 'avoid',
+  //   pageBreakBefore: 'auto',
+  //   pageBreakAfter: 'avoid',
+  // },
   '@media screen': {
     printContent: {
       display: 'none',
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
   '@media print': {
     printContent: {
-      display: 'block !important', // Ensure it displays during print
+      display: 'block !important',
     },
   },
 }));

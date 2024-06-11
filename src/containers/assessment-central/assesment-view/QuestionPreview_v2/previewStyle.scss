@@ -63,9 +63,26 @@
   page-break-after: avoid;
 }
 
+@media screen {
+  .print-container {
+    display: none;
+  }
+}
+
 @media print {
   .check-break {
     page-break-inside: avoid;
+  }
+
+  .page-number {
+    position: absolute;
+    bottom: 10mm;
+    right: 10mm;
+    font-size: 12px;
+    writing-mode: vertical-lr;
+  }
+  .print-container {
+    display: block;
   }
 }
 
@@ -97,17 +114,17 @@
   }
 }
 
-@media screen {
-  .printContent {
-    display: 'none';
-  }
-}
+// @media screen {
+//   .printContent {
+//     display: 'none';
+//   }
+// }
 
-@media print {
-  .printContent {
-    display: 'block !important';
-  }
-}
+// @media print {
+//   .printContent {
+//     display: 'block !important';
+//   }
+// }
 
 .print-container:last-child {
   page-break-after: auto;
