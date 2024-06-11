@@ -213,7 +213,6 @@ const RoleManagement = () => {
       custom_subject: [],
       is_mobile: isMobile,
     });
-
     let payloadModules = [];
 
     if (JSON.stringify(moduleIds.sort()) === JSON.stringify(mobileModuleIds.sort())) {
@@ -455,26 +454,15 @@ const RoleManagement = () => {
     useEffect(() => {
       if (isParentModuleSelected) {
         setIsChildModuleSelected(true);
-      } else if (childModule?.checked) {
-        setIsChildModuleSelected(true);
-      } else {
+      } else if (isChildModuleSelected) {
         setIsChildModuleSelected(false);
       }
-    }, [isParentModuleSelected, childModule]);
-
-    useEffect(() => {
-      if (isMobileParentModuleSelected) {
-        setIsMobileModuleSelected(true);
-      } else if (childModule?.is_mobile) {
-        setIsMobileModuleSelected(true);
-      } else {
-        setIsMobileModuleSelected(false);
-      }
-    }, [isMobileParentModuleSelected, childModule]);
+    }, [isParentModuleSelected]);
 
     useEffect(() => {
       if (childModule?.is_mobile) {
         mobileModule.push(childModule?.module_child_id);
+        mobileModule = [...new Set(mobileModule)];
         setIsMobileModuleSelected(true);
       }
     }, [childModule]);
@@ -484,11 +472,20 @@ const RoleManagement = () => {
       } else {
         const index = mobileModule.indexOf(childModId);
         if (index !== -1) {
-          mobileModule.splice(index, 1);
+          const updatedMobileModule = mobileModule.filter((item) => item !== childModId);
+          mobileModule = updatedMobileModule;
         }
       }
       setIsMobileModuleSelected(!isMobileModuleSelected);
     };
+    useEffect(() => {
+      if (isMobileParentModuleSelected) {
+        setIsMobileModuleSelected(true);
+      } else if (isMobileModuleSelected) {
+        setIsMobileModuleSelected(false);
+      }
+    }, [isMobileParentModuleSelected]);
+
     const getDivClassName = (isMobileSelected, isWebSelected, subIndex) => {
       if (isMobileSelected) {
         return 'th-bg-blue-2';
@@ -500,6 +497,13 @@ const RoleManagement = () => {
     };
     return (
       <>
+        <style>
+          {`
+          .ant-tooltip-placement-topLeft .ant-tooltip-arrow {
+              left : 0px !important
+            }
+        `}
+        </style>
         <div className='d-flex justify-content-between'>
           <div
             key={subIndex}
@@ -515,10 +519,14 @@ const RoleManagement = () => {
                 title='Web'
                 getTooltipContainer={(trigger) => trigger.parentNode}
                 overlayInnerStyle={{
-                  fontSize: '13px',
+                  fontSize: '12px',
                   width: '36px',
-                  padding: '5px 4px',
+                  padding: '2px 4px',
+                  height: '20px',
+                  minHeight: '10px',
                 }}
+                placement='topLeft'
+                overlayClassName='.ant-tooltip-placement-topLeft'
               >
                 <Checkbox
                   checked={isChildModuleSelected}
@@ -538,13 +546,16 @@ const RoleManagement = () => {
                 title='Mobile'
                 getTooltipContainer={(trigger) => trigger.parentNode}
                 overlayInnerStyle={{
-                  fontSize: '13px',
+                  fontSize: '12px',
                   width: '51px',
-                  padding: '5px 4px',
+                  padding: '3px 4px',
+                  height: '23px',
+                  minHeight: '20px',
                 }}
+                placement='topLeft'
               >
                 <Checkbox
-                  checked={isMobileParentModuleSelected || isMobileModuleSelected}
+                  checked={isMobileModuleSelected}
                   onClick={() => handleMobileModuleCheck(childModule?.module_child_id)}
                   className='cursor-pointer'
                 />
@@ -557,53 +568,57 @@ const RoleManagement = () => {
   };
   const ParentModuleCardComponent = ({ parentModule, index }) => {
     const [isParentModuleSelected, setIsParentModuleSelected] = useState(false);
+    const [isMobileParentModuleSelected, setIsMobileParentModuleSelected] =
+      useState(false);
     const handleParentModuleCheck = (parentModId) => {
       if (!parentModuleIds.includes(parentModId)) {
         parentModuleIds.push(parentModId);
+        setIsParentModuleSelected(true);
+        parentModule.module_child.forEach((childModule) => {
+          if (!childModuleIds.includes(childModule.module_child_id)) {
+            childModuleIds.push(childModule.module_child_id);
+          }
+        });
       } else {
         const index = parentModuleIds.indexOf(parentModId);
         if (index !== -1) {
           parentModuleIds.splice(index, 1);
         }
+        setIsParentModuleSelected(false);
+        parentModule.module_child.forEach((childModule) => {
+          const childIndex = childModuleIds.indexOf(childModule.module_child_id);
+          if (childIndex !== -1) {
+            childModuleIds.splice(childIndex, 1);
+          }
+        });
       }
-      setIsParentModuleSelected(!isParentModuleSelected);
-      parentModule.module_child.forEach((childModule) => {
-        if (!isParentModuleSelected) {
-          if (!childModuleIds.includes(childModule.module_child_id)) {
-            childModuleIds.push(childModule.module_child_id);
-          }
-        } else {
-          const index = childModuleIds.indexOf(childModule.module_child_id);
-          if (index !== -1) {
-            childModuleIds.splice(index, 1);
-          }
-        }
-      });
     };
-    const [isMobileParentModuleSelected, setIsMobileParentModuleSelected] =
-      useState(false);
     const handleMobileParentModuleCheck = (parentModId) => {
       if (!mobileParentModuleIds.includes(parentModId)) {
         mobileParentModuleIds.push(parentModId);
+        setIsMobileParentModuleSelected(true);
+        parentModule.module_child.forEach((childModule) => {
+          if (!mobileModule.includes(childModule.module_child_id)) {
+            mobileModule.push(childModule.module_child_id);
+            mobileModule = [...new Set(mobileModule)];
+          }
+        });
       } else {
         const index = mobileParentModuleIds.indexOf(parentModId);
         if (index !== -1) {
           mobileParentModuleIds.splice(index, 1);
         }
+        setIsMobileParentModuleSelected(false);
+        parentModule.module_child.forEach((childModule) => {
+          const childIndex = mobileModule.indexOf(childModule.module_child_id);
+          if (childIndex !== -1) {
+            const updatedMobileModule = mobileModule.filter(
+              (item) => item !== childModule.module_child_id
+            );
+            mobileModule = updatedMobileModule;
+          }
+        });
       }
-      setIsMobileParentModuleSelected(!isMobileParentModuleSelected);
-      parentModule.module_child.forEach((childModule) => {
-        if (!isMobileParentModuleSelected) {
-          if (!mobileModule.includes(childModule.module_child_id)) {
-            mobileModule.push(childModule.module_child_id);
-          }
-        } else {
-          const index = mobileModule.indexOf(childModule.module_child_id);
-          if (index !== -1) {
-            mobileModule.splice(index, 1);
-          }
-        }
-      });
     };
 
     const moduleChildMap = new Map();

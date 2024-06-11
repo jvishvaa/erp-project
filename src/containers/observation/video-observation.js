@@ -556,6 +556,7 @@ const VideoObservation = () => {
           message.success(`${selectedRows?.length} rows successfully delete`);
           fetchTableData();
           setIsModalOpen(false);
+          setSelectAll(false);
           handleClearModal();
           resetCheckboxState();
         }
@@ -563,6 +564,7 @@ const VideoObservation = () => {
       .catch((err) => {
         setLoad(false);
         console.log(err);
+        setSelectAll(false);
         setIsModalOpen(false);
       });
   };
@@ -574,6 +576,12 @@ const VideoObservation = () => {
       formData.append('ids', selectedRows);
       formData.append('obs_acad_sess', modalAcadSess);
       formData.append('assigned_obs', modalUserName);
+      if (selectedRows?.length == tableData?.length) {
+        setRefferListPageData({
+          ...refferListPageData,
+          currentPage: refferListPageData?.currentPage - 1,
+        });
+      }
       setLoad(true);
       axiosInstance
         .patch(endpointsV2?.assignVideoObservation?.bulkVideoUpdate, formData)
@@ -583,6 +591,7 @@ const VideoObservation = () => {
             message.success(`${selectedRows?.length} rows successfully updated`);
             fetchTableData();
             setIsModalOpen(false);
+            setSelectAll(false);
             handleClearModal();
             resetCheckboxState();
           }
@@ -590,6 +599,7 @@ const VideoObservation = () => {
         .catch((err) => {
           setLoad(false);
           console.log(err);
+          setSelectAll(false);
           setIsModalOpen(false);
         });
     } else {
@@ -763,7 +773,7 @@ const VideoObservation = () => {
                             currentPage: value,
                           });
                           setSelectedRows([]);
-                          setSelectAll(false)
+                          setSelectAll(false);
                         }}
                         showSizeChanger={false}
                         showQuickJumper={false}
