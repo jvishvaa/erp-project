@@ -1008,16 +1008,16 @@ const FamilyInformation = ({
                             >
                               <Input
                                 className='w-100'
-                                disabled={
-                                  !parentFetchedData?.mother_mobile ||
-                                  parentFetchedData?.mother_mobile === ''
-                                    ? false
-                                    : editId
-                                    ? parentFetchedData?.mother_mobile ===
-                                      parentFetchedData?.contact
-                                    : parentFetchedData?.mother_mobile ===
-                                      parentFetchedData?.contact_details
-                                }
+                                // disabled={
+                                //   !parentFetchedData?.mother_mobile ||
+                                //   parentFetchedData?.mother_mobile === ''
+                                //     ? false
+                                //     : editId
+                                //     ? parentFetchedData?.mother_mobile ===
+                                //       parentFetchedData?.contact
+                                //     : parentFetchedData?.mother_mobile ===
+                                //       parentFetchedData?.contact_details
+                                // }
                               />
                             </Form.Item>
                           </Space>
@@ -1360,16 +1360,16 @@ const FamilyInformation = ({
                             >
                               <Input
                                 className='w-100'
-                                disabled={
-                                  !parentFetchedData?.guardian_mobile ||
-                                  parentFetchedData?.guardian_mobile === ''
-                                    ? false
-                                    : editId
-                                    ? parentFetchedData?.guardian_mobile ===
-                                      parentFetchedData?.contact
-                                    : parentFetchedData?.guardian_mobile ===
-                                      parentFetchedData?.contact_details
-                                }
+                                // disabled={
+                                //   !parentFetchedData?.guardian_mobile ||
+                                //   parentFetchedData?.guardian_mobile === ''
+                                //     ? false
+                                //     : editId
+                                //     ? parentFetchedData?.guardian_mobile ===
+                                //       parentFetchedData?.contact
+                                //     : parentFetchedData?.guardian_mobile ===
+                                //       parentFetchedData?.contact_details
+                                // }
                               />
                             </Form.Item>
                           </Space>
