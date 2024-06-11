@@ -439,7 +439,7 @@ const RoleManagement = () => {
         childModuleIds.push(childModule?.module_child_id);
         setIsChildModuleSelected(true);
       }
-    }, [childModule]);
+    }, []);
     const handleChildModuleCheck = (childModId) => {
       if (!childModuleIds.includes(childModId)) {
         childModuleIds.push(childModId);
@@ -462,18 +462,16 @@ const RoleManagement = () => {
     useEffect(() => {
       if (childModule?.is_mobile) {
         mobileModule.push(childModule?.module_child_id);
-        mobileModule = [...new Set(mobileModule)];
         setIsMobileModuleSelected(true);
       }
-    }, [childModule]);
+    }, []);
     const handleMobileModuleCheck = (childModId) => {
       if (!mobileModule.includes(childModId)) {
         mobileModule.push(childModId);
       } else {
         const index = mobileModule.indexOf(childModId);
         if (index !== -1) {
-          const updatedMobileModule = mobileModule.filter((item) => item !== childModId);
-          mobileModule = updatedMobileModule;
+          mobileModule.splice(index, 1);
         }
       }
       setIsMobileModuleSelected(!isMobileModuleSelected);
@@ -600,7 +598,6 @@ const RoleManagement = () => {
         parentModule.module_child.forEach((childModule) => {
           if (!mobileModule.includes(childModule.module_child_id)) {
             mobileModule.push(childModule.module_child_id);
-            mobileModule = [...new Set(mobileModule)];
           }
         });
       } else {
@@ -612,10 +609,7 @@ const RoleManagement = () => {
         parentModule.module_child.forEach((childModule) => {
           const childIndex = mobileModule.indexOf(childModule.module_child_id);
           if (childIndex !== -1) {
-            const updatedMobileModule = mobileModule.filter(
-              (item) => item !== childModule.module_child_id
-            );
-            mobileModule = updatedMobileModule;
+            mobileModule.splice(childIndex, 1);
           }
         });
       }
