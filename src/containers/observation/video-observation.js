@@ -406,7 +406,12 @@ const VideoObservation = () => {
       const value = JSON.parse(e);
       setBranch(value?.value);
       setAcadSession(value?.acad_session);
+      setUserNameList([]);
+      setUserName(null);
       setTableData([]);
+      formRef.current.setFieldsValue({
+        user_name: null,
+      });
     } else {
       setBranch(null);
       setUserNameList([]);
@@ -422,6 +427,11 @@ const VideoObservation = () => {
     if (e && e?.length != 0) {
       setUserLevel(e);
       setTableData([]);
+      setUserNameList([]);
+      setUserName(null);
+      formRef.current.setFieldsValue({
+        user_name: null,
+      });
     } else {
       setUserLevel(null);
       setUserNameList([]);
@@ -548,6 +558,12 @@ const VideoObservation = () => {
     formData.append('bulk_delete', 'bulk_delete');
     formData.append('ids', selectedRows);
     setLoad(true);
+    if (selectedRows?.length == tableData?.length) {
+      setRefferListPageData({
+        ...refferListPageData,
+        currentPage: refferListPageData?.currentPage - 1,
+      });
+    }
     axiosInstance
       .delete(endpointsV2?.assignVideoObservation?.bulkVideoUpdate, { data: formData })
       .then((res) => {
