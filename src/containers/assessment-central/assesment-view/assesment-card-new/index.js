@@ -28,6 +28,7 @@ const AssessmentCard = ({
   setPeriodDataForView,
   setViewMoreData,
   setViewMore,
+  loading,
   setLoading,
   index,
   periodColor,
@@ -51,13 +52,6 @@ const AssessmentCard = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuOpenIndex, setMenuOpenIndex] = useState(null);
   const open = Boolean(anchorEl);
-  const displayStyle = {
-    '@media screen': {
-      printContent: {
-        display: 'none',
-      },
-    },
-  };
   const schoolData = JSON.parse(localStorage.getItem('schoolDetails')) || {};
 
   const history = useHistory();
@@ -883,8 +877,7 @@ const AssessmentCard = ({
       </Paper>
       {printData && (
         <div>
-          {/* <div ref={(el) => (printRef = el)} className={classes.printContent} > */}
-          <div ref={(el) => (printRef = el)} className='printContent'>
+          <div ref={(el) => (printRef = el)} className={classes.printContent}>
             {/* <QuestionPreview templateFrom={printData} currentStep={4} isPrint={true} /> */}
             <QuestionPreview_V2
               templateFrom={printData}
