@@ -523,11 +523,14 @@ const AddVideoObservation = () => {
         role_1: history?.location?.state?.record?.obs_level,
         user_name_1: `${history?.location?.state?.record?.observer?.first_name} ${history?.location?.state?.record?.observer?.last_name}`,
       });
-      editFormRef.current.setFieldsValue({
-        edit_video_1: history?.location?.state?.record?.video_link,
-        edit_role_1: history?.location?.state?.record?.user_level,
-        edit_name_1: history?.location?.state?.record?.erp_user,
-      });
+      if (editFormRef.get(1)?.current) {
+        const record = history.location.state.record;
+        editFormRef.get(1).current.setFieldsValue({
+          edit_video_1: record?.video_link,
+          edit_role_1: record?.user_level,
+          edit_name_1: record?.erp_user,
+        });
+      }
       fetchEditUserName(
         history?.location?.state?.record?.acad_sess,
         history?.location?.state?.record?.user_level
@@ -551,7 +554,7 @@ const AddVideoObservation = () => {
       });
     }
     if (editObservedBranch) {
-      editFormRef.current.setFieldsValue({
+      editFormRef.get(1).current.setFieldsValue({
         [`edit_branch_1`]: editObservedBranch,
       });
     }
