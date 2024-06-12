@@ -564,7 +564,7 @@ const TermsAndCndition = () => {
               PAYMENT TERMS AND CONDITIONS
               <ul className='child-list'>
                 <li>
-                  TStudent/Parent has to enter the username and password and login into
+                  Student/Parent has to enter the username and password and login into
                   their page. Once the Student/Parent is in their login page and press
                   “online fees payment”, they can see the details of the fee dues. If
                   payment is to be made online, Click on "Pay online" and after the

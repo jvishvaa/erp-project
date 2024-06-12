@@ -6,7 +6,10 @@ const Policy = () => {
   return (
     <>
       <div className='' style={{ overflowY: 'scroll', height: '100%' }}>
-        <div className='th-br-12 th-bg-white m-1 m-md-3  p-4 shadow-sm justify-container'>
+        <div
+          className='th-br-12 th-bg-white m-1 m-md-3  p-4 shadow-sm justify-container'
+          style={{ paddingBottom: 80 }}
+        >
           <div className='text-center justify-content-center mb-2 row'>
             <div className='col-md-3 col-5'>
               <img src={LetsEduvateLogo} alt='Lets Eduvate' className='img-fluid' />
