@@ -6,9 +6,6 @@ import {
   Input,
   Popconfirm,
   Select,
-  Space,
-  Table,
-  Tooltip,
   message,
 } from 'antd';
 import Layout from 'containers/Layout';
@@ -31,7 +28,7 @@ const AddVideoObservation = () => {
   const [load, setLoad] = useState(false);
   const [open, setOpen] = useState(false);
   const formRef = createRef();
-  const editFormRef = createRef();
+  const editFormRef = new Map();
   const [formRefs, setFormRefs] = useState([]);
   const [branch, setBranch] = useState(null);
   const [editObservedBranch, setEditObservedBranch] = useState(null);
@@ -63,6 +60,12 @@ const AddVideoObservation = () => {
   ]);
   const [error, setError] = useState(null);
 
+  forms.forEach(form => {
+    if (!editFormRef.has(form.id)) {
+      editFormRef.set(form.id, createRef());
+    }
+  });
+
   const handleAddForm = () => {
     if (forms.length >= 25) {
       setError('You cannot add more than 25 observers.');
@@ -72,7 +75,7 @@ const AddVideoObservation = () => {
     setForms([
       ...forms,
       {
-        id: Date.now(),
+        id: forms.length+1,
         videoLink: null,
         branch: null,
         role: null,
@@ -115,7 +118,7 @@ const AddVideoObservation = () => {
               }
             }
             if (field === 'branch' || field === 'role') {
-              editFormRef.current.setFieldsValue({
+              editFormRef.get(id).current.setFieldsValue({
                 [`edit_name_${id}`]: null,
               });
               updatedForm.name = null;
@@ -124,15 +127,15 @@ const AddVideoObservation = () => {
                 handleBranchOrRoleChange(id, field, updatedForm.branch, updatedForm.role);
               }
             }
-
+  
             if (!updatedForm.branch && !updatedForm.role) {
-              editFormRef.current.setFieldsValue({
+              editFormRef.get(id).current.setFieldsValue({
                 [`edit_name_${id}`]: null,
               });
               updatedForm.name = null;
               updatedForm.usernameListOptions = [];
             }
-
+  
             return updatedForm;
           }
           return form;
@@ -150,7 +153,6 @@ const AddVideoObservation = () => {
       }
     }
   };
-
   const updateUsernameListOptions = (id, newOptions) => {
     setForms((prevForms) =>
       prevForms.map((form) =>
@@ -521,11 +523,14 @@ const AddVideoObservation = () => {
         role_1: history?.location?.state?.record?.obs_level,
         user_name_1: `${history?.location?.state?.record?.observer?.first_name} ${history?.location?.state?.record?.observer?.last_name}`,
       });
-      editFormRef.current.setFieldsValue({
-        edit_video_1: history?.location?.state?.record?.video_link,
-        edit_role_1: history?.location?.state?.record?.user_level,
-        edit_name_1: history?.location?.state?.record?.erp_user,
-      });
+      if (editFormRef.get(1)?.current) {
+        const record = history.location.state.record;
+        editFormRef.get(1).current.setFieldsValue({
+          edit_video_1: record?.video_link,
+          edit_role_1: record?.user_level,
+          edit_name_1: record?.erp_user,
+        });
+      }
       fetchEditUserName(
         history?.location?.state?.record?.acad_sess,
         history?.location?.state?.record?.user_level
@@ -549,7 +554,7 @@ const AddVideoObservation = () => {
       });
     }
     if (editObservedBranch) {
-      editFormRef.current.setFieldsValue({
+      editFormRef.get(1).current.setFieldsValue({
         [`edit_branch_1`]: editObservedBranch,
       });
     }
@@ -763,7 +768,7 @@ const AddVideoObservation = () => {
                       style={{ maxHeight: '60vh', overflowY: 'auto' }}
                     >
                       {forms.map((form, index) => (
-                        <Form ref={editFormRef} key={form.id}>
+                        <Form ref={editFormRef.get(form.id)} key={form.id}>
                           <Card
                             className={`th-br-12 th-bg-grey mb-3`}
                             bodyStyle={{ padding: '8px' }}
