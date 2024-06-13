@@ -75,7 +75,7 @@ const AddVideoObservation = () => {
     setForms([
       ...forms,
       {
-        id: forms.length+1,
+        id: Date.now(),
         videoLink: null,
         branch: null,
         role: null,
