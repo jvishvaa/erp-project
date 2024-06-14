@@ -972,16 +972,16 @@ const FamilyInformation = ({
                                   );
                                 }}
                                 defaultValue={'+91'}
-                                disabled={
-                                  !parentFetchedData?.mother_mobile ||
-                                  parentFetchedData?.mother_mobile === ''
-                                    ? false
-                                    : editId
-                                    ? parentFetchedData?.mother_mobile ===
-                                      parentFetchedData?.contact
-                                    : parentFetchedData?.mother_mobile ===
-                                      parentFetchedData?.contact_details
-                                }
+                                // disabled={
+                                //   !parentFetchedData?.mother_mobile ||
+                                //   parentFetchedData?.mother_mobile === ''
+                                //     ? false
+                                //     : editId
+                                //     ? parentFetchedData?.mother_mobile ===
+                                //       parentFetchedData?.contact
+                                //     : parentFetchedData?.mother_mobile ===
+                                //       parentFetchedData?.contact_details
+                                // }
                               >
                                 {countryCodeOptions}
                               </Select>
@@ -1008,16 +1008,16 @@ const FamilyInformation = ({
                             >
                               <Input
                                 className='w-100'
-                                disabled={
-                                  !parentFetchedData?.mother_mobile ||
-                                  parentFetchedData?.mother_mobile === ''
-                                    ? false
-                                    : editId
-                                    ? parentFetchedData?.mother_mobile ===
-                                      parentFetchedData?.contact
-                                    : parentFetchedData?.mother_mobile ===
-                                      parentFetchedData?.contact_details
-                                }
+                                // disabled={
+                                //   !parentFetchedData?.mother_mobile ||
+                                //   parentFetchedData?.mother_mobile === ''
+                                //     ? false
+                                //     : editId
+                                //     ? parentFetchedData?.mother_mobile ===
+                                //       parentFetchedData?.contact
+                                //     : parentFetchedData?.mother_mobile ===
+                                //       parentFetchedData?.contact_details
+                                // }
                               />
                             </Form.Item>
                           </Space>
@@ -1329,16 +1329,16 @@ const FamilyInformation = ({
                                   );
                                 }}
                                 defaultValue={'+91'}
-                                disabled={
-                                  !parentFetchedData?.guardian_mobile ||
-                                  parentFetchedData?.guardian_mobile === ''
-                                    ? false
-                                    : editId
-                                    ? parentFetchedData?.guardian_mobile ===
-                                      parentFetchedData?.contact
-                                    : parentFetchedData?.guardian_mobile ===
-                                      parentFetchedData?.contact_details
-                                }
+                                // disabled={
+                                //   !parentFetchedData?.guardian_mobile ||
+                                //   parentFetchedData?.guardian_mobile === ''
+                                //     ? false
+                                //     : editId
+                                //     ? parentFetchedData?.guardian_mobile ===
+                                //       parentFetchedData?.contact
+                                //     : parentFetchedData?.guardian_mobile ===
+                                //       parentFetchedData?.contact_details
+                                // }
                               >
                                 {countryCodeOptions}
                               </Select>
@@ -1360,16 +1360,16 @@ const FamilyInformation = ({
                             >
                               <Input
                                 className='w-100'
-                                disabled={
-                                  !parentFetchedData?.guardian_mobile ||
-                                  parentFetchedData?.guardian_mobile === ''
-                                    ? false
-                                    : editId
-                                    ? parentFetchedData?.guardian_mobile ===
-                                      parentFetchedData?.contact
-                                    : parentFetchedData?.guardian_mobile ===
-                                      parentFetchedData?.contact_details
-                                }
+                                // disabled={
+                                //   !parentFetchedData?.guardian_mobile ||
+                                //   parentFetchedData?.guardian_mobile === ''
+                                //     ? false
+                                //     : editId
+                                //     ? parentFetchedData?.guardian_mobile ===
+                                //       parentFetchedData?.contact
+                                //     : parentFetchedData?.guardian_mobile ===
+                                //       parentFetchedData?.contact_details
+                                // }
                               />
                             </Form.Item>
                           </Space>
@@ -1609,6 +1609,9 @@ const FamilyInformation = ({
               setMotherPrimaryEmail(false);
               setFamilyFormValues({
                 ...formValues,
+                contact: familyFormValues?.contact,
+                contact_code: familyFormValues?.contact_code,
+                email: familyFormValues?.email,
                 father_photo: selectedImageFather,
                 mother_photo: selectedImageMother,
                 guardian_photo: selectedImageGuardian,
