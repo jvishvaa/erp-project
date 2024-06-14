@@ -414,11 +414,11 @@ const EventsDashboardAdmin = () => {
             duration: notificationDuration,
             className: 'notification-container',
           });
-          if (response?.data?.result?.length > 0) {
-            let InitiateAnnouncement = response?.data?.result?.map((each, index) =>
-              sendAnnouncement(each, response?.data?.result?.length, index)
-            );
-          }
+          // if (response?.data?.result?.length > 0) {
+          //   let InitiateAnnouncement = response?.data?.result?.map((each, index) =>
+          //     sendAnnouncement(each, response?.data?.result?.length, index)
+          //   );
+          // }
         }
         fetchTableData();
       })
@@ -434,28 +434,28 @@ const EventsDashboardAdmin = () => {
       });
   };
 
-  const sendAnnouncement = (each, length, index) => {
-    axiosInstance
-      .post(`/announcement/create/`, each)
-      .then((response) => {
-        if (response?.data?.status_code == 200) {
-          if (index == length - 1) {
-            notification['success']({
-              message: 'Announcement Created!',
-              duration: notificationDuration,
-              className: 'notification-container',
-            });
-          }
-        }
-      })
-      .catch((error) => {
-        notification['error']({
-          message: 'OOPS! Something went wrong. Please try again',
-          duration: notificationDuration,
-          className: 'notification-container',
-        });
-      });
-  };
+  // const sendAnnouncement = (each, length, index) => {
+  //   axiosInstance
+  //     .post(`/announcement/create/`, each)
+  //     .then((response) => {
+  //       if (response?.data?.status_code == 200) {
+  //         if (index == length - 1) {
+  //           notification['success']({
+  //             message: 'Announcement Created!',
+  //             duration: notificationDuration,
+  //             className: 'notification-container',
+  //           });
+  //         }
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       notification['error']({
+  //         message: 'OOPS! Something went wrong. Please try again',
+  //         duration: notificationDuration,
+  //         className: 'notification-container',
+  //       });
+  //     });
+  // };
   const rejectEvent = () => {
     const remarks = feedBackModalForm?.getFieldsValue()?.remarks;
     const formData = new FormData();
