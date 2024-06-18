@@ -103,12 +103,20 @@ const Appbar = ({ children, history, ...props }) => {
     JSON.parse(localStorage?.getItem('selectProfileDetails')) || {};
   let erpID = JSON.parse(localStorage.getItem('userDetails')) || {};
 
+  const financeSessionYearList = localStorage.getItem('financeSessions')
+    ? JSON.parse(localStorage.getItem('financeSessions'))
+    : [];
+  const session_year = sessionStorage.getItem('acad_session')
+    ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
+    : '';
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const [profileOpen, setProfileOpen] = useState(false);
   const [academicYear, setAcademicYear] = useState('');
   const [branch, setBranch] = useState(selectedBranch?.branch?.branch_name);
+  const branchId = selectedBranch?.branch?.id;
   const profileDetails = JSON.parse(localStorage.getItem('profileDetails')) || {};
   const [profile, setProfile] = useState(selectedProfileDetails.name);
   const [hmac, setHmac] = useState(null);
@@ -120,6 +128,8 @@ const Appbar = ({ children, history, ...props }) => {
   const [wallet, setWallet] = useState(null);
   const [walletLoading, setWalletLoading] = useState(false);
   const [storeWalletLoading, setStoreWalletLoading] = useState(false);
+  const [imprestWallet, setImprestWallet] = useState(null);
+  const [imprestWalletLoading, setImprestWalletLoading] = useState(false);
   const [showWalletPopover, setShowWalletPopover] = useState(false);
 
   const walletPrevData = JSON.parse(localStorage.getItem('walletLocal')) || null;
@@ -303,6 +313,7 @@ const Appbar = ({ children, history, ...props }) => {
   const handleWalletCLick = () => {
     fetchStoreWalletData();
     fetchWalletData();
+    fetchImprestWalletData();
   };
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -645,6 +656,29 @@ const Appbar = ({ children, history, ...props }) => {
         setWalletLoading(false);
       });
   };
+
+  const fetchImprestWalletData = () => {
+    let finance_session_year_id = financeSessionYearList.find(
+      (each) => parseInt(each?.academic_session_id) === session_year
+    )?.id;
+    setImprestWalletLoading(true);
+    axiosInstance
+      .get(
+        `${endpointsV2.finance.imprestWallet}?finance_session_year=${finance_session_year_id}&branch_id=${branchId}&erp_id=${erpID?.erp}`
+      )
+      .then((res) => {
+        if (res?.data?.results) {
+          setImprestWallet(res?.data?.results);
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+      })
+      .finally(() => {
+        setImprestWalletLoading(false);
+      });
+  };
+
   return (
     <>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
@@ -961,13 +995,15 @@ const Appbar = ({ children, history, ...props }) => {
             (userData?.is_superuser == true && isOrchids) ? (
               <>
                 {isMobile ? null : (
-                  <IconButton
-                    className={classes.grow}
-                    style={{ margin: '0' }}
-                    onClick={handlecvbox}
-                  >
-                    <img src={CVbox} width='24px' />
-                  </IconButton>
+                  <Tooltip title='Redirect to CVBox'>
+                    <IconButton
+                      className={classes.grow}
+                      style={{ margin: '0' }}
+                      onClick={handlecvbox}
+                    >
+                      <img src={CVbox} width='24px' />
+                    </IconButton>
+                  </Tooltip>
                 )}
               </>
             ) : (
@@ -986,13 +1022,15 @@ const Appbar = ({ children, history, ...props }) => {
                 {apps?.finance == true ? (
                   <>
                     {isMobile ? null : (
-                      <IconButton
-                        className={classes.grow}
-                        style={{ margin: '0' }}
-                        onClick={handleFinance}
-                      >
-                        <img src={RupeeSymbol} width='24px' />
-                      </IconButton>
+                      <Tooltip title='Redirect to Finance'>
+                        <IconButton
+                          className={classes.grow}
+                          style={{ margin: '0' }}
+                          onClick={handleFinance}
+                        >
+                          <img src={RupeeSymbol} width='24px' />
+                        </IconButton>
+                      </Tooltip>
                     )}
                   </>
                 ) : (
@@ -1010,13 +1048,15 @@ const Appbar = ({ children, history, ...props }) => {
             userData?.is_superuser == true ? (
               <>
                 {isMobile ? null : (
-                  <IconButton
-                    className={classes.grow}
-                    style={{ margin: '0' }}
-                    onClick={handleTicket}
-                  >
-                    <LiveHelpIcon />
-                  </IconButton>
+                  <Tooltip title='Grievances'>
+                    <IconButton
+                      className={classes.grow}
+                      style={{ margin: '0' }}
+                      onClick={handleTicket}
+                    >
+                      <LiveHelpIcon />
+                    </IconButton>
+                  </Tooltip>
                 )}
               </>
             ) : (
@@ -1045,40 +1085,42 @@ const Appbar = ({ children, history, ...props }) => {
                 >
                   <img src={MusicIcon} width='20px' height='20px' />
                 </IconButton> */}
-                <IconButton
+                {/* <IconButton
                   className='py-2 th-icon-no-hover'
                   aria-label='show more'
                   aria-controls={mobileMenuId}
                   aria-haspopup='true'
                   // onClick={handleMobileMenuOpen}
                   color='inherit'
-                >
-                  {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
-                   */}
-                  <Link to='/acad-calendar'>
+                > */}
+                {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
+                 */}
+                {/* <Link to='/acad-calendar'>
                     {window.location.pathname.includes('/acad-calendar') ? (
                       <img src={AcadCalendarIcon} width='20px' height='20px' />
                     ) : (
                       <img src={EventsIcon} width='20px' height='20px' />
                     )}
-                  </Link>
-                </IconButton>
-                <IconButton
-                  className='py-2 th-icon-no-hover'
-                  aria-label='show more'
-                  aria-controls={mobileMenuId}
-                  aria-haspopup='true'
-                  // onClick={handleMobileMenuOpen}
-                  color='inherit'
-                >
-                  <Link to='/announcement-list'>
-                    {window.location.pathname.includes('/announcement-list') ? (
-                      <img src={AnnouncementIcon} width='20px' height='20px' />
-                    ) : (
-                      <img src={NotificationsIcon} width='20px' height='20px' />
-                    )}
-                  </Link>
-                </IconButton>
+                  </Link> */}
+                {/* </IconButton> */}
+                <Tooltip title='Notifications'>
+                  <IconButton
+                    className='py-2 th-icon-no-hover'
+                    aria-label='show more'
+                    aria-controls={mobileMenuId}
+                    aria-haspopup='true'
+                    // onClick={handleMobileMenuOpen}
+                    color='inherit'
+                  >
+                    <Link to='/announcement-list'>
+                      {window.location.pathname.includes('/announcement-list') ? (
+                        <img src={AnnouncementIcon} width='20px' height='20px' />
+                      ) : (
+                        <img src={NotificationsIcon} width='20px' height='20px' />
+                      )}
+                    </Link>
+                  </IconButton>
+                </Tooltip>
                 <div className={classes.sectionDesktop}>
                   {userData?.user_level == 13 ? (
                     <Popover
@@ -1094,7 +1136,7 @@ const Appbar = ({ children, history, ...props }) => {
                       placement='bottomRight'
                       content={
                         <div style={{ width: 200 }}>
-                          {walletLoading || storeWalletLoading ? (
+                          {walletLoading || storeWalletLoading || imprestWalletLoading ? (
                             <Space direction='vertical'>
                               {[1, 2, 3]?.map((el) => (
                                 <Skeleton.Input
@@ -1110,10 +1152,16 @@ const Appbar = ({ children, history, ...props }) => {
                                 <div>Academic Wallet :</div>
                                 <div className='th-fw-600'>₹ {wallet?.amount ?? 0}</div>
                               </div>
-                              <div className='d-flex justify-content-between pb-2'>
+                              <div className='d-flex justify-content-between'>
                                 <div>Store Wallet :</div>
                                 <div className='th-fw-600'>
                                   ₹ {storeWallet?.store_amount ?? 0}
+                                </div>
+                              </div>
+                              <div className='d-flex justify-content-between pb-2'>
+                                <div>Imprest Wallet :</div>
+                                <div className='th-fw-600'>
+                                  ₹ {imprestWallet?.amount ?? 0}
                                 </div>
                               </div>
                               <div className='d-flex justify-content-center'>
@@ -1134,17 +1182,19 @@ const Appbar = ({ children, history, ...props }) => {
                         </div>
                       }
                     >
-                      <div
-                        className='th-primary d-flex align-items-center th-pointer px-1'
-                        onClick={() => {
-                          if (localStorage.getItem('storewalletLocal') === null) {
-                            handleWalletCLick();
-                          }
-                        }}
-                      >
-                        {/* <WalletOutlined className='th-20 px-1' /> */}
-                        <img width='24px' src={WalletIcon} />
-                      </div>
+                      <Tooltip title='Wallet'>
+                        <div
+                          className='th-primary d-flex align-items-center th-pointer px-1'
+                          onClick={() => {
+                            if (localStorage.getItem('storewalletLocal') === null) {
+                              handleWalletCLick();
+                            }
+                          }}
+                        >
+                          {/* <WalletOutlined className='th-20 px-1' /> */}
+                          <img width='24px' src={WalletIcon} />
+                        </div>
+                      </Tooltip>
                     </Popover>
                   ) : (
                     ''
@@ -1205,31 +1255,35 @@ const Appbar = ({ children, history, ...props }) => {
                       </div>
                     </Popover>
                   )}
-                  <IconButton
-                    className='py-2 th-icon-no-hover'
-                    aria-label='show more'
-                    aria-controls={mobileMenuId}
-                    aria-haspopup='true'
-                    onClick={handleMobileMenuOpen}
-                    color='inherit'
-                  >
-                    {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} /> */}
+                  <Tooltip title='Profile'>
+                    <IconButton
+                      className='py-2 th-icon-no-hover'
+                      aria-label='show more'
+                      aria-controls={mobileMenuId}
+                      aria-haspopup='true'
+                      onClick={handleMobileMenuOpen}
+                      color='inherit'
+                    >
+                      {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} /> */}
 
-                    {/* {profileDetails?.is_verified ? (
+                      {/* {profileDetails?.is_verified ? (
                       <Typography>
                         {profile}
                         <KeyboardArrowDownIcon />
                       </Typography>
                     ) : ( */}
-                    <img
-                      width='20px'
-                      height='20px'
-                      src={
-                        roleDetails?.user_profile ? roleDetails?.user_profile : StaffIcon
-                      }
-                    />
-                    {/* )} */}
-                  </IconButton>
+                      <img
+                        width='20px'
+                        height='20px'
+                        src={
+                          roleDetails?.user_profile
+                            ? roleDetails?.user_profile
+                            : StaffIcon
+                        }
+                      />
+                      {/* )} */}
+                    </IconButton>
+                  </Tooltip>
                 </div>
               </>
             )}

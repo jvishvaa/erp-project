@@ -36,6 +36,7 @@ const SectionMappingTable = () => {
   const [filterForm] = useForm();
   const [formRef] = useForm();
   const sessionYearList = JSON.parse(sessionStorage.getItem('acad_session_list'));
+  const session_year = JSON.parse(sessionStorage.getItem('acad_session'));
   const [loading, setLoading] = useState(false);
   const [tableLoading, setTableLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
@@ -66,6 +67,12 @@ const SectionMappingTable = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
+  }, []);
+  useEffect(() => {
+    filterForm.setFieldsValue({
+      session_year: session_year?.id,
+    });
+    fetchBranchList();
   }, []);
   useEffect(() => {
     fetchTableData();
@@ -584,6 +591,7 @@ const SectionMappingTable = () => {
                         );
                       }}
                       onChange={handleSessionYearChange}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {sessionYearOptions}
@@ -606,6 +614,7 @@ const SectionMappingTable = () => {
                         );
                       }}
                       onChange={handleBranchChange}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {branchOptions}
@@ -629,6 +638,7 @@ const SectionMappingTable = () => {
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {gradeOptions}
@@ -877,6 +887,7 @@ const SectionMappingTable = () => {
                         );
                       }}
                       onChange={handleSessionYearChangeDrawer}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {sessionYearOptions}
@@ -905,6 +916,7 @@ const SectionMappingTable = () => {
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {branchOptionsDrawer}
@@ -935,6 +947,7 @@ const SectionMappingTable = () => {
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {allGradeOptionsDrawer}
@@ -965,6 +978,7 @@ const SectionMappingTable = () => {
                           options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         );
                       }}
+                      dropdownMatchSelectWidth={false}
                       className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                     >
                       {allSectionOptionsDrawer}
