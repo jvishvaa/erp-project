@@ -990,7 +990,7 @@ const EventsDashboardAdmin = () => {
                 title={`Remarks: ${row?.remarks}`}
                 overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
               >
-                <InfoCircleTwoTone />
+                <InfoCircleTwoTone style={{ fontSize: '15px' }} />
               </Tooltip>
             </div>
           )}
@@ -1008,7 +1008,7 @@ const EventsDashboardAdmin = () => {
                 title={`Remarks: ${row?.remarks}`}
                 overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
               >
-                <InfoCircleTwoTone />
+                <InfoCircleTwoTone style={{ fontSize: '15px' }} />
               </Tooltip>
             </div>
           )}
@@ -2157,67 +2157,58 @@ const EventsDashboardAdmin = () => {
         width='90%'
       >
         <div>
-          {studentLoading ? (
-            <div className='center-screen'>
-              <Spin tip='Hold on! Great things take time!' size='large' />
+          <>
+            <div className='col-lg-4 col-md-6 col-sm-6 col-12'>
+              <Form form={studentListForm}>
+                <Form.Item name='erp_id'>
+                  <Input
+                    placeholder='Search Student Erp'
+                    suffix={<SearchOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
+                    className='w-100 text-left th-black-1 th-br-4'
+                    onChange={(e) => {
+                      fetchStudentList({
+                        id: studentEventId,
+                      });
+                    }}
+                    allowClear
+                  />
+                </Form.Item>
+              </Form>
             </div>
-          ) : (
-            <>
-              <div className='col-lg-4 col-md-6 col-sm-6 col-12'>
-                <Form form={studentListForm}>
-                  <Form.Item name='erp_id'>
-                    <Input
-                      placeholder='Search Student Erp'
-                      suffix={<SearchOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
-                      className='w-100 text-left th-black-1 th-br-4'
-                      onChange={(e) => {
-                        const timeout = setTimeout(() => {
-                          fetchStudentList({
-                            id: studentEventId,
-                          });
-                        }, 500);
-                        return () => clearTimeout(timeout);
+            <div className=''>
+              <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
+                <div className=''>
+                  <Table
+                    className='th-event-table'
+                    rowClassName={(record, index) =>
+                      index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                    }
+                    loading={studentLoading}
+                    columns={studentColumns}
+                    rowKey={(record) => record?.id}
+                    dataSource={studentList?.results}
+                    pagination={false}
+                    locale={noDataLocale}
+                    scroll={{
+                      x: 'max-content',
+                      y: '100vh',
+                    }}
+                  />
+                  <div className='d-flex justify-content-center py-2'>
+                    <Pagination
+                      current={studentCurrentPage}
+                      pageSize={15}
+                      showSizeChanger={false}
+                      onChange={(page) => {
+                        setStudentCurrentPage(page);
                       }}
-                      allowClear
+                      total={studentList?.count}
                     />
-                  </Form.Item>
-                </Form>
-              </div>
-              <div className=''>
-                <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
-                  <div className=''>
-                    <Table
-                      className='th-event-table'
-                      rowClassName={(record, index) =>
-                        index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                      }
-                      loading={studentLoading}
-                      columns={studentColumns}
-                      rowKey={(record) => record?.id}
-                      dataSource={studentList?.results}
-                      pagination={false}
-                      locale={noDataLocale}
-                      scroll={{
-                        x: 'max-content',
-                        y: '100vh',
-                      }}
-                    />
-                    <div className='d-flex justify-content-center py-2'>
-                      <Pagination
-                        current={studentCurrentPage}
-                        pageSize={15}
-                        showSizeChanger={false}
-                        onChange={(page) => {
-                          setStudentCurrentPage(page);
-                        }}
-                        total={studentList?.count}
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </>
         </div>
       </Drawer>
     </>
