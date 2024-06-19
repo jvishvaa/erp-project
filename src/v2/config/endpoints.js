@@ -383,7 +383,8 @@ export default {
   finance: {
     storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
     walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
-    imprestWallet: `${baseFinanceURL}/apiV1/imprest-transactions/`
+    imprestWallet: `${baseFinanceURL}/apiV1/imprest-transactions/`,
+    imprestWalletRecharge: `${baseFinanceURL}/apiV1/imprest-online-topup/`,
   },
   FrequentlyAskedQuestions: {
     FaqApi: `${baseURL}/erp_user/faq/`,
@@ -401,7 +402,7 @@ export default {
   },
   assignVideoObservation: {
     videoReview: '/erp_user/video-review/',
-    bulkVideoUpdate : '/erp_user/video-review-web/',
+    bulkVideoUpdate: '/erp_user/video-review-web/',
   },
   eventsDashboard: {
     gradeListApi: '/erp_user/grademapping/',

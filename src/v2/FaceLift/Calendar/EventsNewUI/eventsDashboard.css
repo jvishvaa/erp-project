@@ -235,6 +235,9 @@
 .th-event-modal-cancelled .ant-modal-header {
   background: var(--cancelled-color) !important;
 }
+.th-event-modal-primary .ant-modal-header {
+  background: var(--secondary-color) !important;
+}
 .reject-button {
   background-color: var(--rejected-color) !important;
   border-color: var(--rejected-color) !important;
