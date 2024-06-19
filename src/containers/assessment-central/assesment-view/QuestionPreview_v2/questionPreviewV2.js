@@ -45,7 +45,15 @@ const QuestionPreview_V2 = React.forwardRef(
     useEffect(() => {
       const addPageNumbers = () => {
         const printContainer = printContainerRef.current;
-        const totalPages = Math.ceil(printContainer.scrollHeight / 1350);
+        let pageHeight = 1700;
+        if (window.innerWidth > 1220) {
+          pageHeight = 1350;
+        } else if (window.innerWidth > 992) {
+          pageHeight = 1450;
+        } else if (window.innerWidth > 766) {
+          pageHeight = 1490;
+        }
+        const totalPages = Math.ceil(printContainer.scrollHeight / pageHeight);
         for (let i = 1; i <= totalPages; i++) {
           const pageNumberDiv = document.createElement('div');
           const pageNumber = document.createTextNode(`Page ${i}`);
@@ -65,8 +73,8 @@ const QuestionPreview_V2 = React.forwardRef(
     }, [isPrint]);
 
     return (
-      <div ref={ref}>
-        <div ref={printContainerRef} className='container border p-1 print-container'>
+      <div ref={ref} className='print-container'>
+        <div ref={printContainerRef} className='container border p-1 content-container'>
           {/* <div> */}
           <div className='row bg-light p-2'>
             <div className='col-6 d-flex align-items-center'>
@@ -102,7 +110,7 @@ const QuestionPreview_V2 = React.forwardRef(
             </div>
             <div className='d-flex flex-row'>
               <div className='font-weight-bold mr-1'>Duration:</div>
-              <div>{templateFrom?.duration} Min</div>
+              <div>{templateFrom?.total_duration} Min</div>
             </div>
             <div className='d-flex flex-row'>
               <div className='font-weight-bold mr-1'>Total Marks:</div>
@@ -255,7 +263,11 @@ const QuestionPreview_V2 = React.forwardRef(
                                                       ]?.images?.map(
                                                         (eachImage, indexImage) => (
                                                           <img
-                                                            src={endpoints.s3 + eachImage}
+                                                            src={
+                                                              endpoints.s3 +
+                                                              '/' +
+                                                              eachImage
+                                                            }
                                                             alt='option image'
                                                             // height={150}
                                                             // width={200}
@@ -330,7 +342,9 @@ const QuestionPreview_V2 = React.forwardRef(
                                                           (eachImage, indexImage) => (
                                                             <img
                                                               src={
-                                                                endpoints.s3 + eachImage
+                                                                endpoints.s3 +
+                                                                '/' +
+                                                                eachImage
                                                               }
                                                               alt='option image'
                                                               // height={150}
