@@ -502,6 +502,8 @@ import endpointsV2 from 'v2/config/endpoints';
 import _ from 'lodash';
 import FrequentlyAskedQuestions from './containers/FrequentlyAskedQuestions/FrequentlyAskedQuestions.jsx';
 import AddFaq from './containers/FrequentlyAskedQuestions/AddFaq.jsx';
+import VideoObservation from './containers/observation/video-observation.js';
+import AddVideoObservation from 'containers/observation/add-video-observation';
 
 const userDetails = localStorage?.getItem('userDetails')
   ? JSON.parse(localStorage?.getItem('userDetails'))
@@ -2588,6 +2590,14 @@ function App({ alert, isMsAPI, erpConfig }) {
                             ,
                             <Route path='/add-faq'>
                               {({ match }) => <AddFaq match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/assign-video-observation'>
+                            {({ match }) => <VideoObservation match={match} />}
+                            </Route>
+                            ,
+                            <Route path='/add-video-observation'>
+                            {({ match }) => <AddVideoObservation match={match} />}
                             </Route>
                             ,
                             <Route path='*'>

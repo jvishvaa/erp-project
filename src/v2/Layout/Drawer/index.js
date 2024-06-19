@@ -96,7 +96,7 @@ const resolveMenu = (url) => {
   if (url.includes('studentwallet')) return 'Student Wallet';
   if (url.includes('curriculum-completion-student-subject')) return 'Lesson Plan';
   if (url.includes('frequently-asked-questions')) return 'FAQ';
-
+  if (url.includes('assign-video-observation')) return 'Assign Video Observation';
   // if (url.includes('Appointment')) return 'Appointments';
   return null;
 };
