@@ -89,7 +89,7 @@ const ModuleManagement = () => {
       .put(`${endpoints.moduleManagement.restoreModules}`, data)
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          message.success('Hurray! Modules(s) activated successfully');
+          message.success('Hurray! Modules activated successfully');
           fetchModuleList();
         }
       })
@@ -214,6 +214,21 @@ const ModuleManagement = () => {
             </Breadcrumb>
           </div>
         </div>
+        <style>
+          {`
+          .custom-popover {
+            top: 59px !important; 
+          }
+
+          .custom-popover .ant-popover-inner-content {
+            padding: 5px 16px !important;
+          }
+
+          .ant-popover-buttons {
+            text-align : center !important;
+          }
+        `}
+        </style>
         <div className='row'>
           <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
             <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
@@ -235,6 +250,7 @@ const ModuleManagement = () => {
                     onConfirm={
                       tabValue === 'active' ? handleDeleteModules : handleRestoreModules
                     }
+                    overlayClassName='custom-popover'
                   >
                     <Button
                       type='primary'

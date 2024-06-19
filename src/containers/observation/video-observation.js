@@ -406,7 +406,12 @@ const VideoObservation = () => {
       const value = JSON.parse(e);
       setBranch(value?.value);
       setAcadSession(value?.acad_session);
+      setUserNameList([]);
+      setUserName(null);
       setTableData([]);
+      formRef.current.setFieldsValue({
+        user_name: null,
+      });
     } else {
       setBranch(null);
       setUserNameList([]);
@@ -422,6 +427,11 @@ const VideoObservation = () => {
     if (e && e?.length != 0) {
       setUserLevel(e);
       setTableData([]);
+      setUserNameList([]);
+      setUserName(null);
+      formRef.current.setFieldsValue({
+        user_name: null,
+      });
     } else {
       setUserLevel(null);
       setUserNameList([]);
@@ -489,7 +499,7 @@ const VideoObservation = () => {
 
   const handleFilter = () => {
     setSelectAll(false);
-    if (branch == null && userLevel==null && userName==null) {
+    if (branch == null && userLevel == null && userName == null) {
       return message.error('Please Select The Filters');
     } else {
       fetchTableData();
@@ -548,6 +558,12 @@ const VideoObservation = () => {
     formData.append('bulk_delete', 'bulk_delete');
     formData.append('ids', selectedRows);
     setLoad(true);
+    if (selectedRows?.length == tableData?.length) {
+      setRefferListPageData({
+        ...refferListPageData,
+        currentPage: refferListPageData?.currentPage - 1,
+      });
+    }
     axiosInstance
       .delete(endpointsV2?.assignVideoObservation?.bulkVideoUpdate, { data: formData })
       .then((res) => {
@@ -556,6 +572,7 @@ const VideoObservation = () => {
           message.success(`${selectedRows?.length} rows successfully delete`);
           fetchTableData();
           setIsModalOpen(false);
+          setSelectAll(false);
           handleClearModal();
           resetCheckboxState();
         }
@@ -563,6 +580,7 @@ const VideoObservation = () => {
       .catch((err) => {
         setLoad(false);
         console.log(err);
+        setSelectAll(false);
         setIsModalOpen(false);
       });
   };
@@ -574,6 +592,12 @@ const VideoObservation = () => {
       formData.append('ids', selectedRows);
       formData.append('obs_acad_sess', modalAcadSess);
       formData.append('assigned_obs', modalUserName);
+      if (selectedRows?.length == tableData?.length) {
+        setRefferListPageData({
+          ...refferListPageData,
+          currentPage: refferListPageData?.currentPage - 1,
+        });
+      }
       setLoad(true);
       axiosInstance
         .patch(endpointsV2?.assignVideoObservation?.bulkVideoUpdate, formData)
@@ -583,6 +607,7 @@ const VideoObservation = () => {
             message.success(`${selectedRows?.length} rows successfully updated`);
             fetchTableData();
             setIsModalOpen(false);
+            setSelectAll(false);
             handleClearModal();
             resetCheckboxState();
           }
@@ -590,6 +615,7 @@ const VideoObservation = () => {
         .catch((err) => {
           setLoad(false);
           console.log(err);
+          setSelectAll(false);
           setIsModalOpen(false);
         });
     } else {
@@ -605,9 +631,11 @@ const VideoObservation = () => {
   useEffect(() => {
     fetchTableData();
   }, [refferListPageData.currentPage, selectedBranch]);
-  useEffect(()=>{
-    fetchUserName(branch, userLevel);
-  }, [branch, userLevel])
+  useEffect(() => {
+    if (branch && userLevel) {
+      fetchUserName(branch, userLevel);
+    }
+  }, [branch, userLevel]);
   return (
     <>
       <Layout>
@@ -746,6 +774,7 @@ const VideoObservation = () => {
                       columns={columns}
                       className='text-center mt-2'
                       pagination={false}
+                      scroll={{ y: '80vh' }}
                     />
                   </div>
                   {tableData?.length > 0 && (
@@ -754,12 +783,14 @@ const VideoObservation = () => {
                         current={refferListPageData.currentPage}
                         total={refferListPageData.totalCount}
                         pageSize={refferListPageData.pageSize}
-                        onChange={(value) =>
+                        onChange={(value) => {
                           setRefferListPageData({
                             ...refferListPageData,
                             currentPage: value,
-                          })
-                        }
+                          });
+                          setSelectedRows([]);
+                          setSelectAll(false);
+                        }}
                         showSizeChanger={false}
                         showQuickJumper={false}
                         showTotal={(total, range) =>
@@ -774,6 +805,7 @@ const VideoObservation = () => {
           </div>
           {load && <Loader />}
           <Modal
+            width={'600px'}
             title='Bulk Delete Or Edit'
             visible={isModalOpen}
             onCancel={handleCancel}
@@ -823,7 +855,8 @@ const VideoObservation = () => {
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
-                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0
+                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >=
+                        0
                       );
                     }}
                     className='w-100 text-left th-black-1 th-bg-white th-br-4'
@@ -845,7 +878,8 @@ const VideoObservation = () => {
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
-                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0
+                        options?.children?.toLowerCase()?.indexOf(input?.toLowerCase()) >=
+                        0
                       );
                     }}
                     className='w-100 text-left th-black-1 th-bg-white th-br-4'

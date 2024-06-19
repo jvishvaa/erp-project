@@ -103,12 +103,20 @@ const Appbar = ({ children, history, ...props }) => {
     JSON.parse(localStorage?.getItem('selectProfileDetails')) || {};
   let erpID = JSON.parse(localStorage.getItem('userDetails')) || {};
 
+  const financeSessionYearList = localStorage.getItem('financeSessions')
+    ? JSON.parse(localStorage.getItem('financeSessions'))
+    : [];
+  const session_year = sessionStorage.getItem('acad_session')
+    ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
+    : '';
+
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const [profileOpen, setProfileOpen] = useState(false);
   const [academicYear, setAcademicYear] = useState('');
   const [branch, setBranch] = useState(selectedBranch?.branch?.branch_name);
+  const branchId = selectedBranch?.branch?.id;
   const profileDetails = JSON.parse(localStorage.getItem('profileDetails')) || {};
   const [profile, setProfile] = useState(selectedProfileDetails.name);
   const [hmac, setHmac] = useState(null);
@@ -650,9 +658,14 @@ const Appbar = ({ children, history, ...props }) => {
   };
 
   const fetchImprestWalletData = () => {
+    let finance_session_year_id = financeSessionYearList.find(
+      (each) => parseInt(each?.academic_session_id) === session_year
+    )?.id;
     setImprestWalletLoading(true);
     axiosInstance
-      .get(`${endpointsV2.finance.imprestWallet}?erp_id=${erpID?.erp}`)
+      .get(
+        `${endpointsV2.finance.imprestWallet}?finance_session_year=${finance_session_year_id}&branch_id=${branchId}&erp_id=${erpID?.erp}`
+      )
       .then((res) => {
         if (res?.data?.results) {
           setImprestWallet(res?.data?.results);

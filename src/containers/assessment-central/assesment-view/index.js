@@ -482,6 +482,7 @@ const AssessmentView = () => {
                             setSelectedIndex={setSelectedIndex}
                             periodColor={selectedIndex === i ? true : false}
                             viewMore={viewMore}
+                            loading={loading}
                             setLoading={setLoading}
                             setViewMore={setViewMore}
                             setCallFlag={setCallFlag}

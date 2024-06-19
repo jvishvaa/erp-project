@@ -1,0 +1,135 @@
+.image {
+  width: 80px;
+  height: 80px;
+}
+
+.school-name {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.bg-custom {
+  background-color: #d9d9d9;
+}
+
+.border-bottom-custom {
+  border-bottom: 2px solid #000;
+}
+
+.title-cutom {
+  font-size: 18px;
+}
+
+.section-mark {
+  right: 0;
+}
+
+.question-custom {
+  font-weight: 600;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px; /* Adjust margin as needed */
+}
+
+.option-image-container {
+  // margin-top: 10px; /* Adjust margin as needed */
+
+  img {
+    object-fit: contain;
+  }
+}
+
+.generated-question-div {
+  img {
+    padding: 10px 0px !important;
+    max-height: 350px !important;
+    max-width: 400px !important;
+    object-fit: contain;
+  }
+  p {
+    // margin-right: 10px !important;
+    text-align: justify;
+    width: 100% !important;
+  }
+}
+.th-marks-info {
+  width: 200px !important;
+}
+
+.last-page {
+  page-break-after: avoid;
+}
+
+@media screen {
+  .print-container {
+    display: none;
+  }
+}
+
+@media print {
+  .check-break {
+    page-break-inside: avoid;
+  }
+
+  .page-number {
+    position: absolute;
+    bottom: 10mm;
+    right: 10mm;
+    font-size: 12px;
+    writing-mode: vertical-lr;
+  }
+  .print-container {
+    display: block;
+  }
+}
+
+@page {
+  margin: 10mm;
+  margin-bottom: 25mm;
+  margin-top: 20mm;
+  // counter-increment: page;
+}
+
+.check-break {
+  page-break-inside: avoid;
+}
+
+.print-container {
+  page-break-after: avoid;
+  height: auto;
+}
+
+.section-container {
+  page-break-after: auto;
+}
+
+@media print {
+  html,
+  body {
+    height: 99%;
+    width: 100%;
+  }
+}
+
+// @media screen {
+//   .printContent {
+//     display: 'none';
+//   }
+// }
+
+// @media print {
+//   .printContent {
+//     display: 'block !important';
+//   }
+// }
+
+.print-container:last-child {
+  page-break-after: auto;
+}
+
+.force-page-break {
+  page-break-before: always;
+}

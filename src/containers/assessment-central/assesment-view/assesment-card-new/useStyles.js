@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
   },
   backgroundColor: {
-    backgroundColor: theme.palette.primary.primarylightest
+    backgroundColor: theme.palette.primary.primarylightest,
   },
   selectedRoot: {
     border: `1px solid ${theme.palette.primary.main}`,
@@ -29,32 +29,42 @@ const useStyles = makeStyles((theme) => ({
   },
   tooltiptext: theme.toolTipText,
   verifiedColor: {
-    background: theme.palette.primary.primarylightest
+    background: theme.palette.primary.primarylightest,
   },
   notverified: {
-    background: "#fff"
+    background: '#fff',
   },
   checkCentral: {
     // color: theme.palette.primary.primarylightest,
     color: 'lightestprimary',
-    fontSize: "0.99rem"
+    fontSize: '0.99rem',
   },
   checkCentralNot: {
     // color: theme.palette.primary.main,
     color: 'primarytemp',
-    fontSize: "0.99rem"
+    fontSize: '0.99rem',
   },
-  identifier_icon:{
-    marginRight:"30px",
-    height:"25px",
-    width:"25px"
+  identifier_icon: {
+    marginRight: '30px',
+    height: '25px',
+    width: '25px',
   },
-  "@media screen":{
-
-    printContent:{
-      display:"none"
-    }
-  }
+  // printContent: {
+  //   lineHeight: '1.5',
+  //   pageBreakInside: 'avoid',
+  //   pageBreakBefore: 'auto',
+  //   pageBreakAfter: 'avoid',
+  // },
+  '@media screen': {
+    printContent: {
+      display: 'none',
+    },
+  },
+  '@media print': {
+    printContent: {
+      display: 'block !important',
+    },
+  },
 }));
 
 export default useStyles;

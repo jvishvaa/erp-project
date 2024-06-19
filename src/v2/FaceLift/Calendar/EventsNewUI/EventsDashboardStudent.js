@@ -16,6 +16,7 @@ import {
   Modal,
   List,
   Spin,
+  message,
 } from 'antd';
 import {
   EyeOutlined,
@@ -40,6 +41,9 @@ const EventsDashboardStudent = () => {
   const notificationDuration = 3;
   const [filterForm] = useForm();
   const { RangePicker } = DatePicker;
+  const financeSessionYearList = localStorage.getItem('financeSessions')
+    ? JSON.parse(localStorage.getItem('financeSessions'))
+    : [];
   const branch = sessionStorage.getItem('selected_branch')
     ? JSON.parse(sessionStorage.getItem('selected_branch'))
     : '';
@@ -128,39 +132,47 @@ const EventsDashboardStudent = () => {
         setLoading(false);
       });
   };
-  const subscribeEvent = ({ eventId }) => {
+  const subscribeEvent = ({ eventId, row }) => {
     setLoading(true);
-    axiosInstance
-      .post(
-        `${endpoints.eventsDashboard.studentActionApi}?event_id=${eventId}&subscribed=1`
-      )
-      .then((response) => {
-        if (response?.data?.status_code == 200) {
-          notification['success']({
-            message: 'Hurray! Subscribed Successfully',
-            duration: notificationDuration,
-            className: 'notification-container',
-          });
-          fetchTableData();
-          fetchImprestWalletData();
-        } else if (response?.data?.status_code == 402) {
+    if (
+      moment().isSame(row.reg_end, 'day') == true ||
+      moment().isBefore(row.reg_end, 'day') == true
+    ) {
+      axiosInstance
+        .post(
+          `${endpoints.eventsDashboard.studentActionApi}?event_id=${eventId}&subscribed=1`
+        )
+        .then((response) => {
+          if (response?.data?.status_code == 200) {
+            notification['success']({
+              message: 'Hurray! Subscribed Successfully',
+              duration: notificationDuration,
+              className: 'notification-container',
+            });
+            fetchTableData();
+            fetchImprestWalletData();
+          } else if (response?.data?.status_code == 402) {
+            notification['error']({
+              message: 'Insufficient wallet balance. Please recharge to subscribe',
+              duration: notificationDuration,
+              className: 'notification-container',
+            });
+          }
+        })
+        .catch((error) => {
           notification['error']({
-            message: 'Insufficient wallet balance. Please recharge to subscribe',
+            message: 'OOPS! Something went wrong. Please try again',
             duration: notificationDuration,
             className: 'notification-container',
           });
-        }
-      })
-      .catch((error) => {
-        notification['error']({
-          message: 'OOPS! Something went wrong. Please try again',
-          duration: notificationDuration,
-          className: 'notification-container',
+        })
+        .finally(() => {
+          setLoading(false);
         });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    } else {
+      setLoading(false);
+      message.error('Registration Date Ended !');
+    }
   };
   const unSubscribeEvent = ({ eventId }) => {
     setUnSubscribeLoading(true);
@@ -235,8 +247,13 @@ const EventsDashboardStudent = () => {
   };
 
   const fetchImprestWalletData = () => {
+    let finance_session_year_id = financeSessionYearList.find(
+      (each) => parseInt(each?.academic_session_id) === session_year
+    )?.id;
     axiosInstance
-      .get(`${endpointsV2.finance.imprestWallet}?erp_id=${erpID?.erp}`)
+      .get(
+        `${endpointsV2.finance.imprestWallet}?finance_session_year=${finance_session_year_id}&branch_id=${branch?.branch?.id}&erp_id=${erpID?.erp}`
+      )
       .then((res) => {
         if (res?.data?.results) {
           setImprestWallet(res?.data?.results);
@@ -382,6 +399,7 @@ const EventsDashboardStudent = () => {
                     onConfirm={() =>
                       subscribeEvent({
                         eventId: row?.id,
+                        row,
                       })
                     }
                   >

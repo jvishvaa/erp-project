@@ -1,0 +1,42 @@
+.justify-container {
+  p {
+    text-align: justify;
+  }
+}
+.main-list {
+  list-style-type: decimal;
+  padding-left: 0.75rem;
+  li {
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-align: justify;
+  }
+  .child-list {
+    margin-left: 1rem;
+    list-style-type: lower-roman;
+    margin-top: 0.5rem;
+    padding-left: 0.75rem;
+    ::first-letter {
+      text-transform: uppercase;
+    }
+
+    li {
+      margin-bottom: 5px;
+      font-weight: 400;
+      text-align: justify;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+
+      .sub-child-list {
+        list-style-type: lower-alpha;
+        padding-left: 1.3rem;
+        li {
+          text-align: justify;
+        }
+        ::first-letter {
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+}

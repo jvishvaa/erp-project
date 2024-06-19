@@ -80,7 +80,7 @@ const EventsDashboardAdmin = () => {
     : '';
   const branchList = sessionStorage.getItem('branch_list')
     ? JSON.parse(sessionStorage.getItem('branch_list'))
-    : '';
+    : [];
   const session_year = sessionStorage.getItem('acad_session')
     ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
     : '';
@@ -414,6 +414,11 @@ const EventsDashboardAdmin = () => {
             duration: notificationDuration,
             className: 'notification-container',
           });
+          // if (response?.data?.result?.length > 0) {
+          //   let InitiateAnnouncement = response?.data?.result?.map((each, index) =>
+          //     sendAnnouncement(each, response?.data?.result?.length, index)
+          //   );
+          // }
         }
         fetchTableData();
       })
@@ -428,6 +433,29 @@ const EventsDashboardAdmin = () => {
         setLoading(false);
       });
   };
+
+  // const sendAnnouncement = (each, length, index) => {
+  //   axiosInstance
+  //     .post(`/announcement/create/`, each)
+  //     .then((response) => {
+  //       if (response?.data?.status_code == 200) {
+  //         if (index == length - 1) {
+  //           notification['success']({
+  //             message: 'Announcement Created!',
+  //             duration: notificationDuration,
+  //             className: 'notification-container',
+  //           });
+  //         }
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       notification['error']({
+  //         message: 'OOPS! Something went wrong. Please try again',
+  //         duration: notificationDuration,
+  //         className: 'notification-container',
+  //       });
+  //     });
+  // };
   const rejectEvent = () => {
     const remarks = feedBackModalForm?.getFieldsValue()?.remarks;
     const formData = new FormData();
@@ -888,12 +916,12 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Branch</span>,
       align: 'center',
-      width: '15%',
+      width: '10%',
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>
-          {row?.branch_name && row?.branch_name.length > 15 ? (
+          {row?.branch_name && row?.branch_name.length > 10 ? (
             <Popover placement='bottomLeft' content={row?.branch_name}>
-              {row?.branch_name.substring(0, 15)}...
+              {row?.branch_name.substring(0, 10)}...
             </Popover>
           ) : (
             row?.branch_name
@@ -904,7 +932,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Reg. End Date</span>,
       align: 'center',
-      width: '13%',
+      width: '12%',
       sorter: (a, b) => new Date(a.reg_end) - new Date(b.reg_end),
       render: (data, row) => (
         <span className='th-black-1 th-event-12'>{row?.reg_end}</span>
@@ -937,7 +965,7 @@ const EventsDashboardAdmin = () => {
     {
       title: <span className='th-white th-event-12 th-fw-700'>Status</span>,
       align: 'left',
-      width: '12%',
+      width: '13%',
       render: (data, row) => (
         <>
           {row?.approval_status === 1 && (
@@ -962,7 +990,7 @@ const EventsDashboardAdmin = () => {
                 title={`Remarks: ${row?.remarks}`}
                 overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
               >
-                <InfoCircleTwoTone />
+                <InfoCircleTwoTone style={{ fontSize: '15px' }} />
               </Tooltip>
             </div>
           )}
@@ -980,7 +1008,7 @@ const EventsDashboardAdmin = () => {
                 title={`Remarks: ${row?.remarks}`}
                 overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
               >
-                <InfoCircleTwoTone />
+                <InfoCircleTwoTone style={{ fontSize: '15px' }} />
               </Tooltip>
             </div>
           )}
@@ -1000,7 +1028,6 @@ const EventsDashboardAdmin = () => {
       title: <span className='th-white th-event-12 th-fw-700'>Action</span>,
       align: 'left',
       key: 'action',
-      width: '10%',
       render: (data, row) => {
         return (
           <>
@@ -1874,9 +1901,9 @@ const EventsDashboardAdmin = () => {
                         </Form.Item>
                         {refundPolicy && (
                           <>
-                            <div className='row justify-content-between'>
+                            <div className='row'>
                               <div
-                                className='col-md-8 col-12'
+                                className='col-md-6 col-12'
                                 style={{
                                   fontSize: '12px',
                                   fontStyle: 'italic',
@@ -2130,67 +2157,58 @@ const EventsDashboardAdmin = () => {
         width='90%'
       >
         <div>
-          {studentLoading ? (
-            <div className='center-screen'>
-              <Spin tip='Hold on! Great things take time!' size='large' />
+          <>
+            <div className='col-lg-4 col-md-6 col-sm-6 col-12'>
+              <Form form={studentListForm}>
+                <Form.Item name='erp_id'>
+                  <Input
+                    placeholder='Search Student Erp'
+                    suffix={<SearchOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
+                    className='w-100 text-left th-black-1 th-br-4'
+                    onChange={(e) => {
+                      fetchStudentList({
+                        id: studentEventId,
+                      });
+                    }}
+                    allowClear
+                  />
+                </Form.Item>
+              </Form>
             </div>
-          ) : (
-            <>
-              <div className='col-lg-4 col-md-6 col-sm-6 col-12'>
-                <Form form={studentListForm}>
-                  <Form.Item name='erp_id'>
-                    <Input
-                      placeholder='Search Student Erp'
-                      suffix={<SearchOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
-                      className='w-100 text-left th-black-1 th-br-4'
-                      onChange={(e) => {
-                        const timeout = setTimeout(() => {
-                          fetchStudentList({
-                            id: studentEventId,
-                          });
-                        }, 500);
-                        return () => clearTimeout(timeout);
+            <div className=''>
+              <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
+                <div className=''>
+                  <Table
+                    className='th-event-table'
+                    rowClassName={(record, index) =>
+                      index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+                    }
+                    loading={studentLoading}
+                    columns={studentColumns}
+                    rowKey={(record) => record?.id}
+                    dataSource={studentList?.results}
+                    pagination={false}
+                    locale={noDataLocale}
+                    scroll={{
+                      x: 'max-content',
+                      y: '100vh',
+                    }}
+                  />
+                  <div className='d-flex justify-content-center py-2'>
+                    <Pagination
+                      current={studentCurrentPage}
+                      pageSize={15}
+                      showSizeChanger={false}
+                      onChange={(page) => {
+                        setStudentCurrentPage(page);
                       }}
-                      allowClear
+                      total={studentList?.count}
                     />
-                  </Form.Item>
-                </Form>
-              </div>
-              <div className=''>
-                <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
-                  <div className=''>
-                    <Table
-                      className='th-event-table'
-                      rowClassName={(record, index) =>
-                        index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-                      }
-                      loading={studentLoading}
-                      columns={studentColumns}
-                      rowKey={(record) => record?.id}
-                      dataSource={studentList?.results}
-                      pagination={false}
-                      locale={noDataLocale}
-                      scroll={{
-                        x: 'max-content',
-                        y: '100vh',
-                      }}
-                    />
-                    <div className='d-flex justify-content-center py-2'>
-                      <Pagination
-                        current={studentCurrentPage}
-                        pageSize={15}
-                        showSizeChanger={false}
-                        onChange={(page) => {
-                          setStudentCurrentPage(page);
-                        }}
-                        total={studentList?.count}
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </>
         </div>
       </Drawer>
     </>
