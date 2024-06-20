@@ -97,6 +97,8 @@ import FrequentlyAskedQuestions from '../containers/FrequentlyAskedQuestions/Fre
 import AddFaq from '../containers/FrequentlyAskedQuestions/AddFaq';
 import HomeworkDashboard from '../v2/FaceLift/Homework/Dashboard';
 import SchoolWall from 'v2/FaceLift/ActivityManagement/SchoolWall';
+import ErrorBoundary from '../ErrorBoundary';
+import PostsModeration from 'v2/FaceLift/PostsModeration/PostsModeration';
 
 const V2Router = () => {
   useEffect(() => {
@@ -187,6 +189,16 @@ const V2Router = () => {
                                 return <SuperAdmindashboardNew match={match} />;
                               default:
                                 return <AcadCalendar match={match} />;
+                            }
+                          }}
+                        </Route>
+                        <Route path='/posts-moderation'>
+                          {({ match }) => {
+                            switch (userLevel) {
+                              case 13:
+                                return <ErrorBoundary match={match} />;
+                              default:
+                                return <PostsModeration match={match} />;
                             }
                           }}
                         </Route>

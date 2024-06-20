@@ -483,16 +483,12 @@ import SubjectWiseRatings from 'containers/newBlog/CreateRating/SubjectWiseRatin
 import ErpAdminViewClassv2 from 'v2/FaceLift/OnlineClass/ErpViewClass';
 import VideoObservation from 'containers/observation/video-observation';
 import AddVideoObservation from 'containers/observation/add-video-observation';
-import PostsModeration from 'v2/FaceLift/PostsModeration/PostsModeration';
 // import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
 const V1Router = [
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
-  <Route path='/posts-moderation'>
-    {({ match }) => <PostsModeration match={match} />}
-  </Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
   </Route>,
