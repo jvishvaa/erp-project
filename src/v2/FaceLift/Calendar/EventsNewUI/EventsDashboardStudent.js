@@ -146,6 +146,9 @@ const EventsDashboardStudent = () => {
           });
           fetchTableData();
           fetchImprestWalletData();
+          if (viewEventModalOpen) {
+            closeViewEventModal();
+          }
         } else if (response?.data?.status_code == 402) {
           notification['error']({
             message: 'Insufficient wallet balance. Please recharge to subscribe',
@@ -167,7 +170,6 @@ const EventsDashboardStudent = () => {
   };
   const unSubscribeEvent = ({ eventId }) => {
     setUnSubscribeLoading(true);
-    console.log('test');
     axiosInstance
       .post(
         `${endpoints.eventsDashboard.studentActionApi}?event_id=${eventId}&subscribed=0`
@@ -180,6 +182,9 @@ const EventsDashboardStudent = () => {
             duration: 5,
             className: 'notification-container',
           });
+          if (viewEventModalOpen) {
+            closeViewEventModal();
+          }
           closeUnSubscribeModal();
           fetchTableData();
           fetchImprestWalletData();
@@ -549,6 +554,10 @@ const EventsDashboardStudent = () => {
         viewEventModalOpen={viewEventModalOpen}
         closeViewEventModal={closeViewEventModal}
         viewEvent={viewEvent}
+        subscribeEvent={subscribeEvent}
+        unSubscribeEvent={unSubscribeEvent}
+        loading={loading}
+        unSubscribeLoading={unSubscribeLoading}
       />
       <Modal
         title={

@@ -20,23 +20,28 @@ const MediaDisplay = ({
 
     if (extension.match(/(jpg|jpeg|png|gif|avif|webp)/i)) {
       return (
-        <Image
+        <div
           style={{
-            width: '200px',
-            height: '200px',
+            width: '100%',
+            height: '300px',
             borderRadius: 16,
-            objectFit: 'cover',
+            backgroundImage: `url(${CDNLink})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
-          src={CDNLink}
         />
       );
     } else if (extension.match(/(mp4|ogg|avi)/i)) {
       return (
         <video
-          // autoPlay={true}
+          style={{
+            ...styles,
+            width: '100%',
+            height: '300px',
+          }}
           controls
           className={className}
-          style={{ ...styles }}
         >
           <source src={CDNLink} type={`video/${extension}`} />
           Your browser does not support the video tag.
@@ -51,13 +56,12 @@ const MediaDisplay = ({
       );
     } else if (extension.match(/pdf/i)) {
       return (
-        <div>
+        <div className='d-flex align-items-center flex-column'>
           <a href={CDNLink} target='__blank'>
             <img
               style={{
-                width: '200px',
-                height: '200px',
-                borderRadius: 16,
+                height: '300px',
+                borderRadius: 6,
                 objectFit: 'cover',
               }}
               src={PDFIcon}
