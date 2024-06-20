@@ -44,7 +44,6 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { getActivityColor, ActivityTypes } from 'v2/generalActivityFunction';
 import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import { Profanity } from 'components/file-validation/Profanity.js';
-import useTimeTracker from 'v2/MixpanelTracking';
 import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const isOrchids = IsOrchidsChecker();
@@ -1794,7 +1793,6 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [subjectID]);
 
-  useTimeTracker('web_homework');
   return (
     <div className='row th-bg-white'>
       <div className='row py-1'>

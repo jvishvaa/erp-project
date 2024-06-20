@@ -65,7 +65,9 @@
 
 @media screen {
   .print-container {
-    display: none;
+    opacity: 0;
+    position: absolute;
+    left: -9999px;
   }
 }
 
@@ -82,7 +84,7 @@
     writing-mode: vertical-lr;
   }
   .print-container {
-    display: block;
+    display: block !important;
   }
 }
 
@@ -97,7 +99,7 @@
   page-break-inside: avoid;
 }
 
-.print-container {
+.content-container {
   page-break-after: avoid;
   height: auto;
 }
@@ -106,27 +108,7 @@
   page-break-after: auto;
 }
 
-@media print {
-  html,
-  body {
-    height: 99%;
-    width: 100%;
-  }
-}
-
-// @media screen {
-//   .printContent {
-//     display: 'none';
-//   }
-// }
-
-// @media print {
-//   .printContent {
-//     display: 'block !important';
-//   }
-// }
-
-.print-container:last-child {
+.content-container:last-child {
   page-break-after: auto;
 }
 

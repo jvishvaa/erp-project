@@ -61,9 +61,8 @@ const VideoObservation = () => {
   const [selectAll, setSelectAll] = useState(false);
   const inputRef = useRef(null);
   const modalRef = useRef(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
   const [refferListPageData, setRefferListPageData] = useState({
-    currentPage: 1,
     pageSize: 15,
     totalCount: null,
     totalPage: null,
@@ -122,7 +121,7 @@ const VideoObservation = () => {
             />
           )}
           <span>
-            {(refferListPageData.currentPage - 1) * refferListPageData.pageSize +
+            {(currentPage - 1) * refferListPageData.pageSize +
               index +
               1}
           </span>
@@ -202,7 +201,7 @@ const VideoObservation = () => {
           </Tooltip>
           {!record?.evaluated && (
             <Popconfirm
-              title='Sure to Delete ?'
+              title='Delete ?'
               open={open}
               onConfirm={() => {
                 handleDelete(record?.id);
@@ -314,7 +313,7 @@ const VideoObservation = () => {
     setLoad(true);
     axiosInstance
       .get(
-        `${endpointsV2?.assignVideoObservation?.bulkVideoUpdate}?page=${refferListPageData.currentPage}`,
+        `${endpointsV2?.assignVideoObservation?.bulkVideoUpdate}?page=${currentPage}`,
         {
           params: filteredParams,
         }
@@ -412,6 +411,9 @@ const VideoObservation = () => {
       formRef.current.setFieldsValue({
         user_name: null,
       });
+      setSelectAll(false)
+      setSelectedRows([])
+      setCurrentPage(1)
     } else {
       setBranch(null);
       setUserNameList([]);
@@ -420,6 +422,9 @@ const VideoObservation = () => {
         user_name: null,
       });
       setTableData([]);
+      setSelectAll(false)
+      setSelectedRows([])
+      setCurrentPage(1)
     }
   };
 
@@ -432,6 +437,9 @@ const VideoObservation = () => {
       formRef.current.setFieldsValue({
         user_name: null,
       });
+      setSelectAll(false)
+      setSelectedRows([])
+      setCurrentPage(1)
     } else {
       setUserLevel(null);
       setUserNameList([]);
@@ -440,11 +448,27 @@ const VideoObservation = () => {
         user_name: null,
       });
       setTableData([]);
+      setSelectAll(false)
+      setSelectedRows([])
+      setCurrentPage(1)
     }
   };
 
   const handleUserName = (e) => {
-    setUserName(e || null);
+    if(e){
+      setUserName(e || null);
+      setTableData([]);
+      setSelectAll(false)
+      setSelectedRows([])
+      setCurrentPage(1)
+    }
+    else{
+      setUserName(null)
+      setTableData([]);
+      setSelectAll(false)
+      setSelectedRows([])
+      setCurrentPage(1)
+    }
   };
 
   const handleModalBranchChange = (val) => {
@@ -502,11 +526,8 @@ const VideoObservation = () => {
     if (branch == null && userLevel == null && userName == null) {
       return message.error('Please Select The Filters');
     } else {
-      fetchTableData();
-      setRefferListPageData({
-        ...refferListPageData,
-        currentPage: 1,
-      });
+      setCurrentPage(1)
+      fetchTableData()
       resetCheckboxState();
     }
     if (branch && userLevel && userName) {
@@ -559,10 +580,12 @@ const VideoObservation = () => {
     formData.append('ids', selectedRows);
     setLoad(true);
     if (selectedRows?.length == tableData?.length) {
-      setRefferListPageData({
-        ...refferListPageData,
-        currentPage: refferListPageData?.currentPage - 1,
-      });
+      if(currentPage!==1){
+        setCurrentPage((prev)=>prev-1)
+      }
+      else{
+        setCurrentPage(1)
+      }
     }
     axiosInstance
       .delete(endpointsV2?.assignVideoObservation?.bulkVideoUpdate, { data: formData })
@@ -593,10 +616,12 @@ const VideoObservation = () => {
       formData.append('obs_acad_sess', modalAcadSess);
       formData.append('assigned_obs', modalUserName);
       if (selectedRows?.length == tableData?.length) {
-        setRefferListPageData({
-          ...refferListPageData,
-          currentPage: refferListPageData?.currentPage - 1,
-        });
+        if(currentPage!==1){
+          setCurrentPage((prev)=>prev-1)
+        }
+        else{
+          setCurrentPage(1)
+        }
       }
       setLoad(true);
       axiosInstance
@@ -630,7 +655,7 @@ const VideoObservation = () => {
 
   useEffect(() => {
     fetchTableData();
-  }, [refferListPageData.currentPage, selectedBranch]);
+  }, [currentPage, selectedBranch]);
   useEffect(() => {
     if (branch && userLevel) {
       fetchUserName(branch, userLevel);
@@ -780,14 +805,11 @@ const VideoObservation = () => {
                   {tableData?.length > 0 && (
                     <div className='text-center mt-2'>
                       <Pagination
-                        current={refferListPageData.currentPage}
+                        current={currentPage}
                         total={refferListPageData.totalCount}
                         pageSize={refferListPageData.pageSize}
                         onChange={(value) => {
-                          setRefferListPageData({
-                            ...refferListPageData,
-                            currentPage: value,
-                          });
+                          setCurrentPage(value)
                           setSelectedRows([]);
                           setSelectAll(false);
                         }}

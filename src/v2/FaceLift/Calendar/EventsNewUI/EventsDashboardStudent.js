@@ -16,6 +16,7 @@ import {
   Modal,
   List,
   Spin,
+  message,
 } from 'antd';
 import {
   EyeOutlined,
@@ -26,6 +27,8 @@ import {
   InfoCircleTwoTone,
   SyncOutlined,
   CloseSquareOutlined,
+  RightOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
 import endpointsV2 from 'v2/config/endpoints';
@@ -35,6 +38,7 @@ import { useForm } from 'antd/lib/form/Form';
 import './eventsDashboard.css';
 import ViewEventModal from './viewEventModal';
 import ENVCONFIG from 'config/config';
+import { useSelector } from 'react-redux';
 
 const EventsDashboardStudent = () => {
   const notificationDuration = 3;
@@ -43,6 +47,7 @@ const EventsDashboardStudent = () => {
   const financeSessionYearList = localStorage.getItem('financeSessions')
     ? JSON.parse(localStorage.getItem('financeSessions'))
     : [];
+  const selectedAcademicYear = useSelector((state) => state.commonFilterReducer);
   const branch = sessionStorage.getItem('selected_branch')
     ? JSON.parse(sessionStorage.getItem('selected_branch'))
     : '';
@@ -52,9 +57,12 @@ const EventsDashboardStudent = () => {
   let erpID = localStorage.getItem('userDetails')
     ? JSON.parse(localStorage.getItem('userDetails'))
     : {};
-  const { token } = localStorage.getItem('userDetails')
+  const { token, role_details, erp, first_name } = localStorage.getItem('userDetails')
     ? JSON.parse(localStorage.getItem('userDetails'))
     : {};
+
+  const branchId = selectedAcademicYear?.selectedBranch?.branch?.id;
+  const sessionYear = selectedAcademicYear?.selectedBranch?.session_year?.session_year;
 
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState();
@@ -69,6 +77,10 @@ const EventsDashboardStudent = () => {
   const [unSubscribeModalOpen, setUnSubscribeModalOpen] = useState(false);
   const [policyDatesArray, setPolicyDatesArray] = useState([]);
   const [eventDetails, setEventDetails] = useState([]);
+  const [rechargeModal, setRechargeModal] = useState(false);
+  const [rechargeAmount, setRechargeAmount] = useState(1000);
+  const [userDetails, setUserDetails] = useState([]);
+  const [walletLoading, setWalletLoading] = useState(false);
 
   useEffect(() => {
     fetchImprestWalletData();
@@ -131,42 +143,47 @@ const EventsDashboardStudent = () => {
         setLoading(false);
       });
   };
-  const subscribeEvent = ({ eventId }) => {
+  const subscribeEvent = ({ eventId, row }) => {
     setLoading(true);
-    axiosInstance
-      .post(
-        `${endpoints.eventsDashboard.studentActionApi}?event_id=${eventId}&subscribed=1`
-      )
-      .then((response) => {
-        if (response?.data?.status_code == 200) {
-          notification['success']({
-            message: 'Hurray! Subscribed Successfully',
-            duration: notificationDuration,
-            className: 'notification-container',
-          });
-          fetchTableData();
-          fetchImprestWalletData();
-          if (viewEventModalOpen) {
-            closeViewEventModal();
+    if (
+      moment().isSame(row.reg_end, 'day') == true ||
+      moment().isBefore(row.reg_end, 'day') == true
+    ) {
+      axiosInstance
+        .post(
+          `${endpoints.eventsDashboard.studentActionApi}?event_id=${eventId}&subscribed=1`
+        )
+        .then((response) => {
+          if (response?.data?.status_code == 200) {
+            notification['success']({
+              message: 'Hurray! Subscribed Successfully',
+              duration: notificationDuration,
+              className: 'notification-container',
+            });
+            fetchTableData();
+            fetchImprestWalletData();
+          } else if (response?.data?.status_code == 402) {
+            notification['error']({
+              message: 'Insufficient wallet balance. Please recharge to subscribe',
+              duration: notificationDuration,
+              className: 'notification-container',
+            });
           }
-        } else if (response?.data?.status_code == 402) {
+        })
+        .catch((error) => {
           notification['error']({
-            message: 'Insufficient wallet balance. Please recharge to subscribe',
+            message: 'OOPS! Something went wrong. Please try again',
             duration: notificationDuration,
             className: 'notification-container',
           });
-        }
-      })
-      .catch((error) => {
-        notification['error']({
-          message: 'OOPS! Something went wrong. Please try again',
-          duration: notificationDuration,
-          className: 'notification-container',
+        })
+        .finally(() => {
+          setLoading(false);
         });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    } else {
+      setLoading(false);
+      message.error('Registration Date Ended !');
+    }
   };
   const unSubscribeEvent = ({ eventId }) => {
     setUnSubscribeLoading(true);
@@ -227,21 +244,6 @@ const EventsDashboardStudent = () => {
     setUnSubscribeModalOpen(false);
   };
 
-  const handleFinanceRedirection = () => {
-    if (ENVCONFIG?.apiGateway?.finance && token) {
-      window.open(
-        `${ENVCONFIG?.apiGateway?.finance}/sso/imprest/${token}#/auth/login`,
-        '_blank'
-      );
-    } else {
-      notification['error']({
-        message: 'OOPS! Redirection failed. Try again after some time',
-        duration: notificationDuration,
-        className: 'notification-container',
-      });
-    }
-  };
-
   const fetchImprestWalletData = () => {
     let finance_session_year_id = financeSessionYearList.find(
       (each) => parseInt(each?.academic_session_id) === session_year
@@ -259,6 +261,50 @@ const EventsDashboardStudent = () => {
         console.log({ err });
       })
       .finally(() => {});
+  };
+
+  const fetchUserStatus = () => {
+    axiosInstance
+      .get(
+        `${endpoints.profile.getUserStatus}?branch=${branchId}&session_year=${sessionYear}&erp_id=${erp}`
+      )
+      .then((res) => {
+        setUserDetails(res.data.result.results);
+      });
+  };
+
+  const generatePaymentLink = (params = {}) => {
+    if (rechargeAmount < 999) {
+      return message.error('Minimum amount should be atleast 1000/-');
+    }
+    setWalletLoading(true);
+    const formData = new FormData();
+    formData.append('session_year', sessionYear);
+    formData.append('branch_id', branch?.branch?.id);
+    formData.append('grade_id', role_details?.grades[0]?.grade_id);
+    formData.append('section_id', role_details?.grades[0]?.id);
+    formData.append('erp_id', erp);
+    formData.append('description', 'CREDIT');
+    formData.append('payment_mode', 1);
+    formData.append('amount', rechargeAmount);
+    formData.append('transaction_type', 'credit');
+    formData.append('created_by_erp', erp);
+    formData.append('created_by_name', first_name);
+    axiosInstance
+      .post(`${endpointsV2.finance.imprestWalletRecharge}`, formData)
+      .then((res) => {
+        setWalletLoading(false);
+        if (res?.data?.payment_gateway == 'cashfree') {
+          window.open(res?.data?.data?.data?.link_url, '_blank');
+        } else {
+          window.open(res?.data?.data?.payment_link);
+        }
+        setTimeout(setRechargeModal(false), 1000);
+      })
+      .catch((err) => {
+        message.error('Failed to Fetch Data');
+        setWalletLoading(false);
+      });
   };
 
   const columns = [
@@ -331,9 +377,9 @@ const EventsDashboardStudent = () => {
                 title={
                   'Event got cancelled due to unforeseen circumstances. Your full amount will be refunded to your wallet'
                 }
-                overlayStyle={{ maxWidth: '60%', minWidth: '20%' }}
+                overlayStyle={{ maxWidth: '50%', minWidth: '20%' }}
               >
-                <InfoCircleTwoTone />
+                <InfoCircleTwoTone className='th-14' />
               </Tooltip>
             </div>
           ) : (
@@ -395,6 +441,7 @@ const EventsDashboardStudent = () => {
                     onConfirm={() =>
                       subscribeEvent({
                         eventId: row?.id,
+                        row,
                       })
                     }
                   >
@@ -440,6 +487,7 @@ const EventsDashboardStudent = () => {
       </div>
     ),
   };
+
   return (
     <>
       <div className='row'>
@@ -510,7 +558,10 @@ const EventsDashboardStudent = () => {
             <Button
               size='small'
               className='primary-button create-button'
-              onClick={() => handleFinanceRedirection()}
+              onClick={() => {
+                setRechargeModal(true);
+                fetchUserStatus();
+              }}
             >
               Recharge Imprest Wallet
             </Button>
@@ -679,6 +730,111 @@ const EventsDashboardStudent = () => {
             unsubscribe from this event?
           </div>
         )}
+      </Modal>
+
+      <Modal
+        title={
+          <div className='d-flex justify-content-between align-items-center'>
+            <div>Recharge Imprest Wallet</div>
+            <div>
+              <CloseSquareOutlined
+                onClick={() => setRechargeModal(false)}
+                className='th-close-icon'
+              />
+            </div>
+          </div>
+        }
+        className='th-event-modal th-event-modal-primary'
+        style={{
+          top: '10%',
+        }}
+        visible={rechargeModal}
+        onCancel={() => setRechargeModal(false)}
+        footer={[
+          <Row justify='end'>
+            <Col className='mr-3'>
+              <Button
+                size='small'
+                className='primary-button drawer-modal-footer-button'
+                onClick={closeUnSubscribeModal}
+              >
+                Close
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                size='small'
+                className='secondary-button drawer-modal-footer-button'
+                icon={walletLoading ? <SyncOutlined spin /> : <RightOutlined />}
+                onClick={generatePaymentLink}
+                disabled={walletLoading}
+              >
+                Proceed
+              </Button>
+            </Col>
+          </Row>,
+        ]}
+      >
+        <>
+          <div className='row align-items-center justify-content-center py-2'>
+            <div
+              style={{
+                cursor: rechargeAmount === 1000 ? 'not-allowed' : 'pointer',
+              }}
+              className={
+                'px-3 th-br-10 mr-2 text-white th-lh-36 th-20 ' +
+                (rechargeAmount > 1000 ? 'th-bg-primary' : 'th-bg-grey-2')
+              }
+              onClick={() =>
+                rechargeAmount > 1000 ? setRechargeAmount(rechargeAmount - 1000) : null
+              }
+            >
+              -
+            </div>
+
+            <div className='th-24 th-fw-600 text-center px-4'>{rechargeAmount}</div>
+
+            <div
+              className='px-3 th-bg-primary th-br-10 ml-2 text-white th-lh-36 th-20 th-pointer'
+              onClick={() => setRechargeAmount(rechargeAmount + 1000)}
+            >
+              +
+            </div>
+          </div>
+          <div className='d-flex justify-content-center'>
+            <Button
+              icon={<PlusOutlined />}
+              className='m-2 th-br-6'
+              onClick={() => setRechargeAmount(rechargeAmount + 1000)}
+            >
+              1000
+            </Button>
+            <Button
+              icon={<PlusOutlined />}
+              className='m-2 th-br-6'
+              onClick={() => setRechargeAmount(rechargeAmount + 2000)}
+            >
+              2000
+            </Button>
+            <Button
+              icon={<PlusOutlined />}
+              className='m-2 th-br-6'
+              onClick={() => setRechargeAmount(rechargeAmount + 5000)}
+            >
+              5000
+            </Button>
+          </div>
+          <div className='shadow-sm p-3 my-2 mx-3 th-bg-grey th-br-8'>
+            Note:
+            <div className='th-12 th-grey'>
+              1. Amount can be added only in multiples of 1000/-
+            </div>
+            <div className='th-12 th-grey'>
+              2. Imprest Wallet amount can be used only for events and not for other Fee
+              Payments
+            </div>
+          </div>
+        </>
       </Modal>
     </>
   );

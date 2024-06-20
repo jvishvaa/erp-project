@@ -68,6 +68,7 @@ const ListCard = (props) => {
           className='col-md-2 col-5 text-truncate th-pointer'
           style={{ width: '10%' }}
           onClick={() => {
+            TrackerHandler('announcement_view', { title });
             setShowModal(true);
           }}
         >

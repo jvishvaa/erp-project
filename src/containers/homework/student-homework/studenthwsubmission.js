@@ -73,7 +73,6 @@ import moment from 'moment';
 import Loader from 'components/loader/loader';
 import { Profanity } from 'components/file-validation/Profanity';
 import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
-import useTimeTracker from 'v2/MixpanelTracking';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -1021,7 +1020,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       .put(`${endpoints.homework.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`)
       .then((result) => {});
   };
-  // useTimeTracker('homework_view', { title: homeworkTitle,action:'' });
+  
   return (
     <div className='create_group_filter_container'>
       {uploadLoading ? <Loader /> : ''}
