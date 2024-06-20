@@ -1,5 +1,6 @@
 import Layout from 'containers/Layout';
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   Button,
@@ -31,6 +32,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const SchoolWallConfigOn = () => {
+  const history = useHistory();
   const { user_id, first_name, last_name, user_level } = JSON.parse(
     localStorage?.getItem('userDetails')
   );
@@ -459,11 +461,20 @@ const SchoolWallConfigOn = () => {
     <>
       <div className='row'>
         <div className='col-md-12 px-md-4'>
-          <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/school-wall' className='th-black-1 th-16'>
-              School Wall
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          <div className='d-flex justify-content-between'>
+            <Breadcrumb separator='>'>
+              <Breadcrumb.Item href='/school-wall' className='th-black-1 th-16'>
+                School Wall
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <Button
+              type='primary'
+              onClick={() => history.push('/posts-moderation')}
+              className='th-br-8'
+            >
+              Go to Posts Moderation
+            </Button>
+          </div>
         </div>
         {loading ? (
           <Loader />

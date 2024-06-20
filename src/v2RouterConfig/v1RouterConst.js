@@ -482,20 +482,23 @@ import PrincipalDashboardTableActivity from 'containers/newBlog/PrincipalDashboa
 import SubjectWiseRatings from 'containers/newBlog/CreateRating/SubjectWiseRatings';
 import ErpAdminViewClassv2 from 'v2/FaceLift/OnlineClass/ErpViewClass';
 import VideoObservation from 'containers/observation/video-observation';
-import AddVideoObservation from 'containers/observation/add-video-observation'
+import AddVideoObservation from 'containers/observation/add-video-observation';
+import PostsModeration from 'v2/FaceLift/PostsModeration/PostsModeration';
 // import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
-
 const V1Router = [
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
+  <Route path='/posts-moderation'>
+    {({ match }) => <PostsModeration match={match} />}
+  </Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
   </Route>,
   <Route path='/module-management'>
-   {({ match }) => <ModuleManagement match={match} />}
- </Route>,
+    {({ match }) => <ModuleManagement match={match} />}
+  </Route>,
   <Route path='/post-activity-view'>
     {({ match }) => <PostActivityView match={match} />}
   </Route>,
@@ -1857,11 +1860,11 @@ const V1Router = [
     {({ match }) => <SubjectWiseRatings match={match} />}
   </Route>,
   <Route path='/assign-video-observation'>
-  {({ match }) => <VideoObservation match={match} />}
+    {({ match }) => <VideoObservation match={match} />}
   </Route>,
-    <Route path='/add-video-observation'>
+  <Route path='/add-video-observation'>
     {({ match }) => <AddVideoObservation match={match} />}
-    </Route>,
+  </Route>,
   //   <Route path='/pptview'>
   //   {({ match }) => <PPTView match={match} />}
   // </Route>,
