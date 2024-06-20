@@ -411,6 +411,10 @@ export default {
     studentListApi: '/academic/sub-list/',
     studentActionApi: 'academic/event-sub/',
   },
+  studentPosts: {
+    studentPostsApi: '/school-feed/feed-draft/',
+    commentsApi: '/school-feed/comments-draft/',
+  },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,
 };
