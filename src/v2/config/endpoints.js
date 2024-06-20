@@ -384,6 +384,7 @@ export default {
     storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
     walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
     imprestWallet: `${baseFinanceURL}/apiV1/imprest-transactions/`,
+    imprestWalletRecharge: `${baseFinanceURL}/apiV1/imprest-online-topup/`,
   },
   FrequentlyAskedQuestions: {
     FaqApi: `${baseURL}/erp_user/faq/`,
