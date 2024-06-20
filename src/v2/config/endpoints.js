@@ -383,7 +383,7 @@ export default {
   finance: {
     storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
     walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
-    imprestWallet: `${baseFinanceURL}/apiV1/imprest-transactions/`
+    imprestWallet: `${baseFinanceURL}/apiV1/imprest-transactions/`,
   },
   FrequentlyAskedQuestions: {
     FaqApi: `${baseURL}/erp_user/faq/`,
@@ -401,7 +401,7 @@ export default {
   },
   assignVideoObservation: {
     videoReview: '/erp_user/video-review/',
-    bulkVideoUpdate : '/erp_user/video-review-web/',
+    bulkVideoUpdate: '/erp_user/video-review-web/',
   },
   eventsDashboard: {
     gradeListApi: '/erp_user/grademapping/',
@@ -409,6 +409,10 @@ export default {
     eventApi: '/academic/event-manage/',
     studentListApi: '/academic/sub-list/',
     studentActionApi: 'academic/event-sub/',
+  },
+  studentPosts: {
+    studentPostsApi: '/school-feed/feed-draft/',
+    commentsApi: '/school-feed/comments-draft/',
   },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,
