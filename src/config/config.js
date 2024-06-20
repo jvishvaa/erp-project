@@ -110,8 +110,8 @@ const stage = {
     FINANCE_BUCKET: 'https://storage.googleapis.com/letseduvate/prod/media',
   },
   apiGateway: {
-    // baseURL: `${window.location.origin}/qbox`,
-    baseURL: `https://orchids-stage.stage-vm.letseduvate.com/qbox`,
+    baseURL: `${window.location.origin}/qbox`,
+    // baseURL: `https://orchids-stage.stage-vm.letseduvate.com/qbox`,
     baseUdaan: 'https://udanta.dev-k8.letseduvate.com/qbox',
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
@@ -145,7 +145,7 @@ const prod = {
     FINANCE_BUCKET: 'https://storage.googleapis.com/letseduvate/prod/media',
   },
   apiGateway: {
-    baseURL: `https://orchids.letseduvate.com/qbox`,
+    baseURL: `${window.location.origin}/qbox`,
     baseUdaan: 'https://udaansurelearning.com/qbox',
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
@@ -182,7 +182,7 @@ const DEV = 'DEV';
 const QA = 'QA';
 const STAGE = 'STAGE';
 const env = { [PROD]: prod, [DEV]: dev, [QA]: qa, [STAGE]: stage };
-const config = env[process.env.REACT_APP_UI_ENV] || prod;
+const config = env[process.env.REACT_APP_UI_ENV] || qa;
 
 export default {
   // Add common config values here
