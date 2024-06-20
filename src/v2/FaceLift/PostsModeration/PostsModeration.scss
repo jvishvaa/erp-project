@@ -112,6 +112,11 @@
     border-color: var(--cancelled-color) !important;
     color: var(--text-color) !important;
   }
+  .restore-button {
+    background-color: var(--pending-color) !important;
+    border-color: var(--pending-color) !important;
+    color: var(--text-color) !important;
+  }
   .th-pending {
     border: 1px solid var(--pending-color) !important;
     color: var(--pending-color) !important;
@@ -348,6 +353,9 @@
 }
 .th-modal-cancelled .ant-modal-header {
   background: var(--cancelled-color) !important;
+}
+.th-modal-pending .ant-modal-header {
+  background: var(--pending-color) !important;
 }
 
 
