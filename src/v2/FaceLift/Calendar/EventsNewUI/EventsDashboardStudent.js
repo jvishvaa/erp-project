@@ -199,6 +199,9 @@ const EventsDashboardStudent = () => {
             duration: 5,
             className: 'notification-container',
           });
+          if (viewEventModalOpen) {
+            closeViewEventModal();
+          }
           closeUnSubscribeModal();
           fetchTableData();
           fetchImprestWalletData();
@@ -602,6 +605,10 @@ const EventsDashboardStudent = () => {
         viewEventModalOpen={viewEventModalOpen}
         closeViewEventModal={closeViewEventModal}
         viewEvent={viewEvent}
+        subscribeEvent={subscribeEvent}
+        unSubscribeEvent={unSubscribeEvent}
+        loading={loading}
+        unSubscribeLoading={unSubscribeLoading}
       />
       <Modal
         title={
