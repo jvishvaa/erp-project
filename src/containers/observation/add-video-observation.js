@@ -1,13 +1,4 @@
-import {
-  Breadcrumb,
-  Button,
-  Card,
-  Form,
-  Input,
-  Popconfirm,
-  Select,
-  message,
-} from 'antd';
+import { Breadcrumb, Button, Card, Form, Input, Popconfirm, Select, message } from 'antd';
 import Layout from 'containers/Layout';
 import React, { createRef, useEffect, useState } from 'react';
 import axios from 'axios';
@@ -60,7 +51,7 @@ const AddVideoObservation = () => {
   ]);
   const [error, setError] = useState(null);
 
-  forms.forEach(form => {
+  forms.forEach((form) => {
     if (!editFormRef.has(form.id)) {
       editFormRef.set(form.id, createRef());
     }
@@ -75,7 +66,7 @@ const AddVideoObservation = () => {
     setForms([
       ...forms,
       {
-        id: forms.length+1,
+        id: Date.now(),
         videoLink: null,
         branch: null,
         role: null,
@@ -127,7 +118,7 @@ const AddVideoObservation = () => {
                 handleBranchOrRoleChange(id, field, updatedForm.branch, updatedForm.role);
               }
             }
-  
+
             if (!updatedForm.branch && !updatedForm.role) {
               editFormRef.get(id).current.setFieldsValue({
                 [`edit_name_${id}`]: null,
@@ -135,7 +126,7 @@ const AddVideoObservation = () => {
               updatedForm.name = null;
               updatedForm.usernameListOptions = [];
             }
-  
+
             return updatedForm;
           }
           return form;
@@ -254,6 +245,14 @@ const AddVideoObservation = () => {
           fields[index].role = null;
         }
         setFormFields(fields);
+      }
+      if (field == 'user_name') {
+        const fields = [...formFields];
+        fields[index].user_name = null;
+        setFormFields(fields);
+        formRef.current.setFieldsValue({
+          [`user_name_${fields[index].id}`]: null,
+        });
       }
     }
     if (field == 'branch' || field == 'role') {

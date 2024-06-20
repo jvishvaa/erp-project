@@ -526,7 +526,7 @@ const AssessmentCard = ({
 
                             html, body {
                               width: 100%;
-                              height: 100%;
+                              height: 99%;
                               margin: 0;
                               padding: 0;
                             }
@@ -661,9 +661,9 @@ const AssessmentCard = ({
                               margin: 0;
                               padding: 0;
                             }
-                              .print:last-child {
-                                page-break-after: avoid;
-                              }
+                            .print:last-child {
+                              page-break-after: avoid;
+                            }
                           }
                         `}
                         />
@@ -877,7 +877,7 @@ const AssessmentCard = ({
       </Paper>
       {printData && (
         <div>
-          <div ref={(el) => (printRef = el)} className={classes.printContent}>
+          <div ref={(el) => (printRef = el)}>
             {/* <QuestionPreview templateFrom={printData} currentStep={4} isPrint={true} /> */}
             <QuestionPreview_V2
               templateFrom={printData}

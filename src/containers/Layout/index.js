@@ -117,13 +117,15 @@ const Layout = ({ children, history }) => {
   }, [selectedBranch, window.location.pathname]);
 
   function getChildId(childName, navigationData) {
-    for (const ele of navigationData) {
-      const name = ele?.child_module?.find((child) => child.child_name === childName);
-      if (name) {
-        return name?.child_id;
+    if (navigationData) {
+      for (const ele of navigationData) {
+        const name = ele?.child_module?.find((child) => child.child_name === childName);
+        if (name) {
+          return name?.child_id;
+        }
       }
+      return null;
     }
-    return null;
   }
 
   useEffect(() => {
@@ -1282,8 +1284,8 @@ const Layout = ({ children, history }) => {
         history.push('/frequently-asked-questions');
         break;
       }
-      case 'Assign Video Observation':{
-        history.push('/assign-video-observation')
+      case 'Assign Video Observation': {
+        history.push('/assign-video-observation');
         break;
       }
 

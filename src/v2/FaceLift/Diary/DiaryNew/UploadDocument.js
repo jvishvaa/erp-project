@@ -91,7 +91,7 @@ const UploadDocument = (props) => {
   const draggerProps = {
     showUploadList: false,
     disabled: false,
-    accept: '.jpeg,.jpg,.png,.pdf,.mp4 ',
+    accept: '.jpeg,.jpg,.png,.pdf,.mp4',
     multiple: true,
     onRemove: (file) => {
       const index = fileList.indexOf(file);
@@ -99,14 +99,12 @@ const UploadDocument = (props) => {
       newFileList.splice(index, 1);
       setFileList(newFileList);
     },
-    beforeUpload: (...file) => {
-      let type = file[0]?.type.split('/')[1];
-      if (type == 'mp4') {
-        let checkFormat = file[0]?.name.split('.')[1];
-        type = checkFormat;
-      }
-      if (['jpeg', 'jpg', 'png', 'pdf', 'mp4'].includes(type)) {
-        setFileList([...fileList, ...file[1]]);
+    beforeUpload: (file) => {
+      const fileType = file.type.split('/')[1]; 
+      const fileName = file.name.split('.');
+      const fileExtension = fileName[fileName.length - 1].toLowerCase(); 
+      if ((fileType === 'mp4' && fileExtension === 'mp4') || ['jpeg', 'jpg', 'png', 'pdf'].includes(fileExtension)) {
+        setFileList([...fileList, file]);
         setFileTypeError(false);
       } else {
         setFileTypeError(true);
@@ -114,7 +112,7 @@ const UploadDocument = (props) => {
       return false;
     },
     fileList,
-  };
+  };  
 
   const uniqueFiles = [];
   let uniqueFilesList = fileList.filter((element) => {
