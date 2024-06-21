@@ -22,6 +22,7 @@ const ViewEventModal = ({
   loading,
   unSubscribeLoading,
 }) => {
+  const user_level = JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
   const settings = {
     dots: false,
     infinite: false,
@@ -48,7 +49,7 @@ const ViewEventModal = ({
   };
   const handleDownloadAll = async (files) => {
     for (const item of files) {
-      const fullName = item?.split('.').pop();
+      const fullName = item?.split('/')[item?.split('/').length - 1];
       await downloadFile(`${item}`, fullName);
     }
   };
@@ -57,12 +58,6 @@ const ViewEventModal = ({
     const blob = await response.blob();
     saveAs(blob, fullName);
   };
-  const policyDatesArray = viewEvent?.policy_dates
-    ? Object.entries(viewEvent.policy_dates).map(([date, amount]) => ({
-        date,
-        amount: `Rs. ${amount}`,
-      }))
-    : [];
 
   console.log({ viewEvent });
   return (
@@ -100,7 +95,7 @@ const ViewEventModal = ({
                     <div className='text-right'>
                       <Button
                         size='small'
-                        className='th-10'
+                        className='th-14'
                         type='link'
                         icon={<DownloadOutlined />}
                         onClick={() => {
@@ -113,6 +108,18 @@ const ViewEventModal = ({
                   )}
                 </div>
               )}
+              <Card
+                className='th-br-20 mb-4'
+                title={<div className='font-weight-bold th-grey'>Event Highlights</div>}
+              >
+                <div className='th-calendar-description'>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: viewEvent?.highlight,
+                    }}
+                  />
+                </div>
+              </Card>
               <Card
                 className='th-br-20'
                 title={<div className='font-weight-bold th-grey'>Event Description</div>}
@@ -150,81 +157,86 @@ const ViewEventModal = ({
                     <CalendarOutlined className='th-grey' />{' '}
                     <div className='th-black-1'>
                       Event Date :{' '}
-                      <span className=' th-fw-600'>{viewEvent?.reg_start}</span>
+                      <span className=' th-fw-600'>{viewEvent?.event_date}</span>
                     </div>
                   </div>
-                  <div className='d-flex align-items-center justify-content-between'>
-                    <div
-                      className='d-flex align-items-center justify-content-start'
-                      style={{ gap: 10 }}
-                    >
-                      <WalletOutlined className='th-grey' />{' '}
-                      <div className='th-black-1 th-fw-700 th-22 '>
-                        ₹{' '}
-                        {viewEvent?.event_price
-                          ? `${NumberFormatter(viewEvent?.event_price)}`
-                          : '0'}
+
+                  <div className={`d-flex flex-column align-items-start`}>
+                    {viewEvent?.is_subscription_need && (
+                      <div
+                        className='d-flex align-items-center justify-content-start pb-2'
+                        style={{ gap: 10 }}
+                      >
+                        <WalletOutlined className='th-grey' />{' '}
+                        <div className='th-black-1 th-fw-700 th-22 '>
+                          ₹{' '}
+                          {viewEvent?.event_price
+                            ? `${NumberFormatter(viewEvent?.event_price)}`
+                            : '0'}
+                        </div>
                       </div>
-                    </div>
-                    {viewEvent?.approval_status == 4 ? (
-                      viewEvent?.subscription == 'unsubscribed' ? (
-                        <Button type='default' className='th-br-6'>
-                          Unsubscribed
-                        </Button>
-                      ) : viewEvent?.subscription == 'subscribed' ? (
-                        <Popconfirm
-                          title='Are you sure you want to unsubscribe?'
-                          okText={'Unsubscribe'}
-                          onConfirm={() => {
-                            unSubscribeEvent({
-                              eventId: viewEvent?.id,
-                            });
-                          }}
-                          zIndex={2100}
-                          placement='bottomRight'
-                        >
-                          <Button
-                            type='primary'
-                            className='th-br-6'
-                            loading={unSubscribeLoading}
-                          >
-                            Unsubscribe
-                          </Button>
-                        </Popconfirm>
-                      ) : (
-                        <Button
-                          type='primary'
-                          className='th-br-6'
-                          loading={loading}
-                          onClick={() => {
-                            subscribeEvent({
-                              eventId: viewEvent?.id,
-                            });
-                          }}
-                        >
-                          Subscribe
-                        </Button>
-                      )
-                    ) : viewEvent?.approval_status == 3 ? (
-                      <Button type='ghost' className='th-br-6' disabled>
-                        Cancelled
-                      </Button>
-                    ) : (
-                      ''
                     )}
+                    {user_level == 13 ? (
+                      viewEvent?.approval_status == 4 ? (
+                        viewEvent?.is_subscription_need ? (
+                          viewEvent?.subscription == 'unsubscribed' ? (
+                            <Button type='ghost' className='th-br-6 w-100'>
+                              Unsubscribed
+                            </Button>
+                          ) : (
+                            <>
+                              {viewEvent?.subscription == 'subscribed' ? (
+                                <Popconfirm
+                                  title='Are you sure you want to unsubscribe?'
+                                  okText={'Unsubscribe'}
+                                  onConfirm={() => {
+                                    unSubscribeEvent({
+                                      eventId: viewEvent?.id,
+                                    });
+                                  }}
+                                  zIndex={2100}
+                                  placement='bottomRight'
+                                >
+                                  <Button
+                                    type='danger'
+                                    className='th-br-6 w-100'
+                                    loading={unSubscribeLoading}
+                                  >
+                                    Unsubscribe
+                                  </Button>
+                                </Popconfirm>
+                              ) : (
+                                <Button
+                                  type='primary'
+                                  className='th-br-6 w-100'
+                                  loading={loading}
+                                  onClick={() => {
+                                    subscribeEvent({
+                                      eventId: viewEvent?.id,
+                                      row: viewEvent,
+                                    });
+                                  }}
+                                >
+                                  Subscribe
+                                </Button>
+                              )}
+                              {viewEvent?.refundable && (
+                                <div className='th-grey pt-2 th-12'>
+                                  Note: Please read the refund policy
+                                </div>
+                              )}
+                            </>
+                          )
+                        ) : null
+                      ) : viewEvent?.approval_status == 3 ? (
+                        <Button type='ghost' className='th-br-6 w-100' disabled>
+                          Cancelled
+                        </Button>
+                      ) : (
+                        ''
+                      )
+                    ) : null}
                   </div>
-                </div>
-              </Card>
-              <Card
-                className='th-br-20 mb-4'
-                title={<div className='font-weight-bold th-grey'>Event Highlights</div>}
-              >
-                <div className='th-calendar-description'>
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: viewEvent?.highlight,
-                    }}
-                  />
                 </div>
               </Card>
               {viewEvent?.refundable && (

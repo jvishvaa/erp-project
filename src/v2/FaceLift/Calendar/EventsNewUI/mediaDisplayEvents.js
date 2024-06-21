@@ -19,16 +19,14 @@ const MediaDisplay = ({
     const extension = getFileExtension(link);
 
     if (extension.match(/(jpg|jpeg|png|gif|avif|webp)/i)) {
-      return (
-        <div
+      return (        
+        <Image
+          src={CDNLink}
           style={{
+            height: 300,
             width: '100%',
-            height: '300px',
             borderRadius: 16,
-            backgroundImage: `url(${CDNLink})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            objectFit: 'cover',
           }}
         />
       );
@@ -78,7 +76,7 @@ const MediaDisplay = ({
   };
 
   return (
-    <div className='th-media-display text-center th-br-14 mx-3 my-2'>
+    <div className='th-media-display text-center th-br-14 mx-3 my-2 th-events-display'>
       {getMediaTag(mediaName)}
     </div>
   );

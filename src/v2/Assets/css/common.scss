@@ -602,3 +602,8 @@ svg {
 .th-event-bar:hover {
   background: #f5f5f5;
 }
+.th-events-display {
+  .ant-image {
+    width: 100% !important;
+  }
+}

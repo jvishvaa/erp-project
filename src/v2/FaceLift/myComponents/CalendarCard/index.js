@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Calendar from 'react-calendar';
-import { Modal, Button, Card, Tooltip, Empty, notification } from 'antd';
-import { RightOutlined } from '@ant-design/icons';
+import { Modal, Button, Card, Tooltip, Empty, notification, Popconfirm } from 'antd';
+import { RightOutlined, DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import './index.css';
 import { useSelector } from 'react-redux';
@@ -13,11 +13,13 @@ import EventIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/eventNew.png';
 import Slider from 'react-slick';
 import { NumberFormatter } from 'v2/CommonFormatter';
 import MediaDisplay from '../../Calendar/EventsNewUI/mediaDisplayEvents';
+import { saveAs } from 'file-saver';
 
 const CalendarCard = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  const refundRef = useRef();
   const [holidaysData, setHolidaysData] = useState([]);
   const [eventssData, setEventsData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -98,8 +100,15 @@ const CalendarCard = () => {
               reg_start: item?.reg_start,
               reg_end: item?.reg_end,
               event_price: item?.event_price,
+              approval_status: Number(item?.approval_status),
               reg_start: item?.reg_start,
               subscription: item?.subscription,
+              // is_subscription_need: item?.is_subscription_need ?? true,
+              // policy_dates: item?.policy_dates ?? {
+              //   2: '400',
+              //   3: '300',
+              // },
+              // refundable: item?.refundable ?? true,
             })
           );
           setEventsData(eventsArr);
@@ -147,7 +156,10 @@ const CalendarCard = () => {
             duration: 3,
             className: 'notification-container',
           });
-          setModData((prev) => ({ ...prev, subscription: 1 }));
+          setModData((prev) => ({
+            ...prev,
+            subscription: action === 'subscribe' ? 1 : 0,
+          }));
           fetchEventsData({
             start_date: monthStartDate,
             end_date: monthEndDate,
@@ -259,6 +271,21 @@ const CalendarCard = () => {
     }
   });
 
+  const handleDownloadAll = async (files) => {
+    for (const item of files) {
+      const fullName = item?.split('/')[item?.split('/').length - 1];
+      await downloadFile(`${item}`, fullName);
+    }
+  };
+  const downloadFile = async (url, fullName) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    saveAs(blob, fullName);
+  };
+
+  const handleScrollToPolicy = () => {
+    refundRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   return (
     <div className='th-bg-white th-br-5 mt-3'>
       <div className='row' style={{ borderRadius: '5px 5px 0 0 ' }}>
@@ -358,7 +385,7 @@ const CalendarCard = () => {
           <div style={{ width: '50%' }} className='listholiday'>
             <Card
               title='Events and Holidays'
-              className='event_holiday pl-2 '
+              className='event_holiday pl-1 '
               bordered={false}
             >
               {allEvent?.length > 0 ? (
@@ -376,7 +403,7 @@ const CalendarCard = () => {
                         className='row mt-2 py-2 align-items-center th-pointer px-1 th-event-bar'
                         onClick={() => modalopen(item)}
                       >
-                        <div className='col-2 px-0'>
+                        <div className='col-2 pl-0'>
                           <div
                             style={{
                               height: '30px',
@@ -448,33 +475,78 @@ const CalendarCard = () => {
                 >
                   Cancelled
                 </Button>
-              ) : modData?.subscription == 0 ? (
-                <Button
-                  type='default'
-                  className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
-                  style={{ minWidth: '25%', cursor: 'default' }}
-                >
-                  Unsubscribed
-                </Button>
-              ) : (
-                <Button
-                  type='primary'
-                  loading={loading}
-                  className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
-                  style={{ minWidth: '25%' }}
-                  onClick={() => {
-                      handleEventAction({
-                        eventId: modData?.id,
-                        action: 'subscribe',
-                      });
-                   
-                  }}
-                >
-                  {modData?.subscription == 1
-                    ? 'You are already subscribed to this event'
-                    : 'Subscribe'}
-                </Button>
-              )}
+              ) : modData?.is_subscription_need ? (
+                modData?.subscription == 0 ? (
+                  <Button
+                    type='default'
+                    className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
+                    style={{ minWidth: '25%', cursor: 'default' }}
+                  >
+                    Unsubscribed
+                  </Button>
+                ) :
+                 modData?.subscription == 1 ? (
+                  <Popconfirm
+                    title={
+                      <div className='d-flex flex-column' style={{ gap: 5 }}>
+                        <div className=''>Are you sure you want to unsubscibe?</div>
+                        {modData?.refundable && (
+                          <div className='th-grey th-14 mt-2'>
+                            Make sure you have read the{' '}
+                            <span
+                              className='th-pointer th-primary th-fw-500'
+                              onClick={() => {
+                                handleScrollToPolicy();
+                              }}
+                            >
+                              refund policy
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    }
+                    okText={'Unsubscribe'}
+                    onConfirm={() => {
+                      if (modData?.subscription == 1) {
+                        handleEventAction({
+                          eventId: modData?.id,
+                          action: 'unsubscribe',
+                        });
+                      }
+                    }}
+                    zIndex={2100}
+                    placement='right'
+                  >
+                    <Button
+                      type='default'
+                      loading={loading}
+                      className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
+                      style={{ minWidth: '25%' }}
+                    >
+                      Unsubscribe
+                    </Button>
+                  </Popconfirm>
+                ) : (
+                  <Button
+                    type='primary'
+                    loading={loading}
+                    className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
+                    style={{ minWidth: '25%' }}
+                    onClick={() => {
+                      if (modData?.subscription != 1) {
+                        handleEventAction({
+                          eventId: modData?.id,
+                          action: 'subscribe',
+                        });
+                      }
+                    }}
+                  >
+                    {modData?.subscription == 1
+                      ? 'You are already subscribed to this event'
+                      : 'Subscribe'}
+                  </Button>
+                )
+              ) : null}
             </div>
           )
         }
@@ -521,10 +593,25 @@ const CalendarCard = () => {
                   </Slider>
                 </div>
               )}
+              {modData?.attachments?.length > 0 && (
+                <div className='col-12 text-right'>
+                  <Button
+                    size='small'
+                    className='th-14'
+                    type='link'
+                    icon={<DownloadOutlined />}
+                    onClick={() => {
+                      handleDownloadAll(modData?.attachments);
+                    }}
+                  >
+                    Download all attachments
+                  </Button>
+                </div>
+              )}
               <div className='col-12'>
                 <div className='d-flex align-items-start justify-content-between th-grey'>
                   <div className=' font-weight-bold th-20'>{modData?.event_name}</div>
-                  {!modData?.is_holiday && (
+                  {!modData?.is_holiday && modData?.is_subscription_need && (
                     <div className='w-25 text-right'>
                       Event Fee :{' '}
                       <span className='font-weight-bold th-black-1'>
@@ -549,13 +636,17 @@ const CalendarCard = () => {
                   <div className='col-md-4 py-2'>
                     {!modData?.is_holiday && 'Reg.'} Start Date :{' '}
                     <span className='font-weight-bold'>
-                      {moment(modData?.start_time).format('DD-MM-YYYY')}
+                      {moment(
+                        modData?.is_holiday ? modData?.start_time : modData?.reg_start
+                      ).format('DD-MM-YYYY')}
                     </span>
                   </div>
                   <div className=' col-4 py-2 text-right'>
                     {!modData?.is_holiday && 'Reg.'} End Date :{' '}
                     <span className='font-weight-bold'>
-                      {moment(modData?.end_time).format('DD-MM-YYYY')}
+                      {moment(
+                        modData?.is_holiday ? modData?.end_time : modData?.reg_end
+                      ).format('DD-MM-YYYY')}
                     </span>
                   </div>
                 </div>
@@ -570,6 +661,33 @@ const CalendarCard = () => {
                   />
                 </div>
               </div>
+              {!modData?.is_holiday && modData?.refundable && (
+                <div className='col-4'>
+                  <div className='th-br-20' ref={refundRef}>
+                    <div className='font-weight-bold mt-2'>Refund Policy</div>
+                    <div
+                      className='th-br-8 px-3 py-2 mt-2'
+                      style={{ border: '1px solid #d9d9d9' }}
+                    >
+                      {Object.keys(modData?.policy_dates)?.map((item) => {
+                        return (
+                          <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
+                            <div className='th-grey'>
+                              Till{' '}
+                              {moment(modData?.start_time)
+                                .subtract(item, 'days')
+                                .format('MMM D, YYYY')}
+                            </div>
+                            <div className='th-black-1 th-fw-500'>
+                              ₹ {modData?.policy_dates[item]}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
