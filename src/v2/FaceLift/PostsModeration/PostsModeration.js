@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   Button,
-  message,
+  notification,
   Tag,
   Spin,
   Card,
@@ -152,7 +152,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setDataLoading(false);
@@ -186,7 +189,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setCommentsDrawerLoading(false);
@@ -205,7 +211,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setDataLoading(false);
@@ -223,7 +232,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {});
   };
@@ -279,6 +291,8 @@ const PostsModeration = () => {
       postStatus = '3';
     } else if (flag === 'cancel') {
       postStatus = '4';
+    } else if (flag === 'restore') {
+      postStatus = '1';
     }
     let data = [];
     if (isBulk) {
@@ -301,7 +315,10 @@ const PostsModeration = () => {
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          message.success('Successfully Updated');
+          notification.success({
+            message: 'Hurray! Success',
+            description: 'Posts status updated',
+          });
           closeModal();
           setPostIds([]);
           setAllCheckBox(false);
@@ -309,7 +326,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setFlagLoading(false);
@@ -323,6 +343,8 @@ const PostsModeration = () => {
       commentsStatus = '3';
     } else if (key === 'cancel') {
       commentsStatus = '4';
+    } else if (key === 'restore') {
+      commentsStatus = '1';
     }
     let data = [];
     if (key === 'approve') {
@@ -346,13 +368,19 @@ const PostsModeration = () => {
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          message.success('Successfully Updated');
+          notification.success({
+            message: 'Hurray! Success',
+            description: 'Comments status updated',
+          });
           setSelectedCommentIds([]);
           fetchCommentsData({ feedId: feedId });
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setCommentsDrawerLoading(false);
@@ -409,8 +437,10 @@ const PostsModeration = () => {
     setPostId(id);
   };
   const closeModal = () => {
-    setFlag('');
     setModalOpen(false);
+    setTimeout(() => {
+      setFlag('');
+    }, 500);
     setPostId();
   };
   const openCommentsDrawer = ({ postData }) => {
@@ -423,7 +453,7 @@ const PostsModeration = () => {
     setTimeout(() => {
       setSelectedCommentIds([]);
       setCommentsPostData([]);
-    }, 1000);
+    }, 500);
     fetchPostsData();
     setCommentsTabValue('1');
   };
@@ -710,7 +740,7 @@ const PostsModeration = () => {
                       ? 'Approved'
                       : tabValue === '3'
                       ? 'Rejected'
-                      : 'Cancelled'}{' '}
+                      : 'Deleted'}{' '}
                     Posts
                   </Divider>
                 </div>
@@ -885,7 +915,6 @@ const PostsModeration = () => {
                                               )}
                                             </>
                                           )}
-
                                           {tabValue === '2' && (
                                             <>
                                               <Badge
@@ -909,6 +938,22 @@ const PostsModeration = () => {
                                                 </Tooltip>
                                               </Badge>
                                             </>
+                                          )}
+                                          {tabValue === '3' && (
+                                            <Tooltip title='Restore Post'>
+                                              <Button
+                                                shape='circle'
+                                                size='small'
+                                                icon={<ReloadOutlined />}
+                                                className='icon-hover th-pending'
+                                                onClick={() =>
+                                                  openModal({
+                                                    key: 'restore',
+                                                    id: each?.id,
+                                                  })
+                                                }
+                                              />
+                                            </Tooltip>
                                           )}
                                         </div>
                                         {tabValue === '2' && (
@@ -1001,7 +1046,9 @@ const PostsModeration = () => {
                     ? 'Approving Post(s)'
                     : flag === 'reject'
                     ? 'Rejecting Post(s)'
-                    : 'Deleting Post(s)'}
+                    : flag === 'cancel'
+                    ? 'Deleting Post(s)'
+                    : 'Restoring Post(s)'}
                 </div>
                 <div>
                   <CloseOutlined onClick={closeModal} className='th-close-icon-1' />
@@ -1015,7 +1062,9 @@ const PostsModeration = () => {
                 ? 'th-modal-approved'
                 : flag === 'reject'
                 ? 'th-modal-rejected'
-                : 'th-modal-cancelled'
+                : flag === 'cancel'
+                ? 'th-modal-cancelled'
+                : 'th-modal-pending'
             }`}
             footer={[
               <Row justify='end'>
@@ -1036,15 +1085,19 @@ const PostsModeration = () => {
                         ? 'approve-button'
                         : flag === 'reject'
                         ? 'reject-button'
-                        : 'cancel-button'
+                        : flag === 'cancel'
+                        ? 'cancel-button'
+                        : 'restore-button'
                     }`}
                     icon={
                       flag === 'approve' ? (
                         <CheckCircleOutlined />
                       ) : flag === 'reject' ? (
                         <CloseCircleOutlined />
-                      ) : (
+                      ) : flag === 'cancel' ? (
                         <DeleteOutlined />
+                      ) : (
+                        <ReloadOutlined />
                       )
                     }
                     onClick={() => handleUpdatePosts()}
@@ -1054,7 +1107,9 @@ const PostsModeration = () => {
                       ? 'Approve'
                       : flag === 'reject'
                       ? 'Reject'
-                      : 'Delete'}
+                      : flag === 'cancel'
+                      ? 'Delete'
+                      : 'Restore'}
                   </Button>
                 </Col>
               </Row>,
@@ -1067,8 +1122,14 @@ const PostsModeration = () => {
             ) : (
               <div>
                 Are You Sure To{' '}
-                {flag === 'approve' ? 'Approve' : flag === 'reject' ? 'Reject' : 'Delete'}{' '}
-                Post(s) ?
+                {flag === 'approve'
+                  ? 'Approve'
+                  : flag === 'reject'
+                  ? 'Reject'
+                  : flag === 'cancel'
+                  ? 'Delete'
+                  : 'Restore'}{' '}
+                <b>{postIds.length ? postIds.length : ''}</b> Post(s) ?
               </div>
             )}
           </Modal>
@@ -1173,7 +1234,7 @@ const PostsModeration = () => {
                     ? 'Approved'
                     : commentsTabValue === '3'
                     ? 'Rejected'
-                    : 'Cancelled'}{' '}
+                    : 'Deleted'}{' '}
                   Comments
                 </Divider>
               </div>
@@ -1305,6 +1366,34 @@ const PostsModeration = () => {
                                               size='small'
                                               icon={<DeleteOutlined />}
                                               className='icon-hover th-cancelled'
+                                            />
+                                          </Tooltip>
+                                        </Popconfirm>
+                                      </>
+                                    )}
+                                    {commentsTabValue === '3' && (
+                                      <>
+                                        <Popconfirm
+                                          title='Are you sure to restore ?'
+                                          overlayStyle={{ zIndex: 2001 }}
+                                          okText='Yes'
+                                          cancelText='No'
+                                          onConfirm={() =>
+                                            handleUpdateComments({
+                                              key: 'restore',
+                                              comment_id: each?.id,
+                                            })
+                                          }
+                                        >
+                                          <Tooltip
+                                            title='Restore Comment'
+                                            overlayStyle={{ zIndex: 2001 }}
+                                          >
+                                            <Button
+                                              shape='circle'
+                                              size='small'
+                                              icon={<ReloadOutlined />}
+                                              className='icon-hover th-pending'
                                             />
                                           </Tooltip>
                                         </Popconfirm>
