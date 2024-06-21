@@ -160,6 +160,9 @@ const EventsDashboardStudent = () => {
               duration: notificationDuration,
               className: 'notification-container',
             });
+            if (viewEventModalOpen) {
+              closeViewEventModal();
+            }
             fetchTableData();
             fetchImprestWalletData();
           } else if (response?.data?.status_code == 402) {

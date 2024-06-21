@@ -111,8 +111,8 @@
   text-align: justify !important;
 }
 .th-calendar-description ol,
-ul {
-  padding: 0px 20px !important;
+.th-calendar-description ul {
+  margin: 0px 20px !important;
 }
 .th-calendar-description p {
   margin: 0px !important;
