@@ -484,6 +484,7 @@ import ErpAdminViewClassv2 from 'v2/FaceLift/OnlineClass/ErpViewClass';
 import VideoObservation from 'containers/observation/video-observation';
 import AddVideoObservation from 'containers/observation/add-video-observation';
 import PostsModeration from 'v2/FaceLift/PostsModeration/PostsModeration';
+import AuthChecker from '../AuthChecker';
 // import PPTView from 'components/attachment-previewer/attachment-previewer-ui/pptview';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
@@ -491,7 +492,11 @@ import PostsModeration from 'v2/FaceLift/PostsModeration/PostsModeration';
 const V1Router = [
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
   <Route path='/posts-moderation'>
-    {({ match }) => <PostsModeration match={match} />}
+    {({ match }) => (
+      <AuthChecker restrictedUserLevels={[13]}>
+        <PostsModeration match={match} />
+      </AuthChecker>
+    )}
   </Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
