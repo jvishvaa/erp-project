@@ -105,6 +105,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick, flag, drawerOpen }) =
   const [openMenu, setOpenMenu] = useState(null);
   const [openParent, setOpenParent] = useState(false);
   const { location } = useHistory();
+  let userData = JSON.parse(localStorage.getItem('userDetails'));
   useEffect(() => {
     setOpenMenu(resolveMenu(location.pathname));
   }, []);
@@ -112,18 +113,20 @@ const DrawerMenu = ({ navigationItems, superUser, onClick, flag, drawerOpen }) =
   return (
     <>
       {/* {superUser && ( */}
-      <SuperUserMenu
-        onClickMenuItem={onClick}
-        openMenu={openMenu}
-        drawerOpen={drawerOpen}
-        onChangeMenuState={(menu) => {
-          if (menu === openMenu) {
-            setOpenMenu(null);
-          } else {
-            setOpenMenu(menu);
-          }
-        }}
-      />
+      {[1, 2, 4, 8, 10, 11, 13]?.includes(userData?.user_level) || superUser ? (
+        <SuperUserMenu
+          onClickMenuItem={onClick}
+          openMenu={openMenu}
+          drawerOpen={drawerOpen}
+          onChangeMenuState={(menu) => {
+            if (menu === openMenu) {
+              setOpenMenu(null);
+            } else {
+              setOpenMenu(menu);
+            }
+          }}
+        />
+      ) : null}
       {/* )} */}
       {navigationItems &&
         navigationItems
