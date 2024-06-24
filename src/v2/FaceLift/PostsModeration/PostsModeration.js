@@ -526,11 +526,12 @@ const PostsModeration = () => {
                           marginRight: '0.5rem',
                         }}
                       >
+                        Go to{' '}
                         {tileView === '4'
                           ? '1-Card'
                           : tileView === '1'
                           ? '2-Card'
-                          : '4-Card'}
+                          : '4-Card'}{' '}
                         View
                       </Button>
                       {!selectedGrade && !selectedSection ? (
@@ -1147,18 +1148,18 @@ const PostsModeration = () => {
             }
             visible={commentsDrawerOpen}
             onClose={closeCommentsDrawer}
-            footer={[
-              <Row justify='space-around'>
-                <Col>
-                  <Button
-                    size='small'
-                    className='th-secondary-button footer-button'
-                    onClick={closeCommentsDrawer}
-                  >
-                    Close
-                  </Button>
-                </Col>
-                {commentsTabValue === '1' && (
+            footer={
+              commentsTabValue === '1' ? (
+                <Row justify='space-around'>
+                  <Col>
+                    <Button
+                      size='small'
+                      className='th-secondary-button footer-button'
+                      onClick={closeCommentsDrawer}
+                    >
+                      Close
+                    </Button>
+                  </Col>
                   <Col>
                     <Button
                       size='small'
@@ -1169,14 +1170,14 @@ const PostsModeration = () => {
                           key: 'approve',
                         })
                       }
-                      disabled={commentsDrawerLoading}
+                      disabled={commentsDrawerLoading || selectedCommentIds?.length === 0}
                     >
                       Approve Comments
                     </Button>
                   </Col>
-                )}
-              </Row>,
-            ]}
+                </Row>
+              ) : null
+            }
             className='my-posts'
             closeIcon={false}
             width={drawerWidth}
@@ -1455,7 +1456,7 @@ const PostsModeration = () => {
             onCancel={closeViewModal}
             footer={false}
             centered
-            className='my-posts'
+            className='my-posts my-view-modal'
           >
             <div className=''>
               <Slider {...settings} className='my-media-slider'>
