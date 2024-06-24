@@ -137,13 +137,19 @@ const PostsModeration = () => {
       acad_session: branch?.id,
       grades: selectedGrade?.grade_id,
       section_mapping: selectedSection?.id,
-      post_status: tabValue,
+      post_status: tabValue === '5' ? '2' : tabValue,
       page: currentPage,
       page_size: pageSize,
     };
+    let apiEndPoint;
+    if (tabValue === '5') {
+      apiEndPoint = endpointsV2.studentPosts.commentsPostsApi;
+    } else {
+      apiEndPoint = endpointsV2.studentPosts.studentPostsApi;
+    }
     setDataLoading(true);
     axiosInstance
-      .get(`${endpointsV2.studentPosts.studentPostsApi}`, {
+      .get(`${apiEndPoint}`, {
         params: params,
       })
       .then((response) => {
@@ -453,9 +459,9 @@ const PostsModeration = () => {
     setTimeout(() => {
       setSelectedCommentIds([]);
       setCommentsPostData([]);
+      setCommentsTabValue('1');
     }, 500);
     fetchPostsData();
-    setCommentsTabValue('1');
   };
   const openViewModal = ({ data }) => {
     setViewData(data);
@@ -526,13 +532,8 @@ const PostsModeration = () => {
                           marginRight: '0.5rem',
                         }}
                       >
-                        Go to{' '}
-                        {tileView === '4'
-                          ? '1-Card'
-                          : tileView === '1'
-                          ? '2-Card'
-                          : '4-Card'}{' '}
-                        View
+                        Change View -{' '}
+                        {tileView === '4' ? '4' : tileView === '1' ? '1' : '2'}
                       </Button>
                       {!selectedGrade && !selectedSection ? (
                         <div className='d-flex align-items-center'>
@@ -728,6 +729,15 @@ const PostsModeration = () => {
                       >
                         Deleted
                       </Button>
+                      <Button
+                        className={`th-primary-button ${
+                          tabValue === '5' ? 'th-comments-active' : 'th-comments'
+                        }`}
+                        onClick={() => handleTabChange('5')}
+                        icon={<CheckCircleOutlined />}
+                      >
+                        Approve Comments
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -741,7 +751,9 @@ const PostsModeration = () => {
                       ? 'Approved'
                       : tabValue === '3'
                       ? 'Rejected'
-                      : 'Deleted'}{' '}
+                      : tabValue === '4'
+                      ? 'Deleted'
+                      : 'Approve Comments'}{' '}
                     Posts
                   </Divider>
                 </div>
@@ -836,11 +848,11 @@ const PostsModeration = () => {
                                       <div
                                         className='d-flex flex-column'
                                         style={{
-                                          marginRight: tabValue === '2' ? '10px' : '0px',
-                                          marginTop: tabValue === '2' ? '10px' : '0px',
+                                          marginRight: tabValue === '5' ? '10px' : '0px',
+                                          marginTop: tabValue === '5' ? '10px' : '0px',
                                         }}
                                       >
-                                        <div className='d-flex align-items-center'>
+                                        <div className='d-flex align-items-center justify-content-end'>
                                           {each?.media_files?.length > 0 && (
                                             <Tooltip title='View Files'>
                                               <Button
@@ -916,7 +928,7 @@ const PostsModeration = () => {
                                               )}
                                             </>
                                           )}
-                                          {tabValue === '2' && (
+                                          {tabValue === '5' && (
                                             <>
                                               <Badge
                                                 count={data?.comments_count}
@@ -957,7 +969,7 @@ const PostsModeration = () => {
                                             </Tooltip>
                                           )}
                                         </div>
-                                        {tabValue === '2' && (
+                                        {tabValue === '5' && (
                                           <div className='px-2 th-br-12 th-bg-violet text-center th-10 th-white'>
                                             <b>{each?.module_type_name}</b>
                                           </div>
@@ -1151,15 +1163,6 @@ const PostsModeration = () => {
             footer={
               commentsTabValue === '1' ? (
                 <Row justify='space-around'>
-                  <Col>
-                    <Button
-                      size='small'
-                      className='th-secondary-button footer-button'
-                      onClick={closeCommentsDrawer}
-                    >
-                      Close
-                    </Button>
-                  </Col>
                   <Col>
                     <Button
                       size='small'
