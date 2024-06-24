@@ -316,7 +316,7 @@
     padding: 6px 10px;
   }
   .ant-modal-body {
-    padding: 50px !important;
+    padding: 10px !important;
   }
   .ant-modal-content {
     border-radius: 4px !important;
@@ -344,6 +344,9 @@
       left: -50px !important;
     }
   }
+}
+.my-view-modal .ant-modal-body {
+    padding: 50px !important;
 }
 .th-modal-approved .ant-modal-header {
   background: var(--approved-color) !important;
