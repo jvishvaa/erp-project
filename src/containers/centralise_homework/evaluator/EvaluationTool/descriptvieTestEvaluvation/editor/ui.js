@@ -28,6 +28,8 @@ function CorrectionComponent({
   splittedMedia,
   handleONSaveHW,
   initialAngle,
+  restore,
+  setRestore,
   zoom,
   isReset,
 }) {
@@ -44,7 +46,11 @@ function CorrectionComponent({
   const hRef = useRef(0);
   const wRef = useRef(0);
   const [style, setStyle] = useState({});
+  const [drawedHistory, setDrawedHistory] = useState([]);
+  const [selectedDrawingIndex, setSelectedDrawingIndex] = useState(null);
   // const [cImg, setImg] = useState()
+
+  console.log({ drawing });
 
   const urlCopy = url;
   const extenstion = urlCopy.split('.').pop();
@@ -78,8 +84,8 @@ function CorrectionComponent({
         let width = 0;
         let height = 0;
 
-        width = extenstion === 'pdf' ? viewWidth : 700;
-        height = extenstion === 'pdf' ? viewHeight : 500;
+        width = extenstion === 'pdf' ? viewWidth : img.width;
+        height = extenstion === 'pdf' ? viewHeight : img.height;
 
         canvas.height = height;
         canvas.width = width;
@@ -89,7 +95,7 @@ function CorrectionComponent({
         console.log(
           img.width,
           img.height,
-          'img',
+          img,
           canvas.width,
           canvas.height,
           'canvas',
@@ -102,13 +108,70 @@ function CorrectionComponent({
         setContainerWidth(width);
         context.clearRect(0, 0, canvas.width, canvas.height);
         // context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        // context.drawImage(img, 0, 0, canvas.width, canvas.height);
         context.drawImage(img, 0, 0, width, height);
-        context.drawImage(img, 0, 0, width, height);
+        console.log({ context });
       };
       img.src = `${pgUrl}??${escape(new Date().getTime())}`;
       imgRef.current = img;
     }
   }, [angleInDegrees, extenstion, pageNumber, splittedMedia, url, viewHeight, viewWidth]);
+
+  useEffect(() => {
+    if (restore === 'undo') {
+      restoreDrawing('undo');
+    }
+  }, [restore]);
+
+  const restoreDrawing = (type) => {
+    console.log('restore drawing', type);
+    let drawingCanvas = canvasElement.current;
+    if (drawedHistory.length > 1) {
+      const context = drawingCanvas.getContext('2d');
+      // eslint-disable-next-line no-undef
+      let img = new Image();
+      let selectedDrawing;
+      if (type === 'undo') {
+        selectedDrawing = drawedHistory[drawedHistory.length - 2];
+        setDrawedHistory(drawedHistory.slice(0, -1));
+      }
+      img.src = selectedDrawing.image;
+      console.log(
+        base64StringtoFile(drawedHistory[drawedHistory.length - 2].image),
+        selectedDrawing,
+        'imageaFASSAFSAF'
+      );
+      img.addEventListener('load', () => {
+        drawingCanvas.width = containerWidth;
+        drawingCanvas.height = containerHeight;
+        context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        context.drawImage(
+          img,
+          0,
+          0,
+          selectedDrawing.viewWidth,
+          selectedDrawing.viewHeight
+        );
+      });
+      setRestore('');
+      // setImg(img.src)
+      drawingRef.current = img;
+    }
+  };
+
+  const base64StringtoFile = (base64String, filename) => {
+    let arr = base64String.split(',');
+    let mime = arr[0].match(/:(.*?);/)[1];
+    // eslint-disable-next-line no-undef
+    let bstr = atob(arr[1]);
+    let n = bstr.length;
+    let u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    // eslint-disable-next-line no-undef
+    return new File([u8arr], filename, { type: mime });
+  };
 
   const drawRotated = useCallback(() => {
     // let coX = '10px'
@@ -176,32 +239,15 @@ function CorrectionComponent({
       }
       // ratio = (wRef.current - hRef.current) / 2 + 20
     }
-    // if (
-    //   (angleInDegrees === 270 ||
-    //   angleInDegrees === -270 ||
-    //   angleInDegrees === 90 ||
-    //   angleInDegrees === -90) && sX == 1
-    // ) {
-    //   // coX = `-${ratio}px`
-    //   margin = '26% 0% 0% 0%';
-    //   //   let v = marginStyleAngle[String(sX)];
-    //   //   if (sX <= 1) {
-    //   //     margin = '0%';
-    //   //   } else {
-    //   //     margin = sX <= 1.5 ? `${v}` : margin;
-    //   //   }
-    //   // } else {
-    //   //   let v = marginStyleAngleReverse[String(sX)];
-
-    //   //   margin = sX <= 1.5 ? `${v}` : margin;
-    // }
 
     let style = {
       width: containerWidth,
       height: fullscreen ? 'calc(100vh - 46px)' : 'calc(100vh - 46px)',
+
+      // height: 842,
       overflow: 'auto',
       // transform: `rotate(${angleInDegrees}deg)`,
-      margin: margin,
+      // margin: margin,
     };
 
     if (extenstion === 'pdf') {
@@ -316,6 +362,214 @@ function CorrectionComponent({
     }
   }, [extenstion, renderPage, splittedMedia, url]);
 
+  const canvasDrawingElement = useRef();
+  const [context, setContext] = useState('');
+  const [isPainting, setIsPainting] = useState(false);
+  const [line, setLine] = useState([]);
+  const [prevPos, setPrevPos] = useState({});
+  const [drawedChanges, setDrawedChanges] = useState({});
+  console.log({ drawedChanges });
+  console.log({ drawedHistory });
+  const drawingRef = useRef(null);
+  // const [cImg, setImg] = useState()
+  const enablePainting = tool === 'paint';
+  const enableEraser = tool === 'eraser';
+  var userStrokeStyle = 'red';
+
+  useEffect(() => {
+    const handleListener = (ev) => {
+      if (ev.target === canvasElement.current) {
+        if (enablePainting || enableEraser) {
+          ev.preventDefault();
+          ev.stopImmediatePropagation();
+        }
+      }
+    };
+    window.addEventListener('touchstart', handleListener, { passive: false });
+    window.addEventListener('touchmove', handleListener, { passive: false });
+    return () => {
+      window.removeEventListener('touchstart', handleListener, { passive: false });
+      window.removeEventListener('touchmove', handleListener, { passive: false });
+    };
+  }, [enablePainting, enableEraser]);
+
+  useEffect(() => {
+    if (drawedChanges && Object.keys(drawedChanges).length) {
+      handleSave(drawedChanges);
+    }
+  }, [drawedChanges, handleSave]);
+
+  useEffect(() => {
+    let drawingCanvas = canvasElement.current;
+    drawingCanvas.height = containerHeight;
+    drawingCanvas.width = containerWidth;
+    const context = drawingCanvas.getContext('2d');
+    context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+    setContext(context);
+    context.lineJoin = 'round';
+    context.lineCap = 'round';
+    context.lineWidth = 5;
+
+    if (drawingCanvas) {
+      const context = drawingCanvas.getContext('2d');
+      // eslint-disable-next-line no-undef
+      let img = new Image();
+      img.src = drawing;
+      img.addEventListener('load', () => {
+        // drawingCanvas.width = width;
+        // drawingCanvas.height = height;
+        drawingCanvas.width = containerWidth;
+        drawingCanvas.height = containerHeight;
+        context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+        context.drawImage(img, 0, 0, drawingCanvas.width, drawingCanvas.height);
+      });
+      // setImg(img.src)
+      drawingRef.current = img;
+    }
+  }, [drawing]);
+
+  const onMouseMove = ({ nativeEvent }) => {
+    if (isPainting) {
+      const { offsetX, offsetY } = nativeEvent;
+      const offSetData = { offsetX, offsetY };
+      // Set the start and stop position of the paint event.
+      const positionData = {
+        start: { ...prevPos },
+        stop: { ...offSetData },
+      };
+      // Add the position to the line array
+      setLine(line.concat(positionData));
+      paint(prevPos, offSetData, userStrokeStyle);
+    }
+  };
+  const onMouseDown = ({ nativeEvent }) => {
+    const { offsetX, offsetY } = nativeEvent;
+    if (enablePainting || enableEraser) {
+      setIsPainting(true);
+      setPrevPos({ offsetX, offsetY });
+    }
+  };
+  const onTouchStart = ({ nativeEvent: touchEvent }) => {
+    touchEvent.stopPropagation();
+    touchEvent.preventDefault();
+    let drawingCanvas = canvasElement.current;
+    var rect = drawingCanvas.getBoundingClientRect();
+    var offsetX = touchEvent.touches[0].clientX - rect.left;
+    var offsetY = touchEvent.touches[0].clientY - rect.top;
+    if (enablePainting || enableEraser) {
+      setIsPainting(true);
+      setPrevPos({ offsetX, offsetY });
+    }
+  };
+
+  const onTouchMove = ({ nativeEvent: touchEvent }) => {
+    let drawingCanvas = canvasElement.current;
+    var rect = drawingCanvas.getBoundingClientRect();
+    var offsetX = touchEvent.touches[0].clientX - rect.left;
+    var offsetY = touchEvent.touches[0].clientY - rect.top;
+    if (isPainting) {
+      const offSetData = { offsetX, offsetY };
+      // Set the start and stop position of the paint event.
+      const positionData = {
+        start: { ...prevPos },
+        stop: { ...offSetData },
+      };
+      // Add the position to the line array
+      setLine(line.concat(positionData));
+      paint(prevPos, offSetData, userStrokeStyle);
+    }
+  };
+
+  const endPaintEvent = () => {
+    if (isPainting) {
+      setIsPainting(false);
+      let drawingCanvas = canvasElement.current;
+      setDrawedChanges({
+        image: drawingCanvas.toDataURL(),
+        // containerImg: containerImg.toDataURL(),
+        containerImg: '',
+        operation: 'manualSave',
+        isSaving: 'true',
+        viewHeight: hRef && hRef.current,
+        viewWidth: wRef && wRef.current,
+      });
+      setDrawedHistory([
+        ...drawedHistory,
+        {
+          image: drawingCanvas.toDataURL(),
+          // containerImg: containerImg.toDataURL(),
+          containerImg: '',
+          operation: 'manualSave',
+          isSaving: 'true',
+          viewHeight: hRef && hRef.current,
+          viewWidth: wRef && wRef.current,
+        },
+      ]);
+      // if (extenstion === 'pdf') {
+      //   onChange({ image: drawingCanvas.toDataURL(), containerImg: containerImg.toDataURL(), operation: 'autoSave' })
+      // }
+    }
+  };
+
+  // const drawRotated = useCallback(() => {
+  //   let canvas = canvasElement.current
+  //   // let drawingCanvas = canvasElement.current
+  //   if (canvas) {
+  //     // let img = cImg
+  //     const ctx = canvas.getContext('2d')
+  //     // eslint-disable-next-line no-undef
+  //     var img = new Image()
+  //     // img.src = imgRef.current.src
+  //     img.crossOrigin = 'anonymous'
+  //     // img.id = 'actual_image'
+  //     const decidedAngle = initialAngle ? angleInDegrees - 90 : angleInDegrees
+  //     img.src = cImg
+  //     if (img && angleInDegrees !== 0) {
+  //       img.addEventListener('load', function () {
+  //         ctx.clearRect(0, 0, canvas.width, canvas.height)
+  //         ctx.save()
+  //         canvas.width = width
+  //         canvas.height = height
+  //         ctx.translate(canvas.width / 2, canvas.height / 2)
+  //         ctx.rotate((decidedAngle) * (Math.PI / 180))
+  //         if (img && img.width && img.height) {
+  //           ctx.drawImage(img, -img.width / 2, -img.height / 2)
+  //         }
+
+  //         ctx.restore()
+  //       })
+  //     }
+  //   }
+  // }, [angleInDegrees, cImg, height, initialAngle, width]
+  // )
+
+  // useEffect(() => {
+  //   drawRotated()
+  // }, [angleInDegrees, drawRotated])
+
+  const paint = (prevPos, currPos, strokeStyle) => {
+    const { offsetX, offsetY } = currPos;
+    const { offsetX: x, offsetY: y } = prevPos;
+
+    if (enablePainting) {
+      context.beginPath();
+      context.globalCompositeOperation = 'source-over';
+      context.strokeStyle = strokeStyle;
+      // Move the the prevPosition of the mouse
+      context.moveTo(x, y);
+      // Draw a line to the current position of the mouse
+      context.lineTo(offsetX, offsetY);
+      // Visualize the line using the strokeStyle
+      context.stroke();
+      context.lineWidth = 2;
+    } else {
+      context.globalCompositeOperation = 'destination-out';
+      context.arc(offsetX, offsetY, 8, 0, Math.PI * 2, false);
+      context.fill();
+    }
+    setPrevPos({ offsetX, offsetY });
+  };
+
   return (
     <div ref={divElement} style={style} id='editor-evaluvation-container'>
       {/* <img src={penTool} /> */}
@@ -330,15 +584,24 @@ function CorrectionComponent({
         }}
         ref={canvasElement}
         id='editor-evaluvation-drawing-layer'
+        // ref={canvasDrawingElement}
+        onMouseDown={onMouseDown}
+        onMouseLeave={endPaintEvent}
+        onMouseUp={endPaintEvent}
+        onMouseMove={onMouseMove}
+        onTouchMove={onTouchMove}
+        onTouchStart={onTouchStart}
+        onTouchEnd={endPaintEvent}
+        className='editor-drawing-layer'
       />
-      <DrawingLayer
+      {/* <DrawingLayer
         page={pageNumber}
         drawing={drawing}
         onChange={onChange}
         enableEraser={tool === 'eraser'}
         enablePainting={tool === 'paint'}
-        width={containerWidth}
-        height={containerHeight}
+        width={595}
+        height={842}
         containerImg={canvasElement.current}
         handleSave={handleSave}
         extenstion={extenstion}
@@ -348,7 +611,7 @@ function CorrectionComponent({
         refW={wRef}
         refH={hRef}
         initialAngle={initialAngle}
-      />
+      /> */}
       {/* <canvas id='off-canvas' style='display: none;' /> */}
     </div>
   );

@@ -105,12 +105,12 @@ export function DescriptiveTestContextProvider({
           y = 0.1;
           x = sX + x;
           y = sY + y;
-        } else if(sX == 1.5 ) {
+        } else if (sX == 1.5) {
           x = 3;
           y = 3;
-        }else {
-          x= sX
-          y = sY
+        } else {
+          x = sX;
+          y = sY;
         }
       } else {
         if (sX === 1.5) {
@@ -123,15 +123,14 @@ export function DescriptiveTestContextProvider({
             x = 1;
             y = 1;
           } else {
-            x = sX ;
-            y = sY ;
+            x = sX;
+            y = sY;
           }
-        } else if(sX === 3){
+        } else if (sX === 3) {
           x = sX - 1.5;
           y = sY - 1.5;
-        }
-        else{
-          x = sX ;
+        } else {
+          x = sX;
           y = sY;
         }
       }
@@ -143,14 +142,17 @@ export function DescriptiveTestContextProvider({
     return { x, y };
   };
 
-  const checkTransformOrigin = (isRotated) =>{
-    let element = document.getElementById("editor-evaluvation-container")
-    if(!isRotated && (angleInDegrees === 0 ||angleInDegrees === 360 || angleInDegrees=== -360)){
-      element.style.transformOrigin='0px 0px'
-    }else{
-      element.style.transformOrigin='center'
+  const checkTransformOrigin = (isRotated) => {
+    let element = document.getElementById('editor-evaluvation-container');
+    if (
+      !isRotated &&
+      (angleInDegrees === 0 || angleInDegrees === 360 || angleInDegrees === -360)
+    ) {
+      element.style.transformOrigin = '0px 0px';
+    } else {
+      element.style.transformOrigin = 'center';
     }
-  }
+  };
 
   const enableZoom = (event, updateTool) => {
     let { x, y, mg } = handleZoomINOut(updateTool);
@@ -177,6 +179,7 @@ export function DescriptiveTestContextProvider({
       setTool('');
     }
   };
+  
   const getPaperImage = useCallback(
     (evlRes) => {
       let res =
@@ -201,7 +204,6 @@ export function DescriptiveTestContextProvider({
   };
 
   const getResData = useCallback(() => {
-
     const res = evlRes && evlRes.filter((e) => e.actual_paper_id === mediaId)[0];
 
     let angl = 0;
@@ -356,9 +358,9 @@ export function DescriptiveTestContextProvider({
     return new File([u8arr], filename, { type: mime });
   };
   const sendFormdata = async (data) => {
+    console.log({ data });
     if (data.operation === 'manualSave') {
       setisSave(true);
-      // alert.warning("wait for 10 sec updating changes ...");
     }
 
     if (data.viewHeight) {
@@ -367,83 +369,51 @@ export function DescriptiveTestContextProvider({
     if (data.viewWidth) {
       setWidth(data.viewWidth);
     }
+    let myFilename = String(new Date().getTime()) + '.' + 'png';
+    const fileObj = base64StringtoFile(data.image, myFilename);
+    handleSaveFile(fileObj);
 
-    const [
-      { id, online_test_assessment: { assessment_id: assId } = {} } = {},
-    ] = desTestDetails;
-    let formdata = new FormData();
-    let correctedPaper = '';
-    setCorrectionLoading(true);
-    const urlCopy = url;
-    let extenstion = urlCopy.split('.').pop();
-    let ext = extenstion === 'JPG' ? 'jpg' : extenstion;
-    window.scrollTo(0, 0);
-    html2canvas(document.getElementById('editor-evaluvation-container'), {
-      logging: false,
-      useCORS: true,
-      scrollX: 0,
-      scrollY: 0,
-      backgroundColor: "null",
-      // scrollY: -window.scrollY
-    })
-      .then((canvas) => {
-        // setTimeout(() => {
-        correctedPaper = canvas.toDataURL();
-        let myFilename = String(new Date().getTime()) + '.' + 'png';
-        setCorrectionLoading(false);
-        if (correctedPaper && data.image) {
-          const fileObj = base64StringtoFile(correctedPaper, myFilename);
-          formdata.set('onlinetest_instance', id);
-          formdata.set('assessment_id', assId);
-          if (ext === 'pdf') {
-            formdata.set('page_number', pageNumber);
-            formdata.set('width', data.viewWidth);
-            formdata.set('height', data.viewHeight);
-          }
-          formdata.set('corrected_paper_image', data.image);
-          formdata.set('corrected_paper', fileObj);
-          formdata.set('actual_paper_id', mediaId);
-          formdata.set('is_paper_corrected', 'true');
-          formdata.set('rotated_angle', angleInDegrees);
+    // const [{ id, online_test_assessment: { assessment_id: assId } = {} } = {}] =
+    //   desTestDetails;
+    // let formdata = new FormData();
+    // let correctedPaper = '';
+    // setCorrectionLoading(true);
+    // const urlCopy = url;
+    // let extenstion = urlCopy.split('.').pop();
+    // let ext = extenstion === 'JPG' ? 'jpg' : extenstion;
+    // window.scrollTo(0, 0);
 
-          handleSaveFile(fileObj);
-
-          //         axios
-          //           .post(urls.TeacherEvalDesTest, formdata, {
-          //             headers: {
-          //               Authorization: "Bearer " + localStorage.getItem("id_token"),
-          //               "Content-Type": "multipart/formData",
-          //             },
-          //           })
-          //           .then((res) => {
-          //             alert.success("Saved successfully");
-          //             if (data.operation === "manualSave") {
-          //               setisSave(false);
-          //             }
-          //             const {
-          //               data: {
-          //                 data: [
-          //                   { asessment_response: { evaluvated_result: evlRes } = {} },
-          //                 ] = [],
-          //               } = {},
-          //             } = res;
-          //             setCorrectedPaper(evlRes);
-          //             const image = getPaperImage(evlRes);
-          //             setDrawing(image);
-          //           })
-          //           .catch((err) => {
-          //             alert.error("Something went wrong with correction");
-          //           });
-        } else {
-          // alert.warning("please make changes and save");
-        }
-        // }, 3000);
-      })
-      .catch((error) => console.log('error in converting to canvas', error));
-    //   window.scrollTo(
-    //     0,
-    //     document.body.scrollHeight || document.documentElement.scrollHeight
-    //   );
+    // console.log(document.getElementById('editor-evaluvation-container'), 'dwfegrhj');
+    // html2canvas(document.getElementById('editor-evaluvation-drawing-layer'), {
+    //   logging: false,
+    //   useCORS: true,
+    //   scrollX: 0,
+    //   scrollY: 0,
+    //   backgroundColor: 'null',
+    //   // scrollY: -window.scrollY,
+    // })
+    //   .then((canvas) => {
+    //     // setTimeout(() => {
+    //     // canvas.height = 842;
+    //     // canvas.width = 595;
+    //     console.log({ canvas });
+    //     correctedPaper = data?.image;
+    //     console.log({ correctedPaper });
+    //     let myFilename = String(new Date().getTime()) + '.' + 'png';
+    //     setCorrectionLoading(false);
+    //     if (correctedPaper && data.image) {
+    //       const fileObj = base64StringtoFile(correctedPaper, myFilename);
+    //       handleSaveFile(fileObj);
+    //     } else {
+    //       // alert.warning("please make changes and save");
+    //     }
+    //     // }, 3000);
+    //   })
+    //   .catch((error) => console.log('error in converting to canvas', error));
+    // //   window.scrollTo(
+    // //     0,
+    // //     document.body.scrollHeight || document.documentElement.scrollHeight
+    // //   );
   };
   const onChange = (data) => {
     const mediaImg = data.containerImg;

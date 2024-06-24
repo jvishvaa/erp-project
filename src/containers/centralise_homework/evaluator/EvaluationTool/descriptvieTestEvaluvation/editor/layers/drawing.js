@@ -56,8 +56,8 @@ const DrawingLayer = ({
 
   useEffect(() => {
     let drawingCanvas = canvasDrawingElement.current;
-    drawingCanvas.height = height;
-    drawingCanvas.width = width;
+    drawingCanvas.height = 842;
+    drawingCanvas.width = 595;
     const context = drawingCanvas.getContext('2d');
     context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
     setContext(context);
@@ -73,8 +73,8 @@ const DrawingLayer = ({
       img.addEventListener('load', () => {
         // drawingCanvas.width = width;
         // drawingCanvas.height = height;
-        drawingCanvas.width = 700;
-        drawingCanvas.height = 500;
+        drawingCanvas.width = 595;
+        drawingCanvas.height = 842;
         context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
         context.drawImage(img, 0, 0, drawingCanvas.width, drawingCanvas.height);
       });

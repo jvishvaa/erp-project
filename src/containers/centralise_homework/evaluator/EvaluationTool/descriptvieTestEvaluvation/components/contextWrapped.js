@@ -18,6 +18,7 @@ import {
   ArrowBack,
   ArrowForward,
 } from '@material-ui/icons';
+import UndoIcon from '@material-ui/icons/Undo';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
@@ -42,6 +43,7 @@ function Evaluvation(props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [drawedChanges, setDrawedChanges] = useState({});
+  const [restore, setRestore] = useState('');
   const {
     tool,
     enableTool,
@@ -73,6 +75,8 @@ function Evaluvation(props) {
     zoom,
     isReset,
   } = useDescriptvieContex();
+
+  console.log({ restore });
 
   const showEvaluvationPage = () => {
     setOpen(!open);
@@ -279,6 +283,29 @@ function Evaluvation(props) {
           </ToggleButtonGroup>
           <ToggleButtonGroup
             exclusive
+            value={restore}
+            onChange={(e, type) => {
+              console.log(e, type, 'trqwrugwqr');
+              setRestore(type);
+            }}
+            aria-label='text formatting'
+            className='tool-group'
+          >
+            <ToggleButton
+              value='undo'
+              aria-label='paint'
+              style={{
+                display: !open ? 'none' : '',
+                borderStyle,
+              }}
+            >
+              <Tooltip title='undo' arrow>
+                <UndoIcon />
+              </Tooltip>
+            </ToggleButton>
+          </ToggleButtonGroup>
+          <ToggleButtonGroup
+            exclusive
             value={zoom}
             onChange={enableZoom}
             aria-label='text formatting'
@@ -439,6 +466,8 @@ function Evaluvation(props) {
                 handleONSaveHW={handleONSaveHW}
                 initialAngle={initialAngle}
                 zoom={zoom}
+                restore={restore}
+                setRestore={setRestore}
                 // reset={reset}
                 isReset={isReset}
                 // magnify={magnify}
