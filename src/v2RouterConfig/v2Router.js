@@ -181,8 +181,6 @@ const V2Router = () => {
                                 return <TeacherdashboardNew />;
                               case 13:
                                 return <StudentDashboardNew />; // to be replaced with student dashboard
-                              case 5:
-                              // return <DefaultDashboard />;
                               case 10:
                                 return <SuperAdmindashboardNew match={match} />;
                               default:
