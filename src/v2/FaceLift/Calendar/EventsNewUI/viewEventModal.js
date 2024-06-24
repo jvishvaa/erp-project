@@ -1,24 +1,51 @@
 import React from 'react';
-import { Button, Card, Modal, List, Row, Col } from 'antd';
-import { DownloadOutlined, CloseSquareOutlined } from '@ant-design/icons';
+import { Button, Card, Modal, Popconfirm, Popover } from 'antd';
+import {
+  DownloadOutlined,
+  WalletOutlined,
+  CalendarOutlined,
+  BarcodeOutlined,
+  CloseOutlined,
+  EditOutlined,
+  CheckOutlined,
+} from '@ant-design/icons';
 import './eventsDashboard.css';
 import Slider from 'react-slick';
 import MediaDisplay from './mediaDisplayEvents';
 import { saveAs } from 'file-saver';
+import dayjs from 'dayjs';
+import { NumberFormatter } from 'v2/CommonFormatter';
 
-const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) => {
+const ViewEventModal = ({
+  viewEventModalOpen,
+  closeViewEventModal,
+  viewEvent,
+  subscribeEvent,
+  unSubscribeEvent,
+  loading,
+  unSubscribeLoading,
+  openEventDrawer,
+  openFeedBackModal,
+  approveEvent,
+  approveLoading,
+}) => {
+  const user_level = JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
+  const is_superuser = localStorage.getItem('userDetails')
+    ? JSON.parse(localStorage.getItem('userDetails'))?.is_superuser
+    : '';
+  const is_central_user = [1, 2].includes(user_level) || is_superuser ? true : false;
   const settings = {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 2,
+    slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 1,
           slidesToScroll: 1,
         },
       },
@@ -33,7 +60,7 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
   };
   const handleDownloadAll = async (files) => {
     for (const item of files) {
-      const fullName = item?.split('.').pop();
+      const fullName = item?.split('/')[item?.split('/').length - 1];
       await downloadFile(`${item}`, fullName);
     }
   };
@@ -42,74 +69,45 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
     const blob = await response.blob();
     saveAs(blob, fullName);
   };
-  const policyDatesArray = viewEvent?.policy_dates
-    ? Object.entries(viewEvent.policy_dates).map(([date, amount]) => ({
-        date,
-        amount: `Rs. ${amount}`,
-      }))
-    : [];
 
+  console.log({ viewEvent });
   return (
     <>
       <Modal
-        title={
-          <div className='d-flex justify-content-between align-items-center'>
-            <div>{viewEvent?.title}</div>
-            <div>
-              <CloseSquareOutlined
-                onClick={closeViewEventModal}
-                className='th-close-icon'
-              />
-            </div>
-          </div>
-        }
+        title={'Events Details'}
         visible={viewEventModalOpen}
-        className='th-event-modal-preview'
+        centered
+        className='th-upload-modal'
         footer={null}
         onCancel={() => closeViewEventModal()}
-        style={{
-          top: '0%',
-          height: '100%',
-          bottom: '0%',
-        }}
-        width='90%'
+        width='90vw'
       >
-        <>
+        <div className='py-3 th-bg-grey' style={{ maxHeight: '80vh', overflowY: 'auto' }}>
           <div className='row'>
-            <div className='row col-lg-12 col-md-12 col-sm-12 col-12'>
-              <div className='col-lg-6 col-md-12 col-sm-12 col-12'>
-                <Card className='th-images-card'>
-                  {viewEvent?.attachments?.length > 0 ? (
-                    <Slider {...settings} className='th-slick th-post-slick'>
-                      {viewEvent?.attachments?.map((each) => (
-                        <MediaDisplay
-                          mediaName={each}
-                          mediaLink={each}
-                          alt='File Not Supported'
-                          className='w-100 th-br-20 p-3'
-                          style={{ objectFit: 'contain' }}
-                        />
-                      ))}
-                    </Slider>
-                  ) : (
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        fontSize: '12px',
-                        fontStyle: 'italic',
-                        height: '300px',
-                      }}
-                    >
-                      No Attachments Available
-                    </div>
-                  )}
+            <div className='col-md-8'>
+              {viewEvent?.attachments?.length > 0 && (
+                <div className='th-br-10 mb-4 py-2 th-bg-white'>
+                  <Slider
+                    {...settings}
+                    className='th-slick th-post-slick'
+                    style={{ height: 320 }}
+                  >
+                    {viewEvent?.attachments?.map((each) => (
+                      <MediaDisplay
+                        mediaName={each}
+                        mediaLink={each}
+                        alt='File Not Supported'
+                        className='w-100 th-br-20 p-3'
+                      />
+                    ))}
+                  </Slider>
+
                   {viewEvent?.attachments?.length > 0 && (
                     <div className='text-right'>
                       <Button
                         size='small'
-                        className='secondary-button'
+                        className='th-14'
+                        type='link'
                         icon={<DownloadOutlined />}
                         onClick={() => {
                           handleDownloadAll(viewEvent?.attachments);
@@ -119,116 +117,13 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                       </Button>
                     </div>
                   )}
-                </Card>
-              </div>
-              <div className='col-lg-3 col-md-6 col-sm-12 col-12'>
-                <List
-                  size='small'
-                  className='th-event-list'
-                  header={<div className='th-event-list-header'>Event Details</div>}
-                  dataSource={[
-                    { title: 'Reg Start Date', content: viewEvent?.reg_start },
-                    { title: 'Reg End Date', content: viewEvent?.reg_end },
-                    { title: 'Event Date', content: viewEvent?.event_date },
-                    {
-                      title: 'Subscription',
-                      content: viewEvent?.is_subscription_need ? 'Yes' : 'No',
-                    },
-                    {
-                      title: 'Amount',
-                      content: viewEvent?.event_price
-                        ? `Rs. ${viewEvent?.event_price}`
-                        : 'Rs. 0',
-                    },
-                    {
-                      title: 'Refundable',
-                      content: viewEvent?.refundable ? 'Yes' : 'No',
-                    },
-                  ]}
-                  renderItem={(item) => (
-                    <List.Item className='th-event-list-item'>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          width: '100%',
-                        }}
-                      >
-                        <span style={{ flex: 1 }}>{item.title}</span>
-                        <span style={{ flex: 1, textAlign: 'right' }}>
-                          {item.content}
-                        </span>
-                      </div>
-                    </List.Item>
-                  )}
-                />
-              </div>
-              <div className='col-lg-3 col-md-6 col-sm-12 col-12'>
-                <List
-                  size='small'
-                  className='th-event-list'
-                  header={
-                    <>
-                      <div className='th-event-list-header'>Refund Policy</div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          padding: '10px 10px',
-                          borderBottom: '1px solid #f0f0f0',
-                          background: '#fafafa',
-                        }}
-                      >
-                        <span style={{ flex: 1 }}>
-                          <strong>Cancel Before</strong>
-                        </span>
-                        <span style={{ flex: 1, textAlign: 'right' }}>
-                          <strong>Refund Amount</strong>
-                        </span>
-                      </div>
-                    </>
-                  }
-                  dataSource={policyDatesArray.length > 0 ? policyDatesArray : [{}]}
-                  renderItem={(item) =>
-                    viewEvent?.refundable && policyDatesArray.length > 0 ? (
-                      <List.Item className='th-event-list-item'>
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            width: '100%',
-                          }}
-                        >
-                          <span style={{ flex: 1 }}>{item.date}</span>
-                          <span style={{ flex: 1, textAlign: 'right' }}>
-                            {item.amount}
-                          </span>
-                        </div>
-                      </List.Item>
-                    ) : (
-                      <List.Item className='d-flex justify-content-center align-items-center th-event-list-item'>
-                        <span
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            fontSize: '12px',
-                            fontStyle: 'italic',
-                            color: '#f44336',
-                          }}
-                        >
-                          No Refund Once Subscribed
-                        </span>
-                      </List.Item>
-                    )
-                  }
-                />
-              </div>
-            </div>
-            <div className='col-lg-12 col-md-12 col-sm-12 col-12'>
-              <Card className='th-event-card'>
-                <div className='card-content'>
-                  <div className='card-title'>Event Highlights</div>
+                </div>
+              )}
+              <Card
+                className='th-br-20 mb-4'
+                title={<div className='font-weight-bold th-grey'>Event Highlights</div>}
+              >
+                <div className='th-calendar-description'>
                   <div
                     dangerouslySetInnerHTML={{
                       __html: viewEvent?.highlight,
@@ -236,9 +131,11 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                   />
                 </div>
               </Card>
-              <Card className='th-event-card'>
-                <div className='card-content'>
-                  <div className='card-title'>Event Description</div>
+              <Card
+                className='th-br-20'
+                title={<div className='font-weight-bold th-grey'>Event Description</div>}
+              >
+                <div className='th-calendar-description'>
                   <div
                     dangerouslySetInnerHTML={{
                       __html: viewEvent?.description,
@@ -247,11 +144,225 @@ const viewEventModal = ({ viewEventModalOpen, closeViewEventModal, viewEvent }) 
                 </div>
               </Card>
             </div>
+            <div className='col-md-4 pl-md-0'>
+              <Card className='th-br-20 th-bg-blue-1 mb-4'>
+                <div className='d-flex flex-column' style={{ gap: 10 }}>
+                  <div className='th-fw-700 th-18'>{viewEvent?.title}</div>
+
+                  <div
+                    className='d-flex align-items-center justify-content-start'
+                    style={{ gap: 10 }}
+                  >
+                    <BarcodeOutlined className='th-grey' />{' '}
+                    <div className='th-black-1'>
+                      Registration :{' '}
+                      <span className=' th-fw-600'>
+                        {viewEvent?.reg_start} to {viewEvent?.reg_end}
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    className='d-flex align-items-center justify-content-start'
+                    style={{ gap: 10 }}
+                  >
+                    <CalendarOutlined className='th-grey' />{' '}
+                    <div className='th-black-1'>
+                      Event Date :{' '}
+                      <span className=' th-fw-600'>{viewEvent?.event_date}</span>
+                    </div>
+                  </div>
+
+                  <div className={`d-flex flex-column align-items-start`}>
+                    {viewEvent?.is_subscription_need && (
+                      <div
+                        className='d-flex align-items-center justify-content-start pb-2'
+                        style={{ gap: 10 }}
+                      >
+                        <WalletOutlined className='th-grey' />{' '}
+                        <div className='th-black-1 th-fw-700 th-22 '>
+                          ₹{' '}
+                          {viewEvent?.event_price
+                            ? `${NumberFormatter(viewEvent?.event_price)}`
+                            : '0'}
+                        </div>
+                      </div>
+                    )}
+                    {user_level == 13 ? (
+                      viewEvent?.approval_status == 4 ? (
+                        viewEvent?.is_subscription_need ? (
+                          viewEvent?.subscription == 'unsubscribed' ? (
+                            <Button type='ghost' className='th-br-6 w-100'>
+                              Unsubscribed
+                            </Button>
+                          ) : (
+                            <>
+                              {viewEvent?.subscription == 'subscribed' ? (
+                                <Popconfirm
+                                  title='Are you sure you want to unsubscribe?'
+                                  okText={'Unsubscribe'}
+                                  onConfirm={() => {
+                                    unSubscribeEvent({
+                                      eventId: viewEvent?.id,
+                                    });
+                                  }}
+                                  zIndex={2100}
+                                  placement='bottomRight'
+                                >
+                                  <Button
+                                    type='danger'
+                                    className='th-br-6 w-100'
+                                    loading={unSubscribeLoading}
+                                  >
+                                    Unsubscribe
+                                  </Button>
+                                </Popconfirm>
+                              ) : (
+                                <Popconfirm
+                                  title='Are you sure you want to subscribe?'
+                                  okText={'Subscribe'}
+                                  onConfirm={() => {
+                                    subscribeEvent({
+                                      eventId: viewEvent?.id,
+                                      row: viewEvent,
+                                    });
+                                  }}
+                                  zIndex={2100}
+                                  placement='bottomRight'
+                                >
+                                  <Button
+                                    type='primary'
+                                    className='th-br-6 w-100'
+                                    loading={loading}
+                                  >
+                                    Subscribe
+                                  </Button>
+                                </Popconfirm>
+                              )}
+                              {viewEvent?.refundable && (
+                                <div className='th-grey pt-2 th-12'>
+                                  Note: Please read the refund policy
+                                </div>
+                              )}
+                            </>
+                          )
+                        ) : null
+                      ) : viewEvent?.approval_status == 3 ? (
+                        <Button type='ghost' className='th-br-6 w-100' disabled>
+                          Cancelled
+                        </Button>
+                      ) : (
+                        ''
+                      )
+                    ) : (
+                      <div className='d-flex align-items-center justify-content-between w-100'>
+                        {([10, 14, 34, 8, 26].includes(user_level) ||
+                          is_central_user) && (
+                          <>
+                            {viewEvent?.approval_status === 1 && (
+                              <Button
+                                type='default'
+                                icon={<EditOutlined />}
+                                onClick={() =>
+                                  openEventDrawer({ key: 'edit', rowData: viewEvent })
+                                }
+                                className='th-br-6'
+                              >
+                                Edit
+                              </Button>
+                            )}
+                          </>
+                        )}
+                        {[8, 26].includes(user_level) && (
+                          <>
+                            {viewEvent?.approval_status === 4 && (
+                              <Button
+                                type='default'
+                                icon={<CloseOutlined />}
+                                onClick={() =>
+                                  openFeedBackModal({
+                                    key: 'cancel',
+                                    id: viewEvent?.id,
+                                  })
+                                }
+                                className='th-br-6 w-100'
+                              >
+                                Cancel Event
+                              </Button>
+                            )}
+                            {viewEvent?.approval_status === 1 && (
+                              <>
+                                <Popconfirm
+                                  zIndex={2100}
+                                  placement='bottom'
+                                  title='Are you sure to approve the event ?'
+                                  onConfirm={() =>
+                                    approveEvent({ approveId: viewEvent?.id })
+                                  }
+                                  okText={'Approve'}
+                                >
+                                  <Button
+                                    loading={approveLoading}
+                                    type='primary'
+                                    icon={<CheckOutlined />}
+                                    className='th-br-6'
+                                  >
+                                    Approve
+                                  </Button>
+                                </Popconfirm>
+                                <Popconfirm
+                                  zIndex={2100}
+                                  placement='bottomLeft'
+                                  okText={'Reject'}
+                                  title='Are you sure to approve the event ?'
+                                  onConfirm={() =>
+                                    openFeedBackModal({
+                                      key: 'reject',
+                                      id: viewEvent?.id,
+                                    })
+                                  }
+                                >
+                                  <Button
+                                    type='danger'
+                                    icon={<CloseOutlined />}
+                                    className='th-br-6'
+                                  >
+                                    Reject
+                                  </Button>
+                                </Popconfirm>
+                              </>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </Card>
+              {viewEvent?.refundable && (
+                <Card
+                  className='th-br-20'
+                  title={<div className='font-weight-bold th-grey'>Refund Policy</div>}
+                >
+                  {Object.keys(viewEvent?.policy_dates)?.map((item) => {
+                    return (
+                      <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
+                        <div className='th-grey'>
+                          Till {dayjs(item).format('MMM D, YYYY')}
+                        </div>
+                        <div className='th-black-1 th-fw-500'>
+                          ₹ {viewEvent?.policy_dates[item]}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </Card>
+              )}
+            </div>
           </div>
-        </>
+        </div>
       </Modal>
     </>
   );
 };
 
-export default viewEventModal;
+export default ViewEventModal;

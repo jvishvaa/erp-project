@@ -160,6 +160,9 @@ const EventsDashboardStudent = () => {
               duration: notificationDuration,
               className: 'notification-container',
             });
+            if (viewEventModalOpen) {
+              closeViewEventModal();
+            }
             fetchTableData();
             fetchImprestWalletData();
           } else if (response?.data?.status_code == 402) {
@@ -199,6 +202,9 @@ const EventsDashboardStudent = () => {
             duration: 5,
             className: 'notification-container',
           });
+          if (viewEventModalOpen) {
+            closeViewEventModal();
+          }
           closeUnSubscribeModal();
           fetchTableData();
           fetchImprestWalletData();
@@ -602,6 +608,10 @@ const EventsDashboardStudent = () => {
         viewEventModalOpen={viewEventModalOpen}
         closeViewEventModal={closeViewEventModal}
         viewEvent={viewEvent}
+        subscribeEvent={subscribeEvent}
+        unSubscribeEvent={unSubscribeEvent}
+        loading={loading}
+        unSubscribeLoading={unSubscribeLoading}
       />
       <Modal
         title={
