@@ -1,10 +1,13 @@
 import React from 'react';
-import { Button, Card, Modal, Popconfirm } from 'antd';
+import { Button, Card, Modal, Popconfirm, Popover } from 'antd';
 import {
   DownloadOutlined,
   WalletOutlined,
   CalendarOutlined,
   BarcodeOutlined,
+  CloseOutlined,
+  EditOutlined,
+  CheckOutlined,
 } from '@ant-design/icons';
 import './eventsDashboard.css';
 import Slider from 'react-slick';
@@ -21,8 +24,16 @@ const ViewEventModal = ({
   unSubscribeEvent,
   loading,
   unSubscribeLoading,
+  openEventDrawer,
+  openFeedBackModal,
+  approveEvent,
+  approveLoading,
 }) => {
   const user_level = JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
+  const is_superuser = localStorage.getItem('userDetails')
+    ? JSON.parse(localStorage.getItem('userDetails'))?.is_superuser
+    : '';
+  const is_central_user = [1, 2].includes(user_level) || is_superuser ? true : false;
   const settings = {
     dots: false,
     infinite: false,
@@ -206,19 +217,26 @@ const ViewEventModal = ({
                                   </Button>
                                 </Popconfirm>
                               ) : (
-                                <Button
-                                  type='primary'
-                                  className='th-br-6 w-100'
-                                  loading={loading}
-                                  onClick={() => {
+                                <Popconfirm
+                                  title='Are you sure you want to subscribe?'
+                                  okText={'Subscribe'}
+                                  onConfirm={() => {
                                     subscribeEvent({
                                       eventId: viewEvent?.id,
                                       row: viewEvent,
                                     });
                                   }}
+                                  zIndex={2100}
+                                  placement='bottomRight'
                                 >
-                                  Subscribe
-                                </Button>
+                                  <Button
+                                    type='primary'
+                                    className='th-br-6 w-100'
+                                    loading={loading}
+                                  >
+                                    Subscribe
+                                  </Button>
+                                </Popconfirm>
                               )}
                               {viewEvent?.refundable && (
                                 <div className='th-grey pt-2 th-12'>
@@ -235,7 +253,88 @@ const ViewEventModal = ({
                       ) : (
                         ''
                       )
-                    ) : null}
+                    ) : (
+                      <div className='d-flex align-items-center justify-content-between w-100'>
+                        {([10, 14, 34, 8, 26].includes(user_level) ||
+                          is_central_user) && (
+                          <>
+                            {viewEvent?.approval_status === 1 && (
+                              <Button
+                                type='default'
+                                icon={<EditOutlined />}
+                                onClick={() =>
+                                  openEventDrawer({ key: 'edit', rowData: viewEvent })
+                                }
+                                className='th-br-6'
+                              >
+                                Edit
+                              </Button>
+                            )}
+                          </>
+                        )}
+                        {[8, 26].includes(user_level) && (
+                          <>
+                            {viewEvent?.approval_status === 4 && (
+                              <Button
+                                type='default'
+                                icon={<CloseOutlined />}
+                                onClick={() =>
+                                  openFeedBackModal({
+                                    key: 'cancel',
+                                    id: viewEvent?.id,
+                                  })
+                                }
+                                className='th-br-6 w-100'
+                              >
+                                Cancel Event
+                              </Button>
+                            )}
+                            {viewEvent?.approval_status === 1 && (
+                              <>
+                                <Popconfirm
+                                  zIndex={2100}
+                                  placement='bottom'
+                                  title='Are you sure to approve the event ?'
+                                  onConfirm={() =>
+                                    approveEvent({ approveId: viewEvent?.id })
+                                  }
+                                  okText={'Approve'}
+                                >
+                                  <Button
+                                    loading={approveLoading}
+                                    type='primary'
+                                    icon={<CheckOutlined />}
+                                    className='th-br-6'
+                                  >
+                                    Approve
+                                  </Button>
+                                </Popconfirm>
+                                <Popconfirm
+                                  zIndex={2100}
+                                  placement='bottomLeft'
+                                  okText={'Reject'}
+                                  title='Are you sure to approve the event ?'
+                                  onConfirm={() =>
+                                    openFeedBackModal({
+                                      key: 'reject',
+                                      id: viewEvent?.id,
+                                    })
+                                  }
+                                >
+                                  <Button
+                                    type='danger'
+                                    icon={<CloseOutlined />}
+                                    className='th-br-6'
+                                  >
+                                    Reject
+                                  </Button>
+                                </Popconfirm>
+                              </>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </Card>
