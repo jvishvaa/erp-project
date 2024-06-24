@@ -254,7 +254,10 @@ const ViewEventModal = ({
                         ''
                       )
                     ) : (
-                      <div className='d-flex align-items-center justify-content-between w-100'>
+                      <div
+                        className='d-flex align-items-center justify-content-between w-100'
+                        style={{ gap: 5 }}
+                      >
                         {([10, 14, 34, 8, 26].includes(user_level) ||
                           is_central_user) && (
                           <>
@@ -265,7 +268,7 @@ const ViewEventModal = ({
                                 onClick={() =>
                                   openEventDrawer({ key: 'edit', rowData: viewEvent })
                                 }
-                                className='th-br-6'
+                                className='th-br-6 flex-fill w-100'
                               >
                                 Edit
                               </Button>
@@ -304,7 +307,7 @@ const ViewEventModal = ({
                                     loading={approveLoading}
                                     type='primary'
                                     icon={<CheckOutlined />}
-                                    className='th-br-6'
+                                    className='th-br-6 flex-fill w-100'
                                   >
                                     Approve
                                   </Button>
@@ -324,7 +327,7 @@ const ViewEventModal = ({
                                   <Button
                                     type='danger'
                                     icon={<CloseOutlined />}
-                                    className='th-br-6'
+                                    className='th-br-6 flex-fill w-100'
                                   >
                                     Reject
                                   </Button>

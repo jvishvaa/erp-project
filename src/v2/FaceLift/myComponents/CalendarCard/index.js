@@ -89,7 +89,7 @@ const CalendarCard = () => {
           response.data.events_data.map((item) =>
             eventsArr.push({
               id: item.id,
-              event_name: item.event_name,
+              event_name: item.title,
               attachments: item.attachments,
               description: item.description,
               start_time: moment(item.start_time).format('YYYY-MM-DD'),
@@ -104,7 +104,8 @@ const CalendarCard = () => {
               reg_start: item?.reg_start,
               subscription: item?.subscription,
               is_subscription_need: item?.is_subscription_need,
-              policy_dates: item?.policies,
+              policy_dates: item?.policy_dates,
+              refundable: item?.refundable,
               refundable: item?.refundable,
             })
           );
@@ -155,7 +156,7 @@ const CalendarCard = () => {
           });
           setModData((prev) => ({
             ...prev,
-            subscription: action === 'subscribe' ? 1 : 0,
+            subscription: action === 'subscribe' ? 'subscribed' : 'unsubscribed',
           }));
           fetchEventsData({
             start_date: monthStartDate,
@@ -436,7 +437,7 @@ const CalendarCard = () => {
           </div>
         </div>
         <div className='row align-items-center py-2'>
-          <div className='col-4'>
+          <div className='col-4 px-1'>
             <div className='d-flex align-items-center' style={{ gap: 5 }}>
               <div className='th-bg-blue-4' style={{ width: 14, height: 14 }} />
               <div className='th-blue-2'>
@@ -445,7 +446,7 @@ const CalendarCard = () => {
               </div>
             </div>
           </div>
-          <div className='col-4'>
+          <div className='col-4 px-1'>
             <div className='d-flex align-items-center' style={{ gap: 5 }}>
               <div className='th-bg-violet-2' style={{ width: 14, height: 14 }} />
               <div className='th-violet-2'>
@@ -473,7 +474,7 @@ const CalendarCard = () => {
                   Cancelled
                 </Button>
               ) : modData?.is_subscription_need ? (
-                modData?.subscription == 0 ? (
+                modData?.subscription == 'unsubscribed' ? (
                   <Button
                     type='default'
                     className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
@@ -481,14 +482,14 @@ const CalendarCard = () => {
                   >
                     Unsubscribed
                   </Button>
-                ) : modData?.subscription == 1 ? (
+                ) : modData?.subscription == 'subscribed' ? (
                   <Popconfirm
                     title={
                       <div className='d-flex flex-column' style={{ gap: 5 }}>
                         <div className=''>Are you sure you want to unsubscibe?</div>
                         {modData?.refundable && (
                           <div className='th-grey th-14 mt-2'>
-                            Note: Please read the
+                            Note: Please read the&nbsp;
                             <span
                               className='th-pointer th-primary th-fw-500'
                               onClick={() => {
@@ -503,12 +504,10 @@ const CalendarCard = () => {
                     }
                     okText={'Unsubscribe'}
                     onConfirm={() => {
-                      if (modData?.subscription == 1) {
-                        handleEventAction({
-                          eventId: modData?.id,
-                          action: 'unsubscribe',
-                        });
-                      }
+                      handleEventAction({
+                        eventId: modData?.id,
+                        action: 'unsubscribe',
+                      });
                     }}
                     zIndex={2100}
                     placement='right'
@@ -522,14 +521,14 @@ const CalendarCard = () => {
                       Unsubscribe
                     </Button>
                   </Popconfirm>
-                ) : (
+                ) : modData?.subscription == 'pending' ? (
                   <Popconfirm
                     title={
                       <div className='d-flex flex-column' style={{ gap: 5 }}>
                         <div className=''>Are you sure you want to subscibe?</div>
                         {modData?.refundable && (
                           <div className='th-grey th-14 mt-2'>
-                            Note: Please read the
+                            Note: Please read the&nbsp;
                             <span
                               className='th-pointer th-primary th-fw-500'
                               onClick={() => {
@@ -544,12 +543,10 @@ const CalendarCard = () => {
                     }
                     okText={'Subscribe'}
                     onConfirm={() => {
-                      if (modData?.subscription != 1) {
-                        handleEventAction({
-                          eventId: modData?.id,
-                          action: 'subscribe',
-                        });
-                      }
+                      handleEventAction({
+                        eventId: modData?.id,
+                        action: 'subscribe',
+                      });
                     }}
                     zIndex={2100}
                     placement='right'
@@ -563,6 +560,8 @@ const CalendarCard = () => {
                       Subscribe
                     </Button>
                   </Popconfirm>
+                ) : (
+                  ''
                 )
               ) : null}
             </div>
@@ -691,10 +690,7 @@ const CalendarCard = () => {
                         return (
                           <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
                             <div className='th-grey'>
-                              Till{' '}
-                              {moment(modData?.start_time)
-                                .subtract(item, 'days')
-                                .format('MMM D, YYYY')}
+                              Till {moment(item).format('MMM D, YYYY')}
                             </div>
                             <div className='th-black-1 th-fw-500'>
                               ₹ {modData?.policy_dates[item]}

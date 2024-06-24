@@ -2132,15 +2132,17 @@ const EventsDashboardAdmin = () => {
           </Modal>
         </>
       </Drawer>
-      <ViewEventModal
-        viewEventModalOpen={viewEventModalOpen}
-        closeViewEventModal={closeViewEventModal}
-        viewEvent={viewEvent}
-        openEventDrawer={openEventDrawer}
-        openFeedBackModal={openFeedBackModal}
-        approveEvent={approveEvent}
-        approveLoading={loading}
-      />
+      {viewEventModalOpen && (
+        <ViewEventModal
+          viewEventModalOpen={viewEventModalOpen}
+          closeViewEventModal={closeViewEventModal}
+          viewEvent={viewEvent}
+          openEventDrawer={openEventDrawer}
+          openFeedBackModal={openFeedBackModal}
+          approveEvent={approveEvent}
+          approveLoading={loading}
+        />
+      )}
       <Drawer
         title={
           <div className='d-flex justify-content-between align-items-center'>
