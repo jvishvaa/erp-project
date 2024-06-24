@@ -386,6 +386,9 @@ const EventsDashboardAdmin = () => {
             duration: notificationDuration,
             className: 'notification-container',
           });
+          if (viewEventModalOpen) {
+            closeViewEventModal();
+          }
           closeEventDrawer();
           handleFetchTableData();
         }
@@ -414,6 +417,9 @@ const EventsDashboardAdmin = () => {
             duration: notificationDuration,
             className: 'notification-container',
           });
+          if (viewEventModalOpen) {
+            closeViewEventModal();
+          }
           // if (response?.data?.result?.length > 0) {
           //   let InitiateAnnouncement = response?.data?.result?.map((each, index) =>
           //     sendAnnouncement(each, response?.data?.result?.length, index)
@@ -472,6 +478,9 @@ const EventsDashboardAdmin = () => {
             className: 'notification-container',
           });
         }
+        if (viewEventModalOpen) {
+          closeViewEventModal();
+        }
         closeFeedBackModal();
         fetchTableData();
       })
@@ -501,6 +510,9 @@ const EventsDashboardAdmin = () => {
             duration: notificationDuration,
             className: 'notification-container',
           });
+        }
+        if (viewEventModalOpen) {
+          closeViewEventModal();
         }
         closeFeedBackModal();
         fetchTableData();
@@ -2124,6 +2136,10 @@ const EventsDashboardAdmin = () => {
         viewEventModalOpen={viewEventModalOpen}
         closeViewEventModal={closeViewEventModal}
         viewEvent={viewEvent}
+        openEventDrawer={openEventDrawer}
+        openFeedBackModal={openFeedBackModal}
+        approveEvent={approveEvent}
+        approveLoading={loading}
       />
       <Drawer
         title={
