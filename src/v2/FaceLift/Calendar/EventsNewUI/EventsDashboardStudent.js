@@ -604,15 +604,17 @@ const EventsDashboardStudent = () => {
           </div>
         </div>
       </div>
-      <ViewEventModal
-        viewEventModalOpen={viewEventModalOpen}
-        closeViewEventModal={closeViewEventModal}
-        viewEvent={viewEvent}
-        subscribeEvent={subscribeEvent}
-        unSubscribeEvent={unSubscribeEvent}
-        loading={loading}
-        unSubscribeLoading={unSubscribeLoading}
-      />
+      {viewEventModalOpen && (
+        <ViewEventModal
+          viewEventModalOpen={viewEventModalOpen}
+          closeViewEventModal={closeViewEventModal}
+          viewEvent={viewEvent}
+          subscribeEvent={subscribeEvent}
+          unSubscribeEvent={unSubscribeEvent}
+          loading={loading}
+          unSubscribeLoading={unSubscribeLoading}
+        />
+      )}
       <Modal
         title={
           <div className='d-flex justify-content-between align-items-center'>
@@ -759,7 +761,7 @@ const EventsDashboardStudent = () => {
               <Button
                 size='small'
                 className='primary-button drawer-modal-footer-button'
-                onClick={closeUnSubscribeModal}
+                onClick={() => setRechargeModal(false)}
               >
                 Close
               </Button>
