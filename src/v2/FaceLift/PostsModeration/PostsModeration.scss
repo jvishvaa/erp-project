@@ -153,6 +153,10 @@
     border: 1px solid var(--primary-color) !important;
     color: var(--primary-color) !important;
   }
+  .th-comments-active {
+    background: var(--primary-color) !important;
+    color: var(--text-color) !important;
+  }
   .th-cancelled-active {
     background: var(--cancelled-color) !important;
     color: var(--text-color) !important;
