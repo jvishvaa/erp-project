@@ -122,7 +122,7 @@ const StyledClearButton = withStyles((theme) => ({
       backgroundColor: '#E2E2E2 !important',
     },
   },
-}))(Button); 
+}))(Button);
 
 const EachLearn = () => {
   const classes = useStyles({});
@@ -131,17 +131,15 @@ const EachLearn = () => {
   const udaanDetails = JSON.parse(localStorage.getItem('udaanDetails')) || [];
   const udaanToken = udaanDetails?.personal_info?.token;
   const moduleData = udaanDetails?.role_permission?.modules;
-  const [ courseId , setCourseId ] = useState('');
+  const [courseId, setCourseId] = useState('');
   const userId = udaanDetails.personal_info.user_id;
   const [certificateBtn, setCertificateBtn] = useState(true);
   const [bottomHRef, setBottomHRef] = useState('');
   const ratingStatus = sessionStorage.getItem('ratingStatus');
-    const [ eachLearn , setEachLearn  ] = useState('');
-    const [ desc , setDesc ] = useState('');
+  const [eachLearn, setEachLearn] = useState('');
+  const [desc, setDesc] = useState('');
 
-
-    const { setAlert } = useContext(AlertNotificationContext);
-
+  const { setAlert } = useContext(AlertNotificationContext);
 
   useEffect(() => {
     if (moduleData && moduleData.length) {
@@ -152,17 +150,17 @@ const EachLearn = () => {
         }
       });
     }
-    if(history?.location?.state){
-        setEachLearn(history?.location?.state)
-        console.log(history?.location?.state , "his");
+    if (history?.location?.state) {
+      setEachLearn(history?.location?.state);
+      console.log(history?.location?.state, 'his');
     }
   }, []);
 
   const history = useHistory();
 
   const handleBack = () => {
-      // history.push('/subjectTrain');
-      history.goBack();
+    // history.push('/subjectTrain');
+    history.goBack();
   };
 
   const getCardColor = (index) => {
@@ -171,68 +169,64 @@ const EachLearn = () => {
     return colors[diffColors];
   };
 
-  const handleEditorChange = (content, editor) => {
-      console.log(content , "conte");
-      setDesc(content);
+  const handleEditorChange = (content, delta, source, editor) => {
+    console.log(content, 'conte');
+    setDesc(content);
     // setDescription(content);
     // setDescriptionDisplay(editor?.getContent({ format: 'text' }));
   };
 
   const submitNote = () => {
-      let data = {
-        learning_module: history?.location?.state?.id,
-        notes: desc
-      }
+    let data = {
+      learning_module: history?.location?.state?.id,
+      notes: desc,
+    };
 
-      axios
-      .post(
-        `${endpoints.sureLearning.SaveNotes}`,data,
-        {
-          headers: {
-            Authorization: `Bearer ${udaanToken}`,
-            module: moduleId,
-          },
-        }
-      )
+    axios
+      .post(`${endpoints.sureLearning.SaveNotes}`, data, {
+        headers: {
+          Authorization: `Bearer ${udaanToken}`,
+          module: moduleId,
+        },
+      })
       .then((response) => {
-          console.log(response , "vid");
-          setAlert('success', 'Notes Saved !')
-          history.push('/learningVideos')
+        console.log(response, 'vid');
+        setAlert('success', 'Notes Saved !');
+        history.push('/learningVideos');
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
-//   useEffect(() => {
-//       handleChapters()
-//   }, [moduleId]);
+  //   useEffect(() => {
+  //       handleChapters()
+  //   }, [moduleId]);
 
-//   const handleChapters = () => {
-//       if(moduleId !== null){
-//     axios
-//       .get(
-//         `${endpoints.sureLearning.LearningVideos}?page_size=5&page=2&type=1`,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${udaanToken}`,
-//             module: moduleId,
-//           },
-//         }
-//       )
-//       .then((response) => {
-//           console.log(response , "vid");
-//         setLearnList(response.data.results);
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
-//     }
-//   };
+  //   const handleChapters = () => {
+  //       if(moduleId !== null){
+  //     axios
+  //       .get(
+  //         `${endpoints.sureLearning.LearningVideos}?page_size=5&page=2&type=1`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${udaanToken}`,
+  //             module: moduleId,
+  //           },
+  //         }
+  //       )
+  //       .then((response) => {
+  //           console.log(response , "vid");
+  //         setLearnList(response.data.results);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //       });
+  //     }
+  //   };
 
-  
   return (
-    <Layout >
+    <Layout>
       <div className={classes.parentDiv} id='eachLear'>
         <CommonBreadcrumbs
           componentName='Sure Learning'
@@ -259,7 +253,7 @@ const EachLearn = () => {
               fullWidth
               size='medium'
               // style={{ width: '100%' }}
-            //   className='cancelButton labelColor'
+              //   className='cancelButton labelColor'
               // onClick={history.push('/subjectTrain')}
               onClick={submitNote}
             >
@@ -267,9 +261,9 @@ const EachLearn = () => {
             </Button>
           </Grid>
         </Grid>
-        <div className='titleLearn'  >
-            <p>{eachLearn?.title}</p>
-            </div>
+        <div className='titleLearn'>
+          <p>{eachLearn?.title}</p>
+        </div>
         <div
           style={{
             display: 'flex',
@@ -277,19 +271,26 @@ const EachLearn = () => {
             // flexWrap: 'wrap',
             justifyContent: 'space-evenly',
           }}
-          className="video-area"
+          className='video-area'
         >
-         <div className='video-box'>
-             <VideoModule file={eachLearn?.video}  />
-         </div>
-          <div className='desc-area' >
-          {ReactHtmlParser( eachLearn?.text)}
+          <div className='video-box'>
+            <VideoModule file={eachLearn?.video} />
           </div>
+          <div className='desc-area'>{ReactHtmlParser(eachLearn?.text)}</div>
         </div>
         <div className='tinyEditor'>
-          <MyTinyEditor 
+          {/* <MyTinyEditor 
               handleEditorChange={handleEditorChange}
-          />
+          /> */}
+          <div className='py-2 w-100 font-weight-normal'>
+            <ReactQuillEditor
+              value={desc}
+              onChange={(content, delta, source, editor) =>
+                handleEditorChange(content, delta, source, editor)
+              }
+              placeholder='Book description...'
+            />
+          </div>
         </div>
       </div>
     </Layout>

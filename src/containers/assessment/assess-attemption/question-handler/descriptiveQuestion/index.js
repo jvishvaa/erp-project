@@ -84,7 +84,6 @@
 
 // export default DescriptiveQuestion;
 
-
 import React, { useState, useContext, useEffect } from 'react';
 import '../../assess-attemption.css';
 // import { TextareaAutosize } from '@material-ui/core';
@@ -92,6 +91,7 @@ import ReactHtmlParser from 'react-html-parser';
 // import TinyMce from '../../../../../components/TinyMCE/tinyMce';
 import MyTinyEditor from '../../../../question-bank/create-question/tinymce-editor';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
+import ReactQuillEditor from '../../../../../components/reactQuill';
 
 const DescriptiveQuestion = () => {
   const {
@@ -121,7 +121,7 @@ const DescriptiveQuestion = () => {
   const [{ answer, options, question }] = question_answer;
   const [textEditorContent, setTextEditorContent] = useState('');
 
-  const handleEditorChange = (content, editor) => {
+  const handleEditorChange = (content, delta, source, editor) => {
     content = content.replace(/&nbsp;/g, '');
     // editor?.getContent({ format: 'text' })
     setTextEditorContent(content);
@@ -139,12 +139,22 @@ const DescriptiveQuestion = () => {
     <div>
       <div className='mcq-question-wrapper'>
         <p className='descriptive_question_header'>{ReactHtmlParser(question)}</p>
-        <MyTinyEditor
+        {/* <MyTinyEditor
           id={`userId${currentQuestionObj?.id}`}
           content={currentQuestionObj?.user_response?.answer}
           handleEditorChange={handleEditorChange}
           placeholder='Answer...'
-        />
+        /> */}
+        <div className='py-2 w-100 font-weight-normal'>
+          <ReactQuillEditor
+            id={`userId${currentQuestionObj?.id}`}
+            value={currentQuestionObj?.user_response?.answer}
+            onChange={(content, delta, source, editor) =>
+              handleEditorChange(content, delta, source, editor)
+            }
+            placeholder='Answer...'
+          />
+        </div>
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ import SingleOption from './single-option';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './multiple-choice.css';
 import MyTinyEditor from '../../tinymce-editor';
+import ReactQuillEditor from 'components/reactQuill';
 
 const useStyles = makeStyles((theme) => ({
   questionTag: {
@@ -687,12 +688,12 @@ const MultipleChoice = ({
     }
   };
 
-  const handleEditorChange = (content, editor) => {
+  const handleEditorChange = (content, delta, source, editor) => {
     if (showQuestionType?.Descriptive && editor?.id?.includes('answerEditor')) {
       setDescriptiveAnswer(content);
     } else if (editor?.id?.startsWith('questionEditor')) {
       setQuestion(content);
-      setQuestionDisplay(editor?.getContent({ format: 'text' }));
+      setQuestionDisplay(editor?.getText());
     }
   };
 
@@ -798,20 +799,42 @@ const MultipleChoice = ({
       {toggle ? (
         <div className='questionContainer'>
           {openEditor && (
-            <MyTinyEditor
-              id={
-                parentQuestionType?.ComprehensionQuestions ||
-                parentQuestionType?.VideoQuestion
-                  ? `questionEditor${index}`
-                  : 'questionEditor'
-              }
-              content={question}
-              handleEditorChange={handleEditorChange}
-              setOpenEditor={setOpenEditor}
-              placeholder='Question goes here...'
-              filterDataTop={filterDataTop}
-              filterDataBottom={filterDataBottom}
-            />
+            // <MyTinyEditor
+            //   id={
+            //     parentQuestionType?.ComprehensionQuestions ||
+            //     parentQuestionType?.VideoQuestion
+            //       ? `questionEditor${index}`
+            //       : 'questionEditor'
+            //   }
+            //   content={question}
+            //   handleEditorChange={handleEditorChange}
+            //   setOpenEditor={setOpenEditor}
+            //   placeholder='Question goes here...'
+            //   filterDataTop={filterDataTop}
+            //   filterDataBottom={filterDataBottom}
+            // />
+            <div className='py-2 w-100 font-weight-normal'>
+              <ReactQuillEditor
+                id={
+                  parentQuestionType?.ComprehensionQuestions ||
+                  parentQuestionType?.VideoQuestion
+                    ? `questionEditor${index}`
+                    : 'questionEditor'
+                }
+                value={question}
+                onChange={(content, delta, source, editor) =>
+                  handleEditorChange(content, delta, source, {
+                    ...editor,
+                    id:
+                      parentQuestionType?.ComprehensionQuestions ||
+                      parentQuestionType?.VideoQuestion
+                        ? `questionEditor${index}`
+                        : 'questionEditor',
+                  })
+                }
+                placeholder='Question goes here...'
+              />
+            </div>
           )}
           {!openEditor && (
             <TextField
@@ -886,7 +909,7 @@ const MultipleChoice = ({
           {showQuestionType?.Descriptive ? (
             toggle ? (
               <div className='descriptiveAnswerEditor'>
-                <MyTinyEditor
+                {/* <MyTinyEditor
                   id={
                     parentQuestionType?.ComprehensionQuestions ||
                     parentQuestionType?.VideoQuestion
@@ -900,7 +923,29 @@ const MultipleChoice = ({
                   placeholder='Answer goes here...'
                   filterDataTop={filterDataTop}
                   filterDataBottom={filterDataBottom}
-                />
+                /> */}
+                <div className='py-2 w-100 font-weight-normal'>
+                  <ReactQuillEditor
+                    id={
+                      parentQuestionType?.ComprehensionQuestions ||
+                      parentQuestionType?.VideoQuestion
+                        ? `answerEditor${index}`
+                        : 'answerEditor'
+                    }
+                    value={descriptiveAnswer}
+                    onChange={(content, delta, source, editor) =>
+                      handleEditorChange(content, delta, source, {
+                        ...editor,
+                        id:
+                          parentQuestionType?.ComprehensionQuestions ||
+                          parentQuestionType?.VideoQuestion
+                            ? `answerEditor${index}`
+                            : 'answerEditor',
+                      })
+                    }
+                    placeholder='Answer goes here...'
+                  />
+                </div>
               </div>
             ) : null
           ) : (

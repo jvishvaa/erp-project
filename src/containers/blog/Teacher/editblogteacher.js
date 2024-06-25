@@ -99,7 +99,7 @@ class EditBlogTeacher extends Component {
       key: 0,
       parsedTextEditorContentLen:
         this.props.location.state.parsedTextEditorContentLen &&
-          this.props.location.state.parsedTextEditorContentLen !== 0
+        this.props.location.state.parsedTextEditorContentLen !== 0
           ? this.props.location.state.parsedTextEditorContentLen
           : '',
       title:
@@ -109,22 +109,22 @@ class EditBlogTeacher extends Component {
       blogId: this.props.location.state.blogId ? this.props.location.state.blogId : '',
       genreId:
         this.props.location.state.genreId &&
-          this.props.location.state.genreId.length !== 0
+        this.props.location.state.genreId.length !== 0
           ? this.props.location.state.genreId
           : '',
       genreName:
         this.props.location.state.genreName &&
-          this.props.location.state.genreName.length !== 0
+        this.props.location.state.genreName.length !== 0
           ? this.props.location.state.genreName
           : '',
       genreObj:
         this.props.location.state.genreObj &&
-          this.props.location.state.genreObj.length !== 0
+        this.props.location.state.genreObj.length !== 0
           ? this.props.location.state.genreObj
           : '',
       image:
         this.props.location.state.thumbnail &&
-          this.props.location.state.thumbnail.length !== 0
+        this.props.location.state.thumbnail.length !== 0
           ? this.props.location.state.thumbnail
           : this.props.location.state.image,
       TITLE_CHARACTER_LIMIT: 100,
@@ -135,7 +135,7 @@ class EditBlogTeacher extends Component {
       creationDate: new Date(),
       textEditorContent:
         this.props.location.state.content &&
-          this.props.location.state.content.length !== 0
+        this.props.location.state.content.length !== 0
           ? this.props.location.state.content
           : '',
       files:
@@ -148,7 +148,7 @@ class EditBlogTeacher extends Component {
   static contextType = AlertNotificationContext;
 
   componentDidMount() {
-    console.log(this.props, "prop");
+    console.log(this.props, 'prop');
     this.wordCountFetch();
     this.listGenre();
     const { creationDate } = this.state;
@@ -173,7 +173,7 @@ class EditBlogTeacher extends Component {
       .then((res) => {
         this.setState({ genreList: res.data.result });
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
 
   isWordCountSubceeded = () => {
@@ -217,7 +217,7 @@ class EditBlogTeacher extends Component {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
 
   // handleTextEditor = (content) => {
@@ -231,7 +231,7 @@ class EditBlogTeacher extends Component {
 
   // localStorage.setItem('blogContent', content);
   // };
-  handleEditorChange = (content, editor) => {
+  handleEditorChange = (content, delta, source, editor) => {
     content = content.replace(/&nbsp;/g, '');
     this.setState({ textEditorContent: content, fadeIn: false });
     const subceededWordCount = this.isWordCountSubceeded();
@@ -442,12 +442,22 @@ class EditBlogTeacher extends Component {
                       {/* Write Blog */}
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
-                    <MyTinyEditor
+                    {/* <MyTinyEditor
                       id='blog'
                       content={textEditorContent}
                       handleEditorChange={this.handleEditorChange}
                       placeholder='Description...'
-                    />
+                    /> */}
+                    <div className='py-2 w-100 font-weight-normal'>
+                      <ReactQuillEditor
+                        id='blog'
+                        value={textEditorContent}
+                        onChange={(content, delta, source, editor) =>
+                          this.handleEditorChange(content, delta, source, editor)
+                        }
+                        placeholder='Description...'
+                      />
+                    </div>
                     {/* <TinyMce */}
                     {/* key={key} */}
                     {/* id={key} */}
@@ -524,7 +534,7 @@ class EditBlogTeacher extends Component {
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
-                        // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
+                          // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>

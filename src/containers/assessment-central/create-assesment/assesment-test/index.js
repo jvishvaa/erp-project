@@ -25,25 +25,25 @@ import './styles.scss';
 import QuestionDetailCard from '../question-detail-card.js';
 import ENVCONFIG from '../../../../config/config';
 import axiosInstance from 'config/axios';
+import ReactQuillEditor from 'components/reactQuill';
 
 const useStyles = makeStyles((theme) => ({
   questionsheader: {
     color: theme.palette.primary.main,
-    fontSize: "1.2rem"
+    fontSize: '1.2rem',
   },
   formfieldheader: {
     color: theme.palette.primary.main,
-    fontSize: "1.2rem",
-    margin: "1rem 0",
+    fontSize: '1.2rem',
+    margin: '1rem 0',
   },
   label: {
     color: theme.palette.secondary.main,
-    marginLeft: "1rem",
-    fontSize: "1.1rem",
-    width: "50%",
-  }
-}))
-
+    marginLeft: '1rem',
+    fontSize: '1.1rem',
+    width: '50%',
+  },
+}));
 
 function extractContent(s) {
   const span = document.createElement('span');
@@ -78,20 +78,25 @@ const AssesmentTest = ({
   sectionDate,
   values,
   sectionWiseTest,
-  updateTest
+  updateTest,
 }) => {
-  const classes = useStyles()
+  const classes = useStyles();
   const [minimize, setMinimize] = useState(false);
   const [openEditor, setOpenEditor] = useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [editorContent, setEditorContent] = useState(testInstructions);
   const themeContext = useTheme();
   const history = useHistory();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   // const [paperchecked, setChecked] = React.useState(false);
   console.log(formik);
 
+  const handaleChangeEditorContent = (content, delta, source, editor) => {
+    setEditorContent(content);
+    onInstructionsChange(content);
+  };
   const toggleChecked = () => {
-      setChecked((prev) => !prev);
+    setChecked((prev) => !prev);
   };
 
   const handleChange = (event) => {
@@ -180,9 +185,13 @@ const AssesmentTest = ({
                     </div>
                   </Grid>
                   {/* <div className='dividerVertical' /> */}
-                  {formik?.values?.test_type?.exam_name == 'Quiz' ||  formik?.values?.test_type?.exam_name ==
-                                    'Practice Test' ||
-                                  formik?.values?.test_type?.exam_name == 'Open Test' || sectionWiseTest == true || sectionWiseTest == false ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' ||
+                  formik?.values?.test_type?.exam_name == 'Practice Test' ||
+                  formik?.values?.test_type?.exam_name == 'Open Test' ||
+                  sectionWiseTest == true ||
+                  sectionWiseTest == false ? (
+                    ''
+                  ) : (
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label}>Test ID</div>
@@ -193,7 +202,7 @@ const AssesmentTest = ({
                             size='small'
                             style={{ width: '100%' }}
                             className='bg-white'
-                          id='test-section'
+                            id='test-section'
                             name='testid'
                             value={testId}
                             // onChange={(e) => {
@@ -207,14 +216,20 @@ const AssesmentTest = ({
                         </div>
                       </div>
                     </Grid>
-                  }
+                  )}
                   {/* <div className='dividerVertical' /> */}
-                  {formik?.values?.test_type?.exam_name == 'Quiz' || formik?.values?.test_type?.exam_name ==
-                                    'Practice Test' ||
-                                  formik?.values?.test_type?.exam_name == 'Open Test' ||  sectionWiseTest ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' ||
+                  formik?.values?.test_type?.exam_name == 'Practice Test' ||
+                  formik?.values?.test_type?.exam_name == 'Open Test' ||
+                  sectionWiseTest ? (
+                    ''
+                  ) : (
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
-                        <div className={classes.label} style={{ marginRight: isMobile && '1rem' }}>
+                        <div
+                          className={classes.label}
+                          style={{ marginRight: isMobile && '1rem' }}
+                        >
                           Test Date And Time
                         </div>
                         <div className='input-container'>
@@ -224,7 +239,7 @@ const AssesmentTest = ({
                             size='small'
                             // inputProps={{ min: minDateTime.toISOString().slice(0, 16) }}
                             className='date-time-picker bg-white'
-                          id='test-section'
+                            id='test-section'
                             value={testDate}
                             color='primary'
                             style={{ width: isMobile ? '50%' : '100%' }}
@@ -235,7 +250,7 @@ const AssesmentTest = ({
                         </div>
                       </div>
                     </Grid>
-                  }
+                  )}
                   <Grid xs={12} sm={6}>
                     <div className='detail'>
                       <div className={classes.label}>Test Duration(Min)</div>
@@ -251,7 +266,7 @@ const AssesmentTest = ({
                           name='duration'
                           placeholder='In Minutes'
                           value={testDuration}
-                          style={{ width: '100%' , fontSize: '14px' }}
+                          style={{ width: '100%', fontSize: '14px' }}
                           onChange={(e) => handleChange(e)}
                         />
                       </div>
@@ -259,9 +274,18 @@ const AssesmentTest = ({
                   </Grid>
                   <Grid xs={12} sm={6} style={{ padding: '15px 25px' }}>
                     <Typography>
-                      <Grid component={classes.label} style={{display:'flex'}} alignItems='center' spacing={1}>
+                      <Grid
+                        component={classes.label}
+                        style={{ display: 'flex' }}
+                        alignItems='center'
+                        spacing={1}
+                      >
                         <Grid item>Ques. Wise Marks</Grid>
-                        <Switch checked={paperchecked} disabled={isEdit ? true : false} onChange={toggleChecked} />
+                        <Switch
+                          checked={paperchecked}
+                          disabled={isEdit ? true : false}
+                          onChange={toggleChecked}
+                        />
                         <Grid item>Ques. Paper Wise Marks</Grid>
                       </Grid>
                     </Typography>
@@ -280,7 +304,7 @@ const AssesmentTest = ({
                             }}
                             size='small'
                             className='bg-white'
-                          id='test-section'
+                            id='test-section'
                             name='testmarks'
                             value={totalMarks}
                             style={{ width: '100%' }}
@@ -290,59 +314,79 @@ const AssesmentTest = ({
                       </div>
                     </Grid>
                   )}
-                  {selectedSectionData?.length > 0 && sectionWiseTest && selectedSectionData.map((section , i) => (
-                    <>
-                    {i == 0 ?
-                      <div className={classes.label} style={{ marginRight: isMobile && '1rem' }}>
-                          Test Date And Time
-                        </div>
-                        : ''}
-                      <Grid xs={12} sm={6} style={{ padding: '1%' }} >
-                        <Grid xs={12} sm={5} style={{display : 'flex' , justifyContent: 'center' , margin: '0 auto'}} >
-                          <Autocomplete
-                            id='branch'
-                            name='branch'
-                            onChange={(e, value) => {
-                              // formik.setFieldValue('test_mode', value);
-                              // initSetFilter('selectedTestType', value);
-                            }}
-                            value={section}
-                            options={section || {}}
-                            style={{fontSize: '14px'}}
-                            disabled
-                            className='dropdownSection'
-                            getOptionLabel={(option) => option.section_name || ''}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Section'
-                                placeholder='Section'
-                                required
-                                style={{fontSize: '10px' , fontWeight: '600'}}
-                              />
-                            )}
-                            size='small'
-                          />
-                          <div className='input-container'>
-                            <TextField
-                              variant='outlined'
-                              type='datetime-local'
-                              size='small'
-                              // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
-                              className='date-time-picker bg-white'
-                              value={values?.val?.length > 0 ? values?.val[i]?.test_date : ''}
-                              color='primary'
-                              style={{ width: isMobile ? '50%' : '100%' , marginLeft: '10px' }}
-                              onChange={(e) => {
-                                sectionDate(e , i , section);
-                              }}
-                            />
+                  {selectedSectionData?.length > 0 &&
+                    sectionWiseTest &&
+                    selectedSectionData.map((section, i) => (
+                      <>
+                        {i == 0 ? (
+                          <div
+                            className={classes.label}
+                            style={{ marginRight: isMobile && '1rem' }}
+                          >
+                            Test Date And Time
                           </div>
+                        ) : (
+                          ''
+                        )}
+                        <Grid xs={12} sm={6} style={{ padding: '1%' }}>
+                          <Grid
+                            xs={12}
+                            sm={5}
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              margin: '0 auto',
+                            }}
+                          >
+                            <Autocomplete
+                              id='branch'
+                              name='branch'
+                              onChange={(e, value) => {
+                                // formik.setFieldValue('test_mode', value);
+                                // initSetFilter('selectedTestType', value);
+                              }}
+                              value={section}
+                              options={section || {}}
+                              style={{ fontSize: '14px' }}
+                              disabled
+                              className='dropdownSection'
+                              getOptionLabel={(option) => option.section_name || ''}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant='outlined'
+                                  label='Section'
+                                  placeholder='Section'
+                                  required
+                                  style={{ fontSize: '10px', fontWeight: '600' }}
+                                />
+                              )}
+                              size='small'
+                            />
+                            <div className='input-container'>
+                              <TextField
+                                variant='outlined'
+                                type='datetime-local'
+                                size='small'
+                                // inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+                                className='date-time-picker bg-white'
+                                value={
+                                  values?.val?.length > 0 ? values?.val[i]?.test_date : ''
+                                }
+                                color='primary'
+                                style={{
+                                  width: isMobile ? '50%' : '100%',
+                                  marginLeft: '10px',
+                                }}
+                                onChange={(e) => {
+                                  sectionDate(e, i, section);
+                                }}
+                              />
+                            </div>
+                          </Grid>
                         </Grid>
-                      </Grid>
-                    </>
-                  ))}
+                      </>
+                    ))}
                 </Grid>
               </div>
             </div>
@@ -350,28 +394,35 @@ const AssesmentTest = ({
             <div className='form-field'>
               <div className={classes.formfieldheader}>GENERAL INSTRUCTIONS</div>
               {openEditor && (
-                <Editor
-                  apiKey={TINYMCE_API_KEY}
-                  init={{
-                    height: 300,
-                    placeholder: 'Note==> Word should be less than 500',
-                    selector: 'textarea',
-                    plugin: 'wordcount',
-                    menubar: false,
-                    toolbar:
-                      'fontselect fontsizeselect bold italic underline alignleft aligncenter alignright  bullist numlist file image wordcount  ', //customInsertButton
-                    setup(editor) {
-                      editor.ui.registry.addButton('customInsertButton', {
-                        text: 'Finish',
-                        onAction: (_) => {
-                          setOpenEditor(false);
-                        },
-                      });
-                    },
-                  }}
-                  value={testInstructions}
-                  onEditorChange={(value) => onInstructionsChange(value)}
-                />
+                // <Editor
+                //   apiKey={TINYMCE_API_KEY}
+                //   init={{
+                //     height: 300,
+                //     placeholder: 'Note==> Word should be less than 500',
+                //     selector: 'textarea',
+                //     plugin: 'wordcount',
+                //     menubar: false,
+                //     toolbar:
+                //       'fontselect fontsizeselect bold italic underline alignleft aligncenter alignright  bullist numlist file image wordcount  ', //customInsertButton
+                //     setup(editor) {
+                //       editor.ui.registry.addButton('customInsertButton', {
+                //         text: 'Finish',
+                //         onAction: (_) => {
+                //           setOpenEditor(false);
+                //         },
+                //       });
+                //     },
+                //   }}
+                //   value={testInstructions}
+                //   onEditorChange={(value) => onInstructionsChange(value)}
+                // />
+                <div className='py-2 w-100 font-weight-normal'>
+                  <ReactQuillEditor
+                    value={editorContent}
+                    onChange={handaleChangeEditorContent}
+                    placeholder='Question goes here...'
+                  />
+                </div>
               )}
               {!openEditor && (
                 <TextField
