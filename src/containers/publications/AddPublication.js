@@ -24,7 +24,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import PublicationPreview from './PublicationPreview';
 import Loading from '../../components/loader/loader';
 
-const StyledFilterButton = withStyles((theme)=>({
+const StyledFilterButton = withStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
@@ -34,7 +34,7 @@ const StyledFilterButton = withStyles((theme)=>({
     marginLeft: '20px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor:theme.palette.primary.main ,
+      backgroundColor: theme.palette.primary.main,
     },
   },
   startIcon: {
@@ -61,16 +61,16 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
-  descBox:{
-    marginTop: "15px",
-    backgroundColor: "#bcf1ff",
+  descBox: {
+    marginTop: '15px',
+    backgroundColor: '#bcf1ff',
     color: theme.palette.secondary.main,
     border: `1px solid ${theme.palette.primary.main}`,
-    borderRadius: "10px",
-    fontSize: "16px",
-    width: "70%",
-    padding: "11px 18px",
-  }
+    borderRadius: '10px',
+    fontSize: '16px',
+    width: '70%',
+    padding: '11px 18px',
+  },
 }));
 
 const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
@@ -90,7 +90,11 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const fileRefer = useRef();
   const [file, setFile] = useState(null);
   const [isPublished, setIsPublished] = useState('Draft');
-  const [description, setDescription] = useState();
+  const [description, setDescription] = useState(
+    localStorage.getItem('description') === 'undefined'
+      ? ''
+      : localStorage.getItem('description')
+  );
   const [thumbnail, setThumbnail] = useState(null);
   const [temBranch, setTemBranch] = useState();
   const formData = new FormData();
@@ -103,23 +107,23 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const [delFlag, setDelFlag] = useState(false);
   const [loading, setLoading] = React.useState(false);
   const [goBackFlag, setGoBackFlag] = useState(false);
- const handleFileChange = (event) => {
-   const { files } = event.target;
-   const fil = files[0];
-   if (fil.name.lastIndexOf('.pdf') > 0) {
-     if (fil.size / 1024 / 1024 <= 5) {
-       setFile(fil);
-     } else {
-       setAlert('error', 'Please Select lessthan 5MB!');
-     }
+  const handleFileChange = (event) => {
+    const { files } = event.target;
+    const fil = files[0];
+    if (fil.name.lastIndexOf('.pdf') > 0) {
+      if (fil.size / 1024 / 1024 <= 5) {
+        setFile(fil);
+      } else {
+        setAlert('error', 'Please Select lessthan 5MB!');
+      }
 
-     console.log('upload', fil);
-   } else {
-     setFile(null);
-     fileRef.current.value = null;
-     setAlert('error', 'Only pdf file is acceptable either with .pdf extension');
-   }
- };
+      console.log('upload', fil);
+    } else {
+      setFile(null);
+      fileRef.current.value = null;
+      setAlert('error', 'Only pdf file is acceptable either with .pdf extension');
+    }
+  };
   const handleThumbnailChange = (event) => {
     setImage(URL.createObjectURL(event.target.files[0]));
 
@@ -136,16 +140,15 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       );
     }
   };
- 
 
-  const handleDES = (content, editor) => {
-    const WORDS = editor.getContent({ format: 'text' }).split(' ');
+  const handleDES = (content, delta, source, editor) => {
+    const WORDS = editor.getText().split(' ');
     const MAX_WORDS = WORDS.length;
     const MAX_LENGTH = 100;
     if (MAX_WORDS <= MAX_LENGTH) {
       setDescription(content);
     } else {
-      editor.setContent(description);
+      // editor.setContent(description);
       setDescription(description);
       setAlert('error', 'Maximum word limit reached!');
     }
@@ -292,11 +295,11 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       setLoading(false);
       return;
     }
-        if (!postData.author) {
-          setAlert('error', 'Enter Author Name !');
-          setLoading(false);
-          return;
-        }
+    if (!postData.author) {
+      setAlert('error', 'Enter Author Name !');
+      setLoading(false);
+      return;
+    }
     if (!postBranch) {
       setAlert('error', 'Select Branch !');
       setLoading(false);
@@ -373,16 +376,16 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
       setLoading(false);
       return;
     }
-  if (!postData.title) {
-    setAlert('error', 'Enter title');
-    setLoading(false);
-    return;
-  }
-  if (!postData.author) {
-    setAlert('error', 'Enter Author Name !');
-    setLoading(false);
-    return;
-  }
+    if (!postData.title) {
+      setAlert('error', 'Enter title');
+      setLoading(false);
+      return;
+    }
+    if (!postData.author) {
+      setAlert('error', 'Enter Author Name !');
+      setLoading(false);
+      return;
+    }
     if (!postBranch) {
       setAlert('error', 'Select Branch !');
       setLoading(false);
@@ -423,7 +426,9 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
     <>
       {loading ? (
         <Loading
-          message={publishFlag ? "Please don't refresh or leave this page." : 'Loading...'}
+          message={
+            publishFlag ? "Please don't refresh or leave this page." : 'Loading...'
+          }
         />
       ) : null}
       <form>
@@ -619,7 +624,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
             </Grid>
             <Grid container item md={11} xs={10} className={[classes.root1]}>
               <Paper elevation={3} style={{ width: '100%' }}>
-                <MyTinyEditor
+                {/* <MyTinyEditor
                   id='descriptioneditor'
                   handleEditorChange={handleDES}
                   placeholder='Book description...'
@@ -630,7 +635,17 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
                       ? ''
                       : localStorage.getItem('description')
                   }
-                />
+                /> */}
+                <div className='py-2 w-100 font-weight-normal'>
+                  <ReactQuillEditor
+                    id='descriptioneditor'
+                    value={description}
+                    onChange={(content, delta, source, editor) =>
+                      handleDES(content, delta, source, editor)
+                    }
+                    placeholder='Book description...'
+                  />
+                </div>
               </Paper>
             </Grid>
             <Grid container item md={11} xs={12} className={[classes.root]}>

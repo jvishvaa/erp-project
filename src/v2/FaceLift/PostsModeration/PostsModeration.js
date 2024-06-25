@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import {
   Breadcrumb,
   Button,
-  message,
+  notification,
   Tag,
   Spin,
   Card,
@@ -137,13 +137,19 @@ const PostsModeration = () => {
       acad_session: branch?.id,
       grades: selectedGrade?.grade_id,
       section_mapping: selectedSection?.id,
-      post_status: tabValue,
+      post_status: tabValue === '5' ? '2' : tabValue,
       page: currentPage,
       page_size: pageSize,
     };
+    let apiEndPoint;
+    if (tabValue === '5') {
+      apiEndPoint = endpointsV2.studentPosts.commentsPostsApi;
+    } else {
+      apiEndPoint = endpointsV2.studentPosts.studentPostsApi;
+    }
     setDataLoading(true);
     axiosInstance
-      .get(`${endpointsV2.studentPosts.studentPostsApi}`, {
+      .get(`${apiEndPoint}`, {
         params: params,
       })
       .then((response) => {
@@ -152,7 +158,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setDataLoading(false);
@@ -186,7 +195,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setCommentsDrawerLoading(false);
@@ -205,7 +217,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setDataLoading(false);
@@ -223,7 +238,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {});
   };
@@ -279,6 +297,8 @@ const PostsModeration = () => {
       postStatus = '3';
     } else if (flag === 'cancel') {
       postStatus = '4';
+    } else if (flag === 'restore') {
+      postStatus = '1';
     }
     let data = [];
     if (isBulk) {
@@ -301,7 +321,10 @@ const PostsModeration = () => {
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          message.success('Successfully Updated');
+          notification.success({
+            message: 'Hurray! Success',
+            description: 'Posts status updated',
+          });
           closeModal();
           setPostIds([]);
           setAllCheckBox(false);
@@ -309,7 +332,10 @@ const PostsModeration = () => {
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setFlagLoading(false);
@@ -323,6 +349,8 @@ const PostsModeration = () => {
       commentsStatus = '3';
     } else if (key === 'cancel') {
       commentsStatus = '4';
+    } else if (key === 'restore') {
+      commentsStatus = '1';
     }
     let data = [];
     if (key === 'approve') {
@@ -346,13 +374,19 @@ const PostsModeration = () => {
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {
-          message.success('Successfully Updated');
+          notification.success({
+            message: 'Hurray! Success',
+            description: 'Comments status updated',
+          });
           setSelectedCommentIds([]);
           fetchCommentsData({ feedId: feedId });
         }
       })
       .catch((error) => {
-        message.error('OOPS! Something went wrong. Please try again');
+        notification.error({
+          message: 'OOPS! Failed',
+          description: 'Something went wrong. Please try again!',
+        });
       })
       .finally(() => {
         setCommentsDrawerLoading(false);
@@ -409,8 +443,10 @@ const PostsModeration = () => {
     setPostId(id);
   };
   const closeModal = () => {
-    setFlag('');
     setModalOpen(false);
+    setTimeout(() => {
+      setFlag('');
+    }, 500);
     setPostId();
   };
   const openCommentsDrawer = ({ postData }) => {
@@ -423,9 +459,9 @@ const PostsModeration = () => {
     setTimeout(() => {
       setSelectedCommentIds([]);
       setCommentsPostData([]);
-    }, 1000);
+      setCommentsTabValue('1');
+    }, 500);
     fetchPostsData();
-    setCommentsTabValue('1');
   };
   const openViewModal = ({ data }) => {
     setViewData(data);
@@ -496,12 +532,8 @@ const PostsModeration = () => {
                           marginRight: '0.5rem',
                         }}
                       >
-                        {tileView === '4'
-                          ? '1-Card'
-                          : tileView === '1'
-                          ? '2-Card'
-                          : '4-Card'}
-                        View
+                        Change View -{' '}
+                        {tileView === '4' ? '4' : tileView === '1' ? '1' : '2'}
                       </Button>
                       {!selectedGrade && !selectedSection ? (
                         <div className='d-flex align-items-center'>
@@ -697,6 +729,15 @@ const PostsModeration = () => {
                       >
                         Deleted
                       </Button>
+                      <Button
+                        className={`th-primary-button ${
+                          tabValue === '5' ? 'th-comments-active' : 'th-comments'
+                        }`}
+                        onClick={() => handleTabChange('5')}
+                        icon={<CheckCircleOutlined />}
+                      >
+                        Approve Comments
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -710,7 +751,9 @@ const PostsModeration = () => {
                       ? 'Approved'
                       : tabValue === '3'
                       ? 'Rejected'
-                      : 'Cancelled'}{' '}
+                      : tabValue === '4'
+                      ? 'Deleted'
+                      : 'Approve Comments'}{' '}
                     Posts
                   </Divider>
                 </div>
@@ -805,11 +848,11 @@ const PostsModeration = () => {
                                       <div
                                         className='d-flex flex-column'
                                         style={{
-                                          marginRight: tabValue === '2' ? '10px' : '0px',
-                                          marginTop: tabValue === '2' ? '10px' : '0px',
+                                          marginRight: tabValue === '5' ? '10px' : '0px',
+                                          marginTop: tabValue === '5' ? '10px' : '0px',
                                         }}
                                       >
-                                        <div className='d-flex align-items-center'>
+                                        <div className='d-flex align-items-center justify-content-end'>
                                           {each?.media_files?.length > 0 && (
                                             <Tooltip title='View Files'>
                                               <Button
@@ -885,8 +928,7 @@ const PostsModeration = () => {
                                               )}
                                             </>
                                           )}
-
-                                          {tabValue === '2' && (
+                                          {tabValue === '5' && (
                                             <>
                                               <Badge
                                                 count={data?.comments_count}
@@ -910,8 +952,24 @@ const PostsModeration = () => {
                                               </Badge>
                                             </>
                                           )}
+                                          {tabValue === '3' && (
+                                            <Tooltip title='Restore Post'>
+                                              <Button
+                                                shape='circle'
+                                                size='small'
+                                                icon={<ReloadOutlined />}
+                                                className='icon-hover th-pending'
+                                                onClick={() =>
+                                                  openModal({
+                                                    key: 'restore',
+                                                    id: each?.id,
+                                                  })
+                                                }
+                                              />
+                                            </Tooltip>
+                                          )}
                                         </div>
-                                        {tabValue === '2' && (
+                                        {tabValue === '5' && (
                                           <div className='px-2 th-br-12 th-bg-violet text-center th-10 th-white'>
                                             <b>{each?.module_type_name}</b>
                                           </div>
@@ -1001,7 +1059,9 @@ const PostsModeration = () => {
                     ? 'Approving Post(s)'
                     : flag === 'reject'
                     ? 'Rejecting Post(s)'
-                    : 'Deleting Post(s)'}
+                    : flag === 'cancel'
+                    ? 'Deleting Post(s)'
+                    : 'Restoring Post(s)'}
                 </div>
                 <div>
                   <CloseOutlined onClick={closeModal} className='th-close-icon-1' />
@@ -1015,7 +1075,9 @@ const PostsModeration = () => {
                 ? 'th-modal-approved'
                 : flag === 'reject'
                 ? 'th-modal-rejected'
-                : 'th-modal-cancelled'
+                : flag === 'cancel'
+                ? 'th-modal-cancelled'
+                : 'th-modal-pending'
             }`}
             footer={[
               <Row justify='end'>
@@ -1036,15 +1098,19 @@ const PostsModeration = () => {
                         ? 'approve-button'
                         : flag === 'reject'
                         ? 'reject-button'
-                        : 'cancel-button'
+                        : flag === 'cancel'
+                        ? 'cancel-button'
+                        : 'restore-button'
                     }`}
                     icon={
                       flag === 'approve' ? (
                         <CheckCircleOutlined />
                       ) : flag === 'reject' ? (
                         <CloseCircleOutlined />
-                      ) : (
+                      ) : flag === 'cancel' ? (
                         <DeleteOutlined />
+                      ) : (
+                        <ReloadOutlined />
                       )
                     }
                     onClick={() => handleUpdatePosts()}
@@ -1054,7 +1120,9 @@ const PostsModeration = () => {
                       ? 'Approve'
                       : flag === 'reject'
                       ? 'Reject'
-                      : 'Delete'}
+                      : flag === 'cancel'
+                      ? 'Delete'
+                      : 'Restore'}
                   </Button>
                 </Col>
               </Row>,
@@ -1067,8 +1135,14 @@ const PostsModeration = () => {
             ) : (
               <div>
                 Are You Sure To{' '}
-                {flag === 'approve' ? 'Approve' : flag === 'reject' ? 'Reject' : 'Delete'}{' '}
-                Post(s) ?
+                {flag === 'approve'
+                  ? 'Approve'
+                  : flag === 'reject'
+                  ? 'Reject'
+                  : flag === 'cancel'
+                  ? 'Delete'
+                  : 'Restore'}{' '}
+                <b>{postIds.length ? postIds.length : ''}</b> Post(s) ?
               </div>
             )}
           </Modal>
@@ -1086,18 +1160,9 @@ const PostsModeration = () => {
             }
             visible={commentsDrawerOpen}
             onClose={closeCommentsDrawer}
-            footer={[
-              <Row justify='space-around'>
-                <Col>
-                  <Button
-                    size='small'
-                    className='th-secondary-button footer-button'
-                    onClick={closeCommentsDrawer}
-                  >
-                    Close
-                  </Button>
-                </Col>
-                {commentsTabValue === '1' && (
+            footer={
+              commentsTabValue === '1' ? (
+                <Row justify='space-around'>
                   <Col>
                     <Button
                       size='small'
@@ -1108,14 +1173,14 @@ const PostsModeration = () => {
                           key: 'approve',
                         })
                       }
-                      disabled={commentsDrawerLoading}
+                      disabled={commentsDrawerLoading || selectedCommentIds?.length === 0}
                     >
                       Approve Comments
                     </Button>
                   </Col>
-                )}
-              </Row>,
-            ]}
+                </Row>
+              ) : null
+            }
             className='my-posts'
             closeIcon={false}
             width={drawerWidth}
@@ -1173,7 +1238,7 @@ const PostsModeration = () => {
                     ? 'Approved'
                     : commentsTabValue === '3'
                     ? 'Rejected'
-                    : 'Cancelled'}{' '}
+                    : 'Deleted'}{' '}
                   Comments
                 </Divider>
               </div>
@@ -1310,6 +1375,34 @@ const PostsModeration = () => {
                                         </Popconfirm>
                                       </>
                                     )}
+                                    {commentsTabValue === '3' && (
+                                      <>
+                                        <Popconfirm
+                                          title='Are you sure to restore ?'
+                                          overlayStyle={{ zIndex: 2001 }}
+                                          okText='Yes'
+                                          cancelText='No'
+                                          onConfirm={() =>
+                                            handleUpdateComments({
+                                              key: 'restore',
+                                              comment_id: each?.id,
+                                            })
+                                          }
+                                        >
+                                          <Tooltip
+                                            title='Restore Comment'
+                                            overlayStyle={{ zIndex: 2001 }}
+                                          >
+                                            <Button
+                                              shape='circle'
+                                              size='small'
+                                              icon={<ReloadOutlined />}
+                                              className='icon-hover th-pending'
+                                            />
+                                          </Tooltip>
+                                        </Popconfirm>
+                                      </>
+                                    )}
                                   </div>
                                 </div>
                                 <div className='mt-2 position-relative'>
@@ -1366,7 +1459,7 @@ const PostsModeration = () => {
             onCancel={closeViewModal}
             footer={false}
             centered
-            className='my-posts'
+            className='my-posts my-view-modal'
           >
             <div className=''>
               <Slider {...settings} className='my-media-slider'>

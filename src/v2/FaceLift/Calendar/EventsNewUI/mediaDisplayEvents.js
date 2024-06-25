@@ -19,24 +19,27 @@ const MediaDisplay = ({
     const extension = getFileExtension(link);
 
     if (extension.match(/(jpg|jpeg|png|gif|avif|webp)/i)) {
-      return (
+      return (        
         <Image
+          src={CDNLink}
           style={{
-            width: '200px',
-            height: '200px',
+            height: 300,
+            width: '100%',
             borderRadius: 16,
             objectFit: 'cover',
           }}
-          src={CDNLink}
         />
       );
     } else if (extension.match(/(mp4|ogg|avi)/i)) {
       return (
         <video
-          // autoPlay={true}
+          style={{
+            ...styles,
+            width: '100%',
+            height: '300px',
+          }}
           controls
           className={className}
-          style={{ ...styles }}
         >
           <source src={CDNLink} type={`video/${extension}`} />
           Your browser does not support the video tag.
@@ -51,13 +54,12 @@ const MediaDisplay = ({
       );
     } else if (extension.match(/pdf/i)) {
       return (
-        <div>
+        <div className='d-flex align-items-center flex-column'>
           <a href={CDNLink} target='__blank'>
             <img
               style={{
-                width: '200px',
-                height: '200px',
-                borderRadius: 16,
+                height: '300px',
+                borderRadius: 6,
                 objectFit: 'cover',
               }}
               src={PDFIcon}
@@ -74,7 +76,7 @@ const MediaDisplay = ({
   };
 
   return (
-    <div className='th-media-display text-center th-br-14 mx-3 my-2'>
+    <div className='th-media-display text-center th-br-14 mx-3 my-2 th-events-display'>
       {getMediaTag(mediaName)}
     </div>
   );

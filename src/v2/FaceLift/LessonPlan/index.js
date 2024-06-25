@@ -5,7 +5,6 @@ import PeriodView from './PeriodView';
 import AnnualPlan from './AnnualPlan';
 import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 import { useHistory } from 'react-router-dom';
-import useTimeTracker from 'v2/MixpanelTracking';
 const { TabPane } = Tabs;
 
 const LessonPlan = () => {
@@ -36,7 +35,6 @@ const LessonPlan = () => {
     }
   };
 
-  useTimeTracker(`Lesson Plan ${showTab == 1 ? 'Period view' : 'Annual View'}`);
   return (
     <React.Fragment>
       <Layout>

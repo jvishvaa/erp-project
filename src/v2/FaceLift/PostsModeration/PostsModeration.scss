@@ -112,6 +112,11 @@
     border-color: var(--cancelled-color) !important;
     color: var(--text-color) !important;
   }
+  .restore-button {
+    background-color: var(--pending-color) !important;
+    border-color: var(--pending-color) !important;
+    color: var(--text-color) !important;
+  }
   .th-pending {
     border: 1px solid var(--pending-color) !important;
     color: var(--pending-color) !important;
@@ -147,6 +152,10 @@
   .th-comments {
     border: 1px solid var(--primary-color) !important;
     color: var(--primary-color) !important;
+  }
+  .th-comments-active {
+    background: var(--primary-color) !important;
+    color: var(--text-color) !important;
   }
   .th-cancelled-active {
     background: var(--cancelled-color) !important;
@@ -311,7 +320,7 @@
     padding: 6px 10px;
   }
   .ant-modal-body {
-    padding: 50px !important;
+    padding: 10px !important;
   }
   .ant-modal-content {
     border-radius: 4px !important;
@@ -340,6 +349,9 @@
     }
   }
 }
+.my-view-modal .ant-modal-body {
+    padding: 50px !important;
+}
 .th-modal-approved .ant-modal-header {
   background: var(--approved-color) !important;
 }
@@ -348,6 +360,9 @@
 }
 .th-modal-cancelled .ant-modal-header {
   background: var(--cancelled-color) !important;
+}
+.th-modal-pending .ant-modal-header {
+  background: var(--pending-color) !important;
 }
 
 

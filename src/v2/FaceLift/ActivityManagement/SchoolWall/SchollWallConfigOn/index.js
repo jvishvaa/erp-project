@@ -467,13 +467,15 @@ const SchoolWallConfigOn = () => {
                 School Wall
               </Breadcrumb.Item>
             </Breadcrumb>
-            <Button
-              type='primary'
-              onClick={() => history.push('/posts-moderation')}
-              className='th-br-8'
-            >
-              Go to Posts Moderation
-            </Button>
+            {user_level !== 13 && (
+              <Button
+                type='primary'
+                onClick={() => history.push('/posts-moderation')}
+                className='th-br-8'
+              >
+                Go to Posts Moderation
+              </Button>
+            )}
           </div>
         </div>
         {loading ? (

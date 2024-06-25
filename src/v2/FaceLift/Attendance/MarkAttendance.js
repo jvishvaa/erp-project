@@ -21,6 +21,7 @@ import { IsOrchidsChecker } from 'v2/isOrchidsChecker';
 import _ from 'lodash';
 import { Prompt } from 'react-router-dom';
 import HolidayIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/holidayNew.png';
+import { TrackerHandler } from 'v2/MixpanelTracking/Tracker';
 
 const { Option } = Select;
 const isOrchids = IsOrchidsChecker();
@@ -293,6 +294,7 @@ const MarkStudentAttendance = () => {
           if (isStudent && isOrchids) {
             setShowNotificationModal(true);
           }
+          TrackerHandler('attendance_marked');
           setHasUnsavedChanges(false);
           fetchUserList();
         }

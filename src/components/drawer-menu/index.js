@@ -10,12 +10,10 @@ const resolveMenu = (url) => {
   if (url.includes('lesson-plan')) return 'Lesson Plan';
   if (url.includes('master-management')) return 'Master Management';
   if (url.includes('subject/grade')) return 'Master Management';
-  
 
   if (url.includes('online-class')) return 'Online Class';
   if (url.includes('classwork')) return 'Online Class';
   if (url.includes('homework')) return 'Homework';
-
 
   if (url.includes('communication')) return 'Communication';
   if (url.includes('homework')) return 'Homework';
@@ -29,7 +27,6 @@ const resolveMenu = (url) => {
   if (url.includes('Report')) return 'Reports';
   if (url.includes('ReceiptBook')) return 'Reports';
   if (url.includes('TransactionStatus')) return 'Reports';
-
 
   if (url.includes('intelligent-book')) return 'Ibook';
   if (url.includes('assessment')) return 'Assessment';
@@ -46,7 +43,7 @@ const resolveMenu = (url) => {
   if (url.includes('orchadio')) return 'Orchadio';
   if (url.includes('student-strength')) return 'School Strength';
   if (url.includes('student-strength')) return 'School Strength';
-  if(url.includes('onboarding-report')) return 'Onboarding Report';
+  if (url.includes('onboarding-report')) return 'Onboarding Report';
   if (url.includes('Store')) return 'Store';
   if (url.includes('student-id-card')) return 'ID Card';
   if (url.includes('circular')) return 'Circular';
@@ -54,7 +51,7 @@ const resolveMenu = (url) => {
   if (url.includes('MiscFeeClass')) return 'Misc. Fee To Class';
   if (url.includes('feePlan')) return 'Fee Plan';
   if (url.includes('feeType')) return 'Fee Type';
-  if(url.includes('Grading System Config')) return 'Grading System Config'
+  if (url.includes('Grading System Config')) return 'Grading System Config';
   if (url.includes('griviences')) return 'Griviences';
   if (url.includes('appointments')) return 'Appointment';
   if (url.includes('contact-us')) return 'Appointment';
@@ -87,7 +84,7 @@ const resolveMenu = (url) => {
   return null;
 };
 
-const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) => {
+const DrawerMenu = ({ navigationItems, superUser, onClick, flag, drawerOpen }) => {
   const [openMenu, setOpenMenu] = useState(null);
   const [openParent, setOpenParent] = useState(false);
   const { location } = useHistory();
@@ -98,22 +95,22 @@ const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) =>
   return (
     <>
       {/* {superUser && ( */}
-        <SuperUserMenu
-          onClickMenuItem={onClick}
-          openMenu={openMenu}
-          onChangeMenuState={(menu) => {
-            if (menu === openMenu) {
-              setOpenMenu(null);
-            } else {
-              setOpenMenu(menu);
-            }
-          }}
-        />
+      <SuperUserMenu
+        onClickMenuItem={onClick}
+        openMenu={openMenu}
+        onChangeMenuState={(menu) => {
+          if (menu === openMenu) {
+            setOpenMenu(null);
+          } else {
+            setOpenMenu(menu);
+          }
+        }}
+      />
       {/* )} */}
       {navigationItems &&
         navigationItems
           .filter((item) => item.child_module && item.child_module.length > 0)
-          .map((item,index) => (
+          .map((item, index) => (
             <MenuItem
               item={item}
               index={index}
@@ -123,15 +120,14 @@ const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) =>
                 if (item.parent_modules === openMenu) {
                   setOpenMenu(null);
                   setOpenParent(false);
-
                 } else {
                   setOpenMenu(item.parent_modules);
                   setOpenParent(true);
                 }
               }}
               openMenu={openMenu}
-              navigationItems = {navigationItems}
-              openParent = {openParent}
+              navigationItems={navigationItems}
+              openParent={openParent}
               drawerOpen={drawerOpen}
               onClick={onClick}
               flag={flag}

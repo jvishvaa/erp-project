@@ -384,6 +384,7 @@ export default {
     storeWalletList: `${baseFinanceURL}/apiV1/store-wallet-list/`,
     walletList: `${baseFinanceURL}/apiV1/wallet-list/`,
     imprestWallet: `${baseFinanceURL}/apiV1/imprest-transactions/`,
+    imprestWalletRecharge: `${baseFinanceURL}/apiV1/imprest-online-topup/`,
   },
   FrequentlyAskedQuestions: {
     FaqApi: `${baseURL}/erp_user/faq/`,
@@ -413,6 +414,7 @@ export default {
   studentPosts: {
     studentPostsApi: '/school-feed/feed-draft/',
     commentsApi: '/school-feed/comments-draft/',
+    commentsPostsApi : '/school-feed/feed-comments/',
   },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,

@@ -40,8 +40,9 @@
 
 .th-calendar .react-calendar__tile {
   border-radius: 6px !important;
-  height: 45px !important;
+  height: 30px !important;
   font-size: 14px;
+  padding: 0.25rem !important;
 }
 
 .listholiday .ant-card-head {
@@ -104,4 +105,15 @@
 }
 .react-calendar__tile--active {
   color: black;
+}
+
+.th-calendar-description {
+  text-align: justify !important;
+}
+.th-calendar-description ol,
+.th-calendar-description ul {
+  margin: 0px 20px !important;
+}
+.th-calendar-description p {
+  margin: 0px !important;
 }

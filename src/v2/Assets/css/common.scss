@@ -98,9 +98,15 @@ body {
 .th-violet {
   color: #ac00ea;
 }
+.th-violet-2 {
+  color: #d700dd;
+}
 
 .th-blue-1 {
   color: #00b1df;
+}
+.th-blue-2 {
+  color: #00b8df;
 }
 
 /* BG Color */
@@ -137,6 +143,9 @@ body {
 .th-bg-blue-3 {
   background-color: #b0c4de !important;
 }
+.th-bg-blue-4 {
+  background-color: #00b8df !important;
+}
 .th-bg-yellow-2 {
   background: #f0f1e1 !important;
 }
@@ -154,6 +163,9 @@ body {
 }
 .th-bg-violet {
   background-color: #9482da !important;
+}
+.th-bg-violet-2 {
+  background-color: #d700dd !important;
 }
 .th-bg-grey-2 {
   background-color: #29262d80 !important;
@@ -579,4 +591,19 @@ svg {
 }
 .ant-image-preview-mask {
   background-color: rgba(0, 0, 0, 0.8) !important;
+}
+.ant-tooltip-inner {
+  border-radius: 6px !important;
+}
+.th-event-bar {
+  border-radius: 12px;
+  transition: background 0.3s ease;
+}
+.th-event-bar:hover {
+  background: #f5f5f5;
+}
+.th-events-display {
+  .ant-image {
+    width: 100% !important;
+  }
 }
