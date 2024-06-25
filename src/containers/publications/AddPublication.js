@@ -23,6 +23,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 import PublicationPreview from './PublicationPreview';
 import Loading from '../../components/loader/loader';
+import ReactQuillEditor from 'components/reactQuill';
 
 const StyledFilterButton = withStyles((theme) => ({
   root: {
