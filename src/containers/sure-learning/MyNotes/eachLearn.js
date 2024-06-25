@@ -28,6 +28,7 @@ import ReactHtmlParser from 'react-html-parser';
 import VideoModule from './videoforLearn';
 import MyTinyEditor from 'containers/question-bank/create-question/tinymce-editor';
 import './learning.scss';
+import ReactQuillEditor from 'components/reactQuill';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,

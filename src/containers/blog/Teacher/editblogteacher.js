@@ -32,6 +32,7 @@ import previewBlogteacher from './previewBlogteacher';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import ReactQuillEditor from 'components/reactQuill';
 
 const styles = (theme) => ({
   root: {
