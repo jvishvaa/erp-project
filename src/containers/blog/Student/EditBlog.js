@@ -18,9 +18,8 @@ import {
   TextField,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { HighlightOff } from '@material-ui/icons'
+import { HighlightOff } from '@material-ui/icons';
 import MyTinyEditor from '../../question-bank/create-question/tinymce-editor';
-
 
 import Dropzone from 'react-dropzone';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
@@ -33,6 +32,7 @@ import PreviewBlog from './PreviewBlog';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import ReactQuillEditor from 'components/reactQuill';
 
 const styles = (theme) => ({
   root: {
@@ -72,7 +72,7 @@ const styles = (theme) => ({
     position: 'absolute',
     left: '150px',
     top: '30px',
-    color: '#e74c3c'
+    color: '#e74c3c',
   },
   blogForm: {
     fontSize: '16px',
@@ -80,15 +80,12 @@ const styles = (theme) => ({
     letterSpacing: '0.7px',
     display: 'block',
     marginBottom: '5px',
-
   },
   thumbnailImage: {
     width: '130px',
     height: '100px',
-    marginTop: '22px'
-
-  }
-
+    marginTop: '22px',
+  },
 });
 
 class EditBlog extends Component {
@@ -103,35 +100,32 @@ class EditBlog extends Component {
       key: 0,
       parsedTextEditorContentLen:
         this.props.location.state.parsedTextEditorContentLen &&
-          this.props.location.state.parsedTextEditorContentLen !== 0
+        this.props.location.state.parsedTextEditorContentLen !== 0
           ? this.props.location.state.parsedTextEditorContentLen
           : '',
       title:
         this.props.location.state.title && this.props.location.state.title.length !== 0
           ? this.props.location.state.title
           : '',
-      blogId:
-        this.props.location.state.blogId
-          ? this.props.location.state.blogId
-          : '',
+      blogId: this.props.location.state.blogId ? this.props.location.state.blogId : '',
       genreId:
         this.props.location.state.genreId &&
-          this.props.location.state.genreId.length !== 0
+        this.props.location.state.genreId.length !== 0
           ? this.props.location.state.genreId
           : '',
       genreName:
         this.props.location.state.genreName &&
-          this.props.location.state.genreName.length !== 0
+        this.props.location.state.genreName.length !== 0
           ? this.props.location.state.genreName
           : '',
       genreObj:
         this.props.location.state.genreObj &&
-          this.props.location.state.genreObj.length !== 0
+        this.props.location.state.genreObj.length !== 0
           ? this.props.location.state.genreObj
           : '',
       image:
         this.props.location.state.thumbnail &&
-          this.props.location.state.thumbnail.length !== 0
+        this.props.location.state.thumbnail.length !== 0
           ? this.props.location.state.thumbnail
           : this.props.location.state.image,
       TITLE_CHARACTER_LIMIT: 100,
@@ -142,17 +136,17 @@ class EditBlog extends Component {
       creationDate: new Date(),
       textEditorContent:
         this.props.location.state.content &&
-          this.props.location.state.content.length !== 0
+        this.props.location.state.content.length !== 0
           ? this.props.location.state.content
           : '',
       files:
         this.props.location.state.files && this.props.location.state.files.length !== 0
           ? this.props.location.state.files
           : [],
-      wordCountLimit: 0
+      wordCountLimit: 0,
     };
   }
-  static contextType = AlertNotificationContext
+  static contextType = AlertNotificationContext;
 
   componentDidMount() {
     this.wordCountFetch();
@@ -172,52 +166,53 @@ class EditBlog extends Component {
     let { roleDetails } = this.state;
     const erpUserId = roleDetails.role_details.erp_user_id;
     axios
-      .get(`${endpoints.blog.genreList}
-      ?erp_user_id=${erpUserId
-        }`)
+      .get(
+        `${endpoints.blog.genreList}
+      ?erp_user_id=${erpUserId}`
+      )
       .then((res) => {
         this.setState({ genreList: res.data.result });
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
 
   isWordCountSubceeded = () => {
-    let { textEditorContent, wordCountLimit } = this.state
+    let { textEditorContent, wordCountLimit } = this.state;
     // const parsedTextEditorContent=textEditorContent.split(' ')
-    const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, ' ').split(' ')
-    let count = 0
+    const parsedTextEditorContent = textEditorContent
+      .replace(/(<([^>]+)>)/gi, ' ')
+      .split(' ');
+    let count = 0;
     parsedTextEditorContent.map((item) => {
       if (item.length) {
-        count = count + 1
+        count = count + 1;
       }
-    })
+    });
 
     // const textWordCount = parsedTextEditorContent.length
-    const textWordCount = count
-    this.setState({ parsedTextEditorContentLen: textWordCount })
+    const textWordCount = count;
+    this.setState({ parsedTextEditorContentLen: textWordCount });
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
-      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
-      return errorMsg
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`;
+      return errorMsg;
     }
-    this.setState({ parsedTextEditorContentLen: textWordCount })
+    this.setState({ parsedTextEditorContentLen: textWordCount });
 
-    return false
-  }
-
+    return false;
+  };
 
   wordCountFetch = () => {
     let { roleDetails } = this.state;
     const erpUserId = roleDetails.role_details.erp_user_id;
     axios
-      .get(`${endpoints.blog.WordCountConfig}?erp_user_id=${erpUserId
-        }`)
+      .get(`${endpoints.blog.WordCountConfig}?erp_user_id=${erpUserId}`)
       .then((res) => {
-        this.setState({ wordCountLimit: res.data && res.data.result && res.data.result[0].word_count })
+        this.setState({
+          wordCountLimit: res.data && res.data.result && res.data.result[0].word_count,
+        });
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
-
-
 
   // handleTextEditor = (content) => {
 
@@ -230,12 +225,11 @@ class EditBlog extends Component {
 
   // localStorage.setItem('blogContent', content);
   // };
-  handleEditorChange = (content, editor) => {
-
+  handleEditorChange = (content, delta, source, editor) => {
     content = content.replace(/&nbsp;/g, '');
     this.setState({ textEditorContent: content, fadeIn: false });
-    const subceededWordCount = this.isWordCountSubceeded()
-  }
+    const subceededWordCount = this.isWordCountSubceeded();
+  };
   handleTitle = (event) => {
     this.setState({ title: event.target.value });
   };
@@ -243,16 +237,16 @@ class EditBlog extends Component {
     if (files[0].name.match(/.(jpg|jpeg|png|pdf)$/i)) {
       return true;
     }
-    return false
-  }
+    return false;
+  };
 
   onDrop = (files = []) => {
     if (!this.isImage(files)) {
       this.context.setAlert('error', 'Please select only image/pdf file format');
       return;
     } else if (files.length > 1) {
-      this.context.setAlert('error', "You can select only a single image at once")
-      return
+      this.context.setAlert('error', 'You can select only a single image at once');
+      return;
     }
 
     this.setState({ files, image: URL.createObjectURL(files[0]) });
@@ -260,41 +254,44 @@ class EditBlog extends Component {
 
   getFileNameAndSize = (files) => {
     if (files.length) {
-      const fileName = this.state.files && this.state.files.map(file => (
-        <li key={file.name}>
-          {file.name} - {file.size} bytes
-        </li>
-      ))
-      return fileName
+      const fileName =
+        this.state.files &&
+        this.state.files.map((file) => (
+          <li key={file.name}>
+            {file.name} - {file.size} bytes
+          </li>
+        ));
+      return fileName;
     }
-    return null
-  }
+    return null;
+  };
 
   handleGenre = (data) => {
     this.setState({ genreId: data.id });
   };
 
   PreviewBlogNav = () => {
-    let { genreId, files, title, textEditorContent, image, parsedTextEditorContentLen } = this.state
+    let { genreId, files, title, textEditorContent, image, parsedTextEditorContentLen } =
+      this.state;
     // if(!genreId ||!title ||!textEditorContent || !files.length> 0 && !image ){
     //   this.context.setAlert('error',"please fill all fields")
     //   return
     // }
     if (!genreId) {
-      this.context.setAlert('error', "please select genre")
-      return
+      this.context.setAlert('error', 'please select genre');
+      return;
     }
     if (!files.length > 0 && !image) {
-      this.context.setAlert('error', "please upload image")
-      return
+      this.context.setAlert('error', 'please upload image');
+      return;
     }
     if (!title) {
-      this.context.setAlert('error', "please enter title to the blog ")
-      return
+      this.context.setAlert('error', 'please enter title to the blog ');
+      return;
     }
     if (!textEditorContent) {
-      this.context.setAlert('error', "please enter description to the blog")
-      return
+      this.context.setAlert('error', 'please enter description to the blog');
+      return;
     }
     // if (files.length> 0 && image){
     //   this.context.setAlert('error',"please remove already existing  image")
@@ -305,31 +302,43 @@ class EditBlog extends Component {
     //   this.context.setAlert('error',"please select all fields")
     //   return
     // }
-    const subceededWordCount = this.isWordCountSubceeded()
+    const subceededWordCount = this.isWordCountSubceeded();
     if (subceededWordCount) {
-      this.context.setAlert('error', subceededWordCount)
-      return
+      this.context.setAlert('error', subceededWordCount);
+      return;
     }
     const {
       // textEditorContent,
       // title,
       // genreId,
       studentName,
-      creationDate, blogId,
+      creationDate,
+      blogId,
       genreObj,
       // image,
       // files,
-      genreName
+      genreName,
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-edit-blog',
-      state: { genreName, genreObj, studentName, creationDate, genreId, textEditorContent, title, files, blogId, image, parsedTextEditorContentLen },
+      state: {
+        genreName,
+        genreObj,
+        studentName,
+        creationDate,
+        genreId,
+        textEditorContent,
+        title,
+        files,
+        blogId,
+        image,
+        parsedTextEditorContentLen,
+      },
     });
   };
   handleClearThumbnail = () => {
-    this.setState({ image: '' })
-  }
-
+    this.setState({ image: '' });
+  };
 
   render() {
     const { classes } = this.props;
@@ -349,7 +358,8 @@ class EditBlog extends Component {
       genreList,
       genreId,
       studentName,
-      creationDate, wordCountLimit
+      creationDate,
+      wordCountLimit,
     } = this.state;
     return Preview ? (
       <PreviewBlog
@@ -422,12 +432,22 @@ class EditBlog extends Component {
                       {/* Write Blog */}
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
-                    <MyTinyEditor
+                    {/* <MyTinyEditor
                       id="blog"
                       content={textEditorContent}
                       handleEditorChange={this.handleEditorChange}
                       placeholder='Description...'
-                    />
+                    /> */}
+                    <div className='py-2 w-100 font-weight-normal'>
+                      <ReactQuillEditor
+                        id='blog'
+                        value={textEditorContent}
+                        onChange={(content, delta, source, editor) =>
+                          this.handleEditorChange(content, delta, source, editor)
+                        }
+                        placeholder='Answer...'
+                      />
+                    </div>
                     {/* <TinyMce */}
                     {/* key={key} */}
                     {/* id={key} */}
@@ -439,22 +459,22 @@ class EditBlog extends Component {
                     <Typography style={{ margin: 10 }} variant='body1'>
                       Add Attachment
                     </Typography>
-                    {
-                      image
-                        ? <Grid item style={{ position: 'relative' }}>
-                          <HighlightOff
-                            style={{
-                              position: 'absolute',
-                              left: '100px',
-                              color: '#e74c3c'
-                            }}
-                            onClick={this.handleClearThumbnail}
-                          />
-                          <label className='blogForm' />
-                          <img style={{ width: '100px' }} src={image} />
-                        </Grid>
-                        : ''
-                    }
+                    {image ? (
+                      <Grid item style={{ position: 'relative' }}>
+                        <HighlightOff
+                          style={{
+                            position: 'absolute',
+                            left: '100px',
+                            color: '#e74c3c',
+                          }}
+                          onClick={this.handleClearThumbnail}
+                        />
+                        <label className='blogForm' />
+                        <img style={{ width: '100px' }} src={image} />
+                      </Grid>
+                    ) : (
+                      ''
+                    )}
                     <Card className={classes.Card}>
                       <Dropzone onDrop={this.onDrop}>
                         {({
@@ -484,10 +504,10 @@ class EditBlog extends Component {
                                     <CloudUploadIcon
                                       color='primary'
                                       style={{ marginLeft: '45%', marginTop: '15%' }}
-                                    />drop file
+                                    />
+                                    drop file
                                   </>
                                 )}
-
                               </div>
                               {this.getFileNameAndSize(files)}
                               {/* {files} */}
@@ -495,8 +515,6 @@ class EditBlog extends Component {
                           </Card>
                         )}
                       </Dropzone>
-
-
 
                       <Divider variant='middle' style={{ margin: 10 }} />
 
@@ -506,7 +524,7 @@ class EditBlog extends Component {
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
-                        // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
+                          // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>

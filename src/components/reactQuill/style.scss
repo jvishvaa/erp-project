@@ -1,0 +1,14 @@
+@for $i from 1 through 100 {
+    //  .ql-snow .ql-picker.ql-size .ql-picker-item::before
+    .ql-snow .ql-picker.ql-size .ql-picker-label[data-value='#{$i}px']::before,
+    .ql-snow .ql-picker.ql-size .ql-picker-item[data-value='#{$i}px']::before {
+      content: '#{$i}';
+      // font-size: $i + px !important;
+    }
+    .ql-size-#{$i}px {
+      font-size: #{$i}px !important;
+    }
+  }
+  .ql-snow.ql-toolbar .ql-formats .ql-picker.ql-size{
+    width: 50px;
+  }

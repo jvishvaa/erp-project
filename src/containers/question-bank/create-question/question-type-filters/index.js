@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { Grid, Button, useTheme, SvgIcon, IconButton ,makeStyles} from '@material-ui/core';
+import {
+  Grid,
+  Button,
+  useTheme,
+  SvgIcon,
+  IconButton,
+  makeStyles,
+} from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
@@ -18,56 +25,56 @@ import MyTinyEditor from '../tinymce-editor';
 import TypeFiltersContainer from './type-filters-container';
 import QuestionBulkCreation from '../question-bulk-upload';
 import axios from 'axios';
+import ReactQuillEditor from 'components/reactQuill';
 
-
-const useStyles = makeStyles((theme)=>({
-  createManuallyButton:{
+const useStyles = makeStyles((theme) => ({
+  createManuallyButton: {
     border: `1px solid ${theme.palette.primary.main}`,
-    background: "white",
-    justifyContent: "center",
-    padding: "10px",
-    color : theme.palette.secondary.main
-  },
-  questionPaperTypeTag:{
+    background: 'white',
+    justifyContent: 'center',
+    padding: '10px',
     color: theme.palette.secondary.main,
-  margin: "15px 0 15px 30px",
-  fontSize: "16px",
-  fontWeight: 600,
+  },
+  questionPaperTypeTag: {
+    color: theme.palette.secondary.main,
+    margin: '15px 0 15px 30px',
+    fontSize: '16px',
+    fontWeight: 600,
   },
   minMaxText: {
     color: theme.palette.secondary.main,
-    fontSize: "16px",
-    fontWeight: "600",
-    marginRight: "10px",
-    marginBottom: "5px",
+    fontSize: '16px',
+    fontWeight: '600',
+    marginRight: '10px',
+    marginBottom: '5px',
   },
-  lctBoxes:{
+  lctBoxes: {
     flexGrow: 1,
-    display: "flex",
-    fontSize: "16px",
+    display: 'flex',
+    fontSize: '16px',
     color: theme.palette.primary.main,
-    marginLeft: "10px",
-    '@media screen and (max-width: 768px)':{
-      flexDirection: "column",
-      justifyContent: "space-between",
-      margin: "5px",
+    marginLeft: '10px',
+    '@media screen and (max-width: 768px)': {
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      margin: '5px',
       marginLeft: 0,
-      height: "100px",
-    }
+      height: '100px',
+    },
   },
-  addOutlinedIcon:{
-    color : `${theme.palette.primary.main} !important`,
+  addOutlinedIcon: {
+    color: `${theme.palette.primary.main} !important`,
   },
-  addpasagequebtn:{
-    color : theme.palette.primary.main
+  addpasagequebtn: {
+    color: theme.palette.primary.main,
   },
   draftbtn: {
     width: '100%',
     border: `1px solid ${theme.palette.primary.main}`,
     background: 'white',
-    color : theme.palette.secondary.main
+    color: theme.palette.secondary.main,
   },
-}))
+}));
 const levels = [
   { id: '1', level: 'Easy' },
   { id: '2', level: 'Average' },
@@ -107,7 +114,7 @@ const QuestionTypeFilters = ({
   filterDataDisplay,
   attributes,
 }) => {
-  const classes = useStyles()
+  const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const history = useHistory();
@@ -386,7 +393,7 @@ const QuestionTypeFilters = ({
     }
   };
 
-  const handleEditorChange = (content, editor) => {
+  const handleEditorChange = (content, delta, source, editor) => {
     setComprehensionQuestion(content);
   };
 
@@ -588,7 +595,7 @@ const QuestionTypeFilters = ({
       {isCreateManuallyOpen &&
         (showQuestionType.ComprehensionQuestions || showQuestionType.VideoQuestion) && (
           <div className='comprehensionQuestionEditor'>
-            <MyTinyEditor
+            {/* <MyTinyEditor
               id={
                 showQuestionType.VideoQuestion
                   ? 'videoQuestionEditor'
@@ -601,7 +608,25 @@ const QuestionTypeFilters = ({
               }
               filterDataTop={filterDataDisplay}
               filterDataBottom={filterData}
-            />
+            /> */}
+            <div className='py-2 w-100 font-weight-normal'>
+              <ReactQuillEditor
+                id={
+                  showQuestionType.VideoQuestion
+                    ? 'videoQuestionEditor'
+                    : 'comprehensionEditor'
+                }
+                value={comprehensionQuestion}
+                onChange={(content, delta, source, editor) =>
+                  handleEditorChange(content, delta, source, editor)
+                }
+                placeholder={
+                  showQuestionType.VideoQuestion
+                    ? 'Video Question...'
+                    : 'Comprehension...'
+                }
+              />
+            </div>
           </div>
         )}
 
@@ -670,7 +695,7 @@ const QuestionTypeFilters = ({
             disableFocusRipple
             disableTouchRipple
             style={{ width: '100%' }}
-            startIcon={<AddOutlinedIcon className = {classes.addOutlinedIcon} />}
+            startIcon={<AddOutlinedIcon className={classes.addOutlinedIcon} />}
             component='label'
           >
             <input
