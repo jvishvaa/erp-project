@@ -19,6 +19,7 @@ import {
   ArrowForward,
 } from '@material-ui/icons';
 import UndoIcon from '@material-ui/icons/Undo';
+import RedoIcon from '@material-ui/icons/Redo';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
@@ -75,8 +76,6 @@ function Evaluvation(props) {
     zoom,
     isReset,
   } = useDescriptvieContex();
-
-  console.log({ restore });
 
   const showEvaluvationPage = () => {
     setOpen(!open);
@@ -263,7 +262,7 @@ function Evaluvation(props) {
                 <Brush />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton
+            {/* <ToggleButton
               value='eraser'
               aria-label='eraser'
               style={{
@@ -279,28 +278,25 @@ function Evaluvation(props) {
                   />
                 </svg>
               </Tooltip>
-            </ToggleButton>
+            </ToggleButton> */}
           </ToggleButtonGroup>
           <ToggleButtonGroup
             exclusive
             value={restore}
             onChange={(e, type) => {
-              console.log(e, type, 'trqwrugwqr');
               setRestore(type);
             }}
             aria-label='text formatting'
             className='tool-group'
           >
-            <ToggleButton
-              value='undo'
-              aria-label='paint'
-              style={{
-                display: !open ? 'none' : '',
-                borderStyle,
-              }}
-            >
+            <ToggleButton value='undo' aria-label='undo'>
               <Tooltip title='undo' arrow>
                 <UndoIcon />
+              </Tooltip>
+            </ToggleButton>
+            <ToggleButton value='redo' aria-label='redo'>
+              <Tooltip title='redo' arrow>
+                <RedoIcon />
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>

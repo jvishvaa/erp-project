@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import pdfjsLib from 'pdfjs-dist';
-import DrawingLayer from './layers/drawing';
 import './correction_styles.css';
 import {
   marginStyleAngle,
@@ -10,7 +8,6 @@ import {
 } from './connstant';
 
 // The workerSrc property shall be specified.
-// pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js'
 function CorrectionComponent({
   url,
   pageNumber,
@@ -33,24 +30,31 @@ function CorrectionComponent({
   zoom,
   isReset,
 }) {
-  // const [values, setValues] = useState({})
-  const [scale] = useState(1);
   const canvasElement = useRef();
   const pageRef = useRef(null);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const [containerHeight, setContainerHeight] = useState(0);
   const imgRef = useRef(null);
   const divElement = useRef(null);
-  const [viewWidth, setViewWidth] = useState(0);
-  const [viewHeight, setViewHeight] = useState(0);
   const hRef = useRef(0);
   const wRef = useRef(0);
+  const drawingRef = useRef(null);
+
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [viewWidth, setViewWidth] = useState(0);
+  const [viewHeight, setViewHeight] = useState(0);
   const [style, setStyle] = useState({});
   const [drawedHistory, setDrawedHistory] = useState([]);
-  const [selectedDrawingIndex, setSelectedDrawingIndex] = useState(null);
-  // const [cImg, setImg] = useState()
-
-  console.log({ drawing });
+  const [selectedDrawingIndex, setSelectedDrawingIndex] = useState(
+    drawedHistory.length - 1
+  );
+  const [context, setContext] = useState('');
+  const [isPainting, setIsPainting] = useState(false);
+  const [line, setLine] = useState([]);
+  const [prevPos, setPrevPos] = useState({});
+  const [drawedChanges, setDrawedChanges] = useState({});
+  const enablePainting = tool === 'paint';
+  const enableEraser = tool === 'eraser';
+  var userStrokeStyle = 'red';
 
   const urlCopy = url;
   const extenstion = urlCopy.split('.').pop();
@@ -58,59 +62,45 @@ function CorrectionComponent({
   useEffect(() => {
     const canvas = canvasElement.current;
 
-    // let offCanvas = document.getElementById('off-canvas')
     if (canvas) {
       const context = canvas.getContext('2d');
-      // const offContext = offCanvas.getContext('2d')
       const pgUrl =
         splittedMedia && splittedMedia.length
           ? splittedMedia.filter((e) => e.page_number === pageNumber)[0].file_content
           : url;
       // eslint-disable-next-line no-undef
-
-      // eslint-disable-next-line no-undef
-
-      // eslint-disable-next-line no-undef
       var img = new Image();
-      // img.src = pgUrl
       img.setAttribute('crossorigin', 'anonymous');
-      //  crossOrigin = 'Anonymous';
       img.id = 'actual_image';
-      // imgRef.current = img
-      // window.scrollTo(0, 0)
-      // img.src = pgUrl
-      img.onload = function () {
-        // window.alert(`${img.width}, ${img.height}`)
+      img.onload = async function () {
         let width = 0;
         let height = 0;
 
-        width = extenstion === 'pdf' ? viewWidth : img.width;
-        height = extenstion === 'pdf' ? viewHeight : img.height;
+        width = extenstion === 'pdf' ? viewWidth : 500;
+        height = extenstion === 'pdf' ? viewHeight : 700;
 
         canvas.height = height;
         canvas.width = width;
         hRef.current = height;
         wRef.current = width;
 
-        console.log(
-          img.width,
-          img.height,
-          img,
-          canvas.width,
-          canvas.height,
-          'canvas',
-          wRef.current,
-          hRef,
-          'ref'
-        );
-
         setContainerHeight(height);
         setContainerWidth(width);
+        let base64Image = await imageUrlToBase64(img?.src);
+        setDrawedHistory([
+          ...drawedHistory,
+          {
+            image: base64Image,
+            containerImg: '',
+            operation: 'manualSave',
+            isSaving: 'true',
+            viewHeight: height,
+            viewWidth: width,
+          },
+        ]);
+        setSelectedDrawingIndex(selectedDrawingIndex + 1);
         context.clearRect(0, 0, canvas.width, canvas.height);
-        // context.drawImage(img, 0, 0, canvas.width, canvas.height);
-        // context.drawImage(img, 0, 0, canvas.width, canvas.height);
         context.drawImage(img, 0, 0, width, height);
-        console.log({ context });
       };
       img.src = `${pgUrl}??${escape(new Date().getTime())}`;
       imgRef.current = img;
@@ -120,11 +110,12 @@ function CorrectionComponent({
   useEffect(() => {
     if (restore === 'undo') {
       restoreDrawing('undo');
+    } else if (restore === 'redo') {
+      restoreDrawing('redo');
     }
   }, [restore]);
 
   const restoreDrawing = (type) => {
-    console.log('restore drawing', type);
     let drawingCanvas = canvasElement.current;
     if (drawedHistory.length > 1) {
       const context = drawingCanvas.getContext('2d');
@@ -132,15 +123,18 @@ function CorrectionComponent({
       let img = new Image();
       let selectedDrawing;
       if (type === 'undo') {
-        selectedDrawing = drawedHistory[drawedHistory.length - 2];
-        setDrawedHistory(drawedHistory.slice(0, -1));
+        if (selectedDrawingIndex > 0) {
+          selectedDrawing = drawedHistory[selectedDrawingIndex - 1];
+          setSelectedDrawingIndex(selectedDrawingIndex - 1);
+        }
       }
-      img.src = selectedDrawing.image;
-      console.log(
-        base64StringtoFile(drawedHistory[drawedHistory.length - 2].image),
-        selectedDrawing,
-        'imageaFASSAFSAF'
-      );
+      if (type === 'redo') {
+        if (selectedDrawingIndex < drawedHistory.length - 1) {
+          selectedDrawing = drawedHistory[selectedDrawingIndex + 1];
+          setSelectedDrawingIndex(selectedDrawingIndex + 1);
+        }
+      }
+      img.src = selectedDrawing?.image;
       img.addEventListener('load', () => {
         drawingCanvas.width = containerWidth;
         drawingCanvas.height = containerHeight;
@@ -154,28 +148,26 @@ function CorrectionComponent({
         );
       });
       setRestore('');
-      // setImg(img.src)
       drawingRef.current = img;
     }
   };
 
-  const base64StringtoFile = (base64String, filename) => {
-    let arr = base64String.split(',');
-    let mime = arr[0].match(/:(.*?);/)[1];
-    // eslint-disable-next-line no-undef
-    let bstr = atob(arr[1]);
-    let n = bstr.length;
-    let u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    // eslint-disable-next-line no-undef
-    return new File([u8arr], filename, { type: mime });
+  //URL to base 64
+  const imageUrlToBase64 = async (imageUrl) => {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    const reader = new FileReader();
+
+    let promissedResult = new Promise((resolve, reject) => {
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    let data = await promissedResult;
+    return data;
   };
 
   const drawRotated = useCallback(() => {
-    // let coX = '10px'
-    // let ratio = '300'
     var { sX, sY, zoomAction, m } = zoom;
 
     let margin = '5% 0% 0% 3%';
@@ -237,51 +229,21 @@ function CorrectionComponent({
           margin = '5% 0% 0% 0%';
         }
       }
-      // ratio = (wRef.current - hRef.current) / 2 + 20
     }
 
     let style = {
       width: containerWidth,
       height: fullscreen ? 'calc(100vh - 46px)' : 'calc(100vh - 46px)',
-
-      // height: 842,
       overflow: 'auto',
-      // transform: `rotate(${angleInDegrees}deg)`,
-      // margin: margin,
     };
 
     if (extenstion === 'pdf') {
       let v = marginPDFStyle[String(sX)];
       margin = '5% auto';
-      // margin = sX >= 1.5 ? `${v}` : '7% auto';
-      // margin = sX >= 3 ? `${v}` : '10% auto';
-
       style.margin = margin;
     }
 
-    // if (hRef && hRef.current && wRef && wRef.current && extenstion !== 'pdf') {
-    //   if (hRef && hRef.current && wRef && wRef.current < window.innerWidth) {
-    //     if (
-    //       angleInDegrees === 270 ||
-    //       angleInDegrees === -270 ||
-    //       angleInDegrees === 90 ||
-    //       angleInDegrees === -90
-    //     ) {
-    //       let v = marginStyleAngle[String(sX)];
-    //       margin = '32% auto';
-    //       margin = sX >= 1.5 ? `${v}` : margin;
-    //       style.margin = margin;
-    //     } else {
-    //       let v = marginStyleBelowWindowSize[String(sX)];
-    //       margin = '10% auto';
-    //       margin = sX >= 1.5 ? `${v}` : margin;
-    //       style.margin = margin;
-    //     }
-    //   }
-    // }
-
     let x = sX || 1;
-
     let y = sY || 1;
 
     style.transform =
@@ -301,80 +263,6 @@ function CorrectionComponent({
       handleTotalPage(pageRef.current);
     }
   }, [handleTotalPage, pageRef]);
-
-  const renderPage = useCallback(() => {
-    if (canvasElement.current && url) {
-      // Asynchronous download of PDF
-      setIsPending(true);
-      setPdfState('S');
-      var loadingTask = pdfjsLib.getDocument(url);
-      loadingTask.promise.then(
-        (pdf) => {
-          // Fetch the first page
-          // var pageNumber = 1
-          pageRef.current = pdf.numPages;
-          pdf.getPage(pageNumber).then((page) => {
-            var viewport = page.getViewport({ scale: scale });
-            var canvas = canvasElement.current;
-            if (canvas) {
-              var context = canvas.getContext('2d');
-              canvas.height = viewport.height;
-              canvas.width = viewport.width;
-              setContainerHeight(viewport.height);
-              setContainerWidth(viewport.width);
-              // Render PDF page into canvas context
-              var renderContext = {
-                canvasContext: context,
-                viewport: viewport,
-              };
-              var renderTask = page.render(renderContext);
-              renderTask.promise.then(() => {
-                page.getAnnotations().then((annotations) => {
-                  let newTextBoxes = [];
-                  annotations.forEach((annotation) => {
-                    let rect = pdfjsLib.Util.normalizeRect(
-                      viewport.convertToViewportRectangle(annotation.rect)
-                    );
-                    newTextBoxes.push({
-                      annotation,
-                      rect,
-                    });
-                  });
-                  // setTextBoxes(newTextBoxes)
-                });
-                setIsPending(false);
-                setPdfState('C');
-              });
-            }
-          });
-        },
-        function (reason) {
-          // PDF loading error
-          console.error(reason);
-        }
-      );
-    }
-  }, [pageNumber, scale, setIsPending, setPdfState, url]);
-
-  useEffect(() => {
-    if (extenstion === 'pdf' && splittedMedia && !splittedMedia.length) {
-      renderPage();
-    }
-  }, [extenstion, renderPage, splittedMedia, url]);
-
-  const canvasDrawingElement = useRef();
-  const [context, setContext] = useState('');
-  const [isPainting, setIsPainting] = useState(false);
-  const [line, setLine] = useState([]);
-  const [prevPos, setPrevPos] = useState({});
-  const [drawedChanges, setDrawedChanges] = useState({});
-  console.log({ drawedChanges });
-  console.log({ drawedHistory });
-  const drawingRef = useRef(null);
-  // const [cImg, setImg] = useState()
-  const enablePainting = tool === 'paint';
-  const enableEraser = tool === 'eraser';
-  var userStrokeStyle = 'red';
 
   useEffect(() => {
     const handleListener = (ev) => {
@@ -399,6 +287,7 @@ function CorrectionComponent({
     }
   }, [drawedChanges, handleSave]);
 
+  // Draw image on canvas after every change
   useEffect(() => {
     let drawingCanvas = canvasElement.current;
     drawingCanvas.height = containerHeight;
@@ -416,14 +305,11 @@ function CorrectionComponent({
       let img = new Image();
       img.src = drawing;
       img.addEventListener('load', () => {
-        // drawingCanvas.width = width;
-        // drawingCanvas.height = height;
         drawingCanvas.width = containerWidth;
         drawingCanvas.height = containerHeight;
         context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
         context.drawImage(img, 0, 0, drawingCanvas.width, drawingCanvas.height);
       });
-      // setImg(img.src)
       drawingRef.current = img;
     }
   }, [drawing]);
@@ -449,6 +335,8 @@ function CorrectionComponent({
       setPrevPos({ offsetX, offsetY });
     }
   };
+
+  // start drawing
   const onTouchStart = ({ nativeEvent: touchEvent }) => {
     touchEvent.stopPropagation();
     touchEvent.preventDefault();
@@ -462,6 +350,7 @@ function CorrectionComponent({
     }
   };
 
+  // drawing
   const onTouchMove = ({ nativeEvent: touchEvent }) => {
     let drawingCanvas = canvasElement.current;
     var rect = drawingCanvas.getBoundingClientRect();
@@ -480,12 +369,13 @@ function CorrectionComponent({
     }
   };
 
+  //Leave Drawing
   const endPaintEvent = () => {
     if (isPainting) {
       setIsPainting(false);
       let drawingCanvas = canvasElement.current;
       setDrawedChanges({
-        image: drawingCanvas.toDataURL(),
+        image: drawingCanvas?.toDataURL(),
         // containerImg: containerImg.toDataURL(),
         containerImg: '',
         operation: 'manualSave',
@@ -493,10 +383,31 @@ function CorrectionComponent({
         viewHeight: hRef && hRef.current,
         viewWidth: wRef && wRef.current,
       });
+
+      if (drawedHistory.length - selectedDrawingIndex > 1) {
+        let dummyHistory = drawedHistory;
+        let dummyHistory2 = dummyHistory.slice(0, selectedDrawingIndex + 1);
+
+        setDrawedHistory([
+          ...dummyHistory2,
+          {
+            image: drawingCanvas?.toDataURL(),
+            // containerImg: containerImg.toDataURL(),
+            containerImg: '',
+            operation: 'manualSave',
+            isSaving: 'true',
+            viewHeight: hRef && hRef.current,
+            viewWidth: wRef && wRef.current,
+          },
+        ]);
+        setSelectedDrawingIndex(dummyHistory2.length);
+
+        return;
+      }
       setDrawedHistory([
         ...drawedHistory,
         {
-          image: drawingCanvas.toDataURL(),
+          image: drawingCanvas?.toDataURL(),
           // containerImg: containerImg.toDataURL(),
           containerImg: '',
           operation: 'manualSave',
@@ -505,48 +416,15 @@ function CorrectionComponent({
           viewWidth: wRef && wRef.current,
         },
       ]);
+      setSelectedDrawingIndex(drawedHistory.length);
+      // setDrawedHistory(drawedHistory.splice(selectedDrawingIndex, drawedHistory.length));
       // if (extenstion === 'pdf') {
       //   onChange({ image: drawingCanvas.toDataURL(), containerImg: containerImg.toDataURL(), operation: 'autoSave' })
       // }
     }
   };
 
-  // const drawRotated = useCallback(() => {
-  //   let canvas = canvasElement.current
-  //   // let drawingCanvas = canvasElement.current
-  //   if (canvas) {
-  //     // let img = cImg
-  //     const ctx = canvas.getContext('2d')
-  //     // eslint-disable-next-line no-undef
-  //     var img = new Image()
-  //     // img.src = imgRef.current.src
-  //     img.crossOrigin = 'anonymous'
-  //     // img.id = 'actual_image'
-  //     const decidedAngle = initialAngle ? angleInDegrees - 90 : angleInDegrees
-  //     img.src = cImg
-  //     if (img && angleInDegrees !== 0) {
-  //       img.addEventListener('load', function () {
-  //         ctx.clearRect(0, 0, canvas.width, canvas.height)
-  //         ctx.save()
-  //         canvas.width = width
-  //         canvas.height = height
-  //         ctx.translate(canvas.width / 2, canvas.height / 2)
-  //         ctx.rotate((decidedAngle) * (Math.PI / 180))
-  //         if (img && img.width && img.height) {
-  //           ctx.drawImage(img, -img.width / 2, -img.height / 2)
-  //         }
-
-  //         ctx.restore()
-  //       })
-  //     }
-  //   }
-  // }, [angleInDegrees, cImg, height, initialAngle, width]
-  // )
-
-  // useEffect(() => {
-  //   drawRotated()
-  // }, [angleInDegrees, drawRotated])
-
+  // line drawing
   const paint = (prevPos, currPos, strokeStyle) => {
     const { offsetX, offsetY } = currPos;
     const { offsetX: x, offsetY: y } = prevPos;
@@ -572,7 +450,6 @@ function CorrectionComponent({
 
   return (
     <div ref={divElement} style={style} id='editor-evaluvation-container'>
-      {/* <img src={penTool} /> */}
       <canvas
         style={{
           left: 0,
@@ -584,7 +461,6 @@ function CorrectionComponent({
         }}
         ref={canvasElement}
         id='editor-evaluvation-drawing-layer'
-        // ref={canvasDrawingElement}
         onMouseDown={onMouseDown}
         onMouseLeave={endPaintEvent}
         onMouseUp={endPaintEvent}
@@ -594,25 +470,6 @@ function CorrectionComponent({
         onTouchEnd={endPaintEvent}
         className='editor-drawing-layer'
       />
-      {/* <DrawingLayer
-        page={pageNumber}
-        drawing={drawing}
-        onChange={onChange}
-        enableEraser={tool === 'eraser'}
-        enablePainting={tool === 'paint'}
-        width={595}
-        height={842}
-        containerImg={canvasElement.current}
-        handleSave={handleSave}
-        extenstion={extenstion}
-        angleInDegrees={angleInDegrees}
-        viewHeight={viewHeight}
-        viewWidth={viewWidth}
-        refW={wRef}
-        refH={hRef}
-        initialAngle={initialAngle}
-      /> */}
-      {/* <canvas id='off-canvas' style='display: none;' /> */}
     </div>
   );
 }

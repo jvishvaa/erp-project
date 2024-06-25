@@ -358,7 +358,6 @@ export function DescriptiveTestContextProvider({
     return new File([u8arr], filename, { type: mime });
   };
   const sendFormdata = async (data) => {
-    console.log({ data });
     if (data.operation === 'manualSave') {
       setisSave(true);
     }
@@ -372,48 +371,6 @@ export function DescriptiveTestContextProvider({
     let myFilename = String(new Date().getTime()) + '.' + 'png';
     const fileObj = base64StringtoFile(data.image, myFilename);
     handleSaveFile(fileObj);
-
-    // const [{ id, online_test_assessment: { assessment_id: assId } = {} } = {}] =
-    //   desTestDetails;
-    // let formdata = new FormData();
-    // let correctedPaper = '';
-    // setCorrectionLoading(true);
-    // const urlCopy = url;
-    // let extenstion = urlCopy.split('.').pop();
-    // let ext = extenstion === 'JPG' ? 'jpg' : extenstion;
-    // window.scrollTo(0, 0);
-
-    // console.log(document.getElementById('editor-evaluvation-container'), 'dwfegrhj');
-    // html2canvas(document.getElementById('editor-evaluvation-drawing-layer'), {
-    //   logging: false,
-    //   useCORS: true,
-    //   scrollX: 0,
-    //   scrollY: 0,
-    //   backgroundColor: 'null',
-    //   // scrollY: -window.scrollY,
-    // })
-    //   .then((canvas) => {
-    //     // setTimeout(() => {
-    //     // canvas.height = 842;
-    //     // canvas.width = 595;
-    //     console.log({ canvas });
-    //     correctedPaper = data?.image;
-    //     console.log({ correctedPaper });
-    //     let myFilename = String(new Date().getTime()) + '.' + 'png';
-    //     setCorrectionLoading(false);
-    //     if (correctedPaper && data.image) {
-    //       const fileObj = base64StringtoFile(correctedPaper, myFilename);
-    //       handleSaveFile(fileObj);
-    //     } else {
-    //       // alert.warning("please make changes and save");
-    //     }
-    //     // }, 3000);
-    //   })
-    //   .catch((error) => console.log('error in converting to canvas', error));
-    // //   window.scrollTo(
-    // //     0,
-    // //     document.body.scrollHeight || document.documentElement.scrollHeight
-    // //   );
   };
   const onChange = (data) => {
     const mediaImg = data.containerImg;
