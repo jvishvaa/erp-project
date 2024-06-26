@@ -569,7 +569,7 @@ const FilesViewEvaluate = ({
               {/* <div className=' d-flex justify-content-center'>
                       <span className='th-16'>Files</span>
                     </div> */}
-              <div className='card shadow border-0 th-br-4 w-100'>
+              <div className='card shadow-sm th-br-8 w-100' style={{ height: 400 }}>
                 <div className='p-2'>
                   <div className='col-md-12 row'>
                     <div className='col-md-6'>
@@ -653,13 +653,14 @@ const FilesViewEvaluate = ({
                   </div>
                 </div>
               )}
-              <div>
-                <span className='th-12'>
-                  Attachment {selectedHomeworkIndex + 1} of{' '}
-                  {evaluateData[evaluatedIndex]?.homework?.length}
-                </span>
-              </div>
-              <div className='attachments-container'>
+
+              <div className='attachments-container card shadow-sm w-100 th-br-8'>
+                <div className='pl-5 pt-2'>
+                  <span className='th-12'>
+                    Attachment {selectedHomeworkIndex + 1} of{' '}
+                    {evaluateData[evaluatedIndex]?.homework?.length}
+                  </span>
+                </div>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
                     {selectedHomeworkIndex === 0 ? (
