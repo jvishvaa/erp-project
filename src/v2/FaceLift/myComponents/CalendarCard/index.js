@@ -89,7 +89,7 @@ const CalendarCard = () => {
           response.data.events_data.map((item) =>
             eventsArr.push({
               id: item.id,
-              event_name: item.title,
+              event_name: item.event_name,
               attachments: item.attachments,
               description: item.description,
               start_time: moment(item.start_time).format('YYYY-MM-DD'),

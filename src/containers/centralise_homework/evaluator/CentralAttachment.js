@@ -92,16 +92,17 @@ const CentralAttachment = (props) => {
             )}
           </div>
         </div>
-        <img
-          className='attachment-file'
-          src={`${urlPrefix}/${fileUrl}?${escape(new Date().getTime())}`}
-          alt='File'
-          onError={(e) => {
-            setImagePreviewAvailable(false);
-            e.target.src = placeholder;
+
+        <div
+          className=''
+          style={{
+            backgroundImage: `url(${urlPrefix}/${fileUrl}?${escape(
+              new Date().getTime()
+            )})`,
+            backgroundSize: 'cover',
+            height: 350,
           }}
-          style={{ width: '100%', padding: '0.5rem' }}
-        />
+        ></div>
       </div>
       {openModal && (
         <ConformDeleteMOdel

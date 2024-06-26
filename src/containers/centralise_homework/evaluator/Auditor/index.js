@@ -20,7 +20,6 @@ const AuditorRating = ({ selectedHomework, setSelectedHomework, fetchRating }) =
       feedback: null,
     });
   };
-  console.log({ selectedHomework });
   const rateEvaluator = () => {
     const FormData = auditorFormRef ? auditorFormRef?.current?.getFieldsValue() : null;
     if (!FormData?.rate) {
