@@ -29,6 +29,8 @@ function CorrectionComponent({
   setRestore,
   zoom,
   isReset,
+  drawedHistory,
+  setDrawedHistory,
 }) {
   const canvasElement = useRef();
   const pageRef = useRef(null);
@@ -43,7 +45,6 @@ function CorrectionComponent({
   const [viewWidth, setViewWidth] = useState(0);
   const [viewHeight, setViewHeight] = useState(0);
   const [style, setStyle] = useState({});
-  const [drawedHistory, setDrawedHistory] = useState([]);
   const [selectedDrawingIndex, setSelectedDrawingIndex] = useState(
     drawedHistory.length - 1
   );
@@ -78,7 +79,6 @@ function CorrectionComponent({
 
         width = extenstion === 'pdf' ? viewWidth : 500;
         height = extenstion === 'pdf' ? viewHeight : 700;
-
         canvas.height = height;
         canvas.width = width;
         hRef.current = height;
@@ -99,6 +99,7 @@ function CorrectionComponent({
           },
         ]);
         setSelectedDrawingIndex(selectedDrawingIndex + 1);
+
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(img, 0, 0, width, height);
       };
