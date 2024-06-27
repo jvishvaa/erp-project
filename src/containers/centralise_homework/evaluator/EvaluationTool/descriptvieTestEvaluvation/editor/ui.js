@@ -29,6 +29,8 @@ function CorrectionComponent({
   setRestore,
   zoom,
   isReset,
+  drawedHistory,
+  setDrawedHistory,
 }) {
   const canvasElement = useRef();
   const pageRef = useRef(null);
@@ -43,7 +45,6 @@ function CorrectionComponent({
   const [viewWidth, setViewWidth] = useState(0);
   const [viewHeight, setViewHeight] = useState(0);
   const [style, setStyle] = useState({});
-  const [drawedHistory, setDrawedHistory] = useState([]);
   const [selectedDrawingIndex, setSelectedDrawingIndex] = useState(
     drawedHistory.length - 1
   );
@@ -60,6 +61,7 @@ function CorrectionComponent({
   const extenstion = urlCopy.split('.').pop();
 
   useEffect(() => {
+    console.log({ angleInDegrees });
     const canvas = canvasElement.current;
 
     if (canvas) {
@@ -76,9 +78,8 @@ function CorrectionComponent({
         let width = 0;
         let height = 0;
 
-        width = extenstion === 'pdf' ? viewWidth : 500;
-        height = extenstion === 'pdf' ? viewHeight : 700;
-
+        width = 500;
+        height = 700;
         canvas.height = height;
         canvas.width = width;
         hRef.current = height;
@@ -99,6 +100,7 @@ function CorrectionComponent({
           },
         ]);
         setSelectedDrawingIndex(selectedDrawingIndex + 1);
+
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(img, 0, 0, width, height);
       };
@@ -169,6 +171,8 @@ function CorrectionComponent({
 
   const drawRotated = useCallback(() => {
     var { sX, sY, zoomAction, m } = zoom;
+
+    console.log({ sX, sY, zoomAction, m });
 
     let margin = '5% 0% 0% 3%';
 
@@ -255,6 +259,7 @@ function CorrectionComponent({
   }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen, zoom]);
 
   useEffect(() => {
+    console.log('rotating');
     drawRotated();
   }, [angleInDegrees, drawRotated]);
 

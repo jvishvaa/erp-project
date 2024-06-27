@@ -44,6 +44,8 @@ function Evaluvation(props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [drawedChanges, setDrawedChanges] = useState({});
+  const [drawedHistory, setDrawedHistory] = useState([]);
+
   const [restore, setRestore] = useState('');
   const {
     tool,
@@ -332,39 +334,43 @@ function Evaluvation(props) {
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
-          <ToggleButtonGroup
-            exclusive
-            value={rotation}
-            onChange={enableRotation}
-            aria-label='text formatting'
-            className='tool-group'
-          >
-            <ToggleButton
-              value='rLeft'
-              aria-label='paint'
-              style={{
-                display: !open ? 'none' : '',
-                borderStyle,
-              }}
+
+          {/* Cant rotate canvas after drawing */}
+          {drawedHistory?.length < 2 && (
+            <ToggleButtonGroup
+              exclusive
+              value={rotation}
+              onChange={enableRotation}
+              aria-label='text formatting'
+              className='tool-group'
             >
-              <Tooltip title='rotate left' arrow>
-                <RotateLeftIcon />
-              </Tooltip>
-            </ToggleButton>
-            <ToggleButton
-              color='primary'
-              value='rRight'
-              aria-label='paint'
-              style={{
-                display: !open ? 'none' : '',
-                borderStyle,
-              }}
-            >
-              <Tooltip title='rotate right' arrow>
-                <RotateRightIcon />
-              </Tooltip>
-            </ToggleButton>
-          </ToggleButtonGroup>
+              <ToggleButton
+                value='rLeft'
+                aria-label='paint'
+                style={{
+                  display: !open ? 'none' : '',
+                  borderStyle,
+                }}
+              >
+                <Tooltip title='rotate left' arrow>
+                  <RotateLeftIcon />
+                </Tooltip>
+              </ToggleButton>
+              <ToggleButton
+                color='primary'
+                value='rRight'
+                aria-label='paint'
+                style={{
+                  display: !open ? 'none' : '',
+                  borderStyle,
+                }}
+              >
+                <Tooltip title='rotate right' arrow>
+                  <RotateRightIcon />
+                </Tooltip>
+              </ToggleButton>
+            </ToggleButtonGroup>
+          )}
           {/* </div> */}
           <ToggleButton
             onClick={onClickFullscreen}
@@ -466,6 +472,8 @@ function Evaluvation(props) {
                 setRestore={setRestore}
                 // reset={reset}
                 isReset={isReset}
+                drawedHistory={drawedHistory}
+                setDrawedHistory={setDrawedHistory}
                 // magnify={magnify}
               />
             )}
