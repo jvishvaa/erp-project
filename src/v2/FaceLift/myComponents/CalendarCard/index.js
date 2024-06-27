@@ -690,7 +690,7 @@ const CalendarCard = () => {
                         return (
                           <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
                             <div className='th-grey'>
-                              Till {moment(item).format('MMM D, YYYY')}
+                              Cancel before {moment(item).format('MMM D, YYYY')}
                             </div>
                             <div className='th-black-1 th-fw-500'>
                               ₹ {modData?.policy_dates[item]}
