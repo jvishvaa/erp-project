@@ -61,7 +61,6 @@ function CorrectionComponent({
   const extenstion = urlCopy.split('.').pop();
 
   useEffect(() => {
-    console.log({ angleInDegrees });
     const canvas = canvasElement.current;
 
     if (canvas) {
@@ -78,8 +77,8 @@ function CorrectionComponent({
         let width = 0;
         let height = 0;
 
-        width = 500;
-        height = 700;
+        width = extenstion === 'pdf' ? viewWidth : 500;
+        height = extenstion === 'pdf' ? viewHeight : 700;
         canvas.height = height;
         canvas.width = width;
         hRef.current = height;
@@ -172,8 +171,6 @@ function CorrectionComponent({
   const drawRotated = useCallback(() => {
     var { sX, sY, zoomAction, m } = zoom;
 
-    console.log({ sX, sY, zoomAction, m });
-
     let margin = '5% 0% 0% 3%';
 
     if (hRef && hRef.current && wRef && wRef.current) {
@@ -259,7 +256,6 @@ function CorrectionComponent({
   }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen, zoom]);
 
   useEffect(() => {
-    console.log('rotating');
     drawRotated();
   }, [angleInDegrees, drawRotated]);
 
