@@ -69,8 +69,6 @@ const ViewEventModal = ({
     const blob = await response.blob();
     saveAs(blob, fullName);
   };
-
-  console.log({ viewEvent });
   return (
     <>
       <Modal
@@ -81,6 +79,7 @@ const ViewEventModal = ({
         footer={null}
         onCancel={() => closeViewEventModal()}
         width='90vw'
+        zIndex={1900}
       >
         <div className='py-3 th-bg-grey' style={{ maxHeight: '80vh', overflowY: 'auto' }}>
           <div className='row'>
@@ -172,7 +171,13 @@ const ViewEventModal = ({
                     </div>
                   </div>
 
-                  <div className={`d-flex flex-column align-items-start`}>
+                  <div
+                    className={`d-flex w-100 ${
+                      user_level == 13 || viewEvent?.approval_status == 4 || ![8, 26].includes(user_level) 
+                        ? 'justify-content-between align-items-start'
+                        : 'flex-column align-items-start '
+                    }`}
+                  >
                     {viewEvent?.is_subscription_need && (
                       <div
                         className='d-flex align-items-center justify-content-start pb-2'
@@ -191,11 +196,11 @@ const ViewEventModal = ({
                       viewEvent?.approval_status == 4 ? (
                         viewEvent?.is_subscription_need ? (
                           viewEvent?.subscription == 'unsubscribed' ? (
-                            <Button type='ghost' className='th-br-6 w-100'>
+                            <Button type='default' className='th-br-6'>
                               Unsubscribed
                             </Button>
                           ) : (
-                            <>
+                            <div className='d-flex flex-column'>
                               {viewEvent?.subscription == 'subscribed' ? (
                                 <Popconfirm
                                   title='Are you sure you want to unsubscribe?'
@@ -239,11 +244,11 @@ const ViewEventModal = ({
                                 </Popconfirm>
                               )}
                               {viewEvent?.refundable && (
-                                <div className='th-grey pt-2 th-12'>
+                                <div className='th-grey pt-1 th-12'>
                                   Note: Please read the refund policy
                                 </div>
                               )}
-                            </>
+                            </div>
                           )
                         ) : null
                       ) : viewEvent?.approval_status == 3 ? (
@@ -255,7 +260,9 @@ const ViewEventModal = ({
                       )
                     ) : (
                       <div
-                        className='d-flex align-items-center justify-content-between w-100'
+                        className={`d-flex align-items-center justify-content-between ${
+                          [4]?.includes(viewEvent?.approval_status) || ![8, 26].includes(user_level) ? '' : 'w-100'
+                        }`}
                         style={{ gap: 5 }}
                       >
                         {([10, 14, 34, 8, 26].includes(user_level) ||
@@ -279,7 +286,7 @@ const ViewEventModal = ({
                           <>
                             {viewEvent?.approval_status === 4 && (
                               <Button
-                                type='default'
+                                type='danger'
                                 icon={<CloseOutlined />}
                                 onClick={() =>
                                   openFeedBackModal({
@@ -350,7 +357,7 @@ const ViewEventModal = ({
                     return (
                       <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
                         <div className='th-grey'>
-                          Till {dayjs(item).format('MMM D, YYYY')}
+                          Cancel before {dayjs(item).format('MMM D, YYYY')}
                         </div>
                         <div className='th-black-1 th-fw-500'>
                           ₹ {viewEvent?.policy_dates[item]}
