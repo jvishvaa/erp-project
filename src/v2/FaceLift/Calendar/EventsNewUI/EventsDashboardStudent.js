@@ -293,6 +293,8 @@ const EventsDashboardStudent = () => {
     formData.append('transaction_type', 'credit');
     formData.append('created_by_erp', erp);
     formData.append('created_by_name', first_name);
+    formData.append('is_academic', true);
+
     axiosInstance
       .post(`${endpointsV2.finance.imprestWalletRecharge}`, formData)
       .then((res) => {
