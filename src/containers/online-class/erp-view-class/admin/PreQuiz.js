@@ -193,7 +193,7 @@ const PreQuiz = (props) => {
     }
     if (subDomainLevels === 2) {
       subSubDomain = hostSplitArray[0];
-      subDomain = hostSplitArray[1];
+      subDomain = hostSplitArray[0] + '.' + hostSplitArray[1];
     } else if (subDomainLevels === 1) {
       subDomain = hostSplitArray[0];
     }
@@ -215,7 +215,7 @@ const PreQuiz = (props) => {
     // let lobbyUuid =  preQuizInfo && preQuizInfo.lobby_identifier && preQuizInfo.lobby_info.lobby_identifier
     // let { MPQUIZ } = socketUrls
     const url = quizSocketURLEndpoint
-      .replace('<domain_name>', domain_name)
+      .replace('<domain_name>', domainTobeSent)
       .replace('<role>', role)
       .replace('<online_class_id>', onlineClassId)
       .replace('<question_paper>', questionPaperId)
