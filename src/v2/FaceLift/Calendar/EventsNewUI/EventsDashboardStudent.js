@@ -248,6 +248,7 @@ const EventsDashboardStudent = () => {
   };
 
   const fetchImprestWalletData = () => {
+    console.log({ financeSessionYearList });
     let finance_session_year_id = financeSessionYearList.find(
       (each) => parseInt(each?.academic_session_id) === session_year
     )?.id;
@@ -258,6 +259,7 @@ const EventsDashboardStudent = () => {
       .then((res) => {
         if (res?.data?.results) {
           setImprestWallet(res?.data?.results);
+          setRechargeAmount(res?.data?.results?.minimum_recharge);
         }
       })
       .catch((err) => {
@@ -786,14 +788,21 @@ const EventsDashboardStudent = () => {
           <div className='row align-items-center justify-content-center py-2'>
             <div
               style={{
-                cursor: rechargeAmount === 1000 ? 'not-allowed' : 'pointer',
+                cursor:
+                  rechargeAmount === imprestWallet?.minimum_recharge
+                    ? 'not-allowed'
+                    : 'pointer',
               }}
               className={
                 'px-3 th-br-10 mr-2 text-white th-lh-36 th-20 ' +
-                (rechargeAmount > 1000 ? 'th-bg-primary' : 'th-bg-grey-2')
+                (rechargeAmount > imprestWallet?.minimum_recharge
+                  ? 'th-bg-primary'
+                  : 'th-bg-grey-2')
               }
               onClick={() =>
-                rechargeAmount > 1000 ? setRechargeAmount(rechargeAmount - 1000) : null
+                rechargeAmount > imprestWallet?.minimum_recharge
+                  ? setRechargeAmount(rechargeAmount - 1000)
+                  : null
               }
             >
               -
