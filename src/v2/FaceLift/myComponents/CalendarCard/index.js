@@ -678,7 +678,7 @@ const CalendarCard = () => {
                   />
                 </div>
               </div>
-              {!modData?.is_holiday && modData?.refundable && (
+              {!modData?.is_holiday && modData?.is_subscription_need && (
                 <div className='col-4'>
                   <div className='th-br-20' ref={refundRef}>
                     <div className='font-weight-bold mt-2'>Refund Policy</div>
@@ -686,18 +686,26 @@ const CalendarCard = () => {
                       className='th-br-8 px-3 py-2 mt-2'
                       style={{ border: '1px solid #d9d9d9' }}
                     >
-                      {Object.keys(modData?.policy_dates)?.map((item) => {
-                        return (
-                          <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
-                            <div className='th-grey'>
-                              Cancel before {moment(item).format('MMM D, YYYY')}
+                      {modData?.refundable ? (
+                        Object.keys(modData?.policy_dates)?.map((item) => {
+                          return (
+                            <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
+                              <div className='th-grey'>
+                                Cancel before {moment(item).format('MMM D, YYYY')}
+                              </div>
+                              <div className='th-black-1 th-fw-500'>
+                                ₹ {modData?.policy_dates[item]}
+                              </div>
                             </div>
-                            <div className='th-black-1 th-fw-500'>
-                              ₹ {modData?.policy_dates[item]}
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })
+                      ) : (
+                        <div className='th-grey'>
+                          <i className='th-16'>
+                            As per refund policy, No Refund will be given
+                          </i>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
