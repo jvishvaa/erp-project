@@ -254,7 +254,7 @@ const ViewEventModal = ({
                           )
                         ) : null
                       ) : viewEvent?.approval_status == 3 ? (
-                        <Button type='ghost' className='th-br-6 w-100' disabled>
+                        <Button type='ghost' className='th-br-6' disabled>
                           Cancelled
                         </Button>
                       ) : (

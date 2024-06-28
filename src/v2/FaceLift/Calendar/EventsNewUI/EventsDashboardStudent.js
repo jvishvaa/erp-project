@@ -79,6 +79,7 @@ const EventsDashboardStudent = () => {
   const [eventDetails, setEventDetails] = useState([]);
   const [rechargeModal, setRechargeModal] = useState(false);
   const [rechargeAmount, setRechargeAmount] = useState(1000);
+  const [initialRechargeAmount, setInitialRechargeAmount] = useState(0);
   const [userDetails, setUserDetails] = useState([]);
   const [walletLoading, setWalletLoading] = useState(false);
 
@@ -259,6 +260,7 @@ const EventsDashboardStudent = () => {
       .then((res) => {
         if (res?.data?.results) {
           setImprestWallet(res?.data?.results);
+          setInitialRechargeAmount(res?.data?.results?.minimum_recharge);
           setRechargeAmount(res?.data?.results?.minimum_recharge);
         }
       })
@@ -747,7 +749,10 @@ const EventsDashboardStudent = () => {
             <div>Recharge Imprest Wallet</div>
             <div>
               <CloseSquareOutlined
-                onClick={() => setRechargeModal(false)}
+                onClick={() => {
+                  setRechargeModal(false);
+                  setRechargeAmount(initialRechargeAmount);
+                }}
                 className='th-close-icon'
               />
             </div>
@@ -758,14 +763,20 @@ const EventsDashboardStudent = () => {
           top: '10%',
         }}
         visible={rechargeModal}
-        onCancel={() => setRechargeModal(false)}
+        onCancel={() => {
+          setRechargeModal(false);
+          setRechargeAmount(initialRechargeAmount);
+        }}
         footer={[
           <Row justify='end'>
             <Col className='mr-3'>
               <Button
                 size='small'
                 className='primary-button drawer-modal-footer-button'
-                onClick={() => setRechargeModal(false)}
+                onClick={() => {
+                  setRechargeModal(false);
+                  setRechargeAmount(initialRechargeAmount);
+                }}
               >
                 Close
               </Button>
