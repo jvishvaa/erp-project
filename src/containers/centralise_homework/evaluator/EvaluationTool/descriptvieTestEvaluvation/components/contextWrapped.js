@@ -373,7 +373,7 @@ function Evaluvation(props) {
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
-          <ToggleButton
+          {/* <ToggleButton
             onClick={onClickFullscreen}
             aria-label='paint'
             color='primary'
@@ -388,7 +388,7 @@ function Evaluvation(props) {
             <Tooltip title='Full Screen' arrow>
               {fullscreen ? <FullscreenExitRounded /> : <FullscreenRounded />}
             </Tooltip>
-          </ToggleButton>
+          </ToggleButton> */}
           {/* <Tooltip title='reset' arrow>
             <Button
               edge='start'
