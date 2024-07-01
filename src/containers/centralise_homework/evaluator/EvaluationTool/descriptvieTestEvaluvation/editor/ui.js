@@ -31,6 +31,8 @@ function CorrectionComponent({
   isReset,
   drawedHistory,
   setDrawedHistory,
+  isRotated,
+  setIsRotated,
 }) {
   const canvasElement = useRef();
   const pageRef = useRef(null);
@@ -62,7 +64,6 @@ function CorrectionComponent({
 
   useEffect(() => {
     const canvas = canvasElement.current;
-
     if (canvas) {
       const context = canvas.getContext('2d');
       const pgUrl =
@@ -77,7 +78,7 @@ function CorrectionComponent({
         let width = 0;
         let height = 0;
 
-        width = extenstion === 'pdf' ? viewWidth : 500;
+        width = extenstion === 'pdf' ? viewWidth : 700;
         height = extenstion === 'pdf' ? viewHeight : 700;
         canvas.height = height;
         canvas.width = width;
@@ -96,8 +97,18 @@ function CorrectionComponent({
             isSaving: 'true',
             viewHeight: height,
             viewWidth: width,
+            historyType: 'loading',
           },
         ]);
+        setDrawedChanges({
+          image: base64Image,
+          containerImg: '',
+          operation: 'manualSave',
+          isSaving: 'true',
+          viewHeight: height,
+          viewWidth: width,
+          historyType: 'loading',
+        });
         setSelectedDrawingIndex(selectedDrawingIndex + 1);
 
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -106,7 +117,7 @@ function CorrectionComponent({
       img.src = `${pgUrl}??${escape(new Date().getTime())}`;
       imgRef.current = img;
     }
-  }, [angleInDegrees, extenstion, pageNumber, splittedMedia, url, viewHeight, viewWidth]);
+  }, [extenstion, pageNumber, splittedMedia, url, viewHeight, viewWidth]);
 
   useEffect(() => {
     if (restore === 'undo') {
@@ -241,23 +252,114 @@ function CorrectionComponent({
     if (extenstion === 'pdf') {
       let v = marginPDFStyle[String(sX)];
       margin = '5% auto';
-      style.margin = margin;
+      // style.margin = margin;
     }
 
     let x = sX || 1;
     let y = sY || 1;
 
-    style.transform =
-      zoomAction === 'zoom in'
-        ? `rotate(${angleInDegrees}deg) scale(${x},${y})`
-        : `rotate(${angleInDegrees}deg)scale(${x},${y})`;
+    style.width =
+      angleInDegrees === -90 ||
+      angleInDegrees === 90 ||
+      angleInDegrees === 270 ||
+      angleInDegrees === -270
+        ? 700
+        : 700;
+
+    style.height =
+      angleInDegrees === 0 ||
+      angleInDegrees === 180 ||
+      angleInDegrees === -180 ||
+      angleInDegrees === -360
+        ? 700
+        : 700;
+    // style.transform =
+    //   zoomAction === 'zoom in'
+    //     ? `rotate(${angleInDegrees}deg) scale(${x},${y})`
+    //     : `rotate(${angleInDegrees}deg)scale(${x},${y})`;
 
     setStyle(style);
+    rotateCanvas(angleInDegrees);
   }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen, zoom]);
 
   useEffect(() => {
     drawRotated();
   }, [angleInDegrees, drawRotated]);
+
+  async function rotateCanvas(angle) {
+    if (isRotated) {
+      let rotationAngle = 0;
+
+      rotationAngle = (rotationAngle + angle) % 360;
+
+      // Create an off-screen canvas to store the current content
+      const canvas = canvasElement.current;
+      const pgUrl =
+        splittedMedia && splittedMedia.length
+          ? splittedMedia.filter((e) => e.page_number === pageNumber)[0].file_content
+          : url;
+      let img = new Image();
+      img.setAttribute('crossorigin', 'anonymous');
+      img.id = 'actual_image_rotation';
+      img.src = canvas?.toDataURL();
+      img.style.transform = `rotate(${angleInDegrees}deg)`;
+
+      let newWidth = 700;
+      let newHeight = 700;
+
+      const ctx = canvas.getContext('2d');
+      const offScreenCanvas = document.createElement('canvas');
+      offScreenCanvas.width = canvas.width;
+      offScreenCanvas.height = canvas.height;
+      const offScreenCtx = offScreenCanvas.getContext('2d');
+      offScreenCtx.drawImage(canvas, 0, 0);
+
+      // Update canvas dimensions
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      // Clear the main canvas
+      ctx.clearRect(0, 0, newWidth, newHeight);
+
+      // Apply the rotation
+
+      img.onload = async function () {
+        ctx.save();
+        ctx.translate(newWidth / 2, newHeight / 2);
+        ctx.rotate((rotationAngle * Math.PI) / 180);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+        // Redraw the saved image from the off-screen canvas
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        ctx.restore();
+      };
+      // img.src = `${pgUrl}??${escape(new Date().getTime())}`;
+      imgRef.current = img;
+
+      setDrawedChanges({
+        image: img?.src,
+        // containerImg: containerImg.toDataURL(),
+        containerImg: '',
+        operation: 'manualSave',
+        isSaving: 'true',
+        viewHeight: hRef && hRef.current,
+        viewWidth: wRef && wRef.current,
+      });
+      setDrawedHistory([
+        ...drawedHistory,
+        {
+          image: canvas?.toDataURL(),
+          // containerImg: containerImg.toDataURL(),
+          containerImg: '',
+          operation: 'manualSave',
+          isSaving: 'true',
+          viewHeight: hRef && hRef.current,
+          viewWidth: wRef && wRef.current,
+          historyType: 'rotating',
+        },
+      ]);
+    }
+  }
 
   useEffect(() => {
     if (pageRef && pageRef.current) {
@@ -357,6 +459,7 @@ function CorrectionComponent({
     var rect = drawingCanvas.getBoundingClientRect();
     var offsetX = touchEvent.touches[0].clientX - rect.left;
     var offsetY = touchEvent.touches[0].clientY - rect.top;
+
     if (isPainting) {
       const offSetData = { offsetX, offsetY };
       // Set the start and stop position of the paint event.
@@ -375,6 +478,8 @@ function CorrectionComponent({
     if (isPainting) {
       setIsPainting(false);
       let drawingCanvas = canvasElement.current;
+
+      //state updation for saving updated canvas
       setDrawedChanges({
         image: drawingCanvas?.toDataURL(),
         // containerImg: containerImg.toDataURL(),
@@ -399,6 +504,7 @@ function CorrectionComponent({
             isSaving: 'true',
             viewHeight: hRef && hRef.current,
             viewWidth: wRef && wRef.current,
+            historyType: 'drawing',
           },
         ]);
         setSelectedDrawingIndex(dummyHistory2.length);
@@ -415,6 +521,7 @@ function CorrectionComponent({
           isSaving: 'true',
           viewHeight: hRef && hRef.current,
           viewWidth: wRef && wRef.current,
+          historyType: 'drawing',
         },
       ]);
       setSelectedDrawingIndex(drawedHistory.length);
