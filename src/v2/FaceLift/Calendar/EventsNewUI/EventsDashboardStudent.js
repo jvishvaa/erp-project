@@ -79,6 +79,7 @@ const EventsDashboardStudent = () => {
   const [eventDetails, setEventDetails] = useState([]);
   const [rechargeModal, setRechargeModal] = useState(false);
   const [rechargeAmount, setRechargeAmount] = useState(1000);
+  const [initialRechargeAmount, setInitialRechargeAmount] = useState(0);
   const [userDetails, setUserDetails] = useState([]);
   const [walletLoading, setWalletLoading] = useState(false);
 
@@ -248,6 +249,7 @@ const EventsDashboardStudent = () => {
   };
 
   const fetchImprestWalletData = () => {
+    console.log({ financeSessionYearList });
     let finance_session_year_id = financeSessionYearList.find(
       (each) => parseInt(each?.academic_session_id) === session_year
     )?.id;
@@ -258,6 +260,8 @@ const EventsDashboardStudent = () => {
       .then((res) => {
         if (res?.data?.results) {
           setImprestWallet(res?.data?.results);
+          setInitialRechargeAmount(res?.data?.results?.minimum_recharge);
+          setRechargeAmount(res?.data?.results?.minimum_recharge);
         }
       })
       .catch((err) => {
@@ -293,6 +297,8 @@ const EventsDashboardStudent = () => {
     formData.append('transaction_type', 'credit');
     formData.append('created_by_erp', erp);
     formData.append('created_by_name', first_name);
+    formData.append('is_academic', true);
+
     axiosInstance
       .post(`${endpointsV2.finance.imprestWalletRecharge}`, formData)
       .then((res) => {
@@ -743,7 +749,10 @@ const EventsDashboardStudent = () => {
             <div>Recharge Imprest Wallet</div>
             <div>
               <CloseSquareOutlined
-                onClick={() => setRechargeModal(false)}
+                onClick={() => {
+                  setRechargeModal(false);
+                  setRechargeAmount(initialRechargeAmount);
+                }}
                 className='th-close-icon'
               />
             </div>
@@ -754,14 +763,20 @@ const EventsDashboardStudent = () => {
           top: '10%',
         }}
         visible={rechargeModal}
-        onCancel={() => setRechargeModal(false)}
+        onCancel={() => {
+          setRechargeModal(false);
+          setRechargeAmount(initialRechargeAmount);
+        }}
         footer={[
           <Row justify='end'>
             <Col className='mr-3'>
               <Button
                 size='small'
                 className='primary-button drawer-modal-footer-button'
-                onClick={() => setRechargeModal(false)}
+                onClick={() => {
+                  setRechargeModal(false);
+                  setRechargeAmount(initialRechargeAmount);
+                }}
               >
                 Close
               </Button>
@@ -784,14 +799,21 @@ const EventsDashboardStudent = () => {
           <div className='row align-items-center justify-content-center py-2'>
             <div
               style={{
-                cursor: rechargeAmount === 1000 ? 'not-allowed' : 'pointer',
+                cursor:
+                  rechargeAmount === imprestWallet?.minimum_recharge
+                    ? 'not-allowed'
+                    : 'pointer',
               }}
               className={
                 'px-3 th-br-10 mr-2 text-white th-lh-36 th-20 ' +
-                (rechargeAmount > 1000 ? 'th-bg-primary' : 'th-bg-grey-2')
+                (rechargeAmount > imprestWallet?.minimum_recharge
+                  ? 'th-bg-primary'
+                  : 'th-bg-grey-2')
               }
               onClick={() =>
-                rechargeAmount > 1000 ? setRechargeAmount(rechargeAmount - 1000) : null
+                rechargeAmount > imprestWallet?.minimum_recharge
+                  ? setRechargeAmount(rechargeAmount - 1000)
+                  : null
               }
             >
               -

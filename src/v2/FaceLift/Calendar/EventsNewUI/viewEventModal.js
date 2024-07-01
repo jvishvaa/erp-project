@@ -173,7 +173,9 @@ const ViewEventModal = ({
 
                   <div
                     className={`d-flex w-100 ${
-                      user_level == 13 || viewEvent?.approval_status == 4 || ![8, 26].includes(user_level) 
+                      user_level == 13 ||
+                      viewEvent?.approval_status == 4 ||
+                      ![8, 26].includes(user_level)
                         ? 'justify-content-between align-items-start'
                         : 'flex-column align-items-start '
                     }`}
@@ -252,7 +254,7 @@ const ViewEventModal = ({
                           )
                         ) : null
                       ) : viewEvent?.approval_status == 3 ? (
-                        <Button type='ghost' className='th-br-6 w-100' disabled>
+                        <Button type='ghost' className='th-br-6' disabled>
                           Cancelled
                         </Button>
                       ) : (
@@ -261,7 +263,10 @@ const ViewEventModal = ({
                     ) : (
                       <div
                         className={`d-flex align-items-center justify-content-between ${
-                          [4]?.includes(viewEvent?.approval_status) || ![8, 26].includes(user_level) ? '' : 'w-100'
+                          [4]?.includes(viewEvent?.approval_status) ||
+                          ![8, 26].includes(user_level)
+                            ? ''
+                            : 'w-100'
                         }`}
                         style={{ gap: 5 }}
                       >
@@ -348,23 +353,31 @@ const ViewEventModal = ({
                   </div>
                 </div>
               </Card>
-              {viewEvent?.refundable && (
+              {viewEvent?.is_subscription_need && (
                 <Card
                   className='th-br-20'
                   title={<div className='font-weight-bold th-grey'>Refund Policy</div>}
                 >
-                  {Object.keys(viewEvent?.policy_dates)?.map((item) => {
-                    return (
-                      <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
-                        <div className='th-grey'>
-                          Cancel before {dayjs(item).format('MMM D, YYYY')}
+                  {viewEvent?.refundable ? (
+                    Object.keys(viewEvent?.policy_dates)?.map((item) => {
+                      return (
+                        <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
+                          <div className='th-grey'>
+                            Cancel before {dayjs(item).format('MMM D, YYYY')}
+                          </div>
+                          <div className='th-black-1 th-fw-500'>
+                            ₹ {viewEvent?.policy_dates[item]}
+                          </div>
                         </div>
-                        <div className='th-black-1 th-fw-500'>
-                          ₹ {viewEvent?.policy_dates[item]}
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  ) : (
+                    <div className='th-grey'>
+                      <i className='th-16'>
+                        As per refund policy, No Refund will be given
+                      </i>
+                    </div>
+                  )}
                 </Card>
               )}
             </div>
