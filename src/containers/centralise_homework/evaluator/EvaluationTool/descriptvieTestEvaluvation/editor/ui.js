@@ -21,6 +21,7 @@ function CorrectionComponent({
   handleTotalPage,
   setPdfState,
   angleInDegrees,
+  setAngleInDegrees,
   rotation,
   splittedMedia,
   handleONSaveHW,
@@ -392,7 +393,7 @@ function CorrectionComponent({
       img.setAttribute('crossorigin', 'anonymous');
       img.id = 'actual_image_rotation';
       img.src = canvas?.toDataURL();
-      img.style.transform = `rotate(${angleInDegrees}deg)`;
+      // img.style.transform = `rotate(${angleInDegrees}deg)`;
 
       let newWidth = 700;
       let newHeight = 700;
@@ -448,6 +449,8 @@ function CorrectionComponent({
           historyType: 'rotating',
         },
       ]);
+      setAngleInDegrees(0);
+      setIsRotated(false);
     }
   }
 
