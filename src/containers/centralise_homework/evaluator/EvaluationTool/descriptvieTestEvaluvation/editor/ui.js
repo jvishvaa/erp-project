@@ -179,6 +179,7 @@ function CorrectionComponent({
     return data;
   };
 
+  //rotate use effect
   const drawRotated = useCallback(() => {
     var { sX, sY, zoomAction, m } = zoom;
 
@@ -280,12 +281,101 @@ function CorrectionComponent({
 
     setStyle(style);
     rotateCanvas(angleInDegrees);
-  }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen, zoom]);
+  }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen]);
+
+  const drawZoom = useCallback(() => {
+    var { sX, sY, zoomAction, m } = zoom;
+
+    let margin = '5% 0% 0% 3%';
+
+    if (hRef && hRef.current && wRef && wRef.current) {
+      if (hRef.current < 1000) {
+        if (sX < 1) {
+          sX = 1.5;
+          sY = 1.5;
+          margin = '7% 0% 0% 0%';
+        } else if (sX == 1) {
+          margin = '7% 0% 0% 0%';
+        } else if (sX == 1.5) {
+          margin = '20% auto';
+        } else if (sX == 3) {
+          sX = 1.7;
+          sY = 1.7;
+          margin = '25% auto';
+        }
+      } else if (hRef.current > 1000) {
+        if (sX < 1) {
+          sX = 1;
+          sY = 1;
+          margin = '7% 0% 0% 0%';
+        } else if (sX == 1) {
+          margin = '7% 0% 0% 0%';
+        } else if (sX == 1.5) {
+          if (angleInDegrees === 0) margin = '0% 40% auto';
+          else margin = '8% auto';
+        } else if (sX == 3) {
+          if (angleInDegrees === 0) margin = '0% 42% 0 40%';
+          else margin = '36% 33% 0 40%';
+        }
+        if (
+          (angleInDegrees === 270 ||
+            angleInDegrees === -270 ||
+            angleInDegrees === 90 ||
+            angleInDegrees === -90) &&
+          sX == 1
+        ) {
+          margin = '0% 0% 0% 0%';
+        } else if (
+          (angleInDegrees === 270 ||
+            angleInDegrees === -270 ||
+            angleInDegrees === 90 ||
+            angleInDegrees === -90) &&
+          sX == 1.5
+        ) {
+          margin = '5% 0% 0% 10%';
+        } else if ((angleInDegrees === -270 || angleInDegrees === 90) && sX == 3) {
+          margin = '18% 15% 0% 0%';
+        } else if ((angleInDegrees === 270 || angleInDegrees === -90) && sX == 3) {
+          margin = '18% 0% 0% 45%';
+        } else if ((angleInDegrees === 180 || angleInDegrees === -180) && sX == 1) {
+          margin = '0% 0% 0% 0%';
+        } else if ((angleInDegrees === 180 || angleInDegrees === -180) && sX == 1.5) {
+          margin = '0%';
+        } else if ((angleInDegrees === 180 || angleInDegrees === -180) && sX == 3) {
+          margin = '5% 0% 0% 0%';
+        }
+      }
+    }
+
+    let style = {
+      width: containerWidth,
+      height: fullscreen ? 700 : 700,
+      overflow: 'auto',
+    };
+
+    if (extenstion === 'pdf') {
+      let v = marginPDFStyle[String(sX)];
+      margin = '5% auto';
+      style.margin = margin;
+    }
+
+    let x = sX || 1;
+    let y = sY || 1;
+
+    style.transform = zoomAction === 'zoom in' ? ` scale(${x},${y})` : `scale(${x},${y})`;
+
+    setStyle(style);
+  }, [zoom]);
 
   useEffect(() => {
     drawRotated();
   }, [angleInDegrees, drawRotated]);
 
+  useEffect(() => {
+    drawZoom();
+  }, [zoom]);
+
+  //rotate canvas
   async function rotateCanvas(angle) {
     if (isRotated) {
       let rotationAngle = 0;

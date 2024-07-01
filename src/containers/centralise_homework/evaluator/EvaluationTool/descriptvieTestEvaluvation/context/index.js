@@ -148,7 +148,7 @@ export function DescriptiveTestContextProvider({
       !isRotated &&
       (angleInDegrees === 0 || angleInDegrees === 360 || angleInDegrees === -360)
     ) {
-      element.style.transformOrigin = '0px 0px';
+      element.style.transformOrigin = 'center';
     } else {
       element.style.transformOrigin = 'center';
     }
