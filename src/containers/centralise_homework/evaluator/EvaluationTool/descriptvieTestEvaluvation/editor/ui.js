@@ -421,36 +421,40 @@ function CorrectionComponent({
         ctx.translate(-canvas.width / 2, -canvas.height / 2);
 
         // Redraw the saved image from the off-screen canvas
-        ctx.drawImage(img, 0, 0, img.width, img.height);
+        ctx.drawImage(offScreenCanvas, 0, 0, img.width, img.height);
         ctx.restore();
       };
-      // img.src = `${pgUrl}??${escape(new Date().getTime())}`;
-      imgRef.current = img;
 
-      setDrawedChanges({
-        image: img?.src,
-        // containerImg: containerImg.toDataURL(),
-        containerImg: '',
-        operation: 'manualSave',
-        isSaving: 'true',
-        viewHeight: hRef && hRef.current,
-        viewWidth: wRef && wRef.current,
-      });
-      setDrawedHistory([
-        ...drawedHistory,
-        {
-          image: canvas?.toDataURL(),
+      setTimeout(() => {
+        let drawedCanvas = canvasElement.current;
+        setDrawedChanges({
+          image: drawedCanvas.toDataURL(),
           // containerImg: containerImg.toDataURL(),
           containerImg: '',
           operation: 'manualSave',
           isSaving: 'true',
           viewHeight: hRef && hRef.current,
           viewWidth: wRef && wRef.current,
-          historyType: 'rotating',
-        },
-      ]);
-      setAngleInDegrees(0);
-      setIsRotated(false);
+        });
+        setDrawedHistory([
+          ...drawedHistory,
+          {
+            image: drawedCanvas.src,
+            // containerImg: containerImg.toDataURL(),
+            containerImg: '',
+            operation: 'manualSave',
+            isSaving: 'true',
+            viewHeight: hRef && hRef.current,
+            viewWidth: wRef && wRef.current,
+            historyType: 'rotating',
+          },
+        ]);
+        console.log(img, img?.src);
+        // img.src = `${pgUrl}??${escape(new Date().getTime())}`;
+        // imgRef.current = img;
+        setAngleInDegrees(0);
+        setIsRotated(false);
+      }, 100);
     }
   }
 
