@@ -45,7 +45,7 @@ function Evaluvation(props) {
   const [openMenu, setOpenMenu] = useState(false);
   const [drawedChanges, setDrawedChanges] = useState({});
   const [drawedHistory, setDrawedHistory] = useState([]);
-
+  const [isRotated, setIsRotated] = useState(false);
   const [restore, setRestore] = useState('');
   const {
     tool,
@@ -144,6 +144,11 @@ function Evaluvation(props) {
     }
 
     elmnt.onmousedown = dragMouseDown;
+  };
+
+  const enableRotationFunc = () => {
+    enableRotation();
+    setIsRotated(true);
   };
 
   useEffect(() => {
@@ -335,43 +340,39 @@ function Evaluvation(props) {
             </ToggleButton>
           </ToggleButtonGroup>
 
-          {/* Cant rotate canvas after drawing */}
-          {drawedHistory?.length < 2 && (
-            <ToggleButtonGroup
-              exclusive
-              value={rotation}
-              onChange={enableRotation}
-              aria-label='text formatting'
-              className='tool-group'
+          <ToggleButtonGroup
+            exclusive
+            value={rotation}
+            onChange={() => enableRotationFunc()}
+            aria-label='text formatting'
+            className='tool-group'
+          >
+            <ToggleButton
+              value='rLeft'
+              aria-label='paint'
+              style={{
+                display: !open ? 'none' : '',
+                borderStyle,
+              }}
             >
-              <ToggleButton
-                value='rLeft'
-                aria-label='paint'
-                style={{
-                  display: !open ? 'none' : '',
-                  borderStyle,
-                }}
-              >
-                <Tooltip title='rotate left' arrow>
-                  <RotateLeftIcon />
-                </Tooltip>
-              </ToggleButton>
-              <ToggleButton
-                color='primary'
-                value='rRight'
-                aria-label='paint'
-                style={{
-                  display: !open ? 'none' : '',
-                  borderStyle,
-                }}
-              >
-                <Tooltip title='rotate right' arrow>
-                  <RotateRightIcon />
-                </Tooltip>
-              </ToggleButton>
-            </ToggleButtonGroup>
-          )}
-          {/* </div> */}
+              <Tooltip title='rotate left' arrow>
+                <RotateLeftIcon />
+              </Tooltip>
+            </ToggleButton>
+            <ToggleButton
+              color='primary'
+              value='rRight'
+              aria-label='paint'
+              style={{
+                display: !open ? 'none' : '',
+                borderStyle,
+              }}
+            >
+              <Tooltip title='rotate right' arrow>
+                <RotateRightIcon />
+              </Tooltip>
+            </ToggleButton>
+          </ToggleButtonGroup>
           <ToggleButton
             onClick={onClickFullscreen}
             aria-label='paint'
@@ -463,6 +464,8 @@ function Evaluvation(props) {
                 handleTotalPage={handleTotalPage}
                 setPdfState={setPdfState}
                 rotation={rotation}
+                isRotated={isRotated}
+                setIsRotated={setIsRotated}
                 angleInDegrees={angleInDegrees}
                 splittedMedia={splittedMedia}
                 handleONSaveHW={handleONSaveHW}
