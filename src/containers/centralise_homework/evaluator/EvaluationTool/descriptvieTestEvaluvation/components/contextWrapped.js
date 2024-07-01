@@ -47,6 +47,7 @@ function Evaluvation(props) {
   const [drawedHistory, setDrawedHistory] = useState([]);
   const [isRotated, setIsRotated] = useState(false);
   const [restore, setRestore] = useState('');
+  const [angleInDegrees, setAngleInDegrees] = useState(0);
   const {
     tool,
     enableTool,
@@ -70,7 +71,7 @@ function Evaluvation(props) {
     setPdfState,
     enableRotation,
     rotation,
-    angleInDegrees,
+    // angleInDegrees,
     splittedMedia,
     handleONSaveHW,
     initialAngle,
@@ -146,9 +147,14 @@ function Evaluvation(props) {
     elmnt.onmousedown = dragMouseDown;
   };
 
-  const enableRotationFunc = () => {
+  const enableRotationFunc = (dir) => {
     enableRotation();
     setIsRotated(true);
+    if (dir === 'rLeft') {
+      setAngleInDegrees(-90);
+    } else {
+      setAngleInDegrees(90);
+    }
   };
 
   useEffect(() => {
@@ -343,7 +349,7 @@ function Evaluvation(props) {
           <ToggleButtonGroup
             exclusive
             value={rotation}
-            onChange={() => enableRotationFunc()}
+            onChange={(e, dir) => enableRotationFunc(dir)}
             aria-label='text formatting'
             className='tool-group'
           >
@@ -467,6 +473,7 @@ function Evaluvation(props) {
                 isRotated={isRotated}
                 setIsRotated={setIsRotated}
                 angleInDegrees={angleInDegrees}
+                setAngleInDegrees={setAngleInDegrees}
                 splittedMedia={splittedMedia}
                 handleONSaveHW={handleONSaveHW}
                 initialAngle={initialAngle}
