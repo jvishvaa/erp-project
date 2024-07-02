@@ -147,7 +147,7 @@ const prod = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     baseUdaan: 'https://udaansurelearning.com/qbox',
-    baseURLMPQ: 'https://mpquiz-websocket.letseduvate.com',
+    baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: isPreprod
       ? 'https://mgmt.prod.letseduvate.com/qbox'

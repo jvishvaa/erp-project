@@ -496,6 +496,7 @@ const EventsDashboardStudent = () => {
       </div>
     ),
   };
+
   return (
     <>
       <div className='row'>

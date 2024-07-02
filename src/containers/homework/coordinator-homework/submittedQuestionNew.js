@@ -17,7 +17,6 @@ import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { IconButton } from '@material-ui/core';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { Button } from 'antd';
-import useTimeTracker from 'v2/MixpanelTracking';
 const { TextArea } = Input;
 
 const SubmittedQuestionNew = ({
@@ -57,7 +56,7 @@ const SubmittedQuestionNew = ({
     // } else {
     evaluateAnswer();
     // }
-  };
+  };  
 
   return (
     <div

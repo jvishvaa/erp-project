@@ -19,7 +19,7 @@ const MediaDisplay = ({
     const extension = getFileExtension(link);
 
     if (extension.match(/(jpg|jpeg|png|gif|avif|webp)/i)) {
-      return (
+      return (        
         <Image
           src={CDNLink}
           style={{

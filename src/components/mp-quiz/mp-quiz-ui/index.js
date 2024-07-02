@@ -29,7 +29,7 @@ function MpQuizHome(props) {
   }
   if (subDomainLevels === 2) {
     subSubDomain = hostSplitArray[0];
-    subDomain = hostSplitArray[0] + '.' + hostSplitArray[1];
+    subDomain = hostSplitArray[1];
   } else if (subDomainLevels === 1) {
     subDomain = hostSplitArray[0];
   }
