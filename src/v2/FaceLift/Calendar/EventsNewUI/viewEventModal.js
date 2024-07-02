@@ -196,63 +196,61 @@ const ViewEventModal = ({
                     )}
                     {user_level == 13 ? (
                       viewEvent?.approval_status == 4 ? (
-                        viewEvent?.is_subscription_need ? (
-                          viewEvent?.subscription == 'unsubscribed' ? (
-                            <Button type='default' className='th-br-6'>
-                              Unsubscribed
-                            </Button>
-                          ) : (
-                            <div className='d-flex flex-column'>
-                              {viewEvent?.subscription == 'subscribed' ? (
-                                <Popconfirm
-                                  title='Are you sure you want to unsubscribe?'
-                                  okText={'Unsubscribe'}
-                                  onConfirm={() => {
-                                    unSubscribeEvent({
-                                      eventId: viewEvent?.id,
-                                    });
-                                  }}
-                                  zIndex={2100}
-                                  placement='bottomRight'
+                        viewEvent?.subscription == 'unsubscribed' ? (
+                          <Button type='default' className='th-br-6'>
+                            Unsubscribed
+                          </Button>
+                        ) : (
+                          <div className='d-flex flex-column'>
+                            {viewEvent?.subscription == 'subscribed' ? (
+                              <Popconfirm
+                                title='Are you sure you want to unsubscribe?'
+                                okText={'Unsubscribe'}
+                                onConfirm={() => {
+                                  unSubscribeEvent({
+                                    eventId: viewEvent?.id,
+                                  });
+                                }}
+                                zIndex={2100}
+                                placement='bottomRight'
+                              >
+                                <Button
+                                  type='danger'
+                                  className='th-br-6 w-100'
+                                  loading={unSubscribeLoading}
                                 >
-                                  <Button
-                                    type='danger'
-                                    className='th-br-6 w-100'
-                                    loading={unSubscribeLoading}
-                                  >
-                                    Unsubscribe
-                                  </Button>
-                                </Popconfirm>
-                              ) : (
-                                <Popconfirm
-                                  title='Are you sure you want to subscribe?'
-                                  okText={'Subscribe'}
-                                  onConfirm={() => {
-                                    subscribeEvent({
-                                      eventId: viewEvent?.id,
-                                      row: viewEvent,
-                                    });
-                                  }}
-                                  zIndex={2100}
-                                  placement='bottomRight'
+                                  Unsubscribe
+                                </Button>
+                              </Popconfirm>
+                            ) : (
+                              <Popconfirm
+                                title='Are you sure you want to subscribe?'
+                                okText={'Subscribe'}
+                                onConfirm={() => {
+                                  subscribeEvent({
+                                    eventId: viewEvent?.id,
+                                    row: viewEvent,
+                                  });
+                                }}
+                                zIndex={2100}
+                                placement='bottomRight'
+                              >
+                                <Button
+                                  type='primary'
+                                  className='th-br-6 w-100'
+                                  loading={loading}
                                 >
-                                  <Button
-                                    type='primary'
-                                    className='th-br-6 w-100'
-                                    loading={loading}
-                                  >
-                                    Subscribe
-                                  </Button>
-                                </Popconfirm>
-                              )}
-                              {viewEvent?.refundable && (
-                                <div className='th-grey pt-1 th-12'>
-                                  Note: Please read the refund policy
-                                </div>
-                              )}
-                            </div>
-                          )
-                        ) : null
+                                  Subscribe
+                                </Button>
+                              </Popconfirm>
+                            )}
+                            {viewEvent?.refundable && (
+                              <div className='th-grey pt-1 th-12'>
+                                Note: Please read the refund policy
+                              </div>
+                            )}
+                          </div>
+                        )
                       ) : viewEvent?.approval_status == 3 ? (
                         <Button type='ghost' className='th-br-6' disabled>
                           Cancelled
