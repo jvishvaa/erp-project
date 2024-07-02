@@ -2172,7 +2172,7 @@ const EventsDashboardAdmin = () => {
         ]}
         className='th-event-drawer-2'
         closeIcon={false}
-        width='90%'        
+        width='90%'
       >
         <div>
           <>

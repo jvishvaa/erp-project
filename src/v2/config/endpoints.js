@@ -414,7 +414,7 @@ export default {
   studentPosts: {
     studentPostsApi: '/school-feed/feed-draft/',
     commentsApi: '/school-feed/comments-draft/',
-    commentsPostsApi : '/school-feed/feed-comments/',
+    commentsPostsApi: '/school-feed/feed-comments/',
   },
   erpBucket2: ERP_BUCKET_2,
   erp_googleapi: erp_googleapi,

@@ -1020,7 +1020,7 @@ const HomeworkSubmissionNew = withRouter(({ history, ...props }) => {
       .put(`${endpoints.homework.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`)
       .then((result) => {});
   };
-  
+
   return (
     <div className='create_group_filter_container'>
       {uploadLoading ? <Loader /> : ''}

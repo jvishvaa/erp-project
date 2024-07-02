@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
+import useTimeTracker from 'v2/MixpanelTracking';
 
 const { Option } = Select;
 const iconsData = [

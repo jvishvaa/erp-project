@@ -1793,6 +1793,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
     }
   }, [subjectID]);
 
+  useTimeTracker('web_homework');
   return (
     <div className='row th-bg-white'>
       <div className='row py-1'>
