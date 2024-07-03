@@ -2416,7 +2416,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                       {showHomeworkForm && (
                         <div className='row'>
                           <div className='col-md-6 col-sm-12 my-1'>
-                            {questionList.length < 5 ? (
+                            {/* {questionList.length < 5 ? (
                               <Button
                                 className='th-width-100 th-br-6 th-pointer'
                                 onClick={() => {
@@ -2426,7 +2426,7 @@ const DailyDiary = ({ isSubstituteDiary }) => {
                               >
                                 Add Another Question
                               </Button>
-                            ) : null}
+                            ) : null} */}
                           </div>
                           <div className='col-md-6 col-sm-12 my-1'>
                             <Button

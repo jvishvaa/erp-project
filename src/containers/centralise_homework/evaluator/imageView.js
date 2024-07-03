@@ -851,7 +851,7 @@ const EvaluatorHomework = ({ is_auditor }) => {
                   evaluator_ids: selectedEvaluator,
                 });
               }}
-              className='text-center'
+              className='text-center mt-3'
             />
           </div>
         </div>

@@ -89,7 +89,7 @@ const CalendarCard = () => {
           response.data.events_data.map((item) =>
             eventsArr.push({
               id: item.id,
-              event_name: item.title,
+              event_name: item.event_name,
               attachments: item.attachments,
               description: item.description,
               start_time: moment(item.start_time).format('YYYY-MM-DD'),
@@ -473,96 +473,92 @@ const CalendarCard = () => {
                 >
                   Cancelled
                 </Button>
-              ) : modData?.is_subscription_need ? (
-                modData?.subscription == 'unsubscribed' ? (
+              ) : modData?.subscription == 'unsubscribed' ? (
+                <Button
+                  type='default'
+                  className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
+                  style={{ minWidth: '25%', cursor: 'default' }}
+                >
+                  Unsubscribed
+                </Button>
+              ) : modData?.subscription == 'subscribed' ? (
+                <Popconfirm
+                  title={
+                    <div className='d-flex flex-column' style={{ gap: 5 }}>
+                      <div className=''>Are you sure you want to unsubscibe?</div>
+                      {modData?.refundable && (
+                        <div className='th-grey th-14 mt-2'>
+                          Note: Please read the&nbsp;
+                          <span
+                            className='th-pointer th-primary th-fw-500'
+                            onClick={() => {
+                              handleScrollToPolicy();
+                            }}
+                          >
+                            refund policy
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  }
+                  okText={'Unsubscribe'}
+                  onConfirm={() => {
+                    handleEventAction({
+                      eventId: modData?.id,
+                      action: 'unsubscribe',
+                    });
+                  }}
+                  zIndex={2100}
+                  placement='right'
+                >
                   <Button
                     type='default'
+                    loading={loading}
                     className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
-                    style={{ minWidth: '25%', cursor: 'default' }}
+                    style={{ minWidth: '25%' }}
                   >
-                    Unsubscribed
+                    Unsubscribe
                   </Button>
-                ) : modData?.subscription == 'subscribed' ? (
-                  <Popconfirm
-                    title={
-                      <div className='d-flex flex-column' style={{ gap: 5 }}>
-                        <div className=''>Are you sure you want to unsubscibe?</div>
-                        {modData?.refundable && (
-                          <div className='th-grey th-14 mt-2'>
-                            Note: Please read the&nbsp;
-                            <span
-                              className='th-pointer th-primary th-fw-500'
-                              onClick={() => {
-                                handleScrollToPolicy();
-                              }}
-                            >
-                              refund policy
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    }
-                    okText={'Unsubscribe'}
-                    onConfirm={() => {
-                      handleEventAction({
-                        eventId: modData?.id,
-                        action: 'unsubscribe',
-                      });
-                    }}
-                    zIndex={2100}
-                    placement='right'
+                </Popconfirm>
+              ) : modData?.subscription == 'pending' ? (
+                <Popconfirm
+                  title={
+                    <div className='d-flex flex-column' style={{ gap: 5 }}>
+                      <div className=''>Are you sure you want to subscibe?</div>
+                      {modData?.refundable && (
+                        <div className='th-grey th-14 mt-2'>
+                          Note: Please read the&nbsp;
+                          <span
+                            className='th-pointer th-primary th-fw-500'
+                            onClick={() => {
+                              handleScrollToPolicy();
+                            }}
+                          >
+                            refund policy
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  }
+                  okText={'Subscribe'}
+                  onConfirm={() => {
+                    handleEventAction({
+                      eventId: modData?.id,
+                      action: 'subscribe',
+                    });
+                  }}
+                  zIndex={2100}
+                  placement='right'
+                >
+                  <Button
+                    type='primary'
+                    loading={loading}
+                    className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
+                    style={{ minWidth: '25%' }}
                   >
-                    <Button
-                      type='default'
-                      loading={loading}
-                      className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
-                      style={{ minWidth: '25%' }}
-                    >
-                      Unsubscribe
-                    </Button>
-                  </Popconfirm>
-                ) : modData?.subscription == 'pending' ? (
-                  <Popconfirm
-                    title={
-                      <div className='d-flex flex-column' style={{ gap: 5 }}>
-                        <div className=''>Are you sure you want to subscibe?</div>
-                        {modData?.refundable && (
-                          <div className='th-grey th-14 mt-2'>
-                            Note: Please read the&nbsp;
-                            <span
-                              className='th-pointer th-primary th-fw-500'
-                              onClick={() => {
-                                handleScrollToPolicy();
-                              }}
-                            >
-                              refund policy
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    }
-                    okText={'Subscribe'}
-                    onConfirm={() => {
-                      handleEventAction({
-                        eventId: modData?.id,
-                        action: 'subscribe',
-                      });
-                    }}
-                    zIndex={2100}
-                    placement='right'
-                  >
-                    <Button
-                      type='primary'
-                      loading={loading}
-                      className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
-                      style={{ minWidth: '25%' }}
-                    >
-                      Subscribe
-                    </Button>
-                  </Popconfirm>
-                ) : (
-                  ''
-                )
+                    Subscribe
+                  </Button>
+                </Popconfirm>
               ) : null}
             </div>
           )
@@ -678,7 +674,7 @@ const CalendarCard = () => {
                   />
                 </div>
               </div>
-              {!modData?.is_holiday && modData?.refundable && (
+              {!modData?.is_holiday && modData?.is_subscription_need && (
                 <div className='col-4'>
                   <div className='th-br-20' ref={refundRef}>
                     <div className='font-weight-bold mt-2'>Refund Policy</div>
@@ -686,18 +682,26 @@ const CalendarCard = () => {
                       className='th-br-8 px-3 py-2 mt-2'
                       style={{ border: '1px solid #d9d9d9' }}
                     >
-                      {Object.keys(modData?.policy_dates)?.map((item) => {
-                        return (
-                          <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
-                            <div className='th-grey'>
-                              Till {moment(item).format('MMM D, YYYY')}
+                      {modData?.refundable ? (
+                        Object.keys(modData?.policy_dates)?.map((item) => {
+                          return (
+                            <div className='d-flex align-items-center justify-content-between mb-2 th-15'>
+                              <div className='th-grey'>
+                                Cancel before {moment(item).format('MMM D, YYYY')}
+                              </div>
+                              <div className='th-black-1 th-fw-500'>
+                                ₹ {modData?.policy_dates[item]}
+                              </div>
                             </div>
-                            <div className='th-black-1 th-fw-500'>
-                              ₹ {modData?.policy_dates[item]}
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })
+                      ) : (
+                        <div className='th-grey'>
+                          <i className='th-16'>
+                            As per refund policy, No Refund will be given
+                          </i>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

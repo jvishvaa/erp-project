@@ -44,7 +44,10 @@ function Evaluvation(props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [drawedChanges, setDrawedChanges] = useState({});
+  const [drawedHistory, setDrawedHistory] = useState([]);
+  const [isRotated, setIsRotated] = useState(false);
   const [restore, setRestore] = useState('');
+  const [angleInDegrees, setAngleInDegrees] = useState(0);
   const {
     tool,
     enableTool,
@@ -68,7 +71,7 @@ function Evaluvation(props) {
     setPdfState,
     enableRotation,
     rotation,
-    angleInDegrees,
+    // angleInDegrees,
     splittedMedia,
     handleONSaveHW,
     initialAngle,
@@ -142,6 +145,16 @@ function Evaluvation(props) {
     }
 
     elmnt.onmousedown = dragMouseDown;
+  };
+
+  const enableRotationFunc = (dir) => {
+    enableRotation();
+    setIsRotated(true);
+    if (dir === 'rLeft') {
+      setAngleInDegrees(-90);
+    } else {
+      setAngleInDegrees(90);
+    }
   };
 
   useEffect(() => {
@@ -332,10 +345,11 @@ function Evaluvation(props) {
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
+
           <ToggleButtonGroup
             exclusive
             value={rotation}
-            onChange={enableRotation}
+            onChange={(e, dir) => enableRotationFunc(dir)}
             aria-label='text formatting'
             className='tool-group'
           >
@@ -365,8 +379,7 @@ function Evaluvation(props) {
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
-          {/* </div> */}
-          <ToggleButton
+          {/* <ToggleButton
             onClick={onClickFullscreen}
             aria-label='paint'
             color='primary'
@@ -381,7 +394,7 @@ function Evaluvation(props) {
             <Tooltip title='Full Screen' arrow>
               {fullscreen ? <FullscreenExitRounded /> : <FullscreenRounded />}
             </Tooltip>
-          </ToggleButton>
+          </ToggleButton> */}
           {/* <Tooltip title='reset' arrow>
             <Button
               edge='start'
@@ -457,7 +470,10 @@ function Evaluvation(props) {
                 handleTotalPage={handleTotalPage}
                 setPdfState={setPdfState}
                 rotation={rotation}
+                isRotated={isRotated}
+                setIsRotated={setIsRotated}
                 angleInDegrees={angleInDegrees}
+                setAngleInDegrees={setAngleInDegrees}
                 splittedMedia={splittedMedia}
                 handleONSaveHW={handleONSaveHW}
                 initialAngle={initialAngle}
@@ -466,6 +482,8 @@ function Evaluvation(props) {
                 setRestore={setRestore}
                 // reset={reset}
                 isReset={isReset}
+                drawedHistory={drawedHistory}
+                setDrawedHistory={setDrawedHistory}
                 // magnify={magnify}
               />
             )}

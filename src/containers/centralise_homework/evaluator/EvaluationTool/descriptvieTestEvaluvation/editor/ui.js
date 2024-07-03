@@ -21,6 +21,7 @@ function CorrectionComponent({
   handleTotalPage,
   setPdfState,
   angleInDegrees,
+  setAngleInDegrees,
   rotation,
   splittedMedia,
   handleONSaveHW,
@@ -29,6 +30,10 @@ function CorrectionComponent({
   setRestore,
   zoom,
   isReset,
+  drawedHistory,
+  setDrawedHistory,
+  isRotated,
+  setIsRotated,
 }) {
   const canvasElement = useRef();
   const pageRef = useRef(null);
@@ -43,7 +48,6 @@ function CorrectionComponent({
   const [viewWidth, setViewWidth] = useState(0);
   const [viewHeight, setViewHeight] = useState(0);
   const [style, setStyle] = useState({});
-  const [drawedHistory, setDrawedHistory] = useState([]);
   const [selectedDrawingIndex, setSelectedDrawingIndex] = useState(
     drawedHistory.length - 1
   );
@@ -61,7 +65,6 @@ function CorrectionComponent({
 
   useEffect(() => {
     const canvas = canvasElement.current;
-
     if (canvas) {
       const context = canvas.getContext('2d');
       const pgUrl =
@@ -76,9 +79,8 @@ function CorrectionComponent({
         let width = 0;
         let height = 0;
 
-        width = extenstion === 'pdf' ? viewWidth : 500;
+        width = extenstion === 'pdf' ? viewWidth : 700;
         height = extenstion === 'pdf' ? viewHeight : 700;
-
         canvas.height = height;
         canvas.width = width;
         hRef.current = height;
@@ -96,16 +98,27 @@ function CorrectionComponent({
             isSaving: 'true',
             viewHeight: height,
             viewWidth: width,
+            historyType: 'loading',
           },
         ]);
+        setDrawedChanges({
+          image: base64Image,
+          containerImg: '',
+          operation: 'manualSave',
+          isSaving: 'true',
+          viewHeight: height,
+          viewWidth: width,
+          historyType: 'loading',
+        });
         setSelectedDrawingIndex(selectedDrawingIndex + 1);
+
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(img, 0, 0, width, height);
       };
       img.src = `${pgUrl}??${escape(new Date().getTime())}`;
       imgRef.current = img;
     }
-  }, [angleInDegrees, extenstion, pageNumber, splittedMedia, url, viewHeight, viewWidth]);
+  }, [extenstion, pageNumber, splittedMedia, url, viewHeight, viewWidth]);
 
   useEffect(() => {
     if (restore === 'undo') {
@@ -167,6 +180,7 @@ function CorrectionComponent({
     return data;
   };
 
+  //rotate use effect
   const drawRotated = useCallback(() => {
     var { sX, sY, zoomAction, m } = zoom;
 
@@ -240,23 +254,209 @@ function CorrectionComponent({
     if (extenstion === 'pdf') {
       let v = marginPDFStyle[String(sX)];
       margin = '5% auto';
+      // style.margin = margin;
+    }
+
+    let x = sX || 1;
+    let y = sY || 1;
+
+    style.width =
+      angleInDegrees === -90 ||
+      angleInDegrees === 90 ||
+      angleInDegrees === 270 ||
+      angleInDegrees === -270
+        ? 700
+        : 700;
+
+    style.height =
+      angleInDegrees === 0 ||
+      angleInDegrees === 180 ||
+      angleInDegrees === -180 ||
+      angleInDegrees === -360
+        ? 700
+        : 700;
+    // style.transform =
+    //   zoomAction === 'zoom in'
+    //     ? `rotate(${angleInDegrees}deg) scale(${x},${y})`
+    //     : `rotate(${angleInDegrees}deg)scale(${x},${y})`;
+
+    setStyle(style);
+    rotateCanvas(angleInDegrees);
+  }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen]);
+
+  const drawZoom = useCallback(() => {
+    var { sX, sY, zoomAction, m } = zoom;
+
+    let margin = '5% 0% 0% 3%';
+
+    if (hRef && hRef.current && wRef && wRef.current) {
+      if (hRef.current < 1000) {
+        if (sX < 1) {
+          sX = 1.5;
+          sY = 1.5;
+          margin = '7% 0% 0% 0%';
+        } else if (sX == 1) {
+          margin = '7% 0% 0% 0%';
+        } else if (sX == 1.5) {
+          margin = '20% auto';
+        } else if (sX == 3) {
+          sX = 1.7;
+          sY = 1.7;
+          margin = '25% auto';
+        }
+      } else if (hRef.current > 1000) {
+        if (sX < 1) {
+          sX = 1;
+          sY = 1;
+          margin = '7% 0% 0% 0%';
+        } else if (sX == 1) {
+          margin = '7% 0% 0% 0%';
+        } else if (sX == 1.5) {
+          if (angleInDegrees === 0) margin = '0% 40% auto';
+          else margin = '8% auto';
+        } else if (sX == 3) {
+          if (angleInDegrees === 0) margin = '0% 42% 0 40%';
+          else margin = '36% 33% 0 40%';
+        }
+        if (
+          (angleInDegrees === 270 ||
+            angleInDegrees === -270 ||
+            angleInDegrees === 90 ||
+            angleInDegrees === -90) &&
+          sX == 1
+        ) {
+          margin = '0% 0% 0% 0%';
+        } else if (
+          (angleInDegrees === 270 ||
+            angleInDegrees === -270 ||
+            angleInDegrees === 90 ||
+            angleInDegrees === -90) &&
+          sX == 1.5
+        ) {
+          margin = '5% 0% 0% 10%';
+        } else if ((angleInDegrees === -270 || angleInDegrees === 90) && sX == 3) {
+          margin = '18% 15% 0% 0%';
+        } else if ((angleInDegrees === 270 || angleInDegrees === -90) && sX == 3) {
+          margin = '18% 0% 0% 45%';
+        } else if ((angleInDegrees === 180 || angleInDegrees === -180) && sX == 1) {
+          margin = '0% 0% 0% 0%';
+        } else if ((angleInDegrees === 180 || angleInDegrees === -180) && sX == 1.5) {
+          margin = '0%';
+        } else if ((angleInDegrees === 180 || angleInDegrees === -180) && sX == 3) {
+          margin = '5% 0% 0% 0%';
+        }
+      }
+    }
+
+    let style = {
+      width: containerWidth,
+      height: fullscreen ? 700 : 700,
+      overflow: 'auto',
+    };
+
+    if (extenstion === 'pdf') {
+      let v = marginPDFStyle[String(sX)];
+      margin = '5% auto';
       style.margin = margin;
     }
 
     let x = sX || 1;
     let y = sY || 1;
 
-    style.transform =
-      zoomAction === 'zoom in'
-        ? `rotate(${angleInDegrees}deg) scale(${x},${y})`
-        : `rotate(${angleInDegrees}deg)scale(${x},${y})`;
+    style.transform = zoomAction === 'zoom in' ? ` scale(${x},${y})` : `scale(${x},${y})`;
 
     setStyle(style);
-  }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen, zoom]);
+  }, [zoom]);
 
   useEffect(() => {
     drawRotated();
   }, [angleInDegrees, drawRotated]);
+
+  useEffect(() => {
+    drawZoom();
+  }, [zoom]);
+
+  //rotate canvas
+  async function rotateCanvas(angle) {
+    if (isRotated) {
+      let rotationAngle = 0;
+
+      rotationAngle = (rotationAngle + angle) % 360;
+
+      // Create an off-screen canvas to store the current content
+      const canvas = canvasElement.current;
+      const pgUrl =
+        splittedMedia && splittedMedia.length
+          ? splittedMedia.filter((e) => e.page_number === pageNumber)[0].file_content
+          : url;
+      let img = new Image();
+      img.setAttribute('crossorigin', 'anonymous');
+      img.id = 'actual_image_rotation';
+      img.src = canvas?.toDataURL();
+      // img.style.transform = `rotate(${angleInDegrees}deg)`;
+
+      let newWidth = 700;
+      let newHeight = 700;
+
+      const ctx = canvas.getContext('2d');
+      const offScreenCanvas = document.createElement('canvas');
+      offScreenCanvas.width = canvas.width;
+      offScreenCanvas.height = canvas.height;
+      const offScreenCtx = offScreenCanvas.getContext('2d');
+      offScreenCtx.drawImage(canvas, 0, 0);
+
+      // Update canvas dimensions
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      // Clear the main canvas
+      ctx.clearRect(0, 0, newWidth, newHeight);
+
+      // Apply the rotation
+
+      img.onload = async function () {
+        ctx.save();
+        ctx.translate(newWidth / 2, newHeight / 2);
+        ctx.rotate((rotationAngle * Math.PI) / 180);
+        ctx.translate(-canvas.width / 2, -canvas.height / 2);
+
+        // Redraw the saved image from the off-screen canvas
+        ctx.drawImage(offScreenCanvas, 0, 0, img.width, img.height);
+        ctx.restore();
+      };
+
+      setTimeout(() => {
+        let drawedCanvas = canvasElement.current;
+        setDrawedChanges({
+          image: drawedCanvas.toDataURL(),
+          // containerImg: containerImg.toDataURL(),
+          containerImg: '',
+          operation: 'manualSave',
+          isSaving: 'true',
+          viewHeight: hRef && hRef.current,
+          viewWidth: wRef && wRef.current,
+        });
+        setDrawedHistory([
+          ...drawedHistory,
+          {
+            image: drawedCanvas.src,
+            // containerImg: containerImg.toDataURL(),
+            containerImg: '',
+            operation: 'manualSave',
+            isSaving: 'true',
+            viewHeight: hRef && hRef.current,
+            viewWidth: wRef && wRef.current,
+            historyType: 'rotating',
+          },
+        ]);
+        console.log(img, img?.src);
+        // img.src = `${pgUrl}??${escape(new Date().getTime())}`;
+        // imgRef.current = img;
+        setAngleInDegrees(0);
+        setIsRotated(false);
+      }, 100);
+    }
+  }
 
   useEffect(() => {
     if (pageRef && pageRef.current) {
@@ -356,6 +556,7 @@ function CorrectionComponent({
     var rect = drawingCanvas.getBoundingClientRect();
     var offsetX = touchEvent.touches[0].clientX - rect.left;
     var offsetY = touchEvent.touches[0].clientY - rect.top;
+
     if (isPainting) {
       const offSetData = { offsetX, offsetY };
       // Set the start and stop position of the paint event.
@@ -374,6 +575,8 @@ function CorrectionComponent({
     if (isPainting) {
       setIsPainting(false);
       let drawingCanvas = canvasElement.current;
+
+      //state updation for saving updated canvas
       setDrawedChanges({
         image: drawingCanvas?.toDataURL(),
         // containerImg: containerImg.toDataURL(),
@@ -398,6 +601,7 @@ function CorrectionComponent({
             isSaving: 'true',
             viewHeight: hRef && hRef.current,
             viewWidth: wRef && wRef.current,
+            historyType: 'drawing',
           },
         ]);
         setSelectedDrawingIndex(dummyHistory2.length);
@@ -414,6 +618,7 @@ function CorrectionComponent({
           isSaving: 'true',
           viewHeight: hRef && hRef.current,
           viewWidth: wRef && wRef.current,
+          historyType: 'drawing',
         },
       ]);
       setSelectedDrawingIndex(drawedHistory.length);

@@ -97,6 +97,8 @@ import FrequentlyAskedQuestions from '../containers/FrequentlyAskedQuestions/Fre
 import AddFaq from '../containers/FrequentlyAskedQuestions/AddFaq';
 import HomeworkDashboard from '../v2/FaceLift/Homework/Dashboard';
 import SchoolWall from 'v2/FaceLift/ActivityManagement/SchoolWall';
+import PaymentSuccess from 'v2/FaceLift/myComponents/PaymentPage/PaymentSuccess';
+import PaymentFailed from 'v2/FaceLift/myComponents/PaymentPage/PaymentFailed';
 
 const V2Router = () => {
   useEffect(() => {
@@ -471,6 +473,12 @@ const V2Router = () => {
                         </Route> */}
                         <Route path='/school-wall'>
                           {({ match }) => <SchoolWall match={match} />}
+                        </Route>
+                        <Route path='/payment-success'>
+                          {({ match }) => <PaymentSuccess match={match} />}
+                        </Route>
+                        <Route path='/payment-failed'>
+                          {({ match }) => <PaymentFailed match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {
