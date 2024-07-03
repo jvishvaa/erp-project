@@ -131,9 +131,9 @@ const DescriptiveQuestion = () => {
     });
   };
 
-  // useEffect(() => {
-  //  setTextEditorContent(currentQuestionObj?.user_response?.answer);
-  // },[currentQuestionObj?.id])
+  useEffect(() => {
+    setTextEditorContent(currentQuestionObj?.user_response?.answer);
+  }, [currentQuestionObj?.id]);
 
   return (
     <div>
@@ -148,7 +148,7 @@ const DescriptiveQuestion = () => {
         <div className='py-2 w-100 font-weight-normal'>
           <ReactQuillEditor
             id={`userId${currentQuestionObj?.id}`}
-            value={currentQuestionObj?.user_response?.answer}
+            value={textEditorContent}
             onChange={(content, delta, source, editor) =>
               handleEditorChange(content, delta, source, editor)
             }
