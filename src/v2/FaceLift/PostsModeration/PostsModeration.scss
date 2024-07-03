@@ -171,7 +171,7 @@
   .post-card .ant-card-body{
     padding: 6px;
     border-radius: 4px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 0.5px var(--cancelled-color) !important;
     display:flex;
     flex-direction: column;
     justify-content: space-between;
@@ -185,6 +185,12 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+}
+.div-card-comments {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  height: 100%;
 }
   .th-post-card-dp {
     width: 40px !important;

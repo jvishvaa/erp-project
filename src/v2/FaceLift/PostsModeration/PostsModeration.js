@@ -1277,8 +1277,11 @@ const PostsModeration = () => {
                                 selectedCommentIds.includes(each?.id) &&
                                 'bg-card'
                               }`}
+                              bodyStyle={{
+                                height: '100%',
+                              }}
                             >
-                              <div>
+                              <div className='div-card-comments'>
                                 <div className='d-flex justify-content-between'>
                                   <div className='d-flex'>
                                     <Image
