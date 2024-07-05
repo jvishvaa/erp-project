@@ -28,6 +28,7 @@ const ViewEventModal = ({
   openFeedBackModal,
   approveEvent,
   approveLoading,
+  imprestWallet,
 }) => {
   const user_level = JSON.parse(localStorage.getItem('userDetails'))?.user_level || '';
   const is_superuser = localStorage.getItem('userDetails')
@@ -223,26 +224,46 @@ const ViewEventModal = ({
                                 </Button>
                               </Popconfirm>
                             ) : (
-                              <Popconfirm
-                                title='Are you sure you want to subscribe?'
-                                okText={'Subscribe'}
-                                onConfirm={() => {
-                                  subscribeEvent({
-                                    eventId: viewEvent?.id,
-                                    row: viewEvent,
-                                  });
-                                }}
-                                zIndex={2100}
-                                placement='bottomRight'
-                              >
-                                <Button
-                                  type='primary'
-                                  className='th-br-6 w-100'
-                                  loading={loading}
-                                >
-                                  Subscribe
-                                </Button>
-                              </Popconfirm>
+                              <>
+                                {imprestWallet?.amount >= viewEvent?.event_price ? (
+                                  <Popconfirm
+                                    title='Are you sure you want to subscribe?'
+                                    okText={'Subscribe'}
+                                    onConfirm={() => {
+                                      subscribeEvent({
+                                        eventId: viewEvent?.id,
+                                        row: viewEvent,
+                                      });
+                                    }}
+                                    zIndex={2100}
+                                    placement='bottomRight'
+                                  >
+                                    <Button
+                                      type='primary'
+                                      className='th-br-6 w-100'
+                                      loading={loading}
+                                    >
+                                      Subscribe
+                                    </Button>
+                                  </Popconfirm>
+                                ) : (
+                                  <>
+                                    <Popover
+                                      placement='topRight'
+                                      content='Insufficient Balance, Please recharge to subscribe'
+                                      overlayStyle={{ zIndex: 2001 }}
+                                    >
+                                      <Button
+                                        type='primary'
+                                        className='th-br-6 w-100'
+                                        disabled={true}
+                                      >
+                                        Subscribe
+                                      </Button>
+                                    </Popover>
+                                  </>
+                                )}
+                              </>
                             )}
                             {viewEvent?.refundable && (
                               <div className='th-grey pt-1 th-12'>

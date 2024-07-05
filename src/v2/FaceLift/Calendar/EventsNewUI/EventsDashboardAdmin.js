@@ -285,6 +285,9 @@ const EventsDashboardAdmin = () => {
           .join(',');
         formData.append('policies', formatted_policy);
       }
+    } else {
+      formData.append('event_price', 0);
+      formData.append('refundable', false);
     }
     if (selectedFiles?.length) {
       for (let i = 0; i < selectedFiles.length; i++) {
@@ -364,7 +367,7 @@ const EventsDashboardAdmin = () => {
         formData.append('policies', formatted_policy);
       }
     } else {
-      formData.append('event_price', '');
+      formData.append('event_price', 0);
       formData.append('refundable', false);
     }
     if (selectedFiles?.length) {
@@ -2172,7 +2175,7 @@ const EventsDashboardAdmin = () => {
         ]}
         className='th-event-drawer-2'
         closeIcon={false}
-        width='90%'        
+        width='90%'
       >
         <div>
           <>

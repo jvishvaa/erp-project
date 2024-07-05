@@ -444,25 +444,42 @@ const EventsDashboardStudent = () => {
             {row?.approval_status !== 3 && (
               <>
                 {row?.subscription === 'pending' && (
-                  <Popconfirm
-                    placement='bottomRight'
-                    title='Are you sure to Subscribe for the Event ?'
-                    onConfirm={() =>
-                      subscribeEvent({
-                        eventId: row?.id,
-                        row,
-                      })
-                    }
-                  >
-                    <Popover placement='topRight' content='Subscribe Event'>
-                      <Tag
-                        className='custom-tag th-event-approved'
-                        icon={<CheckCircleOutlined />}
+                  <>
+                    {imprestWallet?.amount >= row?.event_price ? (
+                      <Popconfirm
+                        placement='bottomRight'
+                        title='Are you sure to Subscribe for the Event ?'
+                        onConfirm={() =>
+                          subscribeEvent({
+                            eventId: row?.id,
+                            row,
+                          })
+                        }
                       >
-                        Subscribe
-                      </Tag>
-                    </Popover>
-                  </Popconfirm>
+                        <Popover placement='topRight' content='Subscribe Event'>
+                          <Tag
+                            className='custom-tag th-event-approved'
+                            icon={<CheckCircleOutlined />}
+                          >
+                            Subscribe
+                          </Tag>
+                        </Popover>
+                      </Popconfirm>
+                    ) : (
+                      <Popover
+                        placement='topRight'
+                        content='Insufficient Balance, Please recharge to subscribe'
+                        >
+                        <Tag
+                          className='custom-tag th-event-approved'
+                          icon={<CheckCircleOutlined />}
+                          style={{ cursor: 'not-allowed' }}
+                        >
+                          Subscribe
+                        </Tag>
+                      </Popover>
+                    )}
+                  </>
                 )}
                 {row?.subscription === 'subscribed' && (
                   <Popover placement='topRight' content='Un Subscribe Event'>
@@ -619,6 +636,7 @@ const EventsDashboardStudent = () => {
           unSubscribeEvent={unSubscribeEvent}
           loading={loading}
           unSubscribeLoading={unSubscribeLoading}
+          imprestWallet={imprestWallet}
         />
       )}
       <Modal

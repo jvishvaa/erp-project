@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
 import Calendar from 'react-calendar';
-import { Modal, Button, Card, Tooltip, Empty, notification, Popconfirm } from 'antd';
+import {
+  Modal,
+  Button,
+  Card,
+  Tooltip,
+  Empty,
+  notification,
+  Popconfirm,
+  Popover,
+} from 'antd';
 import { RightOutlined, DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import './index.css';
 import { useSelector } from 'react-redux';
 import axios from 'v2/config/axios';
+import axiosInstance from 'config/axios';
 import endpoints from 'v2/config/endpoints';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import HolidayIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/holidayNew.png';
@@ -16,10 +27,21 @@ import MediaDisplay from '../../Calendar/EventsNewUI/mediaDisplayEvents';
 import { saveAs } from 'file-saver';
 
 const CalendarCard = () => {
+  const history = useHistory();
+  const session_year = sessionStorage.getItem('acad_session')
+    ? JSON.parse(sessionStorage.getItem('acad_session'))?.id
+    : '';
+  const financeSessionYearList = localStorage.getItem('financeSessions')
+    ? JSON.parse(localStorage.getItem('financeSessions'))
+    : [];
+  let erpID = localStorage.getItem('userDetails')
+    ? JSON.parse(localStorage.getItem('userDetails'))
+    : {};
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const refundRef = useRef();
+  const [imprestWallet, setImprestWallet] = useState(0);
   const [holidaysData, setHolidaysData] = useState([]);
   const [eventssData, setEventsData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,6 +153,25 @@ const CalendarCard = () => {
     );
   };
 
+  const fetchImprestWalletData = () => {
+    let finance_session_year_id = financeSessionYearList.find(
+      (each) => parseInt(each?.academic_session_id) === session_year
+    )?.id;
+    axiosInstance
+      .get(
+        `${endpoints.finance.imprestWallet}?finance_session_year=${finance_session_year_id}&branch_id=${selectedBranch?.branch?.id}&erp_id=${erpID?.erp}`
+      )
+      .then((res) => {
+        if (res?.data?.results) {
+          setImprestWallet(res?.data?.results?.amount);
+        }
+      })
+      .catch((err) => {
+        console.log({ err });
+      })
+      .finally(() => {});
+  };
+
   const handleMonthChange = (value) => {
     setMonthStartDate(moment(value).startOf('month').format('YYYY-MM-DD'));
     setMonthEndDate(moment(value).endOf('month').format('YYYY-MM-DD'));
@@ -164,6 +205,7 @@ const CalendarCard = () => {
             session_year: selectedBranch?.id,
             grade: userDetails?.role_details?.grades[0]?.grade_id,
           });
+          fetchImprestWalletData();
         } else if (response?.data?.status_code == 402) {
           notification['error']({
             message: 'Insufficient wallet balance. Please recharge to subscribe',
@@ -199,6 +241,7 @@ const CalendarCard = () => {
           session_year: selectedBranch?.id,
           grade: userDetails?.role_details?.grades[0]?.grade_id,
         });
+        fetchImprestWalletData();
       } else {
         fetchHolidaysData({
           start_date: monthStartDate,
@@ -521,44 +564,73 @@ const CalendarCard = () => {
                   </Button>
                 </Popconfirm>
               ) : modData?.subscription == 'pending' ? (
-                <Popconfirm
-                  title={
-                    <div className='d-flex flex-column' style={{ gap: 5 }}>
-                      <div className=''>Are you sure you want to subscibe?</div>
-                      {modData?.refundable && (
-                        <div className='th-grey th-14 mt-2'>
-                          Note: Please read the&nbsp;
-                          <span
-                            className='th-pointer th-primary th-fw-500'
-                            onClick={() => {
-                              handleScrollToPolicy();
-                            }}
-                          >
-                            refund policy
-                          </span>
+                <>
+                  {imprestWallet >= modData?.event_price ? (
+                    <Popconfirm
+                      title={
+                        <div className='d-flex flex-column' style={{ gap: 5 }}>
+                          <div className=''>Are you sure you want to subscibe?</div>
+                          {modData?.refundable && (
+                            <div className='th-grey th-14 mt-2'>
+                              Note: Please read the&nbsp;
+                              <span
+                                className='th-pointer th-primary th-fw-500'
+                                onClick={() => {
+                                  handleScrollToPolicy();
+                                }}
+                              >
+                                refund policy
+                              </span>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  }
-                  okText={'Subscribe'}
-                  onConfirm={() => {
-                    handleEventAction({
-                      eventId: modData?.id,
-                      action: 'subscribe',
-                    });
-                  }}
-                  zIndex={2100}
-                  placement='right'
-                >
-                  <Button
-                    type='primary'
-                    loading={loading}
-                    className=' th-br-6 th-18 d-flex align-items-center justify-content-center'
-                    style={{ minWidth: '25%' }}
-                  >
-                    Subscribe
-                  </Button>
-                </Popconfirm>
+                      }
+                      okText={'Subscribe'}
+                      onConfirm={() => {
+                        handleEventAction({
+                          eventId: modData?.id,
+                          action: 'subscribe',
+                        });
+                      }}
+                      zIndex={2100}
+                      placement='right'
+                    >
+                      <Button
+                        type='primary'
+                        loading={loading}
+                        className='th-br-6 th-18 d-flex align-items-center justify-content-center'
+                        style={{ minWidth: '25%' }}
+                      >
+                        Subscribe
+                      </Button>
+                    </Popconfirm>
+                  ) : (
+                    <>
+                      <Popover
+                        placement='topRight'
+                        content='Insufficient Balance, Please recharge to subscribe'
+                        overlayStyle={{ zIndex: 2001 }}
+                      >
+                        <Button
+                          type='primary'
+                          className='th-br-6 th-18 d-flex align-items-center justify-content-center'
+                          style={{ minWidth: '25%' }}
+                          disabled={true}
+                        >
+                          Subscribe
+                        </Button>
+                      </Popover>
+                      <Button
+                        type='primary'
+                        className='th-18 d-flex align-items-center justify-content-center'
+                        style={{ marginLeft: '10px' }}
+                        onClick={() => history.push('/attendance-calendar/student-view')}
+                      >
+                        Recharge
+                      </Button>
+                    </>
+                  )}
+                </>
               ) : null}
             </div>
           )
