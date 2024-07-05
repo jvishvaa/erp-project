@@ -1,0 +1,10 @@
+.call-type {
+  cursor: pointer;
+  padding: 4px 3px;
+}
+
+.call-type:hover {
+  background-color: rgba(89, 92, 151, 0.1);
+  color: white;
+  border-radius: 4px;
+}

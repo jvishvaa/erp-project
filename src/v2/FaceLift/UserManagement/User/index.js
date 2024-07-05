@@ -7,6 +7,7 @@ import {
   PlusCircleOutlined,
   SearchOutlined,
   StopOutlined,
+  PhoneOutlined,
 } from '@ant-design/icons';
 import {
   Breadcrumb,
@@ -25,6 +26,7 @@ import {
   Tooltip,
   Typography,
   message,
+  Popover,
 } from 'antd';
 import { Input, Space } from 'antd';
 import endpoints from 'config/endpoints';
@@ -38,6 +40,7 @@ import axiosInstance from 'v2/config/axios';
 import axios from 'axios';
 import FileSaver from 'file-saver';
 import moment from 'moment';
+import './user.scss';
 
 const User = () => {
   const history = useHistory();
@@ -50,7 +53,6 @@ const User = () => {
   const [sectionList, setSectionList] = useState([]);
   const [section, setSection] = useState('');
   const [status, setStatus] = useState('');
-
   const { Option } = Select;
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   // const [moduleId, setModuleId] = useState('');
@@ -233,6 +235,62 @@ const User = () => {
                     style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
                   />
                 </Link>
+                {data?.level === 13 ? (
+                  <>
+                    <Popover
+                      content={
+                        <>
+                          <div
+                            className='call-type'
+                            onClick={() => {
+                              clickToCall(data?.erp_id, 5);
+                            }}
+                            style={{ color: '#595c97' }}
+                          >
+                            <PhoneOutlined className='pr-2' />
+                            Primary
+                          </div>
+                          <div
+                            className='call-type'
+                            onClick={() => {
+                              clickToCall(data?.erp_id, 2);
+                            }}
+                            style={{ color: '#595c97' }}
+                          >
+                            <PhoneOutlined className='pr-2' />
+                            Father
+                          </div>
+                          <div
+                            className='call-type'
+                            onClick={() => {
+                              clickToCall(data?.erp_id, 3);
+                            }}
+                            style={{ color: '#595c97' }}
+                          >
+                            <PhoneOutlined className='pr-2' />
+                            Mother
+                          </div>
+                          <div
+                            className='call-type'
+                            onClick={() => {
+                              clickToCall(data?.erp_id, 4);
+                            }}
+                            style={{ color: '#595c97' }}
+                          >
+                            <PhoneOutlined className='pr-2' />
+                            Guardian
+                          </div>
+                        </>
+                      }
+                      title={null}
+                      trigger='click'
+                    >
+                      <PhoneOutlined
+                        style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
+                      />
+                    </Popover>
+                  </>
+                ) : null}
                 {(loggedUserData?.is_superuser ||
                   userHistoryAccessLevels.includes(
                     String(loggedUserData?.user_level)
@@ -322,6 +380,33 @@ const User = () => {
       activityImagePreview: false,
       activityImagePreviewUrl: null,
     });
+  };
+
+  const clickToCall = (Erp_id, type) => {
+    setLoading(true);
+    const params = {
+      erp_id: Erp_id,
+      contact_type: type,
+    };
+
+    axiosInstance
+      .post(`${endpoints.userManagement.clickToCall}`, params)
+      .then((response) => {
+        setLoading(false);
+        const resData = response?.data?.result?.response_data;
+        if (resData?.status == 1) {
+          message.success(resData?.message);
+        } else {
+          message.error(resData?.message);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        message.error(error?.response?.data?.message ?? 'Something went wrong');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const fetchUserLevel = async () => {
