@@ -113,6 +113,7 @@ export default {
     serachParent: '/erp_user/search-parent/',
     addChildToParent: '/erp_user/add-child-to-parent/',
     updateParent: '/erp_user/update-parent',
+    clickToCall: '/erp_user/click-to-call/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
