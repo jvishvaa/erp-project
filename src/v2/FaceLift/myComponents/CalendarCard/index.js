@@ -613,7 +613,7 @@ const CalendarCard = () => {
                       >
                         <Button
                           type='primary'
-                          className='th-br-6 th-18 d-flex align-items-center justify-content-center'
+                          className='th-br-6 d-flex align-items-center justify-content-center'
                           style={{ minWidth: '25%' }}
                           disabled={true}
                         >
@@ -622,7 +622,7 @@ const CalendarCard = () => {
                       </Popover>
                       <Button
                         type='primary'
-                        className='th-18 d-flex align-items-center justify-content-center'
+                        className='d-flex align-items-center justify-content-center'
                         style={{ marginLeft: '10px' }}
                         onClick={() => history.push('/attendance-calendar/student-view')}
                       >
