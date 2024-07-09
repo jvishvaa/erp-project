@@ -281,8 +281,8 @@ const EventsDashboardStudent = () => {
   };
 
   const generatePaymentLink = (params = {}) => {
-    if (rechargeAmount < 999) {
-      return message.error('Minimum amount should be atleast 1000/-');
+    if (rechargeAmount < initialRechargeAmount) {
+      return message.error(`Minimum amount should be atleast ${initialRechargeAmount}/-`);
     }
     setWalletLoading(true);
     const formData = new FormData();
@@ -469,7 +469,7 @@ const EventsDashboardStudent = () => {
                       <Popover
                         placement='topRight'
                         content='Insufficient Balance, Please recharge to subscribe'
-                        >
+                      >
                         <Tag
                           className='custom-tag th-event-approved'
                           icon={<CheckCircleOutlined />}
