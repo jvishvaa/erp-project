@@ -753,14 +753,16 @@ const AddHomeworkCordNew = ({
             </div>
           </Form.Item>
           <div className='row'>
-            <Button
+            {
+              !propData?.isEdit && <Button
               onClick={() => {
                 setQueIndexCounter(queIndexCounter + 1);
                 addNewQuestion(queIndexCounter + 1);
               }}
             >
               Add Another Question
-            </Button>
+            </Button> 
+            }
             <Button className='mx-2' onClick={handleAddHomeWork} type='primary'>
               {propData?.isEdit ? 'Update' : 'Submit'}
             </Button>
