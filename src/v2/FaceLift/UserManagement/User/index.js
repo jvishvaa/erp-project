@@ -82,6 +82,7 @@ const User = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  const [branchID, setBranchID] = useState(null);
   // const isOrchidsbachu =
   //   window.location.host.split('.')[0] === 'orchids' ||
   //   window.location.host.split('.')[0] === 'localhost:3000'
@@ -97,6 +98,11 @@ const User = () => {
     window.location.host.split('.')[0] === 'orchids-prod'
       ? true
       : false;
+
+  const isOrchidsStage = window.location.host.split('.')[0] === 'orchids-stage';
+  const isOrchidProd =
+    window.location.host.split('.')[0] === 'orchids-prod' ||
+    window.location.host.split('.')[0] === 'orchids';
 
   const columns = [
     {
@@ -235,7 +241,7 @@ const User = () => {
                     style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
                   />
                 </Link>
-                {data?.level === 13 ? (
+                {isOrchidProd && branchID === 66 && data?.level === 13 ? (
                   <>
                     <Popover
                       content={
@@ -290,7 +296,67 @@ const User = () => {
                       />
                     </Popover>
                   </>
-                ) : null}
+                ) : (
+                  isOrchidsStage &&
+                  branchID === 456 &&
+                  data?.level === 13 && (
+                    <>
+                      <Popover
+                        content={
+                          <>
+                            <div
+                              className='call-type'
+                              onClick={() => {
+                                clickToCall(data?.erp_id, 5);
+                              }}
+                              style={{ color: '#595c97' }}
+                            >
+                              <PhoneOutlined className='pr-2' />
+                              Primary
+                            </div>
+                            <div
+                              className='call-type'
+                              onClick={() => {
+                                clickToCall(data?.erp_id, 2);
+                              }}
+                              style={{ color: '#595c97' }}
+                            >
+                              <PhoneOutlined className='pr-2' />
+                              Father
+                            </div>
+                            <div
+                              className='call-type'
+                              onClick={() => {
+                                clickToCall(data?.erp_id, 3);
+                              }}
+                              style={{ color: '#595c97' }}
+                            >
+                              <PhoneOutlined className='pr-2' />
+                              Mother
+                            </div>
+                            <div
+                              className='call-type'
+                              onClick={() => {
+                                clickToCall(data?.erp_id, 4);
+                              }}
+                              style={{ color: '#595c97' }}
+                            >
+                              <PhoneOutlined className='pr-2' />
+                              Guardian
+                            </div>
+                          </>
+                        }
+                        title={null}
+                        trigger='click'
+                      >
+                        <PhoneOutlined
+                          style={{ margin: 10, cursor: 'pointer', color: '#1B4CCB' }}
+                        />
+                      </Popover>
+                    </>
+                  )
+                )}
+
                 {(loggedUserData?.is_superuser ||
                   userHistoryAccessLevels.includes(
                     String(loggedUserData?.user_level)
@@ -333,6 +399,8 @@ const User = () => {
     fetchUserLevel();
     fetchBranches();
     fetchUserHistoryAccessLevels();
+    setBranchID(selectedBranch?.branch?.id);
+    setBranch(selectedBranch?.branch?.id);
   }, []);
   useEffect(() => {
     console.log(activityModal, 'activityModal');
@@ -1107,7 +1175,7 @@ const User = () => {
                           <Button
                             type='primary'
                             className='btn-block th-br-4 th-12'
-                            onClick={() =>
+                            onClick={() => {
                               filterData(
                                 pageNo,
                                 branch,
@@ -1116,8 +1184,13 @@ const User = () => {
                                 section,
                                 status,
                                 searchData
-                              )
-                            }
+                              );
+                              {
+                                branch === '' || null
+                                  ? setBranchID(selectedBranch?.branch?.id)
+                                  : setBranchID(branch);
+                              }
+                            }}
                           >
                             View
                           </Button>
